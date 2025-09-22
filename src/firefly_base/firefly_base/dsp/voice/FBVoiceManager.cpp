@@ -22,6 +22,7 @@ FBVoiceManager::Return(int slot)
   auto iter = std::find(_activeVoices.begin(), _activeVoices.end(), slot);
   FB_ASSERT(iter != _activeVoices.end());
   _activeVoices.erase(iter);
+  std::sort(_activeVoices.begin(), _activeVoices.end());
 }
 
 void
@@ -93,7 +94,10 @@ FBVoiceManager::Lease(FBNoteEvent const& event, std::int64_t groupId, int slotIn
   // Can't assert it became newly active, because voice stealing.
   auto iter = std::find(_activeVoices.begin(), _activeVoices.end(), slot);
   if (iter == _activeVoices.end())
+  {
     _activeVoices.push_back(slot);
+    std::sort(_activeVoices.begin(), _activeVoices.end());
+  }
 
   for (int p = 0; p < _procState->Params().size(); p++)
     if (_procState->Params()[p].IsVoice())
