@@ -49,6 +49,8 @@ public:
   int Lease(FBNoteEvent const& event, std::int64_t groupId, int slotInGroup);
 
   int VoiceCount() const { return _voiceCount; }
+
+  // Note: both active and returned. For lack of a better term than "not-free".
   std::vector<int> const& ActiveVoices() const { return _activeVoices; }
   std::vector<FBNote> const& ReturnedVoices() { return _returnedVoices; }
   std::array<FBVoiceInfo, FBMaxVoices> const& Voices() const { return _voices; }

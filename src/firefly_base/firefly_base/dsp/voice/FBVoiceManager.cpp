@@ -19,10 +19,6 @@ FBVoiceManager::Return(int slot)
   _voices[slot].state = FBVoiceState::Returned;
   _returnedVoices.push_back(_voices[slot].event.note);
   FB_ASSERT(_returnedVoices.size() < FBMaxVoices);
-  auto iter = std::find(_activeVoices.begin(), _activeVoices.end(), slot);
-  FB_ASSERT(iter != _activeVoices.end());
-  _activeVoices.erase(iter);
-  std::sort(_activeVoices.begin(), _activeVoices.end());
 }
 
 void
@@ -31,7 +27,16 @@ FBVoiceManager::ResetReturnedVoices()
   _returnedVoices.clear();
   for (int v = 0; v < FBMaxVoices; v++)
     if (IsReturned(v))
+    {
       _voices[v].state = FBVoiceState::Free;
+
+      // It's only really not active once it's free, not returned.
+      // There's probably some logic to this which i forgot. Don't touch it.
+      auto iter = std::find(_activeVoices.begin(), _activeVoices.end(), v);
+      FB_ASSERT(iter != _activeVoices.end());
+      _activeVoices.erase(iter);
+      std::sort(_activeVoices.begin(), _activeVoices.end());
+    }
 }
 
 void 
