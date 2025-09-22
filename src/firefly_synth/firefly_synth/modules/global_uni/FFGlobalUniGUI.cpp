@@ -57,7 +57,7 @@ MakeGlobalUniFullEditor(FBPlugGUI* plugGUI)
       int guiCol = c * (FFGlobalUniMaxCount + 1);
       int paramOffset = c * uniControlCount / 2 + r;
       auto param0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::FullFirst + paramOffset, 0 } });
-      grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, param0, param0->static_.display));
+      grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, param0, param0->static_.name));
       grid->MarkSection({ { guiRow, guiCol }, { 1, 1 } });
       for (int p = 0; p < FFGlobalUniMaxCount; p++)
       {
