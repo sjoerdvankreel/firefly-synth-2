@@ -62,14 +62,13 @@ FFVoiceModuleProcessor::BeginVoice(
       int myChannel = state.voice->event.note.channel;
       FBVoiceManager const* vManager = state.input->voiceManager;
       int tookOverThisKey = (int)std::round(previousMidiKeyUntuned);
-      for (int v = 0; v < FBMaxVoices; v++)
+      for (int v: vManager->ActiveVoices())
         if (v != voice)
-          if (vManager->IsActive(v))
-          {
-            auto const& thatEventNote = vManager->Voices()[v].event.note;
-            if (thatEventNote.channel == myChannel && thatEventNote.keyUntuned == tookOverThisKey)
-              procState->dsp.voice[v].voiceModule.otherVoiceSubSectionTookOver = true;
-          }
+        {
+          auto const& thatEventNote = vManager->Voices()[v].event.note;
+          if (thatEventNote.channel == myChannel && thatEventNote.keyUntuned == tookOverThisKey)
+            procState->dsp.voice[v].voiceModule.otherVoiceSubSectionTookOver = true;
+        }
     }
   }
 

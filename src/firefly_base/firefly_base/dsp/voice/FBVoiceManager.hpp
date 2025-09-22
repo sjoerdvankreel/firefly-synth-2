@@ -33,6 +33,7 @@ class FBVoiceManager final
   int _voiceCount = 0;
   std::uint64_t _counter = {};
   FBProcStateContainer* const _procState;
+  std::vector<int> _activeVoices = {}; // perf opt, dont loop over FBMaxVoices everywhere
   std::vector<FBNote> _returnedVoices = {};
   std::array<std::uint64_t, FBMaxVoices> _num = {};
   std::array<FBVoiceInfo, FBMaxVoices> _voices = {};
@@ -48,6 +49,7 @@ public:
   int Lease(FBNoteEvent const& event, std::int64_t groupId, int slotInGroup);
 
   int VoiceCount() const { return _voiceCount; }
+  std::vector<int> const& ActiveVoices() const { return _activeVoices; }
   std::vector<FBNote> const& ReturnedVoices() { return _returnedVoices; }
   std::array<FBVoiceInfo, FBMaxVoices> const& Voices() const { return _voices; }
 

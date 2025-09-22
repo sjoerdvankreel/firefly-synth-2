@@ -132,12 +132,11 @@ FFPlugProcessor::ApplyGlobalModulation(
   globalDSP.gMatrix.processor->ApplyModulation(state, moduleIndices);
 
   // We can get away with this because FBHostProcessor does LeaseVoices() first.
-  for (int v = 0; v < FBMaxVoices; v++)
-    if (input.voiceManager->IsActive(v))
-    {
-      state.voice = &state.input->voiceManager->Voices()[v];
-      _procState->dsp.voice[v].vMatrix.processor->ApplyModulation(state, moduleIndices);
-    }
+  for (int v: input.voiceManager->ActiveVoices())
+  {
+    state.voice = &state.input->voiceManager->Voices()[v];
+    _procState->dsp.voice[v].vMatrix.processor->ApplyModulation(state, moduleIndices);
+  }
 }
 
 void 
@@ -153,8 +152,8 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   {
     _prevFlushDelayToggle = flushToggle;
     globalDSP.gEcho.processor->FlushDelayLines();
-    for (int i = 0; i < FBMaxVoices; i++)
-      _procState->dsp.voice[i].vEcho.processor->FlushDelayLines();
+    for (int v = 0; v < FBMaxVoices; v++)
+      _procState->dsp.voice[v].vEcho.processor->FlushDelayLines();
   }
 
   state.moduleSlot = 0;
@@ -198,9 +197,8 @@ FFPlugProcessor::ProcessPostVoice(
 
   FBSArray2<float, FBFixedBlockSamples, 2> voiceMixdown = {};
   voiceMixdown.Fill(0.0f);
-  for (int v = 0; v < FBMaxVoices; v++)
-    if (input.voiceManager->IsActive(v))
-      voiceMixdown.Add(_procState->dsp.voice[v].output);
+  for (int v: input.voiceManager->ActiveVoices())
+    voiceMixdown.Add(_procState->dsp.voice[v].output);
 
   if (gEchoTarget == FFGEchoTarget::BeforeFX)
     ProcessGEcho(state, voiceMixdown);

@@ -104,14 +104,13 @@ FBSmoothingProcessor::ProcessSmoothing(
       noteMatrixSmth.entries[noteEntry].SmoothNextHostValue(s);
   _noteMatrix.finished.clear();
 
+  for (int v: _voiceManager->ActiveVoices())
+    for (int param : _voice[v].finished)
+      for (int s = 0; s < FBFixedBlockSamples; s++)
+        params[param].VoiceAcc().SmoothNextHostValue(v, s);
+
   for (int v = 0; v < FBMaxVoices; v++)
-  {
-    if (_voiceManager->IsActive(v))
-      for (int param : _voice[v].finished)
-        for (int s = 0; s < FBFixedBlockSamples; s++)
-          params[param].VoiceAcc().SmoothNextHostValue(v, s);
     _voice[v].finished.clear();
-  }
 
   SortSampleLastToSampleFirst(input.accAutoByParamThenSample,
     _accAutoBySampleThenParam, FBAccAutoEventOrderByPosThenParam);
@@ -159,9 +158,8 @@ FBSmoothingProcessor::ProcessSmoothing(
       else
       {
         params[event.param].VoiceAcc().GlobalValue(event.value);
-        for (int v = 0; v < FBMaxVoices; v++)
-          if (_voiceManager->IsActive(v))
-            _voice[v].Begin(event.param, smoothingSamples);
+        for (int v: _voiceManager->ActiveVoices())
+          _voice[v].Begin(event.param, smoothingSamples);
       }
     }
 
@@ -176,10 +174,10 @@ FBSmoothingProcessor::ProcessSmoothing(
         _global.Begin(event.param, smoothingSamples);
       }
       else
-        for (int v = 0; v < FBMaxVoices; v++)
+        for (int v: _voiceManager->ActiveVoices())
         {
           auto const& voice = _voiceManager->Voices()[v];
-          if (_voiceManager->IsActive(v) && event.note.Matches(voice.event.note))
+          if (event.note.Matches(voice.event.note))
           {
             params[event.param].VoiceAcc().ModulateByHost(v, event.value);
             _voice[v].Begin(event.param, smoothingSamples);
@@ -214,15 +212,14 @@ FBSmoothingProcessor::ProcessSmoothing(
         iter++;      
     }
 
-    for (int v = 0; v < FBMaxVoices; v++)
-      if (_voiceManager->IsActive(v))
-        for (auto iter = _voice[v].active.begin(); iter != _voice[v].active.end(); )
-        {
-          params[*iter].VoiceAcc().SmoothNextHostValue(v, s);
-          if (--_voice[v].activeSamples[*iter] <= 0)
-            iter = _voice[v].Finish(iter);
-          else
-            iter++;
-        }
+    for (int v: _voiceManager->ActiveVoices())
+      for (auto iter = _voice[v].active.begin(); iter != _voice[v].active.end(); )
+      {
+        params[*iter].VoiceAcc().SmoothNextHostValue(v, s);
+        if (--_voice[v].activeSamples[*iter] <= 0)
+          iter = _voice[v].Finish(iter);
+        else
+          iter++;
+      }
   }
 }

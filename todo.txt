@@ -1,4 +1,6 @@
 TODOLIST for alpha-17
+[x] speed up paramAtTopo (4d vector, not a map?)
+[ ] keep track of active voices (perf fix)
 [ ] global unison
 [ ] on note random
 [ ] where goes the echo
@@ -12,7 +14,6 @@ TODOLIST for alpha-17
 [ ] default button for multitaps
 [ ] clap polymod + release as one
 [ ] profile it
-[ ] speed up paramAtTopo (4d vector, not a map?)
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
