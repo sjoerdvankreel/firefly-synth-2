@@ -29,7 +29,7 @@ MakeParamTopoToRuntime(
       result[moduleIndex].resize(moduleSlot + 1);
     if (result[moduleIndex][moduleSlot].size() <= paramIndex)
       result[moduleIndex][moduleSlot].resize(paramIndex + 1);
-    if (result[moduleIndex][moduleSlot][paramIndex] <= paramSlot)
+    if (result[moduleIndex][moduleSlot][paramIndex].size() <= paramSlot)
       result[moduleIndex][moduleSlot][paramIndex].resize(paramSlot + 1);
     result[moduleIndex][moduleSlot][paramIndex][paramSlot] = p;
   }
