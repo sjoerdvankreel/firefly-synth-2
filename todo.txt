@@ -1,6 +1,6 @@
 TODOLIST for alpha-17
 [x] speed up paramAtTopo (4d vector, not a map?)
-[ ] keep track of active voices (perf fix)
+[x] keep track of active voices (perf fix)
 [ ] global unison
 [ ] on note random
 [ ] where goes the echo
