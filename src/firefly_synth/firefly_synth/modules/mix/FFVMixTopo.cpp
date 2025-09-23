@@ -117,10 +117,9 @@ FFMakeVMixTopo()
   lfo6ToBal.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO6ToBal);
   lfo6ToBal.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO6ToBal);
 
-  // todo fix the defaults
   auto& osciToOsciMix = result->params[(int)FFVMixParam::OsciToOsciMix];
   osciToOsciMix.mode = FBParamMode::Accurate;
-  osciToOsciMix.defaultText = "0";
+  osciToOsciMix.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
   osciToOsciMix.name = "Osc To Osc Mix";
   osciToOsciMix.slotCount = FFOsciCount;
   osciToOsciMix.unit = "%";
@@ -133,7 +132,6 @@ FFMakeVMixTopo()
   osciToOsciMix.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectOsciToOsciMix);
   osciToOsciMix.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOsciToOsciMix);
 
-  // todo fix the defaults
   auto& osciMixToVFX = result->params[(int)FFVMixParam::OsciMixToVFX];
   osciMixToVFX.mode = FBParamMode::Accurate;
   osciMixToVFX.defaultText = "0";
@@ -181,7 +179,7 @@ FFMakeVMixTopo()
 
   auto& osciToOut = result->params[(int)FFVMixParam::OsciToOut];
   osciToOut.mode = FBParamMode::Accurate;
-  osciToOut.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
+  osciToOut.defaultText = "0";
   osciToOut.name = "Osc To Out";
   osciToOut.slotCount = FFOsciCount;
   osciToOut.unit = "%";
@@ -211,7 +209,7 @@ FFMakeVMixTopo()
 
   auto& osciMixToOut = result->params[(int)FFVMixParam::OsciMixToOut];
   osciMixToOut.mode = FBParamMode::Accurate;
-  osciMixToOut.defaultText = "0";
+  osciMixToOut.defaultText = "100";
   osciMixToOut.name = "Osc Mix To Out";
   osciMixToOut.slotCount = 1;
   osciMixToOut.unit = "%";
