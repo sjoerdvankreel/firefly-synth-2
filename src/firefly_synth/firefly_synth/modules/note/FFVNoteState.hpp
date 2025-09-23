@@ -23,4 +23,6 @@ public:
   FBSArray<float, FBFixedBlockSamples> outputKeyUntuned = {};
   FBSArray2<float, FBFixedBlockSamples, FFVNoteOnNoteRandomCount> outputRandomUni = {};
   FBSArray2<float, FBFixedBlockSamples, FFVNoteOnNoteRandomCount> outputRandomNorm = {};
+  FBSArray2<float, FBFixedBlockSamples, FFVNoteOnNoteRandomCount> outputGroupRandomUni = {};
+  FBSArray2<float, FBFixedBlockSamples, FFVNoteOnNoteRandomCount> outputGroupRandomNorm = {};
 };

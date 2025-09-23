@@ -11,8 +11,10 @@ void
 FFVNoteProcessor::BeginVoice(
   FBModuleProcState& state,
   std::array<float, FFVNoteOnNoteRandomCount> const& randomUni,
-  std::array<float, FFVNoteOnNoteRandomCount> const& randomNorm)
-{
+  std::array<float, FFVNoteOnNoteRandomCount> const& randomNorm,
+  std::array<float, FFVNoteOnNoteRandomCount> const& groupRandomUni,
+  std::array<float, FFVNoteOnNoteRandomCount> const& groupRandomNorm)
+  {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   procState->dsp.voice[voice].vNote.outputVelo.Fill(state.voice->event.velo);
@@ -21,5 +23,7 @@ FFVNoteProcessor::BeginVoice(
   {
     procState->dsp.voice[voice].vNote.outputRandomUni[i].Fill(randomUni[i]);
     procState->dsp.voice[voice].vNote.outputRandomNorm[i].Fill(randomNorm[i]);
+    procState->dsp.voice[voice].vNote.outputGroupRandomUni[i].Fill(groupRandomUni[i]);
+    procState->dsp.voice[voice].vNote.outputGroupRandomNorm[i].Fill(groupRandomNorm[i]);
   }
 }

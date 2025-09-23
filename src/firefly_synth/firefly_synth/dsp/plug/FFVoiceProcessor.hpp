@@ -15,6 +15,8 @@ class FFVoiceProcessor final
   bool _firstRoundThisVoice = true;
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteRandomUni = {};
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteRandomNorm = {};
+  std::array<float, FFVNoteOnNoteRandomCount> _onNoteGroupRandomUni = {};
+  std::array<float, FFVNoteOnNoteRandomCount> _onNoteGroupRandomNorm = {};
   FFVEchoTarget GetCurrentVEchoTarget(FBModuleProcState const& state);
 
 public:
@@ -22,5 +24,7 @@ public:
   bool Process(FBModuleProcState state, int releaseAt);
   void BeginVoice(FBModuleProcState state,
     std::array<float, FFVNoteOnNoteRandomCount> const& onNoteRandomUni,
-    std::array<float, FFVNoteOnNoteRandomCount> const& onNoteRandomNorm);
+    std::array<float, FFVNoteOnNoteRandomCount> const& onNoteRandomNorm,
+    std::array<float, FFVNoteOnNoteRandomCount> const& onNoteGroupRandomUni,
+    std::array<float, FFVNoteOnNoteRandomCount> const& onNoteGroupRandomNorm);
 };

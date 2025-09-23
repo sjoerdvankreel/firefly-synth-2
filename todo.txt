@@ -1,17 +1,17 @@
 TODOLIST for alpha-17
 [x] speed up paramAtTopo (4d vector, not a map?)
 [x] keep track of active voices (perf fix)
-[ ] global unison
+[x] some clear/init buttons
+[x] default button for multitaps
 [ ] on note random
+[ ] decent defaults
+[ ] global unison
 [ ] where goes the echo
 [ ] test with porta 
 [ ] echo controls
 [ ] place echo everywhere
 [ ] echo extend/fade
-[ ] decent defaults
-[ ] some clear/init buttons
 [ ] basic mode
-[ ] default button for multitaps
 [ ] clap polymod + release as one
 [ ] profile it
 
