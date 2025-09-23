@@ -138,9 +138,9 @@ FFMakeVMixGUITab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 1, 0 });
-  grid->Add(0, 0, MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(plugGUI));
-  grid->Add(0, 1, MakeVMixSectionOsciToVFX(plugGUI));
-  grid->Add(0, 2, FFMakeMixGUISectionFXToFX(plugGUI, (int)FFModuleType::VMix, (int)FFVMixParam::VFXToVFX, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 0, MakeVMixSectionOsciToVFX(plugGUI));
+  grid->Add(0, 1, FFMakeMixGUISectionFXToFX(plugGUI, (int)FFModuleType::VMix, (int)FFVMixParam::VFXToVFX, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 2, MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(plugGUI));
   grid->Add(0, 3, MakeVMixSectionOsciAndVFXToOut(plugGUI));
   grid->Add(0, 4, MakeVMixSectionOsciMixToOut(plugGUI));
   grid->Add(0, 5, MakeVMixGUISectionAmpBal(plugGUI));
