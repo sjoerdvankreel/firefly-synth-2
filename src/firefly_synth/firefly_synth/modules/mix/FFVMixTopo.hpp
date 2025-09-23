@@ -19,5 +19,6 @@ FFVMixOsciToVFXGetFXSlot(int mixSlot)
 
 enum class FFVMixParam {
   Amp, AmpEnvToAmp, Bal, LFO6ToBal,
+  OsciToOsciMix, OsciMixToVFX,
   OsciToVFX, VFXToVFX,
-  OsciToOut, VFXToOut, Count };
+  OsciToOut, VFXToOut, OsciMixToOut, Count };

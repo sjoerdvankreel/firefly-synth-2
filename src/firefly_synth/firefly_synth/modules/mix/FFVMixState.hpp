@@ -20,7 +20,10 @@ class alignas(alignof(TAccurate)) FFVMixAccParamState final
   std::array<TAccurate, 1> lfo6ToBal = {};
   std::array<TAccurate, 1> amp = {};
   std::array<TAccurate, 1> ampEnvToAmp = {};
+  std::array<TAccurate, 1> osciMixToOut = {};
   std::array<TAccurate, FFOsciCount> osciToOut = {};
+  std::array<TAccurate, FFOsciCount> osciToOsciMix = {};
+  std::array<TAccurate, FFEffectCount> osciMixToVFX = {};
   std::array<TAccurate, FFEffectCount> VFXToOut = {};
   std::array<TAccurate, FFMixFXToFXCount> VFXToVFX = {};
   std::array<TAccurate, FFVMixOsciToVFXCount> osciToVFX = {};
