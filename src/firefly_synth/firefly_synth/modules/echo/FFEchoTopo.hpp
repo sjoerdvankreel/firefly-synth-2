@@ -12,8 +12,8 @@ enum class FFEchoGUIParam {
   TapSelect, Count };
 enum class FFVEchoTarget { 
   Off, AfterMix, };
-enum class FFGEchoTarget { 
-  Off, FXIn, FXOut, MixOut,
+enum class FFGEchoTarget {
+  Off, MixIn, MixOut, VoiceMix,
   FX1In, FX1Out, FX2In, FX2Out,
   FX3In, FX3Out, FX4In, FX4Out };
 

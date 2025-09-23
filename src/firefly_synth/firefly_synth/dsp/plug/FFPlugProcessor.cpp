@@ -209,7 +209,7 @@ FFPlugProcessor::ProcessPostVoice(
   for (int v: input.voiceManager->ActiveVoices())
     voiceMixdown.Add(_procState->dsp.voice[v].output);
 
-  if (gEchoTarget == FFGEchoTarget::FXIn)
+  if (gEchoTarget == FFGEchoTarget::VoiceMix)
     ProcessGEcho(state, voiceMixdown);
 
   for (int i = 0; i < FFEffectCount; i++)
@@ -257,7 +257,7 @@ FFPlugProcessor::ProcessPostVoice(
     output.audio.AddMul(globalDSP.gEffect[i].output, gfxToOutNorm);
   }
 
-  if (gEchoTarget == FFGEchoTarget::FXOut)
+  if (gEchoTarget == FFGEchoTarget::MixIn)
     ProcessGEcho(state, output.audio);
 
   ampNormIn.CV().CopyTo(ampNormModulated);

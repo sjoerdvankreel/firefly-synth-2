@@ -52,9 +52,9 @@ FFMakeEchoTopo(bool global)
   if (global)
     vTargetOrGTarget.List().items = {
       { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "Off" },
-      { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "GFX In" },
-      { "{38A69D55-AB3E-49F2-9CCD-44917FD24597}", "GFX Out" },
+      { "{38A69D55-AB3E-49F2-9CCD-44917FD24597}", "GMix In" },
       { "{C510F9C1-13A6-4929-A7EA-7C5F79BA6E42}", "GMix Out" },
+      { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "Voice Mix" },
       { "{CDE64B50-C65D-43E9-B52E-325F544E5175}", "GFX1 In" },
       { "{1C7AA2CC-2116-45E4-B7C2-AA9678CC15B5}", "GFX1 Out" },
       { "{68C1469F-96FF-47D7-8A2E-B24309E10031}", "GFX2 In" },
