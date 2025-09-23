@@ -3,7 +3,8 @@ TODOLIST for alpha-17
 [x] keep track of active voices (perf fix)
 [x] some clear/init buttons
 [x] default button for multitaps
-[ ] on note random
+[x] on note random
+[ ] osc=>osci mix
 [ ] decent defaults
 [ ] global unison
 [ ] where goes the echo

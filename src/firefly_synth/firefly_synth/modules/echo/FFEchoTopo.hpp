@@ -13,9 +13,9 @@ enum class FFEchoGUIParam {
 enum class FFVEchoTarget { 
   Off, AfterMix, };
 enum class FFGEchoTarget { 
-  Off, BeforeFX, AfterFX, AfterMix,
-  BeforeFX1, AfterFX1, BeforeFX2, AfterFX2,
-  BeforeFX3, AfterFX3, BeforeFX4, AfterFX4 };
+  Off, FXIn, FXOut, MixOut,
+  FX1In, FX1Out, FX2In, FX2Out,
+  FX3In, FX3Out, FX4In, FX4Out };
 
 enum class FFEchoModule {
   Taps, Feedback, Reverb, Count };
