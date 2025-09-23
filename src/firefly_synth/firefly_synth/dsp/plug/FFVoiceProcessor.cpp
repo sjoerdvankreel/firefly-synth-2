@@ -58,10 +58,13 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   auto const& ampNormIn = vMix.acc.amp[0].Voice()[voice];
   auto const& lfo6ToBalNorm = vMix.acc.lfo6ToBal[0].Voice()[voice];
   auto const& ampEnvToAmpNorm = vMix.acc.ampEnvToAmp[0].Voice()[voice];
+  auto const& osciMixToOutNorm = vMix.acc.osciMixToOut[0].Voice()[voice];
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::VMix];
 
+  FBSArray2<float, FBFixedBlockSamples, 2> osciMix = {};
   FBSArray<float, FBFixedBlockSamples> ampNormModulated = {};
   FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
+  osciMix.Fill(0.0f);
 
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginModulationBlock();
@@ -133,6 +136,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
     if(_firstRoundThisVoice)
       voiceDSP.osci[i].processor->BeginVoice(state, false);
     voiceDSP.osci[i].processor->Process(state, false);
+    osciMix.AddMul(voiceDSP.osci[i].output, vMix.acc.osciToOsciMix[i].Voice()[voice].CV());
   }
 
   FB_ASSERT(FFOsciCount == FFEffectCount);
@@ -140,6 +144,11 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   {
     state.moduleSlot = i;
     voiceDSP.vEffect[i].input.Fill(0.0f);
+    for (int r = 0; r < FFEffectCount; r++)
+    {
+      auto const& osciMixToVFXNorm = vMix.acc.osciMixToVFX[r].Voice()[voice].CV();
+      voiceDSP.vEffect[r].input.AddMul(osciMix, osciMixToVFXNorm);
+    }
     for (int r = 0; r < FFVMixOsciToVFXCount; r++)
       if (FFVMixOsciToVFXGetFXSlot(r) == i)
       {
@@ -162,6 +171,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   }
 
   voiceDSP.output.Fill(0.0f);
+  voiceDSP.output.AddMul(osciMix, osciMixToOutNorm.CV());
   for (int i = 0; i < FFOsciCount; i++)
   {
     auto const& osciToOutNorm = vMix.acc.osciToOut[i].Voice()[voice].CV();
@@ -213,14 +223,21 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   exchangeParams.acc.amp[0][voice] = ampNormModulated.Last();
   exchangeParams.acc.lfo6ToBal[0][voice] = lfo6ToBalNorm.Last();
   exchangeParams.acc.ampEnvToAmp[0][voice] = ampEnvToAmpNorm.Last();
+  exchangeParams.acc.osciMixToOut[0][voice] = osciMixToOutNorm.Last();
   for (int r = 0; r < FFMixFXToFXCount; r++)
     exchangeParams.acc.VFXToVFX[r][voice] = vMix.acc.VFXToVFX[r].Voice()[voice].CV().Last();
   for (int r = 0; r < FFVMixOsciToVFXCount; r++)
     exchangeParams.acc.osciToVFX[r][voice] = vMix.acc.osciToVFX[r].Voice()[voice].CV().Last();
   for (int r = 0; r < FFEffectCount; r++)
+  {
     exchangeParams.acc.VFXToOut[r][voice] = vMix.acc.VFXToOut[r].Voice()[voice].CV().Last();
-  for(int r = 0; r < FFOsciCount; r++)
+    exchangeParams.acc.osciMixToVFX[r][voice] = vMix.acc.osciMixToVFX[r].Voice()[voice].CV().Last();
+  }
+  for (int r = 0; r < FFOsciCount; r++)
+  {
     exchangeParams.acc.osciToOut[r][voice] = vMix.acc.osciToOut[r].Voice()[voice].CV().Last();
+    exchangeParams.acc.osciToOsciMix[r][voice] = vMix.acc.osciToOsciMix[r].Voice()[voice].CV().Last();
+  }
 
   procState->dsp.voice[voice].vMatrix.processor->EndModulationBlock(state);
   return voiceFinished;
