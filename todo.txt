@@ -9,6 +9,7 @@ TODOLIST for alpha-17
 [x] echo controls
 [x] place echo everywhere
 [x] echo extend/fade
+[ ] the vecho buffers are not reset? -- oh its the filters, check global too?
 [ ] decent defaults
 [ ] global unison
 [ ] test with porta 
