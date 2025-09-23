@@ -225,26 +225,20 @@ FFPlugProcessor::ProcessPostVoice(
         globalDSP.gEffect[i].input.AddMul(globalDSP.gEffect[source].output, gfxToGFXNorm);
       }
     
-    if(i == 0 && gEchoTarget == FFGEchoTarget::FX1In)
-      ProcessGEcho(state, globalDSP.gEffect[i].input);
-    else if (i == 1 && gEchoTarget == FFGEchoTarget::FX2In)
-      ProcessGEcho(state, globalDSP.gEffect[i].input);
-    else if (i == 2 && gEchoTarget == FFGEchoTarget::FX3In)
-      ProcessGEcho(state, globalDSP.gEffect[i].input);
-    else if (i == 3 && gEchoTarget == FFGEchoTarget::FX4In)
+    if(gEchoTarget == FFGEchoTarget::FX1In && i == 0 ||
+      gEchoTarget == FFGEchoTarget::FX2In && i == 1 ||
+      gEchoTarget == FFGEchoTarget::FX3In && i == 2 ||
+      gEchoTarget == FFGEchoTarget::FX4In && i == 3)
       ProcessGEcho(state, globalDSP.gEffect[i].input);
     
     state.moduleSlot = i; // gecho changes it!
     globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(state, false, -1, -1);
     globalDSP.gEffect[i].processor->Process<true>(state);
 
-    if (i == 0 && gEchoTarget == FFGEchoTarget::FX1Out)
-      ProcessGEcho(state, globalDSP.gEffect[i].output);
-    else if (i == 1 && gEchoTarget == FFGEchoTarget::FX2Out)
-      ProcessGEcho(state, globalDSP.gEffect[i].output);
-    else if (i == 2 && gEchoTarget == FFGEchoTarget::FX3Out)
-      ProcessGEcho(state, globalDSP.gEffect[i].output);
-    else if (i == 3 && gEchoTarget == FFGEchoTarget::FX4Out)
+    if (gEchoTarget == FFGEchoTarget::FX1Out && i == 0 ||
+      gEchoTarget == FFGEchoTarget::FX2Out && i == 1 ||
+      gEchoTarget == FFGEchoTarget::FX3Out && i == 2 ||
+      gEchoTarget == FFGEchoTarget::FX4Out && i == 3)
       ProcessGEcho(state, globalDSP.gEffect[i].output);
   }
 

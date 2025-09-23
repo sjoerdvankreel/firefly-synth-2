@@ -16,7 +16,10 @@ enum class FFGEchoTarget {
   FX3In, FX3Out, FX4In, FX4Out };
 enum class FFVEchoTarget {
   Off, MixIn, MixOut, OscMix,
-  Osc1, Osc2, Osc3, Osc4,
+  Osc1PreMix, Osc1PostMix,
+  Osc2PreMix, Osc2PostMix,
+  Osc3PreMix, Osc3PostMix,
+  Osc4PreMix, Osc4PostMix,
   FX1In, FX1Out, FX2In, FX2Out,
   FX3In, FX3Out, FX4In, FX4Out };
 

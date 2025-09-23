@@ -22,6 +22,22 @@ FFVoiceProcessor::GetCurrentVEchoTarget(FBModuleProcState const& state)
   return vEchoModuleTopo.NormalizedToListFast<FFVEchoTarget>(FFEchoParam::VTargetOrGTarget, vEchoTargetNorm);
 }
 
+bool
+FFVoiceProcessor::ProcessVEcho(
+  FBModuleProcState& state, int ampEnvFinishedAt,
+  FBSArray2<float, FBFixedBlockSamples, 2>& inout)
+{
+  int voice = state.voice->slot;
+  auto& voiceDSP = state.ProcAs<FFProcState>()->dsp.voice[voice];
+  state.moduleSlot = 0;
+  if (_firstRoundThisVoice)
+    voiceDSP.vEcho.processor->BeginVoiceOrBlock(state, false, -1, -1);
+  inout.CopyTo(voiceDSP.vEcho.input);
+  int vEchoProcessed = voiceDSP.vEcho.processor->Process(state, ampEnvFinishedAt);
+  voiceDSP.vEcho.output.CopyTo(inout);
+  return vEchoProcessed != FBFixedBlockSamples;
+}
+
 void 
 FFVoiceProcessor::BeginVoice(
   FBModuleProcState state,
@@ -60,6 +76,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   auto const& ampEnvToAmpNorm = vMix.acc.ampEnvToAmp[0].Voice()[voice];
   auto const& osciMixToOutNorm = vMix.acc.osciMixToOut[0].Voice()[voice];
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::VMix];
+  auto vEchoTarget = GetCurrentVEchoTarget(state);
 
   FBSArray2<float, FBFixedBlockSamples, 2> osciMix = {};
   FBSArray<float, FBFixedBlockSamples> ampNormModulated = {};
@@ -136,8 +153,25 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
     if(_firstRoundThisVoice)
       voiceDSP.osci[i].processor->BeginVoice(state, false);
     voiceDSP.osci[i].processor->Process(state, false);
+
+    if (vEchoTarget == FFVEchoTarget::Osc1PreMix && i == 0 ||
+      vEchoTarget == FFVEchoTarget::Osc2PreMix && i == 1 ||
+      vEchoTarget == FFVEchoTarget::Osc3PreMix && i == 2 ||
+      vEchoTarget == FFVEchoTarget::Osc4PreMix && i == 3)
+      voiceFinished = ProcessVEcho(state, ampEnvProcessed, voiceDSP.osci[i].output);
+
+    state.moduleSlot = i;
     osciMix.AddMul(voiceDSP.osci[i].output, vMix.acc.osciToOsciMix[i].Voice()[voice].CV());
+
+    if (vEchoTarget == FFVEchoTarget::Osc1PostMix && i == 0 ||
+      vEchoTarget == FFVEchoTarget::Osc2PostMix && i == 1 ||
+      vEchoTarget == FFVEchoTarget::Osc3PostMix && i == 2 ||
+      vEchoTarget == FFVEchoTarget::Osc4PostMix && i == 3)
+      voiceFinished = ProcessVEcho(state, ampEnvProcessed, voiceDSP.osci[i].output);
   }
+
+  if (vEchoTarget == FFVEchoTarget::OscMix)
+    voiceFinished = ProcessVEcho(state, ampEnvProcessed, osciMix);
 
   FB_ASSERT(FFOsciCount == FFEffectCount);
   for (int i = 0; i < FFEffectCount; i++)
@@ -167,7 +201,21 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
     state.moduleSlot = i;
     if (_firstRoundThisVoice)
       voiceDSP.vEffect[i].processor->BeginVoiceOrBlock<false>(state, false, -1, -1);
+
+    if (vEchoTarget == FFVEchoTarget::FX1In && i == 0 ||
+      vEchoTarget == FFVEchoTarget::FX2In && i == 1 ||
+      vEchoTarget == FFVEchoTarget::FX3In && i == 2 ||
+      vEchoTarget == FFVEchoTarget::FX4In && i == 3)
+      voiceFinished = ProcessVEcho(state, ampEnvProcessed, voiceDSP.vEffect[i].input);
+
+    state.moduleSlot = i; // vecho changes it!
     voiceDSP.vEffect[i].processor->Process<false>(state);
+
+    if (vEchoTarget == FFVEchoTarget::FX1Out && i == 0 ||
+      vEchoTarget == FFVEchoTarget::FX2Out && i == 1 ||
+      vEchoTarget == FFVEchoTarget::FX3Out && i == 2 ||
+      vEchoTarget == FFVEchoTarget::FX4Out && i == 3)
+      voiceFinished = ProcessVEcho(state, ampEnvProcessed, voiceDSP.vEffect[i].output);
   }
 
   voiceDSP.output.Fill(0.0f);
@@ -183,6 +231,9 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
     voiceDSP.output.AddMul(voiceDSP.vEffect[i].output, vfxToOutNorm);
   }
 
+  if(vEchoTarget == FFVEchoTarget::MixIn)
+    voiceFinished = ProcessVEcho(state, ampEnvProcessed, voiceDSP.output);
+
   balNormIn.CV().CopyTo(balNormModulated);
   ampNormIn.CV().CopyTo(ampNormModulated);
   FFApplyModulation(FFModulationOpType::BPStack, voiceDSP.vLFO[5].outputAll, lfo6ToBalNorm.CV(), balNormModulated);
@@ -195,16 +246,8 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
       voiceDSP.output[c].Set(s, voiceDSP.output[c].Get(s) * ampPlain * FBStereoBalance(c, balPlain));
   }
 
-  if (GetCurrentVEchoTarget(state) == FFVEchoTarget::MixOut)
-  {
-    state.moduleSlot = 0;
-    if(_firstRoundThisVoice)
-      voiceDSP.vEcho.processor->BeginVoiceOrBlock(state, false, -1, -1);
-    voiceDSP.output.CopyTo(voiceDSP.vEcho.input);
-    int vEchoProcessed = voiceDSP.vEcho.processor->Process(state, ampEnvProcessed);
-    voiceFinished = vEchoProcessed != FBFixedBlockSamples;
-    voiceDSP.vEcho.output.CopyTo(voiceDSP.output);
-  }
+  if (vEchoTarget == FFVEchoTarget::MixOut)
+    voiceFinished = ProcessVEcho(state, ampEnvProcessed, voiceDSP.output);
 
   _firstRoundThisVoice = false;
 

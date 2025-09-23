@@ -17,7 +17,12 @@ class FFVoiceProcessor final
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteRandomNorm = {};
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteGroupRandomUni = {};
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteGroupRandomNorm = {};
-  FFVEchoTarget GetCurrentVEchoTarget(FBModuleProcState const& state);
+  
+  FFVEchoTarget GetCurrentVEchoTarget(
+    FBModuleProcState const& state);
+  bool ProcessVEcho(
+    FBModuleProcState& state, int ampEnvFinishedAt, 
+    FBSArray2<float, FBFixedBlockSamples, 2>& inout);
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceProcessor);
