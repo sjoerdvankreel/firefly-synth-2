@@ -195,7 +195,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
       voiceDSP.output[c].Set(s, voiceDSP.output[c].Get(s) * ampPlain * FBStereoBalance(c, balPlain));
   }
 
-  if (GetCurrentVEchoTarget(state) == FFVEchoTarget::AfterMix)
+  if (GetCurrentVEchoTarget(state) == FFVEchoTarget::MixOut)
   {
     state.moduleSlot = 0;
     if(_firstRoundThisVoice)

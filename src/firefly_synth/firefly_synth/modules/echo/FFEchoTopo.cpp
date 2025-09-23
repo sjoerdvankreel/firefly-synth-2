@@ -66,7 +66,21 @@ FFMakeEchoTopo(bool global)
   else
     vTargetOrGTarget.List().items = {
       { "{0EFCD973-BAA5-47B9-B61B-23FC8B82DC03}", "Off" },
-      { "{4E37CD52-00B3-455A-9958-99F7ACBE544E}", "Post VMix" } };
+      { "{41E82846-7503-4DBA-B2B2-880482DE7970}", "VMIx In" },
+      { "{4E37CD52-00B3-455A-9958-99F7ACBE544E}", "VMix Out" },
+      { "{CFD09E84-2938-4113-867F-31941D722578}", "Osc Mix" },
+      { "{26FABB4C-7E94-4CAF-ABC3-7ED3610D514E}", "Osc 1" },
+      { "{12F8A4E6-7D4F-4E7E-80AC-3502B801C76E}", "Osc 2" },
+      { "{66805E87-E1B2-4B1C-87F1-487CAF824EE7}", "Osc 3" },
+      { "{75EB8B97-D30E-4912-BDDD-656E267FD698}", "Osc 4" },
+      { "{76D95D3E-0D97-434A-B960-A7BD3667F57D}", "VFX1 In" },
+      { "{F7432F58-5DA1-45DD-9B02-90D32ABE6B3F}", "VFX1 Out" },
+      { "{371838D8-5D97-459E-A553-29CB416793DE}", "VFX2 In" },
+      { "{4379BE69-288E-4C96-81C0-10BF312E73C9}", "VFX2 Out" },
+      { "{CBA10ED2-7C2F-4312-BBD9-45957AD840D7}", "VFX3 In" },
+      { "{F2E5F511-BC7C-4759-9FCC-98E369E6B641}", "VFX3 Out" },
+      { "{D9140819-6982-4B2C-883E-0D6325815FB8}", "VFX4 In" },
+      { "{86AA4803-EA25-4C52-B2AB-0CEEA44BE0C0}", "VFX4 Out" } };
 
   auto& order = result->params[(int)FFEchoParam::Order];
   order.mode = FBParamMode::Block;
