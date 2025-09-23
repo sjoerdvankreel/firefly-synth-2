@@ -4,7 +4,7 @@ TODOLIST for alpha-17
 [x] some clear/init buttons
 [x] default button for multitaps
 [x] on note random
-[x] osc=>osci mix
+[x] osc=>osci mix (breaking by defaults)
 [ ] decent defaults
 [ ] global unison
 [ ] where goes the echo
