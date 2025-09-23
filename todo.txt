@@ -5,13 +5,13 @@ TODOLIST for alpha-17
 [x] default button for multitaps
 [x] on note random
 [x] osc=>osci mix (breaking by defaults)
+[x] where goes the echo
+[x] echo controls
+[x] place echo everywhere
+[x] echo extend/fade
 [ ] decent defaults
 [ ] global unison
-[ ] where goes the echo
 [ ] test with porta 
-[ ] echo controls
-[ ] place echo everywhere
-[ ] echo extend/fade
 [ ] basic mode
 [ ] clap polymod + release as one
 [ ] profile it
