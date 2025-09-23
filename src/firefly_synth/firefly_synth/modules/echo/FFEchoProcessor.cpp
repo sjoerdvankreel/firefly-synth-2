@@ -105,11 +105,11 @@ FFEchoProcessor<Global>::AllocOnDemandBuffers(
   auto const& moduleTopo = topo->static_->modules[(int)(Global ? FFModuleType::GEcho : FFModuleType::VEcho)];
 
   float tapsOnNorm = FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.tapsOn[0]);
-  float targetNorm = FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.target[0]);
   float reverbOnNorm = FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.reverbOn[0]);
   float feedbackOnNorm = FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.feedbackOn[0]);
+  float vTargetOrGTargetNorm = FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.vTargetOrGTarget[0]);
 
-  if (!graph && moduleTopo.NormalizedToListFast<int>(FFEchoParam::Target, targetNorm) == 0)
+  if (!graph && moduleTopo.NormalizedToListFast<int>(FFEchoParam::VTargetOrGTarget, vTargetOrGTargetNorm) == 0)
     return;
 
   int maxSamples = (int)std::ceil(sampleRate * FFEchoMaxSeconds);
@@ -162,9 +162,9 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
 
   float syncNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.sync[0], voice);
   float orderNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.order[0], voice);
-  float targetNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.target[0], voice);
   float delaySmoothTimeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.delaySmoothTime[0], voice);
   float delaySmoothBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.delaySmoothBars[0], voice);
+  float vTargetOrGTargetNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.vTargetOrGTarget[0], voice);
 
   auto const& tapOnNorm = params.block.tapOn;
   auto const& tapDelayBarsNorm = params.block.tapDelayBars;
@@ -185,8 +185,8 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
   _sync = topo.NormalizedToBoolFast(FFEchoParam::Sync, syncNorm);
-  _on = topo.NormalizedToListFast<int>(FFEchoParam::Target, targetNorm) != 0;
   _order = topo.NormalizedToListFast<FFEchoOrder>(FFEchoParam::Order, orderNorm);
+  _on = topo.NormalizedToListFast<int>(FFEchoParam::VTargetOrGTarget, vTargetOrGTargetNorm) != 0;
 
   int tapsOrder = FFEchoGetProcessingOrder(_order, FFEchoModule::Taps);
   int reverbOrder = FFEchoGetProcessingOrder(_order, FFEchoModule::Reverb);
