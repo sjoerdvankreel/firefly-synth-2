@@ -103,9 +103,9 @@ MakeEchoSectionMain(
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0, 0, 0 });
-  auto vTargetOrGTarget = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, vTargetOrGTarget));
-  auto targetBox = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, vTargetOrGTarget);
+  auto target = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Target, 0 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, target));
+  auto targetBox = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, target);
   grid->Add(0, 1, targetBox);
   *targetBoxOut = targetBox;
   auto order = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Order, 0 } });
@@ -331,10 +331,10 @@ MakeGEchoTab(FBPlugGUI* plugGUI, bool global)
   grid->Add(0, 4, MakeEchoSectionReverb(plugGUI, global));
 
   FBParamTopoIndices tapsOnIndices = { { (int)moduleType, 0 }, { (int)FFEchoParam::TapsOn, 0 } };
-  FBParamTopoIndices vTargetOrGTargetIndices = { { (int)moduleType, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
-  std::function<void()> updateTapEditEnabled = [plugGUI, showTapsEditorButton, vTargetOrGTargetIndices, tapsOnIndices]() {
+  FBParamTopoIndices targetIndices = { { (int)moduleType, 0 }, { (int)FFEchoParam::Target, 0 } };
+  std::function<void()> updateTapEditEnabled = [plugGUI, showTapsEditorButton, targetIndices, tapsOnIndices]() {
     bool tapsOn = plugGUI->HostContext()->GetAudioParamBool(tapsOnIndices);
-    bool echoOn = plugGUI->HostContext()->GetAudioParamList<int>(vTargetOrGTargetIndices) != 0;
+    bool echoOn = plugGUI->HostContext()->GetAudioParamList<int>(targetIndices) != 0;
     showTapsEditorButton->setEnabled(echoOn && tapsOn); };
   updateTapEditEnabled();
 

@@ -11,15 +11,15 @@
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
-FFVEchoTarget 
+FFEchoTarget 
 FFVoiceProcessor::GetCurrentVEchoTarget(FBModuleProcState const& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& vEcho = procState->param.voice.vEcho[0];
   auto& vEchoModuleTopo = state.topo->static_->modules[(int)FFModuleType::VEcho];
-  float vEchoTargetNorm = vEcho.block.vTargetOrGTarget[0].Voice()[voice];
-  return vEchoModuleTopo.NormalizedToListFast<FFVEchoTarget>(FFEchoParam::VTargetOrGTarget, vEchoTargetNorm);
+  float vEchoTargetNorm = vEcho.block.target[0].Voice()[voice];
+  return vEchoModuleTopo.NormalizedToListFast<FFEchoTarget>(FFEchoParam::Target, vEchoTargetNorm);
 }
 
 void 
@@ -185,7 +185,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
       voiceDSP.output[c].Set(s, voiceDSP.output[c].Get(s) * ampPlain * FBStereoBalance(c, balPlain));
   }
 
-  if (GetCurrentVEchoTarget(state) == FFVEchoTarget::AfterMix)
+  if (GetCurrentVEchoTarget(state) == FFEchoTarget::AfterMix)
   {
     state.moduleSlot = 0;
     if(_firstRoundThisVoice)

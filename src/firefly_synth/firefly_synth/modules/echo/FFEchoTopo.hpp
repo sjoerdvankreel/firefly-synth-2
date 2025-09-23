@@ -10,9 +10,7 @@ std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
 
 enum class FFEchoGUIParam { 
   TapSelect, Count };
-enum class FFVEchoTarget { 
-  Off, AfterMix, };
-enum class FFGEchoTarget { 
+enum class FFEchoTarget { 
   Off, BeforeFX, AfterFX, AfterMix,
   BeforeFX1, AfterFX1, BeforeFX2, AfterFX2,
   BeforeFX3, AfterFX3, BeforeFX4, AfterFX4 };
@@ -25,7 +23,7 @@ enum class FFEchoOrder {
   ReverbToTapsToFeedback, ReverbToFeedbackToTaps };
 
 enum class FFEchoParam {
-  VTargetOrGTarget, Order, Gain, Sync,
+  Target, Order, Gain, Sync,
   DelaySmoothTime, DelaySmoothBars,
   VoiceExtendTime, VoiceExtendBars, VoiceFadeTime, VoiceFadeBars,
   ReverbOn, ReverbMix, ReverbXOver,

@@ -36,37 +36,32 @@ FFMakeEchoTopo(bool global)
   auto selectVoiceModule = [](auto& state) { return &state.voice.vEcho; };
   auto selectGlobalModule = [](auto& state) { return &state.global.gEcho; };
 
-  auto& vTargetOrGTarget = result->params[(int)FFEchoParam::VTargetOrGTarget];
-  vTargetOrGTarget.mode = FBParamMode::Block;
-  vTargetOrGTarget.slotCount = 1;
-  vTargetOrGTarget.id = prefix + "{60F7D173-C5F9-46AD-A108-D17D40FE4C1D}";
-  vTargetOrGTarget.name = "Target";
-  vTargetOrGTarget.defaultText = "Off";
-  vTargetOrGTarget.type = FBParamType::List;
-  auto selectVTargetOrGTarget = [](auto& module) { return &module.block.vTargetOrGTarget; };
-  vTargetOrGTarget.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectVTargetOrGTarget);
-  vTargetOrGTarget.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectVTargetOrGTarget);
-  vTargetOrGTarget.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectVTargetOrGTarget);
-  vTargetOrGTarget.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVTargetOrGTarget);
-  vTargetOrGTarget.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVTargetOrGTarget);
-  if (global)
-    vTargetOrGTarget.List().items = {
-      { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "Off" },
-      { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "Pre GFX" },
-      { "{38A69D55-AB3E-49F2-9CCD-44917FD24597}", "Post GFX" },
-      { "{C510F9C1-13A6-4929-A7EA-7C5F79BA6E42}", "Post GMix" },
-      { "{CDE64B50-C65D-43E9-B52E-325F544E5175}", "Pre GFX1" },
-      { "{1C7AA2CC-2116-45E4-B7C2-AA9678CC15B5}", "Post GFX1" },
-      { "{68C1469F-96FF-47D7-8A2E-B24309E10031}", "Pre GFX2" },
-      { "{A043114B-C471-46A8-A526-B93E1897B1A0}", "Post GFX2" },
-      { "{883FA130-AB68-42D5-B56A-C61039DAD9A6}", "Pre GFX3" },
-      { "{56CE90EE-F9D0-4CCF-93B8-9BB0501DCBEF}", "Post GFX3" },
-      { "{80ECC9AA-AC6B-44DC-B305-43057720A4AC}", "Pre GFX4" },
-      { "{050E8D54-BFD2-4821-B14F-717D161D69DB}", "Post GFX4" } };
-  else
-    vTargetOrGTarget.List().items = {
-      { "{0EFCD973-BAA5-47B9-B61B-23FC8B82DC03}", "Off" },
-      { "{4E37CD52-00B3-455A-9958-99F7ACBE544E}", "Post VMix" } };
+  auto& target = result->params[(int)FFEchoParam::Target];
+  target.mode = FBParamMode::Block;
+  target.slotCount = 1;
+  target.id = prefix + "{60F7D173-C5F9-46AD-A108-D17D40FE4C1D}";
+  target.name = "Target";
+  target.defaultText = "Off";
+  target.type = FBParamType::List;
+  auto selectTarget = [](auto& module) { return &module.block.target; };
+  target.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTarget);
+  target.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectTarget);
+  target.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTarget);
+  target.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTarget);
+  target.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTarget);
+  target.List().items = {
+    { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "Off" },
+    { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "Pre GFX" },
+    { "{38A69D55-AB3E-49F2-9CCD-44917FD24597}", "Post GFX" },
+    { "{C510F9C1-13A6-4929-A7EA-7C5F79BA6E42}", "Post GMix" },
+    { "{CDE64B50-C65D-43E9-B52E-325F544E5175}", "Pre GFX1" },
+    { "{1C7AA2CC-2116-45E4-B7C2-AA9678CC15B5}", "Post GFX1" },
+    { "{68C1469F-96FF-47D7-8A2E-B24309E10031}", "Pre GFX2" },
+    { "{A043114B-C471-46A8-A526-B93E1897B1A0}", "Post GFX2" },
+    { "{883FA130-AB68-42D5-B56A-C61039DAD9A6}", "Pre GFX3" },
+    { "{56CE90EE-F9D0-4CCF-93B8-9BB0501DCBEF}", "Post GFX3" },
+    { "{80ECC9AA-AC6B-44DC-B305-43057720A4AC}", "Pre GFX4" },
+    { "{050E8D54-BFD2-4821-B14F-717D161D69DB}", "Post GFX4" } };
 
   auto& order = result->params[(int)FFEchoParam::Order];
   order.mode = FBParamMode::Block;
@@ -88,7 +83,7 @@ FFMakeEchoTopo(bool global)
   order.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOrder);
   order.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOrder);
   order.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectOrder);
-  order.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget }, [](auto const& vs) { return vs[0] != 0; });
+  order.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& gain = result->params[(int)FFEchoParam::Gain];
   gain.mode = FBParamMode::Accurate;
@@ -107,7 +102,7 @@ FFMakeEchoTopo(bool global)
   gain.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectGain);
   gain.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectGain);
   gain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectGain);
-  gain.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget }, [](auto const& vs) { return vs[0] != 0; });
+  gain.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& sync = result->params[(int)FFEchoParam::Sync];
   sync.mode = FBParamMode::Block;
@@ -123,7 +118,7 @@ FFMakeEchoTopo(bool global)
   sync.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSync);
   sync.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSync);
   sync.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSync);
-  sync.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget }, [](auto const& vs) { return vs[0] != 0; });
+  sync.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& delaySmoothTime = result->params[(int)FFEchoParam::DelaySmoothTime];
   delaySmoothTime.mode = FBParamMode::Block;
@@ -145,7 +140,7 @@ FFMakeEchoTopo(bool global)
   delaySmoothTime.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectDelaySmoothTime);
   delaySmoothTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectDelaySmoothTime);
   delaySmoothTime.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  delaySmoothTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
+  delaySmoothTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
 
   auto& delaySmoothBars = result->params[(int)FFEchoParam::DelaySmoothBars];
   delaySmoothBars.mode = FBParamMode::Block;
@@ -164,7 +159,7 @@ FFMakeEchoTopo(bool global)
   delaySmoothBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectDelaySmoothBars);
   delaySmoothBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectDelaySmoothBars);
   delaySmoothBars.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  delaySmoothBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  delaySmoothBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   // only used for voice, but we still share the gui
   auto& voiceExtendTime = result->params[(int)FFEchoParam::VoiceExtendTime];
@@ -187,7 +182,7 @@ FFMakeEchoTopo(bool global)
   voiceExtendTime.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVoiceExtendTime);
   voiceExtendTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVoiceExtendTime);
   voiceExtendTime.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  voiceExtendTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] == 0; });
+  voiceExtendTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] == 0; });
 
   auto& voiceExtendBars = result->params[(int)FFEchoParam::VoiceExtendBars];
   voiceExtendBars.mode = FBParamMode::Block;
@@ -206,7 +201,7 @@ FFMakeEchoTopo(bool global)
   voiceExtendBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVoiceExtendBars);
   voiceExtendBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVoiceExtendBars);
   voiceExtendBars.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  voiceExtendBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] != 0; });
+  voiceExtendBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] != 0; });
   
   auto& voiceFadeTime = result->params[(int)FFEchoParam::VoiceFadeTime];
   voiceFadeTime.mode = FBParamMode::VoiceStart;
@@ -228,7 +223,7 @@ FFMakeEchoTopo(bool global)
   voiceFadeTime.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVoiceFadeTime);
   voiceFadeTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVoiceFadeTime);
   voiceFadeTime.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  voiceFadeTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] == 0; });
+  voiceFadeTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] == 0; });
 
   auto& voiceFadeBars = result->params[(int)FFEchoParam::VoiceFadeBars];
   voiceFadeBars.mode = FBParamMode::Block;
@@ -247,7 +242,7 @@ FFMakeEchoTopo(bool global)
   voiceFadeBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVoiceFadeBars);
   voiceFadeBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVoiceFadeBars);
   voiceFadeBars.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  voiceFadeBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] != 0; });
+  voiceFadeBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] != 0; });
 
   auto& tapsMix = result->params[(int)FFEchoParam::TapsMix];
   tapsMix.mode = FBParamMode::Accurate;
@@ -264,7 +259,7 @@ FFMakeEchoTopo(bool global)
   tapsMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTapsMix);
   tapsMix.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapsMix);
   tapsMix.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapsMix);
-  tapsMix.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  tapsMix.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::TapsOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapsOn = result->params[(int)FFEchoParam::TapsOn];
   tapsOn.mode = FBParamMode::Block;
@@ -280,7 +275,7 @@ FFMakeEchoTopo(bool global)
   tapsOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTapsOn);
   tapsOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapsOn);
   tapsOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapsOn);
-  tapsOn.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget }, [](auto const& vs) { return vs[0] != 0; });
+  tapsOn.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& guiTapSelect = result->guiParams[(int)FFEchoGUIParam::TapSelect];
   guiTapSelect.defaultText = "1";
@@ -292,7 +287,7 @@ FFMakeEchoTopo(bool global)
   guiTapSelect.Discrete().valueCount = FFEchoTapCount;
   auto selectGuiTapSelect = [](auto& module) { return &module.tapSelect; };
   guiTapSelect.scalarAddr = FFSelectDualGUIParamAddr(global, selectGuiGlobalModule, selectGuiVoiceModule, selectGuiTapSelect);
-  guiTapSelect.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  guiTapSelect.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::TapsOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapOn = result->params[(int)FFEchoParam::TapOn];
   tapOn.mode = FBParamMode::Block;
@@ -309,7 +304,7 @@ FFMakeEchoTopo(bool global)
   tapOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTapOn);
   tapOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapOn);
   tapOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapOn);
-  tapOn.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  tapOn.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::TapsOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapLevel = result->params[(int)FFEchoParam::TapLevel];
   tapLevel.mode = FBParamMode::Accurate;
@@ -326,7 +321,7 @@ FFMakeEchoTopo(bool global)
   tapLevel.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTapLevel);
   tapLevel.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapLevel);
   tapLevel.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapLevel);
-  tapLevel.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+  tapLevel.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
     
   auto& tapDelayTime = result->params[(int)FFEchoParam::TapDelayTime];
   tapDelayTime.mode = FBParamMode::Accurate;
@@ -348,7 +343,7 @@ FFMakeEchoTopo(bool global)
   tapDelayTime.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapDelayTime);
   tapDelayTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapDelayTime);
   tapDelayTime.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  tapDelayTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0 && vs[3] == 0; });
+  tapDelayTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0 && vs[3] == 0; });
 
   auto& tapDelayBars = result->params[(int)FFEchoParam::TapDelayBars];
   tapDelayBars.mode = FBParamMode::Block;
@@ -367,7 +362,7 @@ FFMakeEchoTopo(bool global)
   tapDelayBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapDelayBars);
   tapDelayBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapDelayBars);
   tapDelayBars.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  tapDelayBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0 && vs[3] != 0; });
+  tapDelayBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0 && vs[3] != 0; });
    
   auto& tapBal = result->params[(int)FFEchoParam::TapBalance];
   tapBal.mode = FBParamMode::Accurate;
@@ -388,7 +383,7 @@ FFMakeEchoTopo(bool global)
   tapBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTapBal);
   tapBal.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapBal);
   tapBal.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapBal);
-  tapBal.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+  tapBal.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapXOver = result->params[(int)FFEchoParam::TapXOver];
   tapXOver.mode = FBParamMode::Accurate;
@@ -406,7 +401,7 @@ FFMakeEchoTopo(bool global)
   tapXOver.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTapXOver);
   tapXOver.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapXOver);
   tapXOver.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapXOver);
-  tapXOver.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+  tapXOver.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapLPFreq = result->params[(int)FFEchoParam::TapLPFreq];
   tapLPFreq.mode = FBParamMode::Accurate;
@@ -424,7 +419,7 @@ FFMakeEchoTopo(bool global)
   tapLPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTapLPFreq);
   tapLPFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapLPFreq);
   tapLPFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapLPFreq);
-  tapLPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+  tapLPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapLPRes = result->params[(int)FFEchoParam::TapLPRes];
   tapLPRes.mode = FBParamMode::Accurate;
@@ -441,7 +436,7 @@ FFMakeEchoTopo(bool global)
   tapLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTapLPRes);
   tapLPRes.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapLPRes);
   tapLPRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapLPRes);
-  tapLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+  tapLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapHPFreq = result->params[(int)FFEchoParam::TapHPFreq];
   tapHPFreq.mode = FBParamMode::Accurate;
@@ -459,7 +454,7 @@ FFMakeEchoTopo(bool global)
   tapHPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTapHPFreq);
   tapHPFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapHPFreq);
   tapHPFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapHPFreq);
-  tapHPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+  tapHPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapHPRes = result->params[(int)FFEchoParam::TapHPRes];
   tapHPRes.mode = FBParamMode::Accurate;
@@ -476,7 +471,7 @@ FFMakeEchoTopo(bool global)
   tapHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTapHPRes);
   tapHPRes.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapHPRes);
   tapHPRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapHPRes);
-  tapHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+  tapHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& feedbackOn = result->params[(int)FFEchoParam::FeedbackOn];
   feedbackOn.mode = FBParamMode::Block;
@@ -492,7 +487,7 @@ FFMakeEchoTopo(bool global)
   feedbackOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectFeedbackOn);
   feedbackOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFeedbackOn);
   feedbackOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectFeedbackOn);
-  feedbackOn.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget }, [](auto const& vs) { return vs[0] != 0; });
+  feedbackOn.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& feedbackMix = result->params[(int)FFEchoParam::FeedbackMix];
   feedbackMix.mode = FBParamMode::Accurate;
@@ -510,7 +505,7 @@ FFMakeEchoTopo(bool global)
   feedbackMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectFeedbackMix);
   feedbackMix.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFeedbackMix);
   feedbackMix.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectFeedbackMix);
-  feedbackMix.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  feedbackMix.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& feedbackXOver = result->params[(int)FFEchoParam::FeedbackXOver];
   feedbackXOver.unit = "%";
@@ -528,7 +523,7 @@ FFMakeEchoTopo(bool global)
   feedbackXOver.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectFeedbackXOver);
   feedbackXOver.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFeedbackXOver);
   feedbackXOver.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectFeedbackXOver);
-  feedbackXOver.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  feedbackXOver.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& feedbackAmount = result->params[(int)FFEchoParam::FeedbackAmount];
   feedbackAmount.unit = "%";
@@ -546,7 +541,7 @@ FFMakeEchoTopo(bool global)
   feedbackAmount.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectFeedbackAmount);
   feedbackAmount.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFeedbackAmount);
   feedbackAmount.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectFeedbackAmount);
-  feedbackAmount.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  feedbackAmount.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& feedbackDelayTime = result->params[(int)FFEchoParam::FeedbackDelayTime];
   feedbackDelayTime.mode = FBParamMode::Accurate;
@@ -568,7 +563,7 @@ FFMakeEchoTopo(bool global)
   feedbackDelayTime.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFeedbackDelayTime);
   feedbackDelayTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectFeedbackDelayTime);
   feedbackDelayTime.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  feedbackDelayTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] == 0; });
+  feedbackDelayTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::FeedbackOn, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] == 0; });
 
   auto& feedbackDelayBars = result->params[(int)FFEchoParam::FeedbackDelayBars];
   feedbackDelayBars.mode = FBParamMode::Block;
@@ -588,7 +583,7 @@ FFMakeEchoTopo(bool global)
   feedbackDelayBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFeedbackDelayBars);
   feedbackDelayBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectFeedbackDelayBars);
   feedbackDelayBars.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  feedbackDelayBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+  feedbackDelayBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::FeedbackOn, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
   
   auto& feedbackLPFreq = result->params[(int)FFEchoParam::FeedbackLPFreq];
   feedbackLPFreq.mode = FBParamMode::Accurate;
@@ -607,7 +602,7 @@ FFMakeEchoTopo(bool global)
   feedbackLPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectFeedbackLPFreq);
   feedbackLPFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFeedbackLPFreq);
   feedbackLPFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectFeedbackLPFreq);
-  feedbackLPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  feedbackLPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& feedbackLPRes = result->params[(int)FFEchoParam::FeedbackLPRes];
   feedbackLPRes.mode = FBParamMode::Accurate;
@@ -625,7 +620,7 @@ FFMakeEchoTopo(bool global)
   feedbackLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectFeedbackLPRes);
   feedbackLPRes.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFeedbackLPRes);
   feedbackLPRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectFeedbackLPRes);
-  feedbackLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  feedbackLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& feedbackHPFreq = result->params[(int)FFEchoParam::FeedbackHPFreq];
   feedbackHPFreq.mode = FBParamMode::Accurate;
@@ -644,7 +639,7 @@ FFMakeEchoTopo(bool global)
   feedbackHPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectFeedbackHPFreq);
   feedbackHPFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFeedbackHPFreq);
   feedbackHPFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectFeedbackHPFreq);
-  feedbackHPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  feedbackHPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& feedbackHPRes = result->params[(int)FFEchoParam::FeedbackHPRes];
   feedbackHPRes.mode = FBParamMode::Accurate;
@@ -662,7 +657,7 @@ FFMakeEchoTopo(bool global)
   feedbackHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectFeedbackHPRes);
   feedbackHPRes.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFeedbackHPRes);
   feedbackHPRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectFeedbackHPRes);
-  feedbackHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  feedbackHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbOn = result->params[(int)FFEchoParam::ReverbOn];
   reverbOn.mode = FBParamMode::Block;
@@ -678,7 +673,7 @@ FFMakeEchoTopo(bool global)
   reverbOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectReverbOn);
   reverbOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectReverbOn);
   reverbOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectReverbOn);
-  reverbOn.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget }, [](auto const& vs) { return vs[0] != 0; });
+  reverbOn.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& reverbMix = result->params[(int)FFEchoParam::ReverbMix];
   reverbMix.mode = FBParamMode::Accurate;
@@ -696,7 +691,7 @@ FFMakeEchoTopo(bool global)
   reverbMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectReverbMix);
   reverbMix.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectReverbMix);
   reverbMix.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectReverbMix);
-  reverbMix.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  reverbMix.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbXOver = result->params[(int)FFEchoParam::ReverbXOver];
   reverbXOver.unit = "%";
@@ -714,7 +709,7 @@ FFMakeEchoTopo(bool global)
   reverbXOver.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectReverbXOver);
   reverbXOver.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectReverbXOver);
   reverbXOver.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectReverbXOver);
-  reverbXOver.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  reverbXOver.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbAPF = result->params[(int)FFEchoParam::ReverbAPF];
   reverbAPF.unit = "%";
@@ -732,7 +727,7 @@ FFMakeEchoTopo(bool global)
   reverbAPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectReverbAPF);
   reverbAPF.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectReverbAPF);
   reverbAPF.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectReverbAPF);
-  reverbAPF.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  reverbAPF.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbDamp = result->params[(int)FFEchoParam::ReverbDamp];
   reverbDamp.unit = "%";
@@ -750,7 +745,7 @@ FFMakeEchoTopo(bool global)
   reverbDamp.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectReverbDamp);
   reverbDamp.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectReverbDamp);
   reverbDamp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectReverbDamp);
-  reverbDamp.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  reverbDamp.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbSize = result->params[(int)FFEchoParam::ReverbSize];
   reverbSize.unit = "%";
@@ -768,7 +763,7 @@ FFMakeEchoTopo(bool global)
   reverbSize.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectReverbSize);
   reverbSize.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectReverbSize);
   reverbSize.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectReverbSize);
-  reverbSize.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  reverbSize.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbLPFreq = result->params[(int)FFEchoParam::ReverbLPFreq];
   reverbLPFreq.mode = FBParamMode::Accurate;
@@ -787,7 +782,7 @@ FFMakeEchoTopo(bool global)
   reverbLPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectReverbLPFreq);
   reverbLPFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectReverbLPFreq);
   reverbLPFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectReverbLPFreq);
-  reverbLPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  reverbLPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbLPRes = result->params[(int)FFEchoParam::ReverbLPRes];
   reverbLPRes.mode = FBParamMode::Accurate;
@@ -805,7 +800,7 @@ FFMakeEchoTopo(bool global)
   reverbLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectReverbLPRes);
   reverbLPRes.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectReverbLPRes);
   reverbLPRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectReverbLPRes);
-  reverbLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  reverbLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbHPFreq = result->params[(int)FFEchoParam::ReverbHPFreq];
   reverbHPFreq.mode = FBParamMode::Accurate;
@@ -824,7 +819,7 @@ FFMakeEchoTopo(bool global)
   reverbHPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectReverbHPFreq);
   reverbHPFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectReverbHPFreq);
   reverbHPFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectReverbHPFreq);
-  reverbHPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  reverbHPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbHPRes = result->params[(int)FFEchoParam::ReverbHPRes];
   reverbHPRes.mode = FBParamMode::Accurate;
@@ -842,7 +837,7 @@ FFMakeEchoTopo(bool global)
   reverbHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectReverbHPRes);
   reverbHPRes.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectReverbHPRes);
   reverbHPRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectReverbHPRes);
-  reverbHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  reverbHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::Target, (int)FFEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
   
   return result;
 }

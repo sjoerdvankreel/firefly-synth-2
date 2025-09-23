@@ -107,7 +107,7 @@ EchoGraphRenderData<Global>::DoProcess(
 {
   auto* moduleProcState = state->ModuleProcState();
   auto moduleType = Global ? FFModuleType::GEcho : FFModuleType::VEcho;
-  FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
+  FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEchoParam::Target, 0 } };
   auto target = state->AudioParamList<int>(indices, false, -1);
   if (target == 0)
     return 0;
@@ -161,7 +161,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
   auto* renderState = graphData->renderState;
   auto moduleType = Global ? FFModuleType::GEcho : FFModuleType::VEcho;
   FBTopoIndices modIndices = { (int)moduleType, 0 };
-  FBParamTopoIndices paramIndices = { modIndices, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
+  FBParamTopoIndices paramIndices = { modIndices, { (int)FFEchoParam::Target, 0 } };
   bool on = renderState->AudioParamList<int>(paramIndices, false, -1) != 0;
 
   paramIndices = { modIndices, { (int)FFEchoParam::Order, 0 } };

@@ -201,15 +201,15 @@ FFPlugProcessor::ProcessPostVoice(
 
   FBSArray<float, FBFixedBlockSamples> ampNormModulated = {};
   FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
-  float gEchoTargetNorm = gEcho.block.vTargetOrGTarget[0].Value();
-  auto gEchoTarget = gEchoModuleTopo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VTargetOrGTarget, gEchoTargetNorm);
+  float gEchoTargetNorm = gEcho.block.target[0].Value();
+  auto gEchoTarget = gEchoModuleTopo.NormalizedToListFast<FFEchoTarget>(FFEchoParam::Target, gEchoTargetNorm);
 
   FBSArray2<float, FBFixedBlockSamples, 2> voiceMixdown = {};
   voiceMixdown.Fill(0.0f);
   for (int v: input.voiceManager->ActiveVoices())
     voiceMixdown.Add(_procState->dsp.voice[v].output);
 
-  if (gEchoTarget == FFGEchoTarget::BeforeFX)
+  if (gEchoTarget == FFEchoTarget::BeforeFX)
     ProcessGEcho(state, voiceMixdown);
 
   for (int i = 0; i < FFEffectCount; i++)
@@ -225,26 +225,26 @@ FFPlugProcessor::ProcessPostVoice(
         globalDSP.gEffect[i].input.AddMul(globalDSP.gEffect[source].output, gfxToGFXNorm);
       }
     
-    if(i == 0 && gEchoTarget == FFGEchoTarget::BeforeFX1)
+    if(i == 0 && gEchoTarget == FFEchoTarget::BeforeFX1)
       ProcessGEcho(state, globalDSP.gEffect[i].input);
-    else if (i == 1 && gEchoTarget == FFGEchoTarget::BeforeFX2)
+    else if (i == 1 && gEchoTarget == FFEchoTarget::BeforeFX2)
       ProcessGEcho(state, globalDSP.gEffect[i].input);
-    else if (i == 2 && gEchoTarget == FFGEchoTarget::BeforeFX3)
+    else if (i == 2 && gEchoTarget == FFEchoTarget::BeforeFX3)
       ProcessGEcho(state, globalDSP.gEffect[i].input);
-    else if (i == 3 && gEchoTarget == FFGEchoTarget::BeforeFX4)
+    else if (i == 3 && gEchoTarget == FFEchoTarget::BeforeFX4)
       ProcessGEcho(state, globalDSP.gEffect[i].input);
     
     state.moduleSlot = i; // gecho changes it!
     globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(state, false, -1, -1);
     globalDSP.gEffect[i].processor->Process<true>(state);
 
-    if (i == 0 && gEchoTarget == FFGEchoTarget::AfterFX1)
+    if (i == 0 && gEchoTarget == FFEchoTarget::AfterFX1)
       ProcessGEcho(state, globalDSP.gEffect[i].output);
-    else if (i == 1 && gEchoTarget == FFGEchoTarget::AfterFX2)
+    else if (i == 1 && gEchoTarget == FFEchoTarget::AfterFX2)
       ProcessGEcho(state, globalDSP.gEffect[i].output);
-    else if (i == 2 && gEchoTarget == FFGEchoTarget::AfterFX3)
+    else if (i == 2 && gEchoTarget == FFEchoTarget::AfterFX3)
       ProcessGEcho(state, globalDSP.gEffect[i].output);
-    else if (i == 3 && gEchoTarget == FFGEchoTarget::AfterFX4)
+    else if (i == 3 && gEchoTarget == FFEchoTarget::AfterFX4)
       ProcessGEcho(state, globalDSP.gEffect[i].output);
   }
 
@@ -257,7 +257,7 @@ FFPlugProcessor::ProcessPostVoice(
     output.audio.AddMul(globalDSP.gEffect[i].output, gfxToOutNorm);
   }
 
-  if (gEchoTarget == FFGEchoTarget::AfterFX)
+  if (gEchoTarget == FFEchoTarget::AfterFX)
     ProcessGEcho(state, output.audio);
 
   ampNormIn.CV().CopyTo(ampNormModulated);
@@ -272,7 +272,7 @@ FFPlugProcessor::ProcessPostVoice(
       output.audio[c].Set(s, output.audio[c].Get(s) * ampPlain * FBStereoBalance(c, balPlain));
   }
 
-  if (gEchoTarget == FFGEchoTarget::AfterMix)
+  if (gEchoTarget == FFEchoTarget::AfterMix)
     ProcessGEcho(state, output.audio);
 
   state.moduleSlot = 0;
