@@ -14,7 +14,7 @@ struct FBStaticModule;
 template <class TBlock>
 class alignas(alignof(TBlock)) FFVMixBlockParamState final
 {
-  friend class FFVMixProcessor;
+  friend class FFVoiceProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeVMixTopo();
   std::array<TBlock, 1> ampEnvTarget = {};
 public:

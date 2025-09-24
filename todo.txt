@@ -48,6 +48,7 @@ TODOLIST for alpha-19
 TODOLIST for alpha-20
 [ ] theme the gui
 
+routing / order diagram
 figure out bitwig dataexchange on Linux
 make a percussion demo
 make porta lead demo

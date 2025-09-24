@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_synth/modules/mix/FFVMixTopo.hpp>
 #include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 #include <firefly_synth/modules/note/FFVNoteTopo.hpp>
 
@@ -13,13 +14,14 @@ struct FBPlugInputBlock;
 class FFVoiceProcessor final
 {
   bool _firstRoundThisVoice = true;
+  FFVEchoTarget _vEchoTarget = {};
+  FFVMixAmpEnvTarget _ampEnvTarget = {};
+
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteRandomUni = {};
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteRandomNorm = {};
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteGroupRandomUni = {};
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteGroupRandomNorm = {};
-  
-  FFVEchoTarget GetCurrentVEchoTarget(
-    FBModuleProcState const& state);
+
   bool ProcessVEcho(
     FBModuleProcState& state, int ampEnvFinishedAt, 
     FBSArray2<float, FBFixedBlockSamples, 2>& inout);

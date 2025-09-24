@@ -7,10 +7,14 @@
 #include <memory>
 
 struct FBStaticModule;
-std::unique_ptr<FBStaticModule> FFMakeVMixTopo();
-
-enum class FFAmpEnvTarget { Off, Osc, OscMix, FX, Out };
 inline int constexpr FFVMixOsciToVFXCount = FFOsciCount * FFEffectCount;
+
+enum class FFVMixAmpEnvTarget { 
+  Off, 
+  OscPreMix, OscPostMix, OscMix, 
+  VFXIn, VFXOut, MixIn, MixOut };
+
+std::unique_ptr<FBStaticModule> FFMakeVMixTopo();
 
 inline int
 FFVMixOsciToVFXGetOsciSlot(int mixSlot)
