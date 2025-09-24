@@ -9,12 +9,13 @@ TODOLIST for alpha-17
 [x] echo controls
 [x] place echo everywhere
 [x] echo extend/fade
+[x] test with porta 
 [ ] do IN/OUT VAMP
-[ ] lpf/hpf on/off for all echo filters
 [ ] the vecho buffers are not reset? -- oh its the filters, check global too? also check all fxs
+[ ] lpf/hpf on/off for all echo filters
+[ ] vectorize the echo where possible
 [ ] decent defaults
 [ ] global unison
-[ ] test with porta 
 [ ] basic mode
 [ ] clap polymod + release as one
 [ ] profile it
