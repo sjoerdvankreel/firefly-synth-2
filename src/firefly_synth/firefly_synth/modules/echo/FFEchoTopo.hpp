@@ -36,13 +36,13 @@ enum class FFEchoParam {
   VoiceExtendTime, VoiceExtendBars, VoiceFadeTime, VoiceFadeBars,
   ReverbOn, ReverbMix, ReverbXOver,
   ReverbSize, ReverbDamp, ReverbAPF,
-  ReverbLPFreq, ReverbLPRes, ReverbHPFreq, ReverbHPRes,
+  ReverbLPOn, ReverbLPFreq, ReverbLPRes, ReverbHPOn, ReverbHPFreq, ReverbHPRes,
   FeedbackOn, FeedbackMix, FeedbackAmount, FeedbackXOver,
   FeedbackDelayTime, FeedbackDelayBars,
-  FeedbackLPFreq, FeedbackLPRes, FeedbackHPFreq, FeedbackHPRes,
+  FeedbackLPOn, FeedbackLPFreq, FeedbackLPRes, FeedbackHPOn, FeedbackHPFreq, FeedbackHPRes,
   TapsOn, TapsMix, TapOn, TapFirst = TapOn, TapBalance, 
   TapLevel, TapXOver, TapDelayTime, TapDelayBars,
-  TapLPFreq, TapLPRes, TapHPFreq, TapHPRes, TapLast = TapHPRes, Count };
+  TapLPOn, TapLPFreq, TapLPRes, TapHPOn, TapHPFreq, TapHPRes, TapLast = TapHPRes, Count };
 
 inline int 
 FFEchoGetProcessingOrder(FFEchoOrder order, FFEchoModule module)

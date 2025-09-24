@@ -12,7 +12,8 @@ TODOLIST for alpha-17
 [x] test with porta 
 [x] the vecho buffers are not reset? -- oh its the filters, check global too? also check all fxs
 [x] do IN/OUT VAMP
-[ ] lpf/hpf on/off for all echo filters
+[ ] flip filter/lrx in the popup taps
+[ ] lpf/hpf on/off for all echo filters => breaking
 [ ] vectorize the echo where possible
 [ ] decent defaults
 [ ] global unison
