@@ -10,8 +10,8 @@ TODOLIST for alpha-17
 [x] place echo everywhere
 [x] echo extend/fade
 [x] test with porta 
-[ ] do IN/OUT VAMP
-[ ] the vecho buffers are not reset? -- oh its the filters, check global too? also check all fxs
+[x] the vecho buffers are not reset? -- oh its the filters, check global too? also check all fxs
+[x] do IN/OUT VAMP
 [ ] lpf/hpf on/off for all echo filters
 [ ] vectorize the echo where possible
 [ ] decent defaults
