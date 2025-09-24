@@ -334,7 +334,7 @@ MakeGEchoTab(FBPlugGUI* plugGUI, bool global)
   FBParamComboBox* echoTargetBox = {};
   FBParamToggleButton* tapsOnToggle = {};
   FBAutoSizeButton* showTapsEditorButton = {};
-  std::vector<int> columnSizes = { 1, 0, 0, 0, 0 };
+  std::vector<int> columnSizes = { 1, 0, 0, 0 };
 
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   auto individualTapsGUI = plugGUI->StoreComponent<FBMultiContentComponent>();
@@ -346,9 +346,9 @@ MakeGEchoTab(FBPlugGUI* plugGUI, bool global)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
   grid->Add(0, 0, MakeEchoSectionMain(plugGUI, global, &echoTargetBox));
   grid->Add(0, 1, MakeEchoSectionTaps(plugGUI, global, individualTapsGUI, &tapsOnToggle, &showTapsEditorButton));
-  grid->Add(0, 2, individualTapsGUI);
-  grid->Add(0, 3, MakeEchoSectionFeedback(plugGUI, global));
-  grid->Add(0, 4, MakeEchoSectionReverb(plugGUI, global));
+  // TODO grid->Add(0, 2, individualTapsGUI);
+  grid->Add(0, 2, MakeEchoSectionFeedback(plugGUI, global));
+  grid->Add(0, 3, MakeEchoSectionReverb(plugGUI, global));
 
   FBParamTopoIndices tapsOnIndices = { { (int)moduleType, 0 }, { (int)FFEchoParam::TapsOn, 0 } };
   FBParamTopoIndices vTargetOrGTargetIndices = { { (int)moduleType, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
