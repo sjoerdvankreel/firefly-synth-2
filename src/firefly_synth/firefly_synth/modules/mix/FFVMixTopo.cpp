@@ -92,7 +92,7 @@ FFMakeVMixTopo()
   ampEnvTarget.slotCount = 1;
   ampEnvTarget.name = "Amp Env Target";
   ampEnvTarget.display = "Target";
-  ampEnvTarget.defaultText = "Mix Out";
+  ampEnvTarget.defaultText = "VMix Out";
   ampEnvTarget.id = "{B1D76321-C513-4836-9AB6-741E2204D128}";
   ampEnvTarget.type = FBParamType::List;
   ampEnvTarget.List().items = {
@@ -102,8 +102,8 @@ FFMakeVMixTopo()
     { "{94FDB0DE-84D2-4DE0-98E5-AE247F337CED}", "Osc Mix" },
     { "{6FBC9845-FEDB-467D-9EAB-FB924DE10877}", "VFX In" },
     { "{D2E4DE41-7CB6-411E-BF5E-08970EAB3124}", "VFX Out" },
-    { "{5D47DEB7-B2CF-4F98-BCD6-523CD0F9130A}", "Mix In" },
-    { "{88AA06B7-BFCB-463B-9C6D-21A619BE6FB4}", "Mix Out" } };
+    { "{5D47DEB7-B2CF-4F98-BCD6-523CD0F9130A}", "VMix In" },
+    { "{88AA06B7-BFCB-463B-9C6D-21A619BE6FB4}", "VMix Out" } };
 
   auto selectAmpEnvTarget = [](auto& module) { return &module.block.ampEnvTarget; };
   ampEnvTarget.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAmpEnvTarget);

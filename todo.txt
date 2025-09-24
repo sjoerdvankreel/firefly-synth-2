@@ -10,6 +10,7 @@ TODOLIST for alpha-17
 [x] place echo everywhere
 [x] echo extend/fade
 [ ] do IN/OUT VAMP
+[ ] lpf/hpf on/off for all echo filters
 [ ] the vecho buffers are not reset? -- oh its the filters, check global too? also check all fxs
 [ ] decent defaults
 [ ] global unison
@@ -17,6 +18,7 @@ TODOLIST for alpha-17
 [ ] basic mode
 [ ] clap polymod + release as one
 [ ] profile it
+[ ] profile the vecho
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
