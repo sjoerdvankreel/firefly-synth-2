@@ -96,14 +96,14 @@ FFMakeVMixTopo()
   ampEnvTarget.id = "{B1D76321-C513-4836-9AB6-741E2204D128}";
   ampEnvTarget.type = FBParamType::List;
   ampEnvTarget.List().items = {
-    { "{6A325724-4F53-4FBE-91C8-31F5D29D5C1C}", "Off" },
-    { "{19729FCD-24BE-4D4D-8B8C-D4F05E930FB1}", "Osc PreMix" },
-    { "{19729FCD-24BE-4D4D-8B8C-D4F05E930FB1}", "Osc PostMix" },
-    { "{BE23E27D-9580-46E3-9A9D-F9DC62320DA6}", "Osc Mix" },
-    { "{32F70DA5-12D5-4D3A-9EEF-DC225CABE919}", "VFX In" },
-    { "{32F70DA5-12D5-4D3A-9EEF-DC225CABE919}", "VFX Out" },
-    { "{32F70DA5-12D5-4D3A-9EEF-DC225CABE919}", "Min In" },
-    { "{BDB27A94-D5D0-44F6-8DBE-D98C70CFBD0D}", "Mix Out" } };
+    { "{350E31BF-0F89-4C30-B719-9E436F2074C2}", "Off" },
+    { "{1DAA2CE0-67ED-4A09-A5E6-A907F101F4A7}", "Osc PreMix" },
+    { "{60E614A3-1FB8-4158-8884-37393464F52D}", "Osc PostMix" },
+    { "{94FDB0DE-84D2-4DE0-98E5-AE247F337CED}", "Osc Mix" },
+    { "{6FBC9845-FEDB-467D-9EAB-FB924DE10877}", "VFX In" },
+    { "{D2E4DE41-7CB6-411E-BF5E-08970EAB3124}", "VFX Out" },
+    { "{5D47DEB7-B2CF-4F98-BCD6-523CD0F9130A}", "Mix In" },
+    { "{88AA06B7-BFCB-463B-9C6D-21A619BE6FB4}", "Mix Out" } };
 
   auto selectAmpEnvTarget = [](auto& module) { return &module.block.ampEnvTarget; };
   ampEnvTarget.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAmpEnvTarget);
