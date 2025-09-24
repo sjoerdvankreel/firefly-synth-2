@@ -87,6 +87,25 @@ FFMakeVMixTopo()
   ampEnvToAmp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectAmpEnvToAmp);
   ampEnvToAmp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAmpEnvToAmp);
 
+  auto& ampEnvTarget = result->params[(int)FFVMixParam::AmpEnvTarget];
+  ampEnvTarget.mode = FBParamMode::Block;
+  ampEnvTarget.slotCount = 1;
+  ampEnvTarget.name = "Amp Env Target";
+  ampEnvTarget.display = "Target";
+  ampEnvTarget.defaultText = "Out";
+  ampEnvTarget.id = "{B1D76321-C513-4836-9AB6-741E2204D128}";
+  ampEnvTarget.type = FBParamType::List;
+  ampEnvTarget.List().items = {
+    { "{6A325724-4F53-4FBE-91C8-31F5D29D5C1C}", "Off" },
+    { "{19729FCD-24BE-4D4D-8B8C-D4F05E930FB1}", "Osc" },
+    { "{BE23E27D-9580-46E3-9A9D-F9DC62320DA6}", "OscMix" },
+    { "{32F70DA5-12D5-4D3A-9EEF-DC225CABE919}", "VFX" },
+    { "{BDB27A94-D5D0-44F6-8DBE-D98C70CFBD0D}", "Out" } };
+  auto selectAmpEnvTarget = [](auto& module) { return &module.block.ampEnvTarget; };
+  ampEnvTarget.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAmpEnvTarget);
+  ampEnvTarget.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectAmpEnvTarget);
+  ampEnvTarget.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAmpEnvTarget);
+
   auto& bal = result->params[(int)FFVMixParam::Bal];
   bal.mode = FBParamMode::Accurate;
   bal.defaultText = "0";

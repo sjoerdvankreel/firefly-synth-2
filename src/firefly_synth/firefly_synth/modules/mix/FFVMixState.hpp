@@ -11,6 +11,16 @@
 
 struct FBStaticModule;
 
+template <class TBlock>
+class alignas(alignof(TBlock)) FFVMixBlockParamState final
+{
+  friend class FFVMixProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeVMixTopo();
+  std::array<TBlock, 1> ampEnvTarget = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFVMixBlockParamState);
+};
+
 template <class TAccurate>
 class alignas(alignof(TAccurate)) FFVMixAccParamState final
 {
@@ -31,12 +41,13 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVMixAccParamState);
 };
 
-template <class TAccurate>
+template <class TBlock, class TAccurate>
 class alignas(alignof(TAccurate)) FFVMixParamState final
 {
   friend class FFVoiceProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeVMixTopo();
   FFVMixAccParamState<TAccurate> acc = {};
+  FFVMixBlockParamState<TBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVMixParamState);
 };

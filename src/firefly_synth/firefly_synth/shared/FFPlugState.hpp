@@ -123,7 +123,7 @@ template <class TBlock, class TAccurate>
 struct alignas(alignof(TAccurate)) FFVoiceParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceParamState);
-  std::array<FFVMixParamState<TAccurate>, 1> vMix = {};
+  std::array<FFVMixParamState<TBlock, TAccurate>, 1> vMix = {};
   std::array<FFEchoParamState<TBlock, TAccurate>, 1> vEcho = {};
   std::array<FFOsciModParamState<TBlock, TAccurate>, 1> osciMod = {};
   std::array<FFEnvParamState<TBlock, TAccurate>, FFEnvCount> env = {};
