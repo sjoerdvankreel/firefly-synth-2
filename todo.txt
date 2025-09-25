@@ -39,7 +39,7 @@ TODOLIST for alpha-18
 
 TODOLIST for alpha-19
 [ ] preset infra
-[ ] check all linear horizontal
+[ ] check all linear horizontal + do sensitivity for linear horizontal
 [ ] headers on the popout windows
 [ ] highlight not default
 [ ] env stage length edit is annoying

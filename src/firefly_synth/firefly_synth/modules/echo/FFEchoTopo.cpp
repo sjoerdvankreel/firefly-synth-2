@@ -433,7 +433,7 @@ FFMakeEchoTopo(bool global)
   tapLPFreq.mode = FBParamMode::Accurate;
   tapLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
   tapLPFreq.name = "Tap LPF Freq";
-  tapLPFreq.display = "Freq";
+  tapLPFreq.display = "Frq";
   tapLPFreq.slotCount = FFEchoTapCount;
   tapLPFreq.unit = "Hz";
   tapLPFreq.id = prefix + "{D8CA3B61-6335-4457-9A4F-71F5A912C0D7}";
@@ -484,7 +484,7 @@ FFMakeEchoTopo(bool global)
   tapHPFreq.mode = FBParamMode::Accurate;
   tapHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   tapHPFreq.name = "Tap HPF Freq";
-  tapHPFreq.display = "Freq";
+  tapHPFreq.display = "Frq";
   tapHPFreq.slotCount = FFEchoTapCount;
   tapHPFreq.unit = "Hz";
   tapHPFreq.id = prefix + "{3B3F90D7-CAF0-45ED-8316-D21BE4508E05}";
@@ -648,7 +648,7 @@ FFMakeEchoTopo(bool global)
   feedbackLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
   feedbackLPFreq.name = "Feedback LPF Freq";
   feedbackLPFreq.matrixName = "Fdbk LPF Freq";
-  feedbackLPFreq.display = "Freq";
+  feedbackLPFreq.display = "Frq";
   feedbackLPFreq.slotCount = 1;
   feedbackLPFreq.unit = "Hz";
   feedbackLPFreq.id = prefix + "{E4D8EB30-BF2A-4935-AE14-053F6CF9C446}";
@@ -701,7 +701,7 @@ FFMakeEchoTopo(bool global)
   feedbackHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   feedbackHPFreq.name = "Feedback HPF Freq";
   feedbackHPFreq.matrixName = "Fdbk HPF Freq";
-  feedbackHPFreq.display = "Freq";
+  feedbackHPFreq.display = "Frq";
   feedbackHPFreq.slotCount = 1;
   feedbackHPFreq.unit = "Hz";
   feedbackHPFreq.id = prefix + "{FE81A57D-1D98-4D3D-B563-8A63B099DB99}";
@@ -860,7 +860,7 @@ FFMakeEchoTopo(bool global)
   reverbLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
   reverbLPFreq.name = "Reverb LPF Freq";
   reverbLPFreq.matrixName = "Rvrb LPF Freq";
-  reverbLPFreq.display = "Freq";
+  reverbLPFreq.display = "Frq";
   reverbLPFreq.slotCount = 1;
   reverbLPFreq.unit = "Hz";
   reverbLPFreq.id = prefix + "{9B215206-8C8A-4F37-9F54-60EF7AAA67E1}";
@@ -913,7 +913,7 @@ FFMakeEchoTopo(bool global)
   reverbHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   reverbHPFreq.name = "Reverb HPF Freq";
   reverbHPFreq.matrixName = "Rvrb HPF Freq";
-  reverbHPFreq.display = "HPF";
+  reverbHPFreq.display = "Frq";
   reverbHPFreq.slotCount = 1;
   reverbHPFreq.unit = "Hz";
   reverbHPFreq.id = prefix + "{1CB4ACC6-1EA4-4693-B4D5-D93A73E1E01B}";

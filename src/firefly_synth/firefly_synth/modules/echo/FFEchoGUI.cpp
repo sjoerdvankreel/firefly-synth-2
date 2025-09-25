@@ -192,7 +192,7 @@ MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
   auto on = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackOn, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
@@ -215,17 +215,21 @@ MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpOn));
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, lpOn));
   auto lpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackLPFreq, 0 } });
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpFreq));
+  grid->Add(0, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::RotaryVerticalDrag));
   auto lpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackLPRes, 0 } });
-  grid->Add(0, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 9, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpRes));
+  grid->Add(0, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpRes, Slider::SliderStyle::RotaryVerticalDrag));
   auto hpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackHPOn, 0 } });
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpOn));
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, hpOn));
   auto hpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackHPFreq, 0 } });
-  grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpFreq));
+  grid->Add(1, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, Slider::SliderStyle::RotaryVerticalDrag));
   auto hpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackHPRes, 0 } });
-  grid->Add(1, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 9 } });
+  grid->Add(1, 9, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
+  grid->Add(1, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ { 0, 0 }, { 2, 11 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
@@ -235,7 +239,7 @@ MakeEchoSectionReverb(FBPlugGUI* plugGUI, bool global)
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
   auto on = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbOn, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
@@ -258,17 +262,21 @@ MakeEchoSectionReverb(FBPlugGUI* plugGUI, bool global)
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpOn));
   grid->Add(0, 7, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, lpOn));
   auto lpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbLPFreq, 0 } });
-  grid->Add(0, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpFreq));
+  grid->Add(0, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::RotaryVerticalDrag));
   auto lpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbLPRes, 0 } });
-  grid->Add(0, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpRes));
+  grid->Add(0, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpRes, Slider::SliderStyle::RotaryVerticalDrag));
   auto hpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbHPOn, 0 } });
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpOn));
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, hpOn));
   auto hpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbHPFreq, 0 } });
-  grid->Add(1, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpFreq));
+  grid->Add(1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, Slider::SliderStyle::RotaryVerticalDrag));
   auto hpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbHPRes, 0 } });
-  grid->Add(1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 10 } });
+  grid->Add(1, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
+  grid->Add(1, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ { 0, 0 }, { 2, 12 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
