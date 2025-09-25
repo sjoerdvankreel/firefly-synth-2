@@ -15,7 +15,7 @@ TODOLIST for alpha-17
 [x] flip filter/lrx in the popup taps
 [x] global->voice matrix was slow
 [x] lpf/hpf on/off for all echo filters => breaking + connect the dsp
-[ ] switch echo gui position
+[x] switch echo gui position
 [ ] osci mod labels broken
 [ ] decent defaults
 [ ] global unison

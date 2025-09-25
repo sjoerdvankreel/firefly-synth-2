@@ -205,9 +205,9 @@ FFPlugGUI::SetupGUI()
   _modules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 1 } });
   _modules->Add(0, 0, _topModules);
   _modules->Add(1, 0, FFMakeMixGUI(this));
-  _modules->Add(2, 0, FFMakeEchoGUI(this));
-  _modules->Add(3, 0, FFMakeOsciGUI(this));
-  _modules->Add(4, 0, FFMakeEffectGUI(this));
+  _modules->Add(2, 0, FFMakeOsciGUI(this));
+  _modules->Add(3, 0, FFMakeEffectGUI(this));
+  _modules->Add(4, 0, FFMakeEchoGUI(this));
   _modules->Add(5, 0, FFMakeLFOGUI(this));
   _modules->Add(6, 0, FFMakeEnvGUI(this));
 
