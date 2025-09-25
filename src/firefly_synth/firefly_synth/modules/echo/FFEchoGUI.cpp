@@ -110,7 +110,7 @@ MakeEchoSectionMain(
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 1, 0, 1, 0 });
   auto vTargetOrGTarget = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, vTargetOrGTarget));
   auto targetBox = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, vTargetOrGTarget);
@@ -192,7 +192,7 @@ MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 });
   auto on = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackOn, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
@@ -288,7 +288,7 @@ MakeGEchoTab(FBPlugGUI* plugGUI, bool global)
   FBParamComboBox* echoTargetBox = {};
   FBParamToggleButton* tapsOnToggle = {};
   FBAutoSizeButton* showTapsEditorButton = {};
-  std::vector<int> columnSizes = { 1, 0, 0, 0 };
+  std::vector<int> columnSizes = { 7, 0, 6, 0 };
 
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
   grid->Add(0, 0, MakeEchoSectionMain(plugGUI, global, &echoTargetBox));
