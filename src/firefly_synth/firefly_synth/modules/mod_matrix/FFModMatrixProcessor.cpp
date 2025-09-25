@@ -22,10 +22,10 @@ GetSourceCVBuffer(FBModuleProcState& state, FFModMatrixSource const& source, int
   int os = source.indices.cvOutput.slot;
   int oi = source.indices.cvOutput.index;
   auto const& sourceCvOutput = state.topo->static_->modules[mi].cvOutputs[oi];
-  if (state.topo->static_->modules[mi].voice)
-    return sourceCvOutput.voiceAddr(ms, os, voice, procState);
-  else
+  if (source.isGlobal)
     return sourceCvOutput.globalAddr(ms, os, procState);
+  else
+    return sourceCvOutput.voiceAddr(ms, os, voice, procState);
 }
 
 template <bool Global>
@@ -167,8 +167,57 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
 
 template <bool Global>
 void
-FFModMatrixProcessor<Global>::ApplyModulation(
+FFModMatrixProcessor<Global>::ModSourceCleared(
   FBModuleProcState& state, FBTopoIndices const& currentModule)
+{
+  // perf
+  if (_activeSlotCount == 0)
+    return;
+  _modSourceIsReady[currentModule.index][currentModule.slot] = 1;
+  UpdateCandidateSlots(state);
+}
+
+template <bool Global>
+void 
+FFModMatrixProcessor<Global>::UpdateCandidateSlots(FBModuleProcState& state)
+{
+  // static_cast for perf
+  auto const& ffTopo = static_cast<FFStaticTopo const&>(*state.topo->static_);
+  auto const& sources = Global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
+  auto const& targets = Global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
+
+  // need all slots with same target ready before we begin processing because stacking modulators
+  // dont you just love the bookkeeping?
+  for (int i = 0; i < _activeSlotCount; i++)
+  {
+    _ownModSourceIsReadyForSlot[i] = _opType[i] != FFModulationOpType::Off;
+    _allModSourcesAreReadyForSlot[i] = _opType[i] != FFModulationOpType::Off;
+    if (_ownModSourceIsReadyForSlot[i])
+    {
+      auto const& thisTarget = targets[_target[i]];
+      auto const& thisSource = sources[_source[i]];
+      _ownModSourceIsReadyForSlot[i] &= thisTarget.module.index != -1;
+      _ownModSourceIsReadyForSlot[i] &= thisSource.indices.module.index != -1;
+      if (thisSource.indices.module.index != -1)
+        _ownModSourceIsReadyForSlot[i] &= _modSourceIsReady[thisSource.indices.module.index][thisSource.indices.module.slot] != 0;
+      _allModSourcesAreReadyForSlot[i] &= _ownModSourceIsReadyForSlot[i];
+      if (_allModSourcesAreReadyForSlot[i])
+        for (int j = 0; j < _activeSlotCount; j++)
+          if (_opType[j] != FFModulationOpType::Off)
+          {
+            auto const& thatSource = sources[_source[j]];
+            auto const& thatTarget = targets[_target[j]];
+            if (thatSource.indices.module.index != -1 && thatTarget.module == thisTarget.module)
+              _allModSourcesAreReadyForSlot[i] &= _modSourceIsReady[thatSource.indices.module.index][thatSource.indices.module.slot] != 0;
+          }
+    }
+  }
+}
+
+template <bool Global>
+void
+FFModMatrixProcessor<Global>::ApplyModulation(
+  FBModuleProcState& state)
 {
   // perf
   if (_activeSlotCount == 0)
@@ -211,35 +260,6 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       [exchangeToGUI, &state]() { return &exchangeToGUI->global.gMatrix[state.moduleSlot]; },
       [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vMatrix[state.moduleSlot]; });
     exchangeDSP.boolIsActive = 1;
-  }
-
-  _modSourceIsReady[currentModule.index][currentModule.slot] = 1;
-
-  // need all slots with same target ready before we begin processing because stacking modulators
-  // dont you just love the bookkeeping?
-  for (int i = 0; i < _activeSlotCount; i++)
-  {
-    _ownModSourceIsReadyForSlot[i] = _opType[i] != FFModulationOpType::Off;
-    _allModSourcesAreReadyForSlot[i] = _opType[i] != FFModulationOpType::Off;
-    if (_ownModSourceIsReadyForSlot[i])
-    {
-      auto const& thisTarget = targets[_target[i]];
-      auto const& thisSource = sources[_source[i]];
-      _ownModSourceIsReadyForSlot[i] &= thisTarget.module.index != -1;
-      _ownModSourceIsReadyForSlot[i] &= thisSource.indices.module.index != -1;
-      if (thisSource.indices.module.index != -1)
-        _ownModSourceIsReadyForSlot[i] &= _modSourceIsReady[thisSource.indices.module.index][thisSource.indices.module.slot] != 0;
-      _allModSourcesAreReadyForSlot[i] &= _ownModSourceIsReadyForSlot[i];
-      if (_allModSourcesAreReadyForSlot[i])
-        for (int j = 0; j < _activeSlotCount; j++)
-          if (_opType[j] != FFModulationOpType::Off)
-          {
-            auto const& thatSource = sources[_source[j]];
-            auto const& thatTarget = targets[_target[j]];
-            if (thatSource.indices.module.index != -1 && thatTarget.module == thisTarget.module)
-              _allModSourcesAreReadyForSlot[i] &= _modSourceIsReady[thatSource.indices.module.index][thatSource.indices.module.slot] != 0;
-          }
-    }
   }
 
   for (int i = 0; i < _activeSlotCount; i++)

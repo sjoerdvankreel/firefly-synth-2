@@ -39,6 +39,10 @@ class FFModMatrixProcessor final
   std::array<bool, MaxSlotCount> _ownModSourceIsReadyForSlot = {};
   std::array<bool, MaxSlotCount> _allModSourcesAreReadyForSlot = {};
 
+  // Whenever one or more sources clear, re-evaluate all targets
+  // which have a source that depends on those.
+  void UpdateCandidateSlots(FBModuleProcState& state);
+
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixProcessor);
 
@@ -47,5 +51,9 @@ public:
 
   void InitBuffers(FBRuntimeTopo const* topo);
   void BeginVoiceOrBlock(FBModuleProcState& state);
-  void ApplyModulation(FBModuleProcState& state, FBTopoIndices const& currentModule);
+
+  // perf opt: by having separate cleared/apply functions,
+  // we can do "all global mod sources cleared" at once for voice matrix
+  void ApplyModulation(FBModuleProcState& state);
+  void ModSourceCleared(FBModuleProcState& state, FBTopoIndices const& currentModule);
 };

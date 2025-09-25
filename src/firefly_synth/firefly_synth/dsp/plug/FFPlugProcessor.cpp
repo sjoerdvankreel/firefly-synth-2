@@ -138,13 +138,15 @@ FFPlugProcessor::ApplyGlobalModulation(
 {
   state.moduleSlot = 0;
   auto& globalDSP = _procState->dsp.global;
-  globalDSP.gMatrix.processor->ApplyModulation(state, moduleIndices);
+  globalDSP.gMatrix.processor->ModSourceCleared(state, moduleIndices);
+  globalDSP.gMatrix.processor->ApplyModulation(state);
 
   // We can get away with this because FBHostProcessor does LeaseVoices() first.
   for (int v: input.voiceManager->ActiveVoices())
   {
     state.voice = &state.input->voiceManager->Voices()[v];
-    _procState->dsp.voice[v].vMatrix.processor->ApplyModulation(state, moduleIndices);
+    _procState->dsp.voice[v].vMatrix.processor->ModSourceCleared(state, moduleIndices);
+    _procState->dsp.voice[v].vMatrix.processor->ApplyModulation(state);
   }
 }
 

@@ -88,7 +88,8 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   if (_firstRoundThisVoice)
     procState->dsp.voice[voice].vNote.processor->BeginVoice(state, 
       _onNoteRandomUni, _onNoteRandomNorm, _onNoteGroupRandomUni, _onNoteGroupRandomNorm);
-  procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VNote, 0 });
+  procState->dsp.voice[voice].vMatrix.processor->ModSourceCleared(state, { (int)FFModuleType::VNote, 0 });
+  procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state);
 
   // This needs to be before init of the voice-amp, because of the porta section attack.
   if (_firstRoundThisVoice)
@@ -117,7 +118,8 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   int ampEnvProcessed = voiceDSP.env[FFAmpEnvSlot].processor->Process(state, nullptr, false, releaseAt);
   bool voiceFinished = ampEnvProcessed != FBFixedBlockSamples;
   state.moduleSlot = 0;
-  procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, FFAmpEnvSlot });
+  procState->dsp.voice[voice].vMatrix.processor->ModSourceCleared(state, { (int)FFModuleType::Env, FFAmpEnvSlot });
+  procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state);
 
   // Per-voice amp signal modulated by amp envelope.
   // User selects where to apply it.
@@ -136,14 +138,16 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
       voiceDSP.env[i + FFEnvSlotOffset].processor->BeginVoice(state, nullptr, false);
     voiceDSP.env[i + FFEnvSlotOffset].processor->Process(state, nullptr, false, releaseAt);
     state.moduleSlot = 0;
-    procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, i + FFEnvSlotOffset });
+    procState->dsp.voice[voice].vMatrix.processor->ModSourceCleared(state, { (int)FFModuleType::Env, i + FFEnvSlotOffset });
+    procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state);
 
     state.moduleSlot = i;
     if(_firstRoundThisVoice)
       voiceDSP.vLFO[i].processor->BeginVoiceOrBlock<false>(state, nullptr, false, -1, -1);
     voiceDSP.vLFO[i].processor->Process<false>(state);
     state.moduleSlot = 0;
-    procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VLFO, i });
+    procState->dsp.voice[voice].vMatrix.processor->ModSourceCleared(state, { (int)FFModuleType::VLFO, i });
+    procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state);
   }
 
   state.moduleSlot = 0;

@@ -53,7 +53,7 @@ std::vector<FFModMatrixSource>
 FFModMatrixMakeSources(bool global, FBStaticTopo const* topo)
 {
   std::vector<FFModMatrixSource> result = {};
-  result.push_back({ false, { { -1, -1 }, { -1, -1 } } });
+  result.push_back({ true, false, { { -1, -1 }, { -1, -1 } } });
   for (int m = 0; m < topo->modules.size(); m++)
   {
     auto const& module = topo->modules[m];
@@ -63,7 +63,7 @@ FFModMatrixMakeSources(bool global, FBStaticTopo const* topo)
         {
           auto const& cvOutput = module.cvOutputs[o];
           for (int os = 0; os < cvOutput.slotCount; os++)
-            result.push_back({ false, { { m, ms }, { o, os } } });
+            result.push_back({ !module.voice, false, { { m, ms }, { o, os } } });
         }
   }
   if (!global)
@@ -77,7 +77,7 @@ FFModMatrixMakeSources(bool global, FBStaticTopo const* topo)
           {
             auto const& cvOutput = module.cvOutputs[o];
             for (int os = 0; os < cvOutput.slotCount; os++)
-              result.push_back({ true, { { m, ms }, { o, os } } });
+              result.push_back({ true, true, { { m, ms }, { o, os } } });
           }
     }
   }

@@ -4,6 +4,8 @@
 
 struct FFModMatrixSource
 {
+  // mind order
+  bool isGlobal = {};
   bool onNote = {};
   FBCVOutputTopoIndices indices = {};
 };
