@@ -178,6 +178,25 @@ FFModMatrixProcessor<Global>::ModSourceCleared(
 }
 
 template <bool Global>
+void
+FFModMatrixProcessor<Global>::AllGlobalModSourcesCleared(
+  FBModuleProcState& state)
+{
+  FB_ASSERT(!Global);
+
+  // perf
+  if (_activeSlotCount == 0)
+    return;
+
+  auto const& ffTopo = static_cast<FFStaticTopo const&>(*state.topo->static_);
+  auto const& sources = ffTopo.vMatrixSources;
+  for (int i = 0; i < sources.size(); i++)
+    if (sources[i].isGlobal && sources[i].indices.module.index != -1)
+      _modSourceIsReady[sources[i].indices.module.index][sources[i].indices.module.slot] = 1;
+  UpdateCandidateSlots(state);
+}
+
+template <bool Global>
 void 
 FFModMatrixProcessor<Global>::UpdateCandidateSlots(FBModuleProcState& state)
 {

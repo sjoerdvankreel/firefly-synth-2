@@ -132,22 +132,16 @@ FFPlugProcessor::AllocOnDemandBuffers(
   }
 }
 
+// Applies global to global mod.
+// For global to voice mod, see AllGlobalModSourcesCleared.
 void
 FFPlugProcessor::ApplyGlobalModulation(
-  FBPlugInputBlock const& input, FBModuleProcState& state, FBTopoIndices moduleIndices)
+  FBModuleProcState& state, FBTopoIndices moduleIndices)
 {
   state.moduleSlot = 0;
   auto& globalDSP = _procState->dsp.global;
   globalDSP.gMatrix.processor->ModSourceCleared(state, moduleIndices);
   globalDSP.gMatrix.processor->ApplyModulation(state);
-
-  // We can get away with this because FBHostProcessor does LeaseVoices() first.
-  for (int v: input.voiceManager->ActiveVoices())
-  {
-    state.voice = &state.input->voiceManager->Voices()[v];
-    _procState->dsp.voice[v].vMatrix.processor->ModSourceCleared(state, moduleIndices);
-    _procState->dsp.voice[v].vMatrix.processor->ApplyModulation(state);
-  }
 }
 
 void 
@@ -171,18 +165,28 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   globalDSP.gMatrix.processor->BeginVoiceOrBlock(state);
   globalDSP.gMatrix.processor->BeginModulationBlock();
   globalDSP.midi.processor->Process(state);
-  ApplyGlobalModulation(input, state, { (int)FFModuleType::MIDI, 0 });
+  ApplyGlobalModulation(state, { (int)FFModuleType::MIDI, 0 });
   globalDSP.gNote.processor->Process(state);
-  ApplyGlobalModulation(input, state, { (int)FFModuleType::GNote, 0 });
+  ApplyGlobalModulation(state, { (int)FFModuleType::GNote, 0 });
   globalDSP.master.processor->Process(state);
-  ApplyGlobalModulation(input, state, { (int)FFModuleType::Master, 0 });
+  ApplyGlobalModulation(state, { (int)FFModuleType::Master, 0 });
   for (int i = 0; i < FFLFOCount; i++)
   {
     state.moduleSlot = i;
     globalDSP.gLFO[i].processor->BeginVoiceOrBlock<true>(state, nullptr, false, -1, -1);
     globalDSP.gLFO[i].processor->Process<true>(state);
-    ApplyGlobalModulation(input, state, { (int)FFModuleType::GLFO, i });
+    ApplyGlobalModulation(state, { (int)FFModuleType::GLFO, i });
   }
+
+  // Mark all global mod sources as done at once for each voice, saves some cycles.
+  // We can get away with this because FBHostProcessor does LeaseVoices() first.
+  for (int v : input.voiceManager->ActiveVoices())
+  {
+    state.voice = &state.input->voiceManager->Voices()[v];
+    _procState->dsp.voice[v].vMatrix.processor->AllGlobalModSourcesCleared(state);
+    _procState->dsp.voice[v].vMatrix.processor->ApplyModulation(state);
+  }
+
   globalDSP.globalUni.processor->BeginBlock(state);
 }
 

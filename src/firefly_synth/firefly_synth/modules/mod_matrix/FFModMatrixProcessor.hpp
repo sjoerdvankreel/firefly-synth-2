@@ -55,5 +55,6 @@ public:
   // perf opt: by having separate cleared/apply functions,
   // we can do "all global mod sources cleared" at once for voice matrix
   void ApplyModulation(FBModuleProcState& state);
+  void AllGlobalModSourcesCleared(FBModuleProcState& state);
   void ModSourceCleared(FBModuleProcState& state, FBTopoIndices const& currentModule);
 };
