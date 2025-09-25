@@ -17,12 +17,10 @@ TODOLIST for alpha-17
 [x] lpf/hpf on/off for all echo filters => breaking + connect the dsp
 [ ] switch echo gui position
 [ ] osci mod labels broken
-[ ] vectorize the echo where possible
 [ ] decent defaults
 [ ] global unison
 [ ] basic mode
 [ ] clap polymod + release as one
-[ ] profile it
 [ ] profile the vecho
 
 TODOLIST for alpha-17
