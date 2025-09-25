@@ -59,13 +59,19 @@ class FFEchoProcessor final
   bool _on = {};
   bool _sync = {};
   bool _tapsOn = {};
-  bool _feedbackOn = {};
   bool _reverbOn = {};
+  bool _reverbLPOn = {};
+  bool _reverbHPOn = {};
+  bool _feedbackOn = {};
+  bool _feedbackLPOn = {};
+  bool _feedbackHPOn = {};
   FFEchoOrder _order = {};
   int _voiceFadeSamples = {};
   int _voiceExtendSamples = {};
   float _feedbackDelayBarsSamples = {};
   std::array<bool, FFEchoTapCount> _tapOn = {};
+  std::array<bool, FFEchoTapCount> _tapLPOn = {};
+  std::array<bool, FFEchoTapCount> _tapHPOn = {};
   std::array<float, FFEchoTapCount> _tapDelayBarsSamples = {};
 
   FFEchoVoiceStartParamState<float> _voiceStartSnapshotNorm = {};
