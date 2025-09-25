@@ -24,12 +24,12 @@ FFOsciModFormatSlotVertical(int slot)
 {
   switch (slot)
   {
-  case 0: return "1\n\U000021932";
-  case 1: return "1\n\U000021933";
-  case 2: return "2\n\U000021933";
-  case 3: return "1\n\U000021934";
-  case 4: return "2\n\U000021934";
-  case 5: return "3\n\U000021934";
+  case 0: return "1\n\U00002193\n2";
+  case 1: return "1\n\U00002193\n3";
+  case 2: return "2\n\U00002193\n3";
+  case 3: return "1\n\U00002193\n4";
+  case 4: return "2\n\U00002193\n4";
+  case 5: return "3\n\U00002193\n4";
   default: FB_ASSERT(false); return "";
   }
 }
