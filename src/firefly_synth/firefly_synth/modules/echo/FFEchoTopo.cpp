@@ -28,7 +28,6 @@ FFMakeEchoTopo(bool global)
   result->graphRenderer = global ? FFEchoRenderGraph<true>: FFEchoRenderGraph<false>;
   result->id = prefix + "{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}";
   result->params.resize((int)FFEchoParam::Count);
-  result->guiParams.resize((int)FFEchoGUIParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.vEcho; });
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gEcho; });
   auto selectGuiVoiceModule = [](auto& state) { return &state.vEcho; };
@@ -299,18 +298,6 @@ FFMakeEchoTopo(bool global)
   tapsOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapsOn);
   tapsOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapsOn);
   tapsOn.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget }, [](auto const& vs) { return vs[0] != 0; });
-
-  auto& guiTapSelect = result->guiParams[(int)FFEchoGUIParam::TapSelect];
-  guiTapSelect.defaultText = "1";
-  guiTapSelect.name = "Edit";
-  guiTapSelect.id = prefix + "{FB146F89-2B8D-448F-8B38-EA213B4FC84D}";
-  guiTapSelect.slotCount = 1;
-  guiTapSelect.type = FBParamType::Discrete;
-  guiTapSelect.Discrete().valueOffset = 1;
-  guiTapSelect.Discrete().valueCount = FFEchoTapCount;
-  auto selectGuiTapSelect = [](auto& module) { return &module.tapSelect; };
-  guiTapSelect.scalarAddr = FFSelectDualGUIParamAddr(global, selectGuiGlobalModule, selectGuiVoiceModule, selectGuiTapSelect);
-  guiTapSelect.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapOn = result->params[(int)FFEchoParam::TapOn];
   tapOn.mode = FBParamMode::Block;

@@ -8,8 +8,6 @@ inline int constexpr FFEchoTapCount = 8;
 inline int constexpr FFEchoMaxSeconds = 10;
 std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
 
-enum class FFEchoGUIParam { 
-  TapSelect, Count };
 enum class FFGEchoTarget {
   Off, MixIn, MixOut, VoiceMix,
   FX1In, FX1Out, FX2In, FX2Out,

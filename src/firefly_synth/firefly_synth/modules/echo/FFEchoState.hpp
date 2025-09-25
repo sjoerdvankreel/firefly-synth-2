@@ -16,15 +16,6 @@ struct FBStaticModule;
 template <bool Global>
 struct EchoGraphRenderData;
 
-class FFEchoGUIState final
-{
-  friend struct FFGEchoState;
-  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
-  std::array<double, 1> tapSelect = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoGUIState);
-};
-
 template <bool Global>
 class FFEchoDSPState final
 {

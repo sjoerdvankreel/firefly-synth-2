@@ -34,8 +34,6 @@ class MTSClient;
 
 struct FFGUIState final
 {
-  std::array<FFEchoGUIState, 1> vEcho = {};
-  std::array<FFEchoGUIState, 1> gEcho = {};
   std::array<FFGUISettingsGUIState, 1> guiSettings = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGUIState);
 };

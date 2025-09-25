@@ -24,6 +24,7 @@ TODOLIST for alpha-17
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
+[ ] pop-up editor with the current stuff
 
 TODOLIST for alpha-18
 [ ] make a dedicated tuning section with some options
