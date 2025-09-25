@@ -13,8 +13,8 @@ TODOLIST for alpha-17
 [x] the vecho buffers are not reset? -- oh its the filters, check global too? also check all fxs
 [x] do IN/OUT VAMP
 [x] flip filter/lrx in the popup taps
-[ ] global->voice matrix was slow
-[ ] lpf/hpf on/off for all echo filters => breaking + connect the dsp
+[x] global->voice matrix was slow
+[x] lpf/hpf on/off for all echo filters => breaking + connect the dsp
 [ ] switch echo gui position
 [ ] osci mod labels broken
 [ ] vectorize the echo where possible
