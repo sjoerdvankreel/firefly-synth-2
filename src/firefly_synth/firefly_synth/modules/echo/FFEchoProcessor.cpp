@@ -475,13 +475,17 @@ FFEchoProcessor<Global>::ProcessFeedback(
         hpFreqPlain *= _graphStVarFilterFreqMultiplier;
       }
 
-      _feedbackDelayState.lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0);
-      _feedbackDelayState.hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0);
+      if(_feedbackLPOn)
+        _feedbackDelayState.lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0);
+      if(_feedbackHPOn)
+        _feedbackDelayState.hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0);
       for (int c = 0; c < 2; c++)
       {
         double out = (1.0f - xOverPlain) * outLR[c] + xOverPlain * outLR[c == 0 ? 1 : 0];
-        out = _feedbackDelayState.lpFilter.Next(c, out);
-        out = _feedbackDelayState.hpFilter.Next(c, out);
+        if(_feedbackLPOn)
+          out = _feedbackDelayState.lpFilter.Next(c, out);
+        if(_feedbackHPOn)
+          out = _feedbackDelayState.hpFilter.Next(c, out);
 
         float feedbackVal = output[c].Get(s) + amountPlain * 0.99f * (float)out;
         // because resonant filter inside feedback path
@@ -600,13 +604,17 @@ FFEchoProcessor<Global>::ProcessTaps(
             tapHPFreqPlain *= _graphStVarFilterFreqMultiplier;
           }
 
-          _tapDelayStates[t].lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, tapLPFreqPlain, tapLPResPlain, 0.0);
-          _tapDelayStates[t].hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, tapHPFreqPlain, tapHPResPlain, 0.0);
+          if(_tapLPOn[t])
+            _tapDelayStates[t].lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, tapLPFreqPlain, tapLPResPlain, 0.0);
+          if(_tapHPOn[t])
+            _tapDelayStates[t].hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, tapHPFreqPlain, tapHPResPlain, 0.0);
           for (int c = 0; c < 2; c++)
           {
             double thisTapOut = (1.0f - tapXOverPlain) * thisTapOutLR[c] + tapXOverPlain * thisTapOutLR[c == 0 ? 1 : 0];
-            thisTapOut = _tapDelayStates[t].lpFilter.Next(c, thisTapOut);
-            thisTapOut = _tapDelayStates[t].hpFilter.Next(c, thisTapOut);
+            if(_tapLPOn[t])
+              thisTapOut = _tapDelayStates[t].lpFilter.Next(c, thisTapOut);
+            if(_tapHPOn[t])
+              thisTapOut = _tapDelayStates[t].hpFilter.Next(c, thisTapOut);
             thisTapOut *= tapLevelPlain;
             thisTapOut *= FBStereoBalance(c, tapBalPlain);
             thisTapsOut[c] += (float)thisTapOut;
@@ -743,12 +751,18 @@ FFEchoProcessor<Global>::ProcessReverb(
       double outL = reverbOut[0] * wet1 + reverbOut[1] * wet2;
       double outR = reverbOut[1] * wet1 + reverbOut[0] * wet2;
 
-      _reverbState.lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0);
-      _reverbState.hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0);
-      outL = _reverbState.lpFilter.Next(0, outL);
-      outL = _reverbState.hpFilter.Next(0, outL);
-      outR = _reverbState.lpFilter.Next(1, outR);
-      outR = _reverbState.hpFilter.Next(1, outR);
+      if (_reverbLPOn)
+      {
+        _reverbState.lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0);
+        outL = _reverbState.lpFilter.Next(0, outL);
+        outR = _reverbState.lpFilter.Next(1, outR);
+      }
+      if (_reverbHPOn)
+      {
+        _reverbState.hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0);
+        outL = _reverbState.hpFilter.Next(0, outL);
+        outR = _reverbState.hpFilter.Next(1, outR);
+      }
 
       output[0].Set(s, output[0].Get(s) * dry + (float)outL);
       output[1].Set(s, output[1].Get(s) * dry + (float)outR);
