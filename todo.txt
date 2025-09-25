@@ -14,6 +14,7 @@ TODOLIST for alpha-17
 [x] do IN/OUT VAMP
 [x] flip filter/lrx in the popup taps
 [ ] lpf/hpf on/off for all echo filters => breaking + connect the dsp
+[ ] switch echo gui position
 [ ] osci mod labels broken
 [ ] vectorize the echo where possible
 [ ] decent defaults
