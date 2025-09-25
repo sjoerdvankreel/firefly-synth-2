@@ -32,7 +32,7 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
   rowSizes.push_back(1);
   for (int i = 0; i < FFEchoTapCount; i++)
     rowSizes.push_back(1);
-  auto columnSizes = std::vector<int> { { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 } };
+  auto columnSizes = std::vector<int> { { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Tap/Param"));
   grid->MarkSection({ { 0, 0 }, { 1, 1 } });
@@ -72,7 +72,7 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
     auto tapLevel = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLevel, t } });
     grid->Add(1 + t, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLevel, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapDelayTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapDelayTime, t } });
-    grid->Add(1 + t, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapDelayTime, Slider::SliderStyle::LinearHorizontal));
+    grid->Add(1 + t, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapDelayTime, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapDelayBars = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapDelayBars, t } });
     grid->Add(1 + t, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, tapDelayBars));
     auto tapBalance = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapBalance, t } });
@@ -162,7 +162,7 @@ MakeEchoSectionTaps(
   *showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Multi Tap");
   (*showTapsEditor)->onClick = [plugGUI, tapsEditor, global]() { 
     std::string title = std::string(global ? "G" : "V") + "Echo Multi Tap";
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, tapsEditor, 360, 250, [plugGUI, global]() {
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, tapsEditor, 400, 250, [plugGUI, global]() {
       auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
       FBTopoIndices moduleIndices = { (int)moduleType, 0 };
       std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
