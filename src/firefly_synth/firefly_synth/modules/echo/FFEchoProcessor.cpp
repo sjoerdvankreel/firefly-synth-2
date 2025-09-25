@@ -444,7 +444,7 @@ FFEchoProcessor<Global>::ProcessFeedback(
       else
         lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
           FFEchoParam::FeedbackDelayTime, delayTimeNorm.CV().Get(s), sampleRate);
-      float lengthTimeSamplesSmooth = _feedbackDelayState.smoother.Next(lengthTimeSamples);
+      float lengthTimeSamplesSmooth = _feedbackDelayState.smoother.NextScalar(lengthTimeSamples);
 
       float mixPlain = topo.NormalizedToIdentityFast(
         FFEchoParam::FeedbackMix, mixNorm.CV().Get(s));
@@ -546,50 +546,50 @@ FFEchoProcessor<Global>::ProcessTaps(
 
   if (processAudioOrExchangeState)
   {
-    for (int s = 0; s < FBFixedBlockSamples; s++)
+    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
-      float thisTapsOut[2];
-      thisTapsOut[0] = 0.0f;
-      thisTapsOut[1] = 0.0f;
+      FBBatch<float> thisTapsOut[2];
+      thisTapsOut[0] = FBBatch<float>(0.0f);
+      thisTapsOut[1] = FBBatch<float>(0.0f);
 
-      float tapsMixPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::TapsMix, tapsMixNorm.CV().Get(s));
+      FBBatch<float> tapsMixPlain = topo.NormalizedToIdentityFast(
+        FFEchoParam::TapsMix, tapsMixNorm.CV().Load(s));
 
       for (int t = 0; t < FFEchoTapCount; t++)
       {
         if (_tapOn[t])
         {
-          float lengthTimeSamples;
+          FBBatch<float> lengthTimeSamples;
           if (_sync)
-            lengthTimeSamples = _tapDelayBarsSamples[t];
+            lengthTimeSamples = FBBatch<float>(_tapDelayBarsSamples[t]);
           else
             lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
               FFEchoParam::TapDelayTime,
-              FFSelectDualProcAccParamNormalized<Global>(tapDelayTimeNorm[t], voice).CV().Get(s),
+              FFSelectDualProcAccParamNormalized<Global>(tapDelayTimeNorm[t], voice).CV().Load(s),
               sampleRate);
-          float lengthTimeSamplesSmooth = _tapDelayStates[t].smoother.Next(lengthTimeSamples);
+          FBBatch<float> lengthTimeSamplesSmooth = _tapDelayStates[t].smoother.NextBatch(lengthTimeSamples);
 
-          float tapBalPlain = topo.NormalizedToLinearFast(
+          FBBatch<float> tapBalPlain = topo.NormalizedToLinearFast(
             FFEchoParam::TapBalance, 
-            FFSelectDualProcAccParamNormalized<Global>(tapBalNorm[t], voice).CV().Get(s));
-          float tapXOverPlain = topo.NormalizedToIdentityFast(
+            FFSelectDualProcAccParamNormalized<Global>(tapBalNorm[t], voice).CV().Load(s));
+          FBBatch<float> tapXOverPlain = topo.NormalizedToIdentityFast(
             FFEchoParam::TapXOver,
-            FFSelectDualProcAccParamNormalized<Global>(tapXOverNorm[t], voice).CV().Get(s));
-          float tapLevelPlain = topo.NormalizedToIdentityFast(
+            FFSelectDualProcAccParamNormalized<Global>(tapXOverNorm[t], voice).CV().Load(s));
+          FBBatch<float> tapLevelPlain = topo.NormalizedToIdentityFast(
             FFEchoParam::TapLevel,
-            FFSelectDualProcAccParamNormalized<Global>(tapLevelNorm[t], voice).CV().Get(s));
-          float tapLPResPlain = topo.NormalizedToIdentityFast(
+            FFSelectDualProcAccParamNormalized<Global>(tapLevelNorm[t], voice).CV().Load(s));
+          FBBatch<float> tapLPResPlain = topo.NormalizedToIdentityFast(
             FFEchoParam::TapLPRes,
-            FFSelectDualProcAccParamNormalized<Global>(tapLPResNorm[t], voice).CV().Get(s));
-          float tapHPResPlain = topo.NormalizedToIdentityFast(
+            FFSelectDualProcAccParamNormalized<Global>(tapLPResNorm[t], voice).CV().Load(s));
+          FBBatch<float> tapHPResPlain = topo.NormalizedToIdentityFast(
             FFEchoParam::TapHPRes,
-            FFSelectDualProcAccParamNormalized<Global>(tapHPResNorm[t], voice).CV().Get(s));
-          float tapLPFreqPlain = topo.NormalizedToLog2Fast(
+            FFSelectDualProcAccParamNormalized<Global>(tapHPResNorm[t], voice).CV().Load(s));
+          FBBatch<float> tapLPFreqPlain = topo.NormalizedToLog2Fast(
             FFEchoParam::TapLPFreq,
-            FFSelectDualProcAccParamNormalized<Global>(tapLPFreqNorm[t], voice).CV().Get(s));
-          float tapHPFreqPlain = topo.NormalizedToLog2Fast(
+            FFSelectDualProcAccParamNormalized<Global>(tapLPFreqNorm[t], voice).CV().Load(s));
+          FBBatch<float> tapHPFreqPlain = topo.NormalizedToLog2Fast(
             FFEchoParam::TapHPFreq,
-            FFSelectDualProcAccParamNormalized<Global>(tapHPFreqNorm[t], voice).CV().Get(s));
+            FFSelectDualProcAccParamNormalized<Global>(tapHPFreqNorm[t], voice).CV().Load(s));
 
           float thisTapOutLR[2];
           for (int c = 0; c < 2; c++)

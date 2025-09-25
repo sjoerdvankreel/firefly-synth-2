@@ -50,7 +50,7 @@ float
 FFEffectProcessor::NextMIDIKeyUntuned(int sample)
 {
   if constexpr (Global)
-    return _MIDIKeyUntunedSmoother.Next(_MIDIKeyUntuned.Get(sample));
+    return _MIDIKeyUntunedSmoother.NextScalar(_MIDIKeyUntuned.Get(sample));
   else
     return _MIDIKeyUntuned.Get(sample);
 }
