@@ -1,9 +1,7 @@
 #pragma once
 
-#include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/topo/static/FBBarsItem.hpp>
-
 #include <xsimd/xsimd.hpp>
 
 #include <cmath>
@@ -79,12 +77,6 @@ FBTimeToSamples(float time, float sampleRate)
 
 inline float
 FBTimeToFloatSamples(float time, float sampleRate)
-{
-  return time * sampleRate;
-}
-
-inline FBBatch<float>
-FBTimeToFloatSamples(FBBatch<float> time, FBBatch<float> sampleRate)
 {
   return time * sampleRate;
 }

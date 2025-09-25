@@ -239,7 +239,7 @@ FFEnvProcessor::Process(
         _lastOverall *= portaAmpReleaseMultiplier;
       }
 
-      output.Set(s, _smoother.NextScalar(_lastOverall));
+      output.Set(s, _smoother.Next(_lastOverall));
 
       bool isReleaseNow = s == releaseAt;
       s++;
@@ -293,7 +293,7 @@ FFEnvProcessor::Process(
   }
 
   for (; s < FBFixedBlockSamples && _smoothPosition < _smoothSamples; s++, _smoothPosition++, _positionSamples++)
-    output.Set(s, _smoother.NextScalar(_lastOverall));
+    output.Set(s, _smoother.Next(_lastOverall));
 
   int processed = s;
   if (s < FBFixedBlockSamples)
