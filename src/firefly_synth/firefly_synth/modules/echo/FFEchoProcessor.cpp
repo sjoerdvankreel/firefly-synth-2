@@ -456,10 +456,16 @@ FFEchoProcessor<Global>::ProcessFeedback(
         FFEchoParam::FeedbackLPRes, lpResNorm.CV().Get(s));
       float hpResPlain = topo.NormalizedToIdentityFast(
         FFEchoParam::FeedbackHPRes, hpResNorm.CV().Get(s));
-      float lpFreqPlain = topo.NormalizedToLog2Fast(
-        FFEchoParam::FeedbackLPFreq, lpFreqNorm.CV().Get(s));
-      float hpFreqPlain = topo.NormalizedToLog2Fast(
-        FFEchoParam::FeedbackHPFreq, hpFreqNorm.CV().Get(s));
+
+      // expensive
+      float lpFreqPlain = 0.0f;
+      if(_feedbackLPOn)
+        lpFreqPlain = topo.NormalizedToLog2Fast(
+          FFEchoParam::FeedbackLPFreq, lpFreqNorm.CV().Get(s));
+      float hpFreqPlain = 0.0f;
+      if(_feedbackHPOn)
+        hpFreqPlain = topo.NormalizedToLog2Fast(
+          FFEchoParam::FeedbackHPFreq, hpFreqNorm.CV().Get(s));
 
       float outLR[2];
       for (int c = 0; c < 2; c++)
@@ -711,10 +717,16 @@ FFEchoProcessor<Global>::ProcessReverb(
         FFEchoParam::ReverbLPRes, lpResNorm.CV().Get(s));
       float hpResPlain = topo.NormalizedToIdentityFast(
         FFEchoParam::ReverbHPRes, hpResNorm.CV().Get(s));
-      float lpFreqPlain = topo.NormalizedToLog2Fast(
-        FFEchoParam::ReverbLPFreq, lpFreqNorm.CV().Get(s));
-      float hpFreqPlain = topo.NormalizedToLog2Fast(
-        FFEchoParam::ReverbHPFreq, hpFreqNorm.CV().Get(s));
+
+      // expensive
+      float lpFreqPlain = 0.0f;
+      if(_reverbLPOn)
+        lpFreqPlain = topo.NormalizedToLog2Fast(
+          FFEchoParam::ReverbLPFreq, lpFreqNorm.CV().Get(s));
+      float hpFreqPlain = 0.0f;
+      if(_reverbHPOn)
+        topo.NormalizedToLog2Fast(
+          FFEchoParam::ReverbHPFreq, hpFreqNorm.CV().Get(s));
 
       if (_graph)
       {
