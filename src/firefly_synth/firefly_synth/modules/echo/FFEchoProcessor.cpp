@@ -352,7 +352,7 @@ FFEchoProcessor<Global>::Process(
   if constexpr (!Global)
   {
     // Voice extend/fade-out.
-    // Not for per-voice echo we operate AFTER the amp env.
+    // Note for per-voice echo we may operate before or after the amp env.
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       if (_voiceExtensionStage == FFEchoVoiceExtensionStage::NotStarted && s == ampEnvFinishedAt)

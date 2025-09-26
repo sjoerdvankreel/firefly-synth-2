@@ -40,6 +40,8 @@ FFVoiceProcessor::BeginVoice(
   // F.e. lfo output can be targeted to env stage length
   // which is handle in env's beginvoice, not process.
   _firstRoundThisVoice = true;
+  _ampEnvFinishedPrevRound = false;
+  _ampEnvFinishedThisRound = false;
   _onNoteRandomUni = onNoteRandomUni;
   _onNoteRandomNorm = onNoteRandomNorm;
   _onNoteGroupRandomUni = onNoteGroupRandomUni;
@@ -112,11 +114,16 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
     procState->dsp.voice[voice].voiceModule.processor->BeginVoice(state, previousMidiKeyUntuned, anyNoteWasOnAlready);
   }
 
+  // Determine this on block boundaries.
+  // So, in 16-sample block, waste at most 15 samples of osci computation.
+  _ampEnvFinishedThisRound = _ampEnvFinishedPrevRound;
+
   state.moduleSlot = FFAmpEnvSlot;
   if (_firstRoundThisVoice)
     voiceDSP.env[FFAmpEnvSlot].processor->BeginVoice(state, nullptr, false);
   int ampEnvProcessed = voiceDSP.env[FFAmpEnvSlot].processor->Process(state, nullptr, false, releaseAt);
   bool voiceFinished = ampEnvProcessed != FBFixedBlockSamples;
+  _ampEnvFinishedPrevRound |= voiceFinished;
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->ModSourceCleared(state, { (int)FFModuleType::Env, FFAmpEnvSlot });
   procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state);
@@ -156,17 +163,22 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   state.moduleSlot = 0;
   if(_firstRoundThisVoice)
     voiceDSP.osciMod.processor->BeginVoice(state, false);
-  voiceDSP.osciMod.processor->Process(state);
+  if(!_ampEnvFinishedThisRound)
+    voiceDSP.osciMod.processor->Process(state);
 
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
     if(_firstRoundThisVoice)
       voiceDSP.osci[i].processor->BeginVoice(state, false);
-    voiceDSP.osci[i].processor->Process(state, false);
+    
+    if (_ampEnvFinishedThisRound)
+      voiceDSP.osci[i].output.Fill(0.0);
+    else
+      voiceDSP.osci[i].processor->Process(state, false);
 
     if (_ampEnvTarget == FFVMixAmpEnvTarget::OscPreMix)
-      voiceDSP.osci[i].output.Mul(ampPlainModulated);
+      voiceDSP.osci[i].output.Mul(ampPlainModulated);    
     if (_vEchoTarget == FFVEchoTarget::Osc1PreMix && i == 0 ||
       _vEchoTarget == FFVEchoTarget::Osc2PreMix && i == 1 ||
       _vEchoTarget == FFVEchoTarget::Osc3PreMix && i == 2 ||

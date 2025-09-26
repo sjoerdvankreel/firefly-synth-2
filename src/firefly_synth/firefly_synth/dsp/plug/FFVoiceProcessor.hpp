@@ -13,9 +13,25 @@ struct FBPlugInputBlock;
 
 class FFVoiceProcessor final
 {
-  bool _firstRoundThisVoice = true;
   FFVEchoTarget _vEchoTarget = {};
   FFVMixAmpEnvTarget _ampEnvTarget = {};
+
+  // Need this to apply on-note modulation with sample accuracy.
+  bool _firstRoundThisVoice = true;
+
+  // Perf opt: we don't need to keep running the oscis
+  // once the per-voice amplitude envelope is done.
+  // This matters when using per-voice echo, which
+  // extends the lifetime of the voice after VAMP.
+  // The placement of VAMP is user-selectable, but
+  // all of them are AFTER the oscis. So in any case,
+  // once VAMP is done, osci output is zero.
+  // It is tempting to think that after VAMP, we
+  // don't run the LFO's and other ENV's anymore,
+  // but -- not possible, because these are valid
+  // modulation sources for the per-voice echo.
+  bool _ampEnvFinishedThisRound = false;
+  bool _ampEnvFinishedPrevRound = false;
 
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteRandomUni = {};
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteRandomNorm = {};
