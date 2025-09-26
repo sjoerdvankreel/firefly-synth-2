@@ -29,7 +29,7 @@ static std::array<float, FFEchoReverbCombCount> const ReverbCombLength = {
   1116.0f / 44100.0f, 1188.0f / 44100.0f, 1277.0f / 44100.0f, 1356.0f / 44100.0f,
   1422.0f / 44100.0f, 1491.0f / 44100.0f, 1557.0f / 44100.0f, 1617.0f / 44100.0f };
 
-void 
+void
 FFEchoDelayState::Reset()
 {
   lpFilter.Reset();
@@ -114,9 +114,9 @@ FFEchoProcessor<Global>::AllocOnDemandBuffers(
 
   int maxSamples = (int)std::ceil(sampleRate * FFEchoMaxSeconds);
   bool feedbackOn = moduleTopo.NormalizedToBoolFast(FFEchoParam::FeedbackOn, feedbackOnNorm);
-  if(graph || feedbackOn)
+  if (graph || feedbackOn)
     for (int c = 0; c < 2; c++)
-      if(_feedbackDelayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
+      if (_feedbackDelayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
         _feedbackDelayLine[c].Reset(_feedbackDelayLine[c].MaxBufferSize());
 
   bool tapsOn = moduleTopo.NormalizedToBoolFast(FFEchoParam::TapsOn, tapsOnNorm);
@@ -126,7 +126,7 @@ FFEchoProcessor<Global>::AllocOnDemandBuffers(
         _tapsDelayLine[c].Reset(_tapsDelayLine[c].MaxBufferSize());
 
   bool reverbOn = moduleTopo.NormalizedToBoolFast(FFEchoParam::ReverbOn, reverbOnNorm);
-  if(graph || reverbOn)
+  if (graph || reverbOn)
   {
     for (int i = 0; i < FFEchoReverbCombCount; i++)
     {
@@ -148,7 +148,7 @@ FFEchoProcessor<Global>::AllocOnDemandBuffers(
 template <bool Global>
 void
 FFEchoProcessor<Global>::BeginVoiceOrBlock(
-  FBModuleProcState& state, bool graph, 
+  FBModuleProcState& state, bool graph,
   int graphIndex, int graphSampleCount)
 {
   float bpm = state.input->bpm;
@@ -211,7 +211,7 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
   _reverbHPOn = topo.NormalizedToBoolFast(FFEchoParam::ReverbHPOn, reverbHPOnNorm);
   _reverbOn &= !graph || graphIndex == reverbOrder || graphIndex == (int)FFEchoModule::Count;
 
-  if(init)
+  if (init)
     _reverbState.Reset();
 
   _feedbackOn = topo.NormalizedToBoolFast(FFEchoParam::FeedbackOn, feedbackOnNorm);
@@ -241,14 +241,14 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
 
   for (int t = 0; t < FFEchoTapCount; t++)
   {
-    _tapOn[t] = topo.NormalizedToBoolFast(FFEchoParam::TapOn, 
+    _tapOn[t] = topo.NormalizedToBoolFast(FFEchoParam::TapOn,
       FFSelectDualProcBlockParamNormalized<Global>(tapOnNorm[t], voice));
     _tapLPOn[t] = topo.NormalizedToBoolFast(FFEchoParam::TapLPOn,
       FFSelectDualProcBlockParamNormalized<Global>(tapLPOnNorm[t], voice));
     _tapHPOn[t] = topo.NormalizedToBoolFast(FFEchoParam::TapHPOn,
       FFSelectDualProcBlockParamNormalized<Global>(tapHPOnNorm[t], voice));
     _tapDelayBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(
-      FFEchoParam::TapDelayBars, 
+      FFEchoParam::TapDelayBars,
       FFSelectDualProcBlockParamNormalized<Global>(tapDelayBarsNorm[t], voice), sampleRate, bpm);
     _tapDelayStates[t].smoother.SetCoeffs((int)std::ceil(delaySmoothSamples));
 
@@ -340,7 +340,7 @@ FFEchoProcessor<Global>::Process(
 
   for (int m = 0; m < (int)FFEchoModule::Count; m++)
   {
-    if(_tapsOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Taps) == m)
+    if (_tapsOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Taps) == m)
       ProcessTaps(state, true);
     else if (_feedbackOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Feedback) == m)
       ProcessFeedback(state, true);
@@ -373,7 +373,7 @@ FFEchoProcessor<Global>::Process(
         _voiceExtensionStage = FFEchoVoiceExtensionStage::Finished;
         samplesProcessed = 0;
       }
-      if(_voiceExtensionStage == FFEchoVoiceExtensionStage::Finished)
+      if (_voiceExtensionStage == FFEchoVoiceExtensionStage::Finished)
         for (int c = 0; c < 2; c++)
           output[c].Set(s, 0.0f);
     }
@@ -395,7 +395,7 @@ FFEchoProcessor<Global>::Process(
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI] { return &exchangeToGUI->param.global.gEcho[0]; },
     [exchangeToGUI] { return &exchangeToGUI->param.voice.vEcho[0]; });
-  
+
   FFSelectDualExchangeState<Global>(exchangeParams.acc.gain[0], voice) = gainNorm.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.tapsMix[0], voice) = tapsMixNorm.Last();
 
@@ -422,7 +422,7 @@ FFEchoProcessor<Global>::ProcessFeedback(
   auto& dspState = *FFSelectDualState<Global>(
     [procState]() { return &procState->dsp.global.gEcho; },
     [procState, voice]() { return &procState->dsp.voice[voice].vEcho; });
-  auto& output = dspState.output;  
+  auto& output = dspState.output;
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
   auto const& mixNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackMix[0], voice);
@@ -475,16 +475,16 @@ FFEchoProcessor<Global>::ProcessFeedback(
         hpFreqPlain *= _graphStVarFilterFreqMultiplier;
       }
 
-      if(_feedbackLPOn)
+      if (_feedbackLPOn)
         _feedbackDelayState.lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0);
-      if(_feedbackHPOn)
+      if (_feedbackHPOn)
         _feedbackDelayState.hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0);
       for (int c = 0; c < 2; c++)
       {
         double out = (1.0f - xOverPlain) * outLR[c] + xOverPlain * outLR[c == 0 ? 1 : 0];
-        if(_feedbackLPOn)
+        if (_feedbackLPOn)
           out = _feedbackDelayState.lpFilter.Next(c, out);
-        if(_feedbackHPOn)
+        if (_feedbackHPOn)
           out = _feedbackDelayState.hpFilter.Next(c, out);
 
         float feedbackVal = output[c].Get(s) + amountPlain * 0.99f * (float)out;
@@ -519,7 +519,7 @@ FFEchoProcessor<Global>::ProcessFeedback(
 template <bool Global>
 void
 FFEchoProcessor<Global>::ProcessTaps(
-  FBModuleProcState& state, 
+  FBModuleProcState& state,
   bool processAudioOrExchangeState)
 {
   float sampleRate = state.input->sampleRate;
@@ -546,110 +546,88 @@ FFEchoProcessor<Global>::ProcessTaps(
 
   if (processAudioOrExchangeState)
   {
-    for (int blockStart = 0; blockStart < FBFixedBlockSamples; blockStart += FBSIMDFloatCount)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      FBSArray2<float, FBSIMDFloatCount, 2> thisTapsOut = {};
+      float thisTapsOut[2];
+      thisTapsOut[0] = 0.0f;
+      thisTapsOut[1] = 0.0f;
+
+      float tapsMixPlain = topo.NormalizedToIdentityFast(
+        FFEchoParam::TapsMix, tapsMixNorm.CV().Get(s));
+
       for (int t = 0; t < FFEchoTapCount; t++)
       {
         if (_tapOn[t])
         {
-          // vector stuff here is mostly just to get xsimd::pow 
-          // for the NormalizedToLog2Fast for the filter freqs
-          FBBatch<float> lengthTimeSamplesBatch;
+          float lengthTimeSamples;
           if (_sync)
-            lengthTimeSamplesBatch = FBBatch<float>(_tapDelayBarsSamples[t]);
+            lengthTimeSamples = _tapDelayBarsSamples[t];
           else
-            lengthTimeSamplesBatch = topo.NormalizedToLinearTimeFloatSamplesFast(
+            lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
               FFEchoParam::TapDelayTime,
-              FFSelectDualProcAccParamNormalized<Global>(tapDelayTimeNorm[t], voice).CV().Load(blockStart),
+              FFSelectDualProcAccParamNormalized<Global>(tapDelayTimeNorm[t], voice).CV().Get(s),
               sampleRate);
-          FBBatch<float> lengthTimeSamplesSmoothBatch = _tapDelayStates[t].smoother.NextBatch(lengthTimeSamplesBatch);
+          float lengthTimeSamplesSmooth = _tapDelayStates[t].smoother.NextScalar(lengthTimeSamples);
 
-          FBBatch<float> tapBalPlainBatch = topo.NormalizedToLinearFast(
-            FFEchoParam::TapBalance, 
-            FFSelectDualProcAccParamNormalized<Global>(tapBalNorm[t], voice).CV().Load(blockStart));
-          FBBatch<float> tapXOverPlainBatch = topo.NormalizedToIdentityFast(
+          float tapBalPlain = topo.NormalizedToLinearFast(
+            FFEchoParam::TapBalance,
+            FFSelectDualProcAccParamNormalized<Global>(tapBalNorm[t], voice).CV().Get(s));
+          float tapXOverPlain = topo.NormalizedToIdentityFast(
             FFEchoParam::TapXOver,
-            FFSelectDualProcAccParamNormalized<Global>(tapXOverNorm[t], voice).CV().Load(blockStart));
-          FBBatch<float> tapLevelPlainBatch = topo.NormalizedToIdentityFast(
+            FFSelectDualProcAccParamNormalized<Global>(tapXOverNorm[t], voice).CV().Get(s));
+          float tapLevelPlain = topo.NormalizedToIdentityFast(
             FFEchoParam::TapLevel,
-            FFSelectDualProcAccParamNormalized<Global>(tapLevelNorm[t], voice).CV().Load(blockStart));
-          FBBatch<float> tapLPResPlainBatch = topo.NormalizedToIdentityFast(
+            FFSelectDualProcAccParamNormalized<Global>(tapLevelNorm[t], voice).CV().Get(s));
+          float tapLPResPlain = topo.NormalizedToIdentityFast(
             FFEchoParam::TapLPRes,
-            FFSelectDualProcAccParamNormalized<Global>(tapLPResNorm[t], voice).CV().Load(blockStart));
-          FBBatch<float> tapHPResPlainBatch = topo.NormalizedToIdentityFast(
+            FFSelectDualProcAccParamNormalized<Global>(tapLPResNorm[t], voice).CV().Get(s));
+          float tapHPResPlain = topo.NormalizedToIdentityFast(
             FFEchoParam::TapHPRes,
-            FFSelectDualProcAccParamNormalized<Global>(tapHPResNorm[t], voice).CV().Load(blockStart));
-          FBBatch<float> tapLPFreqPlainBatch = topo.NormalizedToLog2Fast(
+            FFSelectDualProcAccParamNormalized<Global>(tapHPResNorm[t], voice).CV().Get(s));
+          float tapLPFreqPlain = topo.NormalizedToLog2Fast(
             FFEchoParam::TapLPFreq,
-            FFSelectDualProcAccParamNormalized<Global>(tapLPFreqNorm[t], voice).CV().Load(blockStart));
-          FBBatch<float> tapHPFreqPlainBatch = topo.NormalizedToLog2Fast(
+            FFSelectDualProcAccParamNormalized<Global>(tapLPFreqNorm[t], voice).CV().Get(s));
+          float tapHPFreqPlain = topo.NormalizedToLog2Fast(
             FFEchoParam::TapHPFreq,
-            FFSelectDualProcAccParamNormalized<Global>(tapHPFreqNorm[t], voice).CV().Load(blockStart));
+            FFSelectDualProcAccParamNormalized<Global>(tapHPFreqNorm[t], voice).CV().Get(s));
+
+          float thisTapOutLR[2];
+          for (int c = 0; c < 2; c++)
+          {
+            _tapsDelayLine[c].Delay(t, lengthTimeSamplesSmooth);
+            thisTapOutLR[c] = _tapsDelayLine[c].GetLagrangeInterpolate(t);
+          }
 
           if (_graph)
           {
-            tapLPFreqPlainBatch *= _graphStVarFilterFreqMultiplier;
-            tapHPFreqPlainBatch *= _graphStVarFilterFreqMultiplier;
+            tapLPFreqPlain *= _graphStVarFilterFreqMultiplier;
+            tapHPFreqPlain *= _graphStVarFilterFreqMultiplier;
           }
 
-          FBSArray<float, FBSIMDFloatCount> tapBalPlainArr;
-          FBSArray<float, FBSIMDFloatCount> tapXOverPlainArr;
-          FBSArray<float, FBSIMDFloatCount> tapLevelPlainArr;
-          FBSArray<float, FBSIMDFloatCount> tapLPResPlainArr;
-          FBSArray<float, FBSIMDFloatCount> tapHPResPlainArr;
-          FBSArray<float, FBSIMDFloatCount> tapLPFreqPlainArr;
-          FBSArray<float, FBSIMDFloatCount> tapHPFreqPlainArr;
-          FBSArray<float, FBSIMDFloatCount> lengthTimeSamplesSmoothArr;
-
-          tapBalPlainArr.Store(0, tapBalPlainBatch);
-          tapXOverPlainArr.Store(0, tapXOverPlainBatch);
-          tapLevelPlainArr.Store(0, tapLevelPlainBatch);
-          tapLPResPlainArr.Store(0, tapLPResPlainBatch);
-          tapHPResPlainArr.Store(0, tapHPResPlainBatch);
-          tapLPFreqPlainArr.Store(0, tapLPFreqPlainBatch);
-          tapHPFreqPlainArr.Store(0, tapHPFreqPlainBatch);
-          lengthTimeSamplesSmoothArr.Store(0, lengthTimeSamplesSmoothBatch);
-
-          // from here on its all scalar again, because filters and delay lines
-          for (int s0 = 0; s0 < FBSIMDFloatCount; s0++)
+          if (_tapLPOn[t])
+            _tapDelayStates[t].lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, tapLPFreqPlain, tapLPResPlain, 0.0);
+          if (_tapHPOn[t])
+            _tapDelayStates[t].hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, tapHPFreqPlain, tapHPResPlain, 0.0);
+          for (int c = 0; c < 2; c++)
           {
-            float thisTapOutLR[2];
-            for (int c = 0; c < 2; c++)
-            {
-              _tapsDelayLine[c].Delay(t, lengthTimeSamplesSmoothArr.Get(s0));
-              thisTapOutLR[c] = _tapsDelayLine[c].GetLagrangeInterpolate(t);
-            }
-
+            double thisTapOut = (1.0f - tapXOverPlain) * thisTapOutLR[c] + tapXOverPlain * thisTapOutLR[c == 0 ? 1 : 0];
             if (_tapLPOn[t])
-              _tapDelayStates[t].lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, tapLPFreqPlainArr.Get(s0), tapLPResPlainArr.Get(s0), 0.0);
+              thisTapOut = _tapDelayStates[t].lpFilter.Next(c, thisTapOut);
             if (_tapHPOn[t])
-              _tapDelayStates[t].hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, tapHPFreqPlainArr.Get(s0), tapHPResPlainArr.Get(s0), 0.0);
-            for (int c = 0; c < 2; c++)
-            {
-              double thisTapOut = (1.0f - tapXOverPlainArr.Get(s0)) * thisTapOutLR[c] + tapXOverPlainArr.Get(s0) * thisTapOutLR[c == 0 ? 1 : 0];
-              if (_tapLPOn[t])
-                thisTapOut = _tapDelayStates[t].lpFilter.Next(c, thisTapOut);
-              if (_tapHPOn[t])
-                thisTapOut = _tapDelayStates[t].hpFilter.Next(c, thisTapOut);
-              thisTapOut *= tapLevelPlainArr.Get(s0);
-              thisTapOut *= FBStereoBalance(c, tapBalPlainArr.Get(s0));
-              thisTapsOut[c].Set(s0, thisTapsOut[c].Get(s0) + (float)thisTapOut);
-            }
+              thisTapOut = _tapDelayStates[t].hpFilter.Next(c, thisTapOut);
+            thisTapOut *= tapLevelPlain;
+            thisTapOut *= FBStereoBalance(c, tapBalPlain);
+            thisTapsOut[c] += (float)thisTapOut;
           }
         }
       }
 
-      FBSArray<float, FBSIMDFloatCount> tapsMixPlainArr;
-      FBBatch<float> tapsMixPlainBatch = topo.NormalizedToIdentityFast(FFEchoParam::TapsMix, tapsMixNorm.CV().Load(blockStart));
-      tapsMixPlainArr.Store(0, tapsMixPlainBatch);
-      for(int s0 = 0; s0 < FBSIMDFloatCount; s0++)
-        for (int c = 0; c < 2; c++)
-        {
-          _tapsDelayLine[c].Pop();
-          _tapsDelayLine[c].Push(output[c].Get(blockStart + s0));
-          output[c].Set(blockStart + s0, (1.0f - tapsMixPlainArr.Get(s0)) * output[c].Get(blockStart + s0) + tapsMixPlainArr.Get(s0) * thisTapsOut[c].Get(s0));
-        }
+      for (int c = 0; c < 2; c++)
+      {
+        _tapsDelayLine[c].Pop();
+        _tapsDelayLine[c].Push(output[c].Get(s));
+        output[c].Set(s, (1.0f - tapsMixPlain) * output[c].Get(s) + tapsMixPlain * thisTapsOut[c]);
+      }
     }
 
     return;
