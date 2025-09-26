@@ -16,7 +16,10 @@ TODOLIST for alpha-17
 [x] global->voice matrix was slow
 [x] lpf/hpf on/off for all echo filters => breaking + connect the dsp
 [x] switch echo gui position
-[ ] osci mod labels broken
+[x] osci mod labels broken
+[ ] vecho not extend osci etc
+[ ] vecho recheck simd options
+[ ] exchange minimize datapump to GUI fps
 [ ] decent defaults
 [ ] global unison
 [ ] basic mode
