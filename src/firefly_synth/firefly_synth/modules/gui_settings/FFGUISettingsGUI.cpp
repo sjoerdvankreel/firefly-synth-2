@@ -39,7 +39,7 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 6, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, knobRenderMode));
   grid->Add(0, 7, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, knobRenderMode));
   auto flushDelayButton = plugGUI->StoreComponent<FBAutoSizeButton>("Flush Audio");
-  flushDelayButton->setTooltip("Flush delays and reverbs");
+  flushDelayButton->setTooltip("Flush all buffers");
   flushDelayButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushDelayLines(); };
   grid->Add(0, 8, flushDelayButton);
   grid->Add(0, 9, plugGUI->StoreComponent<FBFillerComponent>(15, 1));
