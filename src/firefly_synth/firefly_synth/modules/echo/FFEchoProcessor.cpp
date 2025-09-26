@@ -546,6 +546,24 @@ FFEchoProcessor<Global>::ProcessTaps(
 
   if (processAudioOrExchangeState)
   {
+    // pre-process these using simd since these are a perf bottleneck
+    // all the rest is better suited to scalar
+    FBSArray2<float, FBFixedBlockSamples, FFEchoTapCount> tapLPFreqPlain;
+    FBSArray2<float, FBFixedBlockSamples, FFEchoTapCount> tapHPFreqPlain;
+    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+      for (int t = 0; t < FFEchoTapCount; t++)
+        if (_tapOn[t])
+        {
+          if(_tapLPOn[t])
+            tapLPFreqPlain[t].Store(s, topo.NormalizedToLog2Fast(
+              FFEchoParam::TapLPFreq,
+              FFSelectDualProcAccParamNormalized<Global>(tapLPFreqNorm[t], voice).CV().Load(s)));
+          if(_tapHPOn[t])
+            tapHPFreqPlain[t].Store(s, topo.NormalizedToLog2Fast(
+              FFEchoParam::TapHPFreq,
+              FFSelectDualProcAccParamNormalized<Global>(tapHPFreqNorm[t], voice).CV().Load(s)));
+        }
+
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       float thisTapsOut[2];
@@ -584,12 +602,6 @@ FFEchoProcessor<Global>::ProcessTaps(
           float tapHPResPlain = topo.NormalizedToIdentityFast(
             FFEchoParam::TapHPRes,
             FFSelectDualProcAccParamNormalized<Global>(tapHPResNorm[t], voice).CV().Get(s));
-          float tapLPFreqPlain = topo.NormalizedToLog2Fast(
-            FFEchoParam::TapLPFreq,
-            FFSelectDualProcAccParamNormalized<Global>(tapLPFreqNorm[t], voice).CV().Get(s));
-          float tapHPFreqPlain = topo.NormalizedToLog2Fast(
-            FFEchoParam::TapHPFreq,
-            FFSelectDualProcAccParamNormalized<Global>(tapHPFreqNorm[t], voice).CV().Get(s));
 
           float thisTapOutLR[2];
           for (int c = 0; c < 2; c++)
@@ -600,14 +612,14 @@ FFEchoProcessor<Global>::ProcessTaps(
 
           if (_graph)
           {
-            tapLPFreqPlain *= _graphStVarFilterFreqMultiplier;
-            tapHPFreqPlain *= _graphStVarFilterFreqMultiplier;
+            tapLPFreqPlain[t].Set(s, tapLPFreqPlain[t].Get(s) * _graphStVarFilterFreqMultiplier);
+            tapHPFreqPlain[t].Set(s, tapHPFreqPlain[t].Get(s) * _graphStVarFilterFreqMultiplier);
           }
 
           if (_tapLPOn[t])
-            _tapDelayStates[t].lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, tapLPFreqPlain, tapLPResPlain, 0.0);
+            _tapDelayStates[t].lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, tapLPFreqPlain[t].Get(s), tapLPResPlain, 0.0);
           if (_tapHPOn[t])
-            _tapDelayStates[t].hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, tapHPFreqPlain, tapHPResPlain, 0.0);
+            _tapDelayStates[t].hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, tapHPFreqPlain[t].Get(s), tapHPResPlain, 0.0);
           for (int c = 0; c < 2; c++)
           {
             double thisTapOut = (1.0f - tapXOverPlain) * thisTapOutLR[c] + tapXOverPlain * thisTapOutLR[c == 0 ? 1 : 0];
