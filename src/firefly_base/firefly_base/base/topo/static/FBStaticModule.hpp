@@ -79,6 +79,8 @@ struct FBStaticModule final
   int NormalizedToLinearFreqSamplesFast(ParamIndex index, float normalized, float sampleRate) const;
   template <class ParamIndex>
   float NormalizedToLinearTimeFloatSamplesFast(ParamIndex index, float normalized, float sampleRate) const;
+  template <class ParamIndex>
+  FBBatch<float> NormalizedToLinearTimeFloatSamplesFast(ParamIndex index, FBBatch<float> normalized, float sampleRate) const;
 
   template <class ParamIndex>
   float NormalizedToLog2Fast(ParamIndex index, float normalized) const;
@@ -198,6 +200,13 @@ FBStaticModule::NormalizedToLinearTimeSamplesFast(ParamIndex index, float normal
 template <class ParamIndex>
 float  
 FBStaticModule::NormalizedToLinearTimeFloatSamplesFast(ParamIndex index, float normalized, float sampleRate) const
+{
+  return params[static_cast<int>(index)].Linear().NormalizedTimeToFloatSamplesFast(normalized, sampleRate);
+}
+
+template <class ParamIndex>
+FBBatch<float>
+FBStaticModule::NormalizedToLinearTimeFloatSamplesFast(ParamIndex index, FBBatch<float> normalized, float sampleRate) const
 {
   return params[static_cast<int>(index)].Linear().NormalizedTimeToFloatSamplesFast(normalized, sampleRate);
 }
