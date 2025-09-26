@@ -378,7 +378,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
       _smoother.State(in);
       _firstSample = false;
     }
-    outputAll.Set(s, _smoother.Next(in));
+    outputAll.Set(s, _smoother.NextScalar(in));
     if constexpr (!Global)
     {
       if (oneShotFinished)
