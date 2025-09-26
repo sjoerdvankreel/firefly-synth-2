@@ -207,29 +207,25 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   {
     state.moduleSlot = i;
     voiceDSP.vEffect[i].input.Fill(0.0f);
-
-    if (!_ampEnvFinishedThisRound)
+    for (int r = 0; r < FFEffectCount; r++)
     {
-      for (int r = 0; r < FFEffectCount; r++)
-      {
-        auto const& osciMixToVFXNorm = vMix.acc.osciMixToVFX[r].Voice()[voice].CV();
-        voiceDSP.vEffect[r].input.AddMul(osciMix, osciMixToVFXNorm);
-      }
-      for (int r = 0; r < FFVMixOsciToVFXCount; r++)
-        if (FFVMixOsciToVFXGetFXSlot(r) == i)
-        {
-          int o = FFVMixOsciToVFXGetOsciSlot(r);
-          auto const& osciToVFXNorm = vMix.acc.osciToVFX[r].Voice()[voice].CV();
-          voiceDSP.vEffect[i].input.AddMul(voiceDSP.osci[o].output, osciToVFXNorm);
-        }
-      for (int r = 0; r < FFMixFXToFXCount; r++)
-        if (FFMixFXToFXGetTargetSlot(r) == i)
-        {
-          int source = FFMixFXToFXGetSourceSlot(r);
-          auto const& vfxToVFXNorm = vMix.acc.VFXToVFX[r].Voice()[voice].CV();
-          voiceDSP.vEffect[i].input.AddMul(voiceDSP.vEffect[source].output, vfxToVFXNorm);
-        }
+      auto const& osciMixToVFXNorm = vMix.acc.osciMixToVFX[r].Voice()[voice].CV();
+      voiceDSP.vEffect[r].input.AddMul(osciMix, osciMixToVFXNorm);
     }
+    for (int r = 0; r < FFVMixOsciToVFXCount; r++)
+      if (FFVMixOsciToVFXGetFXSlot(r) == i)
+      {
+        int o = FFVMixOsciToVFXGetOsciSlot(r);
+        auto const& osciToVFXNorm = vMix.acc.osciToVFX[r].Voice()[voice].CV();
+        voiceDSP.vEffect[i].input.AddMul(voiceDSP.osci[o].output, osciToVFXNorm);
+      }
+    for (int r = 0; r < FFMixFXToFXCount; r++)
+      if (FFMixFXToFXGetTargetSlot(r) == i)
+      {
+        int source = FFMixFXToFXGetSourceSlot(r);
+        auto const& vfxToVFXNorm = vMix.acc.VFXToVFX[r].Voice()[voice].CV();
+        voiceDSP.vEffect[i].input.AddMul(voiceDSP.vEffect[source].output, vfxToVFXNorm);
+      }
 
     state.moduleSlot = i;
     if (_firstRoundThisVoice)
@@ -244,10 +240,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
       voiceFinished = ProcessVEcho(state, ampEnvProcessed, voiceDSP.vEffect[i].input);
 
     state.moduleSlot = i; // vecho changes it!
-    if (!_ampEnvFinishedThisRound)
-      voiceDSP.vEffect[i].processor->Process<false>(state);
-    else
-      voiceDSP.vEffect[i].output.Fill(0.0f);
+    voiceDSP.vEffect[i].processor->Process<false>(state);
 
     if (_ampEnvTarget == FFVMixAmpEnvTarget::VFXOut)
       voiceDSP.vEffect[i].output.Mul(ampPlainModulated);

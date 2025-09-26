@@ -30,10 +30,6 @@ class FFVoiceProcessor final
   // don't run the LFO's and other ENV's anymore,
   // but -- not possible, because these are valid
   // modulation sources for the per-voice echo.
-  // By the same logic, we can skip VFX after VAMP.
-  // This short-circuits some extreme waveshaping
-  // which turns silence into DC, but i don't consider
-  // that a real use case.
   bool _ampEnvFinishedThisRound = false;
   bool _ampEnvFinishedPrevRound = false;
 
