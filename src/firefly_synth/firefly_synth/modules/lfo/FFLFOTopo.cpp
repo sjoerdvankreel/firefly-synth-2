@@ -179,6 +179,7 @@ FFMakeLFOTopo(bool global)
   opType.type = FBParamType::List;
   opType.List().items = {
     { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", "Off" },
+    { "{D96CFB4F-1F3C-434C-A78D-BA624B3DFA10}", "Rescale" },
     { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "UP Add" },
     { "{AD641260-F205-497E-B483-330CFA025378}", "UP Mul" },
     { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "UP Stk" },

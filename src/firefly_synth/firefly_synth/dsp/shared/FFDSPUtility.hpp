@@ -4,7 +4,7 @@
 #include <cmath>
 
 enum class FFModulationOpType { 
-  Off, 
+  Off, Rescale,
   UPAdd, UPMul, UPStack, 
   BPAdd, BPMul, BPStack };
 
@@ -94,13 +94,30 @@ FFModulateBPStack(
 }
 
 inline float
+FFModulateRescale(
+  float source,
+  float amount, float target)
+{
+  bool sourceLtHalf = source < 0.5f;
+  float lowMin = 0.0f;
+  float lowMax = source * 2.0f;
+  float highMin = -1.0f + 2.0f * source;
+  float highMax = 1.0f;
+  float min = sourceLtHalf ? lowMin : highMin;
+  float max = sourceLtHalf ? lowMax : highMax;
+  return (1.0f - amount * target) + (amount * (min + (max - min) * target));
+}
+
+inline float
 FFModulate(
   FFModulationOpType opType, float source, 
   float amount, float target)
 {
   switch (opType)
   {
-  case FFModulationOpType::UPAdd: 
+  case FFModulationOpType::Rescale:
+    return FFModulateRescale(source, amount, target);
+  case FFModulationOpType::UPAdd:
     return FFModulateUPAdd(source, amount, target);
   case FFModulationOpType::UPMul:
     return FFModulateUPMul(source, amount, target);
@@ -181,13 +198,30 @@ FFModulateBPStack(
 }
 
 inline FBBatch<float>
+FFModulateRescale(
+  FBBatch<float> source,
+  FBBatch<float> amount, FBBatch<float> target)
+{
+  auto sourceLtHalf = xsimd::lt(source, FBBatch<float>(0.5f));
+  auto lowMin = FBBatch<float>(0.0f);
+  auto lowMax = source * FBBatch<float>(2.0f);
+  auto highMin = -1.0f + 2.0f * source;
+  auto highMax = FBBatch<float>(1.0f);
+  auto min = xsimd::select(sourceLtHalf, lowMin, highMin);
+  auto max = xsimd::select(sourceLtHalf, lowMax, highMax);
+  return (1.0f - amount) * target + (amount * (min + (max - min) * target));
+}
+
+inline FBBatch<float>
 FFModulate(
   FFModulationOpType opType, FBBatch<float> source, 
   FBBatch<float> amount, FBBatch<float> target)
 {
   switch (opType)
   {
-  case FFModulationOpType::UPAdd: 
+  case FFModulationOpType::Rescale:
+    return FFModulateRescale(source, amount, target);
+  case FFModulationOpType::UPAdd:
     return FFModulateUPAdd(source, amount, target);
   case FFModulationOpType::UPMul:
     return FFModulateUPMul(source, amount, target);

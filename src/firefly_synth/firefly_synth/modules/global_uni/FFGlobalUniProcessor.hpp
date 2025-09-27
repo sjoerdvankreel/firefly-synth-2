@@ -43,17 +43,5 @@ FFGlobalUniProcessor::Apply(
   auto const* paramTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramIndex, voiceSlotInGroup } });
   auto const& cvNorm = procStateContainer->Params()[paramTopo->runtimeParamIndex].GlobalAcc().Global().CV();
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-  {
-    // todo unipolar? and coarse
-    auto cvBatch = cvNorm.Load(s);
-    auto targetBatch = targetSignal.Load(s);
-    auto cvLtHalf = xsimd::lt(cvBatch, FBBatch<float>(0.5f));
-    auto cvLowMin = FBBatch<float>(0.0f);
-    auto cvLowMax = cvBatch * FBBatch<float>(2.0f);
-    auto cvHighMin = -1.0f + 2.0f * cvBatch;
-    auto cvHighMax = FBBatch<float>(1.0f);
-    auto cvMin = xsimd::select(cvLtHalf, cvLowMin, cvHighMin);
-    auto cvMax = xsimd::select(cvLtHalf, cvLowMax, cvHighMax);
-    targetSignal.Store(s, cvMin + (cvMax - cvMin) * targetSignal.Load(s));
-  }
+    targetSignal.Store(s, FFModulateRescale(cvNorm.Load(s), 1.0f, targetSignal.Load(s)));
 }
