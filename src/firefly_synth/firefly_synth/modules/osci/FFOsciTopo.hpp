@@ -30,6 +30,7 @@ inline int constexpr FFOsciStringGraphRounds = 5;
 inline int constexpr FFOsciFMRatioCount = 16;
 inline int constexpr FFOsciFMOperatorCount = 3;
 inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperatorCount;
+inline float constexpr FFOsciCoarseSemis = 128.0f;
 
 enum class FFOsciParam {
   Type, Gain, EnvToGain, Pan, Coarse, Fine, LFOToFine,

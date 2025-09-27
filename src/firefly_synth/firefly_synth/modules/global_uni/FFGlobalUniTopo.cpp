@@ -83,8 +83,8 @@ FFMakeGlobalUniTopo()
   fullOscCoarse.unit = "Semitones";
   fullOscCoarse.id = "{C16C50D5-00C0-4393-87F9-1A7C457F4483}";
   fullOscCoarse.type = FBParamType::Linear;
-  fullOscCoarse.Linear().min = -12.0f;
-  fullOscCoarse.Linear().max = 12.0f;
+  fullOscCoarse.Linear().min = -FFGlobalUniOscCoarseSemis;
+  fullOscCoarse.Linear().max = FFGlobalUniOscCoarseSemis;
   auto selectfullOscCoarse = [](auto& module) { return &module.acc.fullOscCoarse; };
   fullOscCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullOscCoarse);
   fullOscCoarse.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullOscCoarse);
