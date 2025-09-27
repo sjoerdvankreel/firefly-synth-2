@@ -17,26 +17,6 @@ FFMakeMasterTopo()
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.master; });
   auto selectModule = [](auto& state) { return &state.global.master; };
 
-  auto& tuningMode = result->params[(int)FFMasterParam::TuningMode];
-  tuningMode.mode = FBParamMode::Block;
-  tuningMode.name = "Tuning";
-  tuningMode.slotCount = 1;
-  tuningMode.id = "{90D901C3-CAFE-492A-89F8-FD081D366B75}";
-  tuningMode.defaultText = "Off";
-  tuningMode.type = FBParamType::List;
-  tuningMode.List().items = {
-    { "{056E5528-280F-4D99-A1D3-41F459609558}", "Off" },
-    { "{34899A66-AB72-4421-9CFB-E692C9F8ACAE}", "Note Once" },
-    { "{FB1A7294-D527-4492-B4E9-E0D31EA74409}", "Note Slide" },
-    { "{6FE4A9F0-F12E-49FE-BB23-78BD839A6E99}", "Mod Once" },
-    { "{138A84B2-29D3-487C-A8EE-A1A1EE0B0C2C}", "Mod Slide" } };
-  auto selectTuningMode = [](auto& module) { return &module.block.tuningMode; };
-  tuningMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuningMode);
-  tuningMode.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuningMode);
-  tuningMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuningMode);
-  // TODO once we actually do tuning
-  tuningMode.dependencies.enabled.audio.WhenSimple({ (int)FFMasterParam::TuningMode }, [](auto const&) { return false; });
-
   auto& hostSmoothTime = result->params[(int)FFMasterParam::HostSmoothTime];
   hostSmoothTime.mode = FBParamMode::Block;
   hostSmoothTime.defaultText = "2";

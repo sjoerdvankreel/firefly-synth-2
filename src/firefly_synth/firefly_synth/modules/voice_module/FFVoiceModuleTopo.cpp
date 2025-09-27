@@ -167,7 +167,7 @@ FFMakeVoiceModuleTopo()
   portaSectionAmpAttack.mode = FBParamMode::VoiceStart;
   portaSectionAmpAttack.defaultText = "50";
   portaSectionAmpAttack.name = "Portamento Section Amp Attack";
-  portaSectionAmpAttack.display = "Amp Attack";
+  portaSectionAmpAttack.display = "Amp Att";
   portaSectionAmpAttack.slotCount = 1;
   portaSectionAmpAttack.unit = "%";
   portaSectionAmpAttack.id = "{C035EBA5-D5E6-4B3B-A40A-2BD5B500ACCA}";
@@ -182,7 +182,7 @@ FFMakeVoiceModuleTopo()
   portaSectionAmpRelease.mode = FBParamMode::VoiceStart;
   portaSectionAmpRelease.defaultText = "50";
   portaSectionAmpRelease.name = "Portamento Section Amp Release";
-  portaSectionAmpRelease.display = "Amp Release";
+  portaSectionAmpRelease.display = "Amp Rls";
   portaSectionAmpRelease.slotCount = 1;
   portaSectionAmpRelease.unit = "%";
   portaSectionAmpRelease.id = "{227ACA77-CD6E-488B-86BB-9802FDF2D2F2}";

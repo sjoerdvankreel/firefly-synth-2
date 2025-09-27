@@ -27,11 +27,9 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   for (int i = 0; i < FFMasterAuxCount; i++)
     params.acc.aux[i].Global().CV().CopyTo(dspState.outputAux[i]);
 
-  float tuningModeNorm = params.block.tuningMode[0].Value();
   float bendRangeNorm = params.block.pitchBendRange[0].Value();
   float bendTargetNorm = params.block.pitchBendTarget[0].Value();
   dspState.mtsEspOn = MTS_HasMaster(dspState.mtsClient);
-  dspState.tuningMode = topo.NormalizedToListFast<FFMasterTuningMode>(FFMasterParam::TuningMode, tuningModeNorm);
   dspState.bendTarget = topo.NormalizedToListFast<FFMasterPitchBendTarget>(FFMasterParam::PitchBendTarget, bendTargetNorm);
   
   auto const& bendAmountNorm = params.acc.pitchBend[0].Global();
