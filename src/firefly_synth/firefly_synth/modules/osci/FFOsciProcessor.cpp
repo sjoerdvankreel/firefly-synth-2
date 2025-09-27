@@ -185,7 +185,7 @@ FFOsciProcessor::Process(FBModuleProcState& state, bool graph)
   {
     FFApplyModulation(FFModulationOpType::UPMul, voiceState.env[state.moduleSlot + FFEnvSlotOffset].output, envToGain.CV(), gainNormModulated);
     FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[state.moduleSlot].outputAll, lfoToFine.CV(), fineNormModulated);
-    procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniParam::FullOscFine, FFModulationOpType::BPStack, voice, fineNormModulated);
+    procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::OscFine, voice, fineNormModulated);
   }
 
   FBSArray<float, FFOsciFixedBlockOversamples> panPlain;

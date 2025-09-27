@@ -12,6 +12,7 @@
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 
 #include <array>
+#include <xsimd/xsimd.hpp>
 
 class FBAccParamState;
 struct FBModuleProcState;
@@ -24,27 +25,35 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalUniProcessor);
   void BeginBlock(FBModuleProcState& state);
   void Apply(
-    FBModuleProcState& state,
-    FFGlobalUniParam param, FFModulationOpType opType, 
-    int voice, FBSArray<float, 16>& target);
+    FBModuleProcState& state, FFGlobalUniTarget targetParam, 
+    int voice, FBSArray<float, 16>& targetSignal);
 };
 
 inline void 
 FFGlobalUniProcessor::Apply(
-  FBModuleProcState& state,
-  FFGlobalUniParam param, FFModulationOpType opType,
-  int voice, FBSArray<float, 16>& target)
+  FBModuleProcState& state, FFGlobalUniTarget targetParam,
+  int voice, FBSArray<float, 16>& targetSignal)
 {
-  // todo not everything is normalized/identity
-  FB_ASSERT((int)FFGlobalUniParam::FullFirst <= (int)param && (int)param <= (int)FFGlobalUniParam::FullLast);
-
   if (_type == FFGlobalUniType::Off)
     return;
-  
+
   auto const* procStateContainer = state.input->procState;
   int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
-  auto const* paramTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)param, voiceSlotInGroup } });
+  int paramIndex = (int)FFGlobalUniParam::FullFirst + (int)targetParam;
+  auto const* paramTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramIndex, voiceSlotInGroup } });
   auto const& cvNorm = procStateContainer->Params()[paramTopo->runtimeParamIndex].GlobalAcc().Global().CV();
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-    target.Store(s, FFModulate(opType, cvNorm.Load(s), FBBatch<float>(1.0f), target.Load(s)));
+  {
+    // todo unipolar? and coarse
+    auto cvBatch = cvNorm.Load(s);
+    auto targetBatch = targetSignal.Load(s);
+    auto cvLtHalf = xsimd::lt(cvBatch, FBBatch<float>(0.5f));
+    auto cvLowMin = FBBatch<float>(0.0f);
+    auto cvLowMax = cvBatch * FBBatch<float>(2.0f);
+    auto cvHighMin = -1.0f + 2.0f * cvBatch;
+    auto cvHighMax = FBBatch<float>(1.0f);
+    auto cvMin = xsimd::select(cvLtHalf, cvLowMin, cvHighMin);
+    auto cvMax = xsimd::select(cvLtHalf, cvLowMax, cvHighMax);
+    targetSignal.Store(s, cvMin + (cvMax - cvMin) * targetSignal.Load(s));
+  }
 }
