@@ -75,17 +75,18 @@ MakeGlobalUniSectionMain(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 1 });
   
   auto type = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Type, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
+  grid->Add(0, 1, 1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
   auto voiceCount = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
 
   auto fullEditor = MakeGlobalUniFullEditor(plugGUI);
-  auto showFullEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Editor");
-  showFullEditor->onClick = [plugGUI, fullEditor]() {
+  auto showEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Edit");
+  showEditor->onClick = [plugGUI, fullEditor]() {
     dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", fullEditor, 640, 450, [plugGUI]() {
       FBTopoIndices moduleIndices = { (int)FFModuleType::GlobalUni, 0 };
       std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
@@ -95,7 +96,7 @@ MakeGlobalUniSectionMain(FBPlugGUI* plugGUI)
           plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
       });
     };
-  grid->Add(1, 0, 1, 3, showFullEditor);
+  grid->Add(1, 2, showEditor);
   grid->MarkSection({ { 0, 0 }, { 2, 3 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(subSection);
