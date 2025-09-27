@@ -105,7 +105,7 @@ FFModulateRescale(
   float highMax = 1.0f;
   float min = sourceLtHalf ? lowMin : highMin;
   float max = sourceLtHalf ? lowMax : highMax;
-  return (1.0f - amount * target) + (amount * (min + (max - min) * target));
+  return ((1.0f - amount) * target) + (amount * (min + (max - min) * target));
 }
 
 inline float
@@ -209,7 +209,7 @@ FFModulateRescale(
   auto highMax = FBBatch<float>(1.0f);
   auto min = xsimd::select(sourceLtHalf, lowMin, highMin);
   auto max = xsimd::select(sourceLtHalf, lowMax, highMax);
-  return (1.0f - amount) * target + (amount * (min + (max - min) * target));
+  return ((1.0f - amount) * target) + (amount * (min + (max - min) * target));
 }
 
 inline FBBatch<float>
