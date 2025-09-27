@@ -93,15 +93,12 @@ FFMakeGlobalUniTopo()
 
   auto& fullOscFine = result->params[(int)FFGlobalUniParam::FullOscFine];
   fullOscFine.mode = FBParamMode::Accurate;
-  fullOscFine.defaultText = "0";
+  fullOscFine.defaultText = "50";
   fullOscFine.name = "Osc Fine";
   fullOscFine.slotCount = FFGlobalUniMaxCount;
-  fullOscFine.unit = "Cent";
   fullOscFine.id = "{D32C05E9-BE89-43CB-887F-AF7B1001518F}";
-  fullOscFine.type = FBParamType::Linear;
-  fullOscFine.Linear().min = -1.0f;
-  fullOscFine.Linear().max = 1.0f;
-  fullOscFine.Linear().displayMultiplier = 100.0f;
+  fullOscFine.unit = "%";
+  fullOscFine.type = FBParamType::Identity;
   auto selectfullOscFine = [](auto& module) { return &module.acc.fullOscFine; };
   fullOscFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullOscFine);
   fullOscFine.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullOscFine);
