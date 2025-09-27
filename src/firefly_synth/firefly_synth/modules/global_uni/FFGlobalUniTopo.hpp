@@ -5,7 +5,7 @@
 struct FBStaticModule;
 
 inline int constexpr FFGlobalUniMaxCount = 8;
-inline float constexpr FFGlobalUniCoarseSemis = 12.0f;
+inline float constexpr FFGlobalUniCoarseSemis = 36.0f;
 
 enum class FFGlobalUniType { Off, Basic, Full };
 enum class FFGlobalUniTarget {

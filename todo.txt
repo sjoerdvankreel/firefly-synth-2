@@ -22,6 +22,7 @@ TODOLIST for alpha-17
 [x] profile the vecho
 [x] new optype remap
 [x] show mod in overlay screens
+[x] amp not work like this, needs unipolar, like osci gain
 [ ] more uni controls: vmix, voice_module
 [ ] osci-target vecho demo
 [ ] global uni demo

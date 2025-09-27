@@ -45,12 +45,15 @@ FFGlobalUniProcessor::Apply(
   int paramIndex = (int)FFGlobalUniParam::FullFirst + (int)targetParam;
   auto const* paramTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramIndex, voiceSlotInGroup } });
   auto const& cvNorm = procStateContainer->Params()[paramTopo->runtimeParamIndex].GlobalAcc().Global().CV();
-  if (targetParam == FFGlobalUniTarget::OscCoarse)
+  if (targetParam == FFGlobalUniTarget::VoiceCoarse || targetParam == FFGlobalUniTarget::OscCoarse)
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
       auto modAmtSemisNorm = FBToBipolar(cvNorm.Load(s)) * FFGlobalUniCoarseSemis / FFOsciCoarseSemis * 0.5f;
       targetSignal.Store(s, xsimd::clip(targetSignal.Load(s) + modAmtSemisNorm, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
     }
+  else if(targetParam == FFGlobalUniTarget::VMixAmp || targetParam == FFGlobalUniTarget::OscGain)
+    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+      targetSignal.Store(s, FFModulateUPMul(cvNorm.Load(s), 1.0f, targetSignal.Load(s)));
   else
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
       targetSignal.Store(s, FFModulateRemap(cvNorm.Load(s), 1.0f, targetSignal.Load(s)));

@@ -2,6 +2,7 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/shared/FFStateDetail.hpp>
 #include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
+#include <firefly_synth/modules/global_uni/FFGlobalUniProcessor.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleProcessor.hpp>
 
@@ -119,6 +120,8 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   coarseNormIn.CV().CopyTo(coarseNormModulated);
   FFApplyModulation(FFModulationOpType::UPStack, voiceState.env[FFEnvSlotOffset + 4].output, env5ToCoarse.CV(), coarseNormModulated);
   FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[4].outputAll, lfo5ToFine.CV(), fineNormModulated);
+  procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::VoiceCoarse, voice, coarseNormModulated);
+  procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::VoiceFine, voice, fineNormModulated);
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
