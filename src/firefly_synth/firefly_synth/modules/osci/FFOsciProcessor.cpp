@@ -166,26 +166,30 @@ FFOsciProcessor::Process(FBModuleProcState& state, bool graph)
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
   int graphPrevPositionSamplesUpToFirstCycle = _graphPhaseGen.PositionSamplesUpToFirstCycle();
 
-  auto const& panNorm = procParams.acc.pan[0].Voice()[voice];
   auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
   auto const& uniBlendNorm = procParams.acc.uniBlend[0].Voice()[voice];
   auto const& uniDetuneNorm = procParams.acc.uniDetune[0].Voice()[voice];
   auto const& uniSpreadNorm = procParams.acc.uniSpread[0].Voice()[voice];
 
+  auto const& panNormIn = procParams.acc.pan[0].Voice()[voice];
   auto const& gainNormIn = procParams.acc.gain[0].Voice()[voice];
   auto const& fineNormIn = procParams.acc.fine[0].Voice()[voice];
   auto const& envToGain = procParams.acc.envToGain[0].Voice()[voice];
   auto const& lfoToFine = procParams.acc.lfoToFine[0].Voice()[voice];
+  FBSArray<float, FBFixedBlockSamples> panNormModulated = {};
   FBSArray<float, FBFixedBlockSamples> gainNormModulated = {};
   FBSArray<float, FBFixedBlockSamples> fineNormModulated = {};
 
+  panNormIn.CV().CopyTo(panNormModulated);
   gainNormIn.CV().CopyTo(gainNormModulated);
   fineNormIn.CV().CopyTo(fineNormModulated);
   if (!graph)
   {
     FFApplyModulation(FFModulationOpType::UPMul, voiceState.env[state.moduleSlot + FFEnvSlotOffset].output, envToGain.CV(), gainNormModulated);
     FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[state.moduleSlot].outputAll, lfoToFine.CV(), fineNormModulated);
+    procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::OscPan, voice, panNormModulated);
     procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::OscFine, voice, fineNormModulated);
+    procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::OscGain, voice, gainNormModulated);
   }
 
   FBSArray<float, FFOsciFixedBlockOversamples> panPlain;
@@ -210,7 +214,7 @@ FFOsciProcessor::Process(FBModuleProcState& state, bool graph)
     if(_graph)
       _graphPhaseGen.NextBatch(baseFreq / sampleRate);
 
-    panPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::Pan, panNorm, s));
+    panPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::Pan, panNormModulated.Load(s)));
     gainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::Gain, gainNormModulated.Load(s)));
     uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
     uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
@@ -294,11 +298,11 @@ FFOsciProcessor::Process(FBModuleProcState& state, bool graph)
   exchangeDSP.lengthSamples = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
-  exchangeParams.acc.pan[0][voice] = panNorm.Last();
   exchangeParams.acc.coarse[0][voice] = coarseNorm.Last();
   exchangeParams.acc.uniBlend[0][voice] = uniBlendNorm.Last();
   exchangeParams.acc.uniDetune[0][voice] = uniDetuneNorm.Last();
   exchangeParams.acc.uniSpread[0][voice] = uniSpreadNorm.Last();
+  exchangeParams.acc.pan[0][voice] = panNormModulated.Last();
   exchangeParams.acc.gain[0][voice] = gainNormModulated.Last();
   exchangeParams.acc.fine[0][voice] = fineNormModulated.Last();
   exchangeParams.acc.envToGain[0][voice] = envToGain.Last();
