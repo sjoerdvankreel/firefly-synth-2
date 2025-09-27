@@ -85,7 +85,7 @@ MakeGlobalUniSectionMain(FBPlugGUI* plugGUI)
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
 
   auto fullEditor = MakeGlobalUniFullEditor(plugGUI);
-  auto showEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Edit");
+  auto showEditor = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, voiceCount, "Edit");
   showEditor->onClick = [plugGUI, fullEditor]() {
     dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", fullEditor, 640, 450, [plugGUI]() {
       FBTopoIndices moduleIndices = { (int)FFModuleType::GlobalUni, 0 };
