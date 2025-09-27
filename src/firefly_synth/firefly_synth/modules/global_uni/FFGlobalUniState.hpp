@@ -45,6 +45,10 @@ class alignas(alignof(TAccurate)) FFGlobalUniAccParamState final
 {
   friend class FFGlobalUniProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGlobalUniTopo();
+  std::array<TAccurate, FFGlobalUniMaxCount> fullVoiceCoarse = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> fullVoiceFine = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> fullVMixAmp = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> fullVMixBal = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullOscPan = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullOscGain = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullOscFine = {};

@@ -1,5 +1,6 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFTopoDetail.hpp>
+#include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
@@ -30,8 +31,8 @@ FFMakeVoiceModuleTopo()
   coarse.unit = "Semitones";
   coarse.id = "{64019FB1-6EE2-4FF5-8D28-F6B692B25EFB}";
   coarse.type = FBParamType::Linear;
-  coarse.Linear().min = -128.0f;
-  coarse.Linear().max = 128.0f;
+  coarse.Linear().min = -FFOsciCoarseSemis;
+  coarse.Linear().max = FFOsciCoarseSemis;
   auto selectCoarse = [](auto& module) { return &module.acc.coarse; };
   coarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCoarse);
   coarse.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCoarse);

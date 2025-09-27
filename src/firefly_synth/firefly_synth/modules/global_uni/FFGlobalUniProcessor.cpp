@@ -40,6 +40,10 @@ FFGlobalUniProcessor::Process(FBModuleProcState& state)
   auto& exchangeParams = exchangeToGUI->param.global.globalUni[0];
   for (int i = 0; i < FFGlobalUniMaxCount; i++)
   {
+    exchangeParams.acc.fullVoiceCoarse[i] = params.acc.fullVoiceCoarse[i].Global().Last();
+    exchangeParams.acc.fullVoiceFine[i] = params.acc.fullVoiceFine[i].Global().Last();
+    exchangeParams.acc.fullVMixAmp[i] = params.acc.fullVMixAmp[i].Global().Last();
+    exchangeParams.acc.fullVMixBal[i] = params.acc.fullVMixBal[i].Global().Last();
     exchangeParams.acc.fullOscPan[i] = params.acc.fullOscPan[i].Global().Last();
     exchangeParams.acc.fullOscGain[i] = params.acc.fullOscGain[i].Global().Last();
     exchangeParams.acc.fullOscFine[i] = params.acc.fullOscFine[i].Global().Last();

@@ -48,7 +48,7 @@ FFGlobalUniProcessor::Apply(
   if (targetParam == FFGlobalUniTarget::OscCoarse)
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
-      auto modAmtSemisNorm = FBToBipolar(cvNorm.Load(s)) * FFGlobalUniOscCoarseSemis / FFOsciCoarseSemis * 0.5f;
+      auto modAmtSemisNorm = FBToBipolar(cvNorm.Load(s)) * FFGlobalUniCoarseSemis / FFOsciCoarseSemis * 0.5f;
       targetSignal.Store(s, xsimd::clip(targetSignal.Load(s) + modAmtSemisNorm, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
     }
   else

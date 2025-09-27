@@ -47,6 +47,64 @@ FFMakeGlobalUniTopo()
   voiceCount.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoiceCount);
   voiceCount.dependencies.enabled.audio.WhenSimple({ (int)FFGlobalUniParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
+  auto& fullVoiceCoarse = result->params[(int)FFGlobalUniParam::FullVoiceCoarse];
+  fullVoiceCoarse.mode = FBParamMode::Accurate;
+  fullVoiceCoarse.defaultText = "0";
+  fullVoiceCoarse.name = "Voice Coarse";
+  fullVoiceCoarse.slotCount = FFGlobalUniMaxCount;
+  fullVoiceCoarse.unit = "Semitones";
+  fullVoiceCoarse.id = "{0D24BD6A-DE67-4CE6-8272-BC290D5D7D2D}";
+  fullVoiceCoarse.type = FBParamType::Linear;
+  fullVoiceCoarse.Linear().min = -FFGlobalUniCoarseSemis;
+  fullVoiceCoarse.Linear().max = FFGlobalUniCoarseSemis;
+  auto selectFullVoiceCoarse = [](auto& module) { return &module.acc.fullVoiceCoarse; };
+  fullVoiceCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFullVoiceCoarse);
+  fullVoiceCoarse.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFullVoiceCoarse);
+  fullVoiceCoarse.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFullVoiceCoarse);
+  fullVoiceCoarse.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::FullVoiceCoarse, -1 }, { (int)FFGlobalUniParam::Type } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] == (int)FFGlobalUniType::Full; });
+
+  auto& fullVoiceFine = result->params[(int)FFGlobalUniParam::FullVoiceFine];
+  fullVoiceFine.mode = FBParamMode::Accurate;
+  fullVoiceFine.defaultText = "50";
+  fullVoiceFine.name = "Voice Fine";
+  fullVoiceFine.slotCount = FFGlobalUniMaxCount;
+  fullVoiceFine.id = "{4A3335C3-9239-4D90-A53A-F73807FEC0B7}";
+  fullVoiceFine.unit = "%";
+  fullVoiceFine.type = FBParamType::Identity;
+  auto selectFullVoiceFine = [](auto& module) { return &module.acc.fullVoiceFine; };
+  fullVoiceFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFullVoiceFine);
+  fullVoiceFine.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFullVoiceFine);
+  fullVoiceFine.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFullVoiceFine);
+  fullVoiceFine.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::FullVoiceFine, -1 }, { (int)FFGlobalUniParam::Type } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] == (int)FFGlobalUniType::Full; });
+
+  auto& fullVMixAmp = result->params[(int)FFGlobalUniParam::FullVMixAmp];
+  fullVMixAmp.mode = FBParamMode::Accurate;
+  fullVMixAmp.defaultText = "50";
+  fullVMixAmp.name = "VMix Amp";
+  fullVMixAmp.slotCount = FFGlobalUniMaxCount;
+  fullVMixAmp.id = "{CA16FDA4-CB83-46F4-B236-5382DAA1CFD6}";
+  fullVMixAmp.unit = "%";
+  fullVMixAmp.type = FBParamType::Identity;
+  auto selectFullVMixAmp = [](auto& module) { return &module.acc.fullVMixAmp; };
+  fullVMixAmp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFullVMixAmp);
+  fullVMixAmp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFullVMixAmp);
+  fullVMixAmp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFullVMixAmp);
+  fullVMixAmp.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::FullVMixAmp, -1 }, { (int)FFGlobalUniParam::Type } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] == (int)FFGlobalUniType::Full; });
+
+  auto& fullVMixBal = result->params[(int)FFGlobalUniParam::FullVMixBal];
+  fullVMixBal.mode = FBParamMode::Accurate;
+  fullVMixBal.defaultText = "50";
+  fullVMixBal.name = "VMix Bal";
+  fullVMixBal.slotCount = FFGlobalUniMaxCount;
+  fullVMixBal.id = "{A6AD53AB-3FBD-4579-9B2C-D97118B16E70}";
+  fullVMixBal.unit = "%";
+  fullVMixBal.type = FBParamType::Identity;
+  auto selectFullVMixBal = [](auto& module) { return &module.acc.fullVMixBal; };
+  fullVMixBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFullVMixBal);
+  fullVMixBal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFullVMixBal);
+  fullVMixBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFullVMixBal);
+  fullVMixBal.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::FullVMixBal, -1 }, { (int)FFGlobalUniParam::Type } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] == (int)FFGlobalUniType::Full; });
+
   auto& fullOscGain = result->params[(int)FFGlobalUniParam::FullOscGain];
   fullOscGain.mode = FBParamMode::Accurate;
   fullOscGain.defaultText = "50";
@@ -83,8 +141,8 @@ FFMakeGlobalUniTopo()
   fullOscCoarse.unit = "Semitones";
   fullOscCoarse.id = "{C16C50D5-00C0-4393-87F9-1A7C457F4483}";
   fullOscCoarse.type = FBParamType::Linear;
-  fullOscCoarse.Linear().min = -FFGlobalUniOscCoarseSemis;
-  fullOscCoarse.Linear().max = FFGlobalUniOscCoarseSemis;
+  fullOscCoarse.Linear().min = -FFGlobalUniCoarseSemis;
+  fullOscCoarse.Linear().max = FFGlobalUniCoarseSemis;
   auto selectfullOscCoarse = [](auto& module) { return &module.acc.fullOscCoarse; };
   fullOscCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullOscCoarse);
   fullOscCoarse.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullOscCoarse);
