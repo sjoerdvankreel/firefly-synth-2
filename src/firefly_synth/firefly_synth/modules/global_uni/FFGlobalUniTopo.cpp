@@ -39,8 +39,8 @@ FFMakeGlobalUniTopo()
   voiceCount.slotCount = 1;
   voiceCount.id = "{617F995E-38CC-40BE-899E-AEAE37852092}";
   voiceCount.type = FBParamType::Discrete;
-  voiceCount.Discrete().valueCount = FFGlobalUniMaxCount - 1;
-  voiceCount.Discrete().valueOffset = 2;
+  voiceCount.Discrete().valueCount = FFGlobalUniMaxCount;
+  voiceCount.Discrete().valueOffset = 1;
   auto selectVoiceCount = [](auto& module) { return &module.block.voiceCount; };
   voiceCount.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVoiceCount);
   voiceCount.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectVoiceCount);
