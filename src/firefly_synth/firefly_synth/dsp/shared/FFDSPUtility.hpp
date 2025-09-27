@@ -4,7 +4,7 @@
 #include <cmath>
 
 enum class FFModulationOpType { 
-  Off, Rescale,
+  Off, Remap,
   UPAdd, UPMul, UPStack, 
   BPAdd, BPMul, BPStack };
 
@@ -94,7 +94,7 @@ FFModulateBPStack(
 }
 
 inline float
-FFModulateRescale(
+FFModulateRemap(
   float source,
   float amount, float target)
 {
@@ -115,8 +115,8 @@ FFModulate(
 {
   switch (opType)
   {
-  case FFModulationOpType::Rescale:
-    return FFModulateRescale(source, amount, target);
+  case FFModulationOpType::Remap:
+    return FFModulateRemap(source, amount, target);
   case FFModulationOpType::UPAdd:
     return FFModulateUPAdd(source, amount, target);
   case FFModulationOpType::UPMul:
@@ -198,7 +198,7 @@ FFModulateBPStack(
 }
 
 inline FBBatch<float>
-FFModulateRescale(
+FFModulateRemap(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -219,8 +219,8 @@ FFModulate(
 {
   switch (opType)
   {
-  case FFModulationOpType::Rescale:
-    return FFModulateRescale(source, amount, target);
+  case FFModulationOpType::Remap:
+    return FFModulateRemap(source, amount, target);
   case FFModulationOpType::UPAdd:
     return FFModulateUPAdd(source, amount, target);
   case FFModulationOpType::UPMul:

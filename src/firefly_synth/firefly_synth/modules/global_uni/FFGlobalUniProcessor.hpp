@@ -43,5 +43,5 @@ FFGlobalUniProcessor::Apply(
   auto const* paramTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramIndex, voiceSlotInGroup } });
   auto const& cvNorm = procStateContainer->Params()[paramTopo->runtimeParamIndex].GlobalAcc().Global().CV();
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-    targetSignal.Store(s, FFModulateRescale(cvNorm.Load(s), 1.0f, targetSignal.Load(s)));
+    targetSignal.Store(s, FFModulateRemap(cvNorm.Load(s), 1.0f, targetSignal.Load(s)));
 }

@@ -133,7 +133,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   opType.type = FBParamType::List;
   opType.List().items = {
     { "{8E7F2BE6-12B7-483E-8308-DD96F63C7743}", "Off" },
-    { "{1461EF1C-29B8-4521-A19C-25DE48C6CFA2}", "Rescale" },
+    { "{1461EF1C-29B8-4521-A19C-25DE48C6CFA2}", "Remap" },
     { "{33CE627C-A02D-43C0-A533-257E4D03EA1E}", "UP Add" },
     { "{F01ABE4C-C22E-47F2-900E-7E913906A740}", "UP Mul" },
     { "{91B784D0-E47A-46DC-ACD8-15A502E68A9A}", "UP Stk" },
