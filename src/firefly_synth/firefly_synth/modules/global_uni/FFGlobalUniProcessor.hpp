@@ -23,7 +23,9 @@ class FFGlobalUniProcessor final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalUniProcessor);
+  void Process(FBModuleProcState& state);
   void BeginBlock(FBModuleProcState& state);
+
   void Apply(
     FBModuleProcState& state, FFGlobalUniTarget targetParam, 
     int voice, FBSArray<float, 16>& targetSignal);

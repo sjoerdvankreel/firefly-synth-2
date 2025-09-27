@@ -188,6 +188,7 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   }
 
   globalDSP.globalUni.processor->BeginBlock(state);
+  globalDSP.globalUni.processor->Process(state);
 }
 
 void

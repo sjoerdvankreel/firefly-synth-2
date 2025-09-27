@@ -21,6 +21,7 @@ TODOLIST for alpha-17
 [x] vecho recheck simd options
 [x] profile the vecho
 [x] new optype remap
+[ ] show mod in overlay screens
 [ ] osci-target vecho demo
 [ ] global uni demo
 [ ] decent defaults
