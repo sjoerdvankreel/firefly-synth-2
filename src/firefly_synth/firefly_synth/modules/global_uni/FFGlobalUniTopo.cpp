@@ -79,7 +79,7 @@ FFMakeGlobalUniTopo()
 
   auto& fullVMixAmp = result->params[(int)FFGlobalUniParam::FullVMixAmp];
   fullVMixAmp.mode = FBParamMode::Accurate;
-  fullVMixAmp.defaultText = "50";
+  fullVMixAmp.defaultText = "100";
   fullVMixAmp.name = "VMix Amp";
   fullVMixAmp.slotCount = FFGlobalUniMaxCount;
   fullVMixAmp.id = "{CA16FDA4-CB83-46F4-B236-5382DAA1CFD6}";
@@ -107,7 +107,7 @@ FFMakeGlobalUniTopo()
 
   auto& fullOscGain = result->params[(int)FFGlobalUniParam::FullOscGain];
   fullOscGain.mode = FBParamMode::Accurate;
-  fullOscGain.defaultText = "50";
+  fullOscGain.defaultText = "100";
   fullOscGain.name = "Osc Gain";
   fullOscGain.slotCount = FFGlobalUniMaxCount;
   fullOscGain.unit = "%";
