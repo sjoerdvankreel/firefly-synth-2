@@ -46,10 +46,12 @@ FFGlobalUniProcessor::Process(FBModuleProcState& state)
     exchangeParams.acc.fullVoiceFine[i] = params.acc.fullVoiceFine[i].Global().Last();
     exchangeParams.acc.fullVMixAmp[i] = params.acc.fullVMixAmp[i].Global().Last();
     exchangeParams.acc.fullVMixBal[i] = params.acc.fullVMixBal[i].Global().Last();
+    exchangeParams.acc.fullOscPhaseOffset[i] = params.acc.fullOscPhaseOffset[i].Global().Last();
     exchangeParams.acc.fullOscPan[i] = params.acc.fullOscPan[i].Global().Last();
     exchangeParams.acc.fullOscGain[i] = params.acc.fullOscGain[i].Global().Last();
     exchangeParams.acc.fullOscFine[i] = params.acc.fullOscFine[i].Global().Last();
     exchangeParams.acc.fullOscCoarse[i] = params.acc.fullOscCoarse[i].Global().Last();
+    exchangeParams.acc.fullLFOPhaseOffset[i] = params.acc.fullLFOPhaseOffset[i].Global().Last();
     exchangeParams.acc.fullLFORate[i] = params.acc.fullLFORate[i].Global().Last();
     exchangeParams.acc.fullLFOMin[i] = params.acc.fullLFOMin[i].Global().Last();
     exchangeParams.acc.fullLFOMax[i] = params.acc.fullLFOMax[i].Global().Last();
@@ -59,6 +61,10 @@ FFGlobalUniProcessor::Process(FBModuleProcState& state)
     exchangeParams.acc.fullVFXParamB[i] = params.acc.fullVFXParamB[i].Global().Last();
     exchangeParams.acc.fullVFXParamC[i] = params.acc.fullVFXParamC[i].Global().Last();
     exchangeParams.acc.fullVFXParamD[i] = params.acc.fullVFXParamD[i].Global().Last();
+    exchangeParams.acc.fullEnvOffset[i] = params.acc.fullEnvOffset[i].Global().Last();
+    exchangeParams.acc.fullEnvStretch[i] = params.acc.fullEnvStretch[i].Global().Last();
+    exchangeParams.acc.fullEchoFade[i] = params.acc.fullEchoFade[i].Global().Last();
+    exchangeParams.acc.fullEchoExtend[i] = params.acc.fullEchoExtend[i].Global().Last();
     exchangeParams.acc.fullEchoTapLevel[i] = params.acc.fullEchoTapLevel[i].Global().Last();
     exchangeParams.acc.fullEchoTapDelay[i] = params.acc.fullEchoTapDelay[i].Global().Last();
     exchangeParams.acc.fullEchoTapBal[i] = params.acc.fullEchoTapBal[i].Global().Last();
