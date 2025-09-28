@@ -23,8 +23,9 @@ TODOLIST for alpha-17
 [x] new optype remap
 [x] show mod in overlay screens
 [x] amp not work like this, needs unipolar, like osci gain
-[ ] make stuff bipolar in the gui => new paramtype identityBipolar
-[ ] more uni controls: vmix, voice_module
+[x] make stuff bipolar in the gui => new paramtype identityBipolar
+[x] more uni controls: vmix, voice_module
+[ ] see what else can benefit from bipolar identity (now say that without context)
 [ ] osci-target vecho demo
 [ ] global uni demo
 [ ] decent defaults
