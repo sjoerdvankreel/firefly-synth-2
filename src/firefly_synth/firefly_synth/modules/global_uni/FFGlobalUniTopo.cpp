@@ -65,12 +65,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullVoiceFine = result->params[(int)FFGlobalUniParam::FullVoiceFine];
   fullVoiceFine.mode = FBParamMode::Accurate;
-  fullVoiceFine.defaultText = "50";
+  fullVoiceFine.defaultText = "0";
   fullVoiceFine.name = "Voice Fine";
   fullVoiceFine.slotCount = FFGlobalUniMaxCount;
   fullVoiceFine.id = "{4A3335C3-9239-4D90-A53A-F73807FEC0B7}";
   fullVoiceFine.unit = "%";
   fullVoiceFine.type = FBParamType::Identity;
+  fullVoiceFine.Identity().displayAsBipolar = true;
   auto selectFullVoiceFine = [](auto& module) { return &module.acc.fullVoiceFine; };
   fullVoiceFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFullVoiceFine);
   fullVoiceFine.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFullVoiceFine);
@@ -93,12 +94,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullVMixBal = result->params[(int)FFGlobalUniParam::FullVMixBal];
   fullVMixBal.mode = FBParamMode::Accurate;
-  fullVMixBal.defaultText = "50";
+  fullVMixBal.defaultText = "0";
   fullVMixBal.name = "VMix Bal";
   fullVMixBal.slotCount = FFGlobalUniMaxCount;
   fullVMixBal.id = "{A6AD53AB-3FBD-4579-9B2C-D97118B16E70}";
   fullVMixBal.unit = "%";
   fullVMixBal.type = FBParamType::Identity;
+  fullVMixBal.Identity().displayAsBipolar = true;
   auto selectFullVMixBal = [](auto& module) { return &module.acc.fullVMixBal; };
   fullVMixBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFullVMixBal);
   fullVMixBal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFullVMixBal);
@@ -121,12 +123,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullOscPan = result->params[(int)FFGlobalUniParam::FullOscPan];
   fullOscPan.mode = FBParamMode::Accurate;
-  fullOscPan.defaultText = "50";
+  fullOscPan.defaultText = "0";
   fullOscPan.name = "Osc Pan";
   fullOscPan.slotCount = FFGlobalUniMaxCount;
   fullOscPan.unit = "%";
   fullOscPan.id = "{9CACBCF5-9D85-431B-986B-E2B50DC3336A}";
   fullOscPan.type = FBParamType::Identity;
+  fullOscPan.Identity().displayAsBipolar = true;
   auto selectfullOscPan = [](auto& module) { return &module.acc.fullOscPan; };
   fullOscPan.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullOscPan);
   fullOscPan.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullOscPan);
@@ -151,12 +154,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullOscFine = result->params[(int)FFGlobalUniParam::FullOscFine];
   fullOscFine.mode = FBParamMode::Accurate;
-  fullOscFine.defaultText = "50";
+  fullOscFine.defaultText = "0";
   fullOscFine.name = "Osc Fine";
   fullOscFine.slotCount = FFGlobalUniMaxCount;
   fullOscFine.id = "{D32C05E9-BE89-43CB-887F-AF7B1001518F}";
   fullOscFine.unit = "%";
   fullOscFine.type = FBParamType::Identity;
+  fullOscFine.Identity().displayAsBipolar = true;
   auto selectfullOscFine = [](auto& module) { return &module.acc.fullOscFine; };
   fullOscFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullOscFine);
   fullOscFine.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullOscFine);
@@ -193,12 +197,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullLFORate = result->params[(int)FFGlobalUniParam::FullLFORate];
   fullLFORate.mode = FBParamMode::Accurate;
-  fullLFORate.defaultText = "50";
+  fullLFORate.defaultText = "0";
   fullLFORate.name = "LFO Rate";
   fullLFORate.slotCount = FFGlobalUniMaxCount;
   fullLFORate.unit = "%";
   fullLFORate.id = "{A14D92A7-0952-4DF9-98D6-194B1A763DDF}";
   fullLFORate.type = FBParamType::Identity;
+  fullLFORate.Identity().displayAsBipolar = true;
   auto selectfullLFORate = [](auto& module) { return &module.acc.fullLFORate; };
   fullLFORate.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullLFORate);
   fullLFORate.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullLFORate);
@@ -207,12 +212,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullLFOMin = result->params[(int)FFGlobalUniParam::FullLFOMin];
   fullLFOMin.mode = FBParamMode::Accurate;
-  fullLFOMin.defaultText = "50";
+  fullLFOMin.defaultText = "0";
   fullLFOMin.name = "LFO Min";
   fullLFOMin.slotCount = FFGlobalUniMaxCount;
   fullLFOMin.unit = "%";
   fullLFOMin.id = "{BC67CD56-29BF-491D-BA5F-43541B6E506D}";
   fullLFOMin.type = FBParamType::Identity;
+  fullLFOMin.Identity().displayAsBipolar = true;
   auto selectfullLFOMin = [](auto& module) { return &module.acc.fullLFOMin; };
   fullLFOMin.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullLFOMin);
   fullLFOMin.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullLFOMin);
@@ -221,12 +227,13 @@ FFMakeGlobalUniTopo()
   
   auto& fullLFOMax = result->params[(int)FFGlobalUniParam::FullLFOMax];
   fullLFOMax.mode = FBParamMode::Accurate;
-  fullLFOMax.defaultText = "50";
+  fullLFOMax.defaultText = "0";
   fullLFOMax.name = "LFO Max";
   fullLFOMax.slotCount = FFGlobalUniMaxCount;
   fullLFOMax.unit = "%";
   fullLFOMax.id = "{D6A4D1B5-8961-4C5B-96CA-792F73227A0C}";
   fullLFOMax.type = FBParamType::Identity;
+  fullLFOMax.Identity().displayAsBipolar = true;
   auto selectfullLFOMax = [](auto& module) { return &module.acc.fullLFOMax; };
   fullLFOMax.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullLFOMax);
   fullLFOMax.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullLFOMax);
@@ -235,12 +242,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullLFOSkewAX = result->params[(int)FFGlobalUniParam::FullLFOSkewAX];
   fullLFOSkewAX.mode = FBParamMode::Accurate;
-  fullLFOSkewAX.defaultText = "50";
+  fullLFOSkewAX.defaultText = "0";
   fullLFOSkewAX.name = "LFO SkewA X";
   fullLFOSkewAX.slotCount = FFGlobalUniMaxCount;
   fullLFOSkewAX.unit = "%";
   fullLFOSkewAX.id = "{5FABD18F-6F53-4532-AC77-7FC5882B2CD1}";
   fullLFOSkewAX.type = FBParamType::Identity;
+  fullLFOSkewAX.Identity().displayAsBipolar = true;
   auto selectfullLFOSkewAX = [](auto& module) { return &module.acc.fullLFOSkewAX; };
   fullLFOSkewAX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullLFOSkewAX);
   fullLFOSkewAX.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullLFOSkewAX);
@@ -249,12 +257,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullLFOSkewAY = result->params[(int)FFGlobalUniParam::FullLFOSkewAY];
   fullLFOSkewAY.mode = FBParamMode::Accurate;
-  fullLFOSkewAY.defaultText = "50";
+  fullLFOSkewAY.defaultText = "0";
   fullLFOSkewAY.name = "LFO SkewA Y";
   fullLFOSkewAY.slotCount = FFGlobalUniMaxCount;
   fullLFOSkewAY.unit = "%";
   fullLFOSkewAY.id = "{7C900D23-EC5F-483B-82A3-EB27E2DD9E66}";
   fullLFOSkewAY.type = FBParamType::Identity;
+  fullLFOSkewAY.Identity().displayAsBipolar = true;
   auto selectfullLFOSkewAY = [](auto& module) { return &module.acc.fullLFOSkewAY; };
   fullLFOSkewAY.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullLFOSkewAY);
   fullLFOSkewAY.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullLFOSkewAY);
@@ -291,12 +300,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullVFXParamA = result->params[(int)FFGlobalUniParam::FullVFXParamA];
   fullVFXParamA.mode = FBParamMode::Accurate;
-  fullVFXParamA.defaultText = "50";
+  fullVFXParamA.defaultText = "0";
   fullVFXParamA.name = "VFX Param A";
   fullVFXParamA.slotCount = FFGlobalUniMaxCount;
   fullVFXParamA.unit = "%";
   fullVFXParamA.id = "{E383FFF3-6549-44A4-878B-9BE81EB4A69F}";
   fullVFXParamA.type = FBParamType::Identity;
+  fullVFXParamA.Identity().displayAsBipolar = true;
   auto selectfullVFXParamA = [](auto& module) { return &module.acc.fullVFXParamA; };
   fullVFXParamA.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullVFXParamA);
   fullVFXParamA.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullVFXParamA);
@@ -305,12 +315,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullVFXParamB = result->params[(int)FFGlobalUniParam::FullVFXParamB];
   fullVFXParamB.mode = FBParamMode::Accurate;
-  fullVFXParamB.defaultText = "50";
+  fullVFXParamB.defaultText = "0";
   fullVFXParamB.name = "VFX Param B";
   fullVFXParamB.slotCount = FFGlobalUniMaxCount;
   fullVFXParamB.unit = "%";
   fullVFXParamB.id = "{82D2D353-D454-496B-BB0E-F7B23D20D698}";
   fullVFXParamB.type = FBParamType::Identity;
+  fullVFXParamB.Identity().displayAsBipolar = true;
   auto selectfullVFXParamB = [](auto& module) { return &module.acc.fullVFXParamB; };
   fullVFXParamB.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullVFXParamB);
   fullVFXParamB.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullVFXParamB);
@@ -319,12 +330,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullVFXParamC = result->params[(int)FFGlobalUniParam::FullVFXParamC];
   fullVFXParamC.mode = FBParamMode::Accurate;
-  fullVFXParamC.defaultText = "50";
+  fullVFXParamC.defaultText = "0";
   fullVFXParamC.name = "VFX Param C";
   fullVFXParamC.slotCount = FFGlobalUniMaxCount;
   fullVFXParamC.unit = "%";
   fullVFXParamC.id = "{55539EFD-3561-4F1F-BDDC-FF0CEC2AA14B}";
   fullVFXParamC.type = FBParamType::Identity;
+  fullVFXParamC.Identity().displayAsBipolar = true;
   auto selectfullVFXParamC = [](auto& module) { return &module.acc.fullVFXParamC; };
   fullVFXParamC.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullVFXParamC);
   fullVFXParamC.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullVFXParamC);
@@ -333,12 +345,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullVFXParamD = result->params[(int)FFGlobalUniParam::FullVFXParamD];
   fullVFXParamD.mode = FBParamMode::Accurate;
-  fullVFXParamD.defaultText = "50";
+  fullVFXParamD.defaultText = "0";
   fullVFXParamD.name = "VFX Param D";
   fullVFXParamD.slotCount = FFGlobalUniMaxCount;
   fullVFXParamD.unit = "%";
   fullVFXParamD.id = "{9346FF6B-068F-4F36-A4CD-68A652CF1A2C}";
   fullVFXParamD.type = FBParamType::Identity;
+  fullVFXParamD.Identity().displayAsBipolar = true;
   auto selectfullVFXParamD = [](auto& module) { return &module.acc.fullVFXParamD; };
   fullVFXParamD.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullVFXParamD);
   fullVFXParamD.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullVFXParamD);
@@ -364,15 +377,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullEnvStretch = result->params[(int)FFGlobalUniParam::FullEnvStretch];
   fullEnvStretch.mode = FBParamMode::Block;
-  fullEnvStretch.defaultText = "100";
+  fullEnvStretch.defaultText = "0";
   fullEnvStretch.name = "Env Stretch";
   fullEnvStretch.slotCount = FFGlobalUniMaxCount;
   fullEnvStretch.unit = "%";
   fullEnvStretch.id = "{6155B06D-D928-4EBF-9A52-99EAA3341D26}";
-  fullEnvStretch.type = FBParamType::Linear;
-  fullEnvStretch.Linear().min = 0.5f;
-  fullEnvStretch.Linear().max = 1.5f;
-  fullEnvStretch.Linear().displayMultiplier = 100.0f;
+  fullEnvStretch.type = FBParamType::Identity;
+  fullEnvStretch.Identity().displayAsBipolar = true;
   auto selectfullEnvStretch = [](auto& module) { return &module.block.fullEnvStretch; };
   fullEnvStretch.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullEnvStretch);
   fullEnvStretch.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectfullEnvStretch);
@@ -381,12 +392,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullEchoExtend = result->params[(int)FFGlobalUniParam::FullEchoExtend];
   fullEchoExtend.mode = FBParamMode::Block;
-  fullEchoExtend.defaultText = "50";
+  fullEchoExtend.defaultText = "0";
   fullEchoExtend.name = "Echo Extend";
   fullEchoExtend.slotCount = FFGlobalUniMaxCount;
   fullEchoExtend.unit = "%";
   fullEchoExtend.id = "{B60645F1-F349-4911-AA11-218E188C0D1F}";
   fullEchoExtend.type = FBParamType::Identity;
+  fullEchoExtend.Identity().displayAsBipolar = true;
   auto selectfullEchoExtend = [](auto& module) { return &module.block.fullEchoExtend; };
   fullEchoExtend.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullEchoExtend);
   fullEchoExtend.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectfullEchoExtend);
@@ -395,12 +407,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullEchoFade = result->params[(int)FFGlobalUniParam::FullEchoFade];
   fullEchoFade.mode = FBParamMode::Block;
-  fullEchoFade.defaultText = "50";
+  fullEchoFade.defaultText = "0";
   fullEchoFade.name = "Echo Fade";
   fullEchoFade.slotCount = FFGlobalUniMaxCount;
   fullEchoFade.unit = "%";
   fullEchoFade.id = "{A9F81A4A-1FB3-418B-86F5-8F49C77934B7}";
   fullEchoFade.type = FBParamType::Identity;
+  fullEchoFade.Identity().displayAsBipolar = true;
   auto selectfullEchoFade = [](auto& module) { return &module.block.fullEchoFade; };
   fullEchoFade.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullEchoFade);
   fullEchoFade.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectfullEchoFade);
@@ -409,12 +422,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullEchoTapLevel = result->params[(int)FFGlobalUniParam::FullEchoTapLevel];
   fullEchoTapLevel.mode = FBParamMode::Accurate;
-  fullEchoTapLevel.defaultText = "50";
+  fullEchoTapLevel.defaultText = "0";
   fullEchoTapLevel.name = "Echo Tap Lvl";
   fullEchoTapLevel.slotCount = FFGlobalUniMaxCount;
   fullEchoTapLevel.unit = "%";
   fullEchoTapLevel.id = "{A480C75C-3429-44A1-BAAF-44341E793F80}";
   fullEchoTapLevel.type = FBParamType::Identity;
+  fullEchoTapLevel.Identity().displayAsBipolar = true;
   auto selectfullEchoTapLevel = [](auto& module) { return &module.acc.fullEchoTapLevel; };
   fullEchoTapLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullEchoTapLevel);
   fullEchoTapLevel.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullEchoTapLevel);
@@ -423,12 +437,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullEchoTapDelay = result->params[(int)FFGlobalUniParam::FullEchoTapDelay];
   fullEchoTapDelay.mode = FBParamMode::Accurate;
-  fullEchoTapDelay.defaultText = "50";
+  fullEchoTapDelay.defaultText = "0";
   fullEchoTapDelay.name = "Echo Tap Dly";
   fullEchoTapDelay.slotCount = FFGlobalUniMaxCount;
   fullEchoTapDelay.unit = "%";
   fullEchoTapDelay.id = "{158E67F4-DD9C-4A2A-93B8-6914B8F9DCED}";
   fullEchoTapDelay.type = FBParamType::Identity;
+  fullEchoTapDelay.Identity().displayAsBipolar = true;
   auto selectfullEchoTapDelay = [](auto& module) { return &module.acc.fullEchoTapDelay; };
   fullEchoTapDelay.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullEchoTapDelay);
   fullEchoTapDelay.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullEchoTapDelay);
@@ -437,12 +452,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullEchoTapBal = result->params[(int)FFGlobalUniParam::FullEchoTapBal];
   fullEchoTapBal.mode = FBParamMode::Accurate;
-  fullEchoTapBal.defaultText = "50";
+  fullEchoTapBal.defaultText = "0";
   fullEchoTapBal.name = "Echo Tap Bal";
   fullEchoTapBal.slotCount = FFGlobalUniMaxCount;
   fullEchoTapBal.unit = "%";
   fullEchoTapBal.id = "{1E8EDB12-2E07-47DE-BB0C-39AC596896E0}";
   fullEchoTapBal.type = FBParamType::Identity;
+  fullEchoTapBal.Identity().displayAsBipolar = true;
   auto selectfullEchoTapBal = [](auto& module) { return &module.acc.fullEchoTapBal; };
   fullEchoTapBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullEchoTapBal);
   fullEchoTapBal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullEchoTapBal);
@@ -451,12 +467,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullEchoFdbkDelay = result->params[(int)FFGlobalUniParam::FullEchoFdbkDelay];
   fullEchoFdbkDelay.mode = FBParamMode::Accurate;
-  fullEchoFdbkDelay.defaultText = "50";
+  fullEchoFdbkDelay.defaultText = "0";
   fullEchoFdbkDelay.name = "Echo Fdbk Dly";
   fullEchoFdbkDelay.slotCount = FFGlobalUniMaxCount;
   fullEchoFdbkDelay.unit = "%";
   fullEchoFdbkDelay.id = "{6D51D872-4BFD-4F06-B202-BD971DB527FA}";
   fullEchoFdbkDelay.type = FBParamType::Identity;
+  fullEchoFdbkDelay.Identity().displayAsBipolar = true;
   auto selectfullEchoFdbkDelay = [](auto& module) { return &module.acc.fullEchoFdbkDelay; };
   fullEchoFdbkDelay.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullEchoFdbkDelay);
   fullEchoFdbkDelay.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullEchoFdbkDelay);
@@ -465,12 +482,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullEchoFdbkMix = result->params[(int)FFGlobalUniParam::FullEchoFdbkMix];
   fullEchoFdbkMix.mode = FBParamMode::Accurate;
-  fullEchoFdbkMix.defaultText = "50";
+  fullEchoFdbkMix.defaultText = "0";
   fullEchoFdbkMix.name = "Echo Fdbk Mix";
   fullEchoFdbkMix.slotCount = FFGlobalUniMaxCount;
   fullEchoFdbkMix.unit = "%";
   fullEchoFdbkMix.id = "{41E192B1-909D-41B6-93B5-9343460670A2}";
   fullEchoFdbkMix.type = FBParamType::Identity;
+  fullEchoFdbkMix.Identity().displayAsBipolar = true;
   auto selectfullEchoFdbkMix = [](auto& module) { return &module.acc.fullEchoFdbkMix; };
   fullEchoFdbkMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullEchoFdbkMix);
   fullEchoFdbkMix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullEchoFdbkMix);
@@ -479,12 +497,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullEchoFdbkAmt = result->params[(int)FFGlobalUniParam::FullEchoFdbkAmt];
   fullEchoFdbkAmt.mode = FBParamMode::Accurate;
-  fullEchoFdbkAmt.defaultText = "50";
+  fullEchoFdbkAmt.defaultText = "0";
   fullEchoFdbkAmt.name = "Echo Fdbk Amt";
   fullEchoFdbkAmt.slotCount = FFGlobalUniMaxCount;
   fullEchoFdbkAmt.unit = "%";
   fullEchoFdbkAmt.id = "{BF96F4F2-74C7-4BA8-8FE5-72320499849E}";
   fullEchoFdbkAmt.type = FBParamType::Identity;
+  fullEchoFdbkAmt.Identity().displayAsBipolar = true;
   auto selectfullEchoFdbkAmt = [](auto& module) { return &module.acc.fullEchoFdbkAmt; };
   fullEchoFdbkAmt.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullEchoFdbkAmt);
   fullEchoFdbkAmt.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullEchoFdbkAmt);
@@ -493,12 +512,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullEchoReverbMix = result->params[(int)FFGlobalUniParam::FullEchoReverbMix];
   fullEchoReverbMix.mode = FBParamMode::Accurate;
-  fullEchoReverbMix.defaultText = "50";
+  fullEchoReverbMix.defaultText = "0";
   fullEchoReverbMix.name = "Echo Rvrb Mix";
   fullEchoReverbMix.slotCount = FFGlobalUniMaxCount;
   fullEchoReverbMix.unit = "%";
   fullEchoReverbMix.id = "{475A0982-1DEE-4636-B532-0D0FCD816DEC}";
   fullEchoReverbMix.type = FBParamType::Identity;
+  fullEchoReverbMix.Identity().displayAsBipolar = true;
   auto selectfullEchoReverbMix = [](auto& module) { return &module.acc.fullEchoReverbMix; };
   fullEchoReverbMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullEchoReverbMix);
   fullEchoReverbMix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullEchoReverbMix);
@@ -507,12 +527,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullEchoReverbSize = result->params[(int)FFGlobalUniParam::FullEchoReverbSize];
   fullEchoReverbSize.mode = FBParamMode::Accurate;
-  fullEchoReverbSize.defaultText = "50";
+  fullEchoReverbSize.defaultText = "0";
   fullEchoReverbSize.name = "Echo Rvrb Size";
   fullEchoReverbSize.slotCount = FFGlobalUniMaxCount;
   fullEchoReverbSize.unit = "%";
   fullEchoReverbSize.id = "{8E997A4E-BCF6-4599-9329-377E81F77B5F}";
   fullEchoReverbSize.type = FBParamType::Identity;
+  fullEchoReverbSize.Identity().displayAsBipolar = true;
   auto selectfullEchoReverbSize = [](auto& module) { return &module.acc.fullEchoReverbSize; };
   fullEchoReverbSize.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullEchoReverbSize);
   fullEchoReverbSize.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullEchoReverbSize);
@@ -521,12 +542,13 @@ FFMakeGlobalUniTopo()
 
   auto& fullEchoReverbDamp = result->params[(int)FFGlobalUniParam::FullEchoReverbDamp];
   fullEchoReverbDamp.mode = FBParamMode::Accurate;
-  fullEchoReverbDamp.defaultText = "50";
+  fullEchoReverbDamp.defaultText = "0";
   fullEchoReverbDamp.name = "Echo Rvrb Damp";
   fullEchoReverbDamp.slotCount = FFGlobalUniMaxCount;
   fullEchoReverbDamp.unit = "%";
   fullEchoReverbDamp.id = "{6E27DACE-DEA9-4168-8752-6BFB0B09002E}";
   fullEchoReverbDamp.type = FBParamType::Identity;
+  fullEchoReverbDamp.Identity().displayAsBipolar = true;
   auto selectfullEchoReverbDamp = [](auto& module) { return &module.acc.fullEchoReverbDamp; };
   fullEchoReverbDamp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullEchoReverbDamp);
   fullEchoReverbDamp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullEchoReverbDamp);

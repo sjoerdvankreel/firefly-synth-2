@@ -11,6 +11,7 @@
 
 struct FBIdentityParam
 {
+  bool displayAsBipolar = false;
   double displayMultiplier = 100.0;
 
   float NormalizedToPlainFast(float normalized) const {  return normalized; }
