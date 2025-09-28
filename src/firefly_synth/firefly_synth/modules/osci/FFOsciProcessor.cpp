@@ -106,14 +106,14 @@ FFOsciProcessor::BeginVoice(
   _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, _voiceStartSnapshotNorm.uniRandom[0]);
 
   float globalUniPhaseOffset = 0.0f;
-  if (graph)
-    globalUniPhaseOffset = exchangeFromDSP->globalUniPhaseOffset;
-  else
+  if (!graph)
   {
     globalUniPhaseOffset = procState->dsp.global.globalUni.processor->GetPhaseOffset(
       state, FFGlobalUniTarget::OscPhaseOffset, voice);
     state.ExchangeToGUIAs<FFExchangeState>()->voice[voice].osci[state.moduleSlot].globalUniPhaseOffset = globalUniPhaseOffset;
   }
+  else if(exchangeFromDSP != nullptr)
+    globalUniPhaseOffset = exchangeFromDSP->globalUniPhaseOffset;
 
   FBSArray<float, FFOsciUniMaxCount> uniPhaseInit = {};
   for (int u = 0; u < _uniCount; u++)
