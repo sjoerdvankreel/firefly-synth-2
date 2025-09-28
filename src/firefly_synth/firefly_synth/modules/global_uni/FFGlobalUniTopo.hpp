@@ -7,7 +7,6 @@ struct FBStaticModule;
 inline int constexpr FFGlobalUniMaxCount = 8;
 inline float constexpr FFGlobalUniCoarseSemis = 36.0f;
 
-enum class FFGlobalUniType { Off, Basic, Full };
 enum class FFGlobalUniTarget {
   VoiceCoarse, VoiceFine, VMixAmp, VMixBal,
   OscGain, OscPan, OscCoarse, OscFine, OscPhaseOffset,
@@ -18,7 +17,7 @@ enum class FFGlobalUniTarget {
   EchoReverbMix, EchoReverbSize, FullEchoReverbDamp };
 
 enum class FFGlobalUniParam { 
-  Type, VoiceCount, 
+  VoiceCount, 
   FullVoiceCoarse, FullFirst = FullVoiceCoarse, FullVoiceFine, FullVMixAmp, FullVMixBal,
   FullOscGain, FullOscPan, FullOscCoarse, FullOscFine, FullOscPhaseOffset,
   FullLFORate, FullLFOMin, FullLFOMax, FullLFOSkewAX, FullLFOSkewAY, FullLFOPhaseOffset,
