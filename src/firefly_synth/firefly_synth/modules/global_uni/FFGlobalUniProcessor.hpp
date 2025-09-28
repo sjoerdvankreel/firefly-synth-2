@@ -30,7 +30,7 @@ public:
 
   float ApplyPhase(
     FBModuleProcState& state, 
-    FFGlobalUniTarget targetPhaseParam, FFGlobalUniTarget targetRandParam,
+    FFGlobalUniTarget targetPhaseParam,
     int voice, float targetValue);
 
   void Apply(
@@ -41,7 +41,7 @@ public:
 inline float 
 FFGlobalUniProcessor::ApplyPhase(
   FBModuleProcState& state, 
-  FFGlobalUniTarget targetPhaseParam, FFGlobalUniTarget targetRandParam,
+  FFGlobalUniTarget targetParam,
   int voice, float targetValue)
 {
   if (_type == FFGlobalUniType::Off)
@@ -50,15 +50,10 @@ FFGlobalUniProcessor::ApplyPhase(
   FFParkMillerPRNG uniformPrng = {};
   auto const* procStateContainer = state.input->procState;
   int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
-  int paramPhaseIndex = (int)FFGlobalUniParam::FullFirst + (int)targetPhaseParam;
-  int paramRandIndex = (int)FFGlobalUniParam::FullFirst + (int)targetRandParam;
-  auto const* paramPhaseTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramPhaseIndex, voiceSlotInGroup } });
-  auto const* paramRandTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramRandIndex, voiceSlotInGroup } });
-  auto const& phaseCvNorm = procStateContainer->Params()[paramPhaseTopo->runtimeParamIndex].GlobalAcc().Global().CV();
-  auto const& randCvNorm = procStateContainer->Params()[paramRandTopo->runtimeParamIndex].GlobalAcc().Global().CV();  
-  float uniPhaseOffset = voiceSlotInGroup * phaseCvNorm.Get(0) / _voiceCount;
-  uniPhaseOffset = ((1.0f - randCvNorm.Get(0)) + randCvNorm.Get(0) * uniformPrng.NextScalar()) * uniPhaseOffset;
-  return FBPhaseWrap(targetValue + uniPhaseOffset);
+  int paramIndex = (int)FFGlobalUniParam::FullFirst + (int)targetParam;
+  auto const* paramTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramIndex, voiceSlotInGroup } });
+  auto const& cvNorm = procStateContainer->Params()[paramTopo->runtimeParamIndex].GlobalAcc().Global().CV();
+  return FBPhaseWrap(targetValue + cvNorm.Get(s));
 }
 
 inline void 

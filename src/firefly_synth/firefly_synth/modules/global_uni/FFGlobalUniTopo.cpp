@@ -175,27 +175,11 @@ FFMakeGlobalUniTopo()
   fullOscPhaseOffset.unit = "%";
   fullOscPhaseOffset.id = "{EC98E6C3-0BB3-4E19-A861-5CDDA8C0401F}";
   fullOscPhaseOffset.type = FBParamType::Identity;
-  fullOscPhaseOffset.Identity().displayAsBipolar = true;
   auto selectfullOscPhaseOffset = [](auto& module) { return &module.acc.fullOscPhaseOffset; };
   fullOscPhaseOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullOscPhaseOffset);
   fullOscPhaseOffset.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullOscPhaseOffset);
   fullOscPhaseOffset.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectfullOscPhaseOffset);
   fullOscPhaseOffset.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::FullOscPhaseOffset, -1 }, { (int)FFGlobalUniParam::Type } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] == (int)FFGlobalUniType::Full; });
-
-  auto& fullOscPhaseRand = result->params[(int)FFGlobalUniParam::FullOscPhaseRand];
-  fullOscPhaseRand.mode = FBParamMode::VoiceStart;
-  fullOscPhaseRand.defaultText = "0";
-  fullOscPhaseRand.name = "Osc Phs Rnd";
-  fullOscPhaseRand.slotCount = FFGlobalUniMaxCount;
-  fullOscPhaseRand.unit = "%";
-  fullOscPhaseRand.id = "{8A9F0F51-B8CF-4BBE-A35A-3A5A8A1FA0EF}";
-  fullOscPhaseRand.type = FBParamType::Identity;
-  fullOscPhaseRand.Identity().displayAsBipolar = true;
-  auto selectFullOscPhaseRand = [](auto& module) { return &module.acc.fullOscPhaseRand; };
-  fullOscPhaseRand.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFullOscPhaseRand);
-  fullOscPhaseRand.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFullOscPhaseRand);
-  fullOscPhaseRand.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFullOscPhaseRand);
-  fullOscPhaseRand.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::FullOscPhaseRand, -1 }, { (int)FFGlobalUniParam::Type } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] == (int)FFGlobalUniType::Full; });
 
   auto& fullLFORate = result->params[(int)FFGlobalUniParam::FullLFORate];
   fullLFORate.mode = FBParamMode::Accurate;
@@ -285,20 +269,6 @@ FFMakeGlobalUniTopo()
   fullLFOPhaseOffset.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullLFOPhaseOffset);
   fullLFOPhaseOffset.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectfullLFOPhaseOffset);
   fullLFOPhaseOffset.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::FullLFOPhaseOffset, -1 }, { (int)FFGlobalUniParam::Type } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] == (int)FFGlobalUniType::Full; });
-
-  auto& fullLFOPhaseRand = result->params[(int)FFGlobalUniParam::FullLFOPhaseRand];
-  fullLFOPhaseRand.mode = FBParamMode::VoiceStart;
-  fullLFOPhaseRand.defaultText = "0";
-  fullLFOPhaseRand.name = "LFO Phs Rnd";
-  fullLFOPhaseRand.slotCount = FFGlobalUniMaxCount;
-  fullLFOPhaseRand.unit = "%";
-  fullLFOPhaseRand.id = "{78DD7308-DA56-4A61-8940-6FE8F0632EAD}";
-  fullLFOPhaseRand.type = FBParamType::Identity;
-  auto selectfullLFOPhaseRand = [](auto& module) { return &module.acc.fullLFOPhaseRand; };
-  fullLFOPhaseRand.scalarAddr = FFSelectScalarParamAddr(selectModule, selectfullLFOPhaseRand);
-  fullLFOPhaseRand.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectfullLFOPhaseRand);
-  fullLFOPhaseRand.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectfullLFOPhaseRand);
-  fullLFOPhaseRand.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::FullLFOPhaseRand, -1 }, { (int)FFGlobalUniParam::Type } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] == (int)FFGlobalUniType::Full; });
 
   auto& fullVFXParamA = result->params[(int)FFGlobalUniParam::FullVFXParamA];
   fullVFXParamA.mode = FBParamMode::Accurate;

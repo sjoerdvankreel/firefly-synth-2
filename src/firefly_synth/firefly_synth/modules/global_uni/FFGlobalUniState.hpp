@@ -41,13 +41,11 @@ class alignas(alignof(TAccurate)) FFGlobalUniAccParamState final
   std::array<TAccurate, FFGlobalUniMaxCount> fullVoiceFine = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullVMixAmp = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullVMixBal = {};
-  std::array<TAccurate, FFGlobalUniMaxCount> fullOscPhaseRand = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullOscPhaseOffset = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullOscPan = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullOscGain = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullOscFine = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullOscCoarse = {};
-  std::array<TAccurate, FFGlobalUniMaxCount> fullLFOPhaseRand = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullLFOPhaseOffset = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullLFORate = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullLFOMin = {};

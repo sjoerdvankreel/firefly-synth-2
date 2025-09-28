@@ -87,7 +87,7 @@ MakeGlobalUniSectionMain(FBPlugGUI* plugGUI)
   auto fullEditor = MakeGlobalUniFullEditor(plugGUI);
   auto showEditor = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, voiceCount, "Edit");
   showEditor->onClick = [plugGUI, fullEditor]() {
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison (Full)", fullEditor, 640, 500, [plugGUI]() {
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison (Full)", fullEditor, 640, 450, [plugGUI]() {
       FBTopoIndices moduleIndices = { (int)FFModuleType::GlobalUni, 0 };
       std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
       plugGUI->HostContext()->UndoState().Snapshot("Init " + name);

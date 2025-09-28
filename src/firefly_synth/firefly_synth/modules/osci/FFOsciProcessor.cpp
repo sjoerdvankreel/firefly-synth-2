@@ -118,7 +118,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state, bool graph)
     float uniPhase = u * _uniOffsetPlain / _uniCount;
     uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _uniformPrng.NextScalar()) * uniPhase);
     uniPhaseInit.Set(u, procState->dsp.global.globalUni.processor->ApplyPhase(
-      state, FFGlobalUniTarget::OscPhaseOffset, FFGlobalUniTarget::OscPhaseRand, voice, uniPhaseInit.Get(u)));
+      state, FFGlobalUniTarget::OscPhaseOffset, voice, uniPhaseInit.Get(u)));
   }
 
   _modMatrixExpoFM = modTopo.NormalizedToBoolFast(FFOsciModParam::ExpoFM, modExpoFMNorm);
