@@ -20,6 +20,7 @@ struct FBModuleProcState;
 
 class FFGlobalUniProcessor final
 {
+  int _voiceCount = {};
   FFGlobalUniType _type = {};
 
 public:
@@ -27,10 +28,38 @@ public:
   void Process(FBModuleProcState& state);
   void BeginBlock(FBModuleProcState& state);
 
+  float ApplyPhase(
+    FBModuleProcState& state, 
+    FFGlobalUniTarget targetPhaseParam, FFGlobalUniTarget targetRandParam,
+    int voice, float targetValue);
+
   void Apply(
     FBModuleProcState& state, FFGlobalUniTarget targetParam, 
     int voice, FBSArray<float, 16>& targetSignal);
 };
+
+inline float 
+FFGlobalUniProcessor::ApplyPhase(
+  FBModuleProcState& state, 
+  FFGlobalUniTarget targetPhaseParam, FFGlobalUniTarget targetRandParam,
+  int voice, float targetValue)
+{
+  if (_type == FFGlobalUniType::Off)
+    return;
+
+  FFParkMillerPRNG uniformPrng = {};
+  auto const* procStateContainer = state.input->procState;
+  int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
+  int paramPhaseIndex = (int)FFGlobalUniParam::FullFirst + (int)targetPhaseParam;
+  int paramRandIndex = (int)FFGlobalUniParam::FullFirst + (int)targetRandParam;
+  auto const* paramPhaseTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramPhaseIndex, voiceSlotInGroup } });
+  auto const* paramRandTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramRandIndex, voiceSlotInGroup } });
+  auto const& phaseCvNorm = procStateContainer->Params()[paramPhaseTopo->runtimeParamIndex].GlobalAcc().Global().CV();
+  auto const& randCvNorm = procStateContainer->Params()[paramRandTopo->runtimeParamIndex].GlobalAcc().Global().CV();  
+  float uniPhaseOffset = voiceSlotInGroup * phaseCvNorm.Get(0) / _voiceCount;
+  uniPhaseOffset = ((1.0f - randCvNorm.Get(0)) + randCvNorm.Get(0) * uniformPrng.NextScalar()) * uniPhaseOffset;
+  return FBPhaseWrap(targetValue + uniPhaseOffset);
+}
 
 inline void 
 FFGlobalUniProcessor::Apply(

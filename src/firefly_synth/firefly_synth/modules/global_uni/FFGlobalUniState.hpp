@@ -28,14 +28,6 @@ class alignas(alignof(TBlock)) FFGlobalUniBlockParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeGlobalUniTopo();
   std::array<TBlock, 1> type = {};
   std::array<TBlock, 1> voiceCount = {};
-  std::array<TBlock, FFGlobalUniMaxCount> fullEchoFade = {};
-  std::array<TBlock, FFGlobalUniMaxCount> fullEchoExtend = {};
-  std::array<TBlock, FFGlobalUniMaxCount> fullEnvOffset = {};
-  std::array<TBlock, FFGlobalUniMaxCount> fullEnvStretch = {};
-  std::array<TBlock, FFGlobalUniMaxCount> fullOscPhaseRand = {};
-  std::array<TBlock, FFGlobalUniMaxCount> fullOscPhaseOffset = {};
-  std::array<TBlock, FFGlobalUniMaxCount> fullLFOPhaseRand = {};
-  std::array<TBlock, FFGlobalUniMaxCount> fullLFOPhaseOffset = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalUniBlockParamState);
 };
@@ -49,10 +41,14 @@ class alignas(alignof(TAccurate)) FFGlobalUniAccParamState final
   std::array<TAccurate, FFGlobalUniMaxCount> fullVoiceFine = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullVMixAmp = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullVMixBal = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> fullOscPhaseRand = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> fullOscPhaseOffset = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullOscPan = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullOscGain = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullOscFine = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullOscCoarse = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> fullLFOPhaseRand = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> fullLFOPhaseOffset = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullLFORate = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullLFOMin = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullLFOMax = {};
@@ -62,6 +58,10 @@ class alignas(alignof(TAccurate)) FFGlobalUniAccParamState final
   std::array<TAccurate, FFGlobalUniMaxCount> fullVFXParamB = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullVFXParamC = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullVFXParamD = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> fullEnvOffset = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> fullEnvStretch = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> fullEchoFade = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> fullEchoExtend = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullEchoTapLevel = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullEchoTapDelay = {};
   std::array<TAccurate, FFGlobalUniMaxCount> fullEchoTapBal = {};
