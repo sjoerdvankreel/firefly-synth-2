@@ -17,16 +17,14 @@ FFGlobalUniProcessor::BeginBlock(FBModuleProcState& state)
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.global.globalUni[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GlobalUni];
-  float typeNorm = params.block.type[0].Value();
   float countNorm = params.block.voiceCount[0].Value();
-  _type = topo.NormalizedToListFast<FFGlobalUniType>((int)FFGlobalUniParam::Type, typeNorm);
   _voiceCount = topo.NormalizedToDiscreteFast((int)FFGlobalUniParam::VoiceCount, countNorm);
 }
 
 void
 FFGlobalUniProcessor::Process(FBModuleProcState& state)
 {
-  if (_type == FFGlobalUniType::Off)
+  if (_voiceCount < 2)
     return;
 
   auto* procState = state.ProcAs<FFProcState>();

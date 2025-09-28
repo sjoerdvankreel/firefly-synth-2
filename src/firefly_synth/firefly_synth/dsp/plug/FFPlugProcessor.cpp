@@ -91,11 +91,8 @@ FFPlugProcessor::LeaseVoices(
 
       std::int64_t voiceGroupId = _voiceGroupId++;
       auto const* procState = input.procState->RawAs<FFProcState>();
-      float uniTypeNorm = procState->param.global.globalUni[0].block.type[0].Value();
       float uniVoiceCountNorm = procState->param.global.globalUni[0].block.voiceCount[0].Value();
       int uniVoiceCount = _topo->static_->modules[(int)FFModuleType::GlobalUni].NormalizedToDiscreteFast((int)FFGlobalUniParam::VoiceCount, uniVoiceCountNorm);
-      auto uniType = _topo->static_->modules[(int)FFModuleType::GlobalUni].NormalizedToListFast<FFGlobalUniType>((int)FFGlobalUniParam::Type, uniTypeNorm);
-      uniVoiceCount = uniType == FFGlobalUniType::Off ? 1 : uniVoiceCount;
 
       for (int v = 0; v < uniVoiceCount; v++)
       {

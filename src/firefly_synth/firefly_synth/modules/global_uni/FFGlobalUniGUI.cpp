@@ -18,7 +18,7 @@
 using namespace juce;
 
 static Component* 
-MakeGlobalUniFullEditor(FBPlugGUI* plugGUI)
+MakeGlobalUniEditor(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto rowSizes = std::vector<int>();
@@ -75,29 +75,28 @@ MakeGlobalUniSectionMain(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0 });
   
-  auto type = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Type, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
-  grid->Add(0, 1, 1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
   auto voiceCount = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
 
-  auto fullEditor = MakeGlobalUniFullEditor(plugGUI);
+  auto editor = MakeGlobalUniEditor(plugGUI);
   auto showEditor = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, voiceCount, "Edit");
-  showEditor->onClick = [plugGUI, fullEditor]() {
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison (Full)", fullEditor, 640, 450, [plugGUI]() {
+  showEditor->onClick = [plugGUI, editor]() {
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", editor, 640, 450, [plugGUI]() {
       FBTopoIndices moduleIndices = { (int)FFModuleType::GlobalUni, 0 };
       std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
       plugGUI->HostContext()->UndoState().Snapshot("Init " + name);
+
+      // TODO
       for (int p = (int)FFGlobalUniParam::FullFirst; p <= (int)FFGlobalUniParam::FullLast; p++)
         for (int s = 0; s < FFGlobalUniMaxCount; s++)
           plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
       });
     };
-  grid->Add(1, 2, showEditor);
-  grid->MarkSection({ { 0, 0 }, { 2, 3 } });
+  grid->Add(1, 0, 1, 2, showEditor);
+  grid->MarkSection({ { 0, 0 }, { 2, 2 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(subSection);
 }

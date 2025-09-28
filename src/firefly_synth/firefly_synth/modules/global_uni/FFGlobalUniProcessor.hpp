@@ -21,7 +21,6 @@ struct FBModuleProcState;
 class FFGlobalUniProcessor final
 {
   int _voiceCount = {};
-  FFGlobalUniType _type = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalUniProcessor);
@@ -44,7 +43,7 @@ FFGlobalUniProcessor::GetPhaseOffset(
   FFGlobalUniTarget targetParam,
   int voice)
 {
-  if (_type == FFGlobalUniType::Off)
+  if (_voiceCount < 2)
     return 0.0f;
 
   FFParkMillerPRNG uniformPrng = {};
@@ -61,7 +60,7 @@ FFGlobalUniProcessor::Apply(
   FBModuleProcState& state, FFGlobalUniTarget targetParam,
   int voice, FBSArray<float, 16>& targetSignal)
 {
-  if (_type == FFGlobalUniType::Off)
+  if (_voiceCount < 2)
     return;
 
   auto const* procStateContainer = state.input->procState;
