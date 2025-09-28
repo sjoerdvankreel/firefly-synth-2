@@ -26,6 +26,8 @@ TODOLIST for alpha-17
 [x] make stuff bipolar in the gui => new paramtype identityBipolar
 [x] more uni controls: vmix, voice_module
 [x] see what else can benefit from bipolar identity (now say that without context) ==> env slope
+[ ] osci phase (lfo phase?) needs exchange for global uni
+[ ] basic/full mode needs per-param
 [ ] osci-target vecho demo
 [ ] global uni demo
 [ ] decent defaults
