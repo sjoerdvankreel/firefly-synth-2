@@ -45,7 +45,7 @@ FFGlobalUniProcessor::ApplyPhase(
   int voice, float targetValue)
 {
   if (_type == FFGlobalUniType::Off)
-    return;
+    return targetValue;
 
   FFParkMillerPRNG uniformPrng = {};
   auto const* procStateContainer = state.input->procState;
