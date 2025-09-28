@@ -14,6 +14,12 @@
 
 struct FBStaticModule;
 
+struct alignas(FBSIMDAlign) FFOsciExchangeState final:
+public FBModuleProcSingleExchangeState
+{
+  float globalUniPhaseOffset = {};
+};
+
 class alignas(FBSIMDAlign) FFOsciDSPState final
 {
   friend class FFPlugProcessor;

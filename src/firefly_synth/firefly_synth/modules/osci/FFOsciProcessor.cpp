@@ -66,7 +66,10 @@ FFOsciProcessor::AllocOnDemandBuffers(
 }
 
 void
-FFOsciProcessor::BeginVoice(FBModuleProcState& state, bool graph)
+FFOsciProcessor::BeginVoice(
+  FBModuleProcState& state, 
+  FFOsciExchangeState const* exchangeFromDSP,
+  bool graph)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -102,6 +105,16 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state, bool graph)
   _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, _voiceStartSnapshotNorm.uniOffset[0]);
   _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, _voiceStartSnapshotNorm.uniRandom[0]);
 
+  float globalUniPhaseOffset = 0.0f;
+  if (graph)
+    globalUniPhaseOffset = exchangeFromDSP->globalUniPhaseOffset;
+  else
+  {
+    globalUniPhaseOffset = procState->dsp.global.globalUni.processor->GetPhaseOffset(
+      state, FFGlobalUniTarget::OscPhaseOffset, voice);
+    state.ExchangeToGUIAs<FFExchangeState>()->voice[voice].osci[state.moduleSlot].globalUniPhaseOffset = globalUniPhaseOffset;
+  }
+
   FBSArray<float, FFOsciUniMaxCount> uniPhaseInit = {};
   for (int u = 0; u < _uniCount; u++)
   {
@@ -117,8 +130,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state, bool graph)
     }
     float uniPhase = u * _uniOffsetPlain / _uniCount;
     uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _uniformPrng.NextScalar()) * uniPhase);
-    uniPhaseInit.Set(u, procState->dsp.global.globalUni.processor->ApplyPhase(
-      state, FFGlobalUniTarget::OscPhaseOffset, voice, uniPhaseInit.Get(u)));
+    uniPhaseInit.Set(u, FBPhaseWrap(uniPhaseInit.Get(u) + globalUniPhaseOffset));
   }
 
   _modMatrixExpoFM = modTopo.NormalizedToBoolFast(FFOsciModParam::ExpoFM, modExpoFMNorm);
@@ -145,7 +157,9 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state, bool graph)
 }
 
 int
-FFOsciProcessor::Process(FBModuleProcState& state, bool graph)
+FFOsciProcessor::Process(
+  FBModuleProcState& state, 
+  bool graph)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();

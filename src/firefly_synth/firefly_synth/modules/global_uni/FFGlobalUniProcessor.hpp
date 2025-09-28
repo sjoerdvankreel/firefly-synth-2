@@ -28,10 +28,10 @@ public:
   void Process(FBModuleProcState& state);
   void BeginBlock(FBModuleProcState& state);
 
-  float ApplyPhase(
+  float GetPhaseOffset(
     FBModuleProcState& state, 
     FFGlobalUniTarget targetPhaseParam,
-    int voice, float targetValue);
+    int voice);
 
   void Apply(
     FBModuleProcState& state, FFGlobalUniTarget targetParam, 
@@ -39,13 +39,13 @@ public:
 };
 
 inline float 
-FFGlobalUniProcessor::ApplyPhase(
+FFGlobalUniProcessor::GetPhaseOffset(
   FBModuleProcState& state, 
   FFGlobalUniTarget targetParam,
-  int voice, float targetValue)
+  int voice)
 {
   if (_type == FFGlobalUniType::Off)
-    return targetValue;
+    return 0.0f;
 
   FFParkMillerPRNG uniformPrng = {};
   auto const* procStateContainer = state.input->procState;
@@ -53,7 +53,7 @@ FFGlobalUniProcessor::ApplyPhase(
   int paramIndex = (int)FFGlobalUniParam::FullFirst + (int)targetParam;
   auto const* paramTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramIndex, voiceSlotInGroup } });
   auto const& cvNorm = procStateContainer->Params()[paramTopo->runtimeParamIndex].GlobalAcc().Global().CV();
-  return FBPhaseWrap(targetValue + cvNorm.Get(0));
+  return cvNorm.Get(0);
 }
 
 inline void 

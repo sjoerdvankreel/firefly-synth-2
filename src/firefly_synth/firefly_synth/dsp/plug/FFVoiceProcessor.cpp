@@ -169,7 +169,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   {
     state.moduleSlot = i;
     if(_firstRoundThisVoice)
-      voiceDSP.osci[i].processor->BeginVoice(state, false);
+      voiceDSP.osci[i].processor->BeginVoice(state, nullptr, false);
     
     if (_ampEnvFinishedThisRound)
       voiceDSP.osci[i].output.Fill(0.0);

@@ -18,6 +18,7 @@
 
 class FBAccParamState;
 struct FBModuleProcState;
+struct FFOsciExchangeState;
 
 inline float constexpr FFOsciStringMinFreq = 20.0f;
 
@@ -138,8 +139,11 @@ public:
   FFOsciProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciProcessor);
   int Process(FBModuleProcState& state, bool graph);
-  void BeginVoice(FBModuleProcState& state, bool graph);
 
+  void BeginVoice(
+    FBModuleProcState& state,
+    FFOsciExchangeState const* exchangeFromDSP,
+    bool graph);
   void AllocOnDemandBuffers(
     FBRuntimeTopo const* topo, FBProcStateContainer* state,
     int moduleSlot, bool graph, float sampleRate);
