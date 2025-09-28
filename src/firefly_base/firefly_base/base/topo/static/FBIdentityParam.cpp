@@ -25,7 +25,7 @@ FBIdentityParamNonRealTime::PlainToText(bool io, int /*moduleIndex*/, double pla
 {
   double displayPlain = plain;
   if (displayAsBipolar)
-    displayPlain = FBToBipolar((float)displayPlain);
+    displayPlain = FBToBipolar(displayPlain);
   displayPlain *= displayMultiplier;
   if (io)
     return std::to_string(displayPlain);
@@ -41,7 +41,7 @@ FBIdentityParamNonRealTime::TextToPlainInternal(bool /*io*/, int /*moduleIndex*/
   double result = resultOpt.value();
   result /= displayMultiplier;
   if (displayAsBipolar)
-    result = FBToUnipolar((float)result);
+    result = FBToUnipolar(result);
   if (result < 0.0 || result > 1.0)
     return {};
   return { result };
