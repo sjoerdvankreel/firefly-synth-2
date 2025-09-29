@@ -54,6 +54,30 @@ FFMakeGlobalUniTopo()
   typeVoiceCoarse.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTypeVoiceCoarse);
   typeVoiceCoarse.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::TypeVoiceCoarse, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0; });
 
+  auto& typeVoiceFine = result->params[(int)FFGlobalUniParam::TypeVoiceFine];
+  typeVoiceFine.mode = FBParamMode::Block;
+  typeVoiceFine.defaultText = "Off";
+  typeVoiceFine.name = "Voice Fine Type";
+  typeVoiceFine.slotCount = 1;
+  typeVoiceFine.id = "{597D8A4C-3B7C-4CAE-86C7-4222FC858576}";
+  typeVoiceFine.type = FBParamType::List;
+  typeVoiceFine.List().items = MakeTypeItems();
+  auto selectTypeVoiceFine = [](auto& module) { return &module.block.typeVoiceCoarse; };
+  typeVoiceFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTypeVoiceCoarse);
+  typeVoiceFine.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTypeVoiceCoarse);
+  typeVoiceFine.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTypeVoiceCoarse);
+  typeVoiceFine.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::TypeVoiceCoarse, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0; });
+
+  /*
+   , VMixAmp, VMixBal,
+  OscGain, OscPan, OscCoarse, OscFine, OscPhaseOffset,
+  LFORate, LFOMin, LFOMax, LFOSkewAX, LFOSkewAY, LFOPhaseOffset,
+  EnvOffset, EnvStretch, VFXParamA, VFXParamB, VFXParamC, VFXParamD,
+  EchoExtend, EchoFade, EchoTapLevel, EchoTapDelay, EchoTapBal,
+  EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt,
+  EchoReverbMix, EchoReverbSize, EchoReverbDamp
+  */
+
   auto& manualVoiceCoarse = result->params[(int)FFGlobalUniParam::ManualVoiceCoarse];
   manualVoiceCoarse.mode = FBParamMode::Accurate;
   manualVoiceCoarse.defaultText = "0";
