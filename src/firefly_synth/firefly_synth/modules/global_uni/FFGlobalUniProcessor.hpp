@@ -49,7 +49,7 @@ FFGlobalUniProcessor::GetPhaseOffset(
   FFParkMillerPRNG uniformPrng = {};
   auto const* procStateContainer = state.input->procState;
   int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
-  int paramIndex = (int)FFGlobalUniParam::FullFirst + (int)targetParam;
+  int paramIndex = (int)FFGlobalUniParam::ManualFirst + (int)targetParam;
   auto const* paramTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramIndex, voiceSlotInGroup } });
   auto const& cvNorm = procStateContainer->Params()[paramTopo->runtimeParamIndex].GlobalAcc().Global().CV();
   return cvNorm.Get(0);
@@ -65,7 +65,7 @@ FFGlobalUniProcessor::Apply(
 
   auto const* procStateContainer = state.input->procState;
   int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
-  int paramIndex = (int)FFGlobalUniParam::FullFirst + (int)targetParam;
+  int paramIndex = (int)FFGlobalUniParam::ManualFirst + (int)targetParam;
   auto const* paramTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramIndex, voiceSlotInGroup } });
   auto const& cvNorm = procStateContainer->Params()[paramTopo->runtimeParamIndex].GlobalAcc().Global().CV();
   if (targetParam == FFGlobalUniTarget::VoiceCoarse || targetParam == FFGlobalUniTarget::OscCoarse)

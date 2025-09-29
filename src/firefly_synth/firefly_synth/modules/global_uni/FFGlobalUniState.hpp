@@ -27,6 +27,7 @@ class alignas(alignof(TBlock)) FFGlobalUniBlockParamState final
   friend class FFGlobalUniProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGlobalUniTopo();
   std::array<TBlock, 1> voiceCount = {};
+  std::array<TBlock, 1> typeVoiceCoarse = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalUniBlockParamState);
 };

@@ -23,7 +23,7 @@ MakeGlobalUniEditor(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto rowSizes = std::vector<int>();
   rowSizes.push_back(1);
-  int uniControlCount = (int)FFGlobalUniParam::FullLast - (int)FFGlobalUniParam::FullFirst + 1;
+  int uniControlCount = (int)FFGlobalUniTarget::Count;
   FB_ASSERT(uniControlCount % 2 == 0);
   for (int i = 0; i < uniControlCount / 2; i++)
     rowSizes.push_back(1);
@@ -56,12 +56,12 @@ MakeGlobalUniEditor(FBPlugGUI* plugGUI)
       int guiRow = r + 1;
       int guiCol = c * (FFGlobalUniMaxCount + 1);
       int paramOffset = c * uniControlCount / 2 + r;
-      auto param0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::FullFirst + paramOffset, 0 } });
+      auto param0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::ManualFirst + paramOffset, 0 } });
       grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, param0, param0->static_.name));
       grid->MarkSection({ { guiRow, guiCol }, { 1, 1 } });
       for (int p = 0; p < FFGlobalUniMaxCount; p++)
       {
-        auto param = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::FullFirst + paramOffset, p } });
+        auto param = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::ManualFirst + paramOffset, p } });
         grid->Add(guiRow, guiCol + p + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag));
         grid->MarkSection({ { guiRow, guiCol + p + 1 }, { 1, 1 } });
       }
@@ -90,7 +90,7 @@ MakeGlobalUniSectionMain(FBPlugGUI* plugGUI)
       plugGUI->HostContext()->UndoState().Snapshot("Init " + name);
 
       // TODO
-      for (int p = (int)FFGlobalUniParam::FullFirst; p <= (int)FFGlobalUniParam::FullLast; p++)
+      for (int p = (int)FFGlobalUniParam::ManualFirst; p <= (int)FFGlobalUniParam::ManualLast; p++)
         for (int s = 0; s < FFGlobalUniMaxCount; s++)
           plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
       });
