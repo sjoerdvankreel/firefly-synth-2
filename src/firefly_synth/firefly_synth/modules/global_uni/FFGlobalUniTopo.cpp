@@ -30,21 +30,21 @@ FFMakeGlobalUniTopo()
   voiceCount.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectVoiceCount);
   voiceCount.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoiceCount);
 
-  auto& type = result->params[(int)FFGlobalUniParam::Type];
-  type.mode = FBParamMode::Block;
-  type.defaultText = "Off";
-  type.name = "Type";
-  type.slotCount = (int)FFGlobalUniTarget::Count;
-  type.id = "{B5809A8A-B0A9-40B2-8A0B-413121869836}";
-  type.type = FBParamType::List;
-  type.List().items = {
+  auto& mode = result->params[(int)FFGlobalUniParam::Mode];
+  mode.mode = FBParamMode::Block;
+  mode.defaultText = "Off";
+  mode.name = "Mode";
+  mode.slotCount = (int)FFGlobalUniTarget::Count;
+  mode.id = "{B5809A8A-B0A9-40B2-8A0B-413121869836}";
+  mode.type = FBParamType::List;
+  mode.List().items = {
     { "{328055DD-795F-402B-9B16-F30589866295}", "Off" },
     { "{770E5F05-0041-4750-805F-BF08A5135B1B}", "Auto" },
     { "{7645E42A-1249-4483-9019-4F92AD9D0FF7}", "Manual" } };
-  auto selectType = [](auto& module) { return &module.block.type; };
-  type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
-  type.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
-  type.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectType);
+  auto selectMode = [](auto& module) { return &module.block.mode; };
+  mode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectMode);
+  mode.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectMode);
+  mode.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectMode);
   
   auto& autoSeed = result->params[(int)FFGlobalUniParam::AutoSeed];
   autoSeed.mode = FBParamMode::Block;

@@ -28,6 +28,7 @@ TODOLIST for alpha-17
 [x] see what else can benefit from bipolar identity (now say that without context) ==> env slope
 [x] osci phase (lfo phase?) needs exchange for global uni
 [ ] make graphs for the guni
+[ ] hunt the todos
 [ ] basic/full mode needs per-param
 [ ] conditional disable edit button
 [ ] osci-target vecho demo

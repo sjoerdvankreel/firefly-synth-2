@@ -27,7 +27,7 @@ class alignas(alignof(TBlock)) FFGlobalUniBlockParamState final
   friend class FFGlobalUniProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGlobalUniTopo();
   std::array<TBlock, 1> voiceCount = {};
-  std::array<TBlock, (int)FFGlobalUniTarget::Count> type = {};
+  std::array<TBlock, (int)FFGlobalUniTarget::Count> mode = {};
   std::array<TBlock, (int)FFGlobalUniTarget::Count> autoSeed = {};
   std::array<TBlock, (int)FFGlobalUniTarget::Count> autoReseed = {};
 public:
