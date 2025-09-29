@@ -46,7 +46,6 @@ FFGlobalUniProcessor::GetPhaseOffset(
   if (_voiceCount < 2)
     return 0.0f;
 
-  FFParkMillerPRNG uniformPrng = {};
   auto const* procStateContainer = state.input->procState;
   int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
   int paramIndex = (int)FFGlobalUniParam::ManualFirst + (int)targetParam;

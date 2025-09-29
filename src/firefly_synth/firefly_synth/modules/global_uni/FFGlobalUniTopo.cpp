@@ -3,16 +3,6 @@
 #include <firefly_synth/modules/global_uni/FFGlobalUniTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
-static std::vector<FBListItem>
-MakeTypeItems()
-{
-  std::vector<FBListItem> result = {};
-  result.push_back({ "{328055DD-795F-402B-9B16-F30589866295}", "Off" });
-  result.push_back({ "{770E5F05-0041-4750-805F-BF08A5135B1B}", "Auto" });
-  result.push_back({ "{7645E42A-1249-4483-9019-4F92AD9D0FF7}", "Manual" });
-  return result;
-}
-
 std::unique_ptr<FBStaticModule>
 FFMakeGlobalUniTopo()
 {
@@ -40,43 +30,48 @@ FFMakeGlobalUniTopo()
   voiceCount.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectVoiceCount);
   voiceCount.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoiceCount);
 
-  auto& typeVoiceCoarse = result->params[(int)FFGlobalUniParam::TypeVoiceCoarse];
-  typeVoiceCoarse.mode = FBParamMode::Block;
-  typeVoiceCoarse.defaultText = "Off";
-  typeVoiceCoarse.name = "Voice Coarse Type";
-  typeVoiceCoarse.slotCount = 1;
-  typeVoiceCoarse.id = "{B5809A8A-B0A9-40B2-8A0B-413121869836}";
-  typeVoiceCoarse.type = FBParamType::List;
-  typeVoiceCoarse.List().items = MakeTypeItems();
-  auto selectTypeVoiceCoarse = [](auto& module) { return &module.block.typeVoiceCoarse; };
-  typeVoiceCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTypeVoiceCoarse);
-  typeVoiceCoarse.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTypeVoiceCoarse);
-  typeVoiceCoarse.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTypeVoiceCoarse);
-  typeVoiceCoarse.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::TypeVoiceCoarse, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0; });
+  auto& type = result->params[(int)FFGlobalUniParam::Type];
+  type.mode = FBParamMode::Block;
+  type.defaultText = "Off";
+  type.name = "Type";
+  type.slotCount = (int)FFGlobalUniTarget::Count;
+  type.id = "{B5809A8A-B0A9-40B2-8A0B-413121869836}";
+  type.type = FBParamType::List;
+  type.List().items = {
+    { "{328055DD-795F-402B-9B16-F30589866295}", "Off" },
+    { "{770E5F05-0041-4750-805F-BF08A5135B1B}", "Auto" },
+    { "{7645E42A-1249-4483-9019-4F92AD9D0FF7}", "Manual" } };
+  auto selectType = [](auto& module) { return &module.block.type; };
+  type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
+  type.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
+  type.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectType);
+  
+  auto& autoSeed = result->params[(int)FFGlobalUniParam::AutoSeed];
+  autoSeed.mode = FBParamMode::Block;
+  autoSeed.defaultText = "0";
+  autoSeed.name = "Seed"; // TODO name it by target
+  autoSeed.slotCount = (int)FFGlobalUniTarget::Count;
+  autoSeed.id = "{3D9A110B-B3F4-4700-B1A6-D3F5F7CEA368}";
+  autoSeed.type = FBParamType::Discrete;
+  autoSeed.Discrete().valueCount = FFGlobalUniMaxSeed + 1;
+  auto selectAutoSeed = [](auto& module) { return &module.block.autoSeed; };
+  autoSeed.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoSeed);
+  autoSeed.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectAutoSeed);
+  autoSeed.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoSeed);
+  autoSeed.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Type, -1 } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniType::Auto; });
 
-  auto& typeVoiceFine = result->params[(int)FFGlobalUniParam::TypeVoiceFine];
-  typeVoiceFine.mode = FBParamMode::Block;
-  typeVoiceFine.defaultText = "Off";
-  typeVoiceFine.name = "Voice Fine Type";
-  typeVoiceFine.slotCount = 1;
-  typeVoiceFine.id = "{597D8A4C-3B7C-4CAE-86C7-4222FC858576}";
-  typeVoiceFine.type = FBParamType::List;
-  typeVoiceFine.List().items = MakeTypeItems();
-  auto selectTypeVoiceFine = [](auto& module) { return &module.block.typeVoiceCoarse; };
-  typeVoiceFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTypeVoiceCoarse);
-  typeVoiceFine.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTypeVoiceCoarse);
-  typeVoiceFine.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTypeVoiceCoarse);
-  typeVoiceFine.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::TypeVoiceCoarse, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0; });
-
-  /*
-   , VMixAmp, VMixBal,
-  OscGain, OscPan, OscCoarse, OscFine, OscPhaseOffset,
-  LFORate, LFOMin, LFOMax, LFOSkewAX, LFOSkewAY, LFOPhaseOffset,
-  EnvOffset, EnvStretch, VFXParamA, VFXParamB, VFXParamC, VFXParamD,
-  EchoExtend, EchoFade, EchoTapLevel, EchoTapDelay, EchoTapBal,
-  EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt,
-  EchoReverbMix, EchoReverbSize, EchoReverbDamp
-  */
+  auto& autoReseed = result->params[(int)FFGlobalUniParam::AutoReseed];
+  autoReseed.mode = FBParamMode::Block;
+  autoReseed.defaultText = "Off";
+  autoReseed.name = "Reseed"; // TODO name it by target
+  autoReseed.slotCount = (int)FFGlobalUniTarget::Count;
+  autoReseed.id = "{8ED21529-ABEF-4D1C-BA27-768B0016BEC9}";
+  autoReseed.type = FBParamType::Boolean;
+  auto selectAutoReseed = [](auto& module) { return &module.block.autoReseed; };
+  autoReseed.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoReseed);
+  autoReseed.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectAutoReseed);
+  autoReseed.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoReseed);
+  autoReseed.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Type, -1 } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniType::Auto; });
 
   auto& manualVoiceCoarse = result->params[(int)FFGlobalUniParam::ManualVoiceCoarse];
   manualVoiceCoarse.mode = FBParamMode::Accurate;

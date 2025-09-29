@@ -5,6 +5,7 @@
 struct FBStaticModule;
 
 inline int constexpr FFGlobalUniMaxCount = 8;
+inline int constexpr FFGlobalUniMaxSeed = 255;
 inline float constexpr FFGlobalUniCoarseSemis = 36.0f;
 
 enum class FFGlobalUniType {
@@ -23,14 +24,9 @@ enum class FFGlobalUniTarget {
 // todo spread/space
 enum class FFGlobalUniParam { 
   VoiceCount, 
-  TypeVoiceCoarse, TypeFirst = TypeVoiceCoarse, TypeVoiceFine, TypeVMixAmp, TypeVMixBal,
-  TypeOscGain, TypeOscPan, TypeOscCoarse, TypeOscFine, TypeOscPhaseOffset,
-  TypeLFORate, TypeLFOMin, TypeLFOMax, TypeLFOSkewAX, TypeLFOSkewAY, TypeLFOPhaseOffset,
-  TypeEnvOffset, TypeEnvStretch, TypeVFXParamA, TypeVFXParamB, TypeVFXParamC, TypeVFXParamD,
-  TypeEchoExtend, TypeEchoFade,
-  TypeEchoTapLevel, TypeEchoTapDelay, TypeEchoTapBal,
-  TypeEchoFdbkDelay, TypeEchoFdbkMix, TypeEchoFdbkAmt,
-  TypeEchoReverbMix, TypeEchoReverbSize, TypeEchoReverbDamp, TypeLast = TypeEchoReverbDamp,
+  // by target dimension
+  Type, AutoAmount, AutoSpread, AutoSeed, AutoReseed, AutoRandom,
+  // by voice dimension (need different control types per param like bipolar yes/no)
   ManualVoiceCoarse, ManualFirst = ManualVoiceCoarse, ManualVoiceFine, ManualVMixAmp, ManualVMixBal,
   ManualOscGain, ManualOscPan, ManualOscCoarse, ManualOscFine, ManualOscPhaseOffset,
   ManualLFORate, ManualLFOMin, ManualLFOMax, ManualLFOSkewAX, ManualLFOSkewAY, ManualLFOPhaseOffset,
