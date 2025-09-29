@@ -73,6 +73,49 @@ FFMakeGlobalUniTopo()
   autoReseed.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoReseed);
   autoReseed.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Type, -1 } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniType::Auto; });
 
+  auto& autoSpread = result->params[(int)FFGlobalUniParam::AutoSpread];
+  autoSpread.mode = FBParamMode::Accurate;
+  autoSpread.defaultText = "0";
+  autoSpread.name = "Spread"; // TODO name it by target
+  autoSpread.slotCount = (int)FFGlobalUniTarget::Count;
+  autoSpread.id = "{6048E64F-F600-49AF-9DE6-16FB77134A40}";
+  autoSpread.unit = "%";
+  autoSpread.type = FBParamType::Identity;
+  auto selectAutoSpread = [](auto& module) { return &module.acc.autoSpread; };
+  autoSpread.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoSpread);
+  autoSpread.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAutoSpread);
+  autoSpread.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoSpread);
+  autoSpread.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Type, -1 } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniType::Auto; });
+
+  auto& autoRandom = result->params[(int)FFGlobalUniParam::AutoRandom];
+  autoRandom.mode = FBParamMode::VoiceStart;
+  autoRandom.defaultText = "0";
+  autoRandom.name = "Rand"; // TODO name it by target
+  autoRandom.slotCount = (int)FFGlobalUniTarget::Count;
+  autoRandom.id = "{74DDA592-503E-4A8E-A026-EB15A3977D7B}";
+  autoRandom.unit = "%";
+  autoRandom.type = FBParamType::Identity;
+  auto selectAutoRandom = [](auto& module) { return &module.acc.autoRnd; };
+  autoRandom.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoRandom);
+  autoRandom.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAutoRandom);
+  autoRandom.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoRandom);
+  autoRandom.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Type, -1 } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniType::Auto; });
+
+  auto& autoSpace = result->params[(int)FFGlobalUniParam::AutoSpace];
+  autoSpace.mode = FBParamMode::Accurate;
+  autoSpace.defaultText = "0";
+  autoSpace.name = "Space"; // TODO name it by target
+  autoSpace.slotCount = (int)FFGlobalUniTarget::Count;
+  autoSpace.id = "{F406EEC6-0A27-4486-BDE3-42947993DFE8}";
+  autoSpace.unit = "%";
+  autoSpace.type = FBParamType::Identity;
+  autoSpace.Identity().displayAsBipolar = true;
+  auto selectAutoSpace = [](auto& module) { return &module.acc.autoSpace; };
+  autoSpace.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoSpace);
+  autoSpace.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAutoSpace);
+  autoSpace.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoSpace);
+  autoSpace.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Type, -1 } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniType::Auto; });
+
   auto& manualVoiceCoarse = result->params[(int)FFGlobalUniParam::ManualVoiceCoarse];
   manualVoiceCoarse.mode = FBParamMode::Accurate;
   manualVoiceCoarse.defaultText = "0";
