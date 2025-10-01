@@ -36,7 +36,7 @@ FFGlobalUniProcessor::Apply(
 
   if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
   {
-    float voicePos = voiceSlotInGroup / (_voiceCount + 1.0f) - 0.5f;
+    float voicePos = voiceSlotInGroup / (_voiceCount - 1.0f) - 0.5f;
     auto const& spread = procState->param.global.globalUni[0].acc.autoSpread[(int)targetParam].Global().CV();
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {

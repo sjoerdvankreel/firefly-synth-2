@@ -20,9 +20,9 @@ public FBModuleGraphRenderData<GlobalUniGraphRenderData>
   FFGlobalUniProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoProcessIndicators(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/) {}
   void DoPostProcess(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
-  void DoProcessIndicators(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
 
 static FBModuleGraphPlotParams
@@ -57,6 +57,22 @@ GlobalUniGraphRenderData::DoProcess(
 {
   samplesProcessed[graphIndex] += FBFixedBlockSamples;
   return std::clamp(totalSamples - samplesProcessed[graphIndex], 0, FBFixedBlockSamples);
+}
+
+void
+GlobalUniGraphRenderData::DoProcessIndicators(
+  FBGraphRenderState* state,
+  int graphIndex, bool exchange,
+  int /*exchangeVoice*/, FBModuleGraphPoints& points)
+{
+  int voiceCount = state->AudioParamDiscrete({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } }, exchange, -1);
+  auto mode = state->AudioParamList<FFGlobalUniMode>({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, graphIndex } }, exchange, -1);
+  if (mode == FFGlobalUniMode::Auto)
+    for (int i = 0; i < voiceCount; i++)
+      points.pointIndicators.push_back((int)(i / (voiceCount - 1.0f) * points.l.size()));
+  if (mode == FFGlobalUniMode::Manual)
+    for (int i = 0; i < voiceCount; i++)
+      points.pointIndicators.push_back((int)(i / (voiceCount - 1.0f) * 0.5f * points.l.size()));
 }
 
 void
