@@ -38,6 +38,8 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
   grid->MarkSection({ { 0, 0 }, { 1, 1 } });
 
   grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>("On"));
+  grid->MarkSection({ { 0, 1 }, { 1, 1 } });
+
   auto tapDelayLevel0 = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLevel, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(tapDelayLevel0->static_.display));
   auto tapDelayTime0 = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapDelayTime, 0 } });
@@ -48,27 +50,33 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
   grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(tapBalance0->static_.display));
   auto tapXOver0 = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapXOver, 0 } });
   grid->Add(0, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(tapXOver0->static_.display));
+  grid->MarkSection({ { 0, 2 }, { 1, 4 } });
+
   auto tapLpOn0 = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLPOn, 0 } });
   grid->Add(0, 6, plugGUI->StoreComponent<FBAutoSizeLabel>(tapLpOn0->static_.display));
   auto tapLpFreq0 = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLPFreq, 0 } });
   grid->Add(0, 7, plugGUI->StoreComponent<FBAutoSizeLabel>(tapLpFreq0->static_.display));
   auto tapLpRes0 = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLPRes, 0 } });
   grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>(tapLpRes0->static_.display));
+  grid->MarkSection({ { 0, 6 }, { 1, 3 } });
+
   auto tapHpOn0 = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapHPOn, 0 } });
   grid->Add(0, 9, plugGUI->StoreComponent<FBAutoSizeLabel>(tapHpOn0->static_.display));
   auto tapHpFreq0 = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapHPFreq, 0 } });
   grid->Add(0, 10, plugGUI->StoreComponent<FBAutoSizeLabel>(tapHpFreq0->static_.display));
   auto tapHpRes0 = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapHPRes, 0 } });
   grid->Add(0, 11, plugGUI->StoreComponent<FBAutoSizeLabel>(tapHpRes0->static_.display));
-
-  for(int i = 0; i < 11; i++)
-    grid->MarkSection({ { 0, 1 + i }, { 1, 1 } });  
+  grid->MarkSection({ { 0, 9 }, { 1, 3 } });
 
   for (int t = 0; t < FFEchoTapCount; t++)
   {
     grid->Add(t + 1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(t + 1), true));
+    grid->MarkSection({ { t + 1, 0 }, { 1, 1 } });
+
     auto tapOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapOn, t } });
     grid->Add(1 + t, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tapOn));
+    grid->MarkSection({ { t + 1, 1 }, { 1, 1 } });
+
     auto tapLevel = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLevel, t } });
     grid->Add(1 + t, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLevel, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapDelayTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapDelayTime, t } });
@@ -79,25 +87,24 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
     grid->Add(1 + t, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapBalance, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapXOver = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapXOver, t } });
     grid->Add(1 + t, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapXOver, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->MarkSection({ { t + 1, 2 }, { 1, 4 } });
+
     auto tapLpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLPOn, t } });
     grid->Add(1 + t, 6, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tapLpOn));
     auto tapLpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLPFreq, t } });
     grid->Add(1 + t, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLpFreq, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapLpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLPRes, t } });
     grid->Add(1 + t, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLpRes, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->MarkSection({ { t + 1, 6 }, { 1, 3 } });
+
     auto tapHpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapHPOn, t } });
     grid->Add(1 + t, 9, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tapHpOn));
     auto tapHpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapHPFreq, t } });
     grid->Add(1 + t, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpFreq, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapHpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapHPRes, t } });
     grid->Add(1 + t, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpRes, Slider::SliderStyle::RotaryVerticalDrag));
-
-    for (int i = 0; i < 11; i++)
-      grid->MarkSection({ { 1 + t, 1 + i }, { 1, 1 } });
+    grid->MarkSection({ { t + 1, 9 }, { 1, 3 } });
   }
-
-  for(int t = 0; t < FFEchoTapCount; t++)
-    grid->MarkSection({ { 1 + t, 0 }, { 1, 1 } });
 
   return grid;
 }
