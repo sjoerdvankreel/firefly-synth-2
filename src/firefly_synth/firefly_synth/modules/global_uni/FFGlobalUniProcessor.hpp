@@ -30,12 +30,15 @@ public:
   void Process(FBModuleProcState& state);
   void BeginBlock(FBModuleProcState& state);
 
+  float GetTargetDefault(
+    FFGlobalUniTarget target);
+
   float GetPhaseOffset(
     FBModuleProcState& state, 
     FFGlobalUniTarget targetPhaseParam,
-    int voice);
+    int voiceSlotInGroup);
 
   void Apply(
     FBModuleProcState& state, FFGlobalUniTarget targetParam, 
-    int voice, FBSArray<float, 16>& targetSignal);
+    int voiceSlotInGroup, FBSArray<float, 16>& targetSignal);
 };

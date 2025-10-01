@@ -75,6 +75,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   auto const& ampEnvToAmpNorm = vMix.acc.ampEnvToAmp[0].Voice()[voice];
   auto const& osciMixToOutNorm = vMix.acc.osciMixToOut[0].Voice()[voice];
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::VMix];
+  int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
 
   FBSArray2<float, FBFixedBlockSamples, 2> osciMix = {};
   FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
@@ -133,7 +134,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   ampNormIn.CV().CopyTo(ampNormModulated);
   if (_ampEnvTarget != FFVMixAmpEnvTarget::Off)
     FFApplyModulation(FFModulationOpType::UPMul, voiceDSP.env[FFAmpEnvSlot].output, ampEnvToAmpNorm.CV(), ampNormModulated);
-  procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::VMixAmp, voice, ampNormModulated);
+  procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::VMixAmp, voiceSlotInGroup, ampNormModulated);
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     ampPlainModulated.Store(s, moduleTopo.NormalizedToLinearFast(FFVMixParam::Amp, ampNormModulated.Load(s)));
 
@@ -277,7 +278,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
   balNormIn.CV().CopyTo(balNormModulated);
   FFApplyModulation(FFModulationOpType::BPStack, voiceDSP.vLFO[5].outputAll, lfo6ToBalNorm.CV(), balNormModulated);
-  procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::VMixBal, voice, balNormModulated);
+  procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::VMixBal, voiceSlotInGroup, balNormModulated);
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float balPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Bal, balNormModulated.Get(s));

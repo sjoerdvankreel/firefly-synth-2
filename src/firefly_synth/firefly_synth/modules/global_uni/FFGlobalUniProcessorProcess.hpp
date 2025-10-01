@@ -4,16 +4,32 @@
 #include <firefly_synth/modules/global_uni/FFGlobalUniProcessor.hpp>
 
 inline float 
+FFGlobalUniProcessor::GetTargetDefault(
+  FFGlobalUniTarget target)
+{
+  switch (target)
+  {
+  case FFGlobalUniTarget::VMixAmp:
+  case FFGlobalUniTarget::OscGain:
+    return 1.0f;
+  case FFGlobalUniTarget::LFOPhaseOffset:
+  case FFGlobalUniTarget::OscPhaseOffset:
+    return 0.0f;
+  default:
+    return 1.0f;
+  }
+}
+
+inline float 
 FFGlobalUniProcessor::GetPhaseOffset(
   FBModuleProcState& state, 
   FFGlobalUniTarget targetParam,
-  int voice)
+  int voiceSlotInGroup)
 {
   if (_voiceCount < 2)
     return 0.0f;
 
   auto const* procStateContainer = state.input->procState;
-  int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
   int paramIndex = (int)FFGlobalUniParam::ManualFirst + (int)targetParam;
   auto const* paramTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramIndex, voiceSlotInGroup } });
   auto const& cvNorm = procStateContainer->Params()[paramTopo->runtimeParamIndex].GlobalAcc().Global().CV();
@@ -23,7 +39,7 @@ FFGlobalUniProcessor::GetPhaseOffset(
 inline void 
 FFGlobalUniProcessor::Apply(
   FBModuleProcState& state, FFGlobalUniTarget targetParam,
-  int voice, FBSArray<float, 16>& targetSignal)
+  int voiceSlotInGroup, FBSArray<float, 16>& targetSignal)
 {
   if (_voiceCount < 2)
     return;
@@ -32,8 +48,6 @@ FFGlobalUniProcessor::Apply(
 
   auto const* procState = state.ProcAs<FFProcState>();
   auto const* procStateContainer = state.input->procState;
-  int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
-
   if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
   {
     float voicePos = voiceSlotInGroup / (_voiceCount - 1.0f) - 0.5f;
