@@ -25,8 +25,8 @@ FBModuleGraphComponent(
   int fixedToRuntimeModuleIndex,
   int fixedToGraphIndex) :
 Component(),
-_fixedToGraphIndex(fixedToGraphIndex),
 _fixedToRuntimeModuleIndex(fixedToRuntimeModuleIndex),
+_fixedToGraphIndex(fixedToGraphIndex),
 _data(std::make_unique<FBModuleGraphComponentData>()),
 _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
 {
@@ -71,7 +71,9 @@ FBModuleGraphComponent::PrepareForRender(int moduleIndex)
     return moduleIndex == _fixedToRuntimeModuleIndex;
   auto moduleProcState = _data->renderState->ModuleProcState();
   moduleProcState->moduleSlot = TopoIndicesFor(moduleIndex).slot;
-  return StaticModuleFor(moduleIndex).graphRenderer != nullptr;
+  auto const& staticTopo = StaticModuleFor(moduleIndex);
+  FB_ASSERT(staticTopo.graphParticipatesInMain);
+  return staticTopo.graphRenderer != nullptr;
 }
 
 void
@@ -107,6 +109,7 @@ FBModuleGraphComponent::paint(Graphics& /*g*/)
 
   auto const* topo = _data->renderState->ModuleProcState()->topo;
   int staticIndex = topo->modules[_tweakedModuleByUI].topoIndices.index;
+  FB_ASSERT(topo->static_->modules[staticIndex].graphParticipatesInMain || _fixedToRuntimeModuleIndex != -1);
 
   _data->bipolar = false;
   _data->drawMarkersSelector = {};

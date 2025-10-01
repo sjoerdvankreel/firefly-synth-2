@@ -35,6 +35,7 @@ struct FBStaticModule final
   std::string name = {};
   std::string matrixName = {};
   bool slotFormatterOverrides = {};
+  bool graphParticipatesInMain = true;
   FBModuleGraphRenderer graphRenderer = {};
   FBModuleSlotFormatter slotFormatter = {};
   FBModuleSlotFormatter tabSlotFormatter = {};
