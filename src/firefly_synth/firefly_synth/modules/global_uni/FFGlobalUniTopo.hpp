@@ -8,6 +8,9 @@ inline int constexpr FFGlobalUniMaxCount = 8;
 inline int constexpr FFGlobalUniMaxSeed = 255;
 inline float constexpr FFGlobalUniCoarseSemis = 36.0f;
 
+std::string
+FFGlobalUniTargetToString(FFGlobalUniTarget target);
+
 enum class FFGlobalUniMode {
   Off, Auto, Manual
 };

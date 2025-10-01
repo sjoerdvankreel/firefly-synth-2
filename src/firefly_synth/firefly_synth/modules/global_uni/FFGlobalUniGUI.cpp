@@ -73,9 +73,8 @@ MakeGlobalUniEditor(FBPlugGUI* plugGUI)
       int guiCol = c * (FFGlobalUniMaxCount + 1 + 6);
       int targetIndex = c * (uniTargetCount / 2) + r;
 
-      int manualParamOffset = c * uniTargetCount / 2 + r;
-      auto param0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::ManualFirst + manualParamOffset, 0 } });
-      grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, param0, param0->static_.name));
+      auto targetName = FFGlobalUniTargetToString((FFGlobalUniTarget)r);
+      grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>(targetName));
 
       auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, targetIndex } });
       grid->Add(guiRow, guiCol + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
@@ -93,6 +92,7 @@ MakeGlobalUniEditor(FBPlugGUI* plugGUI)
       grid->MarkSection({ { guiRow, guiCol }, { 1, 1 } });
       for (int p = 0; p < FFGlobalUniMaxCount; p++)
       {
+        int manualParamOffset = c * uniTargetCount / 2 + r;
         auto param = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::ManualFirst + manualParamOffset, p } });
         grid->Add(guiRow, guiCol + p + 1 + 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag));
         grid->MarkSection({ { guiRow, guiCol + p + 1 + 6 }, { 1, 1 } });

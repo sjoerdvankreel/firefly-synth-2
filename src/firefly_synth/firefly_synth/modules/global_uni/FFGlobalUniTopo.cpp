@@ -3,8 +3,8 @@
 #include <firefly_synth/modules/global_uni/FFGlobalUniTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
-static std::string
-GlobalUniTargetToString(FFGlobalUniTarget target)
+std::string
+FFGlobalUniTargetToString(FFGlobalUniTarget target)
 {
   switch (target)
   {
@@ -47,7 +47,7 @@ GlobalUniTargetToString(FFGlobalUniTarget target)
 static std::string
 ManualSlotFormatter(FFGlobalUniTarget target, int slot)
 {
-  return "Manual " + GlobalUniTargetToString(target) + " " + std::to_string(slot + 1);
+  return "Manual " + FFGlobalUniTargetToString(target) + " " + std::to_string(slot + 1);
 }
 
 std::unique_ptr<FBStaticModule>
