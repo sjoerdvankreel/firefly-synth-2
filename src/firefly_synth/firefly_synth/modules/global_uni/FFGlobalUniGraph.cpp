@@ -20,9 +20,9 @@ public FBModuleGraphRenderData<GlobalUniGraphRenderData>
   FFGlobalUniProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
   void DoProcessIndicators(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/) {}
-  void DoPostProcess(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
 
 static FBModuleGraphPlotParams
@@ -73,6 +73,21 @@ GlobalUniGraphRenderData::DoProcessIndicators(
   if (mode == FFGlobalUniMode::Manual)
     for (int i = 0; i < voiceCount; i++)
       points.pointIndicators.push_back((int)(i / (voiceCount - 1.0f) * 0.5f * points.l.size()));
+}
+
+void 
+GlobalUniGraphRenderData::DoPostProcess(
+  FBGraphRenderState* /*state*/, int /*graphIndex*/,
+  bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& points)
+{
+  // This isn't exactly the most efficient way to draw an arc,
+  // but i didnt feel like breaking into the base painting code.
+  for (int i = 0; i < points.l.size(); i++)
+  {
+    float a = 1.0f / (float)points.l.size();
+    float y = std::sin(a * 2.0f * FBPi);
+    points.l[i] = y;
+  }
 }
 
 void
