@@ -72,8 +72,7 @@ FBModuleGraphComponent::PrepareForRender(int moduleIndex)
   auto moduleProcState = _data->renderState->ModuleProcState();
   moduleProcState->moduleSlot = TopoIndicesFor(moduleIndex).slot;
   auto const& staticTopo = StaticModuleFor(moduleIndex);
-  FB_ASSERT(staticTopo.graphParticipatesInMain);
-  return staticTopo.graphRenderer != nullptr;
+  return staticTopo.graphParticipatesInMain && staticTopo.graphRenderer != nullptr;
 }
 
 void
