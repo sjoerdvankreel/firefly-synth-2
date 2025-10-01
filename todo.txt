@@ -27,22 +27,23 @@ TODOLIST for alpha-17
 [x] more uni controls: vmix, voice_module
 [x] see what else can benefit from bipolar identity (now say that without context) ==> env slope
 [x] osci phase (lfo phase?) needs exchange for global uni
-[ ] also better marksection for the multitap
+[x] also better marksection for the multitap
+[x] make graphs for the guni
+[x] basic/full mode needs per-param
+[x] conditional disable edit button
+[x] basic mode
+[x] check perf & graph perf
+[x] select the target graph
+[ ] do paint as disabled
 [ ] lfo also need phase exchange
-[ ] make graphs for the guni
 [ ] hunt the todos
-[ ] basic/full mode needs per-param
-[ ] conditional disable edit button
 [ ] osci-target vecho demo
 [ ] global uni demo
 [ ] decent defaults
 [ ] global unison
-[ ] basic mode
-[ ] check perf & graph perf
 [ ] upcast to FBPlugGUI in graph no longer works
 [ ] clap polymod + release as one
 [ ] refix the demos
-[ ] select the target graph
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
