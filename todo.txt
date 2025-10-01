@@ -41,6 +41,7 @@ TODOLIST for alpha-17
 [ ] check perf & graph perf
 [ ] upcast to FBPlugGUI in graph no longer works
 [ ] clap polymod + release as one
+[ ] refix the demos
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
