@@ -8,9 +8,6 @@ inline int constexpr FFGlobalUniMaxCount = 8;
 inline int constexpr FFGlobalUniMaxSeed = 255;
 inline float constexpr FFGlobalUniCoarseSemis = 36.0f;
 
-std::string
-FFGlobalUniTargetToString(FFGlobalUniTarget target);
-
 enum class FFGlobalUniMode {
   Off, Auto, Manual
 };
@@ -23,6 +20,9 @@ enum class FFGlobalUniTarget {
   EchoExtend, EchoFade, EchoTapLevel, EchoTapDelay, EchoTapBal,
   EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt,
   EchoReverbMix, EchoReverbSize, EchoReverbDamp, Count };
+
+std::string
+FFGlobalUniTargetToString(FFGlobalUniTarget target);
 
 // todo spread/space
 enum class FFGlobalUniParam { 
