@@ -45,8 +45,10 @@ struct FBModuleGraphComponentData final
 {
   int pixelWidth = -1;
   int fixedGraphIndex = -1;
+  int pointIndicatorSize = -1;
   bool bipolar = false;
   bool drawClipBoundaries = false;
+  bool fillPointIndicators = false;
   bool skipDrawOnEqualsPrimary = true;
   FBGraphRenderState* renderState = {};
   std::vector<FBModuleGraphData> graphs = {};

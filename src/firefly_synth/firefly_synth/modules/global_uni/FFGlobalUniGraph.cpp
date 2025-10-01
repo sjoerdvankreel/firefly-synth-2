@@ -96,7 +96,9 @@ FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData)
 {
   GlobalUniGraphRenderData renderData = {};
   graphData->bipolar = false;
+  graphData->pointIndicatorSize = 4;
   graphData->drawClipBoundaries = false;
+  graphData->fillPointIndicators = true;
   graphData->skipDrawOnEqualsPrimary = true;
   graphData->drawMarkersSelector = [](int) { return true; };
   renderData.graphData = graphData;

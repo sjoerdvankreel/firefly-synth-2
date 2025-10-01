@@ -82,7 +82,7 @@ void
 FBModuleGraphDisplayComponent::PaintMarker(
   Graphics& g, 
   int graph, std::vector<float> const& points,
-  int marker, bool primary, bool isPointIndicator, bool stereo, 
+  int marker, bool primary, bool isPointIndicator, bool stereo,
   bool left, int maxSizeAllSeries, float absMaxValueAllSeries)
 {
   g.setColour(Colours::white);
@@ -91,10 +91,15 @@ FBModuleGraphDisplayComponent::PaintMarker(
   auto xy = PointLocation(graph, points, marker, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
   float x = xy.getX() - HalfMarkerSize;
   float y = xy.getY() - HalfMarkerSize;
-  if(isPointIndicator)
-    g.drawEllipse(x + 2.0f, y + 2.0f, MarkerSize - 4.0f, MarkerSize - 4.0f, 1.0f);
+
+  float size = MarkerSize;
+  bool fill = !isPointIndicator || _data->fillPointIndicators;
+  if (isPointIndicator && _data->pointIndicatorSize != -1)
+    size = (float)_data->pointIndicatorSize;
+  if(fill)
+    g.fillEllipse(x, y, size, size);
   else
-    g.fillEllipse(x, y, MarkerSize, MarkerSize);
+    g.drawEllipse(x + size / 6.0f, y + size / 6.0f, size * 2.0f / 3.0f, size * 2.0f / 3.0f, 1.0f);
 }
 
 void
