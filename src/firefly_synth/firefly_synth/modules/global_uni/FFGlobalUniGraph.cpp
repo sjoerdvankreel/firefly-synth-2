@@ -15,7 +15,7 @@ struct GlobalUniGraphRenderData final :
 public FBModuleGraphRenderData<GlobalUniGraphRenderData>
 {
   int totalSamples = {};
-  std::array<int, (int)FFGlobalUniTarget::Count> samplesProcessed = {};
+  int samplesProcessed = {};
 
   FFGlobalUniProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
@@ -53,20 +53,21 @@ GlobalUniGraphRenderData::DoBeginVoiceOrBlock(
 
 int
 GlobalUniGraphRenderData::DoProcess(
-  FBGraphRenderState* /*state*/, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
+  FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/)
 {
-  samplesProcessed[graphIndex] += FBFixedBlockSamples;
-  return std::clamp(totalSamples - samplesProcessed[graphIndex], 0, FBFixedBlockSamples);
+  samplesProcessed += FBFixedBlockSamples;
+  return std::clamp(totalSamples - samplesProcessed, 0, FBFixedBlockSamples);
 }
 
 void
 GlobalUniGraphRenderData::DoProcessIndicators(
   FBGraphRenderState* state,
-  int graphIndex, bool exchange,
+  int /*graphIndex*/, bool exchange,
   int /*exchangeVoice*/, FBModuleGraphPoints& points)
 {
+  int slot = graphData->fixedModuleSlot;
   int voiceCount = state->AudioParamDiscrete({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } }, exchange, -1);
-  auto mode = state->AudioParamList<FFGlobalUniMode>({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, graphIndex } }, exchange, -1);
+  auto mode = state->AudioParamList<FFGlobalUniMode>({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, slot } }, exchange, -1);
   if (mode == FFGlobalUniMode::Auto)
     for (int i = 0; i < voiceCount; i++)
       points.pointIndicators.push_back((int)(i / (voiceCount - 1.0f) * points.l.size()));
@@ -105,7 +106,5 @@ FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFExchangeState const*>(exchangeState)->global.globalUni[0]; };
   renderData.globalMonoOutputSelector = [](void const* procState, int /*slot*/, int /*graphIndex*/) {
     return &static_cast<FFProcState const*>(procState)->dsp.global.globalUni.fakeGraphOutput; };
-
-  for(int i = 0; i < (int)FFGlobalUniTarget::Count; i++)
-    FBRenderModuleGraph<true, false>(renderData, i);
+  FBRenderModuleGraph<true, false>(renderData, 0);
 }

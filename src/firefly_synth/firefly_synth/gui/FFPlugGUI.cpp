@@ -187,7 +187,7 @@ FFPlugGUI::SetupGUI()
   FB_LOG_ENTRY_EXIT();
 
   _matrix = FFMakeModMatrixGUI(this); 
-  _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
+  _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get(), -1, -1);
   _headerAndGraph = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
   _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
   _headerAndGraph->Add(0, 1, _graph);
@@ -199,7 +199,7 @@ FFPlugGUI::SetupGUI()
 
   _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 1 } });
   _topModules->Add(0, 0, FFMakeVoiceModuleGUI(this));
-  _topModules->Add(0, 1, FFMakeGlobalUniGUI(this));
+  _topModules->Add(0, 1, FFMakeGlobalUniGUI(this, _graphRenderState.get()));
   _topModules->Add(0, 2, FFMakeMasterGUI(this));
 
   _modules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 1 } });

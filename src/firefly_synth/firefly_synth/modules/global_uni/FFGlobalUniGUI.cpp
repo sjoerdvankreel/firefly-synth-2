@@ -19,7 +19,7 @@
 using namespace juce;
 
 static Component* 
-MakeGlobalUniEditor(FBPlugGUI* plugGUI)
+MakeGlobalUniEditor(FBPlugGUI* plugGUI, FBGraphRenderState* /*graphRenderState*/)
 {
   FB_LOG_ENTRY_EXIT();
   auto rowSizes = std::vector<int>();
@@ -33,14 +33,16 @@ MakeGlobalUniEditor(FBPlugGUI* plugGUI)
   for(int i = 0; i < FFGlobalUniMaxCount + 6; i++)
     columnSizes.push_back(0);
   columnSizes.push_back(1);
+  columnSizes.push_back(1);
   for (int i = 0; i < FFGlobalUniMaxCount + 6; i++)
     columnSizes.push_back(0);
+  columnSizes.push_back(1);
 
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
   for (int c = 0; c < 2; c++)
   {
-    int guiCol = c * (FFGlobalUniMaxCount + 6 + 1);
+    int guiCol = c * (FFGlobalUniMaxCount + 7 + 1);
     grid->Add(0, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
     grid->MarkSection({ { 0, guiCol }, { 1, 1 } });
     auto mode0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, 0 } });
@@ -69,7 +71,7 @@ MakeGlobalUniEditor(FBPlugGUI* plugGUI)
     for (int r = 0; r < uniTargetCount / 2; r++)
     {
       int guiRow = r + 1;
-      int guiCol = c * (FFGlobalUniMaxCount + 1 + 6);
+      int guiCol = c * (FFGlobalUniMaxCount + 1 + 7);
       int targetIndex = c * (uniTargetCount / 2) + r;
 
       auto targetName = FFGlobalUniTargetToString((FFGlobalUniTarget)targetIndex);
@@ -105,7 +107,7 @@ MakeGlobalUniEditor(FBPlugGUI* plugGUI)
 }
 
 static Component*
-MakeGlobalUniSectionMain(FBPlugGUI* plugGUI)
+MakeGlobalUniSectionMain(FBPlugGUI* plugGUI, FBGraphRenderState* graphRenderState)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
@@ -115,7 +117,7 @@ MakeGlobalUniSectionMain(FBPlugGUI* plugGUI)
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
 
-  auto editor = MakeGlobalUniEditor(plugGUI);
+  auto editor = MakeGlobalUniEditor(plugGUI, graphRenderState);
   auto showEditor = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, voiceCount, "Edit");
   showEditor->onClick = [plugGUI, editor]() {
     dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", editor, 1080, 450, [plugGUI]() {
@@ -136,11 +138,11 @@ MakeGlobalUniSectionMain(FBPlugGUI* plugGUI)
 }
 
 Component*
-FFMakeGlobalUniGUI(FBPlugGUI* plugGUI)
+FFMakeGlobalUniGUI(FBPlugGUI* plugGUI, FBGraphRenderState* graphRenderState)
 {
   FB_LOG_ENTRY_EXIT();
   auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
   auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::GlobalUni].name;
-  tabs->addTab(name, {}, MakeGlobalUniSectionMain(plugGUI), false);
+  tabs->addTab(name, {}, MakeGlobalUniSectionMain(plugGUI, graphRenderState), false);
   return tabs;
 }
