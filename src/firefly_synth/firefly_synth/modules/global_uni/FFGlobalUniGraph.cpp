@@ -114,6 +114,10 @@ FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->fillPointIndicators = true;
   graphData->skipDrawOnEqualsPrimary = true;
   graphData->drawMarkersSelector = [](int) { return true; };
+  graphData->paintAsDisabled = graphData->renderState->AudioParamDiscrete(
+    { { (int)FFModuleType::GlobalUni, 0 },
+    { (int)FFGlobalUniParam::Mode, graphData->fixedGraphIndex } }, false, -1) == 0;
+
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
   renderData.totalSamples = PlotParams(graphData, 0).sampleCount;

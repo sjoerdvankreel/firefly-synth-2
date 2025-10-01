@@ -46,6 +46,7 @@ struct FBModuleGraphComponentData final
   int pixelWidth = -1;
   int fixedGraphIndex = -1;
   int pointIndicatorSize = -1;
+  bool paintAsDisabled = false;
   bool bipolar = false;
   bool drawClipBoundaries = false;
   bool fillPointIndicators = false;

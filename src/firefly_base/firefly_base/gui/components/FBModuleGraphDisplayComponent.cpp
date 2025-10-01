@@ -85,9 +85,12 @@ FBModuleGraphDisplayComponent::PaintMarker(
   int marker, bool primary, bool isPointIndicator, bool stereo,
   bool left, int maxSizeAllSeries, float absMaxValueAllSeries)
 {
-  g.setColour(Colours::white);
+  auto color = Colours::white;
+  if (_data->paintAsDisabled)
+    color = color.darker();
   if (!primary)
-    g.setColour(Colours::white.withAlpha(0.5f));
+    color = color.withAlpha(0.5f);
+  g.setColour(color);
   auto xy = PointLocation(graph, points, marker, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
 
   float size = DefaultMarkerSize;
@@ -134,6 +137,8 @@ FBModuleGraphDisplayComponent::PaintSeries(
   path.startNewSubPath(PointLocation(graph, points, 0, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
   for (int i = 1; i < points.size(); i++)
     path.lineTo(PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
+  if (_data->paintAsDisabled)
+    color = color.darker();
   g.setColour(color);
   g.strokePath(path, PathStrokeType(1.0f));
 }
