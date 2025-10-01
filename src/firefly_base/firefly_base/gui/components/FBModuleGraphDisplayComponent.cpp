@@ -9,8 +9,8 @@
 using namespace juce;
 
 static float constexpr Padding = 3.0f;
-static float constexpr MarkerSize = 8.0f;
-static float constexpr HalfMarkerSize = MarkerSize / 2.0f;
+static float constexpr DefaultMarkerSize = 8.0f;
+static float constexpr HalfDefaultMarkerSize = 4.0f;
 
 FBModuleGraphDisplayComponent::
 FBModuleGraphDisplayComponent(FBModuleGraphComponentData const* data, bool withBorder):
@@ -59,8 +59,8 @@ FBModuleGraphDisplayComponent::PointYLocation(
   if (stereo)
     pointValue = left ? 0.5f + pointValue * 0.5f: pointValue * 0.5f;
   if(withPadding)
-    return HalfMarkerSize + Padding + (1.0f - pointValue) * (getHeight() - MarkerSize - 2.0f * Padding);
-  return HalfMarkerSize + (1.0f - pointValue) * (getHeight() - MarkerSize);
+    return HalfDefaultMarkerSize + Padding + (1.0f - pointValue) * (getHeight() - DefaultMarkerSize - 2.0f * Padding);
+  return HalfDefaultMarkerSize + (1.0f - pointValue) * (getHeight() - DefaultMarkerSize);
 }
 
 void
@@ -89,13 +89,15 @@ FBModuleGraphDisplayComponent::PaintMarker(
   if (!primary)
     g.setColour(Colours::white.withAlpha(0.5f));
   auto xy = PointLocation(graph, points, marker, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
-  float x = xy.getX() - HalfMarkerSize;
-  float y = xy.getY() - HalfMarkerSize;
 
-  float size = MarkerSize;
+  float size = DefaultMarkerSize;
   bool fill = !isPointIndicator || _data->fillPointIndicators;
   if (isPointIndicator && _data->pointIndicatorSize != -1)
     size = (float)_data->pointIndicatorSize;
+
+  float x = xy.getX() - size * 0.5f;
+  float y = xy.getY() - size * 0.5f;
+
   if(fill)
     g.fillEllipse(x, y, size, size);
   else
