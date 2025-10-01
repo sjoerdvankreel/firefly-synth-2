@@ -62,7 +62,7 @@ GlobalUniGraphRenderData::DoProcess(
 void
 GlobalUniGraphRenderData::DoProcessIndicators(
   FBGraphRenderState* state,
-  int /*graphIndex*/, bool exchange,
+  int /*graphIndex*/, bool /*exchange*/,
   int /*exchangeVoice*/, FBModuleGraphPoints& points)
 {
   int slot = graphData->fixedGraphIndex;
