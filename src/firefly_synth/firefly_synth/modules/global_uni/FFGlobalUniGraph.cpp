@@ -81,9 +81,19 @@ GlobalUniGraphRenderData::DoProcessIndicators(
 
 void 
 GlobalUniGraphRenderData::DoPostProcess(
-  FBGraphRenderState* /*state*/, int /*graphIndex*/,
+  FBGraphRenderState* state, int /*graphIndex*/,
   bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& points)
 {
+  int slot = graphData->fixedGraphIndex;
+  FFProcDSPState* procState = &state->ModuleProcState()->ProcAs<FFProcState>()->dsp;
+  FFGlobalUniProcessor* processor = procState->global.globalUni.processor.get();
+  if (processor->GetTargetDefault((FFGlobalUniTarget)slot) != 0.5f)
+  {
+    for (int i = 0; i < points.l.size(); i++)
+      points.l[i] = i / (float)points.l.size();
+    return;
+  }
+
   // This isn't exactly the most efficient way to draw an arc,
   // but i didnt feel like breaking into the base painting code.
   for (int i = 0; i < points.l.size(); i++)
