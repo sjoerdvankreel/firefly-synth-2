@@ -34,13 +34,11 @@ MakeGlobalUniEditor(
     rowSizes.push_back(1);
   auto columnSizes = std::vector<int>();
   columnSizes.push_back(1);
-  for(int i = 0; i < FFGlobalUniMaxCount + 6; i++)
+  for(int i = 0; i < FFGlobalUniMaxCount + 7; i++)
     columnSizes.push_back(0);
   columnSizes.push_back(1);
-  columnSizes.push_back(1);
-  for (int i = 0; i < FFGlobalUniMaxCount + 6; i++)
+  for (int i = 0; i < FFGlobalUniMaxCount + 7; i++)
     columnSizes.push_back(0);
-  columnSizes.push_back(1);
 
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
@@ -68,6 +66,8 @@ MakeGlobalUniEditor(
     for (int i = 0; i < FFGlobalUniMaxCount; i++)
       grid->Add(0, guiCol + i + 1 + 6, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1), true));
     grid->MarkSection({ { 0, guiCol + 1 + 6 }, { 1, FFGlobalUniMaxCount } });
+
+    grid->Add(0, guiCol + 1 + 6 + FFGlobalUniMaxCount, plugGUI->StoreComponent<FBAutoSizeLabel>("Out"));
     grid->MarkSection({ { 0, guiCol + 1 + 6 + FFGlobalUniMaxCount }, { 1, 1 } });
   }
 
@@ -133,7 +133,7 @@ MakeGlobalUniSectionMain(
   auto editor = MakeGlobalUniEditor(plugGUI, graphRenderState, fixedGraphs);
   auto showEditor = plugGUI->StoreComponent<FBParamValueLinkedButton>(plugGUI, voiceCount, "Edit", [](int v) { return v > 1; });
   showEditor->onClick = [plugGUI, editor]() {
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", editor, 1080, 450, [plugGUI]() {
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", editor, 1120, 450, [plugGUI]() {
       FBTopoIndices moduleIndices = { (int)FFModuleType::GlobalUni, 0 };
       std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
       plugGUI->HostContext()->UndoState().Snapshot("Init " + name);
