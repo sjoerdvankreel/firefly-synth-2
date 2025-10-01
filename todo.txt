@@ -34,7 +34,7 @@ TODOLIST for alpha-17
 [x] basic mode
 [x] check perf & graph perf
 [x] select the target graph
-[ ] do paint as disabled
+[x] do paint as disabled
 [ ] lfo also need phase exchange
 [ ] hunt the todos
 [ ] osci-target vecho demo
