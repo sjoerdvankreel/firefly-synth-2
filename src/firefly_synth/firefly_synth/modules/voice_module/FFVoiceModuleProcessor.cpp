@@ -2,9 +2,9 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/shared/FFStateDetail.hpp>
 #include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
-#include <firefly_synth/modules/global_uni/FFGlobalUniProcessor.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleProcessor.hpp>
+#include <firefly_synth/modules/global_uni/FFGlobalUniProcessorProcess.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>

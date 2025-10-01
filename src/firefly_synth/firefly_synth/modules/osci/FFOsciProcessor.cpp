@@ -4,6 +4,7 @@
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
 #include <firefly_synth/modules/master/FFMasterProcessor.hpp>
+#include <firefly_synth/modules/global_uni/FFGlobalUniProcessorProcess.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
