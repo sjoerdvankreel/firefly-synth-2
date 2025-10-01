@@ -240,7 +240,7 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
       auto const& sources = global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
       auto const& moduleIndices = sources[itemResultId - 1].indices.module;
       if (moduleIndices.index != -1)
-        plugGUI->SwitchGraphToModule(moduleIndices.index, moduleIndices.slot);
+        plugGUI->SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
     } };
 
   auto source = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Source, slot } });
@@ -270,7 +270,7 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
       auto const& targets = global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
       auto const& moduleIndices = targets[itemResultId - 1].module;
       if (moduleIndices.index != -1)
-        plugGUI->SwitchGraphToModule(moduleIndices.index, moduleIndices.slot);
+        plugGUI->SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
     } };
   grid->Add(r, c + 12, targetCombo);
   auto targetAmt = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::TargetAmt, slot } });

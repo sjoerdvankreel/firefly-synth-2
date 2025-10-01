@@ -65,7 +65,7 @@ GlobalUniGraphRenderData::DoProcessIndicators(
   int /*graphIndex*/, bool exchange,
   int /*exchangeVoice*/, FBModuleGraphPoints& points)
 {
-  int slot = graphData->fixedModuleSlot;
+  int slot = graphData->fixedGraphIndex;
   int voiceCount = state->AudioParamDiscrete({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } }, exchange, -1);
   auto mode = state->AudioParamList<FFGlobalUniMode>({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, slot } }, exchange, -1);
   if (mode == FFGlobalUniMode::Auto)

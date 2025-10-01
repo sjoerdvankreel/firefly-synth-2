@@ -44,7 +44,7 @@ public:
 struct FBModuleGraphComponentData final
 {
   int pixelWidth = -1;
-  int fixedModuleSlot = -1;
+  int fixedGraphIndex = -1;
   bool bipolar = false;
   bool drawClipBoundaries = false;
   bool skipDrawOnEqualsPrimary = true;

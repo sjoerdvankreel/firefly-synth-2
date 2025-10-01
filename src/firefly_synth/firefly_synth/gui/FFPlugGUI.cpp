@@ -48,11 +48,20 @@ FFPlugGUI::OnPatchChanged()
   FlushDelayLines();
 }
 
+void 
+FFPlugGUI::RequestFixedGraphsRerender(int moduleIndex)
+{
+  for (int i = 0; i < _fixedGraphs.size(); i++)
+    _fixedGraphs[i]->RequestRerender(
+      moduleIndex == -1? _fixedGraphs[i]->FixedToRuntimeModuleIndex(): moduleIndex);
+}
+
 void
 FFPlugGUI::UpdateExchangeStateTick()
 {
   FBPlugGUI::UpdateExchangeStateTick();
-  _graph->RequestRerender(_graph->TweakedModuleByUI());
+  _mainGraph->RequestRerender(_mainGraph->TweakedModuleByUI());
+  RequestFixedGraphsRerender(-1);
 }
 
 void
@@ -63,22 +72,22 @@ FFPlugGUI::resized()
 }
 
 void
-FFPlugGUI::SwitchGraphToModule(int index, int slot)
+FFPlugGUI::SwitchMainGraphToModule(int index, int slot)
 {
   auto topo = HostContext()->Topo()->ModuleAtTopo({ index, slot });
-  _graph->RequestRerender(topo->runtimeModuleIndex);
+  _mainGraph->RequestRerender(topo->runtimeModuleIndex);
 }
 
 void 
 FFPlugGUI::ModuleSlotClicked(int index, int slot)
 {
-  SwitchGraphToModule(index, slot);
+  SwitchMainGraphToModule(index, slot);
 }
 
 void
 FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
 {
-  SwitchGraphToModule(index, slot);
+  SwitchMainGraphToModule(index, slot);
 }
 
 void 
@@ -86,7 +95,8 @@ FFPlugGUI::GUIParamNormalizedChanged(int index, double normalized)
 {
   FBPlugGUI::GUIParamNormalizedChanged(index, normalized);
   int moduleIndex = HostContext()->Topo()->gui.params[index].runtimeModuleIndex;
-  _graph->RequestRerender(moduleIndex);
+  _mainGraph->RequestRerender(moduleIndex);
+  RequestFixedGraphsRerender(moduleIndex);
 }
 
 void 
@@ -94,7 +104,8 @@ FFPlugGUI::AudioParamNormalizedChangedFromUI(int index, double normalized)
 {
   FBPlugGUI::AudioParamNormalizedChangedFromUI(index, normalized);
   int moduleIndex = HostContext()->Topo()->audio.params[index].runtimeModuleIndex;
-  _graph->RequestRerender(moduleIndex);
+  _mainGraph->RequestRerender(moduleIndex);
+  RequestFixedGraphsRerender(moduleIndex);
 }
 
 void
@@ -103,8 +114,10 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
   FBPlugGUI::AudioParamNormalizedChangedFromHost(index, normalized);
   if (HostContext()->Topo()->audio.params[index].static_.mode == FBParamMode::Output)
     return;
-  if (_graph->TweakedModuleByUI() == HostContext()->Topo()->audio.params[index].runtimeModuleIndex)
-    _graph->RequestRerender(_graph->TweakedModuleByUI());
+  int tweakedModule = HostContext()->Topo()->audio.params[index].runtimeModuleIndex;
+  if (_mainGraph->TweakedModuleByUI() == tweakedModule)
+    _mainGraph->RequestRerender(_mainGraph->TweakedModuleByUI());
+  RequestFixedGraphsRerender(tweakedModule);
 }
 
 FBGUIRenderType
@@ -187,10 +200,10 @@ FFPlugGUI::SetupGUI()
   FB_LOG_ENTRY_EXIT();
 
   _matrix = FFMakeModMatrixGUI(this); 
-  _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get(), -1, -1);
+  _mainGraph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get(), -1, -1);
   _headerAndGraph = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
   _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
-  _headerAndGraph->Add(0, 1, _graph);
+  _headerAndGraph->Add(0, 1, _mainGraph);
 
   _outputGUIAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
   _outputGUIAndPatch->Add(0, 0, FFMakeOutputGUI(this));
@@ -199,7 +212,7 @@ FFPlugGUI::SetupGUI()
 
   _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 1 } });
   _topModules->Add(0, 0, FFMakeVoiceModuleGUI(this));
-  _topModules->Add(0, 1, FFMakeGlobalUniGUI(this, _graphRenderState.get()));
+  _topModules->Add(0, 1, FFMakeGlobalUniGUI(this, _graphRenderState.get(), &_fixedGraphs));
   _topModules->Add(0, 2, FFMakeMasterGUI(this));
 
   _modules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 1 } });

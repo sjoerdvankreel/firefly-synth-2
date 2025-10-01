@@ -22,8 +22,8 @@ public juce::Component
   std::unique_ptr<FBGridComponent> _grid = {};
   std::unique_ptr<FBSectionComponent> _section = {};
 
-  int const _fixedToModuleSlot;
-  int const _fixedToModuleIndex;
+  int const _fixedToRuntimeModuleIndex;
+  int const _fixedToGraphIndex;
   std::unique_ptr<FBModuleGraphComponentData> _data;
   std::unique_ptr<FBModuleGraphDisplayComponent> _display;
   std::chrono::high_resolution_clock::time_point _updated = {};
@@ -36,9 +36,12 @@ public:
   void resized() override;
   void paint(juce::Graphics& g) override;
   void RequestRerender(int moduleIndex);
+
   int TweakedModuleByUI() const { return _tweakedModuleByUI; }
+  int FixedToGraphIndex() const { return _fixedToGraphIndex; }
+  int FixedToRuntimeModuleIndex() const { return _fixedToRuntimeModuleIndex; }
 
   ~FBModuleGraphComponent();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBModuleGraphComponent);
-  FBModuleGraphComponent(FBGraphRenderState* renderState, int fixedToModuleIndex, int fixedToModuleSlot);
+  FBModuleGraphComponent(FBGraphRenderState* renderState, int fixedToRuntimeModuleIndex, int fixedToGraphIndex);
 };

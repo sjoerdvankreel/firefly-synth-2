@@ -6,6 +6,7 @@
 #include <firefly_base/gui/components/FBContentComponent.hpp>
 
 #include <memory>
+#include <vector>
 #include <functional>
 #include <unordered_map>
 
@@ -30,7 +31,8 @@ public FBPlugGUI
   juce::Component* _overlayContainer = {};
   FBContentComponent* _overlayContent = {};
 
-  FBModuleGraphComponent* _graph = {};
+  FBModuleGraphComponent* _mainGraph = {};
+  std::vector<FBModuleGraphComponent*> _fixedGraphs = {};
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   void SetupGUI();
@@ -47,7 +49,8 @@ public:
 
   void FlushDelayLines();
   void ToggleMatrix(bool on);
-  void SwitchGraphToModule(int index, int slot);
+  void RequestFixedGraphsRerender(int moduleIndex);
+  void SwitchMainGraphToModule(int index, int slot);
   
   void HideOverlayComponent();
   void ShowOverlayComponent(

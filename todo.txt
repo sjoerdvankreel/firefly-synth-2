@@ -38,6 +38,8 @@ TODOLIST for alpha-17
 [ ] decent defaults
 [ ] global unison
 [ ] basic mode
+[ ] check perf & graph perf
+[ ] upcast to FBPlugGUI in graph no longer works
 [ ] clap polymod + release as one
 
 TODOLIST for alpha-17

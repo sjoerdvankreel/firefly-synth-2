@@ -22,10 +22,11 @@ FBModuleGraphComponent::
 FBModuleGraphComponent::
 FBModuleGraphComponent(
   FBGraphRenderState* renderState,
-  int fixedToModuleIndex, int fixedToModuleSlot) :
+  int fixedToRuntimeModuleIndex,
+  int fixedToGraphIndex) :
 Component(),
-_fixedToModuleSlot(fixedToModuleSlot),
-_fixedToModuleIndex(fixedToModuleIndex),
+_fixedToGraphIndex(fixedToGraphIndex),
+_fixedToRuntimeModuleIndex(fixedToRuntimeModuleIndex),
 _data(std::make_unique<FBModuleGraphComponentData>()),
 _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
 {
@@ -66,8 +67,8 @@ FBModuleGraphComponent::PrepareForRender(int moduleIndex)
 {
   if (moduleIndex == -1)
     return false;
-  if (_fixedToModuleIndex != -1)
-    return moduleIndex == _fixedToModuleIndex;
+  if (_fixedToRuntimeModuleIndex != -1)
+    return moduleIndex == _fixedToRuntimeModuleIndex;
   auto moduleProcState = _data->renderState->ModuleProcState();
   moduleProcState->moduleSlot = TopoIndicesFor(moduleIndex).slot;
   return StaticModuleFor(moduleIndex).graphRenderer != nullptr;
@@ -111,7 +112,7 @@ FBModuleGraphComponent::paint(Graphics& /*g*/)
   _data->drawMarkersSelector = {};
   _data->drawClipBoundaries = false;
   _data->skipDrawOnEqualsPrimary = true;
-  _data->fixedModuleSlot = _fixedToModuleSlot;
+  _data->fixedGraphIndex = _fixedToGraphIndex;
   _data->guiRenderType = FBGUIRenderType::Basic;
   if(auto* parent = findParentComponentOfClass<FBPlugGUI>())
     _data->guiRenderType = parent->GetGraphRenderType();

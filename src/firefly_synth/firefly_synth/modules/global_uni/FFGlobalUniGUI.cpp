@@ -14,12 +14,16 @@
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
+#include <firefly_base/gui/components/FBModuleGraphComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
 
 static Component* 
-MakeGlobalUniEditor(FBPlugGUI* plugGUI, FBGraphRenderState* /*graphRenderState*/)
+MakeGlobalUniEditor(
+  FBPlugGUI* plugGUI,
+  FBGraphRenderState* graphRenderState,
+  std::vector<FBModuleGraphComponent*>* fixedGraphs)
 {
   FB_LOG_ENTRY_EXIT();
   auto rowSizes = std::vector<int>();
@@ -64,6 +68,7 @@ MakeGlobalUniEditor(FBPlugGUI* plugGUI, FBGraphRenderState* /*graphRenderState*/
     for (int i = 0; i < FFGlobalUniMaxCount; i++)
       grid->Add(0, guiCol + i + 1 + 6, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1), true));
     grid->MarkSection({ { 0, guiCol + 1 + 6 }, { 1, FFGlobalUniMaxCount } });
+    grid->MarkSection({ { 0, guiCol + 1 + 6 + FFGlobalUniMaxCount }, { 1, 1 } });
   }
 
   for (int c = 0; c < 2; c++)
@@ -101,13 +106,21 @@ MakeGlobalUniEditor(FBPlugGUI* plugGUI, FBGraphRenderState* /*graphRenderState*/
         grid->Add(guiRow, guiCol + p + 1 + 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag));
       }
       grid->MarkSection({ { guiRow, guiCol + 1 + 6 }, { 1, FFGlobalUniMaxCount } });
+
+      int moduleRuntimeIndex = topo->moduleTopoToRuntime.at({ (int)FFModuleType::GlobalUni, 0 });
+      auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(graphRenderState, moduleRuntimeIndex, targetIndex);
+      grid->Add(guiRow, guiCol + 1 + 6 + FFGlobalUniMaxCount, uniGraph);
+      fixedGraphs->push_back(uniGraph);
     }
   }
   return grid;
 }
 
 static Component*
-MakeGlobalUniSectionMain(FBPlugGUI* plugGUI, FBGraphRenderState* graphRenderState)
+MakeGlobalUniSectionMain(
+  FBPlugGUI* plugGUI,
+  FBGraphRenderState* graphRenderState,
+  std::vector<FBModuleGraphComponent*>* fixedGraphs)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
@@ -117,7 +130,7 @@ MakeGlobalUniSectionMain(FBPlugGUI* plugGUI, FBGraphRenderState* graphRenderStat
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
 
-  auto editor = MakeGlobalUniEditor(plugGUI, graphRenderState);
+  auto editor = MakeGlobalUniEditor(plugGUI, graphRenderState, fixedGraphs);
   auto showEditor = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, voiceCount, "Edit");
   showEditor->onClick = [plugGUI, editor]() {
     dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", editor, 1080, 450, [plugGUI]() {
@@ -138,11 +151,14 @@ MakeGlobalUniSectionMain(FBPlugGUI* plugGUI, FBGraphRenderState* graphRenderStat
 }
 
 Component*
-FFMakeGlobalUniGUI(FBPlugGUI* plugGUI, FBGraphRenderState* graphRenderState)
+FFMakeGlobalUniGUI(
+  FBPlugGUI* plugGUI,
+  FBGraphRenderState* graphRenderState,
+  std::vector<FBModuleGraphComponent*>* fixedGraphs)
 {
   FB_LOG_ENTRY_EXIT();
   auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
   auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::GlobalUni].name;
-  tabs->addTab(name, {}, MakeGlobalUniSectionMain(plugGUI, graphRenderState), false);
+  tabs->addTab(name, {}, MakeGlobalUniSectionMain(plugGUI, graphRenderState, fixedGraphs), false);
   return tabs;
 }
