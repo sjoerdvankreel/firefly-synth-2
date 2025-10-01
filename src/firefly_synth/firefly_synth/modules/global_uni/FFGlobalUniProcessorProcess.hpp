@@ -16,7 +16,7 @@ FFGlobalUniProcessor::GetTargetDefault(
   case FFGlobalUniTarget::OscPhaseOffset:
     return 0.0f;
   default:
-    return 1.0f;
+    return 0.5f;
   }
 }
 
