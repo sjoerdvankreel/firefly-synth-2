@@ -28,8 +28,8 @@ class alignas(alignof(TBlock)) FFGlobalUniBlockParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeGlobalUniTopo();
   std::array<TBlock, 1> voiceCount = {};
   std::array<TBlock, (int)FFGlobalUniTarget::Count> mode = {};
-  std::array<TBlock, (int)FFGlobalUniTarget::Count> autoSeed = {};
-  std::array<TBlock, (int)FFGlobalUniTarget::Count> autoReseed = {};
+  std::array<TBlock, (int)FFGlobalUniTarget::Count> autoRandSeed = {};
+  std::array<TBlock, (int)FFGlobalUniTarget::Count> autoRandFree = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalUniBlockParamState);
 };
@@ -39,7 +39,7 @@ class alignas(alignof(TAccurate)) FFGlobalUniAccParamState final
 {
   friend class FFGlobalUniProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGlobalUniTopo();
-  std::array<TAccurate, (int)FFGlobalUniTarget::Count> autoRnd = {};
+  std::array<TAccurate, (int)FFGlobalUniTarget::Count> autoRand = {};
   std::array<TAccurate, (int)FFGlobalUniTarget::Count> autoSpace = {};
   std::array<TAccurate, (int)FFGlobalUniTarget::Count> autoSpread = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualVoiceCoarse = {};

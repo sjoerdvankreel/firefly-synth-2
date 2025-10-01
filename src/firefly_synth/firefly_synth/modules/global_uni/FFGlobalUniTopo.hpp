@@ -25,7 +25,7 @@ enum class FFGlobalUniTarget {
 enum class FFGlobalUniParam { 
   VoiceCount, 
   // by target dimension
-  Mode, AutoSpread, AutoSpace, AutoRandom, AutoSeed, AutoReseed,
+  Mode, AutoSpread, AutoSpace, AutoRand, AutoRandSeed, AutoRandFree,
   // by voice dimension (need different control types per param like bipolar yes/no)
   ManualVoiceCoarse, ManualFirst = ManualVoiceCoarse, ManualVoiceFine, ManualVMixAmp, ManualVMixBal,
   ManualOscGain, ManualOscPan, ManualOscCoarse, ManualOscFine, ManualOscPhaseOffset,
