@@ -84,9 +84,9 @@ GlobalUniGraphRenderData::DoPostProcess(
   // but i didnt feel like breaking into the base painting code.
   for (int i = 0; i < points.l.size(); i++)
   {
-    float a = 1.0f / (float)points.l.size();
+    float a = i / (float)points.l.size();
     float y = std::sin(a * 2.0f * FBPi);
-    points.l[i] = y;
+    points.l[i] = y; 
   }
 }
 
