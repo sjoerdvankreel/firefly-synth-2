@@ -62,18 +62,21 @@ GlobalUniGraphRenderData::DoProcess(
 void
 GlobalUniGraphRenderData::DoProcessIndicators(
   FBGraphRenderState* state,
-  int /*graphIndex*/, bool /*exchange*/,
+  int /*graphIndex*/, bool exchange,
   int /*exchangeVoice*/, FBModuleGraphPoints& points)
 {
   int slot = graphData->fixedGraphIndex;
+  FBSArray<float, FBFixedBlockSamples> defaultBlock;
+  FFProcDSPState* procState = &state->ModuleProcState()->ProcAs<FFProcState>()->dsp;
+  FFGlobalUniProcessor* processor = procState->global.globalUni.processor.get();
+  float targetDefault = processor->GetTargetDefault((FFGlobalUniTarget)slot);
   int voiceCount = state->AudioParamDiscrete({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } }, exchange, -1);
-  auto mode = state->AudioParamList<FFGlobalUniMode>({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, slot } }, exchange, -1);
-  if (mode == FFGlobalUniMode::Auto)
-    for (int i = 0; i < voiceCount; i++)
-      points.pointIndicators.push_back((int)(i / (voiceCount - 1.0f) * points.l.size()));
-  if (mode == FFGlobalUniMode::Manual)
-    for (int i = 0; i < voiceCount; i++)
-      points.pointIndicators.push_back((int)(i / (voiceCount - 1.0f) * 0.5f * points.l.size()));
+  for (int i = 0; i < voiceCount; i++)
+  {
+    defaultBlock.Fill(FBBatch<float>(targetDefault));
+    processor->Apply(*state->ModuleProcState(), (FFGlobalUniTarget)slot, i, defaultBlock);
+    points.pointIndicators.push_back((int)(defaultBlock.Get(0) * points.l.size()));
+  }
 }
 
 void 
