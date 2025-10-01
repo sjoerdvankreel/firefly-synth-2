@@ -170,6 +170,7 @@ FFMakeGlobalUniTopo()
   manualVoiceCoarse.mode = FBParamMode::Accurate;
   manualVoiceCoarse.defaultText = "0";
   manualVoiceCoarse.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VoiceCoarse); };
+  manualVoiceCoarse.slotFormatterOverrides = true;
   manualVoiceCoarse.slotCount = FFGlobalUniMaxCount;
   manualVoiceCoarse.unit = "Semitones";
   manualVoiceCoarse.id = "{0D24BD6A-DE67-4CE6-8272-BC290D5D7D2D}";
@@ -186,6 +187,7 @@ FFMakeGlobalUniTopo()
   manualVoiceFine.mode = FBParamMode::Accurate;
   manualVoiceFine.defaultText = "0";
   manualVoiceFine.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VoiceFine); };
+  manualVoiceFine.slotFormatterOverrides = true;
   manualVoiceFine.slotCount = FFGlobalUniMaxCount;
   manualVoiceFine.id = "{4A3335C3-9239-4D90-A53A-F73807FEC0B7}";
   manualVoiceFine.unit = "%";
@@ -201,6 +203,7 @@ FFMakeGlobalUniTopo()
   manualVMixAmp.mode = FBParamMode::Accurate;
   manualVMixAmp.defaultText = "100";
   manualVMixAmp.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VMixAmp); };
+  manualVMixAmp.slotFormatterOverrides = true;
   manualVMixAmp.slotCount = FFGlobalUniMaxCount;
   manualVMixAmp.id = "{CA16FDA4-CB83-46F4-B236-5382DAA1CFD6}";
   manualVMixAmp.unit = "%";
@@ -215,6 +218,7 @@ FFMakeGlobalUniTopo()
   manualVMixBal.mode = FBParamMode::Accurate;
   manualVMixBal.defaultText = "0";
   manualVMixBal.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VMixBal); };
+  manualVMixBal.slotFormatterOverrides = true;
   manualVMixBal.slotCount = FFGlobalUniMaxCount;
   manualVMixBal.id = "{A6AD53AB-3FBD-4579-9B2C-D97118B16E70}";
   manualVMixBal.unit = "%";
@@ -230,6 +234,7 @@ FFMakeGlobalUniTopo()
   manualOscGain.mode = FBParamMode::Accurate;
   manualOscGain.defaultText = "100";
   manualOscGain.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::OscGain); };
+  manualOscGain.slotFormatterOverrides = true;
   manualOscGain.slotCount = FFGlobalUniMaxCount;
   manualOscGain.unit = "%";
   manualOscGain.id = "{847E5FD5-8DAC-43B1-BA0E-125FD916844C}";
@@ -244,6 +249,7 @@ FFMakeGlobalUniTopo()
   manualOscPan.mode = FBParamMode::Accurate;
   manualOscPan.defaultText = "0";
   manualOscPan.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::OscPan); };
+  manualOscPan.slotFormatterOverrides = true;
   manualOscPan.slotCount = FFGlobalUniMaxCount;
   manualOscPan.unit = "%";
   manualOscPan.id = "{9CACBCF5-9D85-431B-986B-E2B50DC3336A}";
@@ -259,6 +265,7 @@ FFMakeGlobalUniTopo()
   manualOscCoarse.mode = FBParamMode::Accurate;
   manualOscCoarse.defaultText = "0";
   manualOscCoarse.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::OscCoarse); };
+  manualOscCoarse.slotFormatterOverrides = true;
   manualOscCoarse.slotCount = FFGlobalUniMaxCount;
   manualOscCoarse.unit = "Semitones";
   manualOscCoarse.id = "{C16C50D5-00C0-4393-87F9-1A7C457F4483}";
@@ -275,6 +282,7 @@ FFMakeGlobalUniTopo()
   manualOscFine.mode = FBParamMode::Accurate;
   manualOscFine.defaultText = "0";
   manualOscFine.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::OscFine); };
+  manualOscFine.slotFormatterOverrides = true;
   manualOscFine.slotCount = FFGlobalUniMaxCount;
   manualOscFine.id = "{D32C05E9-BE89-43CB-887F-AF7B1001518F}";
   manualOscFine.unit = "%";
@@ -290,6 +298,7 @@ FFMakeGlobalUniTopo()
   manualOscPhaseOffset.mode = FBParamMode::VoiceStart;
   manualOscPhaseOffset.defaultText = "0";
   manualOscPhaseOffset.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::OscPhaseOffset); };
+  manualOscPhaseOffset.slotFormatterOverrides = true;
   manualOscPhaseOffset.slotCount = FFGlobalUniMaxCount;
   manualOscPhaseOffset.unit = "%";
   manualOscPhaseOffset.id = "{EC98E6C3-0BB3-4E19-A861-5CDDA8C0401F}";
@@ -304,6 +313,7 @@ FFMakeGlobalUniTopo()
   manualLFORate.mode = FBParamMode::Accurate;
   manualLFORate.defaultText = "0";
   manualLFORate.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::LFORate); };
+  manualLFORate.slotFormatterOverrides = true;
   manualLFORate.slotCount = FFGlobalUniMaxCount;
   manualLFORate.unit = "%";
   manualLFORate.id = "{A14D92A7-0952-4DF9-98D6-194B1A763DDF}";
@@ -319,6 +329,7 @@ FFMakeGlobalUniTopo()
   manualLFOMin.mode = FBParamMode::Accurate;
   manualLFOMin.defaultText = "0";
   manualLFOMin.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::LFOMin); };
+  manualLFOMin.slotFormatterOverrides = true;
   manualLFOMin.slotCount = FFGlobalUniMaxCount;
   manualLFOMin.unit = "%";
   manualLFOMin.id = "{BC67CD56-29BF-491D-BA5F-43541B6E506D}";
@@ -334,6 +345,7 @@ FFMakeGlobalUniTopo()
   manualLFOMax.mode = FBParamMode::Accurate;
   manualLFOMax.defaultText = "0";
   manualLFOMax.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::LFOMax); };
+  manualLFOMax.slotFormatterOverrides = true;
   manualLFOMax.slotCount = FFGlobalUniMaxCount;
   manualLFOMax.unit = "%";
   manualLFOMax.id = "{D6A4D1B5-8961-4C5B-96CA-792F73227A0C}";
@@ -349,6 +361,7 @@ FFMakeGlobalUniTopo()
   manualLFOSkewAX.mode = FBParamMode::Accurate;
   manualLFOSkewAX.defaultText = "0";
   manualLFOSkewAX.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::LFOSkewAX); };
+  manualLFOSkewAX.slotFormatterOverrides = true;
   manualLFOSkewAX.slotCount = FFGlobalUniMaxCount;
   manualLFOSkewAX.unit = "%";
   manualLFOSkewAX.id = "{5FABD18F-6F53-4532-AC77-7FC5882B2CD1}";
@@ -364,6 +377,7 @@ FFMakeGlobalUniTopo()
   manualLFOSkewAY.mode = FBParamMode::Accurate;
   manualLFOSkewAY.defaultText = "0";
   manualLFOSkewAY.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::LFOSkewAY); };
+  manualLFOSkewAY.slotFormatterOverrides = true;
   manualLFOSkewAY.slotCount = FFGlobalUniMaxCount;
   manualLFOSkewAY.unit = "%";
   manualLFOSkewAY.id = "{7C900D23-EC5F-483B-82A3-EB27E2DD9E66}";
@@ -379,6 +393,7 @@ FFMakeGlobalUniTopo()
   manualLFOPhaseOffset.mode = FBParamMode::VoiceStart;
   manualLFOPhaseOffset.defaultText = "0";
   manualLFOPhaseOffset.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::LFOPhaseOffset); };
+  manualLFOPhaseOffset.slotFormatterOverrides = true;
   manualLFOPhaseOffset.slotCount = FFGlobalUniMaxCount;
   manualLFOPhaseOffset.unit = "%";
   manualLFOPhaseOffset.id = "{00A68371-5419-4398-8B42-4AADF0955DAF}";
@@ -393,6 +408,7 @@ FFMakeGlobalUniTopo()
   manualVFXParamA.mode = FBParamMode::Accurate;
   manualVFXParamA.defaultText = "0";
   manualVFXParamA.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VFXParamA); };
+  manualVFXParamA.slotFormatterOverrides = true;
   manualVFXParamA.slotCount = FFGlobalUniMaxCount;
   manualVFXParamA.unit = "%";
   manualVFXParamA.id = "{E383FFF3-6549-44A4-878B-9BE81EB4A69F}";
@@ -408,6 +424,7 @@ FFMakeGlobalUniTopo()
   manualVFXParamB.mode = FBParamMode::Accurate;
   manualVFXParamB.defaultText = "0";
   manualVFXParamB.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VFXParamB); };
+  manualVFXParamB.slotFormatterOverrides = true;
   manualVFXParamB.slotCount = FFGlobalUniMaxCount;
   manualVFXParamB.unit = "%";
   manualVFXParamB.id = "{82D2D353-D454-496B-BB0E-F7B23D20D698}";
@@ -423,6 +440,7 @@ FFMakeGlobalUniTopo()
   manualVFXParamC.mode = FBParamMode::Accurate;
   manualVFXParamC.defaultText = "0";
   manualVFXParamC.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VFXParamC); };
+  manualVFXParamC.slotFormatterOverrides = true;
   manualVFXParamC.slotCount = FFGlobalUniMaxCount;
   manualVFXParamC.unit = "%";
   manualVFXParamC.id = "{55539EFD-3561-4F1F-BDDC-FF0CEC2AA14B}";
@@ -438,6 +456,7 @@ FFMakeGlobalUniTopo()
   manualVFXParamD.mode = FBParamMode::Accurate;
   manualVFXParamD.defaultText = "0";
   manualVFXParamD.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VFXParamD); };
+  manualVFXParamD.slotFormatterOverrides = true;
   manualVFXParamD.slotCount = FFGlobalUniMaxCount;
   manualVFXParamD.unit = "%";
   manualVFXParamD.id = "{9346FF6B-068F-4F36-A4CD-68A652CF1A2C}";
@@ -453,6 +472,7 @@ FFMakeGlobalUniTopo()
   manualEnvOffset.mode = FBParamMode::VoiceStart;
   manualEnvOffset.defaultText = "0";
   manualEnvOffset.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EnvOffset); };
+  manualEnvOffset.slotFormatterOverrides = true;
   manualEnvOffset.slotCount = FFGlobalUniMaxCount;
   manualEnvOffset.unit = "Sec";
   manualEnvOffset.id = "{AEDA998E-B0B7-4A78-8C52-F6B809AC5352}";
@@ -470,6 +490,7 @@ FFMakeGlobalUniTopo()
   manualEnvStretch.mode = FBParamMode::VoiceStart;
   manualEnvStretch.defaultText = "0";
   manualEnvStretch.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EnvStretch); };
+  manualEnvStretch.slotFormatterOverrides = true;
   manualEnvStretch.slotCount = FFGlobalUniMaxCount;
   manualEnvStretch.unit = "%";
   manualEnvStretch.id = "{6155B06D-D928-4EBF-9A52-99EAA3341D26}";
@@ -485,6 +506,7 @@ FFMakeGlobalUniTopo()
   manualEchoExtend.mode = FBParamMode::VoiceStart;
   manualEchoExtend.defaultText = "0";
   manualEchoExtend.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoExtend); };
+  manualEchoExtend.slotFormatterOverrides = true;
   manualEchoExtend.slotCount = FFGlobalUniMaxCount;
   manualEchoExtend.unit = "%";
   manualEchoExtend.id = "{B60645F1-F349-4911-AA11-218E188C0D1F}";
@@ -500,6 +522,7 @@ FFMakeGlobalUniTopo()
   manualEchoFade.mode = FBParamMode::VoiceStart;
   manualEchoFade.defaultText = "0";
   manualEchoFade.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFade); };
+  manualEchoFade.slotFormatterOverrides = true;
   manualEchoFade.slotCount = FFGlobalUniMaxCount;
   manualEchoFade.unit = "%";
   manualEchoFade.id = "{A9F81A4A-1FB3-418B-86F5-8F49C77934B7}";
@@ -515,6 +538,7 @@ FFMakeGlobalUniTopo()
   manualEchoTapLevel.mode = FBParamMode::Accurate;
   manualEchoTapLevel.defaultText = "0";
   manualEchoTapLevel.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapLevel); };
+  manualEchoTapLevel.slotFormatterOverrides = true;
   manualEchoTapLevel.slotCount = FFGlobalUniMaxCount;
   manualEchoTapLevel.unit = "%";
   manualEchoTapLevel.id = "{A480C75C-3429-44A1-BAAF-44341E793F80}";
@@ -530,6 +554,7 @@ FFMakeGlobalUniTopo()
   manualEchoTapDelay.mode = FBParamMode::Accurate;
   manualEchoTapDelay.defaultText = "0";
   manualEchoTapDelay.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapDelay); };
+  manualEchoTapDelay.slotFormatterOverrides = true;
   manualEchoTapDelay.slotCount = FFGlobalUniMaxCount;
   manualEchoTapDelay.unit = "%";
   manualEchoTapDelay.id = "{158E67F4-DD9C-4A2A-93B8-6914B8F9DCED}";
@@ -545,6 +570,7 @@ FFMakeGlobalUniTopo()
   manualEchoTapBal.mode = FBParamMode::Accurate;
   manualEchoTapBal.defaultText = "0";
   manualEchoTapBal.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapBal); };
+  manualEchoTapBal.slotFormatterOverrides = true;
   manualEchoTapBal.slotCount = FFGlobalUniMaxCount;
   manualEchoTapBal.unit = "%";
   manualEchoTapBal.id = "{1E8EDB12-2E07-47DE-BB0C-39AC596896E0}";
@@ -560,6 +586,7 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkDelay.mode = FBParamMode::Accurate;
   manualEchoFdbkDelay.defaultText = "0";
   manualEchoFdbkDelay.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFdbkDelay); };
+  manualEchoFdbkDelay.slotFormatterOverrides = true;
   manualEchoFdbkDelay.slotCount = FFGlobalUniMaxCount;
   manualEchoFdbkDelay.unit = "%";
   manualEchoFdbkDelay.id = "{6D51D872-4BFD-4F06-B202-BD971DB527FA}";
@@ -575,6 +602,7 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkMix.mode = FBParamMode::Accurate;
   manualEchoFdbkMix.defaultText = "0";
   manualEchoFdbkMix.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFdbkMix); };
+  manualEchoFdbkMix.slotFormatterOverrides = true;
   manualEchoFdbkMix.slotCount = FFGlobalUniMaxCount;
   manualEchoFdbkMix.unit = "%";
   manualEchoFdbkMix.id = "{41E192B1-909D-41B6-93B5-9343460670A2}";
@@ -590,6 +618,7 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkAmt.mode = FBParamMode::Accurate;
   manualEchoFdbkAmt.defaultText = "0";
   manualEchoFdbkAmt.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFdbkAmt); };
+  manualEchoFdbkAmt.slotFormatterOverrides = true;
   manualEchoFdbkAmt.slotCount = FFGlobalUniMaxCount;
   manualEchoFdbkAmt.unit = "%";
   manualEchoFdbkAmt.id = "{BF96F4F2-74C7-4BA8-8FE5-72320499849E}";
@@ -605,6 +634,7 @@ FFMakeGlobalUniTopo()
   manualEchoReverbMix.mode = FBParamMode::Accurate;
   manualEchoReverbMix.defaultText = "0";
   manualEchoReverbMix.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoReverbMix); };
+  manualEchoReverbMix.slotFormatterOverrides = true;
   manualEchoReverbMix.slotCount = FFGlobalUniMaxCount;
   manualEchoReverbMix.unit = "%";
   manualEchoReverbMix.id = "{475A0982-1DEE-4636-B532-0D0FCD816DEC}";
@@ -620,6 +650,7 @@ FFMakeGlobalUniTopo()
   manualEchoReverbSize.mode = FBParamMode::Accurate;
   manualEchoReverbSize.defaultText = "0";
   manualEchoReverbSize.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoReverbSize); };
+  manualEchoReverbSize.slotFormatterOverrides = true;
   manualEchoReverbSize.slotCount = FFGlobalUniMaxCount;
   manualEchoReverbSize.unit = "%";
   manualEchoReverbSize.id = "{8E997A4E-BCF6-4599-9329-377E81F77B5F}";
@@ -635,6 +666,7 @@ FFMakeGlobalUniTopo()
   manualEchoReverbDamp.mode = FBParamMode::Accurate;
   manualEchoReverbDamp.defaultText = "0";
   manualEchoReverbDamp.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoReverbDamp); };
+  manualEchoReverbDamp.slotFormatterOverrides = true;
   manualEchoReverbDamp.slotCount = FFGlobalUniMaxCount;
   manualEchoReverbDamp.unit = "%";
   manualEchoReverbDamp.id = "{6E27DACE-DEA9-4168-8752-6BFB0B09002E}";
