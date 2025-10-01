@@ -24,7 +24,6 @@ enum class FFGlobalUniTarget {
 std::string
 FFGlobalUniTargetToString(FFGlobalUniTarget target);
 
-// todo spread/space
 enum class FFGlobalUniParam { 
   VoiceCount, 
   // by target dimension

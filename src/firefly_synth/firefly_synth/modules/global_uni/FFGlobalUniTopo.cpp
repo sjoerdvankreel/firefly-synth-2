@@ -96,7 +96,8 @@ FFMakeGlobalUniTopo()
   auto& autoSpread = result->params[(int)FFGlobalUniParam::AutoSpread];
   autoSpread.mode = FBParamMode::Accurate;
   autoSpread.defaultText = "0";
-  autoSpread.name = "Spread"; // TODO name it by target
+  autoSpread.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Spread"; };
+  autoSpread.slotFormatterOverrides = true;
   autoSpread.slotCount = (int)FFGlobalUniTarget::Count;
   autoSpread.id = "{6048E64F-F600-49AF-9DE6-16FB77134A40}";
   autoSpread.unit = "%";
@@ -110,7 +111,8 @@ FFMakeGlobalUniTopo()
   auto& autoSpace = result->params[(int)FFGlobalUniParam::AutoSpace];
   autoSpace.mode = FBParamMode::Accurate;
   autoSpace.defaultText = "0";
-  autoSpace.name = "Space"; // TODO name it by target
+  autoSpace.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Space"; };
+  autoSpace.slotFormatterOverrides = true;
   autoSpace.slotCount = (int)FFGlobalUniTarget::Count;
   autoSpace.id = "{F406EEC6-0A27-4486-BDE3-42947993DFE8}";
   autoSpace.unit = "%";
@@ -125,7 +127,8 @@ FFMakeGlobalUniTopo()
   auto& autoRand = result->params[(int)FFGlobalUniParam::AutoRand];
   autoRand.mode = FBParamMode::VoiceStart;
   autoRand.defaultText = "0";
-  autoRand.name = "Rand"; // TODO name it by target
+  autoRand.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Rand"; };
+  autoRand.slotFormatterOverrides = true;
   autoRand.slotCount = (int)FFGlobalUniTarget::Count;
   autoRand.id = "{74DDA592-503E-4A8E-A026-EB15A3977D7B}";
   autoRand.unit = "%";
@@ -139,7 +142,8 @@ FFMakeGlobalUniTopo()
   auto& autoRandSeed = result->params[(int)FFGlobalUniParam::AutoRandSeed];
   autoRandSeed.mode = FBParamMode::Block;
   autoRandSeed.defaultText = "0";
-  autoRandSeed.name = "Seed"; // TODO name it by target
+  autoRandSeed.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Seed"; };
+  autoRandSeed.slotFormatterOverrides = true;
   autoRandSeed.slotCount = (int)FFGlobalUniTarget::Count;
   autoRandSeed.id = "{3D9A110B-B3F4-4700-B1A6-D3F5F7CEA368}";
   autoRandSeed.type = FBParamType::Discrete;
@@ -153,7 +157,8 @@ FFMakeGlobalUniTopo()
   auto& autoRandFree = result->params[(int)FFGlobalUniParam::AutoRandFree];
   autoRandFree.mode = FBParamMode::Block;
   autoRandFree.defaultText = "Off";
-  autoRandFree.name = "Free"; // TODO name it by target
+  autoRandFree.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Free"; };
+  autoRandFree.slotFormatterOverrides = true;
   autoRandFree.slotCount = (int)FFGlobalUniTarget::Count;
   autoRandFree.id = "{8ED21529-ABEF-4D1C-BA27-768B0016BEC9}";
   autoRandFree.type = FBParamType::Boolean;

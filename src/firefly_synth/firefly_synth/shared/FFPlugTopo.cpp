@@ -108,7 +108,6 @@ FFMakeTopo(FBPlugFormat format)
   result->specialSelector = SpecialParamsSelector;
   result->specialGUISelector = SpecialGUIParamsSelector;
   result->exchangeStateSize = sizeof(FFExchangeState);
-  result->exchangeStateAlignment = alignof(FFExchangeState);
   result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };
   result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
   result->allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };

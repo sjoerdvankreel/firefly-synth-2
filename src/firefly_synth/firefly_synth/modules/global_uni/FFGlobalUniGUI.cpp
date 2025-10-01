@@ -73,7 +73,7 @@ MakeGlobalUniEditor(FBPlugGUI* plugGUI)
       int guiCol = c * (FFGlobalUniMaxCount + 1 + 6);
       int targetIndex = c * (uniTargetCount / 2) + r;
 
-      auto targetName = FFGlobalUniTargetToString((FFGlobalUniTarget)r);
+      auto targetName = FFGlobalUniTargetToString((FFGlobalUniTarget)targetIndex);
       grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>(targetName));
 
       auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, targetIndex } });
