@@ -28,23 +28,35 @@ Component(),
 _fixedToRuntimeModuleIndex(fixedToRuntimeModuleIndex),
 _fixedToGraphIndex(fixedToGraphIndex),
 _data(std::make_unique<FBModuleGraphComponentData>()),
-_display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
+_display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get(), _fixedToRuntimeModuleIndex == -1))
 {
   _data->renderState = renderState;
-  _grid = std::make_unique<FBGridComponent>(true, 1, 1);
-  _grid->Add(0, 0, _display.get());
-  _section = std::make_unique<FBSectionComponent>(_grid.get());
-  addAndMakeVisible(_section.get());
+  if (_fixedToRuntimeModuleIndex != -1)
+  {
+    addAndMakeVisible(_display.get());
+  } else 
+  {
+    _grid = std::make_unique<FBGridComponent>(true, 1, 1);
+    _grid->Add(0, 0, _display.get());
+    _section = std::make_unique<FBSectionComponent>(_grid.get());
+    addAndMakeVisible(_section.get());
+  }
   resized();
 }
 
 void
 FBModuleGraphComponent::resized()
 {
-  if (!_section)
-    return;
-  _section->setBounds(getLocalBounds());
-  _section->resized();
+  if (_section)
+  {
+    _section->setBounds(getLocalBounds());
+    _section->resized();
+  }
+  else if (_display)
+  {
+    _display->setBounds(getLocalBounds());
+    _display->resized();
+  }
 }
 
 FBTopoIndices const&
