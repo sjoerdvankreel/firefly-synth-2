@@ -85,7 +85,7 @@ GlobalUniGraphRenderData::DoPostProcess(
   for (int i = 0; i < points.l.size(); i++)
   {
     float a = i / (float)points.l.size();
-    float y = std::sin(a * 2.0f * FBPi);
+    float y = std::sin(a * FBPi);
     points.l[i] = y; 
   }
 }
