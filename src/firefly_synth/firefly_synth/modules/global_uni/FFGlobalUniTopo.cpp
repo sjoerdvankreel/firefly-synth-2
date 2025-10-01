@@ -1,6 +1,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFTopoDetail.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniTopo.hpp>
+#include <firefly_synth/modules/global_uni/FFGlobalUniGraph.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 std::string
@@ -70,6 +71,8 @@ FFMakeGlobalUniTopo()
   result->name = "Global Uni";
   result->matrixName = "G.Uni";
   result->slotCount = 1;
+  result->graphCount = (int)FFGlobalUniTarget::Count;
+  result->graphRenderer = FFGlobalUniRenderGraph;
   result->id = "{5A505AF6-4E05-4680-BAFE-B880CE4E1BC2}";
   result->params.resize((int)FFGlobalUniParam::Count);
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.globalUni; });

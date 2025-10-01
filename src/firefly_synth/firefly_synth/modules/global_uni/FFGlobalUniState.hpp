@@ -16,6 +16,7 @@ class alignas(FBSIMDAlign) FFGlobalUniDSPState final
 public:
   // public because everyone needs global unison
   std::unique_ptr<FFGlobalUniProcessor> processor = {};
+  FBSArray<float, FBFixedBlockSamples> fakeGraphOutput = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFGlobalUniDSPState);
   FFGlobalUniDSPState() : processor(std::make_unique<FFGlobalUniProcessor>()) {}
 };
