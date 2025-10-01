@@ -38,6 +38,7 @@ _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
 {
   _input->audio = &_audio;
   _input->noteEvents = &_noteEvents;
+  _input->procState = _procState.get();
   _input->noteMatrixRaw = &_noteMatrixRaw;
 
   auto hostContext = plugGUI->HostContext();
