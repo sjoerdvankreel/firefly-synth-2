@@ -50,6 +50,18 @@ ManualSlotFormatter(FFGlobalUniTarget target, int slot)
   return "Manual " + FFGlobalUniTargetToString(target) + " " + std::to_string(slot + 1);
 }
 
+static void
+SetManualParamEnabledWhen(FBStaticParam& param, FFGlobalUniTarget target)
+{
+  param.dependencies.enabled.audio.WhenSlots({ 
+    { (int)FFGlobalUniParam::VoiceCount, -1 }, 
+    { (int)FFGlobalUniParam::ManualFirst + (int)target, -1 }, 
+    { (int)FFGlobalUniParam::Mode, (int)target } 
+  }, [](auto const& slots, auto const& vs) { 
+      return slots[1] < vs[0] && vs[2] == (int)FFGlobalUniMode::Manual; 
+  });
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeGlobalUniTopo()
 {
@@ -183,7 +195,7 @@ FFMakeGlobalUniTopo()
   manualVoiceCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualVoiceCoarse);
   manualVoiceCoarse.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualVoiceCoarse);
   manualVoiceCoarse.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualVoiceCoarse);
-  manualVoiceCoarse.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualVoiceCoarse, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::VoiceCoarse);
 
   auto& manualVoiceFine = result->params[(int)FFGlobalUniParam::ManualVoiceFine];
   manualVoiceFine.mode = FBParamMode::Accurate;
@@ -199,7 +211,7 @@ FFMakeGlobalUniTopo()
   manualVoiceFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualVoiceFine);
   manualVoiceFine.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualVoiceFine);
   manualVoiceFine.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualVoiceFine);
-  manualVoiceFine.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualVoiceFine, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::VoiceFine);
 
   auto& manualVMixAmp = result->params[(int)FFGlobalUniParam::ManualVMixAmp];
   manualVMixAmp.mode = FBParamMode::Accurate;
@@ -214,7 +226,7 @@ FFMakeGlobalUniTopo()
   manualVMixAmp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualVMixAmp);
   manualVMixAmp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualVMixAmp);
   manualVMixAmp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualVMixAmp);
-  manualVMixAmp.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualVMixAmp, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::VMixAmp);
 
   auto& manualVMixBal = result->params[(int)FFGlobalUniParam::ManualVMixBal];
   manualVMixBal.mode = FBParamMode::Accurate;
@@ -230,7 +242,7 @@ FFMakeGlobalUniTopo()
   manualVMixBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualVMixBal);
   manualVMixBal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualVMixBal);
   manualVMixBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualVMixBal);
-  manualVMixBal.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualVMixBal, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::VMixBal);
 
   auto& manualOscGain = result->params[(int)FFGlobalUniParam::ManualOscGain];
   manualOscGain.mode = FBParamMode::Accurate;
@@ -245,7 +257,7 @@ FFMakeGlobalUniTopo()
   manualOscGain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualOscGain);
   manualOscGain.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualOscGain);
   manualOscGain.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualOscGain);
-  manualOscGain.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualOscGain, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::OscGain);
 
   auto& manualOscPan = result->params[(int)FFGlobalUniParam::ManualOscPan];
   manualOscPan.mode = FBParamMode::Accurate;
@@ -261,7 +273,7 @@ FFMakeGlobalUniTopo()
   manualOscPan.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualOscPan);
   manualOscPan.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualOscPan);
   manualOscPan.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualOscPan);
-  manualOscPan.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualOscPan, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::OscPan);
 
   auto& manualOscCoarse = result->params[(int)FFGlobalUniParam::ManualOscCoarse];
   manualOscCoarse.mode = FBParamMode::Accurate;
@@ -278,7 +290,7 @@ FFMakeGlobalUniTopo()
   manualOscCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectmanualOscCoarse);
   manualOscCoarse.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectmanualOscCoarse);
   manualOscCoarse.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectmanualOscCoarse);
-  manualOscCoarse.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualOscCoarse, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::OscCoarse);
 
   auto& manualOscFine = result->params[(int)FFGlobalUniParam::ManualOscFine];
   manualOscFine.mode = FBParamMode::Accurate;
@@ -294,8 +306,8 @@ FFMakeGlobalUniTopo()
   manualOscFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualOscFine);
   manualOscFine.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualOscFine);
   manualOscFine.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualOscFine);
-  manualOscFine.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualOscFine, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
-  
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::OscFine);
+
   auto& manualOscPhaseOffset = result->params[(int)FFGlobalUniParam::ManualOscPhaseOffset];
   manualOscPhaseOffset.mode = FBParamMode::VoiceStart;
   manualOscPhaseOffset.defaultText = "0";
@@ -309,7 +321,7 @@ FFMakeGlobalUniTopo()
   manualOscPhaseOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualOscPhaseOffset);
   manualOscPhaseOffset.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualOscPhaseOffset);
   manualOscPhaseOffset.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualOscPhaseOffset);
-  manualOscPhaseOffset.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualOscPhaseOffset, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::OscPhaseOffset);
 
   auto& manualLFORate = result->params[(int)FFGlobalUniParam::ManualLFORate];
   manualLFORate.mode = FBParamMode::Accurate;
@@ -325,7 +337,7 @@ FFMakeGlobalUniTopo()
   manualLFORate.scalarAddr = FFSelectScalarParamAddr(selectModule, selectmanualLFORate);
   manualLFORate.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectmanualLFORate);
   manualLFORate.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectmanualLFORate);
-  manualLFORate.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualLFORate, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::LFORate);
 
   auto& manualLFOMin = result->params[(int)FFGlobalUniParam::ManualLFOMin];
   manualLFOMin.mode = FBParamMode::Accurate;
@@ -341,8 +353,8 @@ FFMakeGlobalUniTopo()
   manualLFOMin.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualLFOMin);
   manualLFOMin.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualLFOMin);
   manualLFOMin.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualLFOMin);
-  manualLFOMin.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualLFOMin, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
-  
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::LFOMin);
+
   auto& manualLFOMax = result->params[(int)FFGlobalUniParam::ManualLFOMax];
   manualLFOMax.mode = FBParamMode::Accurate;
   manualLFOMax.defaultText = "0";
@@ -357,7 +369,7 @@ FFMakeGlobalUniTopo()
   manualLFOMax.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualLFOMax);
   manualLFOMax.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualLFOMax);
   manualLFOMax.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualLFOMax);
-  manualLFOMax.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualLFOMax, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::LFOMax);
 
   auto& manualLFOSkewAX = result->params[(int)FFGlobalUniParam::ManualLFOSkewAX];
   manualLFOSkewAX.mode = FBParamMode::Accurate;
@@ -373,7 +385,7 @@ FFMakeGlobalUniTopo()
   manualLFOSkewAX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualLFOSkewAX);
   manualLFOSkewAX.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualLFOSkewAX);
   manualLFOSkewAX.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualLFOSkewAX);
-  manualLFOSkewAX.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualLFOSkewAX, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::LFOSkewAX);
 
   auto& manualLFOSkewAY = result->params[(int)FFGlobalUniParam::ManualLFOSkewAY];
   manualLFOSkewAY.mode = FBParamMode::Accurate;
@@ -389,7 +401,7 @@ FFMakeGlobalUniTopo()
   manualLFOSkewAY.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualLFOSkewAY);
   manualLFOSkewAY.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualLFOSkewAY);
   manualLFOSkewAY.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualLFOSkewAY);
-  manualLFOSkewAY.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualLFOSkewAY, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::LFOSkewAY);
 
   auto& manualLFOPhaseOffset = result->params[(int)FFGlobalUniParam::ManualLFOPhaseOffset];
   manualLFOPhaseOffset.mode = FBParamMode::VoiceStart;
@@ -404,7 +416,7 @@ FFMakeGlobalUniTopo()
   manualLFOPhaseOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualLFOPhaseOffset);
   manualLFOPhaseOffset.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualLFOPhaseOffset);
   manualLFOPhaseOffset.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualLFOPhaseOffset);
-  manualLFOPhaseOffset.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualLFOPhaseOffset, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::LFOPhaseOffset);
 
   auto& manualVFXParamA = result->params[(int)FFGlobalUniParam::ManualVFXParamA];
   manualVFXParamA.mode = FBParamMode::Accurate;
@@ -420,7 +432,7 @@ FFMakeGlobalUniTopo()
   manualVFXParamA.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualVFXParamA);
   manualVFXParamA.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualVFXParamA);
   manualVFXParamA.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualVFXParamA);
-  manualVFXParamA.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualVFXParamA, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::VFXParamA);
 
   auto& manualVFXParamB = result->params[(int)FFGlobalUniParam::ManualVFXParamB];
   manualVFXParamB.mode = FBParamMode::Accurate;
@@ -436,7 +448,7 @@ FFMakeGlobalUniTopo()
   manualVFXParamB.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualVFXParamB);
   manualVFXParamB.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualVFXParamB);
   manualVFXParamB.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualVFXParamB);
-  manualVFXParamB.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualVFXParamB, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::VFXParamB);
 
   auto& manualVFXParamC = result->params[(int)FFGlobalUniParam::ManualVFXParamC];
   manualVFXParamC.mode = FBParamMode::Accurate;
@@ -452,7 +464,7 @@ FFMakeGlobalUniTopo()
   manualVFXParamC.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualVFXParamC);
   manualVFXParamC.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualVFXParamC);
   manualVFXParamC.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualVFXParamC);
-  manualVFXParamC.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualVFXParamC, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::VFXParamC);
 
   auto& manualVFXParamD = result->params[(int)FFGlobalUniParam::ManualVFXParamD];
   manualVFXParamD.mode = FBParamMode::Accurate;
@@ -468,7 +480,7 @@ FFMakeGlobalUniTopo()
   manualVFXParamD.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualVFXParamD);
   manualVFXParamD.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualVFXParamD);
   manualVFXParamD.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualVFXParamD);
-  manualVFXParamD.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualVFXParamD, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::VFXParamD);
 
   auto& manualEnvOffset = result->params[(int)FFGlobalUniParam::ManualEnvOffset];
   manualEnvOffset.mode = FBParamMode::VoiceStart;
@@ -486,7 +498,7 @@ FFMakeGlobalUniTopo()
   manualEnvOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEnvOffset);
   manualEnvOffset.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEnvOffset);
   manualEnvOffset.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEnvOffset);
-  manualEnvOffset.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualEnvOffset, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::EnvOffset);
 
   auto& manualEnvStretch = result->params[(int)FFGlobalUniParam::ManualEnvStretch];
   manualEnvStretch.mode = FBParamMode::VoiceStart;
@@ -502,7 +514,7 @@ FFMakeGlobalUniTopo()
   manualEnvStretch.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEnvStretch);
   manualEnvStretch.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEnvStretch);
   manualEnvStretch.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEnvStretch);
-  manualEnvStretch.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualEnvStretch, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::EnvStretch);
 
   auto& manualEchoExtend = result->params[(int)FFGlobalUniParam::ManualEchoExtend];
   manualEchoExtend.mode = FBParamMode::VoiceStart;
@@ -518,7 +530,7 @@ FFMakeGlobalUniTopo()
   manualEchoExtend.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoExtend);
   manualEchoExtend.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoExtend);
   manualEchoExtend.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoExtend);
-  manualEchoExtend.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualEchoExtend, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::EchoExtend);
 
   auto& manualEchoFade = result->params[(int)FFGlobalUniParam::ManualEchoFade];
   manualEchoFade.mode = FBParamMode::VoiceStart;
@@ -534,7 +546,7 @@ FFMakeGlobalUniTopo()
   manualEchoFade.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoFade);
   manualEchoFade.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoFade);
   manualEchoFade.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoFade);
-  manualEchoFade.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualEchoFade, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::EchoFade);
 
   auto& manualEchoTapLevel = result->params[(int)FFGlobalUniParam::ManualEchoTapLevel];
   manualEchoTapLevel.mode = FBParamMode::Accurate;
@@ -550,7 +562,7 @@ FFMakeGlobalUniTopo()
   manualEchoTapLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoTapLevel);
   manualEchoTapLevel.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoTapLevel);
   manualEchoTapLevel.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoTapLevel);
-  manualEchoTapLevel.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualEchoTapLevel, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::EchoTapLevel);
 
   auto& manualEchoTapDelay = result->params[(int)FFGlobalUniParam::ManualEchoTapDelay];
   manualEchoTapDelay.mode = FBParamMode::Accurate;
@@ -566,7 +578,7 @@ FFMakeGlobalUniTopo()
   manualEchoTapDelay.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoTapDelay);
   manualEchoTapDelay.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoTapDelay);
   manualEchoTapDelay.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoTapDelay);
-  manualEchoTapDelay.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualEchoTapDelay, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::EchoTapDelay);
 
   auto& manualEchoTapBal = result->params[(int)FFGlobalUniParam::ManualEchoTapBal];
   manualEchoTapBal.mode = FBParamMode::Accurate;
@@ -582,7 +594,7 @@ FFMakeGlobalUniTopo()
   manualEchoTapBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoTapBal);
   manualEchoTapBal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoTapBal);
   manualEchoTapBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoTapBal);
-  manualEchoTapBal.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualEchoTapBal, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::EchoTapBal);
 
   auto& manualEchoFdbkDelay = result->params[(int)FFGlobalUniParam::ManualEchoFdbkDelay];
   manualEchoFdbkDelay.mode = FBParamMode::Accurate;
@@ -598,7 +610,7 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkDelay.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoFdbkDelay);
   manualEchoFdbkDelay.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoFdbkDelay);
   manualEchoFdbkDelay.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoFdbkDelay);
-  manualEchoFdbkDelay.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualEchoFdbkDelay, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::EchoFdbkDelay);
 
   auto& manualEchoFdbkMix = result->params[(int)FFGlobalUniParam::ManualEchoFdbkMix];
   manualEchoFdbkMix.mode = FBParamMode::Accurate;
@@ -614,7 +626,7 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoFdbkMix);
   manualEchoFdbkMix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoFdbkMix);
   manualEchoFdbkMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoFdbkMix);
-  manualEchoFdbkMix.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualEchoFdbkMix, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::EchoFdbkMix);
 
   auto& manualEchoFdbkAmt = result->params[(int)FFGlobalUniParam::ManualEchoFdbkAmt];
   manualEchoFdbkAmt.mode = FBParamMode::Accurate;
@@ -630,7 +642,7 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkAmt.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoFdbkAmt);
   manualEchoFdbkAmt.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoFdbkAmt);
   manualEchoFdbkAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoFdbkAmt);
-  manualEchoFdbkAmt.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualEchoFdbkAmt, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::EchoFdbkAmt);
 
   auto& manualEchoReverbMix = result->params[(int)FFGlobalUniParam::ManualEchoReverbMix];
   manualEchoReverbMix.mode = FBParamMode::Accurate;
@@ -646,7 +658,7 @@ FFMakeGlobalUniTopo()
   manualEchoReverbMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoReverbMix);
   manualEchoReverbMix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoReverbMix);
   manualEchoReverbMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoReverbMix);
-  manualEchoReverbMix.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualEchoReverbMix, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::EchoReverbMix);
 
   auto& manualEchoReverbSize = result->params[(int)FFGlobalUniParam::ManualEchoReverbSize];
   manualEchoReverbSize.mode = FBParamMode::Accurate;
@@ -662,7 +674,7 @@ FFMakeGlobalUniTopo()
   manualEchoReverbSize.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoReverbSize);
   manualEchoReverbSize.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoReverbSize);
   manualEchoReverbSize.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoReverbSize);
-  manualEchoReverbSize.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualEchoReverbSize, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::EchoReverbSize);
 
   auto& manualEchoReverbDamp = result->params[(int)FFGlobalUniParam::ManualEchoReverbDamp];
   manualEchoReverbDamp.mode = FBParamMode::Accurate;
@@ -678,7 +690,7 @@ FFMakeGlobalUniTopo()
   manualEchoReverbDamp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoReverbDamp);
   manualEchoReverbDamp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoReverbDamp);
   manualEchoReverbDamp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoReverbDamp);
-  manualEchoReverbDamp.dependencies.enabled.audio.WhenSlots({ { (int)FFGlobalUniParam::VoiceCount, -1 }, { (int)FFGlobalUniParam::ManualEchoReverbDamp, -1 }, { (int)FFGlobalUniParam::Mode, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 0 && vs[2] == (int)FFGlobalUniMode::Manual; });
+  SetManualParamEnabledWhen(manualVoiceCoarse, FFGlobalUniTarget::EchoReverbDamp);
 
   return result;
 }
