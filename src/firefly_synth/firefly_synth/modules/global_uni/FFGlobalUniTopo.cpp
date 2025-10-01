@@ -93,6 +93,8 @@ FFMakeGlobalUniTopo()
   mode.mode = FBParamMode::Block;
   mode.defaultText = "Off";
   mode.name = "Mode";
+  mode.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Mode"; };
+  mode.slotFormatterOverrides = true;
   mode.slotCount = (int)FFGlobalUniTarget::Count;
   mode.id = "{B5809A8A-B0A9-40B2-8A0B-413121869836}";
   mode.type = FBParamType::List;
@@ -108,6 +110,7 @@ FFMakeGlobalUniTopo()
   auto& autoSpread = result->params[(int)FFGlobalUniParam::AutoSpread];
   autoSpread.mode = FBParamMode::Accurate;
   autoSpread.defaultText = "0";
+  autoSpread.name = "Sprd";
   autoSpread.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Spread"; };
   autoSpread.slotFormatterOverrides = true;
   autoSpread.slotCount = (int)FFGlobalUniTarget::Count;
@@ -123,6 +126,7 @@ FFMakeGlobalUniTopo()
   auto& autoSpace = result->params[(int)FFGlobalUniParam::AutoSpace];
   autoSpace.mode = FBParamMode::Accurate;
   autoSpace.defaultText = "0";
+  autoSpace.name = "Space";
   autoSpace.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Space"; };
   autoSpace.slotFormatterOverrides = true;
   autoSpace.slotCount = (int)FFGlobalUniTarget::Count;
@@ -139,6 +143,7 @@ FFMakeGlobalUniTopo()
   auto& autoRand = result->params[(int)FFGlobalUniParam::AutoRand];
   autoRand.mode = FBParamMode::VoiceStart;
   autoRand.defaultText = "0";
+  autoRand.name = "Rand";
   autoRand.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Rand"; };
   autoRand.slotFormatterOverrides = true;
   autoRand.slotCount = (int)FFGlobalUniTarget::Count;
@@ -154,6 +159,7 @@ FFMakeGlobalUniTopo()
   auto& autoRandSeed = result->params[(int)FFGlobalUniParam::AutoRandSeed];
   autoRandSeed.mode = FBParamMode::Block;
   autoRandSeed.defaultText = "0";
+  autoRandSeed.name = "Seed";
   autoRandSeed.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Seed"; };
   autoRandSeed.slotFormatterOverrides = true;
   autoRandSeed.slotCount = (int)FFGlobalUniTarget::Count;
@@ -169,6 +175,7 @@ FFMakeGlobalUniTopo()
   auto& autoRandFree = result->params[(int)FFGlobalUniParam::AutoRandFree];
   autoRandFree.mode = FBParamMode::Block;
   autoRandFree.defaultText = "Off";
+  autoRandFree.name = "Free";
   autoRandFree.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Free"; };
   autoRandFree.slotFormatterOverrides = true;
   autoRandFree.slotCount = (int)FFGlobalUniTarget::Count;
