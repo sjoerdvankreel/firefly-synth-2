@@ -87,7 +87,7 @@ FBModuleGraphDisplayComponent::PaintMarker(
 {
   auto color = Colours::white;
   if (_data->paintAsDisabled)
-    color = color.darker();
+    color = color.darker(0.67f);
   if (!primary)
     color = color.withAlpha(0.5f);
   g.setColour(color);
@@ -138,7 +138,7 @@ FBModuleGraphDisplayComponent::PaintSeries(
   for (int i = 1; i < points.size(); i++)
     path.lineTo(PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
   if (_data->paintAsDisabled)
-    color = color.darker();
+    color = color.darker(0.67f);
   g.setColour(color);
   g.strokePath(path, PathStrokeType(1.0f));
 }
