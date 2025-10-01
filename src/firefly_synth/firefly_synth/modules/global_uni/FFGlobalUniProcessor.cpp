@@ -19,6 +19,12 @@ FFGlobalUniProcessor::BeginBlock(FBModuleProcState& state)
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GlobalUni];
   float countNorm = params.block.voiceCount[0].Value();
   _voiceCount = topo.NormalizedToDiscreteFast((int)FFGlobalUniParam::VoiceCount, countNorm);
+  for (int i = 0; i < (int)FFGlobalUniTarget::Count; i++)
+  {
+    _randFree[i] = topo.NormalizedToBoolFast(FFGlobalUniParam::AutoRandFree, params.block.autoRandFree[i].Value());
+    _randSeed[i] = topo.NormalizedToDiscreteFast(FFGlobalUniParam::AutoRandSeed, params.block.autoRandSeed[i].Value());
+    _mode[i] = topo.NormalizedToListFast<FFGlobalUniMode>(FFGlobalUniParam::Mode, params.block.mode[i].Value());
+  }
 }
 
 void
@@ -38,6 +44,12 @@ FFGlobalUniProcessor::Process(FBModuleProcState& state)
   exchangeDSP.boolIsActive = 1;
 
   auto& exchangeParams = exchangeToGUI->param.global.globalUni[0];
+  for (int i = 0; i < (int)FFGlobalUniTarget::Count; i++)
+  {
+    exchangeParams.acc.autoRand[i] = params.acc.autoRand[i].Global().Last();
+    exchangeParams.acc.autoSpace[i] = params.acc.autoSpace[i].Global().Last();
+    exchangeParams.acc.autoSpread[i] = params.acc.autoSpread[i].Global().Last();
+  }
   for (int i = 0; i < FFGlobalUniMaxCount; i++)
   {
     exchangeParams.acc.manualVoiceCoarse[i] = params.acc.manualVoiceCoarse[i].Global().Last();

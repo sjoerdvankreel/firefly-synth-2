@@ -55,6 +55,7 @@ TODOLIST for alpha-18
 [ ] filters should track the actual pitch when possible (string osci)
 
 TODOLIST for alpha-19
+[ ] split large matrix dropdowns
 [ ] preset infra
 [ ] check all linear horizontal + do sensitivity for linear horizontal
 [ ] headers on the popout windows
