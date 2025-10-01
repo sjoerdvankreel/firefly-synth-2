@@ -14,6 +14,9 @@
 struct GlobalUniGraphRenderData final :
 public FBModuleGraphRenderData<GlobalUniGraphRenderData>
 {
+  int totalSamples = {};
+  std::array<int, (int)FFGlobalUniTarget::Count> samplesProcessed = {};
+
   FFGlobalUniProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
@@ -33,13 +36,6 @@ PlotParams(FBModuleGraphComponentData const* data, int /*graphIndex*/)
   return result;
 }
 
-int
-GlobalUniGraphRenderData::DoProcess(
-  FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/)
-{
-  return FBFixedBlockSamples;
-}
-
 FFGlobalUniProcessor&
 GlobalUniGraphRenderData::GetProcessor(FBModuleProcState& state)
 {
@@ -55,6 +51,14 @@ GlobalUniGraphRenderData::DoBeginVoiceOrBlock(
   GetProcessor(*moduleProcState).BeginBlock(*moduleProcState);
 }
 
+int
+GlobalUniGraphRenderData::DoProcess(
+  FBGraphRenderState* /*state*/, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
+{
+  samplesProcessed[graphIndex] += FBFixedBlockSamples;
+  return std::clamp(totalSamples - samplesProcessed[graphIndex], 0, FBFixedBlockSamples);
+}
+
 void
 FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData)
 {
@@ -65,6 +69,7 @@ FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->drawMarkersSelector = [](int) { return true; };
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
+  renderData.totalSamples = PlotParams(graphData, 0).sampleCount;
   renderData.globalExchangeSelector = [](void const* exchangeState, int /*slot*/, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.globalUni[0]; };
   renderData.globalMonoOutputSelector = [](void const* procState, int /*slot*/, int /*graphIndex*/) {
