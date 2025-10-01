@@ -109,7 +109,7 @@ FBModuleGraphComponent::paint(Graphics& /*g*/)
 
   auto const* topo = _data->renderState->ModuleProcState()->topo;
   int staticIndex = topo->modules[_tweakedModuleByUI].topoIndices.index;
-  FB_ASSERT(topo->static_->modules[staticIndex].graphParticipatesInMain || _fixedToRuntimeModuleIndex != -1);
+  FB_ASSERT(topo->static_->modules[staticIndex].graphParticipatesInMain == (_fixedToRuntimeModuleIndex == -1));
 
   _data->bipolar = false;
   _data->drawMarkersSelector = {};
