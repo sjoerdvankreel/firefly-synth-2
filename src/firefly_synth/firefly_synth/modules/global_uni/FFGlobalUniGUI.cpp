@@ -131,8 +131,7 @@ MakeGlobalUniSectionMain(
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
 
   auto editor = MakeGlobalUniEditor(plugGUI, graphRenderState, fixedGraphs);
-  auto enabledIfMoreThan1Voice = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::ManualFirst, 0 } });
-  auto showEditor = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, enabledIfMoreThan1Voice, "Edit");
+  auto showEditor = plugGUI->StoreComponent<FBParamValueLinkedButton>(plugGUI, voiceCount, "Edit", [](int v) { return v > 1; });
   showEditor->onClick = [plugGUI, editor]() {
     dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", editor, 1080, 450, [plugGUI]() {
       FBTopoIndices moduleIndices = { (int)FFModuleType::GlobalUni, 0 };
