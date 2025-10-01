@@ -45,13 +45,10 @@ GlobalUniTargetToString(FFGlobalUniTarget target)
 }
 
 static std::string
-ManualSlotFormatter(FFGlobalUniTarget target)
+ManualSlotFormatter(FFGlobalUniTarget target, int slot)
 {
-  return "Manual " + GlobalUniTargetToString(target);
+  return "Manual " + GlobalUniTargetToString(target) + " " + std::to_string(slot + 1);
 }
-
-typedef std::function<std::string(FBStaticTopo const& topo, int moduleSlot, int itemSlot)>
-FBModuleItemSlotFormatter;
 
 std::unique_ptr<FBStaticModule>
 FFMakeGlobalUniTopo()
@@ -169,7 +166,7 @@ FFMakeGlobalUniTopo()
   auto& manualVoiceCoarse = result->params[(int)FFGlobalUniParam::ManualVoiceCoarse];
   manualVoiceCoarse.mode = FBParamMode::Accurate;
   manualVoiceCoarse.defaultText = "0";
-  manualVoiceCoarse.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VoiceCoarse); };
+  manualVoiceCoarse.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::VoiceCoarse, s); };
   manualVoiceCoarse.slotFormatterOverrides = true;
   manualVoiceCoarse.slotCount = FFGlobalUniMaxCount;
   manualVoiceCoarse.unit = "Semitones";
@@ -186,7 +183,7 @@ FFMakeGlobalUniTopo()
   auto& manualVoiceFine = result->params[(int)FFGlobalUniParam::ManualVoiceFine];
   manualVoiceFine.mode = FBParamMode::Accurate;
   manualVoiceFine.defaultText = "0";
-  manualVoiceFine.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VoiceFine); };
+  manualVoiceFine.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::VoiceFine, s); };
   manualVoiceFine.slotFormatterOverrides = true;
   manualVoiceFine.slotCount = FFGlobalUniMaxCount;
   manualVoiceFine.id = "{4A3335C3-9239-4D90-A53A-F73807FEC0B7}";
@@ -202,7 +199,7 @@ FFMakeGlobalUniTopo()
   auto& manualVMixAmp = result->params[(int)FFGlobalUniParam::ManualVMixAmp];
   manualVMixAmp.mode = FBParamMode::Accurate;
   manualVMixAmp.defaultText = "100";
-  manualVMixAmp.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VMixAmp); };
+  manualVMixAmp.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::VMixAmp, s); };
   manualVMixAmp.slotFormatterOverrides = true;
   manualVMixAmp.slotCount = FFGlobalUniMaxCount;
   manualVMixAmp.id = "{CA16FDA4-CB83-46F4-B236-5382DAA1CFD6}";
@@ -217,7 +214,7 @@ FFMakeGlobalUniTopo()
   auto& manualVMixBal = result->params[(int)FFGlobalUniParam::ManualVMixBal];
   manualVMixBal.mode = FBParamMode::Accurate;
   manualVMixBal.defaultText = "0";
-  manualVMixBal.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VMixBal); };
+  manualVMixBal.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::VMixBal, s); };
   manualVMixBal.slotFormatterOverrides = true;
   manualVMixBal.slotCount = FFGlobalUniMaxCount;
   manualVMixBal.id = "{A6AD53AB-3FBD-4579-9B2C-D97118B16E70}";
@@ -233,7 +230,7 @@ FFMakeGlobalUniTopo()
   auto& manualOscGain = result->params[(int)FFGlobalUniParam::ManualOscGain];
   manualOscGain.mode = FBParamMode::Accurate;
   manualOscGain.defaultText = "100";
-  manualOscGain.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::OscGain); };
+  manualOscGain.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::OscGain, s); };
   manualOscGain.slotFormatterOverrides = true;
   manualOscGain.slotCount = FFGlobalUniMaxCount;
   manualOscGain.unit = "%";
@@ -248,7 +245,7 @@ FFMakeGlobalUniTopo()
   auto& manualOscPan = result->params[(int)FFGlobalUniParam::ManualOscPan];
   manualOscPan.mode = FBParamMode::Accurate;
   manualOscPan.defaultText = "0";
-  manualOscPan.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::OscPan); };
+  manualOscPan.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::OscPan, s); };
   manualOscPan.slotFormatterOverrides = true;
   manualOscPan.slotCount = FFGlobalUniMaxCount;
   manualOscPan.unit = "%";
@@ -264,7 +261,7 @@ FFMakeGlobalUniTopo()
   auto& manualOscCoarse = result->params[(int)FFGlobalUniParam::ManualOscCoarse];
   manualOscCoarse.mode = FBParamMode::Accurate;
   manualOscCoarse.defaultText = "0";
-  manualOscCoarse.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::OscCoarse); };
+  manualOscCoarse.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::OscCoarse, s); };
   manualOscCoarse.slotFormatterOverrides = true;
   manualOscCoarse.slotCount = FFGlobalUniMaxCount;
   manualOscCoarse.unit = "Semitones";
@@ -281,7 +278,7 @@ FFMakeGlobalUniTopo()
   auto& manualOscFine = result->params[(int)FFGlobalUniParam::ManualOscFine];
   manualOscFine.mode = FBParamMode::Accurate;
   manualOscFine.defaultText = "0";
-  manualOscFine.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::OscFine); };
+  manualOscFine.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::OscFine, s); };
   manualOscFine.slotFormatterOverrides = true;
   manualOscFine.slotCount = FFGlobalUniMaxCount;
   manualOscFine.id = "{D32C05E9-BE89-43CB-887F-AF7B1001518F}";
@@ -297,7 +294,7 @@ FFMakeGlobalUniTopo()
   auto& manualOscPhaseOffset = result->params[(int)FFGlobalUniParam::ManualOscPhaseOffset];
   manualOscPhaseOffset.mode = FBParamMode::VoiceStart;
   manualOscPhaseOffset.defaultText = "0";
-  manualOscPhaseOffset.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::OscPhaseOffset); };
+  manualOscPhaseOffset.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::OscPhaseOffset, s); };
   manualOscPhaseOffset.slotFormatterOverrides = true;
   manualOscPhaseOffset.slotCount = FFGlobalUniMaxCount;
   manualOscPhaseOffset.unit = "%";
@@ -312,7 +309,7 @@ FFMakeGlobalUniTopo()
   auto& manualLFORate = result->params[(int)FFGlobalUniParam::ManualLFORate];
   manualLFORate.mode = FBParamMode::Accurate;
   manualLFORate.defaultText = "0";
-  manualLFORate.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::LFORate); };
+  manualLFORate.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::LFORate, s); };
   manualLFORate.slotFormatterOverrides = true;
   manualLFORate.slotCount = FFGlobalUniMaxCount;
   manualLFORate.unit = "%";
@@ -328,7 +325,7 @@ FFMakeGlobalUniTopo()
   auto& manualLFOMin = result->params[(int)FFGlobalUniParam::ManualLFOMin];
   manualLFOMin.mode = FBParamMode::Accurate;
   manualLFOMin.defaultText = "0";
-  manualLFOMin.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::LFOMin); };
+  manualLFOMin.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::LFOMin, s); };
   manualLFOMin.slotFormatterOverrides = true;
   manualLFOMin.slotCount = FFGlobalUniMaxCount;
   manualLFOMin.unit = "%";
@@ -344,7 +341,7 @@ FFMakeGlobalUniTopo()
   auto& manualLFOMax = result->params[(int)FFGlobalUniParam::ManualLFOMax];
   manualLFOMax.mode = FBParamMode::Accurate;
   manualLFOMax.defaultText = "0";
-  manualLFOMax.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::LFOMax); };
+  manualLFOMax.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::LFOMax, s); };
   manualLFOMax.slotFormatterOverrides = true;
   manualLFOMax.slotCount = FFGlobalUniMaxCount;
   manualLFOMax.unit = "%";
@@ -360,7 +357,7 @@ FFMakeGlobalUniTopo()
   auto& manualLFOSkewAX = result->params[(int)FFGlobalUniParam::ManualLFOSkewAX];
   manualLFOSkewAX.mode = FBParamMode::Accurate;
   manualLFOSkewAX.defaultText = "0";
-  manualLFOSkewAX.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::LFOSkewAX); };
+  manualLFOSkewAX.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::LFOSkewAX, s); };
   manualLFOSkewAX.slotFormatterOverrides = true;
   manualLFOSkewAX.slotCount = FFGlobalUniMaxCount;
   manualLFOSkewAX.unit = "%";
@@ -376,7 +373,7 @@ FFMakeGlobalUniTopo()
   auto& manualLFOSkewAY = result->params[(int)FFGlobalUniParam::ManualLFOSkewAY];
   manualLFOSkewAY.mode = FBParamMode::Accurate;
   manualLFOSkewAY.defaultText = "0";
-  manualLFOSkewAY.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::LFOSkewAY); };
+  manualLFOSkewAY.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::LFOSkewAY, s); };
   manualLFOSkewAY.slotFormatterOverrides = true;
   manualLFOSkewAY.slotCount = FFGlobalUniMaxCount;
   manualLFOSkewAY.unit = "%";
@@ -392,7 +389,7 @@ FFMakeGlobalUniTopo()
   auto& manualLFOPhaseOffset = result->params[(int)FFGlobalUniParam::ManualLFOPhaseOffset];
   manualLFOPhaseOffset.mode = FBParamMode::VoiceStart;
   manualLFOPhaseOffset.defaultText = "0";
-  manualLFOPhaseOffset.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::LFOPhaseOffset); };
+  manualLFOPhaseOffset.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::LFOPhaseOffset, s); };
   manualLFOPhaseOffset.slotFormatterOverrides = true;
   manualLFOPhaseOffset.slotCount = FFGlobalUniMaxCount;
   manualLFOPhaseOffset.unit = "%";
@@ -407,7 +404,7 @@ FFMakeGlobalUniTopo()
   auto& manualVFXParamA = result->params[(int)FFGlobalUniParam::ManualVFXParamA];
   manualVFXParamA.mode = FBParamMode::Accurate;
   manualVFXParamA.defaultText = "0";
-  manualVFXParamA.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VFXParamA); };
+  manualVFXParamA.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::VFXParamA, s); };
   manualVFXParamA.slotFormatterOverrides = true;
   manualVFXParamA.slotCount = FFGlobalUniMaxCount;
   manualVFXParamA.unit = "%";
@@ -423,7 +420,7 @@ FFMakeGlobalUniTopo()
   auto& manualVFXParamB = result->params[(int)FFGlobalUniParam::ManualVFXParamB];
   manualVFXParamB.mode = FBParamMode::Accurate;
   manualVFXParamB.defaultText = "0";
-  manualVFXParamB.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VFXParamB); };
+  manualVFXParamB.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::VFXParamB, s); };
   manualVFXParamB.slotFormatterOverrides = true;
   manualVFXParamB.slotCount = FFGlobalUniMaxCount;
   manualVFXParamB.unit = "%";
@@ -439,7 +436,7 @@ FFMakeGlobalUniTopo()
   auto& manualVFXParamC = result->params[(int)FFGlobalUniParam::ManualVFXParamC];
   manualVFXParamC.mode = FBParamMode::Accurate;
   manualVFXParamC.defaultText = "0";
-  manualVFXParamC.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VFXParamC); };
+  manualVFXParamC.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::VFXParamC, s); };
   manualVFXParamC.slotFormatterOverrides = true;
   manualVFXParamC.slotCount = FFGlobalUniMaxCount;
   manualVFXParamC.unit = "%";
@@ -455,7 +452,7 @@ FFMakeGlobalUniTopo()
   auto& manualVFXParamD = result->params[(int)FFGlobalUniParam::ManualVFXParamD];
   manualVFXParamD.mode = FBParamMode::Accurate;
   manualVFXParamD.defaultText = "0";
-  manualVFXParamD.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::VFXParamD); };
+  manualVFXParamD.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::VFXParamD, s); };
   manualVFXParamD.slotFormatterOverrides = true;
   manualVFXParamD.slotCount = FFGlobalUniMaxCount;
   manualVFXParamD.unit = "%";
@@ -471,7 +468,7 @@ FFMakeGlobalUniTopo()
   auto& manualEnvOffset = result->params[(int)FFGlobalUniParam::ManualEnvOffset];
   manualEnvOffset.mode = FBParamMode::VoiceStart;
   manualEnvOffset.defaultText = "0";
-  manualEnvOffset.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EnvOffset); };
+  manualEnvOffset.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EnvOffset, s); };
   manualEnvOffset.slotFormatterOverrides = true;
   manualEnvOffset.slotCount = FFGlobalUniMaxCount;
   manualEnvOffset.unit = "Sec";
@@ -489,7 +486,7 @@ FFMakeGlobalUniTopo()
   auto& manualEnvStretch = result->params[(int)FFGlobalUniParam::ManualEnvStretch];
   manualEnvStretch.mode = FBParamMode::VoiceStart;
   manualEnvStretch.defaultText = "0";
-  manualEnvStretch.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EnvStretch); };
+  manualEnvStretch.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EnvStretch, s); };
   manualEnvStretch.slotFormatterOverrides = true;
   manualEnvStretch.slotCount = FFGlobalUniMaxCount;
   manualEnvStretch.unit = "%";
@@ -505,7 +502,7 @@ FFMakeGlobalUniTopo()
   auto& manualEchoExtend = result->params[(int)FFGlobalUniParam::ManualEchoExtend];
   manualEchoExtend.mode = FBParamMode::VoiceStart;
   manualEchoExtend.defaultText = "0";
-  manualEchoExtend.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoExtend); };
+  manualEchoExtend.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoExtend, s); };
   manualEchoExtend.slotFormatterOverrides = true;
   manualEchoExtend.slotCount = FFGlobalUniMaxCount;
   manualEchoExtend.unit = "%";
@@ -521,7 +518,7 @@ FFMakeGlobalUniTopo()
   auto& manualEchoFade = result->params[(int)FFGlobalUniParam::ManualEchoFade];
   manualEchoFade.mode = FBParamMode::VoiceStart;
   manualEchoFade.defaultText = "0";
-  manualEchoFade.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFade); };
+  manualEchoFade.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFade, s); };
   manualEchoFade.slotFormatterOverrides = true;
   manualEchoFade.slotCount = FFGlobalUniMaxCount;
   manualEchoFade.unit = "%";
@@ -537,7 +534,7 @@ FFMakeGlobalUniTopo()
   auto& manualEchoTapLevel = result->params[(int)FFGlobalUniParam::ManualEchoTapLevel];
   manualEchoTapLevel.mode = FBParamMode::Accurate;
   manualEchoTapLevel.defaultText = "0";
-  manualEchoTapLevel.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapLevel); };
+  manualEchoTapLevel.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapLevel, s); };
   manualEchoTapLevel.slotFormatterOverrides = true;
   manualEchoTapLevel.slotCount = FFGlobalUniMaxCount;
   manualEchoTapLevel.unit = "%";
@@ -553,7 +550,7 @@ FFMakeGlobalUniTopo()
   auto& manualEchoTapDelay = result->params[(int)FFGlobalUniParam::ManualEchoTapDelay];
   manualEchoTapDelay.mode = FBParamMode::Accurate;
   manualEchoTapDelay.defaultText = "0";
-  manualEchoTapDelay.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapDelay); };
+  manualEchoTapDelay.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapDelay, s); };
   manualEchoTapDelay.slotFormatterOverrides = true;
   manualEchoTapDelay.slotCount = FFGlobalUniMaxCount;
   manualEchoTapDelay.unit = "%";
@@ -569,7 +566,7 @@ FFMakeGlobalUniTopo()
   auto& manualEchoTapBal = result->params[(int)FFGlobalUniParam::ManualEchoTapBal];
   manualEchoTapBal.mode = FBParamMode::Accurate;
   manualEchoTapBal.defaultText = "0";
-  manualEchoTapBal.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapBal); };
+  manualEchoTapBal.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapBal, s); };
   manualEchoTapBal.slotFormatterOverrides = true;
   manualEchoTapBal.slotCount = FFGlobalUniMaxCount;
   manualEchoTapBal.unit = "%";
@@ -585,7 +582,7 @@ FFMakeGlobalUniTopo()
   auto& manualEchoFdbkDelay = result->params[(int)FFGlobalUniParam::ManualEchoFdbkDelay];
   manualEchoFdbkDelay.mode = FBParamMode::Accurate;
   manualEchoFdbkDelay.defaultText = "0";
-  manualEchoFdbkDelay.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFdbkDelay); };
+  manualEchoFdbkDelay.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFdbkDelay, s); };
   manualEchoFdbkDelay.slotFormatterOverrides = true;
   manualEchoFdbkDelay.slotCount = FFGlobalUniMaxCount;
   manualEchoFdbkDelay.unit = "%";
@@ -601,7 +598,7 @@ FFMakeGlobalUniTopo()
   auto& manualEchoFdbkMix = result->params[(int)FFGlobalUniParam::ManualEchoFdbkMix];
   manualEchoFdbkMix.mode = FBParamMode::Accurate;
   manualEchoFdbkMix.defaultText = "0";
-  manualEchoFdbkMix.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFdbkMix); };
+  manualEchoFdbkMix.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFdbkMix, s); };
   manualEchoFdbkMix.slotFormatterOverrides = true;
   manualEchoFdbkMix.slotCount = FFGlobalUniMaxCount;
   manualEchoFdbkMix.unit = "%";
@@ -617,7 +614,7 @@ FFMakeGlobalUniTopo()
   auto& manualEchoFdbkAmt = result->params[(int)FFGlobalUniParam::ManualEchoFdbkAmt];
   manualEchoFdbkAmt.mode = FBParamMode::Accurate;
   manualEchoFdbkAmt.defaultText = "0";
-  manualEchoFdbkAmt.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFdbkAmt); };
+  manualEchoFdbkAmt.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFdbkAmt, s); };
   manualEchoFdbkAmt.slotFormatterOverrides = true;
   manualEchoFdbkAmt.slotCount = FFGlobalUniMaxCount;
   manualEchoFdbkAmt.unit = "%";
@@ -633,7 +630,7 @@ FFMakeGlobalUniTopo()
   auto& manualEchoReverbMix = result->params[(int)FFGlobalUniParam::ManualEchoReverbMix];
   manualEchoReverbMix.mode = FBParamMode::Accurate;
   manualEchoReverbMix.defaultText = "0";
-  manualEchoReverbMix.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoReverbMix); };
+  manualEchoReverbMix.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoReverbMix, s); };
   manualEchoReverbMix.slotFormatterOverrides = true;
   manualEchoReverbMix.slotCount = FFGlobalUniMaxCount;
   manualEchoReverbMix.unit = "%";
@@ -649,7 +646,7 @@ FFMakeGlobalUniTopo()
   auto& manualEchoReverbSize = result->params[(int)FFGlobalUniParam::ManualEchoReverbSize];
   manualEchoReverbSize.mode = FBParamMode::Accurate;
   manualEchoReverbSize.defaultText = "0";
-  manualEchoReverbSize.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoReverbSize); };
+  manualEchoReverbSize.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoReverbSize, s); };
   manualEchoReverbSize.slotFormatterOverrides = true;
   manualEchoReverbSize.slotCount = FFGlobalUniMaxCount;
   manualEchoReverbSize.unit = "%";
@@ -665,7 +662,7 @@ FFMakeGlobalUniTopo()
   auto& manualEchoReverbDamp = result->params[(int)FFGlobalUniParam::ManualEchoReverbDamp];
   manualEchoReverbDamp.mode = FBParamMode::Accurate;
   manualEchoReverbDamp.defaultText = "0";
-  manualEchoReverbDamp.slotFormatter = [](auto const&, auto, auto) { return ManualSlotFormatter(FFGlobalUniTarget::EchoReverbDamp); };
+  manualEchoReverbDamp.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoReverbDamp, s); };
   manualEchoReverbDamp.slotFormatterOverrides = true;
   manualEchoReverbDamp.slotCount = FFGlobalUniMaxCount;
   manualEchoReverbDamp.unit = "%";
