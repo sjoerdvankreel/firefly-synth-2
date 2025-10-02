@@ -114,7 +114,7 @@ FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->drawClipBoundaries = false;
   graphData->fillPointIndicators = true;
   graphData->skipDrawOnEqualsPrimary = true;
-  graphData->drawMarkersSelector = [](int) { return true; };
+  graphData->drawMarkersSelector = [](int) { return false; };
   graphData->renderState->ModuleProcState()->moduleSlot = 0;
   graphData->paintAsDisabled = graphData->renderState->AudioParamList<FFGlobalUniMode>(
     { { (int)FFModuleType::GlobalUni, 0 },
