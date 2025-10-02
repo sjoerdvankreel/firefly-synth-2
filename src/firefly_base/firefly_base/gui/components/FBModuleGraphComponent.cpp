@@ -23,8 +23,10 @@ FBModuleGraphComponent::
 FBModuleGraphComponent(
   FBGraphRenderState* renderState,
   int fixedToRuntimeModuleIndex,
-  int fixedToGraphIndex) :
+  int fixedToGraphIndex,
+  std::function<FBGUIRenderType()> getCurrentRenderType) :
 Component(),
+_getCurrentRenderType(getCurrentRenderType),
 _fixedToRuntimeModuleIndex(fixedToRuntimeModuleIndex),
 _fixedToGraphIndex(fixedToGraphIndex),
 _data(std::make_unique<FBModuleGraphComponentData>()),
@@ -101,9 +103,8 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
   float fps = FBGUIFPS;
   auto now = high_resolution_clock::now();
   auto elapsedMillis = duration_cast<milliseconds>(now - _updated);
-  if (auto* parent = findParentComponentOfClass<FBPlugGUI>())
-    if(parent->GetGraphRenderType() == FBGUIRenderType::Basic)
-      fps = 1;
+  if (_getCurrentRenderType() == FBGUIRenderType::Basic)
+    fps = 1;
   if (elapsedMillis.count() < 1000.0 / fps)
     return;
   _updated = now;
@@ -127,9 +128,7 @@ FBModuleGraphComponent::paint(Graphics& /*g*/)
   _data->drawClipBoundaries = false;
   _data->skipDrawOnEqualsPrimary = true;
   _data->fixedGraphIndex = _fixedToGraphIndex;
-  _data->guiRenderType = FBGUIRenderType::Basic;
-  if(auto* parent = findParentComponentOfClass<FBPlugGUI>())
-    _data->guiRenderType = parent->GetGraphRenderType();
+  _data->guiRenderType = _getCurrentRenderType();
 
   _data->graphs.clear();
   _data->graphs.resize(topo->static_->modules[staticIndex].graphCount);

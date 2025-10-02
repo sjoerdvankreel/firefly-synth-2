@@ -200,7 +200,7 @@ FFPlugGUI::SetupGUI()
   FB_LOG_ENTRY_EXIT();
 
   _matrix = FFMakeModMatrixGUI(this); 
-  _mainGraph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get(), -1, -1);
+  _mainGraph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get(), -1, -1, [this]() { return GetGraphRenderType(); });
   _headerAndGraph = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
   _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
   _headerAndGraph->Add(0, 1, _mainGraph);

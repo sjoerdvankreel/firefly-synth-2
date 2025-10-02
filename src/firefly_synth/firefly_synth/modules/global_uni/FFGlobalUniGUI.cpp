@@ -108,7 +108,7 @@ MakeGlobalUniEditor(
       grid->MarkSection({ { guiRow, guiCol + 1 + 6 }, { 1, FFGlobalUniMaxCount } });
 
       int moduleRuntimeIndex = topo->moduleTopoToRuntime.at({ (int)FFModuleType::GlobalUni, 0 });
-      auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(graphRenderState, moduleRuntimeIndex, targetIndex);
+      auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(graphRenderState, moduleRuntimeIndex, targetIndex, [plugGUI]() { return plugGUI->GetGraphRenderType(); });
       grid->Add(guiRow, guiCol + 1 + 6 + FFGlobalUniMaxCount, uniGraph);
       fixedGraphs->push_back(uniGraph);
     }

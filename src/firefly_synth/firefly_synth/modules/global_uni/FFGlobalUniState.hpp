@@ -11,6 +11,16 @@
 
 struct FBStaticModule;
 
+// Bit different from the rest as the series data
+// is non-existent and the indicators are what matters.
+struct alignas(FBSIMDAlign) FFGlobalUniExchangeState: 
+public FBModuleProcSingleExchangeState
+{
+  ~FFGlobalUniExchangeState() = default;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalUniExchangeState);
+  bool ShouldGraph(int /*graphIndex*/) const override { return boolIsActive != 0; }
+};
+
 class alignas(FBSIMDAlign) FFGlobalUniDSPState final
 {
 public:

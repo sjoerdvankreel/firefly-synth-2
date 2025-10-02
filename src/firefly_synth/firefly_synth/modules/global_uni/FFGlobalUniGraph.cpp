@@ -47,6 +47,7 @@ void
 GlobalUniGraphRenderData::DoBeginVoiceOrBlock(
   FBGraphRenderState* state, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/)
 {
+  samplesProcessed = 0;
   auto* moduleProcState = state->ModuleProcState();
   GetProcessor(*moduleProcState).BeginBlock(*moduleProcState);
 }
@@ -114,6 +115,7 @@ FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->fillPointIndicators = true;
   graphData->skipDrawOnEqualsPrimary = true;
   graphData->drawMarkersSelector = [](int) { return true; };
+  graphData->renderState->ModuleProcState()->moduleSlot = 0;
   graphData->paintAsDisabled = graphData->renderState->AudioParamList<FFGlobalUniMode>(
     { { (int)FFModuleType::GlobalUni, 0 },
     { (int)FFGlobalUniParam::Mode, graphData->fixedGraphIndex } }, false, -1) == FFGlobalUniMode::Off;

@@ -2,7 +2,9 @@
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
+
 #include <memory>
+#include <functional>
 
 class FBPlugGUI;
 class FBGridComponent;
@@ -21,6 +23,7 @@ public juce::Component
   int _tweakedModuleByUI = -1;
   std::unique_ptr<FBGridComponent> _grid = {};
   std::unique_ptr<FBSectionComponent> _section = {};
+  std::function<FBGUIRenderType()> _getCurrentRenderType;
 
   int const _fixedToRuntimeModuleIndex;
   int const _fixedToGraphIndex;
@@ -43,5 +46,9 @@ public:
 
   ~FBModuleGraphComponent();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBModuleGraphComponent);
-  FBModuleGraphComponent(FBGraphRenderState* renderState, int fixedToRuntimeModuleIndex, int fixedToGraphIndex);
+  FBModuleGraphComponent(
+    FBGraphRenderState* renderState, 
+    int fixedToRuntimeModuleIndex, 
+    int fixedToGraphIndex, 
+    std::function<FBGUIRenderType()> getCurrentRenderType);
 };

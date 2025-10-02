@@ -41,12 +41,12 @@ struct FFGUIState final
 struct alignas(FBSIMDAlign) FFGlobalExchangeState final
 {
   std::array<FFLFOExchangeState, FFLFOCount> gLFO = {};
+  std::array<FFGlobalUniExchangeState, 1> globalUni = {};
   std::array<FBModuleProcSingleExchangeState, 1> gMix = {};
   std::array<FBModuleProcSingleExchangeState, 1> gEcho = {};
   std::array<FBModuleProcSingleExchangeState, 1> master = {};
   std::array<FBModuleProcSingleExchangeState, 1> output = {};
   std::array<FBModuleProcSingleExchangeState, 1> gMatrix = {};
-  std::array<FBModuleProcSingleExchangeState, 1> globalUni = {};
   std::array<FBModuleProcSingleExchangeState, FFEffectCount> gEffect = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
 };
