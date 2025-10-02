@@ -35,16 +35,16 @@ TODOLIST for alpha-17
 [x] check perf & graph perf
 [x] select the target graph
 [x] do paint as disabled
-[ ] exchange paint no workie
+[x] exchange paint no workie
+[x] upcast to FBPlugGUI in graph no longer works
+[ ] refix the demos
 [ ] lfo also need phase exchange
 [ ] hunt the todos
 [ ] osci-target vecho demo
 [ ] global uni demo
 [ ] decent defaults
 [ ] global unison
-[ ] upcast to FBPlugGUI in graph no longer works
 [ ] clap polymod + release as one
-[ ] refix the demos
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
