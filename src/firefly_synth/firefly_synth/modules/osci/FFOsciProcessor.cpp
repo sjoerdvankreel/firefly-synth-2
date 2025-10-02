@@ -76,7 +76,6 @@ FFOsciProcessor::BeginVoice(
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
-  int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
 
   auto const& typeNorm = params.block.type[0].Voice()[voice];
   _type = topo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, typeNorm);
@@ -110,6 +109,7 @@ FFOsciProcessor::BeginVoice(
   float globalUniPhaseOffset = 0.0f;
   if (!graph)
   {
+    int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
     globalUniPhaseOffset = procState->dsp.global.globalUni.processor->GetPhaseOffset(
       state, FFGlobalUniTarget::OscPhaseOffset, voiceSlotInGroup);
     state.ExchangeToGUIAs<FFExchangeState>()->voice[voice].osci[state.moduleSlot].globalUniPhaseOffset = globalUniPhaseOffset;
@@ -168,7 +168,6 @@ FFOsciProcessor::Process(
   auto& voiceState = procState->dsp.voice[voice];
   auto& output = voiceState.osci[state.moduleSlot].output;
   auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
-  int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
 
   auto masterPitchBendTarget = procState->dsp.global.master.bendTarget;
   auto const& masterPitchBendSemis = procState->dsp.global.master.bendAmountInSemis;
@@ -206,6 +205,7 @@ FFOsciProcessor::Process(
   coarseNormIn.CV().CopyTo(coarseNormModulated);
   if (!graph)
   {
+    int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
     FFApplyModulation(FFModulationOpType::UPMul, voiceState.env[state.moduleSlot + FFEnvSlotOffset].output, envToGain.CV(), gainNormModulated);
     FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[state.moduleSlot].outputAll, lfoToFine.CV(), fineNormModulated);
     procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::OscPan, voiceSlotInGroup, panNormModulated);
