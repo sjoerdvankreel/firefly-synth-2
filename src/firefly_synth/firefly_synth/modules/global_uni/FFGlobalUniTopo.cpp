@@ -159,10 +159,10 @@ FFMakeGlobalUniTopo()
   autoSpread.name = "Sprd";
   autoSpread.defaultTextSelector = [](int, int, int ps) {
     if (ps == (int)FFGlobalUniTarget::VoiceFine)
-      return "0.167";
+      return "16.7";
     if (ps == (int)FFGlobalUniTarget::OscPhaseOffset)
-      return "0.5";
-    return "0.0";
+      return "50";
+    return "0";
   };
   autoSpread.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Spread"; };
   autoSpread.slotFormatterOverrides = true;
@@ -199,8 +199,8 @@ FFMakeGlobalUniTopo()
   autoRand.name = "Rand";
   autoRand.defaultTextSelector = [](int, int, int ps) {
     if (ps == (int)FFGlobalUniTarget::OscPhaseOffset)
-      return "0.5";
-    return "0.0";
+      return "50";
+    return "0";
   };
   autoRand.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Rand"; };
   autoRand.slotFormatterOverrides = true;
