@@ -50,10 +50,16 @@ FFGlobalUniProcessor::Apply(
   auto const* procState = state.ProcAs<FFProcState>();
   if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
   {
+    //auto invLogHalf = 1.0f / std::log(0.5f);
+   // auto const& space = procState->param.global.globalUni[0].acc.autoSpace[(int)targetParam].Global().CV();
     auto const& spread = procState->param.global.globalUni[0].acc.autoSpread[(int)targetParam].Global().CV();
-    float voicePos = voiceSlotInGroup / (_voiceCount - 1.0f) - 0.5f;
+    auto voicePos = FBBatch<float>(voiceSlotInGroup / (_voiceCount - 1.0f));
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-      modSource.Store(s, 0.5f + voicePos * spread.Load(s));
+    {
+      auto outBatch = 0.5f + (voicePos - 0.5f) * spread.Load(s);
+      //outBatch = outBatch * xsimd::pow(voicePos, xsimd::log(space.Load(s) * invLogHalf));
+      modSource.Store(s, outBatch);
+    }
     if (targetParam == FFGlobalUniTarget::VMixAmp || targetParam == FFGlobalUniTarget::OscGain)
       for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
         modSource.Store(s, 1.0f - xsimd::abs(FBToBipolar(modSource.Load(s))));
