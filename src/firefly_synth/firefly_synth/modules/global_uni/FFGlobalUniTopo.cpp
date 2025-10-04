@@ -136,8 +136,9 @@ FFMakeGlobalUniTopo()
 
   auto& mode = result->params[(int)FFGlobalUniParam::Mode];
   mode.mode = FBParamMode::Block;
-  mode.defaultText = "Off";
   mode.name = "Mode";
+  mode.defaultTextSelector = [](int, int, int ps) { 
+    return ps == (int)FFGlobalUniTarget::VoiceFine || ps == (int)FFGlobalUniTarget::OscPhaseOffset ? "Auto" : "Off"; };
   mode.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Mode"; };
   mode.slotFormatterOverrides = true;
   mode.slotCount = (int)FFGlobalUniTarget::Count;
@@ -155,8 +156,14 @@ FFMakeGlobalUniTopo()
   
   auto& autoSpread = result->params[(int)FFGlobalUniParam::AutoSpread];
   autoSpread.mode = FBParamMode::Accurate;
-  autoSpread.defaultText = "0";
   autoSpread.name = "Sprd";
+  autoSpread.defaultTextSelector = [](int, int, int ps) {
+    if (ps == (int)FFGlobalUniTarget::VoiceFine)
+      return "0.167";
+    if (ps == (int)FFGlobalUniTarget::OscPhaseOffset)
+      return "0.5";
+    return "0.0";
+  };
   autoSpread.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Spread"; };
   autoSpread.slotFormatterOverrides = true;
   autoSpread.slotCount = (int)FFGlobalUniTarget::Count;
@@ -189,8 +196,12 @@ FFMakeGlobalUniTopo()
 
   auto& autoRand = result->params[(int)FFGlobalUniParam::AutoRand];
   autoRand.mode = FBParamMode::VoiceStart;
-  autoRand.defaultText = "0";
   autoRand.name = "Rand";
+  autoRand.defaultTextSelector = [](int, int, int ps) {
+    if (ps == (int)FFGlobalUniTarget::OscPhaseOffset)
+      return "0.5";
+    return "0.0";
+  };
   autoRand.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Rand"; };
   autoRand.slotFormatterOverrides = true;
   autoRand.slotCount = (int)FFGlobalUniTarget::Count;

@@ -38,12 +38,12 @@ TODOLIST for alpha-17
 [x] exchange paint no workie
 [x] upcast to FBPlugGUI in graph no longer works
 [x] refix the demos
+[x] hunt the todos
+[x] decent defaults
 [ ] am/fm amt as targets
 [ ] lfo also need phase exchange
-[ ] hunt the todos
 [ ] osci-target vecho demo
 [ ] global uni demo
-[ ] decent defaults
 [ ] global unison
 [ ] clap polymod + release as one
 [ ] profile some more
