@@ -66,6 +66,8 @@ TODOLIST for alpha-18 - tuning and keytracking
 [ ] filters should track the actual pitch when possible (string osci)
 
 TODOLIST for alpha-19
+[ ] import/export module
+[ ] copy/paste module and patch across sessions
 [ ] split large matrix dropdowns
 [ ] preset infra
 [ ] check all linear horizontal + do sensitivity for linear horizontal
