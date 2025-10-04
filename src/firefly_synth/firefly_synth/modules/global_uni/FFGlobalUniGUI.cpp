@@ -34,7 +34,7 @@ _plugGUI(plugGUI)
 
 void 
 FFGlobalUniParamListener::AudioParamChanged(
-  int index, double normalized, bool changedFromUI)
+  int index, double /*normalized*/, bool changedFromUI)
 {
   if (!changedFromUI)
     return;
