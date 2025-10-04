@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_synth/dsp/shared/FFModulate.hpp>
 #include <firefly_synth/dsp/shared/FFMarsagliaPRNG.hpp>
 #include <firefly_synth/dsp/shared/FFParkMillerPRNG.hpp>
 #include <firefly_synth/dsp/shared/FFPhaseGenerator.hpp>
