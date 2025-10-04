@@ -19,6 +19,15 @@ FFGlobalUniProcessor()
 }
 
 void 
+FFGlobalUniProcessor::PrepareVoice(
+  std::array<float, (int)FFGlobalUniTarget::Count>& randState)
+{
+  for (int i = 0; i < (int)FFGlobalUniTarget::Count; i++)
+    if (_mode[i] == FFGlobalUniMode::Auto)
+      randState[i] = _randStream[i].NextScalar();
+}
+
+void 
 FFGlobalUniProcessor::BeginBlock(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
@@ -38,12 +47,7 @@ FFGlobalUniProcessor::BeginBlock(FBModuleProcState& state)
     {
       _prevRandSeedNorm[i] = _randSeedNorm[i];
       _randStream[i] = FFParkMillerPRNG(_randSeedNorm[i]);
-      for (int v = 0; v < _voiceCount; v++)
-        _randState[i][v] = _randStream[i].NextScalar();
     }
-    if(_randFree[i])
-      for (int v = 0; v < _voiceCount; v++)
-        _randState[i][v] = _randStream[i].NextScalar();
   }
 }
 

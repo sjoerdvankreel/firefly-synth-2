@@ -34,7 +34,7 @@ FFVoiceProcessor::BeginVoice(
   std::array<float, FFVNoteOnNoteRandomCount> const& onNoteRandomNorm,
   std::array<float, FFVNoteOnNoteRandomCount> const& onNoteGroupRandomUni,
   std::array<float, FFVNoteOnNoteRandomCount> const& onNoteGroupRandomNorm)
-  {
+{
   // We need to handle modules BeginVoice inside process
   // because of the on-voice-start modulation feature.
   // F.e. lfo output can be targeted to env stage length
@@ -60,6 +60,8 @@ FFVoiceProcessor::BeginVoice(
   auto const& vMixTopo = state.topo->static_->modules[(int)FFModuleType::VMix];
   float ampEnvTargetNorm = procState->param.voice.vMix[0].block.ampEnvTarget[0].Voice()[voice];
   _ampEnvTarget = vMixTopo.NormalizedToListFast<FFVMixAmpEnvTarget>((int)FFVMixParam::AmpEnvTarget, ampEnvTargetNorm);
+
+  state.ProcAs<FFProcState>()->dsp.global.globalUni.processor->PrepareVoice(_globalUniAutoRandState);
 }
 
 bool 
@@ -134,7 +136,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   ampNormIn.CV().CopyTo(ampNormModulated);
   if (_ampEnvTarget != FFVMixAmpEnvTarget::Off)
     FFApplyModulation(FFModulationOpType::UPMul, voiceDSP.env[FFAmpEnvSlot].output, ampEnvToAmpNorm.CV(), ampNormModulated);
-  procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::VMixAmp, voiceSlotInGroup, ampNormModulated);
+  procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::VMixAmp, voiceSlotInGroup, _globalUniAutoRandState, ampNormModulated);
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     ampPlainModulated.Store(s, moduleTopo.NormalizedToLinearFast(FFVMixParam::Amp, ampNormModulated.Load(s)));
 
@@ -278,7 +280,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
   balNormIn.CV().CopyTo(balNormModulated);
   FFApplyModulation(FFModulationOpType::BPStack, voiceDSP.vLFO[5].outputAll, lfo6ToBalNorm.CV(), balNormModulated);
-  procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::VMixBal, voiceSlotInGroup, balNormModulated);
+  procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::VMixBal, voiceSlotInGroup, _globalUniAutoRandState, balNormModulated);
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float balPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Bal, balNormModulated.Get(s));

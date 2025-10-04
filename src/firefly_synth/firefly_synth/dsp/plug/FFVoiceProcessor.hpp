@@ -3,6 +3,7 @@
 #include <firefly_synth/modules/mix/FFVMixTopo.hpp>
 #include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 #include <firefly_synth/modules/note/FFVNoteTopo.hpp>
+#include <firefly_synth/modules/global_uni/FFGlobalUniTopo.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
@@ -41,6 +42,7 @@ class FFVoiceProcessor final
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteRandomNorm = {};
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteGroupRandomUni = {};
   std::array<float, FFVNoteOnNoteRandomCount> _onNoteGroupRandomNorm = {};
+  std::array<float, (int)FFGlobalUniTarget::Count> _globalUniAutoRandState = {};
 
   bool ProcessVEcho(
     FBModuleProcState& state, int ampEnvFinishedAt, 
@@ -48,6 +50,9 @@ class FFVoiceProcessor final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceProcessor);
+  std::array<float, (int)FFGlobalUniTarget::Count> const& 
+  GlobalUniAutoRandState() const { return _globalUniAutoRandState; }
+
   bool Process(FBModuleProcState state, int releaseAt);
   void BeginVoice(FBModuleProcState state,
     std::array<float, FFVNoteOnNoteRandomCount> const& onNoteRandomUni,
