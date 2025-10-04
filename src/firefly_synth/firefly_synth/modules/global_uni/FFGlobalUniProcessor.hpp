@@ -23,6 +23,7 @@ class FFGlobalUniProcessor final
   int _voiceCount = {};
   std::array<FFGlobalUniMode, (int)FFGlobalUniTarget::Count> _mode = {};
   std::array<bool, (int)FFGlobalUniTarget::Count> _randFree = {};
+  std::array<float, (int)FFGlobalUniTarget::Count> _randState = {};
   std::array<float, (int)FFGlobalUniTarget::Count> _randSeedNorm = {};
   std::array<float, (int)FFGlobalUniTarget::Count> _prevRandSeedNorm = {};
   std::array<FFParkMillerPRNG, (int)FFGlobalUniTarget::Count> _randStream = {};

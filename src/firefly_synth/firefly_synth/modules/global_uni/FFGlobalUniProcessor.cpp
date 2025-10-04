@@ -37,6 +37,7 @@ FFGlobalUniProcessor::BeginBlock(FBModuleProcState& state)
       _prevRandSeedNorm[i] = _randSeedNorm[i];
       _randStream[i] = FFParkMillerPRNG(_randSeedNorm[i]);
     }
+    _randState[i] = _randStream[i].NextScalar();
   }
 }
 

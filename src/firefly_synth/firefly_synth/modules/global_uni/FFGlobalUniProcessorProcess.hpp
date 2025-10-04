@@ -51,13 +51,13 @@ FFGlobalUniProcessor::Apply(
   auto const* procState = state.ProcAs<FFProcState>();
   if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
   {
+    auto randOffset = (_randState[(int)targetParam] - 0.5f) / (_voiceCount - 1.0f);
     auto const& skew = procState->param.global.globalUni[0].acc.autoSkew[(int)targetParam].Global().CV();
     auto const& rand = procState->param.global.globalUni[0].acc.autoRand[(int)targetParam].Global().CV();
     auto const& spread = procState->param.global.globalUni[0].acc.autoSpread[(int)targetParam].Global().CV();
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
       auto voicePos = FBBatch<float>(voiceSlotInGroup / (_voiceCount - 1.0f));
-      auto randOffset = (-0.5f + _randStream[(int)targetParam].NextBatch()) / (_voiceCount - 1.0f);
       voicePos = xsimd::clip(voicePos + rand.Load(s) * randOffset, FBBatch<float>(0.0f), FBBatch<float>(1.0f));
       if(_voiceCount > 3)
         voicePos = FFSkewExpBipolar(voicePos, skew.Load(s));
