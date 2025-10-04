@@ -30,17 +30,35 @@ FFGlobalUniProcessor::GetPhaseOffsetForVoice(
   if (_voiceCount < 2)
     return 0.0f;
 
-  // TODO random
   if (!graph)
     voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
   else
     voice = voiceSlotInGroup;
 
-  auto const* procStateContainer = state.input->procState;
-  int paramIndex = (int)FFGlobalUniParam::ManualFirst + (int)targetParam;
-  auto const* paramTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { paramIndex, voiceSlotInGroup } });
-  auto const& cvNorm = procStateContainer->Params()[paramTopo->runtimeParamIndex].GlobalAcc().Global().CV();
-  return cvNorm.Get(0);
+  int voiceOffsetInBlock = 0;
+  if (!graph)
+    voiceOffsetInBlock = state.input->voiceManager->Voices()[voice].offsetInBlock;
+  if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
+  {
+    auto const* procState = state.ProcAs<FFProcState>();
+    float voicePosBase = voiceSlotInGroup / (_voiceCount - 1.0f);
+    auto randOffset = (_voiceRandState[voice][(int)targetParam] - 0.5f) / (_voiceCount - 1.0f);
+    auto const& skew = procState->param.global.globalUni[0].acc.autoSkew[(int)targetParam].Global().CV();
+    auto const& rand = procState->param.global.globalUni[0].acc.autoRand[(int)targetParam].Global().CV();
+    auto const& spread = procState->param.global.globalUni[0].acc.autoSpread[(int)targetParam].Global().CV();
+    float voicePos = std::clamp(voicePosBase + rand.Get(voiceOffsetInBlock) * randOffset, 0.0f, 1.0f);
+    if (_voiceCount > 3)
+      voicePos = FFSkewExpBipolar(voicePos, skew.Get(voiceOffsetInBlock));
+    return 0.5f + (voicePos - 0.5f) * spread.Get(voiceOffsetInBlock);
+  }
+  else
+  {
+    auto const* procStateContainer = state.input->procState;
+    int manualParamIndex = (int)FFGlobalUniParam::ManualFirst + (int)targetParam;
+    auto const* manualParamTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { manualParamIndex, voiceSlotInGroup } });
+    auto const& manualCvNorm = procStateContainer->Params()[manualParamTopo->runtimeParamIndex].GlobalAcc().Global().CV();
+    return manualCvNorm.Get(0);
+  }
 }
 
 inline void 
@@ -59,9 +77,9 @@ FFGlobalUniProcessor::ApplyToVoice(
     voice = voiceSlotInGroup;
 
   FBSArray<float, 16> modSource;
-  auto const* procState = state.ProcAs<FFProcState>();
   if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
   {
+    auto const* procState = state.ProcAs<FFProcState>();
     auto voicePosBase = FBBatch<float>(voiceSlotInGroup / (_voiceCount - 1.0f));
     auto randOffset = (_voiceRandState[voice][(int)targetParam] - 0.5f) / (_voiceCount - 1.0f);
     auto const& skew = procState->param.global.globalUni[0].acc.autoSkew[(int)targetParam].Global().CV();
