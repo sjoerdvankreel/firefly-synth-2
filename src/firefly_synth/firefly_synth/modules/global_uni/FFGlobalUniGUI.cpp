@@ -45,7 +45,7 @@ FFGlobalUniParamListener::AudioParamChanged(
   int target = -1;
   if (indices.param.index == (int)FFGlobalUniParam::Mode ||
     indices.param.index == (int)FFGlobalUniParam::AutoSpread ||
-    indices.param.index == (int)FFGlobalUniParam::AutoSpace ||
+    indices.param.index == (int)FFGlobalUniParam::AutoSkew ||
     indices.param.index == (int)FFGlobalUniParam::AutoRand ||
     indices.param.index == (int)FFGlobalUniParam::AutoRandSeed ||
     indices.param.index == (int)FFGlobalUniParam::AutoRandFree)
@@ -93,8 +93,8 @@ MakeGlobalUniEditor(
 
     auto spread0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, 0 } });
     grid->Add(0, guiCol + 2, plugGUI->StoreComponent<FBAutoSizeLabel>(spread0->static_.name));
-    auto space0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpace, 0 } });
-    grid->Add(0, guiCol + 3, plugGUI->StoreComponent<FBAutoSizeLabel>(space0->static_.name));
+    auto skew0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSkew, 0 } });
+    grid->Add(0, guiCol + 3, plugGUI->StoreComponent<FBAutoSizeLabel>(skew0->static_.name));
     auto rand0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRand, 0 } });
     grid->Add(0, guiCol + 4, plugGUI->StoreComponent<FBAutoSizeLabel>(rand0->static_.name));
     auto seed0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandSeed, 0 } });
@@ -129,8 +129,8 @@ MakeGlobalUniEditor(
 
       auto spread = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, targetIndex } });
       grid->Add(guiRow, guiCol + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, spread, Slider::SliderStyle::RotaryVerticalDrag));
-      auto space = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpace, targetIndex } });
-      grid->Add(guiRow, guiCol + 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, space, Slider::SliderStyle::RotaryVerticalDrag));
+      auto skew = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSkew, targetIndex } });
+      grid->Add(guiRow, guiCol + 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skew, Slider::SliderStyle::RotaryVerticalDrag));
       auto random = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRand, targetIndex } });
       grid->Add(guiRow, guiCol + 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, random, Slider::SliderStyle::RotaryVerticalDrag));
       auto seed = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandSeed, targetIndex } });

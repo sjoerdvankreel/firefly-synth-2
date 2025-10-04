@@ -47,7 +47,7 @@ FFGlobalUniProcessor::Process(FBModuleProcState& state)
   for (int i = 0; i < (int)FFGlobalUniTarget::Count; i++)
   {
     exchangeParams.acc.autoRand[i] = params.acc.autoRand[i].Global().Last();
-    exchangeParams.acc.autoSpace[i] = params.acc.autoSpace[i].Global().Last();
+    exchangeParams.acc.autoSkew[i] = params.acc.autoSkew[i].Global().Last();
     exchangeParams.acc.autoSpread[i] = params.acc.autoSpread[i].Global().Last();
   }
   for (int i = 0; i < FFGlobalUniMaxCount; i++)

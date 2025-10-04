@@ -50,12 +50,12 @@ FFGlobalUniProcessor::Apply(
   auto const* procState = state.ProcAs<FFProcState>();
   if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
   {
-    auto const& space = procState->param.global.globalUni[0].acc.autoSpace[(int)targetParam].Global().CV();
+    auto const& skew = procState->param.global.globalUni[0].acc.autoSkew[(int)targetParam].Global().CV();
     auto const& spread = procState->param.global.globalUni[0].acc.autoSpread[(int)targetParam].Global().CV();
     auto voicePosBase = FBBatch<float>(voiceSlotInGroup / (_voiceCount - 1.0f));
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
-      auto voicePos = xsimd::pow(voicePosBase, xsimd::log(space.Load(s)) * FFInvLogHalf);
+      auto voicePos = xsimd::pow(voicePosBase, xsimd::log(skew.Load(s)) * FFInvLogHalf);
       auto outBatch = 0.5f + (voicePos - 0.5f) * spread.Load(s);
       modSource.Store(s, outBatch);
     }

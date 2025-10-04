@@ -51,7 +51,7 @@ class alignas(alignof(TAccurate)) FFGlobalUniAccParamState final
   friend class FFGlobalUniProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGlobalUniTopo();
   std::array<TAccurate, (int)FFGlobalUniTarget::Count> autoRand = {};
-  std::array<TAccurate, (int)FFGlobalUniTarget::Count> autoSpace = {};
+  std::array<TAccurate, (int)FFGlobalUniTarget::Count> autoSkew = {};
   std::array<TAccurate, (int)FFGlobalUniTarget::Count> autoSpread = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualVoiceCoarse = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualVoiceFine = {};
