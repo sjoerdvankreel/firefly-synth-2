@@ -54,7 +54,9 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFLFOProcessor);
 
   template <bool Global>
-  int Process(FBModuleProcState& state);
+  int Process(
+    FBModuleProcState& state, bool graph);
+
   template <bool Global>
   void BeginVoiceOrBlock(
     FBModuleProcState& state, 

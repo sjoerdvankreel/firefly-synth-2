@@ -180,7 +180,8 @@ FFLFOProcessor::BeginVoiceOrBlock(
 
 template <bool Global>
 int
-FFLFOProcessor::Process(FBModuleProcState& state)
+FFLFOProcessor::Process(
+  FBModuleProcState& state, bool graph)
 {
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -214,11 +215,41 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   }
 
   float sampleRate = state.input->sampleRate;
-  auto const& minNorm = procParams.acc.min;
-  auto const& maxNorm = procParams.acc.max;
-  auto const& rateHzNorm = procParams.acc.rateHz;
-  auto const& skewAXAmtNorm = FFSelectDualProcAccParamNormalized<Global>(procParams.acc.skewAXAmt[0], voice);
-  auto const& skewAYAmtNorm = FFSelectDualProcAccParamNormalized<Global>(procParams.acc.skewAYAmt[0], voice);
+  auto const& minNormIn = procParams.acc.min;
+  auto const& maxNormIn = procParams.acc.max;
+  auto const& rateHzNormIn = procParams.acc.rateHz;
+  auto const& skewAXAmtNormIn = FFSelectDualProcAccParamNormalized<Global>(procParams.acc.skewAXAmt[0], voice);
+  auto const& skewAYAmtNormIn = FFSelectDualProcAccParamNormalized<Global>(procParams.acc.skewAYAmt[0], voice);
+  
+  FBSArray<float, FBFixedBlockSamples> skewAXAmtNormModulated = {};
+  FBSArray<float, FBFixedBlockSamples> skewAYAmtNormModulated = {};
+  std::array<FBSArray<float, FBFixedBlockSamples>, FFLFOBlockCount> minNormModulated = {};
+  std::array<FBSArray<float, FBFixedBlockSamples>, FFLFOBlockCount> maxNormModulated = {};
+  std::array<FBSArray<float, FBFixedBlockSamples>, FFLFOBlockCount> rateHzNormModulated = {};
+
+  skewAXAmtNormIn.CV().CopyTo(skewAXAmtNormModulated);
+  skewAYAmtNormIn.CV().CopyTo(skewAYAmtNormModulated);
+  for (int i = 0; i < FFLFOBlockCount; i++)
+  { 
+    FFSelectDualProcAccParamNormalized<Global>(minNormIn[i], voice).CV().CopyTo(minNormModulated[i]);
+    FFSelectDualProcAccParamNormalized<Global>(maxNormIn[i], voice).CV().CopyTo(maxNormModulated[i]);
+    FFSelectDualProcAccParamNormalized<Global>(rateHzNormIn[i], voice).CV().CopyTo(rateHzNormModulated[i]);
+  }
+
+  if constexpr (!Global)
+  {
+    if (!graph)
+    {
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::LFOSkewAX, false, voice, -1, skewAXAmtNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::LFOSkewAY, false, voice, -1, skewAYAmtNormModulated);
+      for (int i = 0; i < FFLFOBlockCount; i++)
+      {
+        procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::LFOMin, false, voice, -1, minNormModulated[i]);
+        procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::LFOMax, false, voice, -1, maxNormModulated[i]);
+        procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::LFORate, false, voice, -1, rateHzNormModulated[i]);
+      }
+    }
+  }
 
   FBSArray<float, FBFixedBlockSamples> skewAXAmtPlain;
   FBSArray<float, FBFixedBlockSamples> skewAYAmtPlain;
@@ -229,23 +260,20 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     if(_skewAXMode != FFLFOSkewXMode::Off)
-      skewAXAmtPlain.Store(s, topo.NormalizedToIdentityFast(FFLFOParam::SkewAXAmt, skewAXAmtNorm, s));
+      skewAXAmtPlain.Store(s, topo.NormalizedToIdentityFast(FFLFOParam::SkewAXAmt, skewAXAmtNormModulated.Load(s)));
     if(_skewAYMode != FFLFOSkewYMode::Off)
-      skewAYAmtPlain.Store(s, topo.NormalizedToIdentityFast(FFLFOParam::SkewAYAmt, skewAYAmtNorm, s));
+      skewAYAmtPlain.Store(s, topo.NormalizedToIdentityFast(FFLFOParam::SkewAYAmt, skewAYAmtNormModulated.Load(s)));
 
     for (int i = 0; i < FFLFOBlockCount; i++)
     {
       if (_opType[i] != FFModulationOpType::Off)
       {
-        minPlain[i].Store(s, topo.NormalizedToIdentityFast(FFLFOParam::Min,
-          FFSelectDualProcAccParamNormalized<Global>(minNorm[i], voice), s));
-        maxPlain[i].Store(s, topo.NormalizedToIdentityFast(FFLFOParam::Max,
-          FFSelectDualProcAccParamNormalized<Global>(maxNorm[i], voice), s));
+        minPlain[i].Store(s, topo.NormalizedToIdentityFast(FFLFOParam::Min, minNormModulated[i].Load(s)));
+        maxPlain[i].Store(s, topo.NormalizedToIdentityFast(FFLFOParam::Max, maxNormModulated[i].Load(s)));
         if (_sync)
           rateHzPlain[i].Store(s, _rateHzByBars[i]);
         else
-          rateHzPlain[i].Store(s, topo.NormalizedToLinearFast(FFLFOParam::RateHz,
-            FFSelectDualProcAccParamNormalized<Global>(rateHzNorm[i], voice), s));
+          rateHzPlain[i].Store(s, topo.NormalizedToLinearFast(FFLFOParam::RateHz, rateHzNormModulated[i].Load(s)));
       }
     }
   }
@@ -397,19 +425,19 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gLFO[state.moduleSlot]; },
     [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vLFO[state.moduleSlot]; });
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.skewAXAmt[0], voice) = skewAXAmtNorm.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.skewAYAmt[0], voice) = skewAYAmtNorm.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.skewAXAmt[0], voice) = skewAXAmtNormModulated.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.skewAYAmt[0], voice) = skewAYAmtNormModulated.Last();
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
-    FFSelectDualExchangeState<Global>(exchangeParams.acc.min[i], voice) = FFSelectDualProcAccParamNormalized<Global>(minNorm[i], voice).Last();
-    FFSelectDualExchangeState<Global>(exchangeParams.acc.max[i], voice) = FFSelectDualProcAccParamNormalized<Global>(maxNorm[i], voice).Last();
-    FFSelectDualExchangeState<Global>(exchangeParams.acc.rateHz[i], voice) = FFSelectDualProcAccParamNormalized<Global>(rateHzNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.min[i], voice) = minNormModulated[i].Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.max[i], voice) = maxNormModulated[i].Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.rateHz[i], voice) = rateHzNormModulated[i].Last();
   }
    
   return FBFixedBlockSamples;
 }
 
-template int FFLFOProcessor::Process<true>(FBModuleProcState&);
-template int FFLFOProcessor::Process<false>(FBModuleProcState&);
+template int FFLFOProcessor::Process<true>(FBModuleProcState&, bool);
+template int FFLFOProcessor::Process<false>(FBModuleProcState&, bool);
 template void FFLFOProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, FFLFOExchangeState const*, bool, int, int);
 template void FFLFOProcessor::BeginVoiceOrBlock<false>(FBModuleProcState&, FFLFOExchangeState const*, bool, int, int);
