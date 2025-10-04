@@ -108,7 +108,9 @@ FFGlobalUniProcessor::ApplyToVoice(
   if (targetParam == FFGlobalUniTarget::VoiceCoarse || targetParam == FFGlobalUniTarget::OscCoarse)
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
-      auto modAmtSemisNorm = FBToBipolar(modSource.Load(s)) * FFGlobalUniCoarseSemis / FFOsciCoarseSemis * 0.5f;
+      auto modAmtSemisNorm = FBToBipolar(modSource.Load(s)) * 0.5f;
+      if (!graph)
+        modAmtSemisNorm *= FFGlobalUniCoarseSemis / FFOsciCoarseSemis;
       targetSignal.Store(s, xsimd::clip(targetSignal.Load(s) + modAmtSemisNorm, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
     }
   else if (targetParam == FFGlobalUniTarget::VMixAmp || targetParam == FFGlobalUniTarget::OscGain)
