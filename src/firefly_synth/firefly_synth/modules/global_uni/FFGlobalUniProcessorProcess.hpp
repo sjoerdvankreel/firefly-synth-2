@@ -52,7 +52,7 @@ FFGlobalUniProcessor::Apply(
   if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
   {
     auto voicePosBase = FBBatch<float>(voiceSlotInGroup / (_voiceCount - 1.0f));
-    auto randOffset = (_randState[(int)targetParam] - 0.5f) / (_voiceCount - 1.0f);
+    auto randOffset = (_randState[(int)targetParam][voiceSlotInGroup] - 0.5f) / (_voiceCount - 1.0f);
     auto const& skew = procState->param.global.globalUni[0].acc.autoSkew[(int)targetParam].Global().CV();
     auto const& rand = procState->param.global.globalUni[0].acc.autoRand[(int)targetParam].Global().CV();
     auto const& spread = procState->param.global.globalUni[0].acc.autoSpread[(int)targetParam].Global().CV();

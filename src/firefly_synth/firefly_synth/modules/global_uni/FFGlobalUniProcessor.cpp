@@ -28,16 +28,22 @@ FFGlobalUniProcessor::BeginBlock(FBModuleProcState& state)
   _voiceCount = topo.NormalizedToDiscreteFast((int)FFGlobalUniParam::VoiceCount, countNorm);
   for (int i = 0; i < (int)FFGlobalUniTarget::Count; i++)
   {
-    _randFree[i] = topo.NormalizedToBoolFast(FFGlobalUniParam::AutoRandFree, params.block.autoRandFree[i].Value());
     _mode[i] = topo.NormalizedToListFast<FFGlobalUniMode>(FFGlobalUniParam::Mode, params.block.mode[i].Value());
+    if (_mode[i] != FFGlobalUniMode::Auto)
+      continue;
 
     _randSeedNorm[i] = params.block.autoRandSeed[i].Value();
+    _randFree[i] = topo.NormalizedToBoolFast(FFGlobalUniParam::AutoRandFree, params.block.autoRandFree[i].Value());
     if (_randSeedNorm[i] != _prevRandSeedNorm[i] || !_randFree[i])
     {
       _prevRandSeedNorm[i] = _randSeedNorm[i];
       _randStream[i] = FFParkMillerPRNG(_randSeedNorm[i]);
+      for (int v = 0; v < _voiceCount; v++)
+        _randState[i][v] = _randStream[i].NextScalar();
     }
-    _randState[i] = _randStream[i].NextScalar();
+    if(_randFree[i])
+      for (int v = 0; v < _voiceCount; v++)
+        _randState[i][v] = _randStream[i].NextScalar();
   }
 }
 
