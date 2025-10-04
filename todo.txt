@@ -43,7 +43,6 @@ TODOLIST for alpha-17
 [x] merge knobmod/graph into visuals
 [ ] clap polymod + release as one
 [ ] global unison
-[ ] am/fm amt as targets
 [ ] lfo also need phase exchange
 [ ] osci-target vecho demo
 [ ] global uni demo
