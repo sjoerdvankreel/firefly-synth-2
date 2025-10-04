@@ -24,7 +24,7 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
   auto showMatrix = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::ShowMatrix, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, showMatrix));
   auto showMatrixToggle = plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, showMatrix);
@@ -37,10 +37,11 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   flushDelayButton->setTooltip("Flush all buffers");
   flushDelayButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushAudio(); };
   grid->Add(0, 4, flushDelayButton);
-  grid->Add(0, 5, plugGUI->StoreComponent<FBFillerComponent>(15, 1));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBAutoSizeLabel>("Tweak:"));
   grid->Add(0, 6, plugGUI->StoreComponent<FBLastTweakedLabel>(plugGUI));
   grid->Add(0, 7, plugGUI->StoreComponent<FBLastTweakedTextBox>(plugGUI, 80));
-  grid->MarkSection({ { 0, 0 }, { 1, 8 } });
+  grid->Add(0, 8, plugGUI->StoreComponent<FBFillerComponent>(20, 1));
+  grid->MarkSection({ { 0, 0 }, { 1, 9 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);
 }
