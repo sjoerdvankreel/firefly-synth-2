@@ -48,6 +48,7 @@ TODOLIST for alpha-17
 [ ] osci-target vecho demo
 [ ] global uni demo
 [ ] profile some more
+[ ] guni init the patches
 [ ] show the active slot on SwitchToMainGraph
 
 TODOLIST for alpha-17
