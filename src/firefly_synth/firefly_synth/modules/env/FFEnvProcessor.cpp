@@ -178,7 +178,6 @@ FFEnvProcessor::Process(
   int s = 0;
   float const minSlope = 0.001f;
   float const slopeRange = 1.0f - 2.0f * minSlope;
-  float const invLogHalf = 1.0f / std::log(0.5f);
 
   int loopEnd = _loopStart == 0 ? -1 : _loopStart - 1 + _loopLength;
   loopEnd = std::min(loopEnd, FFEnvStageCount);
@@ -219,7 +218,7 @@ FFEnvProcessor::Process(
       else
       {
         float slope = minSlope + stageSlope[stage].Voice()[voice].CV().Get(s) * slopeRange;
-        _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * invLogHalf);
+        _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * FFInvLogHalf);
       }
 
       // Dealing with portamento subsection release.
@@ -235,7 +234,7 @@ FFEnvProcessor::Process(
         int totalSamplesAfterRelease = _lengthSamples - _lengthSamplesUpToRelease;
         int currentSamplesAfterRelease = _positionSamples - _lengthSamplesUpToRelease;
         float positionPortaAmpRelease = std::clamp(currentSamplesAfterRelease / (float)totalSamplesAfterRelease, 0.0f, 1.0f);
-        float portaAmpReleaseMultiplier = std::pow(1.0f - positionPortaAmpRelease, std::log(0.00001f + (_portaSectionAmpReleaseNorm * 0.99999f)) * invLogHalf);
+        float portaAmpReleaseMultiplier = std::pow(1.0f - positionPortaAmpRelease, std::log(0.00001f + (_portaSectionAmpReleaseNorm * 0.99999f)) * FFInvLogHalf);
         _lastOverall *= portaAmpReleaseMultiplier;
       }
 

@@ -12,41 +12,13 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
-static auto const InvLogHalf = 1.0f / std::log(0.5f);
-
-static inline FBBatch<float>
-SkewScaleUnipolar(FBBatch<float> in, FBBatch<float> amt)
-{
-  return in * (1.0f - amt);
-}
-
-static inline FBBatch<float>
-SkewScaleBipolar(FBBatch<float> in, FBBatch<float> amt)
-{
-  return FBToUnipolar(FBToBipolar(in) * (1.0f - amt));
-}
-
-static inline FBBatch<float>
-SkewExpUnipolar(FBBatch<float> in, FBBatch<float> amt)
-{ 
-  return xsimd::pow(in, xsimd::log(0.001f + (amt * 0.999f)) * InvLogHalf);
-}
-
-static inline FBBatch<float>
-SkewExpBipolar(FBBatch<float> in, FBBatch<float> amt)
-{
-  auto bp = FBToBipolar(in);
-  auto exp = xsimd::log(0.001f + (amt * 0.999f)) * InvLogHalf;
-  return FBToUnipolar(xsimd::sign(bp) * xsimd::pow(xsimd::abs(bp), exp));
-}
-
 static inline FBBatch<float>
 SkewY(FFLFOSkewYMode mode, FBBatch<float> in, FBBatch<float> amt)
 {
   switch (mode)
   {
-  case FFLFOSkewYMode::ExpBipolar: return SkewExpBipolar(in, amt);
-  case FFLFOSkewYMode::ExpUnipolar: return SkewExpUnipolar(in, amt);
+  case FFLFOSkewYMode::ExpBipolar: return FFSkewExpBipolar(in, amt);
+  case FFLFOSkewYMode::ExpUnipolar: return FFSkewExpUnipolar(in, amt);
   default: FB_ASSERT(false); return {};
   }
 }
@@ -56,10 +28,10 @@ SkewX(FFLFOSkewXMode mode, FBBatch<float> in, FBBatch<float> amt)
 {
   switch (mode)
   {
-  case FFLFOSkewXMode::ExpBipolar: return SkewExpBipolar(in, amt);
-  case FFLFOSkewXMode::ExpUnipolar: return SkewExpUnipolar(in, amt);
-  case FFLFOSkewXMode::ScaleBipolar: return SkewScaleBipolar(in, amt);
-  case FFLFOSkewXMode::ScaleUnipolar: return SkewScaleUnipolar(in, amt);
+  case FFLFOSkewXMode::ExpBipolar: return FFSkewExpBipolar(in, amt);
+  case FFLFOSkewXMode::ExpUnipolar: return FFSkewExpUnipolar(in, amt);
+  case FFLFOSkewXMode::ScaleBipolar: return FFSkewScaleBipolar(in, amt);
+  case FFLFOSkewXMode::ScaleUnipolar: return FFSkewScaleUnipolar(in, amt);
   default: FB_ASSERT(false); return {};
   }
 }

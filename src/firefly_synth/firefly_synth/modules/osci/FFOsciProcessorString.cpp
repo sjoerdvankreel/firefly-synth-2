@@ -126,7 +126,7 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
   if (_stringLPOn)
   {
     stringLPFreqPlain = FFMultiplyClamp(stringLPFreqPlain,
-      KeyboardTrackingMultiplier(_keyUntuned, stringTrackingKeyPlain, stringLPKTrkPlain),
+      FFKeyboardTrackingMultiplier(_keyUntuned, stringTrackingKeyPlain, stringLPKTrkPlain),
       FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
     stringLPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
     _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, stringLPFreqPlain, stringLPResPlain, 0.0f);
@@ -135,7 +135,7 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
   if (_stringHPOn)
   {
     stringHPFreqPlain = FFMultiplyClamp(stringHPFreqPlain,
-      KeyboardTrackingMultiplier(_keyUntuned, stringTrackingKeyPlain, -stringHPKTrkPlain),
+      FFKeyboardTrackingMultiplier(_keyUntuned, stringTrackingKeyPlain, -stringHPKTrkPlain),
       FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
     stringHPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
     _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, stringHPFreqPlain, stringHPResPlain, 0.0f);
@@ -299,7 +299,7 @@ FFOsciProcessor::ProcessString(
       float lpFreq = stringLPFreqPlain.Get(s);
       float lpKTrk = stringLPKTrkPlain.Get(s);
       lpFreq = FFMultiplyClamp(lpFreq,
-        KeyboardTrackingMultiplier(_keyUntuned, trackingKey, lpKTrk),
+        FFKeyboardTrackingMultiplier(_keyUntuned, trackingKey, lpKTrk),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
       lpFreq *= _stringGraphStVarFilterFreqMultiplier;
       _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, lpFreq, lpRes, 0.0f);
@@ -311,7 +311,7 @@ FFOsciProcessor::ProcessString(
       float hpFreq = stringHPFreqPlain.Get(s);
       float hpKTrk = stringHPKTrkPlain.Get(s);
       hpFreq = FFMultiplyClamp(hpFreq,
-        KeyboardTrackingMultiplier(_keyUntuned, trackingKey, -hpKTrk),
+        FFKeyboardTrackingMultiplier(_keyUntuned, trackingKey, -hpKTrk),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
       hpFreq *= _stringGraphStVarFilterFreqMultiplier;
       _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, hpFreq, hpRes, 0.0f);
