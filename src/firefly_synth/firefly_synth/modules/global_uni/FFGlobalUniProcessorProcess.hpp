@@ -56,7 +56,9 @@ FFGlobalUniProcessor::Apply(
     auto voicePosBase = FBBatch<float>(voiceSlotInGroup / (_voiceCount - 1.0f));
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
-      auto voicePos = FFSkewExpBipolar(voicePosBase, skew.Load(s));
+      auto voicePos = voicePosBase;
+      if(_voiceCount > 3)
+        voicePos = FFSkewExpBipolar(voicePosBase, skew.Load(s));
       auto outBatch = 0.5f + (voicePos - 0.5f) * spread.Load(s);
       modSource.Store(s, outBatch);
     }

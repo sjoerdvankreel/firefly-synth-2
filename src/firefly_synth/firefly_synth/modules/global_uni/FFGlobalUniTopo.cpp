@@ -184,7 +184,8 @@ FFMakeGlobalUniTopo()
   autoSkew.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoSkew);
   autoSkew.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAutoSkew);
   autoSkew.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoSkew);
-  autoSkew.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::Auto && vs[1] > 1; });
+  // Only enabled for 4+ voices, as near/far/center are fixed.
+  autoSkew.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::Auto && vs[1] > 3; });
 
   auto& autoRand = result->params[(int)FFGlobalUniParam::AutoRand];
   autoRand.mode = FBParamMode::VoiceStart;
