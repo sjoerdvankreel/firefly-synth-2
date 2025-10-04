@@ -1,5 +1,7 @@
 #pragma once
 
+#include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
+
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
@@ -33,6 +35,8 @@ public FBPlugGUI
 
   FBModuleGraphComponent* _mainGraph = {};
   std::vector<FBModuleGraphComponent*> _fixedGraphs = {};
+  std::unique_ptr<FFGlobalUniParamListener> _globalUniParamListener = {};
+  
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   void SetupGUI();

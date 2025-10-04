@@ -4,6 +4,47 @@
 #include <firefly_synth/modules/global_uni/FFGlobalUniGraph.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
+FFModuleType
+FFGlobalUniTargetToModule(FFGlobalUniTarget target)
+{
+  switch (target)
+  {
+  case FFGlobalUniTarget::VoiceCoarse: 
+  case FFGlobalUniTarget::VoiceFine: return FFModuleType::VoiceModule;
+  case FFGlobalUniTarget::VMixAmp: 
+  case FFGlobalUniTarget::VMixBal: return FFModuleType::VMix;
+  case FFGlobalUniTarget::OscGain: 
+  case FFGlobalUniTarget::OscPan: 
+  case FFGlobalUniTarget::OscCoarse: 
+  case FFGlobalUniTarget::OscFine: 
+  case FFGlobalUniTarget::OscPhaseOffset: return FFModuleType::Osci;
+  case FFGlobalUniTarget::LFORate: 
+  case FFGlobalUniTarget::LFOMin: 
+  case FFGlobalUniTarget::LFOMax:
+  case FFGlobalUniTarget::LFOSkewAX: 
+  case FFGlobalUniTarget::LFOSkewAY: 
+  case FFGlobalUniTarget::LFOPhaseOffset: return FFModuleType::VLFO;
+  case FFGlobalUniTarget::EnvOffset: 
+  case FFGlobalUniTarget::EnvStretch: return FFModuleType::Env;
+  case FFGlobalUniTarget::VFXParamA: 
+  case FFGlobalUniTarget::VFXParamB: 
+  case FFGlobalUniTarget::VFXParamC: 
+  case FFGlobalUniTarget::VFXParamD: return FFModuleType::VEffect;
+  case FFGlobalUniTarget::EchoExtend: 
+  case FFGlobalUniTarget::EchoFade: 
+  case FFGlobalUniTarget::EchoTapLevel:
+  case FFGlobalUniTarget::EchoTapDelay:
+  case FFGlobalUniTarget::EchoTapBal: 
+  case FFGlobalUniTarget::EchoFdbkDelay: 
+  case FFGlobalUniTarget::EchoFdbkMix: 
+  case FFGlobalUniTarget::EchoFdbkAmt: 
+  case FFGlobalUniTarget::EchoReverbMix: 
+  case FFGlobalUniTarget::EchoReverbSize: 
+  case FFGlobalUniTarget::EchoReverbDamp: return FFModuleType::VEcho;
+  default: FB_ASSERT(false); return (FFModuleType)-1;
+  }
+}
+
 std::string
 FFGlobalUniTargetToString(FFGlobalUniTarget target)
 {

@@ -38,6 +38,7 @@ TODOLIST for alpha-17
 [x] exchange paint no workie
 [x] upcast to FBPlugGUI in graph no longer works
 [x] refix the demos
+[ ] am/fm amt as targets
 [ ] lfo also need phase exchange
 [ ] hunt the todos
 [ ] osci-target vecho demo

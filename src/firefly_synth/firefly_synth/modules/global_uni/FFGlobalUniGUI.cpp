@@ -19,6 +19,46 @@
 
 using namespace juce;
 
+FFGlobalUniParamListener::
+~FFGlobalUniParamListener()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FFGlobalUniParamListener::
+FFGlobalUniParamListener(FBPlugGUI* plugGUI):
+_plugGUI(plugGUI)
+{
+  _plugGUI->AddParamListener(this);
+}
+
+void 
+FFGlobalUniParamListener::AudioParamChanged(
+  int index, double normalized, bool changedFromUI)
+{
+  if (!changedFromUI)
+    return;
+  auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
+  if (indices.module.index != (int)FFModuleType::GlobalUni)
+    return;
+
+  int target = -1;
+  if (indices.param.index == (int)FFGlobalUniParam::Mode ||
+    indices.param.index == (int)FFGlobalUniParam::AutoSpread ||
+    indices.param.index == (int)FFGlobalUniParam::AutoSpace ||
+    indices.param.index == (int)FFGlobalUniParam::AutoRand ||
+    indices.param.index == (int)FFGlobalUniParam::AutoRandSeed ||
+    indices.param.index == (int)FFGlobalUniParam::AutoRandFree)
+    target = indices.param.slot;
+  else if ((int)FFGlobalUniParam::ManualFirst <= indices.param.index && indices.param.index <= (int)FFGlobalUniParam::ManualLast)
+    target = indices.param.index - (int)FFGlobalUniParam::ManualFirst;
+
+  if (target == -1)
+    return;
+  FFModuleType targetModule = FFGlobalUniTargetToModule((FFGlobalUniTarget)target);
+  dynamic_cast<FFPlugGUI&>(*_plugGUI).SwitchMainGraphToModule((int)targetModule, 0);
+}
+
 static Component* 
 MakeGlobalUniEditor(
   FBPlugGUI* plugGUI,

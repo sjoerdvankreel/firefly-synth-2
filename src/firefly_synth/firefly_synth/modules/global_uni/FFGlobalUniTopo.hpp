@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <memory>
 
 struct FBStaticModule;
@@ -21,6 +22,8 @@ enum class FFGlobalUniTarget {
   EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt,
   EchoReverbMix, EchoReverbSize, EchoReverbDamp, Count };
 
+FFModuleType
+FFGlobalUniTargetToModule(FFGlobalUniTarget target);
 std::string
 FFGlobalUniTargetToString(FFGlobalUniTarget target);
 
