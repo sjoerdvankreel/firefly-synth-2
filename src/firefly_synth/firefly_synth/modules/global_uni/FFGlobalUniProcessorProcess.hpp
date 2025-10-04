@@ -57,7 +57,7 @@ FFGlobalUniProcessor::Apply(
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
       auto outBatch = 0.5f + (voicePos - 0.5f) * spread.Load(s);
-      outBatch = outBatch * xsimd::pow(voicePos, xsimd::log(space.Load(s) * invLogHalf));
+      outBatch = outBatch * xsimd::pow(voicePos, xsimd::log(space.Load(s) * 2.0f) * invLogHalf);
       modSource.Store(s, outBatch);
     }
     if (targetParam == FFGlobalUniTarget::VMixAmp || targetParam == FFGlobalUniTarget::OscGain)

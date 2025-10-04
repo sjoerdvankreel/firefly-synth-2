@@ -545,7 +545,7 @@ FFMakeGlobalUniTopo()
   manualEnvOffset.id = "{AEDA998E-B0B7-4A78-8C52-F6B809AC5352}";
   manualEnvOffset.type = FBParamType::Linear;
   manualEnvOffset.Linear().min = 0.0f;
-  manualEnvOffset.Linear().max = 0.0f;
+  manualEnvOffset.Linear().max = 1.0f;
   manualEnvOffset.Linear().editSkewFactor = 0.5f;
   auto selectManualEnvOffset = [](auto& module) { return &module.acc.manualEnvOffset; };
   manualEnvOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEnvOffset);
