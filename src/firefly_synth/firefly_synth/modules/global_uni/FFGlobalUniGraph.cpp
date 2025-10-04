@@ -75,7 +75,7 @@ GlobalUniGraphRenderData::DoProcessIndicators(
   for (int i = 0; i < voiceCount; i++)
   {
     defaultBlock.Fill(FBBatch<float>(targetDefault));
-    processor->Apply(*state->ModuleProcState(), (FFGlobalUniTarget)slot, i, defaultBlock);
+    processor->ApplyToVoice(*state->ModuleProcState(), (FFGlobalUniTarget)slot, i, defaultBlock);
     points.pointIndicators.push_back((int)(defaultBlock.Get(0) * points.l.size()));
   }
 }

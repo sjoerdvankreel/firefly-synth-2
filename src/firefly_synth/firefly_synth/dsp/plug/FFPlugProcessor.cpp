@@ -106,6 +106,7 @@ FFPlugProcessor::LeaseVoices(
 
         int voice = input.voiceManager->Lease((*input.noteEvents)[n], voiceGroupId, v);
         auto state = MakeModuleVoiceState(input, voice);
+        _procState->dsp.global.globalUni.processor->BeginVoice(voice);
         _procState->dsp.voice[voice].processor.BeginVoice(state, 
           onNoteRandomUni, onNoteRandomNorm, onNoteGroupRandomUni, onNoteGroupRandomNorm);
       }

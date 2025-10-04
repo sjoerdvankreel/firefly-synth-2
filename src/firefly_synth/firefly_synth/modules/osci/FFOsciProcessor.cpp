@@ -109,9 +109,8 @@ FFOsciProcessor::BeginVoice(
   float globalUniPhaseOffset = 0.0f;
   if (!graph)
   {
-    int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
-    globalUniPhaseOffset = procState->dsp.global.globalUni.processor->GetPhaseOffset(
-      state, FFGlobalUniTarget::OscPhaseOffset, voiceSlotInGroup);
+    globalUniPhaseOffset = procState->dsp.global.globalUni.processor->GetPhaseOffsetForVoice(
+      state, FFGlobalUniTarget::OscPhaseOffset, voice);
     state.ExchangeToGUIAs<FFExchangeState>()->voice[voice].osci[state.moduleSlot].globalUniPhaseOffset = globalUniPhaseOffset;
   }
   else if(exchangeFromDSP != nullptr)
@@ -205,13 +204,12 @@ FFOsciProcessor::Process(
   coarseNormIn.CV().CopyTo(coarseNormModulated);
   if (!graph)
   {
-    int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
     FFApplyModulation(FFModulationOpType::UPMul, voiceState.env[state.moduleSlot + FFEnvSlotOffset].output, envToGain.CV(), gainNormModulated);
     FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[state.moduleSlot].outputAll, lfoToFine.CV(), fineNormModulated);
-    procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::OscPan, voiceSlotInGroup, panNormModulated);
-    procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::OscFine, voiceSlotInGroup, fineNormModulated);
-    procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::OscGain, voiceSlotInGroup, gainNormModulated);
-    procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::OscCoarse, voiceSlotInGroup, coarseNormModulated);
+    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscPan, voice, panNormModulated);
+    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscFine, voice, fineNormModulated);
+    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscGain, voice, gainNormModulated);
+    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscCoarse, voice, coarseNormModulated);
   }
 
   FBSArray<float, FFOsciFixedBlockOversamples> panPlain;

@@ -26,24 +26,25 @@ class FFGlobalUniProcessor final
   std::array<float, (int)FFGlobalUniTarget::Count> _randSeedNorm = {};
   std::array<float, (int)FFGlobalUniTarget::Count> _prevRandSeedNorm = {};
   std::array<FFParkMillerPRNG, (int)FFGlobalUniTarget::Count> _randStream = {};
-  std::array<std::array<float, FFGlobalUniMaxCount>, (int)FFGlobalUniTarget::Count> _randState = {};
+  std::array<std::array<float, (int)FFGlobalUniTarget::Count>, FBMaxVoices> _voiceRandState = {};
 
 public:
   FFGlobalUniProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFGlobalUniProcessor);
 
+  void BeginVoice(int voice);
   void Process(FBModuleProcState& state);
   void BeginBlock(FBModuleProcState& state);
 
   float GetTargetDefault(
     FFGlobalUniTarget target);
 
-  float GetPhaseOffset(
+  float GetPhaseOffsetForVoice(
     FBModuleProcState& state, 
     FFGlobalUniTarget targetPhaseParam,
-    int voiceSlotInGroup);
+    int voice);
 
-  void Apply(
+  void ApplyToVoice(
     FBModuleProcState& state, FFGlobalUniTarget targetParam, 
-    int voiceSlotInGroup, FBSArray<float, 16>& targetSignal);
+    int voice, FBSArray<float, 16>& targetSignal);
 };

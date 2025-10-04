@@ -104,8 +104,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   auto& voiceState = procState->dsp.voice[voice];
   auto const& procParams = procState->param.voice.voiceModule[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
-  auto& pitchOffsetInSemis = voiceState.voiceModule.pitchOffsetInSemis;
-  int voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
+  auto& pitchOffsetInSemis = voiceState.voiceModule.pitchOffsetInSemis;  
 
   auto masterPitchBendTarget = procState->dsp.global.master.bendTarget;
   auto const& masterPitchBendSemis = procState->dsp.global.master.bendAmountInSemis;
@@ -121,8 +120,8 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   coarseNormIn.CV().CopyTo(coarseNormModulated);
   FFApplyModulation(FFModulationOpType::UPStack, voiceState.env[FFEnvSlotOffset + 4].output, env5ToCoarse.CV(), coarseNormModulated);
   FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[4].outputAll, lfo5ToFine.CV(), fineNormModulated);
-  procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::VoiceCoarse, voiceSlotInGroup, coarseNormModulated);
-  procState->dsp.global.globalUni.processor->Apply(state, FFGlobalUniTarget::VoiceFine, voiceSlotInGroup, fineNormModulated);
+  procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VoiceCoarse, voice, coarseNormModulated);
+  procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VoiceFine, voice, fineNormModulated);
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
