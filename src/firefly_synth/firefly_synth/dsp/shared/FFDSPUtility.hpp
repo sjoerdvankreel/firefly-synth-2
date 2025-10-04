@@ -59,18 +59,16 @@ FFSkewExpUnipolar(FBBatch<float> in, FBBatch<float> amt)
   return xsimd::pow(in, xsimd::log(0.001f + (amt * 0.999f)) * FFInvLogHalf);
 }
 
+inline float
+FFSkewExpUnipolar(float in, float amt)
+{
+  return std::pow(in, std::log(0.001f + (amt * 0.999f)) * FFInvLogHalf);
+}
+
 inline FBBatch<float>
 FFSkewExpBipolar(FBBatch<float> in, FBBatch<float> amt)
 {
   auto bp = FBToBipolar(in);
   auto exp = xsimd::log(0.001f + (amt * 0.999f)) * FFInvLogHalf;
-  return 1.0f - FBToUnipolar(xsimd::sign(bp) * xsimd::pow(xsimd::abs(bp), exp));
-}
-
-inline float
-FFSkewExpBipolar(float in, float amt)
-{
-  auto bp = FBToBipolar(in);
-  auto exp = std::log(0.001f + (amt * 0.999f)) * FFInvLogHalf;
-  return 1.0f - FBToUnipolar((in < 0? -1: 1) * std::pow(std::abs(bp), exp));
+  return FBToUnipolar(xsimd::sign(bp) * xsimd::pow(xsimd::abs(bp), exp));
 }

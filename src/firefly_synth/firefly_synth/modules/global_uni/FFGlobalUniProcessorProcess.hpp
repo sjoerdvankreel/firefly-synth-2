@@ -51,8 +51,8 @@ FFGlobalUniProcessor::GetPhaseOffsetForVoice(
     auto const& spread = procState->param.global.globalUni[0].acc.autoSpread[(int)targetParam].Global().CV();
     float voicePos = std::clamp(voicePosBase + rand.Get(voiceOffsetInBlock) * randOffset, 0.0f, 1.0f);
     if (_voiceCount > 3)
-      voicePos = FFSkewExpBipolar(voicePos, skew.Get(voiceOffsetInBlock));
-    return voicePos * 0.5f * spread.Get(voiceOffsetInBlock);
+      voicePos = FFSkewExpUnipolar(voicePos, skew.Get(voiceOffsetInBlock));
+    return voicePos * spread.Get(voiceOffsetInBlock);
   }
   else
   {
