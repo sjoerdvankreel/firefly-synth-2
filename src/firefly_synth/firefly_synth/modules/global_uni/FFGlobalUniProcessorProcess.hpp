@@ -39,6 +39,7 @@ FFGlobalUniProcessor::GetPhaseOffsetForVoice(
     voice = voiceSlotInGroup;
 
   int voiceOffsetInBlock = 0;
+  float const phaseShiftMax = 0.99f;
   if (!graph)
     voiceOffsetInBlock = state.input->voiceManager->Voices()[voice].offsetInBlock;
   if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
@@ -52,7 +53,7 @@ FFGlobalUniProcessor::GetPhaseOffsetForVoice(
     float voicePos = std::clamp(voicePosBase + rand.Get(voiceOffsetInBlock) * randOffset, 0.0f, 1.0f);
     if (_voiceCount > 3)
       voicePos = FFSkewExpUnipolar(voicePos, skew.Get(voiceOffsetInBlock));
-    return voicePos * spread.Get(voiceOffsetInBlock);
+    return voicePos * spread.Get(voiceOffsetInBlock) * phaseShiftMax;
   }
   else
   {
@@ -60,7 +61,7 @@ FFGlobalUniProcessor::GetPhaseOffsetForVoice(
     int manualParamIndex = (int)FFGlobalUniParam::ManualFirst + (int)targetParam;
     auto const* manualParamTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { manualParamIndex, voiceSlotInGroup } });
     auto const& manualCvNorm = procStateContainer->Params()[manualParamTopo->runtimeParamIndex].GlobalAcc().Global().CV();
-    return manualCvNorm.Get(0);
+    return manualCvNorm.Get(0) * phaseShiftMax;
   }
 }
 
