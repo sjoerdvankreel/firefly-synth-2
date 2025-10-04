@@ -52,13 +52,14 @@ FFGlobalUniProcessor::Apply(
   if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
   {
     auto const& skew = procState->param.global.globalUni[0].acc.autoSkew[(int)targetParam].Global().CV();
+    auto const& rand = procState->param.global.globalUni[0].acc.autoRand[(int)targetParam].Global().CV();
     auto const& spread = procState->param.global.globalUni[0].acc.autoSpread[(int)targetParam].Global().CV();
-    auto voicePosBase = FBBatch<float>(voiceSlotInGroup / (_voiceCount - 1.0f));
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
-      auto voicePos = voicePosBase;
+      auto voicePos = FBBatch<float>(voiceSlotInGroup / (_voiceCount - 1.0f));
+      voicePos = ((1.0f - rand.Load(s)) + rand.Load(s) * _randStream[(int)targetParam].NextBatch()) * voicePos;
       if(_voiceCount > 3)
-        voicePos = FFSkewExpBipolar(voicePosBase, skew.Load(s));
+        voicePos = FFSkewExpBipolar(voicePos, skew.Load(s));
       auto outBatch = 0.5f + (voicePos - 0.5f) * spread.Load(s);
       modSource.Store(s, outBatch);
     }

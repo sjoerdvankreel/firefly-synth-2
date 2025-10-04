@@ -11,6 +11,13 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
+FFGlobalUniProcessor::
+FFGlobalUniProcessor()
+{
+  for (int i = 0; i < (int)FFGlobalUniTarget::Count; i++)
+    _prevRandSeedNorm[i] = -1.0f;
+}
+
 void 
 FFGlobalUniProcessor::BeginBlock(FBModuleProcState& state)
 {
@@ -22,8 +29,14 @@ FFGlobalUniProcessor::BeginBlock(FBModuleProcState& state)
   for (int i = 0; i < (int)FFGlobalUniTarget::Count; i++)
   {
     _randFree[i] = topo.NormalizedToBoolFast(FFGlobalUniParam::AutoRandFree, params.block.autoRandFree[i].Value());
-    _randSeed[i] = topo.NormalizedToDiscreteFast(FFGlobalUniParam::AutoRandSeed, params.block.autoRandSeed[i].Value());
     _mode[i] = topo.NormalizedToListFast<FFGlobalUniMode>(FFGlobalUniParam::Mode, params.block.mode[i].Value());
+
+    _randSeedNorm[i] = params.block.autoRandSeed[i].Value();
+    if (_randSeedNorm[i] != _prevRandSeedNorm[i] || !_randFree[i])
+    {
+      _prevRandSeedNorm[i] = _randSeedNorm[i];
+      _randStream[i] = FFParkMillerPRNG(_randSeedNorm[i]);
+    }
   }
 }
 

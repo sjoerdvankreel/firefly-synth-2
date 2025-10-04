@@ -21,12 +21,16 @@ struct FBModuleProcState;
 class FFGlobalUniProcessor final
 {
   int _voiceCount = {};
-  std::array<int, (int)FFGlobalUniTarget::Count> _randSeed = {};
-  std::array<bool, (int)FFGlobalUniTarget::Count> _randFree = {};
   std::array<FFGlobalUniMode, (int)FFGlobalUniTarget::Count> _mode = {};
+  std::array<bool, (int)FFGlobalUniTarget::Count> _randFree = {};
+  std::array<float, (int)FFGlobalUniTarget::Count> _randSeedNorm = {};
+  std::array<float, (int)FFGlobalUniTarget::Count> _prevRandSeedNorm = {};
+  std::array<FFParkMillerPRNG, (int)FFGlobalUniTarget::Count> _randStream = {};
 
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalUniProcessor);
+  FFGlobalUniProcessor();
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFGlobalUniProcessor);
+
   void Process(FBModuleProcState& state);
   void BeginBlock(FBModuleProcState& state);
 
