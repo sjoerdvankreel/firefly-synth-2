@@ -40,14 +40,14 @@ TODOLIST for alpha-17
 [x] refix the demos
 [x] hunt the todos
 [x] decent defaults
+[x] merge knobmod/graph into visuals
+[ ] clap polymod + release as one
+[ ] global unison
 [ ] am/fm amt as targets
 [ ] lfo also need phase exchange
 [ ] osci-target vecho demo
 [ ] global uni demo
-[ ] global unison
-[ ] clap polymod + release as one
 [ ] profile some more
-[ ] break: skew bipolar was broken
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor

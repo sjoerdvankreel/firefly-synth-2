@@ -31,38 +31,25 @@ FFMakeGUISettingsTopo()
 
   auto& guiShowMatrix = result->guiParams[(int)FFGUISettingsGUIParam::ShowMatrix];
   guiShowMatrix.defaultText = "Off";
-  guiShowMatrix.name = "Matrix";
+  guiShowMatrix.name = "Show Matrix";
   guiShowMatrix.slotCount = 1;
   guiShowMatrix.id = "{FEB66217-BE68-4B94-A8D3-009EE307BBB5}";
   guiShowMatrix.type = FBParamType::Boolean;
   auto selectGuiShowMatrix = [](auto& module) { return &module.showMatrix; };
   guiShowMatrix.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiShowMatrix);
 
-  auto& guiGraphRenderMode = result->guiParams[(int)FFGUISettingsGUIParam::GraphRenderMode];
-  guiGraphRenderMode.defaultText = "If Focus";
-  guiGraphRenderMode.name = "Graph";
-  guiGraphRenderMode.slotCount = 1;
-  guiGraphRenderMode.id = "{6C5F2DC2-C796-444C-8D43-077708580609}";
-  guiGraphRenderMode.type = FBParamType::List;
-  guiGraphRenderMode.List().items = {
+  auto& guiVisualsMode = result->guiParams[(int)FFGUISettingsGUIParam::VisualsMode];
+  guiVisualsMode.defaultText = "If Focus";
+  guiVisualsMode.name = "Visuals";
+  guiVisualsMode.slotCount = 1;
+  guiVisualsMode.id = "{6C5F2DC2-C796-444C-8D43-077708580609}";
+  guiVisualsMode.type = FBParamType::List;
+  guiVisualsMode.List().items = {
     { "{D5C9FC77-0DE8-4077-9D07-073B44F5076F}", "Basic" },
     { "{8291740E-D7DC-4481-B430-9C73F3343E10}", "Always" },
     { "{A5369260-7E9F-4C23-8FED-0C42CAA9DD91}", "If Focus" } };
-  auto selectGuiGraphRenderMode = [](auto& module) { return &module.graphRenderMode; };
-  guiGraphRenderMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphRenderMode);
-
-  auto& guiKnobRenderMode = result->guiParams[(int)FFGUISettingsGUIParam::KnobRenderMode];
-  guiKnobRenderMode.defaultText = "If Focus";
-  guiKnobRenderMode.name = "Knob Mod";
-  guiKnobRenderMode.slotCount = 1;
-  guiKnobRenderMode.id = "{586DE12C-6D53-48C0-B5EE-CBAE92985465}";
-  guiKnobRenderMode.type = FBParamType::List;
-  guiKnobRenderMode.List().items = {
-    { "{28EDDEC0-2CB0-422F-B786-8804EE311F43}", "Never" },
-    { "{F682B536-34F4-4BAC-90A9-CF23E23BE0B1}", "Always" },
-    { "{F6DA89D0-A8FE-42F3-A7F2-C83FCFE6DE19}", "If Focus" } };
-  auto selectGuiKnobRenderMode = [](auto& module) { return &module.knobRenderMode; };
-  guiKnobRenderMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiKnobRenderMode);
+  auto selectGuiVisualsMode = [](auto& module) { return &module.visualsMode; };
+  guiVisualsMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiVisualsMode);
 
   auto& guiOscSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::OscSelectedTab];
   guiOscSelectedTab.defaultText = "0";
@@ -125,17 +112,17 @@ FFMakeGUISettingsTopo()
   guiEchoSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiEchoSelectedTab);
 
   // dummy which we check on the audio if it changed
-  auto& flushDelayToggle = result->params[(int)FFGUISettingsParam::FlushDelayToggle];
-  flushDelayToggle.mode = FBParamMode::Fake;
-  flushDelayToggle.name = "Flush Delay";
-  flushDelayToggle.slotCount = 1;
-  flushDelayToggle.defaultText = "Off";
-  flushDelayToggle.id = "{22F4FB2F-BAD8-43A0-BC28-88F5F3A3B7CF}";
-  flushDelayToggle.type = FBParamType::Boolean;
-  auto selectFlushDelayToggle = [](auto& module) { return &module.block.flushDelayToggle; };
-  flushDelayToggle.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFlushDelayToggle);
-  flushDelayToggle.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFlushDelayToggle);
-  flushDelayToggle.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFlushDelayToggle);
+  auto& flushAudioToggle = result->params[(int)FFGUISettingsParam::FlushAudioToggle];
+  flushAudioToggle.mode = FBParamMode::Fake;
+  flushAudioToggle.name = "Flush Delay";
+  flushAudioToggle.slotCount = 1;
+  flushAudioToggle.defaultText = "Off";
+  flushAudioToggle.id = "{22F4FB2F-BAD8-43A0-BC28-88F5F3A3B7CF}";
+  flushAudioToggle.type = FBParamType::Boolean;
+  auto selectFlushAudioToggle = [](auto& module) { return &module.block.flushAudioToggle; };
+  flushAudioToggle.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFlushAudioToggle);
+  flushAudioToggle.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFlushAudioToggle);
+  flushAudioToggle.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFlushAudioToggle);
 
   return result;
 }

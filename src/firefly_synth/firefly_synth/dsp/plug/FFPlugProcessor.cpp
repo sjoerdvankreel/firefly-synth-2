@@ -150,7 +150,7 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   auto const& globalParam = _procState->param.global;
 
   // manual flush
-  bool flushToggle = globalParam.guiSettings[0].block.flushDelayToggle[0].Value() > 0.5f;
+  bool flushToggle = globalParam.guiSettings[0].block.flushAudioToggle[0].Value() > 0.5f;
   if (flushToggle != _prevFlushDelayToggle)
   {
     _prevFlushDelayToggle = flushToggle;

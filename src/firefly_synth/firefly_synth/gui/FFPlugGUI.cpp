@@ -45,7 +45,7 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
 void
 FFPlugGUI::OnPatchChanged()
 {
-  FlushDelayLines();
+  FlushAudio();
 }
 
 void 
@@ -120,28 +120,16 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
   RequestFixedGraphsRerender(tweakedModule);
 }
 
-FBGUIRenderType
-FFPlugGUI::GetKnobRenderType() const
-{
-  return GetRenderType((int)FFGUISettingsGUIParam::KnobRenderMode);
-}
-
-FBGUIRenderType
-FFPlugGUI::GetGraphRenderType() const
-{
-  return GetRenderType((int)FFGUISettingsGUIParam::GraphRenderMode);
-}
-
 FBGUIRenderType 
-FFPlugGUI::GetRenderType(int paramIndex) const
+FFPlugGUI::GetRenderType() const
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { paramIndex, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::VisualsMode, 0 } };
   auto const* paramTopo = HostContext()->Topo()->gui.ParamAtTopo(indices);
   float normalized = static_cast<float>(HostContext()->GetGUIParamNormalized(paramTopo->runtimeParamIndex));
-  auto mode = static_cast<FFGUISettingsRenderMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
-  if (mode == FFGUISettingsRenderMode::Basic)
+  auto mode = static_cast<FFGUISettingsVisualsMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
+  if (mode == FFGUISettingsVisualsMode::Basic)
     return FBGUIRenderType::Basic;
-  if (mode == FFGUISettingsRenderMode::Always)
+  if (mode == FFGUISettingsVisualsMode::Always)
     return FBGUIRenderType::Full;
   return hasKeyboardFocus(true) ? FBGUIRenderType::Full : FBGUIRenderType::Basic;
 }
@@ -186,9 +174,9 @@ FFPlugGUI::ShowOverlayComponent(
 }
 
 void
-FFPlugGUI::FlushDelayLines()
+FFPlugGUI::FlushAudio()
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsParam::FlushDelayToggle, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsParam::FlushAudioToggle, 0 } };
   double flushNorm = HostContext()->GetAudioParamNormalized(indices);
   double newFlushNorm = flushNorm > 0.5 ? 0.0 : 1.0;
   HostContext()->PerformImmediateAudioParamEdit(indices, newFlushNorm);

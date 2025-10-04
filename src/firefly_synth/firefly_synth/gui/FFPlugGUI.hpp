@@ -40,7 +40,7 @@ public FBPlugGUI
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   void SetupGUI();
-  FBGUIRenderType GetRenderType(int paramIndex) const;
+  FBGUIRenderType GetRenderType() const;
 
 protected:
   void OnPatchChanged() override;
@@ -51,7 +51,7 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
   FFPlugGUI(FBHostGUIContext* hostContext);
 
-  void FlushDelayLines();
+  void FlushAudio();
   void ToggleMatrix(bool on);
   void RequestFixedGraphsRerender(int moduleIndex);
   void SwitchMainGraphToModule(int index, int slot);
@@ -63,9 +63,10 @@ public:
     int w, int h, 
     std::function<void()> init);
 
+  FBGUIRenderType GetKnobRenderType() const override { return GetRenderType(); }
+  FBGUIRenderType GetGraphRenderType() const override { return GetRenderType(); }
+
   void resized() override;
-  FBGUIRenderType GetKnobRenderType() const override;
-  FBGUIRenderType GetGraphRenderType() const override;
   void ModuleSlotClicked(int index, int slot) override;
   void ActiveModuleSlotChanged(int index, int slot) override;
   void GUIParamNormalizedChanged(int index, double normalized) override;

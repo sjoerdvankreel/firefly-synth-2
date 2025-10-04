@@ -3,13 +3,12 @@
 #include <memory>
 
 struct FBStaticModule;
-enum class FFGUISettingsRenderMode { Basic, Always, IfFocus };
+enum class FFGUISettingsVisualsMode { Basic, Always, IfFocus };
 
 enum class FFGUISettingsParam {
-  FlushDelayToggle, Count };
+  FlushAudioToggle, Count };
 enum class FFGUISettingsGUIParam {
-  UserScale, ShowMatrix,
-  GraphRenderMode, KnobRenderMode,
+  UserScale, ShowMatrix, VisualsMode,
   OscSelectedTab, FXSelectedTab, LFOSelectedTab, 
   MixSelectedTab, EnvSelectedTab, EchoSelectedTab, Count };
 
