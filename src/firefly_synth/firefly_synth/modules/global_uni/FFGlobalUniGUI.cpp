@@ -178,7 +178,11 @@ MakeGlobalUniSectionMain(
       std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
       plugGUI->HostContext()->UndoState().Snapshot("Init " + name);
 
-      // TODO
+      for (int s = 0; s < (int)FFGlobalUniTarget::Count; s++)
+        plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { (int)FFGlobalUniParam::Mode, s}});
+      for (int p = (int)FFGlobalUniParam::AutoFirst; p <= (int)FFGlobalUniParam::AutoLast; p++)
+        for (int s = 0; s < (int)FFGlobalUniTarget::Count; s++)
+          plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
       for (int p = (int)FFGlobalUniParam::ManualFirst; p <= (int)FFGlobalUniParam::ManualLast; p++)
         for (int s = 0; s < FFGlobalUniMaxCount; s++)
           plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
