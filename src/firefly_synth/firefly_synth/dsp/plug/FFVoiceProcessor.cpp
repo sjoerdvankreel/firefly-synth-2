@@ -128,15 +128,6 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   procState->dsp.voice[voice].vMatrix.processor->ModSourceCleared(state, { (int)FFModuleType::Env, FFAmpEnvSlot });
   procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state);
 
-  // Per-voice amp signal modulated by amp envelope.
-  // User selects where to apply it.
-  ampNormIn.CV().CopyTo(ampNormModulated);
-  if (_ampEnvTarget != FFVMixAmpEnvTarget::Off)
-    FFApplyModulation(FFModulationOpType::UPMul, voiceDSP.env[FFAmpEnvSlot].output, ampEnvToAmpNorm.CV(), ampNormModulated);
-  procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VMixAmp, false, voice, -1, ampNormModulated);
-  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-    ampPlainModulated.Store(s, moduleTopo.NormalizedToLinearFast(FFVMixParam::Amp, ampNormModulated.Load(s)));
-
   for (int i = 0; i < FFLFOCount; i++)
   {
     state.moduleSlot = i + FFEnvSlotOffset;
@@ -155,6 +146,17 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
     procState->dsp.voice[voice].vMatrix.processor->ModSourceCleared(state, { (int)FFModuleType::VLFO, i });
     procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state);
   }
+
+  // Per-voice amp signal modulated by amp envelope.
+  // User selects where to apply it.
+  // NOTE TO SELF: this needs to be AFTER the lfo's.
+  ampNormIn.CV().CopyTo(ampNormModulated);
+  if (_ampEnvTarget != FFVMixAmpEnvTarget::Off)
+    FFApplyModulation(FFModulationOpType::UPMul, voiceDSP.env[FFAmpEnvSlot].output, ampEnvToAmpNorm.CV(), ampNormModulated);
+  state.moduleSlot = 0;
+  procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VMixAmp, false, voice, -1, ampNormModulated);
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+    ampPlainModulated.Store(s, moduleTopo.NormalizedToLinearFast(FFVMixParam::Amp, ampNormModulated.Load(s)));
 
   state.moduleSlot = 0;
   voiceDSP.voiceModule.processor->Process(state);

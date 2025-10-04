@@ -41,12 +41,14 @@ TODOLIST for alpha-17
 [x] hunt the todos
 [x] decent defaults
 [x] merge knobmod/graph into visuals
+[x] VAMP mod not take lfo into account
 [ ] clap polymod + release as one
 [ ] global unison
 [ ] lfo also need phase exchange
 [ ] osci-target vecho demo
 [ ] global uni demo
 [ ] profile some more
+[ ] show the active slot on SwitchToMainGraph
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
