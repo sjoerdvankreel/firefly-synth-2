@@ -57,7 +57,7 @@ FFGlobalUniProcessor::Apply(
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
       auto voicePos = FBBatch<float>(voiceSlotInGroup / (_voiceCount - 1.0f));
-      voicePos = ((1.0f - rand.Load(s)) + rand.Load(s) * _randStream[(int)targetParam].NextBatch()) * voicePos;
+      voicePos = xsimd::clip(voicePos + FBToBipolar(rand.Load(s)) / (_voiceCount - 1.0f) * 0.5f, FBBatch<float>(0.0f), FBBatch<float>(1.0f));
       if(_voiceCount > 3)
         voicePos = FFSkewExpBipolar(voicePos, skew.Load(s));
       auto outBatch = 0.5f + (voicePos - 0.5f) * spread.Load(s);
