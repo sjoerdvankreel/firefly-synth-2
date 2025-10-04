@@ -120,8 +120,8 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   coarseNormIn.CV().CopyTo(coarseNormModulated);
   FFApplyModulation(FFModulationOpType::UPStack, voiceState.env[FFEnvSlotOffset + 4].output, env5ToCoarse.CV(), coarseNormModulated);
   FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[4].outputAll, lfo5ToFine.CV(), fineNormModulated);
-  procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VoiceCoarse, voice, coarseNormModulated);
-  procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VoiceFine, voice, fineNormModulated);
+  procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VoiceCoarse, false, voice, -1, coarseNormModulated);
+  procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VoiceFine, false, voice, -1, fineNormModulated);
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {

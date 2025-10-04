@@ -40,11 +40,12 @@ public:
     FFGlobalUniTarget target);
 
   float GetPhaseOffsetForVoice(
-    FBModuleProcState& state, 
+    FBModuleProcState& state,
     FFGlobalUniTarget targetPhaseParam,
-    int voice);
+    bool graph, int voice, int voiceSlotInGroup);
 
   void ApplyToVoice(
     FBModuleProcState& state, FFGlobalUniTarget targetParam, 
-    int voice, FBSArray<float, 16>& targetSignal);
+    bool graph, int voice, int voiceSlotInGroup,
+    FBSArray<float, 16>& targetSignal);
 };

@@ -110,7 +110,7 @@ FFOsciProcessor::BeginVoice(
   if (!graph)
   {
     globalUniPhaseOffset = procState->dsp.global.globalUni.processor->GetPhaseOffsetForVoice(
-      state, FFGlobalUniTarget::OscPhaseOffset, voice);
+      state, FFGlobalUniTarget::OscPhaseOffset, false, voice, -1);
     state.ExchangeToGUIAs<FFExchangeState>()->voice[voice].osci[state.moduleSlot].globalUniPhaseOffset = globalUniPhaseOffset;
   }
   else if(exchangeFromDSP != nullptr)
@@ -206,10 +206,10 @@ FFOsciProcessor::Process(
   {
     FFApplyModulation(FFModulationOpType::UPMul, voiceState.env[state.moduleSlot + FFEnvSlotOffset].output, envToGain.CV(), gainNormModulated);
     FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[state.moduleSlot].outputAll, lfoToFine.CV(), fineNormModulated);
-    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscPan, voice, panNormModulated);
-    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscFine, voice, fineNormModulated);
-    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscGain, voice, gainNormModulated);
-    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscCoarse, voice, coarseNormModulated);
+    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscPan, false, voice, -1, panNormModulated);
+    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscFine, false, voice, -1, fineNormModulated);
+    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscGain, false, voice, -1, gainNormModulated);
+    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscCoarse, false, voice, -1, coarseNormModulated);
   }
 
   FBSArray<float, FFOsciFixedBlockOversamples> panPlain;

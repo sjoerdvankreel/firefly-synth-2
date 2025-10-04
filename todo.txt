@@ -46,6 +46,7 @@ TODOLIST for alpha-17
 [ ] decent defaults
 [ ] global unison
 [ ] clap polymod + release as one
+[ ] profile some more
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
