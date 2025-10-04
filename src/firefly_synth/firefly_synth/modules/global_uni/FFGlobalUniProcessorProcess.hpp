@@ -52,7 +52,7 @@ FFGlobalUniProcessor::GetPhaseOffsetForVoice(
     float voicePos = std::clamp(voicePosBase + rand.Get(voiceOffsetInBlock) * randOffset, 0.0f, 1.0f);
     if (_voiceCount > 3)
       voicePos = FFSkewExpBipolar(voicePos, skew.Get(voiceOffsetInBlock));
-    return 0.5f + (voicePos - 0.5f) * spread.Get(voiceOffsetInBlock);
+    return voicePos * 0.5f * spread.Get(voiceOffsetInBlock);
   }
   else
   {
