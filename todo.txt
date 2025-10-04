@@ -47,6 +47,7 @@ TODOLIST for alpha-17
 [ ] global unison
 [ ] clap polymod + release as one
 [ ] profile some more
+[ ] filter kbd track -- should it take into account all coarse pitch mods ?
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
