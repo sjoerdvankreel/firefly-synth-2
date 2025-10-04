@@ -1,6 +1,7 @@
 #pragma once
 
 #include <firefly_synth/shared/FFPlugState.hpp>
+#include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniProcessor.hpp>
 
 inline float 
@@ -55,7 +56,7 @@ FFGlobalUniProcessor::Apply(
     auto voicePosBase = FBBatch<float>(voiceSlotInGroup / (_voiceCount - 1.0f));
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
-      auto voicePos = xsimd::pow(voicePosBase, xsimd::log(skew.Load(s)) * FFInvLogHalf);
+      auto voicePos = FFSkewExpBipolar(voicePosBase, skew.Load(s));
       auto outBatch = 0.5f + (voicePos - 0.5f) * spread.Load(s);
       modSource.Store(s, outBatch);
     }
