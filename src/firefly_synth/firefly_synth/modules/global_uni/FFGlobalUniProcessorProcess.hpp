@@ -27,6 +27,9 @@ FFGlobalUniProcessor::GetPhaseOffsetForVoice(
   FFGlobalUniTarget targetParam,
   bool graph, int voice, int voiceSlotInGroup)
 {
+  FB_ASSERT(graph && voice == -1 && voiceSlotInGroup != -1 || !graph && voice != -1 && voiceSlotInGroup == -1);
+  FB_ASSERT(targetParam == FFGlobalUniTarget::LFOPhaseOffset || targetParam == FFGlobalUniTarget::OscPhaseOffset);
+
   if (_voiceCount < 2)
     return 0.0f;
 
@@ -66,6 +69,9 @@ FFGlobalUniProcessor::ApplyToVoice(
   FBModuleProcState& state, FFGlobalUniTarget targetParam,
   bool graph, int voice, int voiceSlotInGroup, FBSArray<float, 16>& targetSignal)
 {
+  FB_ASSERT(graph && voice == -1 && voiceSlotInGroup != -1 || !graph && voice != -1 && voiceSlotInGroup == -1);
+  FB_ASSERT(targetParam != FFGlobalUniTarget::LFOPhaseOffset && targetParam != FFGlobalUniTarget::OscPhaseOffset);
+
   if (_voiceCount < 2)
     return;
   if (_mode[(int)targetParam] == FFGlobalUniMode::Off)

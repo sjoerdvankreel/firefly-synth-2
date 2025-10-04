@@ -71,16 +71,25 @@ GlobalUniGraphRenderData::DoProcessIndicators(
   int /*exchangeVoice*/, FBModuleGraphPoints& points)
 {
   int slot = graphData->fixedGraphIndex;
-  FBSArray<float, FBFixedBlockSamples> defaultBlock;
+  FBSArray<float, FBFixedBlockSamples> targetSignal;
   FFProcDSPState* procState = &state->ModuleProcState()->ProcAs<FFProcState>()->dsp;
   FFGlobalUniProcessor* processor = procState->global.globalUni.processor.get();
   float targetDefault = processor->GetTargetDefault((FFGlobalUniTarget)slot);
   int voiceCount = state->AudioParamDiscrete({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } }, exchange, -1);
   for (int i = 0; i < voiceCount; i++)
   {
-    defaultBlock.Fill(FBBatch<float>(targetDefault));
-    processor->ApplyToVoice(*state->ModuleProcState(), (FFGlobalUniTarget)slot, true, -1, i, defaultBlock);
-    points.pointIndicators.push_back((int)(defaultBlock.Get(0) * points.l.size()));
+    float target = targetDefault;
+    if (slot == (int)FFGlobalUniTarget::LFOPhaseOffset || slot == (int)FFGlobalUniTarget::OscPhaseOffset)
+    {
+      target = FBPhaseWrap(target + processor->GetPhaseOffsetForVoice(*state->ModuleProcState(), (FFGlobalUniTarget)slot, true, -1, i));
+      targetSignal.Fill(target);
+    }
+    else
+    {
+      targetSignal.Fill(FBBatch<float>(targetDefault));
+      processor->ApplyToVoice(*state->ModuleProcState(), (FFGlobalUniTarget)slot, true, -1, i, targetSignal);
+    }
+    points.pointIndicators.push_back((int)(targetSignal.Get(0) * points.l.size()));
   }
 }
 
