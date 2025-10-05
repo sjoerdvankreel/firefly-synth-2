@@ -109,9 +109,9 @@ FFMakeOsciTopo()
   phase.id = "{4BB87878-BB20-4253-85AD-E1B608A4B3D9}";
   phase.type = FBParamType::Identity;
   auto selectPhase = [](auto& module) { return &module.voiceStart.phase; };
-  phase.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
-  phase.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
-  phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
+  phase.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPhase);
+  phase.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectPhase);
+  phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPhase);
   phase.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String; });
 
   auto& envToGain = result->params[(int)FFOsciParam::EnvToGain];
