@@ -100,9 +100,6 @@ FFGlobalUniProcessor::ApplyToVoice(
       auto outBatch = 0.5f + (voicePos - 0.5f) * spread.Load(s);
       modSource.Store(s, outBatch);
     }
-    if (targetParam == FFGlobalUniTarget::VMixAmp || targetParam == FFGlobalUniTarget::OscGain)
-      for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-        modSource.Store(s, 1.0f - xsimd::abs(FBToBipolar(modSource.Load(s))));
   } else
   {
     auto const* procStateContainer = state.input->procState;
@@ -122,8 +119,8 @@ FFGlobalUniProcessor::ApplyToVoice(
     }
   else if (targetParam == FFGlobalUniTarget::VMixAmp || targetParam == FFGlobalUniTarget::OscGain)
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-      targetSignal.Store(s, FFModulateUPMul(modSource.Load(s), 1.0f, targetSignal.Load(s)));
+      targetSignal.Store(s, FFModulateUPRemap(modSource.Load(s), 1.0f, targetSignal.Load(s)));
   else
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-      targetSignal.Store(s, FFModulateRemap(modSource.Load(s), 1.0f, targetSignal.Load(s)));
+      targetSignal.Store(s, FFModulateBPRemap(modSource.Load(s), 1.0f, targetSignal.Load(s)));
 }

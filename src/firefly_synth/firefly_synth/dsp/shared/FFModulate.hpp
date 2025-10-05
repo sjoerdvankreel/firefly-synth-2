@@ -6,9 +6,9 @@
 #include <cmath>
 
 enum class FFModulationOpType { 
-  Off, Remap,
-  UPAdd, UPMul, UPStack, 
-  BPAdd, BPMul, BPStack };
+  Off,
+  UPAdd, UPMul, UPStack, UPRemap,
+  BPAdd, BPMul, BPStack, BPRemap };
 
 inline float
 FFModulateUPStack(
@@ -32,6 +32,15 @@ FFModulateUPAdd(
   float amount, float target)
 {
   return std::clamp(target + source * amount, 0.0f, 1.0f);
+}
+
+inline float
+FFModulateUPRemap(
+  float source,
+  float amount, float target)
+{
+  source = 1.0f - std::abs(FBToBipolar(source));
+  return FFModulateUPMul(source, amount, target);
 }
 
 inline float
@@ -63,7 +72,7 @@ FFModulateBPStack(
 }
 
 inline float
-FFModulateRemap(
+FFModulateBPRemap(
   float source,
   float amount, float target)
 {
@@ -84,20 +93,22 @@ FFModulate(
 {
   switch (opType)
   {
-  case FFModulationOpType::Remap:
-    return FFModulateRemap(source, amount, target);
   case FFModulationOpType::UPAdd:
     return FFModulateUPAdd(source, amount, target);
   case FFModulationOpType::UPMul:
     return FFModulateUPMul(source, amount, target);
   case FFModulationOpType::UPStack:
     return FFModulateUPStack(source, amount, target);
-  case FFModulationOpType::BPAdd: 
+  case FFModulationOpType::UPRemap:
+    return FFModulateUPRemap(source, amount, target);
+  case FFModulationOpType::BPAdd:
     return FFModulateBPAdd(source, amount, target);
   case FFModulationOpType::BPMul:
     return FFModulateBPMul(source, amount, target);
   case FFModulationOpType::BPStack:
     return FFModulateBPStack(source, amount, target);
+  case FFModulationOpType::BPRemap:
+    return FFModulateBPRemap(source, amount, target);
   case FFModulationOpType::Off:
   default: 
     FB_ASSERT(false); return {};
@@ -139,6 +150,15 @@ FFModulateUPAdd(
 }
 
 inline FBBatch<float>
+FFModulateUPRemap(
+  FBBatch<float> source,
+  FBBatch<float> amount, FBBatch<float> target)
+{
+  source = 1.0f - xsimd::abs(FBToBipolar(source));
+  return FFModulateUPMul(source, amount, target);
+}
+
+inline FBBatch<float>
 FFModulateBPMul(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
@@ -167,7 +187,7 @@ FFModulateBPStack(
 }
 
 inline FBBatch<float>
-FFModulateRemap(
+FFModulateBPRemap(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -188,20 +208,22 @@ FFModulate(
 {
   switch (opType)
   {
-  case FFModulationOpType::Remap:
-    return FFModulateRemap(source, amount, target);
   case FFModulationOpType::UPAdd:
     return FFModulateUPAdd(source, amount, target);
   case FFModulationOpType::UPMul:
     return FFModulateUPMul(source, amount, target);
   case FFModulationOpType::UPStack:
     return FFModulateUPStack(source, amount, target);
-  case FFModulationOpType::BPAdd: 
+  case FFModulationOpType::UPRemap:
+    return FFModulateUPRemap(source, amount, target);
+  case FFModulationOpType::BPAdd:
     return FFModulateBPAdd(source, amount, target);
   case FFModulationOpType::BPMul:
     return FFModulateBPMul(source, amount, target);
   case FFModulationOpType::BPStack:
     return FFModulateBPStack(source, amount, target);
+  case FFModulationOpType::BPRemap:
+    return FFModulateBPRemap(source, amount, target);
   case FFModulationOpType::Off:
   default: 
     FB_ASSERT(false); return {};

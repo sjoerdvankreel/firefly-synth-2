@@ -179,13 +179,14 @@ FFMakeLFOTopo(bool global)
   opType.type = FBParamType::List;
   opType.List().items = {
     { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", "Off" },
-    { "{D96CFB4F-1F3C-434C-A78D-BA624B3DFA10}", "Remap" },
     { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "UP Add" },
     { "{AD641260-F205-497E-B483-330CFA025378}", "UP Mul" },
     { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "UP Stk" },
+    { "{01014CF0-B70C-4E60-9A78-FF560CF05ECF}", "UP Rmp" },
     { "{C18F6A70-944C-4A9B-8A01-561E1B6B93D4}", "BP Add" },
     { "{3130BBE8-D204-450D-A3D2-AC4266FB8E4B}", "BP Mul" },
-    { "{69D5AD4B-BD0B-42A6-A252-A0A43D425F89}", "BP Stk" } };
+    { "{69D5AD4B-BD0B-42A6-A252-A0A43D425F89}", "BP Stk" },
+    { "{D96CFB4F-1F3C-434C-A78D-BA624B3DFA10}", "BP Rmp" } };
   auto selectOpType = [](auto& module) { return &module.block.opType; };
   opType.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpType);
   opType.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpType);
