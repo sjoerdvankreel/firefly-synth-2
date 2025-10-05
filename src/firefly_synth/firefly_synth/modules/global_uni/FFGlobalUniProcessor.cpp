@@ -165,7 +165,6 @@ FFGlobalUniProcessor::ApplyToVoice(
   bool graph, int voice, int voiceSlotInGroup, FBSArray<float, 16>& targetSignal)
 {
   FB_ASSERT(graph && voice == -1 && voiceSlotInGroup != -1 || !graph && voice != -1 && voiceSlotInGroup == -1);
-  FB_ASSERT(targetParam != FFGlobalUniTarget::LFOPhaseOffset && targetParam != FFGlobalUniTarget::OscPhaseOffset);
 
   if (_voiceCount < 2)
     return;
@@ -210,6 +209,9 @@ FFGlobalUniProcessor::ApplyToVoice(
   else if (targetParam == FFGlobalUniTarget::VMixAmp || targetParam == FFGlobalUniTarget::OscGain)
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
       targetSignal.Store(s, FFModulateUPRemap(modSource.Load(s), 1.0f, targetSignal.Load(s)));
+  else if (targetParam == FFGlobalUniTarget::LFOPhaseOffset || targetParam == FFGlobalUniTarget::OscPhaseOffset)
+    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+      targetSignal.Store(s, FFModulatePhaseWrap(modSource.Load(s), 1.0f, targetSignal.Load(s)));
   else
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
       targetSignal.Store(s, FFModulateBPRemap(modSource.Load(s), 1.0f, targetSignal.Load(s)));

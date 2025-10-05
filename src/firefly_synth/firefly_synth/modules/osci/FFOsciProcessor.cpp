@@ -126,17 +126,15 @@ FFOsciProcessor::BeginVoice(
     }
     else
     {
-      float globalUniPhaseOffset = 0.0f;
       float uniPhase = u * _uniOffsetPlain / _uniCount;
       uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _uniformPrng.NextScalar()) * uniPhase);
+      uniPhaseInit.Set(u, FBPhaseWrap(uniPhaseInit.Get(u) + _voiceStartSnapshotNorm.phase[0]));
       if (!graph)
       {
-        globalUniPhaseOffset = procState->dsp.global.globalUni.processor->GetPhaseOffsetForVoice(
-          state, FFGlobalUniTarget::OscPhaseOffset, false, voice, -1);
-      }
-      uniPhaseInit.Set(u, FBPhaseWrap(uniPhaseInit.Get(u) + globalUniPhaseOffset + _voiceStartSnapshotNorm.phase[0]));
-      if (!graph)
-      {
+        FBSArray<float, FBFixedBlockSamples> uniPhaseBlock;
+        uniPhaseBlock.Fill(FBBatch<float>(uniPhaseInit.Get(u)));
+        procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscPhaseOffset, false, voice, -1, uniPhaseBlock);
+        uniPhaseInit.Set(u, uniPhaseBlock.Get(0));
         state.ExchangeToGUIAs<FFExchangeState>()->voice[voice].osci[state.moduleSlot].phases[u] = uniPhaseInit.Get(u);
       }
     }
