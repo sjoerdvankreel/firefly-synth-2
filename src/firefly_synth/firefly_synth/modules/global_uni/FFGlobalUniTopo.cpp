@@ -190,6 +190,7 @@ FFMakeGlobalUniTopo()
     case FFGlobalUniTarget::OscCoarse: return "BP Ad2";
     case FFGlobalUniTarget::OscPhaseOffset: return "Ph Wrp";
     case FFGlobalUniTarget::LFOPhaseOffset: return "Ph Wrp";
+    case FFGlobalUniTarget::LFORate: return "BP Ad2";
     default: return "BP Rmp";
     }
   };
