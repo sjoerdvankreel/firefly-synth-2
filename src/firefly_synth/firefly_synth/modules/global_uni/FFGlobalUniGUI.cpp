@@ -184,7 +184,10 @@ MakeGlobalUniSectionMain(
       plugGUI->HostContext()->UndoState().Snapshot("Init " + name);
 
       for (int s = 0; s < (int)FFGlobalUniTarget::Count; s++)
-        plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { (int)FFGlobalUniParam::Mode, s}});
+      {
+        plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { (int)FFGlobalUniParam::Mode, s} });
+        plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { (int)FFGlobalUniParam::OpType, s} });
+      }
       for (int p = (int)FFGlobalUniParam::AutoFirst; p <= (int)FFGlobalUniParam::AutoLast; p++)
         for (int s = 0; s < (int)FFGlobalUniTarget::Count; s++)
           plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
