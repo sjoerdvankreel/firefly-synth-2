@@ -196,7 +196,7 @@ FFMakeGlobalUniTopo()
   mode.mode = FBParamMode::Block;
   mode.name = "Mode";
   mode.defaultTextSelector = [](int, int, int ps) { 
-    return ps == (int)FFGlobalUniTarget::VoiceFine || ps == (int)FFGlobalUniTarget::OscPhaseOffset ? "Auto" : "Off"; };
+    return ps == (int)FFGlobalUniTarget::OscCoarse || ps == (int)FFGlobalUniTarget::VoiceCoarse ? "Manual" : "Auto"; };
   mode.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Mode"; };
   mode.slotFormatterOverrides = true;
   mode.slotCount = (int)FFGlobalUniTarget::Count;
@@ -308,7 +308,6 @@ FFMakeGlobalUniTopo()
   manualVoiceCoarse.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::VoiceCoarse, s); };
   manualVoiceCoarse.slotFormatterOverrides = true;
   manualVoiceCoarse.slotCount = FFGlobalUniMaxCount;
-  manualVoiceCoarse.unit = "Semitones";
   manualVoiceCoarse.id = "{0D24BD6A-DE67-4CE6-8272-BC290D5D7D2D}";
   manualVoiceCoarse.type = FBParamType::Linear;
   manualVoiceCoarse.Linear().min = -FFOsciCoarseSemis;
@@ -403,7 +402,6 @@ FFMakeGlobalUniTopo()
   manualOscCoarse.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::OscCoarse, s); };
   manualOscCoarse.slotFormatterOverrides = true;
   manualOscCoarse.slotCount = FFGlobalUniMaxCount;
-  manualOscCoarse.unit = "Semitones";
   manualOscCoarse.id = "{C16C50D5-00C0-4393-87F9-1A7C457F4483}";
   manualOscCoarse.type = FBParamType::Linear;
   manualOscCoarse.Linear().min = -FFOsciCoarseSemis;
