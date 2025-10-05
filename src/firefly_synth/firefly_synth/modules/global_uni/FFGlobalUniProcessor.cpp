@@ -206,12 +206,7 @@ FFGlobalUniProcessor::ApplyToVoice(
 
   if (targetParam == FFGlobalUniTarget::VoiceCoarse || targetParam == FFGlobalUniTarget::OscCoarse)
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-    {
-      auto modAmtSemisNorm = FBToBipolar(modSource.Load(s)) * 0.5f;
-      if (!graph)
-        modAmtSemisNorm *= FFGlobalUniCoarseSemis / FFOsciCoarseSemis;
-      targetSignal.Store(s, xsimd::clip(targetSignal.Load(s) + modAmtSemisNorm, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
-    }
+      targetSignal.Store(s, FFModulateBPAdd2(modSource.Load(s), 1.0f, targetSignal.Load(s)));
   else if (targetParam == FFGlobalUniTarget::VMixAmp || targetParam == FFGlobalUniTarget::OscGain)
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
       targetSignal.Store(s, FFModulateUPRemap(modSource.Load(s), 1.0f, targetSignal.Load(s)));

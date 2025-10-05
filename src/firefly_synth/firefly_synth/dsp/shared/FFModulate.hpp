@@ -8,7 +8,7 @@
 enum class FFModulationOpType { 
   Off,
   UPAdd, UPMul, UPStack, UPRemap,
-  BPAdd, BPMul, BPStack, BPRemap };
+  BPAdd, BPAdd2, BPMul, BPStack, BPRemap };
 
 inline float
 FFModulateUPStack(
@@ -62,6 +62,15 @@ FFModulateBPAdd(
 }
 
 inline float
+FFModulateBPAdd2(
+  float source,
+  float amount, float target)
+{
+  source = FBToBipolar(source) * 0.5f;
+  return std::clamp(target + amount * source, 0.0f, 1.0f);
+}
+
+inline float
 FFModulateBPStack(
   float source,
   float amount, float target)
@@ -103,6 +112,8 @@ FFModulate(
     return FFModulateUPRemap(source, amount, target);
   case FFModulationOpType::BPAdd:
     return FFModulateBPAdd(source, amount, target);
+  case FFModulationOpType::BPAdd2:
+    return FFModulateBPAdd2(source, amount, target);
   case FFModulationOpType::BPMul:
     return FFModulateBPMul(source, amount, target);
   case FFModulationOpType::BPStack:
@@ -177,6 +188,15 @@ FFModulateBPAdd(
 }
 
 inline FBBatch<float>
+FFModulateBPAdd2(
+  FBBatch<float> source,
+  FBBatch<float> amount, FBBatch<float> target)
+{
+  source = FBToBipolar(source) * 0.5f;
+  return xsimd::clip(target + amount * source, FBBatch<float>(0.0f), FBBatch<float>(1.0f));
+}
+
+inline FBBatch<float>
 FFModulateBPStack(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
@@ -218,6 +238,8 @@ FFModulate(
     return FFModulateUPRemap(source, amount, target);
   case FFModulationOpType::BPAdd:
     return FFModulateBPAdd(source, amount, target);
+  case FFModulationOpType::BPAdd2:
+    return FFModulateBPAdd2(source, amount, target);
   case FFModulationOpType::BPMul:
     return FFModulateBPMul(source, amount, target);
   case FFModulationOpType::BPStack:
