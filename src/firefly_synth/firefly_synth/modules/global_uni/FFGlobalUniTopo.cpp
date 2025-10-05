@@ -175,7 +175,6 @@ FFMakeGlobalUniTopo()
   };
   opType.type = FBParamType::List;
   opType.List().items = {
-    { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", "Off" },
     { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "UP Add" },
     { "{AD641260-F205-497E-B483-330CFA025378}", "UP Mul" },
     { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "UP Stk" },
@@ -203,6 +202,7 @@ FFMakeGlobalUniTopo()
   mode.id = "{B5809A8A-B0A9-40B2-8A0B-413121869836}";
   mode.type = FBParamType::List;
   mode.List().items = {
+    { "{328055DD-795F-402B-9B16-F30589866295}", "Off" },
     { "{770E5F05-0041-4750-805F-BF08A5135B1B}", "Auto" },
     { "{7645E42A-1249-4483-9019-4F92AD9D0FF7}", "Manual" } };
   auto selectMode = [](auto& module) { return &module.block.mode; };

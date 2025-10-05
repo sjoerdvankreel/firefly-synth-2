@@ -147,10 +147,18 @@ FFGlobalUniProcessor::ApplyToVoice(
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
       auto voicePos = xsimd::clip(voicePosBase + rand.Load(s) * randOffset, FBBatch<float>(0.0f), FBBatch<float>(1.0f));
-      if (_voiceCount > 3)
-        voicePos = FFSkewExpBipolar(voicePos, skew.Load(s));
-      auto outBatch = 0.5f + (voicePos - 0.5f) * spread.Load(s);
-      modSource.Store(s, outBatch);
+      if (FFModulationOpTypeIsBipolar(_opTypes[(int)targetParam]))
+      {
+        if (_voiceCount > 3)
+          voicePos = FFSkewExpBipolar(voicePos, skew.Load(s));
+        modSource.Store(s, 0.5f + (voicePos - 0.5f) * spread.Load(s));
+      }
+      else
+      {
+        if (_voiceCount > 3)
+          voicePos = FFSkewExpUnipolar(voicePos, skew.Load(s));
+        modSource.Store(s, voicePos * spread.Load(s));
+      }
     }
   }
   else
