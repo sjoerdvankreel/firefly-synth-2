@@ -216,10 +216,12 @@ FFMakeGlobalUniTopo()
   autoSpread.mode = FBParamMode::Accurate;
   autoSpread.name = "Sprd";
   autoSpread.defaultTextSelector = [](int, int, int ps) {
-    if (ps == (int)FFGlobalUniTarget::VoiceFine)
+    if (ps == (int)FFGlobalUniTarget::VoiceFine || ps == (int)FFGlobalUniTarget::OscFine)
       return "16.7";
-    if (ps == (int)FFGlobalUniTarget::OscPhaseOffset)
+    if (ps == (int)FFGlobalUniTarget::OscPhaseOffset || ps == (int)FFGlobalUniTarget::LFOPhaseOffset)
       return "50";
+    if (ps == (int)FFGlobalUniTarget::VMixAmp || ps == (int)FFGlobalUniTarget::OscGain)
+      return "100";
     return "0";
   };
   autoSpread.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Spread"; };
@@ -337,7 +339,7 @@ FFMakeGlobalUniTopo()
 
   auto& manualVMixAmp = result->params[(int)FFGlobalUniParam::ManualVMixAmp];
   manualVMixAmp.mode = FBParamMode::Accurate;
-  manualVMixAmp.defaultText = "100";
+  manualVMixAmp.defaultText = "50";
   manualVMixAmp.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::VMixAmp, s); };
   manualVMixAmp.slotFormatterOverrides = true;
   manualVMixAmp.slotCount = FFGlobalUniMaxCount;
@@ -368,7 +370,7 @@ FFMakeGlobalUniTopo()
 
   auto& manualOscGain = result->params[(int)FFGlobalUniParam::ManualOscGain];
   manualOscGain.mode = FBParamMode::Accurate;
-  manualOscGain.defaultText = "100";
+  manualOscGain.defaultText = "50";
   manualOscGain.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::OscGain, s); };
   manualOscGain.slotFormatterOverrides = true;
   manualOscGain.slotCount = FFGlobalUniMaxCount;
