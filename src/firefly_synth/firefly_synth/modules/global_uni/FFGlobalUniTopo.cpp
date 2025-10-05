@@ -41,7 +41,7 @@ FFGlobalUniTargetToModule(FFGlobalUniTarget target)
   case FFGlobalUniTarget::LFOSkewAX: 
   case FFGlobalUniTarget::LFOSkewAY: 
   case FFGlobalUniTarget::LFOPhaseOffset: return FFModuleType::VLFO;
-  case FFGlobalUniTarget::EnvOffset: 
+  case FFGlobalUniTarget::EnvSlope: 
   case FFGlobalUniTarget::EnvStretch: return FFModuleType::Env;
   case FFGlobalUniTarget::VFXParamA: 
   case FFGlobalUniTarget::VFXParamB: 
@@ -82,7 +82,7 @@ FFGlobalUniTargetToString(FFGlobalUniTarget target)
   case FFGlobalUniTarget::LFOSkewAX: return "VLFO SkewA X";
   case FFGlobalUniTarget::LFOSkewAY: return "VLFO SkewA Y";
   case FFGlobalUniTarget::LFOPhaseOffset: return "VLFO Phase";
-  case FFGlobalUniTarget::EnvOffset: return "Env Offset";
+  case FFGlobalUniTarget::EnvSlope: return "Env Slope";
   case FFGlobalUniTarget::EnvStretch: return "Env Stretch";
   case FFGlobalUniTarget::VFXParamA: return "VFX Param A";
   case FFGlobalUniTarget::VFXParamB: return "VFX Param B";
@@ -606,23 +606,21 @@ FFMakeGlobalUniTopo()
   manualVFXParamD.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualVFXParamD);
   SetManualParamEnabledWhen(manualVFXParamD, FFGlobalUniTarget::VFXParamD);
 
-  auto& manualEnvOffset = result->params[(int)FFGlobalUniParam::ManualEnvOffset];
-  manualEnvOffset.mode = FBParamMode::VoiceStart;
-  manualEnvOffset.defaultText = "0";
-  manualEnvOffset.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EnvOffset, s); };
-  manualEnvOffset.slotFormatterOverrides = true;
-  manualEnvOffset.slotCount = FFGlobalUniMaxCount;
-  manualEnvOffset.unit = "Sec";
-  manualEnvOffset.id = "{AEDA998E-B0B7-4A78-8C52-F6B809AC5352}";
-  manualEnvOffset.type = FBParamType::Linear;
-  manualEnvOffset.Linear().min = 0.0f;
-  manualEnvOffset.Linear().max = 1.0f;
-  manualEnvOffset.Linear().editSkewFactor = 0.5f;
-  auto selectManualEnvOffset = [](auto& module) { return &module.acc.manualEnvOffset; };
-  manualEnvOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEnvOffset);
-  manualEnvOffset.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEnvOffset);
-  manualEnvOffset.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEnvOffset);
-  SetManualParamEnabledWhen(manualEnvOffset, FFGlobalUniTarget::EnvOffset);
+  auto& manualEnvSlope = result->params[(int)FFGlobalUniParam::ManualEnvSlope];
+  manualEnvSlope.mode = FBParamMode::Accurate;
+  manualEnvSlope.defaultText = "0";
+  manualEnvSlope.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EnvSlope, s); };
+  manualEnvSlope.slotFormatterOverrides = true;
+  manualEnvSlope.slotCount = FFGlobalUniMaxCount;
+  manualEnvSlope.unit = "%";
+  manualEnvSlope.id = "{19A72E15-FC14-4F36-8CB9-C176FB09B78C}";
+  manualEnvSlope.type = FBParamType::Identity;
+  manualEnvSlope.Identity().displayAsBipolar = true;
+  auto selectManualEnvSlope = [](auto& module) { return &module.acc.manualEnvSlope; };
+  manualEnvSlope.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEnvSlope);
+  manualEnvSlope.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEnvSlope);
+  manualEnvSlope.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEnvSlope);
+  SetManualParamEnabledWhen(manualEnvSlope, FFGlobalUniTarget::EnvSlope);
 
   auto& manualEnvStretch = result->params[(int)FFGlobalUniParam::ManualEnvStretch];
   manualEnvStretch.mode = FBParamMode::VoiceStart;

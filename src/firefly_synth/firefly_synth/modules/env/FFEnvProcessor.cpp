@@ -93,6 +93,13 @@ FFEnvProcessor::BeginVoice(
     for (int i = 0; i < FFEnvStageCount; i++)
     {
       _voiceStartSnapshotNorm.stageTime[i] = stageTimeNorm[i].Voice()[voice].CV().Get(state.voice->offsetInBlock);
+      if (!graph)
+      {
+        FBSArray<float, FBFixedBlockSamples> stageTimeBlock = {};
+        stageTimeBlock.Fill(FBBatch<float>(_voiceStartSnapshotNorm.stageTime[i]));
+        procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EnvStretch, false, voice, -1, stageTimeBlock);
+        _voiceStartSnapshotNorm.stageTime[i] = stageTimeBlock.Get(0);
+      }
       float stageSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
         FFEnvParam::StageTime, _voiceStartSnapshotNorm.stageTime[i], state.input->sampleRate);
       if (state.moduleSlot == FFAmpEnvSlot && i == 0 && _thisVoiceIsSubSectionStart)

@@ -73,7 +73,7 @@ class alignas(alignof(TAccurate)) FFGlobalUniAccParamState final
   std::array<TAccurate, FFGlobalUniMaxCount> manualVFXParamB = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualVFXParamC = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualVFXParamD = {};
-  std::array<TAccurate, FFGlobalUniMaxCount> manualEnvOffset = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> manualEnvSlope = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEnvStretch = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoFade = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoExtend = {};

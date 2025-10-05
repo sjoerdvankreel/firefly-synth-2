@@ -16,7 +16,7 @@ enum class FFGlobalUniTarget {
   VoiceCoarse, VoiceFine, VMixAmp, VMixBal,
   OscGain, OscPan, OscCoarse, OscFine, OscPhaseOffset,
   LFORate, LFOMin, LFOMax, LFOSkewAX, LFOSkewAY, LFOPhaseOffset,
-  EnvOffset, EnvStretch, VFXParamA, VFXParamB, VFXParamC, VFXParamD,
+  EnvSlope, EnvStretch, VFXParamA, VFXParamB, VFXParamC, VFXParamD,
   EchoExtend, EchoFade, EchoTapLevel, EchoTapDelay, EchoTapBal,
   EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt,
   EchoReverbMix, EchoReverbSize, EchoReverbDamp, Count };
@@ -36,7 +36,7 @@ enum class FFGlobalUniParam {
   ManualVoiceCoarse, ManualFirst = ManualVoiceCoarse, ManualVoiceFine, ManualVMixAmp, ManualVMixBal,
   ManualOscGain, ManualOscPan, ManualOscCoarse, ManualOscFine, ManualOscPhaseOffset,
   ManualLFORate, ManualLFOMin, ManualLFOMax, ManualLFOSkewAX, ManualLFOSkewAY, ManualLFOPhaseOffset,
-  ManualEnvOffset, ManualEnvStretch, ManualVFXParamA, ManualVFXParamB, ManualVFXParamC, ManualVFXParamD,
+  ManualEnvSlope, ManualEnvStretch, ManualVFXParamA, ManualVFXParamB, ManualVFXParamC, ManualVFXParamD,
   ManualEchoExtend, ManualEchoFade,
   ManualEchoTapLevel, ManualEchoTapDelay, ManualEchoTapBal,
   ManualEchoFdbkDelay, ManualEchoFdbkMix, ManualEchoFdbkAmt,

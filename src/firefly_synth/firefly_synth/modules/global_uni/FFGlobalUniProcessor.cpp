@@ -102,7 +102,7 @@ FFGlobalUniProcessor::Process(FBModuleProcState& state)
     exchangeParams.acc.manualVFXParamB[i] = params.acc.manualVFXParamB[i].Global().Last();
     exchangeParams.acc.manualVFXParamC[i] = params.acc.manualVFXParamC[i].Global().Last();
     exchangeParams.acc.manualVFXParamD[i] = params.acc.manualVFXParamD[i].Global().Last();
-    exchangeParams.acc.manualEnvOffset[i] = params.acc.manualEnvOffset[i].Global().Last();
+    exchangeParams.acc.manualEnvSlope[i] = params.acc.manualEnvSlope[i].Global().Last();
     exchangeParams.acc.manualEnvStretch[i] = params.acc.manualEnvStretch[i].Global().Last();
     exchangeParams.acc.manualEchoFade[i] = params.acc.manualEchoFade[i].Global().Last();
     exchangeParams.acc.manualEchoExtend[i] = params.acc.manualEchoExtend[i].Global().Last();
