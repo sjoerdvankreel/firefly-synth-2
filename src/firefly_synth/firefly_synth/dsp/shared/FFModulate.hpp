@@ -11,6 +11,28 @@ enum class FFModulationOpType {
   BPAdd, BPAdd2, BPMul, BPStack, BPRemap,
   PhaseWrap };
 
+inline bool 
+FFModulationOpTypeIsBipolar(FFModulationOpType opType)
+{
+  switch (opType)
+  {
+  case FFModulationOpType::UPAdd:
+  case FFModulationOpType::UPMul:
+  case FFModulationOpType::UPStack:
+  case FFModulationOpType::UPRemap:
+  case FFModulationOpType::PhaseWrap:
+    return false;
+  case FFModulationOpType::BPAdd:
+  case FFModulationOpType::BPAdd2:
+  case FFModulationOpType::BPMul:
+  case FFModulationOpType::BPStack:
+  case FFModulationOpType::BPRemap:
+    return true;
+  case FFModulationOpType::Off:
+  default: FB_ASSERT(false); return false;
+  }
+}
+
 inline float
 FFModulateUPStack(
   float source,
