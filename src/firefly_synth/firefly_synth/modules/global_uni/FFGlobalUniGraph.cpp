@@ -74,7 +74,7 @@ GlobalUniGraphRenderData::DoProcessIndicators(
   FBSArray<float, FBFixedBlockSamples> targetSignal;
   FFProcDSPState* procState = &state->ModuleProcState()->ProcAs<FFProcState>()->dsp;
   FFGlobalUniProcessor* processor = procState->global.globalUni.processor.get();
-  float targetDefault = FFGlobalUniTargetGetDefault((FFGlobalUniTarget)slot);
+  float targetDefault = FFGlobalUniTargetGetDefaultValue((FFGlobalUniTarget)slot);
   int voiceCount = state->AudioParamDiscrete({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } }, exchange, -1);
   for (int i = 0; i < voiceCount; i++)
   {
@@ -90,7 +90,7 @@ GlobalUniGraphRenderData::DoPostProcess(
   bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& points)
 {
   int slot = graphData->fixedGraphIndex;
-  if (FFGlobalUniTargetGetDefault((FFGlobalUniTarget)slot) != 0.5f)
+  if (FFGlobalUniTargetGetDefaultValue((FFGlobalUniTarget)slot) != 0.5f)
   {
     for (int i = 0; i < points.l.size(); i++)
       points.l[i] = i / (float)points.l.size();
@@ -118,9 +118,9 @@ FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->skipDrawOnEqualsPrimary = true;
   graphData->drawMarkersSelector = [](int) { return false; };
   graphData->renderState->ModuleProcState()->moduleSlot = 0;
-  graphData->paintAsDisabled = graphData->renderState->AudioParamList<FFGlobalUniMode>(
+  graphData->paintAsDisabled = graphData->renderState->AudioParamList<FFModulationOpType>(
     { { (int)FFModuleType::GlobalUni, 0 },
-    { (int)FFGlobalUniParam::Mode, graphData->fixedGraphIndex } }, false, -1) == FFGlobalUniMode::Off;
+    { (int)FFGlobalUniParam::OpType, graphData->fixedGraphIndex } }, false, -1) == FFModulationOpType::Off;
 
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;

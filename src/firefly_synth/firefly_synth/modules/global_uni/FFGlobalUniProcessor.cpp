@@ -25,7 +25,9 @@ FFGlobalUniProcessor::BeginVoice(int voice)
     return;
   for (int i = 0; i < (int)FFGlobalUniTarget::Count; i++)
   {
-    if (_mode[i] != FFGlobalUniMode::Auto)
+    if (_opTypes[i] == FFModulationOpType::Off)
+      continue;
+    if (_modes[i] != FFGlobalUniMode::Auto)
       continue;
     _voiceRandState[voice][i] = _randStream[i].NextScalar();
   }
@@ -41,8 +43,9 @@ FFGlobalUniProcessor::BeginBlock(FBModuleProcState& state)
   _voiceCount = topo.NormalizedToDiscreteFast((int)FFGlobalUniParam::VoiceCount, countNorm);
   for (int i = 0; i < (int)FFGlobalUniTarget::Count; i++)
   {
-    _mode[i] = topo.NormalizedToListFast<FFGlobalUniMode>(FFGlobalUniParam::Mode, params.block.mode[i].Value());
-    if (_mode[i] != FFGlobalUniMode::Auto)
+    _modes[i] = topo.NormalizedToListFast<FFGlobalUniMode>(FFGlobalUniParam::Mode, params.block.mode[i].Value());
+    _opTypes[i] = topo.NormalizedToListFast<FFModulationOpType>(FFGlobalUniParam::OpType, params.block.opType[i].Value());
+    if (_opTypes[i] == FFModulationOpType::Off || _modes[i] != FFGlobalUniMode::Auto)
       continue;
 
     _randSeedNorm[i] = params.block.autoRandSeed[i].Value();
@@ -124,7 +127,7 @@ FFGlobalUniProcessor::ApplyToVoice(
 
   if (_voiceCount < 2)
     return;
-  if (_mode[(int)targetParam] == FFGlobalUniMode::Off)
+  if (_opTypes[(int)targetParam] == FFModulationOpType::Off)
     return;
 
   if (!graph)
@@ -133,7 +136,7 @@ FFGlobalUniProcessor::ApplyToVoice(
     voice = voiceSlotInGroup;
 
   FBSArray<float, 16> modSource;
-  if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
+  if (_modes[(int)targetParam] == FFGlobalUniMode::Auto)
   {
     auto const* procState = state.ProcAs<FFProcState>();
     auto voicePosBase = FBBatch<float>(voiceSlotInGroup / (_voiceCount - 1.0f));
@@ -159,16 +162,6 @@ FFGlobalUniProcessor::ApplyToVoice(
     manualCvNorm.CopyTo(modSource);
   }
 
-  if (targetParam == FFGlobalUniTarget::VoiceCoarse || targetParam == FFGlobalUniTarget::OscCoarse)
-    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-      targetSignal.Store(s, FFModulateBPAdd2(modSource.Load(s), 1.0f, targetSignal.Load(s)));
-  else if (targetParam == FFGlobalUniTarget::VMixAmp || targetParam == FFGlobalUniTarget::OscGain)
-    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-      targetSignal.Store(s, FFModulateUPRemap(modSource.Load(s), 1.0f, targetSignal.Load(s)));
-  else if (targetParam == FFGlobalUniTarget::LFOPhaseOffset || targetParam == FFGlobalUniTarget::OscPhaseOffset)
-    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-      targetSignal.Store(s, FFModulatePhaseWrap(modSource.Load(s), 1.0f, targetSignal.Load(s)));
-  else
-    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-      targetSignal.Store(s, FFModulateBPRemap(modSource.Load(s), 1.0f, targetSignal.Load(s)));
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+    targetSignal.Store(s, FFModulate(_opTypes[(int)targetParam], modSource.Load(s), 1.0f, targetSignal.Load(s)));
 }

@@ -5,7 +5,7 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 float
-FFGlobalUniTargetGetDefault(
+FFGlobalUniTargetGetDefaultValue(
   FFGlobalUniTarget target)
 {
   switch (target)
@@ -115,9 +115,10 @@ SetManualParamEnabledWhen(FBStaticParam& param, FFGlobalUniTarget target)
   param.dependencies.enabled.audio.WhenSlots({ 
     { (int)FFGlobalUniParam::VoiceCount, -1 }, 
     { (int)FFGlobalUniParam::ManualFirst + (int)target, -1 }, 
-    { (int)FFGlobalUniParam::Mode, (int)target } 
+    { (int)FFGlobalUniParam::Mode, (int)target },
+    { (int)FFGlobalUniParam::OpType, (int)target }
   }, [](auto const& slots, auto const& vs) { 
-      return slots[1] < vs[0] && vs[2] == (int)FFGlobalUniMode::Manual; 
+      return slots[1] < vs[0] && vs[2] == (int)FFGlobalUniMode::Manual && vs[3] != 0; 
   });
 }
 
@@ -151,6 +152,46 @@ FFMakeGlobalUniTopo()
   voiceCount.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectVoiceCount);
   voiceCount.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoiceCount);
 
+  auto& opType = result->params[(int)FFGlobalUniParam::OpType];
+  opType.mode = FBParamMode::Block;
+  opType.name = "Op";
+  opType.display = "Op";
+  opType.slotCount = (int)FFGlobalUniTarget::Count;
+  opType.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Op"; };
+  opType.slotFormatterOverrides = true;
+  opType.id = "{84EAEA86-D75E-403F-8EEC-231F02F4E053}";
+  opType.defaultTextSelector = [](int /*mi*/, int, int ps) { 
+    auto target = (FFGlobalUniTarget)ps;
+    switch (target)
+    {
+    case FFGlobalUniTarget::VoiceCoarse: return "BP Ad2";
+    case FFGlobalUniTarget::VMixAmp: return "UP Rmp";
+    case FFGlobalUniTarget::OscGain: return "UP Rmp";
+    case FFGlobalUniTarget::OscCoarse: return "BP Ad2";
+    case FFGlobalUniTarget::OscPhaseOffset: return "Ph Wrp";
+    case FFGlobalUniTarget::LFOPhaseOffset: return "Ph Wrp";
+    default: return "BP Rmp";
+    }
+  };
+  opType.type = FBParamType::List;
+  opType.List().items = {
+    { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", "Off" },
+    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "UP Add" },
+    { "{AD641260-F205-497E-B483-330CFA025378}", "UP Mul" },
+    { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "UP Stk" },
+    { "{01014CF0-B70C-4E60-9A78-FF560CF05ECF}", "UP Rmp" },
+    { "{C18F6A70-944C-4A9B-8A01-561E1B6B93D4}", "BP Add" },
+    { "{4464FDBF-1CDA-4023-85CC-D3A90CC4F47B}", "BP Ad2" },
+    { "{3130BBE8-D204-450D-A3D2-AC4266FB8E4B}", "BP Mul" },
+    { "{69D5AD4B-BD0B-42A6-A252-A0A43D425F89}", "BP Stk" },
+    { "{D96CFB4F-1F3C-434C-A78D-BA624B3DFA10}", "BP Rmp" },
+    { "{79662DE0-C38D-4ECD-BCC1-5CDD210E0015}", "Ph Wrp" } };
+  auto selectOpType = [](auto& module) { return &module.block.opType; };
+  opType.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOpType);
+  opType.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectOpType);
+  opType.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOpType);
+  opType.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::VoiceCount } }, [](auto const& vs) { return vs[0] > 1; });
+
   auto& mode = result->params[(int)FFGlobalUniParam::Mode];
   mode.mode = FBParamMode::Block;
   mode.name = "Mode";
@@ -169,8 +210,8 @@ FFMakeGlobalUniTopo()
   mode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectMode);
   mode.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectMode);
   mode.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectMode);
-  mode.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::VoiceCount } }, [](auto const& vs) { return vs[0] > 1; });
-  
+  mode.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::VoiceCount, (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return vs[0] > 1 && vs[1] != 0; });
+
   auto& autoSpread = result->params[(int)FFGlobalUniParam::AutoSpread];
   autoSpread.mode = FBParamMode::Accurate;
   autoSpread.name = "Sprd";
@@ -191,7 +232,7 @@ FFMakeGlobalUniTopo()
   autoSpread.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoSpread);
   autoSpread.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAutoSpread);
   autoSpread.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoSpread);
-  autoSpread.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::Auto && vs[1] > 1; });
+  autoSpread.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount, (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::Auto && vs[1] > 1 && vs[2] != 0; });
 
   auto& autoSkew = result->params[(int)FFGlobalUniParam::AutoSkew];
   autoSkew.mode = FBParamMode::Accurate;
@@ -209,7 +250,7 @@ FFMakeGlobalUniTopo()
   autoSkew.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAutoSkew);
   autoSkew.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoSkew);
   // Only enabled for 4+ voices, as near/far/center are fixed.
-  autoSkew.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::Auto && vs[1] > 3; });
+  autoSkew.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount, (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::Auto && vs[1] > 3 && vs[2] != 0; });
 
   auto& autoRand = result->params[(int)FFGlobalUniParam::AutoRand];
   autoRand.mode = FBParamMode::VoiceStart;
@@ -229,7 +270,7 @@ FFMakeGlobalUniTopo()
   autoRand.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoRand);
   autoRand.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAutoRand);
   autoRand.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoRand);
-  autoRand.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::Auto && vs[1] > 1; });
+  autoRand.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount, (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::Auto && vs[1] > 1 && vs[2] != 0; });
 
   auto& autoRandSeed = result->params[(int)FFGlobalUniParam::AutoRandSeed];
   autoRandSeed.mode = FBParamMode::Block;
@@ -245,7 +286,7 @@ FFMakeGlobalUniTopo()
   autoRandSeed.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoRandSeed);
   autoRandSeed.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectAutoRandSeed);
   autoRandSeed.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoRandSeed);
-  autoRandSeed.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::Auto && vs[1] > 1; });
+  autoRandSeed.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount,  (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::Auto && vs[1] > 1 && vs[2] != 0; });
 
   auto& autoRandFree = result->params[(int)FFGlobalUniParam::AutoRandFree];
   autoRandFree.mode = FBParamMode::Block;
@@ -260,7 +301,7 @@ FFMakeGlobalUniTopo()
   autoRandFree.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoRandFree);
   autoRandFree.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectAutoRandFree);
   autoRandFree.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoRandFree);
-  autoRandFree.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::Auto && vs[1] > 1; });
+  autoRandFree.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount, (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::Auto && vs[1] > 1 && vs[2] != 0; });
 
   auto& manualVoiceCoarse = result->params[(int)FFGlobalUniParam::ManualVoiceCoarse];
   manualVoiceCoarse.mode = FBParamMode::Accurate;
