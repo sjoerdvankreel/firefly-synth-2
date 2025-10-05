@@ -107,16 +107,6 @@ FFOsciProcessor::BeginVoice(
   _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, _voiceStartSnapshotNorm.uniOffset[0]);
   _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, _voiceStartSnapshotNorm.uniRandom[0]);
 
-  float globalUniPhaseOffset = 0.0f;
-  if (!graph)
-  {
-    globalUniPhaseOffset = procState->dsp.global.globalUni.processor->GetPhaseOffsetForVoice(
-      state, FFGlobalUniTarget::OscPhaseOffset, false, voice, -1);
-    state.ExchangeToGUIAs<FFExchangeState>()->voice[voice].osci[state.moduleSlot].globalUniPhaseOffset = globalUniPhaseOffset;
-  }
-  else if(exchangeFromDSP != nullptr)
-    globalUniPhaseOffset = exchangeFromDSP->globalUniPhaseOffset;
-
   FBSArray<float, FFOsciUniMaxCount> uniPhaseInit = {};
   for (int u = 0; u < _uniCount; u++)
   {
@@ -130,9 +120,26 @@ FFOsciProcessor::BeginVoice(
       _uniPosMHalfToHalf.Set(u, u / (_uniCount - 1.0f) - 0.5f);
       _uniPosAbsHalfToHalf.Set(u, std::fabs(_uniPosMHalfToHalf.Get(u)));
     }
-    float uniPhase = u * _uniOffsetPlain / _uniCount;
-    uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _uniformPrng.NextScalar()) * uniPhase);
-    uniPhaseInit.Set(u, FBPhaseWrap(uniPhaseInit.Get(u) + globalUniPhaseOffset + _voiceStartSnapshotNorm.phase[0]));
+    if (graph && exchangeFromDSP)
+    {
+      uniPhaseInit.Set(u, exchangeFromDSP->phases[u]);
+    }
+    else
+    {
+      float globalUniPhaseOffset = 0.0f;
+      float uniPhase = u * _uniOffsetPlain / _uniCount;
+      uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _uniformPrng.NextScalar()) * uniPhase);
+      if (!graph)
+      {
+        globalUniPhaseOffset = procState->dsp.global.globalUni.processor->GetPhaseOffsetForVoice(
+          state, FFGlobalUniTarget::OscPhaseOffset, false, voice, -1);
+      }
+      uniPhaseInit.Set(u, FBPhaseWrap(uniPhaseInit.Get(u) + globalUniPhaseOffset + _voiceStartSnapshotNorm.phase[0]));
+      if (!graph)
+      {
+        state.ExchangeToGUIAs<FFExchangeState>()->voice[voice].osci[state.moduleSlot].phases[u] = uniPhaseInit.Get(u);
+      }
+    }
   }
 
   _modMatrixExpoFM = modTopo.NormalizedToBoolFast(FFOsciModParam::ExpoFM, modExpoFMNorm);

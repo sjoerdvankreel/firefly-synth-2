@@ -17,7 +17,7 @@ struct FBStaticModule;
 struct alignas(FBSIMDAlign) FFOsciExchangeState final:
 public FBModuleProcSingleExchangeState
 {
-  float globalUniPhaseOffset = {};
+  std::array<float, FFOsciUniMaxCount> phases = {};
 };
 
 class alignas(FBSIMDAlign) FFOsciDSPState final
