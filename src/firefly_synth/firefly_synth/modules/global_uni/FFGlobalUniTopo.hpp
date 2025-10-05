@@ -26,6 +26,8 @@ FFModuleType
 FFGlobalUniTargetToModule(FFGlobalUniTarget target);
 std::string
 FFGlobalUniTargetToString(FFGlobalUniTarget target);
+float
+FFGlobalUniTargetGetDefault(FFGlobalUniTarget target);
 
 enum class FFGlobalUniParam { 
   VoiceCount, 

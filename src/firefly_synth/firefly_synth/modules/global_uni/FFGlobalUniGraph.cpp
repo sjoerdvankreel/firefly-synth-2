@@ -1,7 +1,7 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/shared/FFStateDetail.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniGraph.hpp>
-#include <firefly_synth/modules/global_uni/FFGlobalUniProcessorProcess.hpp>
+#include <firefly_synth/modules/global_uni/FFGlobalUniProcessor.hpp>
 
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBGraphing.hpp>
@@ -74,7 +74,7 @@ GlobalUniGraphRenderData::DoProcessIndicators(
   FBSArray<float, FBFixedBlockSamples> targetSignal;
   FFProcDSPState* procState = &state->ModuleProcState()->ProcAs<FFProcState>()->dsp;
   FFGlobalUniProcessor* processor = procState->global.globalUni.processor.get();
-  float targetDefault = processor->GetTargetDefault((FFGlobalUniTarget)slot);
+  float targetDefault = FFGlobalUniTargetGetDefault((FFGlobalUniTarget)slot);
   int voiceCount = state->AudioParamDiscrete({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } }, exchange, -1);
   for (int i = 0; i < voiceCount; i++)
   {
@@ -95,13 +95,11 @@ GlobalUniGraphRenderData::DoProcessIndicators(
 
 void 
 GlobalUniGraphRenderData::DoPostProcess(
-  FBGraphRenderState* state, int /*graphIndex*/,
+  FBGraphRenderState* /*state*/, int /*graphIndex*/,
   bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& points)
 {
   int slot = graphData->fixedGraphIndex;
-  FFProcDSPState* procState = &state->ModuleProcState()->ProcAs<FFProcState>()->dsp;
-  FFGlobalUniProcessor* processor = procState->global.globalUni.processor.get();
-  if (processor->GetTargetDefault((FFGlobalUniTarget)slot) != 0.5f)
+  if (FFGlobalUniTargetGetDefault((FFGlobalUniTarget)slot) != 0.5f)
   {
     for (int i = 0; i < points.l.size(); i++)
       points.l[i] = i / (float)points.l.size();

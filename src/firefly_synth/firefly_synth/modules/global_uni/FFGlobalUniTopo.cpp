@@ -4,6 +4,23 @@
 #include <firefly_synth/modules/global_uni/FFGlobalUniGraph.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
+float
+FFGlobalUniTargetGetDefault(
+  FFGlobalUniTarget target)
+{
+  switch (target)
+  {
+  case FFGlobalUniTarget::VMixAmp:
+  case FFGlobalUniTarget::OscGain:
+    return 1.0f;
+  case FFGlobalUniTarget::LFOPhaseOffset:
+  case FFGlobalUniTarget::OscPhaseOffset:
+    return 0.0f;
+  default:
+    return 0.5f;
+  }
+}
+
 FFModuleType
 FFGlobalUniTargetToModule(FFGlobalUniTarget target)
 {
