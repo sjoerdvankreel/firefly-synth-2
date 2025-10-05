@@ -88,10 +88,10 @@ MakeGlobalUniEditor(
     int guiCol = c * (FFGlobalUniMaxCount + 8 + 1);
     grid->Add(0, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
     grid->MarkSection({ { 0, guiCol }, { 1, 1 } });
-    auto opType0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, 0 } });
-    grid->Add(0, guiCol + 1, plugGUI->StoreComponent<FBAutoSizeLabel>(opType0->static_.name));
     auto mode0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, 0 } });
-    grid->Add(0, guiCol + 2, plugGUI->StoreComponent<FBAutoSizeLabel>(mode0->static_.name));
+    grid->Add(0, guiCol + 1, plugGUI->StoreComponent<FBAutoSizeLabel>(mode0->static_.name));
+    auto opType0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, 0 } });
+    grid->Add(0, guiCol + 2, plugGUI->StoreComponent<FBAutoSizeLabel>(opType0->static_.name));
     grid->MarkSection({ { 0, guiCol + 1 }, { 1, 2 } });
 
     auto spread0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, 0 } });
@@ -126,10 +126,10 @@ MakeGlobalUniEditor(
       grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>(targetName));
       grid->MarkSection({ { guiRow, guiCol }, { 1, 1 } });
 
-      auto opType = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, targetIndex } });
-      grid->Add(guiRow, guiCol + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
       auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, targetIndex } });
-      grid->Add(guiRow, guiCol + 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
+      grid->Add(guiRow, guiCol + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
+      auto opType = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, targetIndex } });
+      grid->Add(guiRow, guiCol + 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
       grid->MarkSection({ { guiRow, guiCol + 1 }, { 1, 2 } });
 
       auto spread = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, targetIndex } });
