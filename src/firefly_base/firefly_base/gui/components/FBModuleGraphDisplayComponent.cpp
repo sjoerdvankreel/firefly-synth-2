@@ -85,6 +85,11 @@ FBModuleGraphDisplayComponent::PaintMarker(
   int marker, bool primary, bool isPointIndicator, bool stereo,
   bool left, int maxSizeAllSeries, float absMaxValueAllSeries)
 {
+  // It does happen every now and then.
+  // Case in point: env length got 0 by modulation.
+  if (points.size() == 0)
+    return;
+
   auto color = Colours::white;
   if (_data->paintAsDisabled)
     color = color.darker(0.67f);

@@ -95,10 +95,15 @@ FFEnvProcessor::BeginVoice(
       _voiceStartSnapshotNorm.stageTime[i] = stageTimeNorm[i].Voice()[voice].CV().Get(state.voice->offsetInBlock);
       if (!graph)
       {
-        FBSArray<float, FBFixedBlockSamples> stageTimeBlock = {};
-        stageTimeBlock.Fill(FBBatch<float>(_voiceStartSnapshotNorm.stageTime[i]));
-        procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EnvStretch, false, voice, -1, stageTimeBlock);
-        _voiceStartSnapshotNorm.stageTime[i] = stageTimeBlock.Get(0);
+        // If it's off, it's off.
+        // No need to be introducing fake stages by modulation.
+        if (_voiceStartSnapshotNorm.stageTime[i] != 0.0f)
+        {
+          FBSArray<float, FBFixedBlockSamples> stageTimeBlock = {};
+          stageTimeBlock.Fill(FBBatch<float>(_voiceStartSnapshotNorm.stageTime[i]));
+          procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EnvStretch, false, voice, -1, stageTimeBlock);
+          _voiceStartSnapshotNorm.stageTime[i] = stageTimeBlock.Get(0);
+        }
       }
       float stageSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
         FFEnvParam::StageTime, _voiceStartSnapshotNorm.stageTime[i], state.input->sampleRate);

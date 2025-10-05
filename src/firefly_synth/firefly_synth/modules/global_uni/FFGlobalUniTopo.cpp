@@ -191,6 +191,7 @@ FFMakeGlobalUniTopo()
     case FFGlobalUniTarget::OscPhaseOffset: return "Ph Wrp";
     case FFGlobalUniTarget::LFOPhaseOffset: return "Ph Wrp";
     case FFGlobalUniTarget::LFORate: return "BP Ad2";
+    case FFGlobalUniTarget::EnvStretch: return "BP Stk";
     default: return "BP Rmp";
     }
   };
