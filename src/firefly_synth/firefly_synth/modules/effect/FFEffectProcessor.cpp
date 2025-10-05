@@ -261,6 +261,10 @@ FFEffectProcessor::Process(FBModuleProcState& state)
               FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                 stVarFreqNormModulated[i].Load(s)));
+
+            int uniTargetParamBase = (int)FFGlobalUniTarget::VFXParamA;
+            FFGlobalUniTarget uniTargetParam = (FFGlobalUniTarget)(uniTargetParamBase + i);
+            procState->dsp.global.globalUni.processor->ApplyToVoice(state, uniTargetParam, false, voice, -1, stVarFreqNormModulated[i]);
           }
         }
         stVarFreqPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::StVarFreq, stVarFreqNormModulated[i].Load(s)));
@@ -287,6 +291,10 @@ FFEffectProcessor::Process(FBModuleProcState& state)
                 FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
                   FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                   combFreqMinNormModulated[i].Load(s)));
+
+              int uniTargetParamBase = (int)FFGlobalUniTarget::VFXParamA;
+              FFGlobalUniTarget uniTargetParam = (FFGlobalUniTarget)(uniTargetParamBase + i);
+              procState->dsp.global.globalUni.processor->ApplyToVoice(state, uniTargetParam, false, voice, -1, combFreqMinNormModulated[i]);
             }
           }
           combFreqMinPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqMin, combFreqMinNormModulated[i].Load(s)));
@@ -309,6 +317,10 @@ FFEffectProcessor::Process(FBModuleProcState& state)
                 FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
                   FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                   combFreqPlusNormModulated[i].Load(s)));
+
+              int uniTargetParamBase = (int)FFGlobalUniTarget::VFXParamA;
+              FFGlobalUniTarget uniTargetParam = (FFGlobalUniTarget)(uniTargetParamBase + i);
+              procState->dsp.global.globalUni.processor->ApplyToVoice(state, uniTargetParam, false, voice, -1, combFreqPlusNormModulated[i]);
             }
           }
           combFreqPlusPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqPlus, combFreqPlusNormModulated[i].Load(s)));
@@ -336,6 +348,10 @@ FFEffectProcessor::Process(FBModuleProcState& state)
               FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                 distDriveNormModulated[i].Load(s)));
+
+            int uniTargetParamBase = (int)FFGlobalUniTarget::VFXParamA;
+            FFGlobalUniTarget uniTargetParam = (FFGlobalUniTarget)(uniTargetParamBase + i);
+            procState->dsp.global.globalUni.processor->ApplyToVoice(state, uniTargetParam, false, voice, -1, distDriveNormModulated[i]);
           }
         }
         distDrivePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistDrive, distDriveNormModulated[i].Load(s)));

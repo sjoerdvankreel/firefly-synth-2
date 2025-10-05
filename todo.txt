@@ -37,16 +37,16 @@ TODOLIST for alpha-17
 [x] do paint as disabled
 [x] exchange paint no workie
 [x] upcast to FBPlugGUI in graph no longer works
-[x] refix the demos
 [x] hunt the todos
 [x] decent defaults
 [x] merge knobmod/graph into visuals
 [x] VAMP mod not take lfo into account
 [x] new modulation types incl phase add and make matrix targets for lfo/osc + new osci phase param
+[x] lfo also need guni phase exchange
+[ ] refix the demos
 [ ] note that coarse pitch is only in semis for default optype
 [ ] clap polymod + release as one
 [ ] global unison
-[ ] lfo also need guni phase exchange
 [ ] osci-target vecho demo
 [ ] global uni demo
 [ ] profile some more

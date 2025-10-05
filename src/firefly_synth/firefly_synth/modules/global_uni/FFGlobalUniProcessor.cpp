@@ -27,7 +27,7 @@ FFGlobalUniProcessor::BeginVoice(int voice)
   {
     if (_opType[i] == FFModulationOpType::Off)
       continue;
-    if (_mode[i] != FFGlobalUniMode::Auto)
+    if (_mode[i] != FFGlobalUniMode::AutoLinear && _mode[i] != FFGlobalUniMode::AutoSkew)
       continue;
     _voiceRandState[voice][i] = _randStream[i].NextScalar();
   }
@@ -45,7 +45,7 @@ FFGlobalUniProcessor::BeginBlock(FBModuleProcState& state)
   {
     _mode[i] = topo.NormalizedToListFast<FFGlobalUniMode>(FFGlobalUniParam::Mode, params.block.mode[i].Value());
     _opType[i] = topo.NormalizedToListFast<FFModulationOpType>(FFGlobalUniParam::OpType, params.block.opType[i].Value());
-    if (_opType[i] == FFModulationOpType::Off || _mode[i] != FFGlobalUniMode::Auto)
+    if (_opType[i] == FFModulationOpType::Off || (_mode[i] != FFGlobalUniMode::AutoLinear && _mode[i] != FFGlobalUniMode::AutoSkew))
       continue;
 
     _randSeedNorm[i] = params.block.autoRandSeed[i].Value();
@@ -138,7 +138,7 @@ FFGlobalUniProcessor::ApplyToVoice(
     voice = voiceSlotInGroup;
 
   FBSArray<float, 16> modSource;
-  if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
+  if (_mode[(int)targetParam] == FFGlobalUniMode::AutoLinear || _mode[(int)targetParam] == FFGlobalUniMode::AutoSkew)
   {
     auto const* procState = state.ProcAs<FFProcState>();
     auto voicePosBase = FBBatch<float>(voiceSlotInGroup / (_voiceCount - 1.0f));
@@ -151,13 +151,13 @@ FFGlobalUniProcessor::ApplyToVoice(
       auto voicePos = xsimd::clip(voicePosBase + rand.Load(s) * randOffset, FBBatch<float>(0.0f), FBBatch<float>(1.0f));
       if (FFModulationOpTypeIsBipolar(_opType[(int)targetParam]))
       {
-        if (_voiceCount > 3)
+        if (_voiceCount > 3 && _mode[(int)targetParam] == FFGlobalUniMode::AutoSkew)
           voicePos = FFSkewExpBipolar(voicePos, skew.Load(s));
         modSource.Store(s, 0.5f + (voicePos - 0.5f) * spread.Load(s));
       }
       else
       {
-        if (_voiceCount > 3)
+        if (_voiceCount > 3 && _mode[(int)targetParam] == FFGlobalUniMode::AutoSkew)
           voicePos = FFSkewExpUnipolar(voicePos, skew.Load(s));
         modSource.Store(s, voicePos * spread.Load(s));
       }
