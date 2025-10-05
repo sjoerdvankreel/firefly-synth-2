@@ -36,11 +36,6 @@ public:
   void Process(FBModuleProcState& state);
   void BeginBlock(FBModuleProcState& state);
 
-  float GetPhaseOffsetForVoice(
-    FBModuleProcState& state,
-    FFGlobalUniTarget targetPhaseParam,
-    bool graph, int voice, int voiceSlotInGroup);
-
   void ApplyToVoice(
     FBModuleProcState& state, FFGlobalUniTarget targetParam, 
     bool graph, int voice, int voiceSlotInGroup,

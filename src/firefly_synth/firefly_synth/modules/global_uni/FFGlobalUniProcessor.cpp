@@ -115,50 +115,6 @@ FFGlobalUniProcessor::Process(FBModuleProcState& state)
   }
 }
 
-float
-FFGlobalUniProcessor::GetPhaseOffsetForVoice(
-  FBModuleProcState& state,
-  FFGlobalUniTarget targetParam,
-  bool graph, int voice, int voiceSlotInGroup)
-{
-  FB_ASSERT(graph && voice == -1 && voiceSlotInGroup != -1 || !graph && voice != -1 && voiceSlotInGroup == -1);
-  FB_ASSERT(targetParam == FFGlobalUniTarget::LFOPhaseOffset || targetParam == FFGlobalUniTarget::OscPhaseOffset);
-
-  if (_voiceCount < 2)
-    return 0.0f;
-
-  if (!graph)
-    voiceSlotInGroup = state.input->voiceManager->Voices()[voice].slotInGroup;
-  else
-    voice = voiceSlotInGroup;
-
-  int voiceOffsetInBlock = 0;
-  float const phaseShiftMax = 0.99f;
-  if (!graph)
-    voiceOffsetInBlock = state.input->voiceManager->Voices()[voice].offsetInBlock;
-  if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
-  {
-    auto const* procState = state.ProcAs<FFProcState>();
-    float voicePosBase = voiceSlotInGroup / (_voiceCount - 1.0f);
-    auto randOffset = (_voiceRandState[voice][(int)targetParam] - 0.5f) / (_voiceCount - 1.0f);
-    auto const& skew = procState->param.global.globalUni[0].acc.autoSkew[(int)targetParam].Global().CV();
-    auto const& rand = procState->param.global.globalUni[0].acc.autoRand[(int)targetParam].Global().CV();
-    auto const& spread = procState->param.global.globalUni[0].acc.autoSpread[(int)targetParam].Global().CV();
-    float voicePos = std::clamp(voicePosBase + rand.Get(voiceOffsetInBlock) * randOffset, 0.0f, 1.0f);
-    if (_voiceCount > 3)
-      voicePos = FFSkewExpUnipolar(voicePos, skew.Get(voiceOffsetInBlock));
-    return voicePos * spread.Get(voiceOffsetInBlock) * phaseShiftMax;
-  }
-  else
-  {
-    auto const* procStateContainer = state.input->procState;
-    int manualParamIndex = (int)FFGlobalUniParam::ManualFirst + (int)targetParam;
-    auto const* manualParamTopo = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { manualParamIndex, voiceSlotInGroup } });
-    auto const& manualCvNorm = procStateContainer->Params()[manualParamTopo->runtimeParamIndex].GlobalAcc().Global().CV();
-    return manualCvNorm.Get(0) * phaseShiftMax;
-  }
-}
-
 void
 FFGlobalUniProcessor::ApplyToVoice(
   FBModuleProcState& state, FFGlobalUniTarget targetParam,

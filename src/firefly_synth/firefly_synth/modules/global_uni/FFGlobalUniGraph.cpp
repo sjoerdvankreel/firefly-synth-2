@@ -78,17 +78,8 @@ GlobalUniGraphRenderData::DoProcessIndicators(
   int voiceCount = state->AudioParamDiscrete({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } }, exchange, -1);
   for (int i = 0; i < voiceCount; i++)
   {
-    float target = targetDefault;
-    if (slot == (int)FFGlobalUniTarget::LFOPhaseOffset || slot == (int)FFGlobalUniTarget::OscPhaseOffset)
-    {
-      target = FBPhaseWrap(target + processor->GetPhaseOffsetForVoice(*state->ModuleProcState(), (FFGlobalUniTarget)slot, true, -1, i));
-      targetSignal.Fill(target);
-    }
-    else
-    {
-      targetSignal.Fill(FBBatch<float>(targetDefault));
-      processor->ApplyToVoice(*state->ModuleProcState(), (FFGlobalUniTarget)slot, true, -1, i, targetSignal);
-    }
+    targetSignal.Fill(FBBatch<float>(targetDefault));
+    processor->ApplyToVoice(*state->ModuleProcState(), (FFGlobalUniTarget)slot, true, -1, i, targetSignal);
     points.pointIndicators.push_back((int)(targetSignal.Get(0) * points.l.size()));
   }
 }
