@@ -68,6 +68,20 @@ FFLFOProcessor::BeginVoiceOrBlock(
     else
       _voiceStartSnapshotNorm.phase[i] = params.voiceStart.phase[i].Voice()[voice].CV().Get(state.voice->offsetInBlock);
 
+  if constexpr (!Global)
+  {
+    if (!graph)
+    {
+      for (int i = 0; i < FFLFOBlockCount; i++)
+      {
+        FBSArray<float, FBFixedBlockSamples> phaseBlock;
+        phaseBlock.Fill(FBBatch<float>(_voiceStartSnapshotNorm.phase[i]));
+        procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::LFOPhaseOffset, false, voice, -1, phaseBlock);
+        _voiceStartSnapshotNorm.phase[i] = phaseBlock.Get(0);
+      }
+    }
+  }
+
   _rateHzByBars = {};
   _smoothSamples = 0;
   _lastOutputAll = 0.0f;

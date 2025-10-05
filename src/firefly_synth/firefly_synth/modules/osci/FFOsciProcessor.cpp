@@ -120,7 +120,7 @@ FFOsciProcessor::BeginVoice(
       _uniPosMHalfToHalf.Set(u, u / (_uniCount - 1.0f) - 0.5f);
       _uniPosAbsHalfToHalf.Set(u, std::fabs(_uniPosMHalfToHalf.Get(u)));
     }
-    if (graph && exchangeFromDSP)
+    if (graph && exchangeFromDSP != nullptr)
     {
       uniPhaseInit.Set(u, exchangeFromDSP->phases[u]);
     }
