@@ -141,7 +141,8 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     { "{2542FBEF-B0E5-4FA9-8831-1E592A8D01BB}", "BP Ad2" },
     { "{B85CFA28-8107-417C-B6E6-0DBF16D6AFE8}", "BP Mul" },
     { "{98709D78-A6A9-4836-A64A-50B30167497B}", "BP Stk" },
-    { "{1461EF1C-29B8-4521-A19C-25DE48C6CFA2}", "BP Rmp" } };
+    { "{1461EF1C-29B8-4521-A19C-25DE48C6CFA2}", "BP Rmp" },
+    { "{8D2FFD6A-7E7C-402E-8C57-E6DDF49B6950}", "Ph Wrp" } };
   auto selectOpType = [](auto& module) { return &module.block.opType; };
   opType.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpType);
   opType.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpType);

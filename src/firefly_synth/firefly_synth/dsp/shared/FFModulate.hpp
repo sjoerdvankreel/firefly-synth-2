@@ -8,7 +8,8 @@
 enum class FFModulationOpType { 
   Off,
   UPAdd, UPMul, UPStack, UPRemap,
-  BPAdd, BPAdd2, BPMul, BPStack, BPRemap };
+  BPAdd, BPAdd2, BPMul, BPStack, BPRemap,
+  PhaseWrap };
 
 inline float
 FFModulateUPStack(
@@ -96,6 +97,14 @@ FFModulateBPRemap(
 }
 
 inline float
+FFModulatePhaseWrap(
+  float source,
+  float amount, float target)
+{
+  return FBPhaseWrap(source + amount * target);
+}
+
+inline float
 FFModulate(
   FFModulationOpType opType, float source, 
   float amount, float target)
@@ -120,6 +129,8 @@ FFModulate(
     return FFModulateBPStack(source, amount, target);
   case FFModulationOpType::BPRemap:
     return FFModulateBPRemap(source, amount, target);
+  case FFModulationOpType::PhaseWrap: 
+    return FFModulatePhaseWrap(source, amount, target);
   case FFModulationOpType::Off:
   default: 
     FB_ASSERT(false); return {};
@@ -222,6 +233,14 @@ FFModulateBPRemap(
 }
 
 inline FBBatch<float>
+FFModulatePhaseWrap(
+  FBBatch<float> source,
+  FBBatch<float> amount, FBBatch<float> target)
+{
+  return FBPhaseWrap(source + amount * target);
+}
+
+inline FBBatch<float>
 FFModulate(
   FFModulationOpType opType, FBBatch<float> source, 
   FBBatch<float> amount, FBBatch<float> target)
@@ -246,6 +265,8 @@ FFModulate(
     return FFModulateBPStack(source, amount, target);
   case FFModulationOpType::BPRemap:
     return FFModulateBPRemap(source, amount, target);
+  case FFModulationOpType::PhaseWrap:
+    return FFModulatePhaseWrap(source, amount, target);
   case FFModulationOpType::Off:
   default: 
     FB_ASSERT(false); return {};

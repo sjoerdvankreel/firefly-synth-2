@@ -7,6 +7,7 @@
 #include <firefly_synth/dsp/shared/FFNoiseGenerator.hpp>
 
 #include <firefly_synth/modules/lfo/FFLFOTopo.hpp>
+#include <firefly_synth/modules/lfo/FFLFOStateVoiceStart.hpp>
 #include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 
@@ -20,9 +21,9 @@ class FFLFOProcessor final
   FFLFOSkewXMode _skewAXMode = {};
   FFLFOSkewYMode _skewAYMode = {};
   std::array<int, FFLFOBlockCount> _steps = {};
-  std::array<float, FFLFOBlockCount> _phase = {};
   std::array<FFLFOWaveMode, FFLFOBlockCount> _waveMode = {};
   std::array<FFModulationOpType, FFLFOBlockCount> _opType = {};
+  FFLFOVoiceStartParamState<float> _voiceStartSnapshotNorm = {};
 
   bool _graph = {};
   int _graphSampleCount = {};

@@ -51,7 +51,6 @@ FFLFOProcessor::BeginVoiceOrBlock(
   auto const& topo = state.topo->static_->modules[(int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO)];
 
   auto const& stepsNorm = params.block.steps;
-  auto const& phaseNorm = params.block.phase;
   auto const& opTypeNorm = params.block.opType;
   auto const& waveModeNorm = params.block.waveMode;
   auto const& rateBarsNorm = params.block.rateBars;
@@ -62,6 +61,12 @@ FFLFOProcessor::BeginVoiceOrBlock(
   float skewAYModeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.skewAYMode[0], voice);
   float smoothBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothBars[0], voice);
   float smoothTimeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothTime[0], voice);
+
+  for(int i = 0; i < FFLFOBlockCount; i++)
+    if constexpr (Global)
+      _voiceStartSnapshotNorm.phase[i] = params.voiceStart.phase[i].Global().CV().Get(0);
+    else
+      _voiceStartSnapshotNorm.phase[i] = params.voiceStart.phase[i].Voice()[voice].CV().Get(state.voice->offsetInBlock);
 
   _rateHzByBars = {};
   _smoothSamples = 0;
@@ -105,11 +110,11 @@ FFLFOProcessor::BeginVoiceOrBlock(
     _prevSmoothSamples = _smoothSamples;
     for (int i = 0; i < FFLFOBlockCount; i++)
     {
-      shouldInit |= _prevPhaseNorm[i] != phaseNorm[i].Value();
+      shouldInit |= _prevPhaseNorm[i] != _voiceStartSnapshotNorm.phase[i];
       shouldInit |= _prevStepsNorm[i] != stepsNorm[i].Value();
       shouldInit |= _prevWaveModeNorm[i] != waveModeNorm[i].Value();
       _prevStepsNorm[i] = stepsNorm[i].Value();
-      _prevPhaseNorm[i] = phaseNorm[i].Value();
+      _prevPhaseNorm[i] = _voiceStartSnapshotNorm.phase[i];
       _prevWaveModeNorm[i] = waveModeNorm[i].Value();
     }
   }
@@ -137,9 +142,6 @@ FFLFOProcessor::BeginVoiceOrBlock(
     _steps[i] = topo.NormalizedToDiscreteFast(
       FFLFOParam::Steps,
       FFSelectDualProcBlockParamNormalized<Global>(stepsNorm[i], voice));
-    _phase[i] = topo.NormalizedToIdentityFast(
-      FFLFOParam::Phase,
-      FFSelectDualProcBlockParamNormalized<Global>(phaseNorm[i], voice));
     _waveMode[i] = topo.NormalizedToListFast<FFLFOWaveMode>(
       FFLFOParam::WaveMode,
       FFSelectDualProcBlockParamNormalized<Global>(waveModeNorm[i], voice));
@@ -171,7 +173,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
         _normNoiseGens[i].Init(floatSeed, _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeNormRandom);
         _smoothUniNoiseGens[i].Init(floatSeed, _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeUniSmooth);
         _smoothNormNoiseGens[i].Init(floatSeed, _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeNormSmooth);
-        _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::Phase, _phase[i]));
+        _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::Phase, _voiceStartSnapshotNorm.phase[i]));
       }
     }
   }
@@ -289,7 +291,7 @@ FFLFOProcessor::Process(
         float rate0 = rateHzPlain[i].Get(0);
         if (rate0 > 0.0f)
         {
-          float phaseOffset = _phase[i];
+          float phaseOffset = _voiceStartSnapshotNorm.phase[i];
           std::int64_t samples0 = (std::int64_t)(sampleRate / rate0);
           std::int64_t phaseSamples = state.input->projectTimeSamples % samples0;
           float newPhase = phaseSamples / (float)samples0 + phaseOffset;
@@ -432,6 +434,7 @@ FFLFOProcessor::Process(
     FFSelectDualExchangeState<Global>(exchangeParams.acc.min[i], voice) = minNormModulated[i].Last();
     FFSelectDualExchangeState<Global>(exchangeParams.acc.max[i], voice) = maxNormModulated[i].Last();
     FFSelectDualExchangeState<Global>(exchangeParams.acc.rateHz[i], voice) = rateHzNormModulated[i].Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.voiceStart.phase[i], voice) = _voiceStartSnapshotNorm.phase[i];
   }
    
   return FBFixedBlockSamples;
