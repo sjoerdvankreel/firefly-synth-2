@@ -157,7 +157,27 @@ FFEnvProcessor::Process(
   auto const& procParams = procState->param.voice.env[state.moduleSlot];
   auto& output = procState->dsp.voice[voice].env[state.moduleSlot].output;
   auto const& stageLevel = procParams.acc.stageLevel;
-  auto const& stageSlope = procParams.acc.stageSlope;
+  auto const& stageSlopeIn = procParams.acc.stageSlope;
+
+  if (_type == FFEnvType::Off)
+  {
+    output.Fill(0.0f);
+    return 0;
+  }
+
+  if (_finished)
+  {
+    output.Fill(_smoother.State());
+    return 0;
+  }
+
+  std::array<FBSArray<float, FBFixedBlockSamples>, FFEnvStageCount> stageSlopeModulated;
+  for (int i = 0; i < FFEnvStageCount; i++)
+  {
+    stageSlopeIn[i].Voice()[voice].CV().CopyTo(stageSlopeModulated[i]);
+    if (!graph && _stageSamples[i] != 0 && _type == FFEnvType::Exp)
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EnvSlope, false, voice, -1, stageSlopeModulated[i]);
+  }
   
   _thisVoiceIsSubSectionStart = false;
   _otherVoiceSubSectionTookOver = false;
@@ -173,18 +193,6 @@ FFEnvProcessor::Process(
       _thisVoiceIsSubSectionStart = true;
     if (exchangeFromDSP->boolOtherVoiceSubSectionTookOver != 0)
       _otherVoiceSubSectionTookOver = true;
-  }
-
-  if (_type == FFEnvType::Off)
-  {
-    output.Fill(0.0f);
-    return 0;
-  }
-
-  if (_finished)
-  {
-    output.Fill(_smoother.State());
-    return 0;
   }
 
   int s = 0;
@@ -229,7 +237,7 @@ FFEnvProcessor::Process(
         _lastOverall = stageStart + (stageEnd - stageStart) * pos;
       else
       {
-        float slope = minSlope + stageSlope[stage].Voice()[voice].CV().Get(s) * slopeRange;
+        float slope = minSlope + stageSlopeModulated[stage].Get(s) * slopeRange;
         _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * FFInvLogHalf);
       }
 
@@ -328,8 +336,8 @@ FFEnvProcessor::Process(
   auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
   for (int i = 0; i < FFEnvStageCount; i++)
   {
+    exchangeParams.acc.stageSlope[i][voice] = stageSlopeModulated[i].Last();
     exchangeParams.acc.stageLevel[i][voice] = stageLevel[i].Voice()[voice].Last();
-    exchangeParams.acc.stageSlope[i][voice] = stageSlope[i].Voice()[voice].Last();
     exchangeParams.voiceStart.stageTime[i][voice] = _voiceStartSnapshotNorm.stageTime[i];
   }
   return processed;
