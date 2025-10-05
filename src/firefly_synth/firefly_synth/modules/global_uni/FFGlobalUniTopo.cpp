@@ -203,7 +203,6 @@ FFMakeGlobalUniTopo()
   mode.id = "{B5809A8A-B0A9-40B2-8A0B-413121869836}";
   mode.type = FBParamType::List;
   mode.List().items = {
-    { "{328055DD-795F-402B-9B16-F30589866295}", "Off" },
     { "{770E5F05-0041-4750-805F-BF08A5135B1B}", "Auto" },
     { "{7645E42A-1249-4483-9019-4F92AD9D0FF7}", "Manual" } };
   auto selectMode = [](auto& module) { return &module.block.mode; };
