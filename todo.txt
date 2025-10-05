@@ -42,7 +42,7 @@ TODOLIST for alpha-17
 [x] decent defaults
 [x] merge knobmod/graph into visuals
 [x] VAMP mod not take lfo into account
-[ ] new modulation types incl phase add and make matrix targets for lfo/osc
+[ ] new modulation types incl phase add and make matrix targets for lfo/osc + new osci phase param
 [ ] clap polymod + release as one
 [ ] global unison
 [ ] lfo also need phase exchange

@@ -89,6 +89,7 @@ FFOsciProcessor::BeginVoice(
   float uniCountNorm = params.block.uniCount[0].Voice()[voice];
   float modExpoFMNorm = modParams.block.expoFM[0].Voice()[voice];
   float modOversampleNorm = modParams.block.oversample[0].Voice()[voice];
+  _voiceStartSnapshotNorm.phase[0] = params.voiceStart.phase[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
   _voiceStartSnapshotNorm.uniOffset[0] = params.voiceStart.uniOffset[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
   _voiceStartSnapshotNorm.uniRandom[0] = params.voiceStart.uniRandom[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
 
@@ -131,7 +132,7 @@ FFOsciProcessor::BeginVoice(
     }
     float uniPhase = u * _uniOffsetPlain / _uniCount;
     uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _uniformPrng.NextScalar()) * uniPhase);
-    uniPhaseInit.Set(u, FBPhaseWrap(uniPhaseInit.Get(u) + globalUniPhaseOffset));
+    uniPhaseInit.Set(u, FBPhaseWrap(uniPhaseInit.Get(u) + globalUniPhaseOffset + _voiceStartSnapshotNorm.phase[0]));
   }
 
   _modMatrixExpoFM = modTopo.NormalizedToBoolFast(FFOsciModParam::ExpoFM, modExpoFMNorm);
@@ -327,6 +328,7 @@ FFOsciProcessor::Process(
   exchangeParams.acc.gain[0][voice] = gainNormModulated.Last();
   exchangeParams.acc.fine[0][voice] = fineNormModulated.Last();
   exchangeParams.acc.coarse[0][voice] = coarseNormModulated.Last();
+  exchangeParams.voiceStart.phase[0][voice] = _voiceStartSnapshotNorm.phase[0];
   exchangeParams.voiceStart.uniOffset[0][voice] = _voiceStartSnapshotNorm.uniOffset[0];
   exchangeParams.voiceStart.uniRandom[0][voice] = _voiceStartSnapshotNorm.uniRandom[0];
   return FBFixedBlockSamples;
