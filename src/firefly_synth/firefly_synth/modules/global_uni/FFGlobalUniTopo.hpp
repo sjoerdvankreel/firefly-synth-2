@@ -10,7 +10,7 @@ struct FBStaticModule;
 inline int constexpr FFGlobalUniMaxCount = 8;
 inline int constexpr FFGlobalUniMaxSeed = 255;
 
-enum class FFGlobalUniMode { Auto, Manual };
+enum class FFGlobalUniMode { Off, Auto, Manual };
 
 enum class FFGlobalUniTarget {
   VoiceCoarse, VoiceFine, VMixAmp, VMixBal,
@@ -31,7 +31,7 @@ FFGlobalUniTargetGetDefaultValue(FFGlobalUniTarget target);
 enum class FFGlobalUniParam { 
   VoiceCount, 
   // by target dimension
-  OpType, Mode, AutoSpread, AutoFirst = AutoSpread, AutoSkew, AutoRand, AutoRandSeed, AutoRandFree, AutoLast = AutoRandFree,
+  Mode, OpType, AutoSpread, AutoFirst = AutoSpread, AutoSkew, AutoRand, AutoRandSeed, AutoRandFree, AutoLast = AutoRandFree,
   // by voice dimension (need different control types per param like bipolar yes/no)
   ManualVoiceCoarse, ManualFirst = ManualVoiceCoarse, ManualVoiceFine, ManualVMixAmp, ManualVMixBal,
   ManualOscGain, ManualOscPan, ManualOscCoarse, ManualOscFine, ManualOscPhaseOffset,

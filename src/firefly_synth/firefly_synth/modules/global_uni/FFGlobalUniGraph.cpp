@@ -121,6 +121,9 @@ FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->paintAsDisabled = graphData->renderState->AudioParamList<FFModulationOpType>(
     { { (int)FFModuleType::GlobalUni, 0 },
     { (int)FFGlobalUniParam::OpType, graphData->fixedGraphIndex } }, false, -1) == FFModulationOpType::Off;
+  graphData->paintAsDisabled |= graphData->renderState->AudioParamList<FFGlobalUniMode>(
+    { { (int)FFModuleType::GlobalUni, 0 },
+    { (int)FFGlobalUniParam::Mode, graphData->fixedGraphIndex } }, false, -1) == FFGlobalUniMode::Off;
 
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;

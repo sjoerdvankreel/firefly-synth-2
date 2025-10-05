@@ -25,9 +25,9 @@ FFGlobalUniProcessor::BeginVoice(int voice)
     return;
   for (int i = 0; i < (int)FFGlobalUniTarget::Count; i++)
   {
-    if (_opTypes[i] == FFModulationOpType::Off)
+    if (_opType[i] == FFModulationOpType::Off)
       continue;
-    if (_modes[i] != FFGlobalUniMode::Auto)
+    if (_mode[i] != FFGlobalUniMode::Auto)
       continue;
     _voiceRandState[voice][i] = _randStream[i].NextScalar();
   }
@@ -43,9 +43,9 @@ FFGlobalUniProcessor::BeginBlock(FBModuleProcState& state)
   _voiceCount = topo.NormalizedToDiscreteFast((int)FFGlobalUniParam::VoiceCount, countNorm);
   for (int i = 0; i < (int)FFGlobalUniTarget::Count; i++)
   {
-    _modes[i] = topo.NormalizedToListFast<FFGlobalUniMode>(FFGlobalUniParam::Mode, params.block.mode[i].Value());
-    _opTypes[i] = topo.NormalizedToListFast<FFModulationOpType>(FFGlobalUniParam::OpType, params.block.opType[i].Value());
-    if (_opTypes[i] == FFModulationOpType::Off || _modes[i] != FFGlobalUniMode::Auto)
+    _mode[i] = topo.NormalizedToListFast<FFGlobalUniMode>(FFGlobalUniParam::Mode, params.block.mode[i].Value());
+    _opType[i] = topo.NormalizedToListFast<FFModulationOpType>(FFGlobalUniParam::OpType, params.block.opType[i].Value());
+    if (_opType[i] == FFModulationOpType::Off || _mode[i] != FFGlobalUniMode::Auto)
       continue;
 
     _randSeedNorm[i] = params.block.autoRandSeed[i].Value();
@@ -127,7 +127,9 @@ FFGlobalUniProcessor::ApplyToVoice(
 
   if (_voiceCount < 2)
     return;
-  if (_opTypes[(int)targetParam] == FFModulationOpType::Off)
+  if (_opType[(int)targetParam] == FFModulationOpType::Off)
+    return;
+  if (_mode[(int)targetParam] == FFGlobalUniMode::Off)
     return;
 
   if (!graph)
@@ -136,7 +138,7 @@ FFGlobalUniProcessor::ApplyToVoice(
     voice = voiceSlotInGroup;
 
   FBSArray<float, 16> modSource;
-  if (_modes[(int)targetParam] == FFGlobalUniMode::Auto)
+  if (_mode[(int)targetParam] == FFGlobalUniMode::Auto)
   {
     auto const* procState = state.ProcAs<FFProcState>();
     auto voicePosBase = FBBatch<float>(voiceSlotInGroup / (_voiceCount - 1.0f));
@@ -163,5 +165,5 @@ FFGlobalUniProcessor::ApplyToVoice(
   }
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-    targetSignal.Store(s, FFModulate(_opTypes[(int)targetParam], modSource.Load(s), 1.0f, targetSignal.Load(s)));
+    targetSignal.Store(s, FFModulate(_opType[(int)targetParam], modSource.Load(s), 1.0f, targetSignal.Load(s)));
 }

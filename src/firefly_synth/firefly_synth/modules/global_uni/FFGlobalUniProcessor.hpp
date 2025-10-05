@@ -21,8 +21,8 @@ struct FBModuleProcState;
 class FFGlobalUniProcessor final
 {
   int _voiceCount = {};
-  std::array<FFGlobalUniMode, (int)FFGlobalUniTarget::Count> _modes = {};
-  std::array<FFModulationOpType, (int)FFGlobalUniTarget::Count> _opTypes = {};
+  std::array<FFGlobalUniMode, (int)FFGlobalUniTarget::Count> _mode = {};
+  std::array<FFModulationOpType, (int)FFGlobalUniTarget::Count> _opType = {};
   std::array<bool, (int)FFGlobalUniTarget::Count> _randFree = {};
   std::array<float, (int)FFGlobalUniTarget::Count> _randSeedNorm = {};
   std::array<float, (int)FFGlobalUniTarget::Count> _prevRandSeedNorm = {};
