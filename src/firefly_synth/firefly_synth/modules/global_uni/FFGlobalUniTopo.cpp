@@ -734,6 +734,38 @@ FFMakeGlobalUniTopo()
   manualEchoTapBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoTapBal);
   SetManualParamEnabledWhen(manualEchoTapBal, FFGlobalUniTarget::EchoTapBal);
 
+  auto& manualEchoTapLPF = result->params[(int)FFGlobalUniParam::ManualEchoTapLPF];
+  manualEchoTapLPF.mode = FBParamMode::Accurate;
+  manualEchoTapLPF.defaultText = "0";
+  manualEchoTapLPF.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapLPF, s); };
+  manualEchoTapLPF.slotFormatterOverrides = true;
+  manualEchoTapLPF.slotCount = FFGlobalUniMaxCount;
+  manualEchoTapLPF.unit = "%";
+  manualEchoTapLPF.id = "{47E81F03-58DC-4A04-9534-5E1A04E1C150}";
+  manualEchoTapLPF.type = FBParamType::Identity;
+  manualEchoTapLPF.Identity().displayAsBipolar = true;
+  auto selectManualEchoTapLPF = [](auto& module) { return &module.acc.manualEchoTapLPF; };
+  manualEchoTapLPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoTapLPF);
+  manualEchoTapLPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoTapLPF);
+  manualEchoTapLPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoTapLPF);
+  SetManualParamEnabledWhen(manualEchoTapLPF, FFGlobalUniTarget::EchoTapLPF);
+
+  auto& manualEchoTapHPF = result->params[(int)FFGlobalUniParam::ManualEchoTapHPF];
+  manualEchoTapHPF.mode = FBParamMode::Accurate;
+  manualEchoTapHPF.defaultText = "0";
+  manualEchoTapHPF.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapHPF, s); };
+  manualEchoTapHPF.slotFormatterOverrides = true;
+  manualEchoTapHPF.slotCount = FFGlobalUniMaxCount;
+  manualEchoTapHPF.unit = "%";
+  manualEchoTapHPF.id = "{61C0E876-6480-421F-A5BB-EA9A616751FB}";
+  manualEchoTapHPF.type = FBParamType::Identity;
+  manualEchoTapHPF.Identity().displayAsBipolar = true;
+  auto selectManualEchoTapHPF = [](auto& module) { return &module.acc.manualEchoTapHPF; };
+  manualEchoTapHPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoTapHPF);
+  manualEchoTapHPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoTapHPF);
+  manualEchoTapHPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoTapHPF);
+  SetManualParamEnabledWhen(manualEchoTapHPF, FFGlobalUniTarget::EchoTapHPF);
+
   auto& manualEchoFdbkDelay = result->params[(int)FFGlobalUniParam::ManualEchoFdbkDelay];
   manualEchoFdbkDelay.mode = FBParamMode::Accurate;
   manualEchoFdbkDelay.defaultText = "0";
@@ -782,6 +814,38 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoFdbkAmt);
   SetManualParamEnabledWhen(manualEchoFdbkAmt, FFGlobalUniTarget::EchoFdbkAmt);
 
+  auto& manualEchoFdbkLPF = result->params[(int)FFGlobalUniParam::ManualEchoFdbkLPF];
+  manualEchoFdbkLPF.mode = FBParamMode::Accurate;
+  manualEchoFdbkLPF.defaultText = "0";
+  manualEchoFdbkLPF.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFdbkLPF, s); };
+  manualEchoFdbkLPF.slotFormatterOverrides = true;
+  manualEchoFdbkLPF.slotCount = FFGlobalUniMaxCount;
+  manualEchoFdbkLPF.unit = "%";
+  manualEchoFdbkLPF.id = "{7F92602A-61F7-42E8-AAE7-9C931B9200E2}";
+  manualEchoFdbkLPF.type = FBParamType::Identity;
+  manualEchoFdbkLPF.Identity().displayAsBipolar = true;
+  auto selectManualEchoFdbkLPF = [](auto& module) { return &module.acc.manualEchoFdbkLPF; };
+  manualEchoFdbkLPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoFdbkLPF);
+  manualEchoFdbkLPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoFdbkLPF);
+  manualEchoFdbkLPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoFdbkLPF);
+  SetManualParamEnabledWhen(manualEchoFdbkLPF, FFGlobalUniTarget::EchoFdbkLPF);
+
+  auto& manualEchoFdbkHPF = result->params[(int)FFGlobalUniParam::ManualEchoFdbkHPF];
+  manualEchoFdbkHPF.mode = FBParamMode::Accurate;
+  manualEchoFdbkHPF.defaultText = "0";
+  manualEchoFdbkHPF.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFdbkHPF, s); };
+  manualEchoFdbkHPF.slotFormatterOverrides = true;
+  manualEchoFdbkHPF.slotCount = FFGlobalUniMaxCount;
+  manualEchoFdbkHPF.unit = "%";
+  manualEchoFdbkHPF.id = "{089575E1-8167-46F7-80C7-86BA739693A8}";
+  manualEchoFdbkHPF.type = FBParamType::Identity;
+  manualEchoFdbkHPF.Identity().displayAsBipolar = true;
+  auto selectManualEchoFdbkHPF = [](auto& module) { return &module.acc.manualEchoFdbkHPF; };
+  manualEchoFdbkHPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoFdbkHPF);
+  manualEchoFdbkHPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoFdbkHPF);
+  manualEchoFdbkHPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoFdbkHPF);
+  SetManualParamEnabledWhen(manualEchoFdbkHPF, FFGlobalUniTarget::EchoFdbkLPF);
+
   auto& manualEchoReverbMix = result->params[(int)FFGlobalUniParam::ManualEchoReverbMix];
   manualEchoReverbMix.mode = FBParamMode::Accurate;
   manualEchoReverbMix.defaultText = "0";
@@ -829,6 +893,38 @@ FFMakeGlobalUniTopo()
   manualEchoReverbDamp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoReverbDamp);
   manualEchoReverbDamp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoReverbDamp);
   SetManualParamEnabledWhen(manualEchoReverbDamp, FFGlobalUniTarget::EchoReverbDamp);
+
+  auto& manualEchoReverbLPF = result->params[(int)FFGlobalUniParam::ManualEchoReverbLPF];
+  manualEchoReverbLPF.mode = FBParamMode::Accurate;
+  manualEchoReverbLPF.defaultText = "0";
+  manualEchoReverbLPF.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoReverbLPF, s); };
+  manualEchoReverbLPF.slotFormatterOverrides = true;
+  manualEchoReverbLPF.slotCount = FFGlobalUniMaxCount;
+  manualEchoReverbLPF.unit = "%";
+  manualEchoReverbLPF.id = "{64120E13-8778-42CF-8A7D-EB3EC175DA15}";
+  manualEchoReverbLPF.type = FBParamType::Identity;
+  manualEchoReverbLPF.Identity().displayAsBipolar = true;
+  auto selectManualEchoReverbLPF = [](auto& module) { return &module.acc.manualEchoReverbLPF; };
+  manualEchoReverbLPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoReverbLPF);
+  manualEchoReverbLPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoReverbLPF);
+  manualEchoReverbLPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoReverbLPF);
+  SetManualParamEnabledWhen(manualEchoReverbLPF, FFGlobalUniTarget::EchoReverbLPF);
+
+  auto& manualEchoReverbHPF = result->params[(int)FFGlobalUniParam::ManualEchoReverbHPF];
+  manualEchoReverbHPF.mode = FBParamMode::Accurate;
+  manualEchoReverbHPF.defaultText = "0";
+  manualEchoReverbHPF.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoReverbHPF, s); };
+  manualEchoReverbHPF.slotFormatterOverrides = true;
+  manualEchoReverbHPF.slotCount = FFGlobalUniMaxCount;
+  manualEchoReverbHPF.unit = "%";
+  manualEchoReverbHPF.id = "{87EC2DB4-38C8-4EB3-9A1E-E2BABD327BF7}";
+  manualEchoReverbHPF.type = FBParamType::Identity;
+  manualEchoReverbHPF.Identity().displayAsBipolar = true;
+  auto selectManualEchoReverbHPF = [](auto& module) { return &module.acc.manualEchoReverbHPF; };
+  manualEchoReverbHPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoReverbHPF);
+  manualEchoReverbHPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoReverbHPF);
+  manualEchoReverbHPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoReverbHPF);
+  SetManualParamEnabledWhen(manualEchoReverbHPF, FFGlobalUniTarget::EchoReverbHPF);
 
   return result;
 }
