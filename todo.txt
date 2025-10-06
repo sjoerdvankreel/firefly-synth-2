@@ -51,7 +51,6 @@ TODOLIST for alpha-17
 [ ] global uni demo
 [ ] profile some more
 [ ] guni init the patches
-[ ] show the active slot on SwitchToMainGraph
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor

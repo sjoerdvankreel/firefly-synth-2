@@ -77,15 +77,21 @@ class alignas(alignof(TAccurate)) FFGlobalUniAccParamState final
   std::array<TAccurate, FFGlobalUniMaxCount> manualEnvStretch = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoFade = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoExtend = {};
-  std::array<TAccurate, FFGlobalUniMaxCount> manualEchoTapLevel = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> manualEchoTapMix = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoTapDelay = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoTapBal = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> manualEchoTapLPF = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> manualEchoTapHPF = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoFdbkDelay = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoFdbkMix = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoFdbkAmt = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> manualEchoFdbkLPF = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> manualEchoFdbkHPF = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoReverbMix = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoReverbSize = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoReverbDamp = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> manualEchoReverbLPF = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> manualEchoReverbHPF = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalUniAccParamState);
 };

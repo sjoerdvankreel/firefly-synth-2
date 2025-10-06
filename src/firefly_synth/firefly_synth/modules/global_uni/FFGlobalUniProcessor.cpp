@@ -106,15 +106,21 @@ FFGlobalUniProcessor::Process(FBModuleProcState& state)
     exchangeParams.acc.manualEnvStretch[i] = params.acc.manualEnvStretch[i].Global().Last();
     exchangeParams.acc.manualEchoFade[i] = params.acc.manualEchoFade[i].Global().Last();
     exchangeParams.acc.manualEchoExtend[i] = params.acc.manualEchoExtend[i].Global().Last();
-    exchangeParams.acc.manualEchoTapLevel[i] = params.acc.manualEchoTapLevel[i].Global().Last();
+    exchangeParams.acc.manualEchoTapMix[i] = params.acc.manualEchoTapMix[i].Global().Last();
     exchangeParams.acc.manualEchoTapDelay[i] = params.acc.manualEchoTapDelay[i].Global().Last();
     exchangeParams.acc.manualEchoTapBal[i] = params.acc.manualEchoTapBal[i].Global().Last();
+    exchangeParams.acc.manualEchoTapLPF[i] = params.acc.manualEchoTapLPF[i].Global().Last();
+    exchangeParams.acc.manualEchoTapHPF[i] = params.acc.manualEchoTapHPF[i].Global().Last();
     exchangeParams.acc.manualEchoFdbkDelay[i] = params.acc.manualEchoFdbkDelay[i].Global().Last();
     exchangeParams.acc.manualEchoFdbkMix[i] = params.acc.manualEchoFdbkMix[i].Global().Last();
     exchangeParams.acc.manualEchoFdbkAmt[i] = params.acc.manualEchoFdbkAmt[i].Global().Last();
+    exchangeParams.acc.manualEchoFdbkLPF[i] = params.acc.manualEchoFdbkLPF[i].Global().Last();
+    exchangeParams.acc.manualEchoFdbkHPF[i] = params.acc.manualEchoFdbkHPF[i].Global().Last();
     exchangeParams.acc.manualEchoReverbMix[i] = params.acc.manualEchoReverbMix[i].Global().Last();
     exchangeParams.acc.manualEchoReverbSize[i] = params.acc.manualEchoReverbSize[i].Global().Last();
     exchangeParams.acc.manualEchoReverbDamp[i] = params.acc.manualEchoReverbDamp[i].Global().Last();
+    exchangeParams.acc.manualEchoReverbLPF[i] = params.acc.manualEchoReverbLPF[i].Global().Last();
+    exchangeParams.acc.manualEchoReverbHPF[i] = params.acc.manualEchoReverbHPF[i].Global().Last();
   }
 }
 

@@ -17,9 +17,10 @@ enum class FFGlobalUniTarget {
   OscGain, OscPan, OscCoarse, OscFine, OscPhaseOffset,
   LFORate, LFOMin, LFOMax, LFOSkewAX, LFOSkewAY, LFOPhaseOffset,
   EnvSlope, EnvStretch, VFXParamA, VFXParamB, VFXParamC, VFXParamD,
-  EchoExtend, EchoFade, EchoTapLevel, EchoTapDelay, EchoTapBal,
-  EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt,
-  EchoReverbMix, EchoReverbSize, EchoReverbDamp, Count };
+  EchoExtend, EchoFade, 
+  EchoTapMix, EchoTapDelay, EchoTapBal, EchoTapLPF, EchoTapHPF,
+  EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt, EchoFdbkLPF, EchoFdbkHPF,
+  EchoReverbMix, EchoReverbSize, EchoReverbDamp, EchoReverbLPF, EchoReverbHPF, Count };
 
 FFModuleType
 FFGlobalUniTargetToModule(FFGlobalUniTarget target);
@@ -38,8 +39,9 @@ enum class FFGlobalUniParam {
   ManualLFORate, ManualLFOMin, ManualLFOMax, ManualLFOSkewAX, ManualLFOSkewAY, ManualLFOPhaseOffset,
   ManualEnvSlope, ManualEnvStretch, ManualVFXParamA, ManualVFXParamB, ManualVFXParamC, ManualVFXParamD,
   ManualEchoExtend, ManualEchoFade,
-  ManualEchoTapLevel, ManualEchoTapDelay, ManualEchoTapBal,
-  ManualEchoFdbkDelay, ManualEchoFdbkMix, ManualEchoFdbkAmt,
-  ManualEchoReverbMix, ManualEchoReverbSize, ManualEchoReverbDamp, ManualLast = ManualEchoReverbDamp,
+  ManualEchoTapMix, ManualEchoTapDelay, ManualEchoTapBal, ManualEchoTapLPF, ManualEchoTapHPF,
+  ManualEchoFdbkDelay, ManualEchoFdbkMix, ManualEchoFdbkAmt, ManualEchoFdbkLPF, ManualEchoFdbkHPF,
+  ManualEchoReverbMix, ManualEchoReverbSize, ManualEchoReverbDamp, ManualEchoReverbLPF, ManualEchoReverbHPF,
+  ManualLast = ManualEchoReverbDamp,
   Count };
 std::unique_ptr<FBStaticModule> FFMakeGlobalUniTopo();
