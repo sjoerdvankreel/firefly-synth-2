@@ -178,7 +178,7 @@ MakeGlobalUniSectionMain(
   auto editor = MakeGlobalUniEditor(plugGUI, graphRenderState, fixedGraphs);
   auto showEditor = plugGUI->StoreComponent<FBParamValueLinkedButton>(plugGUI, voiceCount, "Edit", [](int v) { return v > 1; });
   showEditor->onClick = [plugGUI, editor]() {
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", editor, 1180, 450, [plugGUI]() {
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", editor, 1180, 520, false, [plugGUI]() {
       FBTopoIndices moduleIndices = { (int)FFModuleType::GlobalUni, 0 };
       std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
       plugGUI->HostContext()->UndoState().Snapshot("Init " + name);

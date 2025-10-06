@@ -60,7 +60,7 @@ public:
   void ShowOverlayComponent(
     std::string const& title, 
     juce::Component* overlay, 
-    int w, int h, 
+    int w, int h, bool vCenter,
     std::function<void()> init);
 
   FBGUIRenderType GetKnobRenderType() const override { return GetRenderType(); }

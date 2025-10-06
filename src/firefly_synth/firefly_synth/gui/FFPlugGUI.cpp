@@ -157,13 +157,15 @@ void
 FFPlugGUI::ShowOverlayComponent(
   std::string const& title, 
   Component* overlay,
-  int w, int h,
+  int w, int h, bool vCenter,
   std::function<void()> init)
 {
   if (_overlayComponent != nullptr)
     HideOverlayComponent();
   int x = (getWidth() - w) / 2;
   int y = (getHeight() - h) / 2;
+  if (!vCenter)
+    y = (int)((getHeight() - h) * 0.9);
   _overlayInit = init;
   _overlayContent->SetContent(overlay);
   _overlayContainer->setBounds(x, y, w, h);
