@@ -93,22 +93,22 @@ class FFEchoProcessor final
   std::array<FFEchoDelayState, FFEchoTapCount> _tapDelayStates = {};
 
   void ProcessTaps(
-    FBModuleProcState& state,
+    FBModuleProcState& state, bool graph,
     bool processAudioOrExchangeState);
 
   void ProcessFeedback(
-    FBModuleProcState& state,
+    FBModuleProcState& state, bool graph,
     bool processAudioOrExchangeState);
 
   void ProcessReverb(
-    FBModuleProcState& state,
+    FBModuleProcState& state, bool graph,
     bool processAudioOrExchangeState);
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoProcessor);
 
   void FlushDelayLines();
-  int Process(FBModuleProcState& state, int ampEnvFinishedAt);
+  int Process(FBModuleProcState& state, bool graph, int ampEnvFinishedAt);
   void BeginVoiceOrBlock(FBModuleProcState& state, bool graph, int graphIndex, int graphSampleCount);
   void ReleaseOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state);
   void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state, bool graph, float sampleRate);

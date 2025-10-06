@@ -4,6 +4,7 @@
 #include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
 #include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 #include <firefly_synth/modules/echo/FFEchoProcessor.hpp>
+#include <firefly_synth/modules/global_uni/FFGlobalUniProcessor.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
@@ -285,7 +286,7 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
 template <bool Global>
 int
 FFEchoProcessor<Global>::Process(
-  FBModuleProcState& state, int ampEnvFinishedAt)
+  FBModuleProcState& state, bool graph, int ampEnvFinishedAt)
 {
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
@@ -341,11 +342,11 @@ FFEchoProcessor<Global>::Process(
   for (int m = 0; m < (int)FFEchoModule::Count; m++)
   {
     if (_tapsOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Taps) == m)
-      ProcessTaps(state, true);
+      ProcessTaps(state, graph, true);
     else if (_feedbackOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Feedback) == m)
-      ProcessFeedback(state, true);
+      ProcessFeedback(state, graph, true);
     else if (_reverbOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Reverb) == m)
-      ProcessReverb(state, true);
+      ProcessReverb(state, graph, true);
   }
 
   int samplesProcessed = FBFixedBlockSamples;
@@ -400,9 +401,9 @@ FFEchoProcessor<Global>::Process(
   FFSelectDualExchangeState<Global>(exchangeParams.acc.tapsMix[0], voice) = tapsMixNorm.Last();
 
   // Only to push the exchange state.
-  ProcessTaps(state, false);
-  ProcessFeedback(state, false);
-  ProcessReverb(state, false);
+  ProcessTaps(state, graph, false);
+  ProcessFeedback(state, graph, false);
+  ProcessReverb(state, graph, false);
 
   return samplesProcessed;
 }
@@ -410,7 +411,7 @@ FFEchoProcessor<Global>::Process(
 template <bool Global>
 void
 FFEchoProcessor<Global>::ProcessFeedback(
-  FBModuleProcState& state,
+  FBModuleProcState& state, bool /*graph*/,
   bool processAudioOrExchangeState)
 {
   float sampleRate = state.input->sampleRate;
@@ -525,7 +526,7 @@ FFEchoProcessor<Global>::ProcessFeedback(
 template <bool Global>
 void
 FFEchoProcessor<Global>::ProcessTaps(
-  FBModuleProcState& state,
+  FBModuleProcState& state, bool /*graph*/,
   bool processAudioOrExchangeState)
 {
   float sampleRate = state.input->sampleRate;
@@ -674,7 +675,7 @@ FFEchoProcessor<Global>::ProcessTaps(
 template <bool Global>
 void
 FFEchoProcessor<Global>::ProcessReverb(
-  FBModuleProcState& state,
+  FBModuleProcState& state, bool graph,
   bool processAudioOrExchangeState)
 {
   float sampleRate = state.input->sampleRate;
@@ -690,27 +691,52 @@ FFEchoProcessor<Global>::ProcessReverb(
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
   auto const& apfNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbAPF[0], voice);
-  auto const& mixNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbMix[0], voice);
-  auto const& sizeNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbSize[0], voice);
-  auto const& dampNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbDamp[0], voice);
   auto const& xOverNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbXOver[0], voice);
   auto const& lpResNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbLPRes[0], voice);
   auto const& hpResNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbHPRes[0], voice);
-  auto const& lpFreqNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbLPFreq[0], voice);
-  auto const& hpFreqNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbHPFreq[0], voice);
+  auto const& mixNormIn = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbMix[0], voice);
+  auto const& sizeNormIn = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbSize[0], voice);
+  auto const& dampNormIn = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbDamp[0], voice);
+  auto const& lpFreqNormIn = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbLPFreq[0], voice);
+  auto const& hpFreqNormIn = FFSelectDualProcAccParamNormalized<Global>(params.acc.reverbHPFreq[0], voice);
+
+  FBSArray<float, FBFixedBlockSamples> mixNormModulated;
+  FBSArray<float, FBFixedBlockSamples> sizeNormModulated;
+  FBSArray<float, FBFixedBlockSamples> dampNormModulated;
+  FBSArray<float, FBFixedBlockSamples> lpFreqNormModulated;
+  FBSArray<float, FBFixedBlockSamples> hpFreqNormModulated;
+
+  mixNormIn.CV().CopyTo(mixNormModulated);
+  sizeNormIn.CV().CopyTo(sizeNormModulated);
+  dampNormIn.CV().CopyTo(dampNormModulated);
+  lpFreqNormIn.CV().CopyTo(lpFreqNormModulated);
+  hpFreqNormIn.CV().CopyTo(hpFreqNormModulated);
+
+  if constexpr (!Global)
+  {
+    if (!graph)
+    {
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbMix, false, voice, -1, mixNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbSize, false, voice, -1, sizeNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbDamp, false, voice, -1, dampNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbLPF, false, voice, -1, lpFreqNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbHPF, false, voice, -1, hpFreqNormModulated);
+    }
+  }
 
   if (processAudioOrExchangeState)
   {
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       float mixPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::ReverbMix, mixNorm.CV().Get(s));
+        FFEchoParam::ReverbMix, mixNormModulated.Get(s));
+      float sizePlain = topo.NormalizedToIdentityFast(
+        FFEchoParam::ReverbSize, sizeNormModulated.Get(s));
+      float dampPlain = topo.NormalizedToIdentityFast(
+        FFEchoParam::ReverbDamp, dampNormModulated.Get(s));
+
       float apfPlain = topo.NormalizedToIdentityFast(
         FFEchoParam::ReverbAPF, apfNorm.CV().Get(s));
-      float sizePlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::ReverbSize, sizeNorm.CV().Get(s));
-      float dampPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::ReverbDamp, dampNorm.CV().Get(s));
       float xOverPlain = topo.NormalizedToIdentityFast(
         FFEchoParam::ReverbXOver, xOverNorm.CV().Get(s));
       float lpResPlain = topo.NormalizedToIdentityFast(
@@ -720,13 +746,13 @@ FFEchoProcessor<Global>::ProcessReverb(
 
       // expensive
       float lpFreqPlain = 0.0f;
-      if(_reverbLPOn)
+      if (_reverbLPOn)
         lpFreqPlain = topo.NormalizedToLog2Fast(
-          FFEchoParam::ReverbLPFreq, lpFreqNorm.CV().Get(s));
+          FFEchoParam::ReverbLPFreq, lpFreqNormModulated.Get(s));
       float hpFreqPlain = 0.0f;
       if(_reverbHPOn)
         topo.NormalizedToLog2Fast(
-          FFEchoParam::ReverbHPFreq, hpFreqNorm.CV().Get(s));
+          FFEchoParam::ReverbHPFreq, hpFreqNormModulated.Get(s));
 
       if (_graph)
       {
@@ -804,14 +830,14 @@ FFEchoProcessor<Global>::ProcessReverb(
     [exchangeToGUI] { return &exchangeToGUI->param.voice.vEcho[0]; });
 
   FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbAPF[0], voice) = apfNorm.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbMix[0], voice) = mixNorm.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbDamp[0], voice) = dampNorm.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbSize[0], voice) = sizeNorm.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbXOver[0], voice) = xOverNorm.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbLPRes[0], voice) = lpResNorm.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbHPRes[0], voice) = hpResNorm.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbLPFreq[0], voice) = lpFreqNorm.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbHPFreq[0], voice) = hpFreqNorm.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbMix[0], voice) = mixNormModulated.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbDamp[0], voice) = dampNormModulated.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbSize[0], voice) = sizeNormModulated.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbLPFreq[0], voice) = lpFreqNormModulated.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbHPFreq[0], voice) = hpFreqNormModulated.Last();
 
   if constexpr (!Global)
   {

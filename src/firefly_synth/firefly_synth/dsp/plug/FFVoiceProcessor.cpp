@@ -22,7 +22,7 @@ FFVoiceProcessor::ProcessVEcho(
   if (_firstRoundThisVoice)
     voiceDSP.vEcho.processor->BeginVoiceOrBlock(state, false, -1, -1);
   inout.CopyTo(voiceDSP.vEcho.input);
-  int vEchoProcessed = voiceDSP.vEcho.processor->Process(state, ampEnvFinishedAt);
+  int vEchoProcessed = voiceDSP.vEcho.processor->Process(state, false, ampEnvFinishedAt);
   voiceDSP.vEcho.output.CopyTo(inout);
   return vEchoProcessed != FBFixedBlockSamples;
 }

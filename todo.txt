@@ -43,6 +43,8 @@ TODOLIST for alpha-17
 [x] VAMP mod not take lfo into account
 [x] new modulation types incl phase add and make matrix targets for lfo/osc + new osci phase param
 [x] lfo also need guni phase exchange
+[ ] reverb hpf is broken
+[ ] make the popouts moveable top level windows + also the matrix
 [ ] refix the demos
 [ ] note that coarse pitch is only in semis for default optype
 [ ] clap polymod + release as one
