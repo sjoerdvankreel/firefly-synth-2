@@ -242,7 +242,7 @@ FFMakeGlobalUniTopo()
   auto& autoSkew = result->params[(int)FFGlobalUniParam::AutoSkew];
   autoSkew.mode = FBParamMode::Accurate;
   autoSkew.defaultText = "0";
-  autoSkew.name = "Skew";
+  autoSkew.name = "Skw";
   autoSkew.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Skew"; };
   autoSkew.slotFormatterOverrides = true;
   autoSkew.slotCount = (int)FFGlobalUniTarget::Count;
@@ -259,7 +259,7 @@ FFMakeGlobalUniTopo()
 
   auto& autoRand = result->params[(int)FFGlobalUniParam::AutoRand];
   autoRand.mode = FBParamMode::VoiceStart;
-  autoRand.name = "Rand";
+  autoRand.name = "Rnd";
   autoRand.defaultTextSelector = [](int, int, int ps) {
     if (ps == (int)FFGlobalUniTarget::OscPhaseOffset)
       return "50";
@@ -280,7 +280,7 @@ FFMakeGlobalUniTopo()
   auto& autoRandSeed = result->params[(int)FFGlobalUniParam::AutoRandSeed];
   autoRandSeed.mode = FBParamMode::Block;
   autoRandSeed.defaultText = "0";
-  autoRandSeed.name = "Seed";
+  autoRandSeed.name = "Sd";
   autoRandSeed.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Seed"; };
   autoRandSeed.slotFormatterOverrides = true;
   autoRandSeed.slotCount = (int)FFGlobalUniTarget::Count;
