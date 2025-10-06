@@ -42,6 +42,6 @@ enum class FFGlobalUniParam {
   ManualEchoTapMix, ManualEchoTapDelay, ManualEchoTapBal, ManualEchoTapLPF, ManualEchoTapHPF,
   ManualEchoFdbkDelay, ManualEchoFdbkMix, ManualEchoFdbkAmt, ManualEchoFdbkLPF, ManualEchoFdbkHPF,
   ManualEchoReverbMix, ManualEchoReverbSize, ManualEchoReverbDamp, ManualEchoReverbLPF, ManualEchoReverbHPF,
-  ManualLast = ManualEchoReverbDamp,
+  ManualLast = ManualEchoReverbHPF,
   Count };
 std::unique_ptr<FBStaticModule> FFMakeGlobalUniTopo();
