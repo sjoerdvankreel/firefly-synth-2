@@ -43,8 +43,8 @@ TODOLIST for alpha-17
 [x] VAMP mod not take lfo into account
 [x] new modulation types incl phase add and make matrix targets for lfo/osc + new osci phase param
 [x] lfo also need guni phase exchange
-[ ] reverb hpf is broken
-[ ] make the popouts moveable top level windows + also the matrix
+[x] reverb hpf is broken
+[ ] the delay lines are hitting the filters -- they should be init with guni mod value
 [ ] refix the demos
 [ ] note that coarse pitch is only in semis for default optype
 [ ] clap polymod + release as one
@@ -58,6 +58,7 @@ TODOLIST for alpha-17
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
 [ ] pop-up editor with the current stuff
+[ ] make the popouts moveable top level windows + also the matrix
 
 TODOLIST for alpha-18 - tuning and keytracking
 [ ] filter kbd track -- should it take into account all coarse pitch mods ?
