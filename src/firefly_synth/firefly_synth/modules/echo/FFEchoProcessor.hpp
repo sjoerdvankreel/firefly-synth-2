@@ -93,13 +93,10 @@ class FFEchoProcessor final
   std::array<FFEchoDelayState, FFEchoTapCount> _tapDelayStates = {};
 
   void ProcessTaps(
-    FBModuleProcState& state, bool graph,
-    bool processAudioOrExchangeState);
-
+    FBModuleProcState& state, bool graph);
   void ProcessFeedback(
     FBModuleProcState& state, bool graph,
-    bool processAudioOrExchangeState);
-
+    bool processAudioOrExchangeState); // TODO
   void ProcessReverb(
     FBModuleProcState& state, bool graph);
 
