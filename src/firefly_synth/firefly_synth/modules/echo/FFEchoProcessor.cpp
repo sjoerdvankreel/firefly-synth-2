@@ -751,7 +751,7 @@ FFEchoProcessor<Global>::ProcessReverb(
           FFEchoParam::ReverbLPFreq, lpFreqNormModulated.Get(s));
       float hpFreqPlain = 0.0f;
       if(_reverbHPOn)
-        topo.NormalizedToLog2Fast(
+        hpFreqPlain = topo.NormalizedToLog2Fast(
           FFEchoParam::ReverbHPFreq, hpFreqNormModulated.Get(s));
 
       if (_graph)
