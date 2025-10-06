@@ -53,6 +53,7 @@ TODOLIST for alpha-17
 [ ] global uni demo
 [ ] profile some more
 [ ] guni init the patches
+[ ] make the controls not bipolar display, not work for every optype
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor

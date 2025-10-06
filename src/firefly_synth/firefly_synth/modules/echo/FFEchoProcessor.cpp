@@ -345,7 +345,7 @@ FFEchoProcessor<Global>::Process(
     else if (_feedbackOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Feedback) == m)
       ProcessFeedback(state, graph, true);
     else if (_reverbOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Reverb) == m)
-      ProcessReverb(state, graph, true);
+      ProcessReverb(state, graph);
   }
 
   int samplesProcessed = FBFixedBlockSamples;
@@ -401,7 +401,6 @@ FFEchoProcessor<Global>::Process(
   // Only to push the exchange state.
   ProcessTaps(state, graph, false);
   ProcessFeedback(state, graph, false);
-  ProcessReverb(state, graph, false);
 
   return samplesProcessed;
 }
@@ -409,8 +408,7 @@ FFEchoProcessor<Global>::Process(
 template <bool Global>
 void
 FFEchoProcessor<Global>::ProcessFeedback(
-  FBModuleProcState& state, bool /*graph*/,
-  bool processAudioOrExchangeState)
+  FBModuleProcState& state, bool /*graph*/, bool processAudioOrExchangeState)
 {
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
@@ -524,8 +522,7 @@ FFEchoProcessor<Global>::ProcessFeedback(
 template <bool Global>
 void
 FFEchoProcessor<Global>::ProcessTaps(
-  FBModuleProcState& state, bool /*graph*/,
-  bool processAudioOrExchangeState)
+  FBModuleProcState& state, bool /*graph*/, bool processAudioOrExchangeState)
 {
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
@@ -686,8 +683,7 @@ FFEchoProcessor<Global>::ProcessTaps(
 template <bool Global>
 void
 FFEchoProcessor<Global>::ProcessReverb(
-  FBModuleProcState& state, bool graph,
-  bool processAudioOrExchangeState)
+  FBModuleProcState& state, bool graph)
 {
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
@@ -723,114 +719,106 @@ FFEchoProcessor<Global>::ProcessReverb(
   lpFreqNormIn.CV().CopyTo(lpFreqNormModulated);
   hpFreqNormIn.CV().CopyTo(hpFreqNormModulated);
 
-  if (processAudioOrExchangeState)
+  if constexpr (!Global)
   {
-    if constexpr (!Global)
+    if (!graph)
     {
-      if (!graph)
-      {
-        procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbMix, false, voice, -1, mixNormModulated);
-        procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbSize, false, voice, -1, sizeNormModulated);
-        procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbDamp, false, voice, -1, dampNormModulated);
-        procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbLPF, false, voice, -1, lpFreqNormModulated);
-        procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbHPF, false, voice, -1, hpFreqNormModulated);
-      }
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbMix, false, voice, -1, mixNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbSize, false, voice, -1, sizeNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbDamp, false, voice, -1, dampNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbLPF, false, voice, -1, lpFreqNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbHPF, false, voice, -1, hpFreqNormModulated);
     }
-
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-    {
-      float mixPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::ReverbMix, mixNormModulated.Get(s));
-      float sizePlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::ReverbSize, sizeNormModulated.Get(s));
-      float dampPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::ReverbDamp, dampNormModulated.Get(s));
-
-      float apfPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::ReverbAPF, apfNorm.CV().Get(s));
-      float xOverPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::ReverbXOver, xOverNorm.CV().Get(s));
-      float lpResPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::ReverbLPRes, lpResNorm.CV().Get(s));
-      float hpResPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::ReverbHPRes, hpResNorm.CV().Get(s));
-
-      // expensive
-      float lpFreqPlain = 0.0f;
-      if (_reverbLPOn)
-        lpFreqPlain = topo.NormalizedToLog2Fast(
-          FFEchoParam::ReverbLPFreq, lpFreqNormModulated.Get(s));
-      float hpFreqPlain = 0.0f;
-      if(_reverbHPOn)
-        hpFreqPlain = topo.NormalizedToLog2Fast(
-          FFEchoParam::ReverbHPFreq, hpFreqNormModulated.Get(s));
-
-      if (_graph)
-      {
-        lpFreqPlain *= _graphStVarFilterFreqMultiplier;
-        hpFreqPlain *= _graphStVarFilterFreqMultiplier;
-      }
-
-      // Size doesnt respond linear.
-      // By just testing by listening 80% is about the midpoint.
-      // Do cube root so that 0.5 ~= 0.79.
-      float size = (std::cbrt(sizePlain) * ReverbRoomScale) + ReverbRoomOffset;
-      float damp = dampPlain * ReverbDampScale;
-      float reverbIn = (output[0].Get(s) + output[1].Get(s)) * ReverbGain;
-
-      std::array<float, 2> reverbOut = { 0.0f, 0.0f };
-
-      for (int c = 0; c < 2; c++)
-      {
-        for (int i = 0; i < FFEchoReverbCombCount; i++)
-        {
-          int pos = _reverbState.combPosition[c][i];
-          int length = (int)_reverbState.combState[c][i].size();
-          float combVal = _reverbState.combState[c][i][pos];
-          _reverbState.combFilter[c][i] = (combVal * (1.0f - damp)) + (_reverbState.combFilter[c][i] * damp);
-          _reverbState.combState[c][i][pos] = reverbIn + (_reverbState.combFilter[c][i] * size);
-          _reverbState.combPosition[c][i] = (pos + 1) % length;
-          reverbOut[c] += combVal;
-        }
-
-        for (int i = 0; i < FFEchoReverbAllPassCount; i++)
-        {
-          float outputIn = reverbOut[c];
-          int pos = _reverbState.allPassPosition[c][i];
-          int length = (int)_reverbState.allPassState[c][i].size();
-          float allPassVal = _reverbState.allPassState[c][i][pos];
-          reverbOut[c] = -reverbOut[c] + allPassVal;
-          _reverbState.allPassState[c][i][pos] = outputIn + (allPassVal * apfPlain * 0.5f);
-          _reverbState.allPassPosition[c][i] = (pos + 1) % length;
-        }
-      }
-
-      float wet = mixPlain * ReverbWetScale;
-      float dry = (1.0f - mixPlain) * ReverbDryScale;
-      float wet1 = wet * xOverPlain;
-      float wet2 = wet * (1.0f - xOverPlain);
-      double outL = reverbOut[0] * wet1 + reverbOut[1] * wet2;
-      double outR = reverbOut[1] * wet1 + reverbOut[0] * wet2;
-
-      if (_reverbLPOn)
-      {
-        _reverbState.lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0);
-        outL = _reverbState.lpFilter.Next(0, outL);
-        outR = _reverbState.lpFilter.Next(1, outR);
-      }
-      if (_reverbHPOn)
-      {
-        _reverbState.hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0);
-        outL = _reverbState.hpFilter.Next(0, outL);
-        outR = _reverbState.hpFilter.Next(1, outR);
-      }
-
-      output[0].Set(s, output[0].Get(s) * dry + (float)outL);
-      output[1].Set(s, output[1].Get(s) * dry + (float)outR);
-    }
-
-    return;
   }
+
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    float mixPlain = topo.NormalizedToIdentityFast(
+      FFEchoParam::ReverbMix, mixNormModulated.Get(s));
+    float sizePlain = topo.NormalizedToIdentityFast(
+      FFEchoParam::ReverbSize, sizeNormModulated.Get(s));
+    float dampPlain = topo.NormalizedToIdentityFast(
+      FFEchoParam::ReverbDamp, dampNormModulated.Get(s));
+
+    float apfPlain = topo.NormalizedToIdentityFast(
+      FFEchoParam::ReverbAPF, apfNorm.CV().Get(s));
+    float xOverPlain = topo.NormalizedToIdentityFast(
+      FFEchoParam::ReverbXOver, xOverNorm.CV().Get(s));
+    float lpResPlain = topo.NormalizedToIdentityFast(
+      FFEchoParam::ReverbLPRes, lpResNorm.CV().Get(s));
+    float hpResPlain = topo.NormalizedToIdentityFast(
+      FFEchoParam::ReverbHPRes, hpResNorm.CV().Get(s));
+     // expensive
+    float lpFreqPlain = 0.0f;
+    if (_reverbLPOn)
+      lpFreqPlain = topo.NormalizedToLog2Fast(
+        FFEchoParam::ReverbLPFreq, lpFreqNormModulated.Get(s));
+    float hpFreqPlain = 0.0f;
+    if (_reverbHPOn)
+      hpFreqPlain = topo.NormalizedToLog2Fast(
+        FFEchoParam::ReverbHPFreq, hpFreqNormModulated.Get(s));
+    if (_graph)
+    {
+      lpFreqPlain *= _graphStVarFilterFreqMultiplier;
+      hpFreqPlain *= _graphStVarFilterFreqMultiplier;
+    }
+
+    // Size doesnt respond linear.
+    // By just testing by listening 80% is about the midpoint.
+    // Do cube root so that 0.5 ~= 0.79.
+    float size = (std::cbrt(sizePlain) * ReverbRoomScale) + ReverbRoomOffset;
+    float damp = dampPlain * ReverbDampScale;
+    float reverbIn = (output[0].Get(s) + output[1].Get(s)) * ReverbGain;
+
+    std::array<float, 2> reverbOut = { 0.0f, 0.0f };
+
+    for (int c = 0; c < 2; c++)
+    {
+      for (int i = 0; i < FFEchoReverbCombCount; i++)
+      {
+        int pos = _reverbState.combPosition[c][i];
+        int length = (int)_reverbState.combState[c][i].size();
+        float combVal = _reverbState.combState[c][i][pos];
+        _reverbState.combFilter[c][i] = (combVal * (1.0f - damp)) + (_reverbState.combFilter[c][i] * damp);
+        _reverbState.combState[c][i][pos] = reverbIn + (_reverbState.combFilter[c][i] * size);
+        _reverbState.combPosition[c][i] = (pos + 1) % length;
+        reverbOut[c] += combVal;
+      }
+      for (int i = 0; i < FFEchoReverbAllPassCount; i++)
+      {
+        float outputIn = reverbOut[c];
+        int pos = _reverbState.allPassPosition[c][i];
+        int length = (int)_reverbState.allPassState[c][i].size();
+        float allPassVal = _reverbState.allPassState[c][i][pos];
+        reverbOut[c] = -reverbOut[c] + allPassVal;
+        _reverbState.allPassState[c][i][pos] = outputIn + (allPassVal * apfPlain * 0.5f);
+        _reverbState.allPassPosition[c][i] = (pos + 1) % length;
+      }
+    }
+
+    float wet = mixPlain * ReverbWetScale;
+    float dry = (1.0f - mixPlain) * ReverbDryScale;
+    float wet1 = wet * xOverPlain;
+    float wet2 = wet * (1.0f - xOverPlain);
+    double outL = reverbOut[0] * wet1 + reverbOut[1] * wet2;
+    double outR = reverbOut[1] * wet1 + reverbOut[0] * wet2;
+
+    if (_reverbLPOn)
+    {
+      _reverbState.lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0);
+      outL = _reverbState.lpFilter.Next(0, outL);
+      outR = _reverbState.lpFilter.Next(1, outR);
+    }
+    if (_reverbHPOn)
+    {
+      _reverbState.hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0);
+      outL = _reverbState.hpFilter.Next(0, outL);
+      outR = _reverbState.hpFilter.Next(1, outR);
+    }
+
+    output[0].Set(s, output[0].Get(s) * dry + (float)outL);
+    output[1].Set(s, output[1].Get(s) * dry + (float)outR);
+  }  
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)

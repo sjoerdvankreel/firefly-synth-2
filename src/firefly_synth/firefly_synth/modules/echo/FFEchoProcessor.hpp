@@ -101,8 +101,7 @@ class FFEchoProcessor final
     bool processAudioOrExchangeState);
 
   void ProcessReverb(
-    FBModuleProcState& state, bool graph,
-    bool processAudioOrExchangeState);
+    FBModuleProcState& state, bool graph);
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoProcessor);
