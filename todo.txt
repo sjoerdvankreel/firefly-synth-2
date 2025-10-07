@@ -45,15 +45,15 @@ TODOLIST for alpha-17
 [x] lfo also need guni phase exchange
 [x] reverb hpf is broken
 [x] the delay lines are hitting the filters -- they should be init with guni mod value
-[ ] still todo: fade/extend
+[x] still todo: fade/extend
+[x] global unison
 [ ] refix the demos
+[ ] guni init the patches
 [ ] note that coarse pitch is only in semis for default optype
 [ ] clap polymod + release as one
-[ ] global unison
 [ ] osci-target vecho demo
 [ ] global uni demo
 [ ] profile some more
-[ ] guni init the patches
 [ ] make the controls not bipolar display, not work for every optype
 
 TODOLIST for alpha-17
