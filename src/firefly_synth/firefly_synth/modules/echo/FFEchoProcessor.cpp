@@ -266,6 +266,19 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
     float voiceExtendBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.voiceExtendBars[0], voice);
     _voiceStartSnapshotNorm.voiceFadeTime[0] = FFSelectDualProcAccParamNormalized<Global>(params.voiceStart.voiceFadeTime[0], voice).CV().Get(state.voice->offsetInBlock);
     _voiceStartSnapshotNorm.voiceExtendTime[0] = FFSelectDualProcAccParamNormalized<Global>(params.voiceStart.voiceExtendTime[0], voice).CV().Get(state.voice->offsetInBlock);
+
+    if (!graph)
+    {
+      FBSArray<float, FBFixedBlockSamples> voiceFadeTimeBlock;
+      FBSArray<float, FBFixedBlockSamples> voiceExtendTimeBlock;
+      voiceFadeTimeBlock.Fill(_voiceStartSnapshotNorm.voiceFadeTime[0]);
+      voiceExtendTimeBlock.Fill(_voiceStartSnapshotNorm.voiceExtendTime[0]);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoFade, false, voice, -1, voiceFadeTimeBlock);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoExtend, false, voice, -1, voiceExtendTimeBlock);
+      _voiceStartSnapshotNorm.voiceFadeTime[0] = voiceFadeTimeBlock.Get(0);
+      _voiceStartSnapshotNorm.voiceExtendTime[0] = voiceExtendTimeBlock.Get(0);
+    }
+
     if (_sync)
     {
       _voiceFadeSamples = topo.NormalizedToBarsSamplesFast(
@@ -376,6 +389,8 @@ FFEchoProcessor<Global>::Process(
     [exchangeToGUI] { return &exchangeToGUI->param.voice.vEcho[0]; });
 
   FFSelectDualExchangeState<Global>(exchangeParams.acc.gain[0], voice) = gainNorm.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.voiceStart.voiceFadeTime[0], voice) = _voiceStartSnapshotNorm.voiceFadeTime[0];
+  FFSelectDualExchangeState<Global>(exchangeParams.voiceStart.voiceExtendTime[0], voice) = _voiceStartSnapshotNorm.voiceExtendTime[0];
   return samplesProcessed;
 }
 

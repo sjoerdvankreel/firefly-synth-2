@@ -44,9 +44,8 @@ TODOLIST for alpha-17
 [x] new modulation types incl phase add and make matrix targets for lfo/osc + new osci phase param
 [x] lfo also need guni phase exchange
 [x] reverb hpf is broken
-[ ] initial smoother state for taps is broken in vecho
-[ ] still todo: fade/extend/feedbackvecho
-[ ] the delay lines are hitting the filters -- they should be init with guni mod value
+[x] the delay lines are hitting the filters -- they should be init with guni mod value
+[ ] still todo: fade/extend
 [ ] refix the demos
 [ ] note that coarse pitch is only in semis for default optype
 [ ] clap polymod + release as one
