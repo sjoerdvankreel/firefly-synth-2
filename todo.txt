@@ -48,20 +48,18 @@ TODOLIST for alpha-17
 [x] still todo: fade/extend
 [x] global unison
 [x] make the controls not bipolar display, not work for every optype
-[ ] refix the demos
-[ ] guni init the patches
-[ ] note that coarse pitch is only in semis for default optype
+[x] profile some more
 [ ] clap polymod + release as one
 [ ] osci-target vecho demo
-[ ] global uni demo
-[ ] profile some more
+[ ] refix the demos + guni init the patches
+[ ] global uni demo => current nr3 + guni version of fm+dist 1
 
-TODOLIST for alpha-17
+TODOLIST for alpha-18
 [ ] switch the env stage controls for MSEG editor
 [ ] pop-up editor with the current stuff
 [ ] make the popouts moveable top level windows + also the matrix
 
-TODOLIST for alpha-18 - tuning and keytracking
+TODOLIST for alpha-19 - tuning and keytracking
 [ ] filter kbd track -- should it take into account all coarse pitch mods ?
 [ ] make a dedicated tuning section with some options
 [ ] need per-instance params for microtuning
@@ -72,7 +70,7 @@ TODOLIST for alpha-18 - tuning and keytracking
 [ ] MTS take into account all pitch modulators (eg pitchbend + 1 must be +1 semitones of the retuned scale, also for all coarse/fine, unison, etc etc)
 [ ] filters should track the actual pitch when possible (string osci)
 
-TODOLIST for alpha-19
+TODOLIST for alpha-20
 [ ] import/export module
 [ ] copy/paste module and patch across sessions
 [ ] split large matrix dropdowns
@@ -90,7 +88,7 @@ TODOLIST for alpha-19
 [ ] show modulation amount in terms of the mod target unit for matrix and easy access
 [ ] invert scale-none no workie => cannot do, need bipolar amount
 
-TODOLIST for alpha-20
+TODOLIST for alpha-21
 [ ] theme the gui
 
 write the manual + note about disable everything unused for performance including unused matrix slots
