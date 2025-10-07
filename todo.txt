@@ -47,6 +47,7 @@ TODOLIST for alpha-17
 [x] the delay lines are hitting the filters -- they should be init with guni mod value
 [x] still todo: fade/extend
 [x] global unison
+[x] make the controls not bipolar display, not work for every optype
 [ ] refix the demos
 [ ] guni init the patches
 [ ] note that coarse pitch is only in semis for default optype
@@ -54,7 +55,6 @@ TODOLIST for alpha-17
 [ ] osci-target vecho demo
 [ ] global uni demo
 [ ] profile some more
-[ ] make the controls not bipolar display, not work for every optype
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
