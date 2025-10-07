@@ -844,7 +844,7 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkHPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoFdbkHPF);
   manualEchoFdbkHPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoFdbkHPF);
   manualEchoFdbkHPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoFdbkHPF);
-  SetManualParamEnabledWhen(manualEchoFdbkHPF, FFGlobalUniTarget::EchoFdbkLPF);
+  SetManualParamEnabledWhen(manualEchoFdbkHPF, FFGlobalUniTarget::EchoFdbkHPF);
 
   auto& manualEchoReverbMix = result->params[(int)FFGlobalUniParam::ManualEchoReverbMix];
   manualEchoReverbMix.mode = FBParamMode::Accurate;
