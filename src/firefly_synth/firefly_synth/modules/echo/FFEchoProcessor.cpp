@@ -343,7 +343,7 @@ FFEchoProcessor<Global>::Process(
     if (_tapsOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Taps) == m)
       ProcessTaps(state, graph);
     else if (_feedbackOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Feedback) == m)
-      ProcessFeedback(state, graph, true);
+      ProcessFeedback(state, graph);
     else if (_reverbOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Reverb) == m)
       ProcessReverb(state, graph);
   }
@@ -397,17 +397,13 @@ FFEchoProcessor<Global>::Process(
     [exchangeToGUI] { return &exchangeToGUI->param.voice.vEcho[0]; });
 
   FFSelectDualExchangeState<Global>(exchangeParams.acc.gain[0], voice) = gainNorm.Last();
-
-  // Only to push the exchange state.
-  ProcessFeedback(state, graph, false);
-
   return samplesProcessed;
 }
 
 template <bool Global>
 void
 FFEchoProcessor<Global>::ProcessFeedback(
-  FBModuleProcState& state, bool /*graph*/, bool processAudioOrExchangeState)
+  FBModuleProcState& state, bool graph)
 {
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
@@ -421,83 +417,101 @@ FFEchoProcessor<Global>::ProcessFeedback(
   auto& output = dspState.output;
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
-  auto const& mixNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackMix[0], voice);
   auto const& xOverNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackXOver[0], voice);
   auto const& lpResNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackLPRes[0], voice);
   auto const& hpResNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackHPRes[0], voice);
-  auto const& lpFreqNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackLPFreq[0], voice);
-  auto const& hpFreqNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackHPFreq[0], voice);
-  auto const& amountNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackAmount[0], voice);
-  auto const& delayTimeNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackDelayTime[0], voice);
 
-  if (processAudioOrExchangeState)
+  auto const& mixNormIn = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackMix[0], voice);
+  auto const& lpFreqNormIn = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackLPFreq[0], voice);
+  auto const& hpFreqNormIn = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackHPFreq[0], voice);
+  auto const& amountNormIn = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackAmount[0], voice);
+  auto const& delayTimeNormIn = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackDelayTime[0], voice);
+
+  FBSArray<float, FBFixedBlockSamples> mixNormModulated;
+  FBSArray<float, FBFixedBlockSamples> amountNormModulated;
+  FBSArray<float, FBFixedBlockSamples> lpFreqNormModulated;
+  FBSArray<float, FBFixedBlockSamples> hpFreqNormModulated;
+  FBSArray<float, FBFixedBlockSamples> delayTimeNormModulated;
+
+  mixNormIn.CV().CopyTo(mixNormModulated);
+  amountNormIn.CV().CopyTo(amountNormModulated);
+  lpFreqNormIn.CV().CopyTo(lpFreqNormModulated);
+  hpFreqNormIn.CV().CopyTo(hpFreqNormModulated);
+  delayTimeNormIn.CV().CopyTo(delayTimeNormModulated);
+
+  if constexpr (!Global)
   {
-    for (int s = 0; s < FBFixedBlockSamples; s++)
+    if (!graph)
     {
-      float lengthTimeSamples;
-      if (_sync)
-        lengthTimeSamples = _feedbackDelayBarsSamples;
-      else
-        lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
-          FFEchoParam::FeedbackDelayTime, delayTimeNorm.CV().Get(s), sampleRate);
-      float lengthTimeSamplesSmooth = _feedbackDelayState.smoother.NextScalar(lengthTimeSamples);
-
-      float mixPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::FeedbackMix, mixNorm.CV().Get(s));
-      float xOverPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::FeedbackXOver, xOverNorm.CV().Get(s));
-      float amountPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::FeedbackAmount, amountNorm.CV().Get(s));
-      float lpResPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::FeedbackLPRes, lpResNorm.CV().Get(s));
-      float hpResPlain = topo.NormalizedToIdentityFast(
-        FFEchoParam::FeedbackHPRes, hpResNorm.CV().Get(s));
-
-      // expensive
-      float lpFreqPlain = 0.0f;
-      if(_feedbackLPOn)
-        lpFreqPlain = topo.NormalizedToLog2Fast(
-          FFEchoParam::FeedbackLPFreq, lpFreqNorm.CV().Get(s));
-      float hpFreqPlain = 0.0f;
-      if(_feedbackHPOn)
-        hpFreqPlain = topo.NormalizedToLog2Fast(
-          FFEchoParam::FeedbackHPFreq, hpFreqNorm.CV().Get(s));
-
-      float outLR[2];
-      for (int c = 0; c < 2; c++)
-      {
-        _feedbackDelayLine[c].Delay(0, lengthTimeSamplesSmooth);
-        outLR[c] = _feedbackDelayLine[c].GetLagrangeInterpolate(0);
-        _feedbackDelayLine[c].Pop();
-      }
-
-      if (_graph)
-      {
-        lpFreqPlain *= _graphStVarFilterFreqMultiplier;
-        hpFreqPlain *= _graphStVarFilterFreqMultiplier;
-      }
-
-      if (_feedbackLPOn)
-        _feedbackDelayState.lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0);
-      if (_feedbackHPOn)
-        _feedbackDelayState.hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0);
-      for (int c = 0; c < 2; c++)
-      {
-        double out = (1.0f - xOverPlain) * outLR[c] + xOverPlain * outLR[c == 0 ? 1 : 0];
-        if (_feedbackLPOn)
-          out = _feedbackDelayState.lpFilter.Next(c, out);
-        if (_feedbackHPOn)
-          out = _feedbackDelayState.hpFilter.Next(c, out);
-
-        float feedbackVal = output[c].Get(s) + amountPlain * 0.99f * (float)out;
-        // because resonant filter inside feedback path
-        feedbackVal = FFSoftClip10(feedbackVal);
-        _feedbackDelayLine[c].Push(feedbackVal);
-        output[c].Set(s, (1.0f - mixPlain) * output[c].Get(s) + mixPlain * (float)out);
-      }
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoFdbkMix, false, voice, -1, mixNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoFdbkLPF, false, voice, -1, lpFreqNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoFdbkHPF, false, voice, -1, hpFreqNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoFdbkAmt, false, voice, -1, amountNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoFdbkDelay, false, voice, -1, delayTimeNormModulated);
     }
+  }
 
-    return;
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    float lengthTimeSamples;
+    if (_sync)
+      lengthTimeSamples = _feedbackDelayBarsSamples;
+    else
+      lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
+        FFEchoParam::FeedbackDelayTime, delayTimeNormModulated.Get(s), sampleRate);
+    float lengthTimeSamplesSmooth = _feedbackDelayState.smoother.NextScalar(lengthTimeSamples);
+
+    float xOverPlain = topo.NormalizedToIdentityFast(
+      FFEchoParam::FeedbackXOver, xOverNorm.CV().Get(s));
+    float lpResPlain = topo.NormalizedToIdentityFast(
+      FFEchoParam::FeedbackLPRes, lpResNorm.CV().Get(s));
+    float hpResPlain = topo.NormalizedToIdentityFast(
+      FFEchoParam::FeedbackHPRes, hpResNorm.CV().Get(s));
+
+    float mixPlain = topo.NormalizedToIdentityFast(
+      FFEchoParam::FeedbackMix, mixNormModulated.Get(s));
+    float amountPlain = topo.NormalizedToIdentityFast(
+      FFEchoParam::FeedbackAmount, amountNormModulated.Get(s));
+
+    // expensive
+    float lpFreqPlain = 0.0f;
+    if(_feedbackLPOn)
+      lpFreqPlain = topo.NormalizedToLog2Fast(
+        FFEchoParam::FeedbackLPFreq, lpFreqNormModulated.Get(s));
+    float hpFreqPlain = 0.0f;
+    if(_feedbackHPOn)
+      hpFreqPlain = topo.NormalizedToLog2Fast(
+        FFEchoParam::FeedbackHPFreq, hpFreqNormModulated.Get(s));
+
+    float outLR[2];
+    for (int c = 0; c < 2; c++)
+    {
+      _feedbackDelayLine[c].Delay(0, lengthTimeSamplesSmooth);
+      outLR[c] = _feedbackDelayLine[c].GetLagrangeInterpolate(0);
+      _feedbackDelayLine[c].Pop();
+    }
+    if (_graph)
+    {
+      lpFreqPlain *= _graphStVarFilterFreqMultiplier;
+      hpFreqPlain *= _graphStVarFilterFreqMultiplier;
+    }
+    if (_feedbackLPOn)
+      _feedbackDelayState.lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0);
+    if (_feedbackHPOn)
+      _feedbackDelayState.hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0);
+    for (int c = 0; c < 2; c++)
+    {
+      double out = (1.0f - xOverPlain) * outLR[c] + xOverPlain * outLR[c == 0 ? 1 : 0];
+      if (_feedbackLPOn)
+        out = _feedbackDelayState.lpFilter.Next(c, out);
+      if (_feedbackHPOn)
+        out = _feedbackDelayState.hpFilter.Next(c, out);
+       float feedbackVal = output[c].Get(s) + amountPlain * 0.99f * (float)out;
+      // because resonant filter inside feedback path
+      feedbackVal = FFSoftClip10(feedbackVal);
+      _feedbackDelayLine[c].Push(feedbackVal);
+      output[c].Set(s, (1.0f - mixPlain) * output[c].Get(s) + mixPlain * (float)out);
+    }
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
@@ -509,13 +523,13 @@ FFEchoProcessor<Global>::ProcessFeedback(
     [exchangeToGUI] { return &exchangeToGUI->param.voice.vEcho[0]; });
 
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackLPRes[0], voice) = lpResNorm.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackLPFreq[0], voice) = lpFreqNorm.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackHPRes[0], voice) = hpResNorm.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackHPFreq[0], voice) = hpFreqNorm.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackMix[0], voice) = mixNorm.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackXOver[0], voice) = xOverNorm.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackAmount[0], voice) = amountNorm.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackDelayTime[0], voice) = delayTimeNorm.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackMix[0], voice) = mixNormModulated.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackLPFreq[0], voice) = lpFreqNormModulated.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackHPFreq[0], voice) = hpFreqNormModulated.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackAmount[0], voice) = amountNormModulated.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackDelayTime[0], voice) = delayTimeNormModulated.Last();
 }
 
 template <bool Global>

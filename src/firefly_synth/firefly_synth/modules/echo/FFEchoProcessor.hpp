@@ -95,8 +95,7 @@ class FFEchoProcessor final
   void ProcessTaps(
     FBModuleProcState& state, bool graph);
   void ProcessFeedback(
-    FBModuleProcState& state, bool graph,
-    bool processAudioOrExchangeState); // TODO
+    FBModuleProcState& state, bool graph);
   void ProcessReverb(
     FBModuleProcState& state, bool graph);
 
