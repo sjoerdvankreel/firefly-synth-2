@@ -93,6 +93,7 @@ TODOLIST for alpha-19
 TODOLIST for alpha-20
 [ ] theme the gui
 
+write the manual + note about disable everything unused for performance including unused matrix slots
 routing / order diagram
 figure out bitwig dataexchange on Linux
 make a percussion demo
