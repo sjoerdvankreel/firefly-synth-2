@@ -1,4 +1,5 @@
 TODOLIST for alpha-18
+[ ] recheck audio input in plug mode
 [ ] switch the env stage controls for MSEG editor
 [ ] pop-up editor with the current stuff
 [ ] make the popouts moveable top level windows + also the matrix
