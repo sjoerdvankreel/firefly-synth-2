@@ -1,0 +1,40 @@
+- pitch/frequency targets:
+* coarse pitch: voice level, osci level, global uni level, master pitch bend
+* fine pitch: voice level, osci level, global uni detune, osci unison detune
+* osci: hard sync slave pitch
+* osci: dedicated FM osci ratio (not inter-osci, thats just FM index)
+* filter keyboard tracking
+* voice-level portamento
+
+- current thought in "retune(note + A) + B" mode (A = "patch"/"yes retune", B = "performance"/"not retune"):
+* all fine pitch goes in "B"
+* hard sync: sort of pitch-sweep, so this goes in "B"
+* portamento: this goes in "A". Slide from retuned note to retuned note.
+* linear FM goes in neither, just keep the frequency ratios intact
+* exponential FM: if i did it correctly, this is just an audio-rate pitch modulator, so goes in "B" just like a vibrato. besides, results are inharmonic even when not retuned.
+
+The hard ones are all of the coarse pitch targets.
+A) If i make a pitch sweep, don't retune.
+B) If i use a pitch env to create a kick, don't retune.
+C) If i use master pitch bend range +/-12 semis => can go either way.
+D) If i set osci 1 coarse pitch to +0 semis, osci 2 to +12, YES retune.
+E) If i use global unison, 3 voices, coarse pitch +0, +5, +8 semis (hit a note, play a chord) => YES retune.
+
+And of course here's the kicker:
+If i am in either D) or E), then apply an LFO to coarse pitch:
+F) Now have a sinusoid going between +0 and +12 semis.
+Gut feeling says, don't bother, because now it went from the "patch" bucket to the "performance" bucket.
+
+All in all i think i'm best off by having some sort of "retune all coarse pitch (together, at once) yes/no" switch.
+
+And finally -- filter keyboard tracking.
+
+
+
+
+
+
+
+
+
+
