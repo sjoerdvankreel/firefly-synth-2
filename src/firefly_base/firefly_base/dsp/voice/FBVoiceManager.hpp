@@ -9,7 +9,7 @@
 
 class FBProcStateContainer;
 
-inline int constexpr FBMaxVoices = 32;
+inline int constexpr FBMaxVoices = 64;
 
 enum class FBVoiceState { Free, Active, Returned };
 
@@ -19,6 +19,10 @@ struct FBVoiceInfo final
   int offsetInBlock = {};
   FBNoteEvent event = {};
   FBVoiceState state = {};
+
+  // support for global unison, handled in the plug
+  int slotInGroup = -1;
+  std::int64_t groupId = -1;
 };
 
 class FBVoiceManager final
@@ -29,7 +33,8 @@ class FBVoiceManager final
   int _voiceCount = 0;
   std::uint64_t _counter = {};
   FBProcStateContainer* const _procState;
-  std::vector<FBNote> _returnedVoices = {};
+  std::vector<int> _activeVoices = {}; // perf opt, dont loop over FBMaxVoices everywhere
+  std::vector<FBVoiceInfo> _returnedVoices = {};
   std::array<std::uint64_t, FBMaxVoices> _num = {};
   std::array<FBVoiceInfo, FBMaxVoices> _voices = {};
 
@@ -41,10 +46,13 @@ public:
 
   void Return(int slot);
   void ResetReturnedVoices();
-  int Lease(FBNoteEvent const& event);
+  int Lease(FBNoteEvent const& event, std::int64_t groupId, int slotInGroup);
 
   int VoiceCount() const { return _voiceCount; }
-  std::vector<FBNote> const& ReturnedVoices() { return _returnedVoices; }
+
+  // Note: both active and returned. For lack of a better term than "not-free".
+  std::vector<int> const& ActiveVoices() const { return _activeVoices; }
+  std::vector<FBVoiceInfo> const& ReturnedVoices() { return _returnedVoices; }
   std::array<FBVoiceInfo, FBMaxVoices> const& Voices() const { return _voices; }
 
   bool IsFree(int slot) const { return _voices[slot].state == FBVoiceState::Free; }

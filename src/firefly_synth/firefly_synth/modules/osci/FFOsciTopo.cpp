@@ -99,6 +99,21 @@ FFMakeOsciTopo()
   gain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
   gain.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
+  auto& phase = result->params[(int)FFOsciParam::Phase];
+  phase.mode = FBParamMode::VoiceStart;
+  phase.defaultText = "0";
+  phase.name = "Phase";
+  phase.display = "Phs";
+  phase.slotCount = 1;
+  phase.unit = "%";
+  phase.id = "{4BB87878-BB20-4253-85AD-E1B608A4B3D9}";
+  phase.type = FBParamType::Identity;
+  auto selectPhase = [](auto& module) { return &module.voiceStart.phase; };
+  phase.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPhase);
+  phase.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectPhase);
+  phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPhase);
+  phase.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String; });
+
   auto& envToGain = result->params[(int)FFOsciParam::EnvToGain];
   envToGain.mode = FBParamMode::Accurate;
   envToGain.name = "Env\U00002192Gain";
@@ -137,8 +152,8 @@ FFMakeOsciTopo()
   coarse.unit = "Semitones";
   coarse.id = "{E122CA2C-C1B1-47E5-A1BB-DEAC6A4030E0}";
   coarse.type = FBParamType::Linear;
-  coarse.Linear().min = -128.0f;
-  coarse.Linear().max = 128.0f;
+  coarse.Linear().min = -FFOsciCoarseSemis;
+  coarse.Linear().max = FFOsciCoarseSemis;
   auto selectCoarse = [](auto& module) { return &module.acc.coarse; };
   coarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCoarse);
   coarse.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCoarse);
@@ -395,8 +410,8 @@ FFMakeOsciTopo()
   auto& waveHSMode = result->params[(int)FFOsciParam::WaveHSMode];
   waveHSMode.mode = FBParamMode::Block;
   waveHSMode.defaultText = "Off";
-  waveHSMode.name = "HS Mode";
-  waveHSMode.display = "HSync";
+  waveHSMode.name = "HardSync Mode";
+  waveHSMode.display = "HS";
   waveHSMode.slotFormatDisplay = true;
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";

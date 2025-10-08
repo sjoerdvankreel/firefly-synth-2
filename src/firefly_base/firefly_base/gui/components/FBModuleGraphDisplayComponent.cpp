@@ -9,12 +9,13 @@
 using namespace juce;
 
 static float constexpr Padding = 3.0f;
-static float constexpr MarkerSize = 8.0f;
-static float constexpr HalfMarkerSize = MarkerSize / 2.0f;
+static float constexpr DefaultMarkerSize = 8.0f;
+static float constexpr HalfDefaultMarkerSize = 4.0f;
 
 FBModuleGraphDisplayComponent::
-FBModuleGraphDisplayComponent(FBModuleGraphComponentData const* data):
+FBModuleGraphDisplayComponent(FBModuleGraphComponentData const* data, bool withBorder):
 Component(),
+_withBorder(withBorder),
 _data(data) {}
 
 Point<float>
@@ -58,8 +59,8 @@ FBModuleGraphDisplayComponent::PointYLocation(
   if (stereo)
     pointValue = left ? 0.5f + pointValue * 0.5f: pointValue * 0.5f;
   if(withPadding)
-    return HalfMarkerSize + Padding + (1.0f - pointValue) * (getHeight() - MarkerSize - 2.0f * Padding);
-  return HalfMarkerSize + (1.0f - pointValue) * (getHeight() - MarkerSize);
+    return HalfDefaultMarkerSize + Padding + (1.0f - pointValue) * (getHeight() - DefaultMarkerSize - 2.0f * Padding);
+  return HalfDefaultMarkerSize + (1.0f - pointValue) * (getHeight() - DefaultMarkerSize);
 }
 
 void
@@ -81,19 +82,34 @@ void
 FBModuleGraphDisplayComponent::PaintMarker(
   Graphics& g, 
   int graph, std::vector<float> const& points,
-  int marker, bool primary, bool isPointIndicator, bool stereo, 
+  int marker, bool primary, bool isPointIndicator, bool stereo,
   bool left, int maxSizeAllSeries, float absMaxValueAllSeries)
 {
-  g.setColour(Colours::white);
+  // It does happen every now and then.
+  // Case in point: env length got 0 by modulation.
+  if (points.size() == 0)
+    return;
+
+  auto color = Colours::white;
+  if (_data->paintAsDisabled)
+    color = color.darker(0.67f);
   if (!primary)
-    g.setColour(Colours::white.withAlpha(0.5f));
+    color = color.withAlpha(0.5f);
+  g.setColour(color);
   auto xy = PointLocation(graph, points, marker, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
-  float x = xy.getX() - HalfMarkerSize;
-  float y = xy.getY() - HalfMarkerSize;
-  if(isPointIndicator)
-    g.drawEllipse(x + 2.0f, y + 2.0f, MarkerSize - 4.0f, MarkerSize - 4.0f, 1.0f);
+
+  float size = DefaultMarkerSize;
+  bool fill = !isPointIndicator || _data->fillPointIndicators;
+  if (isPointIndicator && _data->pointIndicatorSize != -1)
+    size = (float)_data->pointIndicatorSize;
+
+  float x = xy.getX() - size * 0.5f;
+  float y = xy.getY() - size * 0.5f;
+
+  if(fill)
+    g.fillEllipse(x, y, size, size);
   else
-    g.fillEllipse(x, y, MarkerSize, MarkerSize);
+    g.drawEllipse(x + size / 6.0f, y + size / 6.0f, size * 2.0f / 3.0f, size * 2.0f / 3.0f, 1.0f);
 }
 
 void
@@ -126,6 +142,8 @@ FBModuleGraphDisplayComponent::PaintSeries(
   path.startNewSubPath(PointLocation(graph, points, 0, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
   for (int i = 1; i < points.size(); i++)
     path.lineTo(PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
+  if (_data->paintAsDisabled)
+    color = color.darker(0.67f);
   g.setColour(color);
   g.strokePath(path, PathStrokeType(1.0f));
 }
@@ -150,8 +168,12 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     auto graphBounds = Rectangle<int>(x0, bounds.getY(), x1 - x0, bounds.getHeight());
     g.setColour(Colour(0xFF181818));
     g.fillRoundedRectangle(graphBounds.toFloat(), 6.0f);
-    g.setColour(Colour(0xFFA0A0A0));
-    g.drawRoundedRectangle(graphBounds.toFloat(), 6.0f, 2.0f);
+
+    if (_withBorder)
+    {
+      g.setColour(Colour(0xFFA0A0A0));
+      g.drawRoundedRectangle(graphBounds.toFloat(), 6.0f, 2.0f);
+    }
 
     if (maxSizeAllSeries != 0)
     {

@@ -135,7 +135,7 @@ EchoGraphRenderData<Global>::DoProcess(
     }
   
   samplesProcessed[graphIndex] += FBFixedBlockSamples;
-  return GetProcessor(*moduleProcState).Process(*moduleProcState, -1);
+  return GetProcessor(*moduleProcState).Process(*moduleProcState, true, -1);
 }
 
 template <bool Global>

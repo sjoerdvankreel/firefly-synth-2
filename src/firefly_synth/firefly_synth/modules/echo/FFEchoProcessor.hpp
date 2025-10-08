@@ -59,13 +59,19 @@ class FFEchoProcessor final
   bool _on = {};
   bool _sync = {};
   bool _tapsOn = {};
-  bool _feedbackOn = {};
   bool _reverbOn = {};
+  bool _reverbLPOn = {};
+  bool _reverbHPOn = {};
+  bool _feedbackOn = {};
+  bool _feedbackLPOn = {};
+  bool _feedbackHPOn = {};
   FFEchoOrder _order = {};
   int _voiceFadeSamples = {};
   int _voiceExtendSamples = {};
   float _feedbackDelayBarsSamples = {};
   std::array<bool, FFEchoTapCount> _tapOn = {};
+  std::array<bool, FFEchoTapCount> _tapLPOn = {};
+  std::array<bool, FFEchoTapCount> _tapHPOn = {};
   std::array<float, FFEchoTapCount> _tapDelayBarsSamples = {};
 
   FFEchoVoiceStartParamState<float> _voiceStartSnapshotNorm = {};
@@ -87,22 +93,17 @@ class FFEchoProcessor final
   std::array<FFEchoDelayState, FFEchoTapCount> _tapDelayStates = {};
 
   void ProcessTaps(
-    FBModuleProcState& state,
-    bool processAudioOrExchangeState);
-
+    FBModuleProcState& state, bool graph);
   void ProcessFeedback(
-    FBModuleProcState& state,
-    bool processAudioOrExchangeState);
-
+    FBModuleProcState& state, bool graph);
   void ProcessReverb(
-    FBModuleProcState& state,
-    bool processAudioOrExchangeState);
+    FBModuleProcState& state, bool graph);
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoProcessor);
 
   void FlushDelayLines();
-  int Process(FBModuleProcState& state, int ampEnvFinishedAt);
+  int Process(FBModuleProcState& state, bool graph, int ampEnvFinishedAt);
   void BeginVoiceOrBlock(FBModuleProcState& state, bool graph, int graphIndex, int graphSampleCount);
   void ReleaseOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state);
   void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state, bool graph, float sampleRate);

@@ -16,15 +16,6 @@ struct FBStaticModule;
 template <bool Global>
 struct EchoGraphRenderData;
 
-class FFEchoGUIState final
-{
-  friend struct FFGEchoState;
-  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
-  std::array<double, 1> tapSelect = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoGUIState);
-};
-
 template <bool Global>
 class FFEchoDSPState final
 {
@@ -52,7 +43,11 @@ class alignas(alignof(TBlock)) FFEchoBlockParamState final
   std::array<TBlock, 1> order = {};
   std::array<TBlock, 1> tapsOn = {};
   std::array<TBlock, 1> reverbOn = {};
+  std::array<TBlock, 1> reverbLPOn = {};
+  std::array<TBlock, 1> reverbHPOn = {};
   std::array<TBlock, 1> feedbackOn = {};
+  std::array<TBlock, 1> feedbackLPOn = {};
+  std::array<TBlock, 1> feedbackHPOn = {};
   std::array<TBlock, 1> vTargetOrGTarget = {};
   std::array<TBlock, 1> feedbackDelayBars = {};
   std::array<TBlock, 1> voiceFadeBars = {};
@@ -60,6 +55,8 @@ class alignas(alignof(TBlock)) FFEchoBlockParamState final
   std::array<TBlock, 1> delaySmoothTime = {};
   std::array<TBlock, 1> delaySmoothBars = {};
   std::array<TBlock, FFEchoTapCount> tapOn = {};
+  std::array<TBlock, FFEchoTapCount> tapLPOn = {};
+  std::array<TBlock, FFEchoTapCount> tapHPOn = {};
   std::array<TBlock, FFEchoTapCount> tapDelayBars = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoBlockParamState);

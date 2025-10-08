@@ -14,6 +14,7 @@
 #include <firefly_synth/modules/master/FFMasterState.hpp>
 #include <firefly_synth/modules/output/FFOutputState.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModState.hpp>
+#include <firefly_synth/modules/global_uni/FFGlobalUniState.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixState.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleState.hpp>
@@ -33,8 +34,6 @@ class MTSClient;
 
 struct FFGUIState final
 {
-  std::array<FFEchoGUIState, 1> vEcho = {};
-  std::array<FFEchoGUIState, 1> gEcho = {};
   std::array<FFGUISettingsGUIState, 1> guiSettings = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGUIState);
 };
@@ -42,6 +41,7 @@ struct FFGUIState final
 struct alignas(FBSIMDAlign) FFGlobalExchangeState final
 {
   std::array<FFLFOExchangeState, FFLFOCount> gLFO = {};
+  std::array<FFGlobalUniExchangeState, 1> globalUni = {};
   std::array<FBModuleProcSingleExchangeState, 1> gMix = {};
   std::array<FBModuleProcSingleExchangeState, 1> gEcho = {};
   std::array<FBModuleProcSingleExchangeState, 1> master = {};
@@ -55,12 +55,12 @@ struct alignas(FBSIMDAlign) FFVoiceExchangeState final
 {
   std::array<FFEnvExchangeState, FFEnvCount> env = {};
   std::array<FFLFOExchangeState, FFLFOCount> vLFO = {};
+  std::array<FFOsciExchangeState, FFOsciCount> osci = {};
   std::array<FBModuleProcSingleExchangeState, 1> vMix = {};
   std::array<FBModuleProcSingleExchangeState, 1> vEcho = {};
   std::array<FBModuleProcSingleExchangeState, 1> vMatrix = {};
   std::array<FBModuleProcSingleExchangeState, 1> osciMod = {};
   std::array<FBModuleProcSingleExchangeState, 1> voiceModule = {};
-  std::array<FBModuleProcSingleExchangeState, FFOsciCount> osci = {};
   std::array<FBModuleProcSingleExchangeState, FFEffectCount> vEffect = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
 };
@@ -71,6 +71,7 @@ struct alignas(FBSIMDAlign) FFGlobalDSPState final
   FFGNoteDSPState gNote = {};
   FFOutputDSPState output = {};
   FFMasterDSPState master = {};
+  FFGlobalUniDSPState globalUni = {};
   FFEchoDSPState<true> gEcho = {};
   FFModMatrixDSPState<true> gMatrix = {};
   std::array<FFLFODSPState, FFLFOCount> gLFO = {};
@@ -110,6 +111,7 @@ struct alignas(alignof(TAccurate)) FFGlobalParamState final
   std::array<FFGUISettingsParamState<TBlock>, 1> guiSettings = {};
   std::array<FFMasterParamState<TBlock, TAccurate>, 1> master = {};
   std::array<FFOutputParamState<TBlock, TAccurate>, 1> output = {};
+  std::array<FFGlobalUniParamState<TBlock, TAccurate>, 1> globalUni = {};
   std::array<FFLFOParamState<TBlock, TAccurate>, FFLFOCount> gLFO = {};
   std::array<FFModMatrixParamState<TBlock, TAccurate, true>, 1> gMatrix = {};
   std::array<FFEffectParamState<TBlock, TAccurate>, FFEffectCount> gEffect = {};
@@ -119,7 +121,7 @@ template <class TBlock, class TAccurate>
 struct alignas(alignof(TAccurate)) FFVoiceParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceParamState);
-  std::array<FFVMixParamState<TAccurate>, 1> vMix = {};
+  std::array<FFVMixParamState<TBlock, TAccurate>, 1> vMix = {};
   std::array<FFEchoParamState<TBlock, TAccurate>, 1> vEcho = {};
   std::array<FFOsciModParamState<TBlock, TAccurate>, 1> osciMod = {};
   std::array<FFEnvParamState<TBlock, TAccurate>, FFEnvCount> env = {};

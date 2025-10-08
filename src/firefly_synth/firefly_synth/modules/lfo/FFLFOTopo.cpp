@@ -182,9 +182,13 @@ FFMakeLFOTopo(bool global)
     { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "UP Add" },
     { "{AD641260-F205-497E-B483-330CFA025378}", "UP Mul" },
     { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "UP Stk" },
+    { "{01014CF0-B70C-4E60-9A78-FF560CF05ECF}", "UP Rmp" },
     { "{C18F6A70-944C-4A9B-8A01-561E1B6B93D4}", "BP Add" },
+    { "{4464FDBF-1CDA-4023-85CC-D3A90CC4F47B}", "BP Ad2" },
     { "{3130BBE8-D204-450D-A3D2-AC4266FB8E4B}", "BP Mul" },
-    { "{69D5AD4B-BD0B-42A6-A252-A0A43D425F89}", "BP Stk" } };
+    { "{69D5AD4B-BD0B-42A6-A252-A0A43D425F89}", "BP Stk" },
+    { "{D96CFB4F-1F3C-434C-A78D-BA624B3DFA10}", "BP Rmp" },
+    { "{79662DE0-C38D-4ECD-BCC1-5CDD210E0015}", "Ph Wrp" } };
   auto selectOpType = [](auto& module) { return &module.block.opType; };
   opType.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpType);
   opType.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpType);
@@ -339,7 +343,7 @@ FFMakeLFOTopo(bool global)
   steps.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& phase = result->params[(int)FFLFOParam::Phase];
-  phase.mode = FBParamMode::Block;
+  phase.mode = FBParamMode::VoiceStart;
   phase.defaultText = "0";
   phase.name = "Phase";
   phase.display = "Phase";
@@ -348,11 +352,11 @@ FFMakeLFOTopo(bool global)
   phase.unit = "%";
   phase.id = prefix + "{4BFEC447-4A16-4AE4-9E73-4FDC889046D1}";
   phase.type = FBParamType::Identity;
-  auto selectPhase = [](auto& module) { return &module.block.phase; };
+  auto selectPhase = [](auto& module) { return &module.voiceStart.phase; };
   phase.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectPhase);
-  phase.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectPhase);
+  phase.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectPhase);
   phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhase);
-  phase.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhase);
+  phase.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhase);
   phase.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhase);
   phase.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 

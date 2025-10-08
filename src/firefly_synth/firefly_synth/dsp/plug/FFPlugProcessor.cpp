@@ -61,7 +61,7 @@ FFPlugProcessor::ProcessGEcho(
   state.moduleSlot = 0;
   inout.CopyTo(globalDSP.gEcho.input);
   globalDSP.gEcho.processor->BeginVoiceOrBlock(state, false, -1, -1);
-  globalDSP.gEcho.processor->Process(state, -1);
+  globalDSP.gEcho.processor->Process(state, false, -1);
   globalDSP.gEcho.output.CopyTo(inout);
 }
 
@@ -81,17 +81,35 @@ FFPlugProcessor::LeaseVoices(
   for (int n = 0; n < input.noteEvents->size(); n++)
     if ((*input.noteEvents)[n].on)
     {
-      std::array<float, FFVNoteOnNoteRandomCount> onNoteRandomUni;
-      std::array<float, FFVNoteOnNoteRandomCount> onNoteRandomNorm;
+      std::array<float, FFVNoteOnNoteRandomCount> onNoteGroupRandomUni;
+      std::array<float, FFVNoteOnNoteRandomCount> onNoteGroupRandomNorm;
       for (int r = 0; r < FFVNoteOnNoteRandomCount; r++)
       {
-        onNoteRandomUni[r] = _onNoteRandomUni.NextScalar();
-        onNoteRandomNorm[r] = _onNoteRandomNorm.NextScalar();
+        onNoteGroupRandomUni[r] = _onNoteRandomUni.NextScalar();
+        onNoteGroupRandomNorm[r] = _onNoteRandomNorm.NextScalar();
       }
 
-      int voice = input.voiceManager->Lease((*input.noteEvents)[n]);
-      auto state = MakeModuleVoiceState(input, voice);
-      _procState->dsp.voice[voice].processor.BeginVoice(state, onNoteRandomUni, onNoteRandomNorm);
+      std::int64_t voiceGroupId = _voiceGroupId++;
+      auto const* procState = input.procState->RawAs<FFProcState>();
+      float uniVoiceCountNorm = procState->param.global.globalUni[0].block.voiceCount[0].Value();
+      int uniVoiceCount = _topo->static_->modules[(int)FFModuleType::GlobalUni].NormalizedToDiscreteFast((int)FFGlobalUniParam::VoiceCount, uniVoiceCountNorm);
+
+      for (int v = 0; v < uniVoiceCount; v++)
+      {
+        std::array<float, FFVNoteOnNoteRandomCount> onNoteRandomUni;
+        std::array<float, FFVNoteOnNoteRandomCount> onNoteRandomNorm;
+        for (int r = 0; r < FFVNoteOnNoteRandomCount; r++)
+        {
+          onNoteRandomUni[r] = _onNoteRandomUni.NextScalar();
+          onNoteRandomNorm[r] = _onNoteRandomNorm.NextScalar();
+        }
+
+        int voice = input.voiceManager->Lease((*input.noteEvents)[n], voiceGroupId, v);
+        auto state = MakeModuleVoiceState(input, voice);
+        _procState->dsp.global.globalUni.processor->BeginVoice(voice);
+        _procState->dsp.voice[voice].processor.BeginVoice(state, 
+          onNoteRandomUni, onNoteRandomNorm, onNoteGroupRandomUni, onNoteGroupRandomNorm);
+      }
     }
 }
 
@@ -112,21 +130,16 @@ FFPlugProcessor::AllocOnDemandBuffers(
   }
 }
 
+// Applies global to global mod.
+// For global to voice mod, see AllGlobalModSourcesCleared.
 void
 FFPlugProcessor::ApplyGlobalModulation(
-  FBPlugInputBlock const& input, FBModuleProcState& state, FBTopoIndices moduleIndices)
+  FBModuleProcState& state, FBTopoIndices moduleIndices)
 {
   state.moduleSlot = 0;
   auto& globalDSP = _procState->dsp.global;
-  globalDSP.gMatrix.processor->ApplyModulation(state, moduleIndices);
-
-  // We can get away with this because FBHostProcessor does LeaseVoices() first.
-  for (int v = 0; v < FBMaxVoices; v++)
-    if (input.voiceManager->IsActive(v))
-    {
-      state.voice = &state.input->voiceManager->Voices()[v];
-      _procState->dsp.voice[v].vMatrix.processor->ApplyModulation(state, moduleIndices);
-    }
+  globalDSP.gMatrix.processor->ModSourceCleared(state, moduleIndices);
+  globalDSP.gMatrix.processor->ApplyModulation(state);
 }
 
 void 
@@ -137,31 +150,43 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   auto const& globalParam = _procState->param.global;
 
   // manual flush
-  bool flushToggle = globalParam.guiSettings[0].block.flushDelayToggle[0].Value() > 0.5f;
+  bool flushToggle = globalParam.guiSettings[0].block.flushAudioToggle[0].Value() > 0.5f;
   if (flushToggle != _prevFlushDelayToggle)
   {
     _prevFlushDelayToggle = flushToggle;
     globalDSP.gEcho.processor->FlushDelayLines();
-    for (int i = 0; i < FBMaxVoices; i++)
-      _procState->dsp.voice[i].vEcho.processor->FlushDelayLines();
+    for (int v = 0; v < FBMaxVoices; v++)
+      _procState->dsp.voice[v].vEcho.processor->FlushDelayLines();
   }
 
   state.moduleSlot = 0;
   globalDSP.gMatrix.processor->BeginVoiceOrBlock(state);
   globalDSP.gMatrix.processor->BeginModulationBlock();
   globalDSP.midi.processor->Process(state);
-  ApplyGlobalModulation(input, state, { (int)FFModuleType::MIDI, 0 });
+  ApplyGlobalModulation(state, { (int)FFModuleType::MIDI, 0 });
   globalDSP.gNote.processor->Process(state);
-  ApplyGlobalModulation(input, state, { (int)FFModuleType::GNote, 0 });
+  ApplyGlobalModulation(state, { (int)FFModuleType::GNote, 0 });
   globalDSP.master.processor->Process(state);
-  ApplyGlobalModulation(input, state, { (int)FFModuleType::Master, 0 });
+  ApplyGlobalModulation(state, { (int)FFModuleType::Master, 0 });
   for (int i = 0; i < FFLFOCount; i++)
   {
     state.moduleSlot = i;
     globalDSP.gLFO[i].processor->BeginVoiceOrBlock<true>(state, nullptr, false, -1, -1);
-    globalDSP.gLFO[i].processor->Process<true>(state);
-    ApplyGlobalModulation(input, state, { (int)FFModuleType::GLFO, i });
+    globalDSP.gLFO[i].processor->Process<true>(state, false);
+    ApplyGlobalModulation(state, { (int)FFModuleType::GLFO, i });
   }
+
+  // Mark all global mod sources as done at once for each voice, saves some cycles.
+  // We can get away with this because FBHostProcessor does LeaseVoices() first.
+  for (int v : input.voiceManager->ActiveVoices())
+  {
+    state.voice = &state.input->voiceManager->Voices()[v];
+    _procState->dsp.voice[v].vMatrix.processor->AllGlobalModSourcesCleared(state);
+    _procState->dsp.voice[v].vMatrix.processor->ApplyModulation(state);
+  }
+
+  globalDSP.globalUni.processor->BeginBlock(state);
+  globalDSP.globalUni.processor->Process(state);
 }
 
 void
@@ -186,11 +211,10 @@ FFPlugProcessor::ProcessPostVoice(
 
   FBSArray2<float, FBFixedBlockSamples, 2> voiceMixdown = {};
   voiceMixdown.Fill(0.0f);
-  for (int v = 0; v < FBMaxVoices; v++)
-    if (input.voiceManager->IsActive(v))
-      voiceMixdown.Add(_procState->dsp.voice[v].output);
+  for (int v: input.voiceManager->ActiveVoices())
+    voiceMixdown.Add(_procState->dsp.voice[v].output);
 
-  if (gEchoTarget == FFGEchoTarget::BeforeFX)
+  if (gEchoTarget == FFGEchoTarget::VoiceMix)
     ProcessGEcho(state, voiceMixdown);
 
   for (int i = 0; i < FFEffectCount; i++)
@@ -206,26 +230,20 @@ FFPlugProcessor::ProcessPostVoice(
         globalDSP.gEffect[i].input.AddMul(globalDSP.gEffect[source].output, gfxToGFXNorm);
       }
     
-    if(i == 0 && gEchoTarget == FFGEchoTarget::BeforeFX1)
-      ProcessGEcho(state, globalDSP.gEffect[i].input);
-    else if (i == 1 && gEchoTarget == FFGEchoTarget::BeforeFX2)
-      ProcessGEcho(state, globalDSP.gEffect[i].input);
-    else if (i == 2 && gEchoTarget == FFGEchoTarget::BeforeFX3)
-      ProcessGEcho(state, globalDSP.gEffect[i].input);
-    else if (i == 3 && gEchoTarget == FFGEchoTarget::BeforeFX4)
+    if(gEchoTarget == FFGEchoTarget::FX1In && i == 0 ||
+      gEchoTarget == FFGEchoTarget::FX2In && i == 1 ||
+      gEchoTarget == FFGEchoTarget::FX3In && i == 2 ||
+      gEchoTarget == FFGEchoTarget::FX4In && i == 3)
       ProcessGEcho(state, globalDSP.gEffect[i].input);
     
     state.moduleSlot = i; // gecho changes it!
     globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(state, false, -1, -1);
     globalDSP.gEffect[i].processor->Process<true>(state);
 
-    if (i == 0 && gEchoTarget == FFGEchoTarget::AfterFX1)
-      ProcessGEcho(state, globalDSP.gEffect[i].output);
-    else if (i == 1 && gEchoTarget == FFGEchoTarget::AfterFX2)
-      ProcessGEcho(state, globalDSP.gEffect[i].output);
-    else if (i == 2 && gEchoTarget == FFGEchoTarget::AfterFX3)
-      ProcessGEcho(state, globalDSP.gEffect[i].output);
-    else if (i == 3 && gEchoTarget == FFGEchoTarget::AfterFX4)
+    if (gEchoTarget == FFGEchoTarget::FX1Out && i == 0 ||
+      gEchoTarget == FFGEchoTarget::FX2Out && i == 1 ||
+      gEchoTarget == FFGEchoTarget::FX3Out && i == 2 ||
+      gEchoTarget == FFGEchoTarget::FX4Out && i == 3)
       ProcessGEcho(state, globalDSP.gEffect[i].output);
   }
 
@@ -238,7 +256,7 @@ FFPlugProcessor::ProcessPostVoice(
     output.audio.AddMul(globalDSP.gEffect[i].output, gfxToOutNorm);
   }
 
-  if (gEchoTarget == FFGEchoTarget::AfterFX)
+  if (gEchoTarget == FFGEchoTarget::MixIn)
     ProcessGEcho(state, output.audio);
 
   ampNormIn.CV().CopyTo(ampNormModulated);
@@ -253,7 +271,7 @@ FFPlugProcessor::ProcessPostVoice(
       output.audio[c].Set(s, output.audio[c].Get(s) * ampPlain * FBStereoBalance(c, balPlain));
   }
 
-  if (gEchoTarget == FFGEchoTarget::AfterMix)
+  if (gEchoTarget == FFGEchoTarget::MixOut)
     ProcessGEcho(state, output.audio);
 
   state.moduleSlot = 0;

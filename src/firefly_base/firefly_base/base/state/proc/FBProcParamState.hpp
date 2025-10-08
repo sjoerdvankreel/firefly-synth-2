@@ -170,6 +170,9 @@ FBProcParamState::Value() const
 inline void
 FBProcParamState::Value(float value)
 {
+  // Actually normalized, but, just trying to find weird stuff.
+  FB_ASSERT(-1.5f <= value && value <= 1.5f);
+  FB_ASSERT(!std::isnan(value));
   switch (Type())
   {
   case FBProcParamType::GlobalAcc: GlobalAcc().Value(value); break;

@@ -53,7 +53,7 @@ std::vector<FFModMatrixSource>
 FFModMatrixMakeSources(bool global, FBStaticTopo const* topo)
 {
   std::vector<FFModMatrixSource> result = {};
-  result.push_back({ false, { { -1, -1 }, { -1, -1 } } });
+  result.push_back({ true, false, { { -1, -1 }, { -1, -1 } } });
   for (int m = 0; m < topo->modules.size(); m++)
   {
     auto const& module = topo->modules[m];
@@ -63,7 +63,7 @@ FFModMatrixMakeSources(bool global, FBStaticTopo const* topo)
         {
           auto const& cvOutput = module.cvOutputs[o];
           for (int os = 0; os < cvOutput.slotCount; os++)
-            result.push_back({ false, { { m, ms }, { o, os } } });
+            result.push_back({ !module.voice, false, { { m, ms }, { o, os } } });
         }
   }
   if (!global)
@@ -77,7 +77,7 @@ FFModMatrixMakeSources(bool global, FBStaticTopo const* topo)
           {
             auto const& cvOutput = module.cvOutputs[o];
             for (int os = 0; os < cvOutput.slotCount; os++)
-              result.push_back({ true, { { m, ms }, { o, os } } });
+              result.push_back({ true, true, { { m, ms }, { o, os } } });
           }
     }
   }
@@ -136,9 +136,13 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     { "{33CE627C-A02D-43C0-A533-257E4D03EA1E}", "UP Add" },
     { "{F01ABE4C-C22E-47F2-900E-7E913906A740}", "UP Mul" },
     { "{91B784D0-E47A-46DC-ACD8-15A502E68A9A}", "UP Stk" },
+    { "{7E165825-F382-47F7-AEFB-4BF63605F830}", "UP Rmp" },
     { "{23F72708-1F63-4AAB-9970-9F1D77FC5245}", "BP Add" },
+    { "{2542FBEF-B0E5-4FA9-8831-1E592A8D01BB}", "BP Ad2" },
     { "{B85CFA28-8107-417C-B6E6-0DBF16D6AFE8}", "BP Mul" },
-    { "{98709D78-A6A9-4836-A64A-50B30167497B}", "BP Stk" } };
+    { "{98709D78-A6A9-4836-A64A-50B30167497B}", "BP Stk" },
+    { "{1461EF1C-29B8-4521-A19C-25DE48C6CFA2}", "BP Rmp" },
+    { "{8D2FFD6A-7E7C-402E-8C57-E6DDF49B6950}", "Ph Wrp" } };
   auto selectOpType = [](auto& module) { return &module.block.opType; };
   opType.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpType);
   opType.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpType);

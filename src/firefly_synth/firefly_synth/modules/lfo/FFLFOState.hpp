@@ -3,6 +3,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/lfo/FFLFOTopo.hpp>
 #include <firefly_synth/modules/lfo/FFLFOProcessor.hpp>
+#include <firefly_synth/modules/lfo/FFLFOStateVoiceStart.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -51,7 +52,6 @@ class alignas(alignof(TBlock)) FFLFOBlockParamState final
   std::array<TBlock, 1> skewAYMode = {};
   std::array<TBlock, 1> smoothTime = {};
   std::array<TBlock, 1> smoothBars = {};
-  std::array<TBlock, FFLFOBlockCount> phase = {};
   std::array<TBlock, FFLFOBlockCount> steps = {};
   std::array<TBlock, FFLFOBlockCount> opType = {};
   std::array<TBlock, FFLFOBlockCount> rateBars = {};
@@ -70,7 +70,6 @@ class alignas(alignof(TAccurate)) FFLFOAccParamState final
   std::array<TAccurate, FFLFOBlockCount> min = {};
   std::array<TAccurate, FFLFOBlockCount> max = {};
   std::array<TAccurate, FFLFOBlockCount> rateHz = {};
-
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFLFOAccParamState);
 };
@@ -82,6 +81,7 @@ class alignas(alignof(TAccurate)) FFLFOParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeLFOTopo(bool);
   FFLFOAccParamState<TAccurate> acc = {};
   FFLFOBlockParamState<TBlock> block = {};
+  FFLFOVoiceStartParamState<TAccurate> voiceStart = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFLFOParamState);
 };

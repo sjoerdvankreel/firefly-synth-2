@@ -93,6 +93,18 @@ FFEnvProcessor::BeginVoice(
     for (int i = 0; i < FFEnvStageCount; i++)
     {
       _voiceStartSnapshotNorm.stageTime[i] = stageTimeNorm[i].Voice()[voice].CV().Get(state.voice->offsetInBlock);
+      if (!graph)
+      {
+        // If it's off, it's off.
+        // No need to be introducing fake stages by modulation.
+        if (_voiceStartSnapshotNorm.stageTime[i] != 0.0f)
+        {
+          FBSArray<float, FBFixedBlockSamples> stageTimeBlock = {};
+          stageTimeBlock.Fill(FBBatch<float>(_voiceStartSnapshotNorm.stageTime[i]));
+          procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EnvStretch, false, voice, -1, stageTimeBlock);
+          _voiceStartSnapshotNorm.stageTime[i] = stageTimeBlock.Get(0);
+        }
+      }
       float stageSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
         FFEnvParam::StageTime, _voiceStartSnapshotNorm.stageTime[i], state.input->sampleRate);
       if (state.moduleSlot == FFAmpEnvSlot && i == 0 && _thisVoiceIsSubSectionStart)
@@ -145,7 +157,27 @@ FFEnvProcessor::Process(
   auto const& procParams = procState->param.voice.env[state.moduleSlot];
   auto& output = procState->dsp.voice[voice].env[state.moduleSlot].output;
   auto const& stageLevel = procParams.acc.stageLevel;
-  auto const& stageSlope = procParams.acc.stageSlope;
+  auto const& stageSlopeIn = procParams.acc.stageSlope;
+
+  if (_type == FFEnvType::Off)
+  {
+    output.Fill(0.0f);
+    return 0;
+  }
+
+  if (_finished)
+  {
+    output.Fill(_smoother.State());
+    return 0;
+  }
+
+  std::array<FBSArray<float, FBFixedBlockSamples>, FFEnvStageCount> stageSlopeModulated;
+  for (int i = 0; i < FFEnvStageCount; i++)
+  {
+    stageSlopeIn[i].Voice()[voice].CV().CopyTo(stageSlopeModulated[i]);
+    if (!graph && _stageSamples[i] != 0 && _type == FFEnvType::Exp)
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EnvSlope, false, voice, -1, stageSlopeModulated[i]);
+  }
   
   _thisVoiceIsSubSectionStart = false;
   _otherVoiceSubSectionTookOver = false;
@@ -163,22 +195,9 @@ FFEnvProcessor::Process(
       _otherVoiceSubSectionTookOver = true;
   }
 
-  if (_type == FFEnvType::Off)
-  {
-    output.Fill(0.0f);
-    return 0;
-  }
-
-  if (_finished)
-  {
-    output.Fill(_smoother.State());
-    return 0;
-  }
-
   int s = 0;
   float const minSlope = 0.001f;
   float const slopeRange = 1.0f - 2.0f * minSlope;
-  float const invLogHalf = 1.0f / std::log(0.5f);
 
   int loopEnd = _loopStart == 0 ? -1 : _loopStart - 1 + _loopLength;
   loopEnd = std::min(loopEnd, FFEnvStageCount);
@@ -218,8 +237,8 @@ FFEnvProcessor::Process(
         _lastOverall = stageStart + (stageEnd - stageStart) * pos;
       else
       {
-        float slope = minSlope + stageSlope[stage].Voice()[voice].CV().Get(s) * slopeRange;
-        _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * invLogHalf);
+        float slope = minSlope + stageSlopeModulated[stage].Get(s) * slopeRange;
+        _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * FFInvLogHalf);
       }
 
       // Dealing with portamento subsection release.
@@ -235,11 +254,11 @@ FFEnvProcessor::Process(
         int totalSamplesAfterRelease = _lengthSamples - _lengthSamplesUpToRelease;
         int currentSamplesAfterRelease = _positionSamples - _lengthSamplesUpToRelease;
         float positionPortaAmpRelease = std::clamp(currentSamplesAfterRelease / (float)totalSamplesAfterRelease, 0.0f, 1.0f);
-        float portaAmpReleaseMultiplier = std::pow(1.0f - positionPortaAmpRelease, std::log(0.00001f + (_portaSectionAmpReleaseNorm * 0.99999f)) * invLogHalf);
+        float portaAmpReleaseMultiplier = std::pow(1.0f - positionPortaAmpRelease, std::log(0.00001f + (_portaSectionAmpReleaseNorm * 0.99999f)) * FFInvLogHalf);
         _lastOverall *= portaAmpReleaseMultiplier;
       }
 
-      output.Set(s, _smoother.Next(_lastOverall));
+      output.Set(s, _smoother.NextScalar(_lastOverall));
 
       bool isReleaseNow = s == releaseAt;
       s++;
@@ -293,7 +312,7 @@ FFEnvProcessor::Process(
   }
 
   for (; s < FBFixedBlockSamples && _smoothPosition < _smoothSamples; s++, _smoothPosition++, _positionSamples++)
-    output.Set(s, _smoother.Next(_lastOverall));
+    output.Set(s, _smoother.NextScalar(_lastOverall));
 
   int processed = s;
   if (s < FBFixedBlockSamples)
@@ -317,8 +336,8 @@ FFEnvProcessor::Process(
   auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
   for (int i = 0; i < FFEnvStageCount; i++)
   {
+    exchangeParams.acc.stageSlope[i][voice] = stageSlopeModulated[i].Last();
     exchangeParams.acc.stageLevel[i][voice] = stageLevel[i].Voice()[voice].Last();
-    exchangeParams.acc.stageSlope[i][voice] = stageSlope[i].Voice()[voice].Last();
     exchangeParams.voiceStart.stageTime[i][voice] = _voiceStartSnapshotNorm.stageTime[i];
   }
   return processed;

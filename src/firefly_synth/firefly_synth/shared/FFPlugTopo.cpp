@@ -15,6 +15,7 @@
 #include <firefly_synth/modules/master/FFMasterTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
+#include <firefly_synth/modules/global_uni/FFGlobalUniTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
@@ -107,7 +108,6 @@ FFMakeTopo(FBPlugFormat format)
   result->specialSelector = SpecialParamsSelector;
   result->specialGUISelector = SpecialGUIParamsSelector;
   result->exchangeStateSize = sizeof(FFExchangeState);
-  result->exchangeStateAlignment = alignof(FFExchangeState);
   result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };
   result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
   result->allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };
@@ -123,6 +123,7 @@ FFMakeTopo(FBPlugFormat format)
   result->modules[(int)FFModuleType::MIDI] = std::move(*FFMakeMIDITopo());
   result->modules[(int)FFModuleType::GNote] = std::move(*FFMakeGNoteTopo());
   result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
+  result->modules[(int)FFModuleType::GlobalUni] = std::move(*FFMakeGlobalUniTopo());
   result->modules[(int)FFModuleType::VoiceModule] = std::move(*FFMakeVoiceModuleTopo());
   result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
   result->modules[(int)FFModuleType::GUISettings] = std::move(*FFMakeGUISettingsTopo());
@@ -157,6 +158,7 @@ FFMakeTopo(FBPlugFormat format)
   result->moduleProcessOrder.push_back({ (int)FFModuleType::Master, 0 });
   for (int s = 0; s < result->modules[(int)FFModuleType::GLFO].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::GLFO, s });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::GlobalUni, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::VMatrix, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::VNote, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::Env, FFAmpEnvSlot });

@@ -17,9 +17,9 @@ public IFBHorizontalAutoSize
 {
   int const _textWidth;
 public:
-  FBAutoSizeLabel(std::string const& text);
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
+  FBAutoSizeLabel(std::string const& text, bool centred = false);
 };
 
 class FBGUIParamLabel final:

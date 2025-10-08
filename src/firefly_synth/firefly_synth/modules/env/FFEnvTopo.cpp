@@ -159,12 +159,13 @@ FFMakeEnvTopo()
 
   auto& stageSlope = result->params[(int)FFEnvParam::StageSlope];
   stageSlope.mode = FBParamMode::Accurate;
-  stageSlope.defaultText = "50";
+  stageSlope.defaultText = "0";
   stageSlope.name = "Slope";
   stageSlope.slotCount = FFEnvStageCount;
   stageSlope.unit = "%";
   stageSlope.id = "{A860A5DD-A18D-4B00-A394-53E4328642D2}";
   stageSlope.type = FBParamType::Identity;
+  stageSlope.Identity().displayAsBipolar = true;
   auto selectStageSlope = [](auto& module) { return &module.acc.stageSlope; };
   stageSlope.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageSlope);
   stageSlope.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStageSlope);

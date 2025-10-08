@@ -1,5 +1,6 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFDeserializationConverter.hpp>
+#include <firefly_synth/modules/env/FFEnvTopo.hpp>
 #include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 
@@ -161,6 +162,19 @@ FFDeserializationConverter::PostProcess(
         }
       }
     }
+  }
+
+  // 2.0.6 - envelope slope now displays as bipolar.
+  if (OldVersion() < FBPlugVersion(2, 0, 6))
+  {
+    auto const& envModule = Topo()->static_->modules[(int)FFModuleType::Env];
+    auto const& slopeParam = envModule.params[(int)FFEnvParam::StageSlope];
+    for (int ms = 0; ms < envModule.slotCount; ms++)
+      for (int ps = 0; ps < slopeParam.slotCount; ps++)
+      {
+        int rtParamIndex = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, ms }, { (int)FFEnvParam::StageSlope, ps } })->runtimeParamIndex;
+        *paramValues[rtParamIndex] = FBToBipolar(*paramValues[rtParamIndex]);
+      }
   }
 }
 

@@ -23,7 +23,10 @@ FBIdentityParamNonRealTime::NormalizedToPlain(double normalized) const
 std::string
 FBIdentityParamNonRealTime::PlainToText(bool io, int /*moduleIndex*/, double plain) const
 {
-  double displayPlain = plain * displayMultiplier;
+  double displayPlain = plain;
+  if (displayAsBipolar)
+    displayPlain = FBToBipolar(displayPlain);
+  displayPlain *= displayMultiplier;
   if (io)
     return std::to_string(displayPlain);
   return FBFormatDouble(displayPlain, FBDefaultDisplayPrecision);
@@ -37,6 +40,8 @@ FBIdentityParamNonRealTime::TextToPlainInternal(bool /*io*/, int /*moduleIndex*/
     return std::nullopt;
   double result = resultOpt.value();
   result /= displayMultiplier;
+  if (displayAsBipolar)
+    result = FBToUnipolar(result);
   if (result < 0.0 || result > 1.0)
     return {};
   return { result };

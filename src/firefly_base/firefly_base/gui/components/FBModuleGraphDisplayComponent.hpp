@@ -8,12 +8,13 @@ struct FBModuleGraphComponentData;
 class FBModuleGraphDisplayComponent final:
 public juce::Component
 {
+  bool _withBorder;
   FBModuleGraphComponentData const* const _data;
 
 public:
   void paint(juce::Graphics& g) override;
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBModuleGraphDisplayComponent);
-  FBModuleGraphDisplayComponent(FBModuleGraphComponentData const* data);
+  FBModuleGraphDisplayComponent(FBModuleGraphComponentData const* data, bool withBorder);
 
 private:
   float PointXLocation(

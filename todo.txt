@@ -1,8 +1,10 @@
-TODOLIST for alpha-17
-[ ] global unison
-[ ] invert scale-none no workie => cannot do, need bipolar amount
-
 TODOLIST for alpha-18
+[ ] switch the env stage controls for MSEG editor
+[ ] pop-up editor with the current stuff
+[ ] make the popouts moveable top level windows + also the matrix
+
+TODOLIST for alpha-19 - tuning and keytracking
+[ ] filter kbd track -- should it take into account all coarse pitch mods ?
 [ ] make a dedicated tuning section with some options
 [ ] need per-instance params for microtuning
 [ ] note filtering
@@ -12,8 +14,15 @@ TODOLIST for alpha-18
 [ ] MTS take into account all pitch modulators (eg pitchbend + 1 must be +1 semitones of the retuned scale, also for all coarse/fine, unison, etc etc)
 [ ] filters should track the actual pitch when possible (string osci)
 
-TODOLIST for alpha-19
+TODOLIST for alpha-20
+[ ] import/export module
+[ ] copy/paste module and patch across sessions
+[ ] split large matrix dropdowns
+[ ] preset infra
+[ ] check all linear horizontal + do sensitivity for linear horizontal
+[ ] headers on the popout windows
 [ ] highlight not default
+[ ] env stage length edit is annoying
 [ ] how the heck is the mod menu ordered?
 [ ] do display disabled/impossible items different in the mod matrix
 [ ] save modulation as actual value not normalized + display that way too
@@ -21,10 +30,13 @@ TODOLIST for alpha-19
 [ ] get the text out of the graphs
 [ ] show visual clue if knob is being modulated
 [ ] show modulation amount in terms of the mod target unit for matrix and easy access
+[ ] invert scale-none no workie => cannot do, need bipolar amount
 
-TODOLIST for alpha-20
+TODOLIST for alpha-21
 [ ] theme the gui
 
+write the manual + note about disable everything unused for performance including unused matrix slots
+routing / order diagram
 figure out bitwig dataexchange on Linux
 make a percussion demo
 make porta lead demo

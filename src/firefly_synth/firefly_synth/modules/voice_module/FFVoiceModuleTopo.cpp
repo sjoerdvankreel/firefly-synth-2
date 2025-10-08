@@ -1,5 +1,6 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFTopoDetail.hpp>
+#include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
@@ -30,8 +31,8 @@ FFMakeVoiceModuleTopo()
   coarse.unit = "Semitones";
   coarse.id = "{64019FB1-6EE2-4FF5-8D28-F6B692B25EFB}";
   coarse.type = FBParamType::Linear;
-  coarse.Linear().min = -128.0f;
-  coarse.Linear().max = 128.0f;
+  coarse.Linear().min = -FFOsciCoarseSemis;
+  coarse.Linear().max = FFOsciCoarseSemis;
   auto selectCoarse = [](auto& module) { return &module.acc.coarse; };
   coarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCoarse);
   coarse.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCoarse);
@@ -167,7 +168,7 @@ FFMakeVoiceModuleTopo()
   portaSectionAmpAttack.mode = FBParamMode::VoiceStart;
   portaSectionAmpAttack.defaultText = "50";
   portaSectionAmpAttack.name = "Portamento Section Amp Attack";
-  portaSectionAmpAttack.display = "Amp Attack";
+  portaSectionAmpAttack.display = "Amp Att";
   portaSectionAmpAttack.slotCount = 1;
   portaSectionAmpAttack.unit = "%";
   portaSectionAmpAttack.id = "{C035EBA5-D5E6-4B3B-A40A-2BD5B500ACCA}";
@@ -182,7 +183,7 @@ FFMakeVoiceModuleTopo()
   portaSectionAmpRelease.mode = FBParamMode::VoiceStart;
   portaSectionAmpRelease.defaultText = "50";
   portaSectionAmpRelease.name = "Portamento Section Amp Release";
-  portaSectionAmpRelease.display = "Amp Release";
+  portaSectionAmpRelease.display = "Amp Rls";
   portaSectionAmpRelease.slotCount = 1;
   portaSectionAmpRelease.unit = "%";
   portaSectionAmpRelease.id = "{227ACA77-CD6E-488B-86BB-9802FDF2D2F2}";
@@ -191,7 +192,7 @@ FFMakeVoiceModuleTopo()
   portaSectionAmpRelease.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPortaSectionAmpRelease);
   portaSectionAmpRelease.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectPortaSectionAmpRelease);
   portaSectionAmpRelease.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPortaSectionAmpRelease);
-  portaSectionAmpRelease.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType, (int)FFVoiceModuleParam::PortaMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFVoiceModulePortaMode::Section; });
+  portaSectionAmpRelease.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType, (int)FFVoiceModuleParam::PortaMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFVoiceModulePortaMode::Section; }); 
 
   return result;
 }

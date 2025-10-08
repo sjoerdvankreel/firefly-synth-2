@@ -21,6 +21,9 @@ public IFBPlugProcessor
   FFProcState* const _procState;
   FFExchangeState* const _exchangeState;
 
+  // global uni
+  std::int64_t _voiceGroupId = {};
+
   // on note random
   FFParkMillerPRNG _onNoteRandomUni = {};
   FFMarsagliaPRNG<false> _onNoteRandomNorm = {};
@@ -31,7 +34,7 @@ public IFBPlugProcessor
   FBModuleProcState MakeModuleState(FBPlugInputBlock const& input);
   FBModuleProcState MakeModuleVoiceState(FBPlugInputBlock const& input, int voice);
   void ProcessGEcho(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout);
-  void ApplyGlobalModulation(FBPlugInputBlock const& input, FBModuleProcState& state, FBTopoIndices moduleIndices);
+  void ApplyGlobalModulation(FBModuleProcState& state, FBTopoIndices moduleIndices);
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugProcessor);

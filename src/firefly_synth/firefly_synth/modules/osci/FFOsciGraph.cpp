@@ -45,7 +45,7 @@ OsciGraphRenderData::DoReleaseOnDemandBuffers(
 
 void
 OsciGraphRenderData::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
+  FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   // need to handle all oscis up to this one + mod matrix
   auto* moduleProcState = state->ModuleProcState();
@@ -55,12 +55,17 @@ OsciGraphRenderData::DoBeginVoiceOrBlock(
   for (int i = 0; i <= graphIndex; i++)
   {
     moduleProcState->moduleSlot = i;
+    FFOsciExchangeState const* exchangeFromDSP = nullptr;
+    int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ (int)FFModuleType::Osci, i });
+    auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
+    if (exchange)
+      exchangeFromDSP = &dynamic_cast<FFOsciExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
     auto& processor = GetVoiceDSPState(*moduleProcState).osci[i].processor;
     processor->AllocOnDemandBuffers(
       state->PlugGUI()->HostContext()->Topo(), 
       state->ProcContainer(), 
       i, true, moduleProcState->input->sampleRate);
-    processor->BeginVoice(*moduleProcState, true);
+    processor->BeginVoice(*moduleProcState, exchangeFromDSP, true);
   }
   moduleProcState->moduleSlot = slot;
 }

@@ -2,6 +2,7 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/shared/FFStateDetail.hpp>
 #include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
+#include <firefly_synth/modules/global_uni/FFGlobalUniProcessor.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleProcessor.hpp>
 
@@ -62,14 +63,13 @@ FFVoiceModuleProcessor::BeginVoice(
       int myChannel = state.voice->event.note.channel;
       FBVoiceManager const* vManager = state.input->voiceManager;
       int tookOverThisKey = (int)std::round(previousMidiKeyUntuned);
-      for (int v = 0; v < FBMaxVoices; v++)
+      for (int v: vManager->ActiveVoices())
         if (v != voice)
-          if (vManager->IsActive(v))
-          {
-            auto const& thatEventNote = vManager->Voices()[v].event.note;
-            if (thatEventNote.channel == myChannel && thatEventNote.keyUntuned == tookOverThisKey)
-              procState->dsp.voice[v].voiceModule.otherVoiceSubSectionTookOver = true;
-          }
+        {
+          auto const& thatEventNote = vManager->Voices()[v].event.note;
+          if (thatEventNote.channel == myChannel && thatEventNote.keyUntuned == tookOverThisKey)
+            procState->dsp.voice[v].voiceModule.otherVoiceSubSectionTookOver = true;
+        }
     }
   }
 
@@ -104,7 +104,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   auto& voiceState = procState->dsp.voice[voice];
   auto const& procParams = procState->param.voice.voiceModule[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
-  auto& pitchOffsetInSemis = voiceState.voiceModule.pitchOffsetInSemis;
+  auto& pitchOffsetInSemis = voiceState.voiceModule.pitchOffsetInSemis;  
 
   auto masterPitchBendTarget = procState->dsp.global.master.bendTarget;
   auto const& masterPitchBendSemis = procState->dsp.global.master.bendAmountInSemis;
@@ -120,6 +120,8 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   coarseNormIn.CV().CopyTo(coarseNormModulated);
   FFApplyModulation(FFModulationOpType::UPStack, voiceState.env[FFEnvSlotOffset + 4].output, env5ToCoarse.CV(), coarseNormModulated);
   FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[4].outputAll, lfo5ToFine.CV(), fineNormModulated);
+  procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VoiceCoarse, false, voice, -1, coarseNormModulated);
+  procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VoiceFine, false, voice, -1, fineNormModulated);
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {

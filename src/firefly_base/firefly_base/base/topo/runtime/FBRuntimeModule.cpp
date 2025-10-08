@@ -68,7 +68,15 @@ cvOutputs(MakeRuntimeCVOutputs(topo, staticModule, topoIndices, runtimeIndex, ru
 #ifndef NDEBUG
   std::set<std::string> paramNames = {};
   for (int p = 0; p < staticModule.params.size(); p++)
-    FB_ASSERT(paramNames.insert(staticModule.params[p].name).second);
+  {
+    for (int ps = 0; ps < staticModule.params[p].slotCount; ps++)
+    {
+      auto paramName = FBMakeRuntimeModuleItemShortName(
+        topo, staticModule.params[p].name, topoIndices.slot, staticModule.params[p].slotCount,
+        ps, staticModule.params[p].slotFormatter, staticModule.params[p].slotFormatterOverrides);
+      FB_ASSERT(paramNames.insert(paramName).second);
+    }
+  }
   std::set<std::string> cvOutputNames = {};
   for (int o = 0; o < staticModule.cvOutputs.size(); o++)
     FB_ASSERT(cvOutputNames.insert(staticModule.cvOutputs[o].name).second);

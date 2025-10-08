@@ -7,11 +7,33 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
+FormatOsciMixToOut(FBStaticTopo const& /*topo*/, int /* moduleSlot */, int /*mixSlot*/)
+{
+  return "Osc Mix\U00002192Out";
+}
+
+static std::string
 FormatOsciToOutSlot(FBStaticTopo const& topo, int /* moduleSlot */, int mixSlot)
 {
   int osciSlot = mixSlot;
   std::string osciName = topo.modules[(int)FFModuleType::Osci].name + " " + std::to_string(osciSlot + 1);
   return osciName + "\U00002192Out";
+}
+
+static std::string
+FormatOsciToOsciMixSlot(FBStaticTopo const& topo, int /* moduleSlot */, int mixSlot)
+{
+  int osciSlot = mixSlot;
+  std::string osciName = topo.modules[(int)FFModuleType::Osci].name + " " + std::to_string(osciSlot + 1);
+  return osciName + "\U00002192Osc Mix";
+}
+
+static std::string
+FormatOsciMixToVFXSlot(FBStaticTopo const& /*topo*/, int /* moduleSlot */, int mixSlot)
+{
+  int fxSlot = mixSlot;
+  std::string fxName = "VFX " + std::to_string(fxSlot + 1);
+  return "Osc Mix\U00002192" + fxName;
 }
 
 static std::string
@@ -65,6 +87,29 @@ FFMakeVMixTopo()
   ampEnvToAmp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectAmpEnvToAmp);
   ampEnvToAmp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAmpEnvToAmp);
 
+  auto& ampEnvTarget = result->params[(int)FFVMixParam::AmpEnvTarget];
+  ampEnvTarget.mode = FBParamMode::Block;
+  ampEnvTarget.slotCount = 1;
+  ampEnvTarget.name = "Amp Env Target";
+  ampEnvTarget.display = "Target";
+  ampEnvTarget.defaultText = "VMix Out";
+  ampEnvTarget.id = "{B1D76321-C513-4836-9AB6-741E2204D128}";
+  ampEnvTarget.type = FBParamType::List;
+  ampEnvTarget.List().items = {
+    { "{350E31BF-0F89-4C30-B719-9E436F2074C2}", "Off" },
+    { "{1DAA2CE0-67ED-4A09-A5E6-A907F101F4A7}", "Osc PreMix" },
+    { "{60E614A3-1FB8-4158-8884-37393464F52D}", "Osc PostMix" },
+    { "{94FDB0DE-84D2-4DE0-98E5-AE247F337CED}", "Osc Mix" },
+    { "{6FBC9845-FEDB-467D-9EAB-FB924DE10877}", "VFX In" },
+    { "{D2E4DE41-7CB6-411E-BF5E-08970EAB3124}", "VFX Out" },
+    { "{5D47DEB7-B2CF-4F98-BCD6-523CD0F9130A}", "VMix In" },
+    { "{88AA06B7-BFCB-463B-9C6D-21A619BE6FB4}", "VMix Out" } };
+
+  auto selectAmpEnvTarget = [](auto& module) { return &module.block.ampEnvTarget; };
+  ampEnvTarget.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAmpEnvTarget);
+  ampEnvTarget.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectAmpEnvTarget);
+  ampEnvTarget.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAmpEnvTarget);
+
   auto& bal = result->params[(int)FFVMixParam::Bal];
   bal.mode = FBParamMode::Accurate;
   bal.defaultText = "0";
@@ -94,6 +139,36 @@ FFMakeVMixTopo()
   lfo6ToBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO6ToBal);
   lfo6ToBal.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO6ToBal);
   lfo6ToBal.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO6ToBal);
+
+  auto& osciToOsciMix = result->params[(int)FFVMixParam::OsciToOsciMix];
+  osciToOsciMix.mode = FBParamMode::Accurate;
+  osciToOsciMix.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
+  osciToOsciMix.name = "Osc To Osc Mix";
+  osciToOsciMix.slotCount = FFOsciCount;
+  osciToOsciMix.unit = "%";
+  osciToOsciMix.id = "{3EF9D095-1F5E-45BD-8B9E-55EEC321AA43}";
+  osciToOsciMix.slotFormatter = FormatOsciToOsciMixSlot;
+  osciToOsciMix.slotFormatterOverrides = true;
+  osciToOsciMix.type = FBParamType::Identity;
+  auto selectOsciToOsciMix = [](auto& module) { return &module.acc.osciToOsciMix; };
+  osciToOsciMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOsciToOsciMix);
+  osciToOsciMix.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectOsciToOsciMix);
+  osciToOsciMix.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOsciToOsciMix);
+
+  auto& osciMixToVFX = result->params[(int)FFVMixParam::OsciMixToVFX];
+  osciMixToVFX.mode = FBParamMode::Accurate;
+  osciMixToVFX.defaultText = "0";
+  osciMixToVFX.name = "Osc Mix To VFX";
+  osciMixToVFX.slotCount = FFEffectCount;
+  osciMixToVFX.unit = "%";
+  osciMixToVFX.id = "{54582A91-57BD-4F24-BA01-390AF0339EB2}";
+  osciMixToVFX.slotFormatter = FormatOsciMixToVFXSlot;
+  osciMixToVFX.slotFormatterOverrides = true;
+  osciMixToVFX.type = FBParamType::Identity;
+  auto selectOsciMixToVFX = [](auto& module) { return &module.acc.osciMixToVFX; };
+  osciMixToVFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOsciMixToVFX);
+  osciMixToVFX.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectOsciMixToVFX);
+  osciMixToVFX.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOsciMixToVFX);
   
   auto& osciToVFX = result->params[(int)FFVMixParam::OsciToVFX];
   osciToVFX.mode = FBParamMode::Accurate;
@@ -127,7 +202,7 @@ FFMakeVMixTopo()
 
   auto& osciToOut = result->params[(int)FFVMixParam::OsciToOut];
   osciToOut.mode = FBParamMode::Accurate;
-  osciToOut.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
+  osciToOut.defaultText = "0";
   osciToOut.name = "Osc To Out";
   osciToOut.slotCount = FFOsciCount;
   osciToOut.unit = "%";
@@ -154,6 +229,21 @@ FFMakeVMixTopo()
   vfxToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVFXToOut);
   vfxToOut.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectVFXToOut);
   vfxToOut.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVFXToOut);
+
+  auto& osciMixToOut = result->params[(int)FFVMixParam::OsciMixToOut];
+  osciMixToOut.mode = FBParamMode::Accurate;
+  osciMixToOut.defaultText = "100";
+  osciMixToOut.name = "Osc Mix To Out";
+  osciMixToOut.slotCount = 1;
+  osciMixToOut.unit = "%";
+  osciMixToOut.id = "{44FCA1C1-297B-4EE9-B928-81F2CF31EB2A}";
+  osciMixToOut.slotFormatter = FormatOsciMixToOut;
+  osciMixToOut.slotFormatterOverrides = true;
+  osciMixToOut.type = FBParamType::Identity;
+  auto selectOsciMixToOut = [](auto& module) { return &module.acc.osciMixToOut; };
+  osciMixToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOsciMixToOut);
+  osciMixToOut.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectOsciMixToOut);
+  osciMixToOut.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOsciMixToOut);
 
   return result;
 }

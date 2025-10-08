@@ -1,11 +1,15 @@
 #pragma once
 
+#include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
+
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBContentComponent.hpp>
 
 #include <memory>
+#include <vector>
+#include <functional>
 #include <unordered_map>
 
 class FBHostGUIContext;
@@ -23,15 +27,20 @@ public FBPlugGUI
   FBGridComponent* _outputGUIAndPatch = {};
 
   FBContentComponent* _content = {};
+  juce::Label* _overlayCaption = {};
+  std::function<void()> _overlayInit = {};
   juce::Component* _overlayComponent = {};
   juce::Component* _overlayContainer = {};
   FBContentComponent* _overlayContent = {};
 
-  FBModuleGraphComponent* _graph = {};
+  FBModuleGraphComponent* _mainGraph = {};
+  std::vector<FBModuleGraphComponent*> _fixedGraphs = {};
+  std::unique_ptr<FFGlobalUniParamListener> _globalUniParamListener = {};
+  
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   void SetupGUI();
-  FBGUIRenderType GetRenderType(int paramIndex) const;
+  FBGUIRenderType GetRenderType() const;
 
 protected:
   void OnPatchChanged() override;
@@ -42,16 +51,22 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
   FFPlugGUI(FBHostGUIContext* hostContext);
 
-  void FlushDelayLines();
+  void FlushAudio();
   void ToggleMatrix(bool on);
-  void SwitchGraphToModule(int index, int slot);
+  void RequestFixedGraphsRerender(int moduleIndex);
+  void SwitchMainGraphToModule(int index, int slot);
   
   void HideOverlayComponent();
-  void ShowOverlayComponent(juce::Component* overlay, int w, int h);
+  void ShowOverlayComponent(
+    std::string const& title, 
+    juce::Component* overlay, 
+    int w, int h, bool vCenter,
+    std::function<void()> init);
+
+  FBGUIRenderType GetKnobRenderType() const override { return GetRenderType(); }
+  FBGUIRenderType GetGraphRenderType() const override { return GetRenderType(); }
 
   void resized() override;
-  FBGUIRenderType GetKnobRenderType() const override;
-  FBGUIRenderType GetGraphRenderType() const override;
   void ModuleSlotClicked(int index, int slot) override;
   void ActiveModuleSlotChanged(int index, int slot) override;
   void GUIParamNormalizedChanged(int index, double normalized) override;

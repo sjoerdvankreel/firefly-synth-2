@@ -38,6 +38,7 @@ _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
 {
   _input->audio = &_audio;
   _input->noteEvents = &_noteEvents;
+  _input->procState = _procState.get();
   _input->noteMatrixRaw = &_noteMatrixRaw;
 
   auto hostContext = plugGUI->HostContext();
@@ -150,7 +151,7 @@ FBGraphRenderState::PrepareForRenderPrimaryVoice()
     _primaryVoiceManager->Return(0);
     _primaryVoiceManager->ResetReturnedVoices();
   }
-  _primaryVoiceManager->Lease(MakeNoteC4On());
+  _primaryVoiceManager->Lease(MakeNoteC4On(), -1, 0);
   _input->voiceManager = _primaryVoiceManager.get();
   _moduleState->voice = &_primaryVoiceManager->Voices()[0];
 }
@@ -228,7 +229,7 @@ FBGraphRenderState::GlobalModuleExchangeStateEqualsPrimary(
 {
   auto context = _plugGUI->HostContext();
   auto topo = _plugGUI->HostContext()->Topo();
-  auto paramIndex = topo->audio.paramTopoToRuntime.at({ { moduleIndex, moduleSlot }, { 0, 0 } });
+  auto paramIndex = topo->audio.ParamAtTopo({ { moduleIndex, moduleSlot }, { 0, 0 } })->runtimeParamIndex;
   auto runtimeModuleIndex = topo->audio.params[paramIndex].runtimeModuleIndex;
   for (; paramIndex < topo->audio.params.size() && topo->audio.params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
     if (*ExchangeContainer()->Params()[paramIndex].Global() != static_cast<float>(context->GetAudioParamNormalized(paramIndex)))
@@ -242,7 +243,7 @@ FBGraphRenderState::VoiceModuleExchangeStateEqualsPrimary(
 {
   auto context = _plugGUI->HostContext();
   auto topo = _plugGUI->HostContext()->Topo();
-  auto paramIndex = topo->audio.paramTopoToRuntime.at({ { moduleIndex, moduleSlot }, { 0, 0 } });
+  auto paramIndex = topo->audio.ParamAtTopo({ { moduleIndex, moduleSlot }, { 0, 0 } })->runtimeParamIndex;
   auto runtimeModuleIndex = topo->audio.params[paramIndex].runtimeModuleIndex;
   for (; paramIndex < topo->audio.params.size() && topo->audio.params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
     if (ExchangeContainer()->Params()[paramIndex].Voice()[voice] != static_cast<float>(context->GetAudioParamNormalized(paramIndex)))

@@ -1,7 +1,9 @@
 #pragma once
 
+#include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/topo/static/FBBarsItem.hpp>
+
 #include <xsimd/xsimd.hpp>
 
 #include <cmath>
@@ -14,26 +16,16 @@ inline constexpr float FBTwoPi = 2.0f * FBPi;
 inline constexpr float FBMaxPitch = 140.0f; // Safety net at 26.5 kHz.
 inline constexpr float FBMinPitch = -48.0f; // Very small Hz but not denormal. Also some algorithms divide by frequency => div/0.
 
-inline float
-FBToUnipolar(float v)
+template <class T>
+inline T
+FBToUnipolar(T v)
 {
   return (v * 0.5f) + 0.5f;
 }
 
-inline float
-FBToBipolar(float v)
-{
-  return (v - 0.5f) * 2.0f;
-}
-
-inline FBBatch<float>
-FBToUnipolar(FBBatch<float> v)
-{
-  return (v * 0.5f) + 0.5f;
-} 
-
-inline FBBatch<float>
-FBToBipolar(FBBatch<float> v)
+template <class T>
+inline T
+FBToBipolar(T v)
 {
   return (v - 0.5f) * 2.0f;
 }
@@ -77,6 +69,12 @@ FBTimeToSamples(float time, float sampleRate)
 
 inline float
 FBTimeToFloatSamples(float time, float sampleRate)
+{
+  return time * sampleRate;
+}
+
+inline FBBatch<float>
+FBTimeToFloatSamples(FBBatch<float> time, FBBatch<float> sampleRate)
 {
   return time * sampleRate;
 }

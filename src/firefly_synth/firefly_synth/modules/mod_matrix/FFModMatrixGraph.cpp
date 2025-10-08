@@ -1,5 +1,5 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
-#include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
+#include <firefly_synth/dsp/shared/FFModulate.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGraph.hpp>
 

@@ -26,7 +26,7 @@ class alignas(FBSIMDAlign) FBAccParamState final
   void SetSmoothingCoeffs(int sampleCount) { _hostSmoother.SetCoeffs(sampleCount); }
   
   void SmoothNextHostValue(int sample, float automation) 
-  { _hostCV.Set(sample, _hostSmoother.Next(std::clamp(automation + _hostModulation, 0.0f, 1.0f))); }
+  { _hostCV.Set(sample, _hostSmoother.NextScalar(std::clamp(automation + _hostModulation, 0.0f, 1.0f))); }
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBAccParamState);

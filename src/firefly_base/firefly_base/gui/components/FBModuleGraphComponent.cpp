@@ -20,26 +20,45 @@ FBModuleGraphComponent::
 ~FBModuleGraphComponent() {}
 
 FBModuleGraphComponent::
-FBModuleGraphComponent(FBGraphRenderState* renderState) :
+FBModuleGraphComponent(
+  FBGraphRenderState* renderState,
+  int fixedToRuntimeModuleIndex,
+  int fixedToGraphIndex,
+  std::function<FBGUIRenderType()> getCurrentRenderType) :
 Component(),
+_getCurrentRenderType(getCurrentRenderType),
+_fixedToRuntimeModuleIndex(fixedToRuntimeModuleIndex),
+_fixedToGraphIndex(fixedToGraphIndex),
 _data(std::make_unique<FBModuleGraphComponentData>()),
-_display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
+_display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get(), _fixedToRuntimeModuleIndex == -1))
 {
   _data->renderState = renderState;
-  _grid = std::make_unique<FBGridComponent>(true, 1, 1);
-  _grid->Add(0, 0, _display.get());
-  _section = std::make_unique<FBSectionComponent>(_grid.get());
-  addAndMakeVisible(_section.get());
+  if (_fixedToRuntimeModuleIndex != -1)
+  {
+    addAndMakeVisible(_display.get());
+  } else 
+  {
+    _grid = std::make_unique<FBGridComponent>(true, 1, 1);
+    _grid->Add(0, 0, _display.get());
+    _section = std::make_unique<FBSectionComponent>(_grid.get());
+    addAndMakeVisible(_section.get());
+  }
   resized();
 }
 
 void
 FBModuleGraphComponent::resized()
 {
-  if (!_section)
-    return;
-  _section->setBounds(getLocalBounds());
-  _section->resized();
+  if (_section)
+  {
+    _section->setBounds(getLocalBounds());
+    _section->resized();
+  }
+  else if (_display)
+  {
+    _display->setBounds(getLocalBounds());
+    _display->resized();
+  }
 }
 
 FBTopoIndices const&
@@ -62,9 +81,12 @@ FBModuleGraphComponent::PrepareForRender(int moduleIndex)
 {
   if (moduleIndex == -1)
     return false;
+  if (_fixedToRuntimeModuleIndex != -1)
+    return moduleIndex == _fixedToRuntimeModuleIndex;
   auto moduleProcState = _data->renderState->ModuleProcState();
   moduleProcState->moduleSlot = TopoIndicesFor(moduleIndex).slot;
-  return StaticModuleFor(moduleIndex).graphRenderer != nullptr;
+  auto const& staticTopo = StaticModuleFor(moduleIndex);
+  return staticTopo.graphParticipatesInMain && staticTopo.graphRenderer != nullptr;
 }
 
 void
@@ -81,9 +103,8 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
   float fps = FBGUIFPS;
   auto now = high_resolution_clock::now();
   auto elapsedMillis = duration_cast<milliseconds>(now - _updated);
-  if (auto* parent = findParentComponentOfClass<FBPlugGUI>())
-    if(parent->GetGraphRenderType() == FBGUIRenderType::Basic)
-      fps = 1;
+  if (_getCurrentRenderType() == FBGUIRenderType::Basic)
+    fps = 1;
   if (elapsedMillis.count() < 1000.0 / fps)
     return;
   _updated = now;
@@ -100,14 +121,14 @@ FBModuleGraphComponent::paint(Graphics& /*g*/)
 
   auto const* topo = _data->renderState->ModuleProcState()->topo;
   int staticIndex = topo->modules[_tweakedModuleByUI].topoIndices.index;
+  FB_ASSERT(topo->static_->modules[staticIndex].graphParticipatesInMain == (_fixedToRuntimeModuleIndex == -1));
 
   _data->bipolar = false;
   _data->drawMarkersSelector = {};
   _data->drawClipBoundaries = false;
   _data->skipDrawOnEqualsPrimary = true;
-  _data->guiRenderType = FBGUIRenderType::Basic;
-  if(auto* parent = findParentComponentOfClass<FBPlugGUI>())
-    _data->guiRenderType = parent->GetGraphRenderType();
+  _data->fixedGraphIndex = _fixedToGraphIndex;
+  _data->guiRenderType = _getCurrentRenderType();
 
   _data->graphs.clear();
   _data->graphs.resize(topo->static_->modules[staticIndex].graphCount);

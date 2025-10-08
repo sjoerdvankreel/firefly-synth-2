@@ -6,6 +6,11 @@
 
 #include <array>
 
+// It doesn't feel so great to push stuff with virtuals over the wire.
+// It seems to work, and even cross-process (Bitwig), and we're guaranteed
+// to be always the exact same binary on both ends, etc, but still. I don't like it.
+// NOTE TO SELF: at blit-time, it's always most-derived and always by-value,
+// so, we're probably good.
 struct alignas(FBSIMDAlign) FBModuleProcExchangeStateBase
 {
   int boolIsActive = 0; // i dont dare to put not aligned stuff in here anymore because of ARM mac
