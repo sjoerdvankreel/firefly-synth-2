@@ -11,10 +11,10 @@
 
 # This is not a finished product
 * But it is a functioning clap and vst3 plugin.
+* But nearly finished on the audio engine side! Only microtuning still missing.
 * Builds and runs on win/lin (ubuntu 22+)/mac (both Intel and ARM).
 * Tested on reaper, renoise, fruity and bitwig.
-* Osci, inter-osci modulation, envelopes, per-voice and global fx/echo/lfos/modmatrix/audiomixer matrix, global pitchbend/modwheel, voice level (all osci) coarse/fine and portamento implemented.
-* Stock JUCE GUI, no presets, no MTS-ESP, no global unison.
+* Stock JUCE GUI, no presets, theming still to-do.
 
 # Some demo material
 * Bowed strings
@@ -66,6 +66,12 @@
 * Plucked strings + per-voice echo mod
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_voice_echo_pluckstring_and_voice_echo_mod.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_voice_echo_pluckstring_and_voice_echo_mod.rpp)
+* Per-voice echo applied to only one out of 2 osci's
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_voice_echo_one_osci_only.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_voice_echo_one_osci_only.rpp)
+* Global unison with different per-voice settings for coarse pitch, voice lfo to voice filter, and echo
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_global_uni_lfo_echo.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_global_uni_lfo_echo.rpp)
 
 The distortion demo is actually interesting to look at the reaper/video file. It makes use of envelope loop points,
 keytracking state variable filters and keytracking comb filters. Because of the keytracking each engine voice
