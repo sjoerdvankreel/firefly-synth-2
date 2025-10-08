@@ -12,6 +12,7 @@
 * portamento: this goes in "A". Slide from retuned note to retuned note.
 * linear FM goes in neither, just keep the frequency ratios intact
 * exponential FM: if i did it correctly, this is just an audio-rate pitch modulator, so goes in "B" just like a vibrato. besides, results are inharmonic even when not retuned.
+* hypothetical: FF1 has an arpeggiator, FF2 does not. If i re-introduce it, this goes in "A".
 
 The hard ones are all of the coarse pitch targets.
 A) If i make a pitch sweep, don't retune.
@@ -22,10 +23,11 @@ E) If i use global unison, 3 voices, coarse pitch +0, +5, +8 semis (hit a note, 
 
 And of course here's the kicker:
 If i am in either D) or E), then apply an LFO to coarse pitch:
-F) Now have a sinusoid going between +0 and +12 semis.
+F) Now i have a sinusoid going between +0 and +12 semis.
 Gut feeling says, don't bother, because now it went from the "patch" bucket to the "performance" bucket.
 
-All in all i think i'm best off by having some sort of "retune all coarse pitch (together, at once) yes/no" switch.
+Question: All in all i think i'm best off by having some sort of "retune all coarse pitch (together, at once) yes/no" switch?
+Possibly with a separate switch for pitch bend + all the rest.
 
 And finally -- filter keyboard tracking.
 The way i do it now is to let the user specify a base key as the tracking base (say, "c4"), along with a tracking amount (+/-200%).
@@ -40,7 +42,6 @@ account both retuning and coarse pitch modulators. Which leads me to:
 G) Do you think that's even worth it? Just by the looks of it, again gut feeling says filters go in the "B" bucket.
 I sincerely hope you agree here because that makes my life that much easier. AKA: filter keytracking 200%
 does NOT mean "i rely on 2 octaves up being exactly 4 times more filter freq" but rather "i want brighter highs".
-
 
 
 
