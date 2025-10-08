@@ -188,7 +188,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 ## Echo
 * Combined multitap delay / feedback delay / reverb.
 * Adjustable ordering of taps / feedback / reverb.
-* For per-voice: can only apply to the end of the pipeline (so, after audio mixer (vmix)).
+* For per-voice: adjustable placement in the processing pipeline: target any single osci or voice fx, subset of all oscis, or final voice output
 * For global: adjustable placement in the processing pipeline: before all fx, after all fx, after audio mixer, or apply to input / output of any of the effect modules.
 * Time or tempo-synced versions of multitap and feedback delay.
 * Smoothing parameter for delay time changes. Applies to time, bars, host bpm changes etc etc.
@@ -208,6 +208,13 @@ These go out of bounds reasonably fast, so i soft-clip the feedback path at +/- 
 ## Voice control module
 * All-osci coarse/fine + modulators
 * Portamenta with time/tempo sync, constant pitch/constant time, length control, and subsection envelope attack/release control
+
+## Global unison
+* Up to 8 voices
+* 38 fully controllable target parameters like osci coarse, fine, gain, vfx filter freq/shaper gain, vlfo rate and others, envelope shaping and per-voice-echo targets
+* Manual mode: get 8 knobs (1 per voice) per parameter
+* Automatic mode: spread/skew/randomize to build up the voice "spectrum"
+* All global unison controls are themselves fully modulatable, so valid targets for modmatrix and CLAP modulation
 
 # Build it
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
