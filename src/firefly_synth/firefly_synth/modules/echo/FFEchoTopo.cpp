@@ -30,8 +30,6 @@ FFMakeEchoTopo(bool global)
   result->params.resize((int)FFEchoParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.vEcho; });
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gEcho; });
-  auto selectGuiVoiceModule = [](auto& state) { return &state.vEcho; };
-  auto selectGuiGlobalModule = [](auto& state) { return &state.gEcho; };
   auto selectVoiceModule = [](auto& state) { return &state.voice.vEcho; };
   auto selectGlobalModule = [](auto& state) { return &state.global.gEcho; };
 
