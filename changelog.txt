@@ -1,3 +1,38 @@
+October 08, 2025 - Alpha 17.
+
+- Core
+* Some more performance improvements.
+
+- UI
+* Merged "show mod indicator details" and "show graph details" into 1 control.
+
+- VMix
+* The main voice amp envelope can now be placed anywhere in the voice processing pipeline (was necessary to work with per-voice echo).
+* Add an intermediate "Osci Mixer" stage to allow grouping multiple osci's together and allow per-voice echo on that group. (Breaking change).
+
+- Matrix:
+* Performance fix: global-to-voice modulation was slow.
+* New on-note (VNote) sources: 3x per-group-random-uniform and 3x gaussian. These have the same value for all voices in a global unison group.
+* New modulation types "phase wrap" and "remap". Phase wrap just adds modulator to target, folds back into [0..1]. Remap: at 0.5 it does nothing,
+at 0.4 it maps [0 1] onto [0 0.8] and at 0.7 it maps [0 1] onto [0.4 1]. These were needed for global unison but now also available in the mod matrix
+and the LFO's.
+
+- Echo:
+* Added clear/init buttons for the multitap editor.
+* Performance fix + breaking change: all LP/HP filters now have a toggle button to enable them.
+* Performance fix: per-voice echo lifetime extension of the voice kept running the oscillators (oops).
+* Per-voice echo can now be placed anywhere in the pipeline (target a single osci/fx, subset of oscis, or the entire voice).
+
+- Global unison (new module)
+* Up to 8 voices.
+* 38 per-voice target parameters. Subset of all possible osci, lfo, fx, envelope and voice echo knobs.
+* Per-parameter selection of automatic or manual modulation mode.
+* Manual: build up the voice spectrum by hand, with 8 (max global uni voices) controls per target parameter (all 38).
+* Automatic mode: spread, skew, and randomize controls to build up the voice spectrum.
+* Per-parameter selection of modulation type (how to apply the spectrum to the individual voices), same options as mod matrix.
+* All controls (both manual and automatic modes) fully modulatable, so the entire global unison module can be controlled by the matrix.
+* Tiny per-parameter graph that shows the voice spectrum.
+
 September 17, 2025 - Alpha 16.
 
 - Core
