@@ -34,7 +34,7 @@ class FBVoiceManager final
   std::uint64_t _counter = {};
   FBProcStateContainer* const _procState;
   std::vector<int> _activeVoices = {}; // perf opt, dont loop over FBMaxVoices everywhere
-  std::vector<FBNote> _returnedVoices = {};
+  std::vector<FBVoiceInfo> _returnedVoices = {};
   std::array<std::uint64_t, FBMaxVoices> _num = {};
   std::array<FBVoiceInfo, FBMaxVoices> _voices = {};
 
@@ -52,7 +52,7 @@ public:
 
   // Note: both active and returned. For lack of a better term than "not-free".
   std::vector<int> const& ActiveVoices() const { return _activeVoices; }
-  std::vector<FBNote> const& ReturnedVoices() { return _returnedVoices; }
+  std::vector<FBVoiceInfo> const& ReturnedVoices() { return _returnedVoices; }
   std::array<FBVoiceInfo, FBMaxVoices> const& Voices() const { return _voices; }
 
   bool IsFree(int slot) const { return _voices[slot].state == FBVoiceState::Free; }

@@ -13,7 +13,7 @@ class FBHostAudioBlock;
 class FBPlugToHostProcessor final
 {
   FBBufferAudioBlock _buffer = {};
-  std::vector<FBNote> _returnedVoices = {};
+  std::vector<FBVoiceInfo> _returnedVoices = {};
   FBVoiceManager* _voiceManager;
 
 public:

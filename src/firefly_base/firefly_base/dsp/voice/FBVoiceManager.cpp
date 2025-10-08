@@ -17,7 +17,7 @@ FBVoiceManager::Return(int slot)
   FB_ASSERT(_voiceCount > 0);
   _voiceCount--;
   _voices[slot].state = FBVoiceState::Returned;
-  _returnedVoices.push_back(_voices[slot].event.note);
+  _returnedVoices.push_back(_voices[slot]);
   FB_ASSERT(_returnedVoices.size() < FBMaxVoices);
 }
 
@@ -86,7 +86,7 @@ FBVoiceManager::Lease(FBNoteEvent const& event, std::int64_t groupId, int slotIn
 
   FB_ASSERT(0 <= slot && slot < _voices.size());
   if (IsActive(slot))
-    _returnedVoices.push_back(_voices[slot].event.note);
+    _returnedVoices.push_back(_voices[slot]);
 
   _num[slot] = ++_counter;
   _voices[slot].slot = slot;
