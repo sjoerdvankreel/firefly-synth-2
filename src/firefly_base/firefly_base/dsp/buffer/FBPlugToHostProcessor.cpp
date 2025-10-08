@@ -38,6 +38,7 @@ FBPlugToHostProcessor::ProcessToHost(FBHostOutputBlock& hostBlock)
       continue;
     hostBlock.returnedVoices.push_back(_returnedVoices[i].event.note);
   }
+  _returnedVoices.clear();
   FB_ASSERT(hostBlock.returnedVoices.size() < FBMaxVoices);
 
   FB_ASSERT(hostBlock.audio.Count() <= _buffer.Count());
