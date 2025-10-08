@@ -28,6 +28,20 @@ Gut feeling says, don't bother, because now it went from the "patch" bucket to t
 All in all i think i'm best off by having some sort of "retune all coarse pitch (together, at once) yes/no" switch.
 
 And finally -- filter keyboard tracking.
+The way i do it now is to let the user specify a base key as the tracking base (say, "c4"), along with a tracking amount (+/-200%).
+So example: base key = c3, note played = c5, diff = 24 semis, frequency ratio = 400%, tracking amount = 50%, filter frequency gets multiplied by 2.
+This works well enough, but i'm not totally convinced this holds up in above mentioned D) and E) cases (because those modulators are not taken into account).
+I could switch that scheme to compare not "note played" but "active coarse pitch (voice level, not osci level)" against "base key".
+Such a setup would imply f.e. that an lfo thrown to voice coarse pitch would affect the filter keytracking.
+All this is even without retuning - but i mention it because in the context of filters, i feel that microtuning
+is a pitch modulator like any other. Which of course means, to calculate keytracking amount, i need to take into
+account both retuning and coarse pitch modulators. Which leads me to:
+
+G) Do you think that's even worth it? Just by the looks of it, again gut feeling says filters go in the "B" bucket.
+I sincerely hope you agree here because that makes my life that much easier. AKA: filter keytracking 200%
+does NOT mean "i rely on 2 octaves up being exactly 4 times more filter freq" but rather "i want brighter highs".
+
+
 
 
 
