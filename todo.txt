@@ -52,7 +52,8 @@ TODOLIST for alpha-17
 [x] clap polymod + release as one
 [x] refix the demos + guni init the patches
 [x] global uni demo => current nr3 + guni version of fm+dist 1 + onnoterand + env stretch
-[ ] osci-target vecho demo
+[x] osci-target vecho demo
+[ ] explain the vecho in some detail
 
 TODOLIST for alpha-18
 [ ] switch the env stage controls for MSEG editor
