@@ -93,11 +93,11 @@ FFMakeGMixTopo()
   auto& voiceToGFX = result->params[(int)FFGMixParam::VoiceToGFX];
   voiceToGFX.mode = FBParamMode::Accurate;
   voiceToGFX.defaultText = "0";
-  voiceToGFX.name = "Voice To GFX";
+  voiceToGFX.name = "Voice Mix To GFX";
   voiceToGFX.slotCount = FFEffectCount;
   voiceToGFX.unit = "%";
   voiceToGFX.id = "{43E24F38-ADA0-41A0-88BD-B17333ABFA9C}";
-  voiceToGFX.slotFormatter = FormatVoiceToGFXSlot;
+  voiceToGFX.slotFormatter = FormatVoiceMixToGFXSlot;
   voiceToGFX.slotFormatterOverrides = true;
   voiceToGFX.type = FBParamType::Identity;
   auto selectVoiceToGFX = [](auto& module) { return &module.acc.voiceToGFX; };

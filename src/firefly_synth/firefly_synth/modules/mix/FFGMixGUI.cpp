@@ -46,7 +46,7 @@ MakeGMixSectionGFXToOut(FBPlugGUI* plugGUI)
     int c = e % (FFEffectCount / 2);
     grid->Add(r, c * 2 + 0, plugGUI->StoreComponent<FBAutoSizeLabel>("GFX " + std::to_string(e + 1) + "\U00002192Out"));
     auto gfxToOut = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::GFXToOut, e } });
-    grid->Add(r, c * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gfxToOut, Slider::SliderStyle::LinearHorizontal));
+    grid->Add(r, c * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gfxToOut, Slider::SliderStyle::RotaryVerticalDrag));
   }
   grid->MarkSection({ { 0, 0 }, { 2, 4 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
