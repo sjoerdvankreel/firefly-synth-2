@@ -16,6 +16,8 @@ if %errorlevel% neq 0 exit /b !errorlevel!
 cd ..\..\dist\windows\"%1"
 7z a -tzip FireflySynth2-windows-vst3-"%1".zip FireflySynth2.vst3\*
 7z a -tzip FireflySynth2-windows-clap-"%1".zip FireflySynth2.clap\*
+7z a -tzip FireflySynth2FX-windows-vst3-"%1".zip FireflySynth2FX.vst3\*
+7z a -tzip FireflySynth2FX-windows-clap-"%1".zip FireflySynth2FX.clap\*
 if %errorlevel% neq 0 exit /b !errorlevel!
 
 cd ..\..\..\..\scripts
