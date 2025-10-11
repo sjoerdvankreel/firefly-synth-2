@@ -2,7 +2,7 @@ TODOLIST for alpha-18
 [ ] recheck audio input in plug mode => needs cache clear / rescan
 [ ] in global section
 [ ] as osci
-[ ] do midi-receive yesno
+[ ] do midi-receive yesno, default 1/0 for inst/fx
 [ ] fx/inst + other guid
 [ ] make the popouts moveable top level windows + also the matrix
 
