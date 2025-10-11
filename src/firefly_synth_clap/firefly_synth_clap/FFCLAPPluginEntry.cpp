@@ -99,7 +99,7 @@ Init(char const*)
 }
 
 static char const*
-Features[] = { CLAP_PLUGIN_FEATURE_INSTRUMENT, nullptr };
+Features[] = { FF_PLUGIN_FEATURE, CLAP_PLUGIN_FEATURE_STEREO, nullptr };
 static std::uint32_t CLAP_ABI
 GetPluginCount(struct clap_plugin_factory const*) { return 1; }
 
