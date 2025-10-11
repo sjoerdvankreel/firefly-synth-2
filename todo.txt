@@ -1,7 +1,9 @@
 TODOLIST for alpha-18
-[ ] recheck audio input in plug mode
-[ ] switch the env stage controls for MSEG editor
-[ ] pop-up editor with the current stuff
+[ ] recheck audio input in plug mode => needs cache clear / rescan
+[ ] in global section
+[ ] as osci
+[ ] do midi-receive yesno
+[ ] fx/inst + other guid
 [ ] make the popouts moveable top level windows + also the matrix
 
 TODOLIST for alpha-19 - tuning and keytracking
@@ -16,6 +18,8 @@ TODOLIST for alpha-19 - tuning and keytracking
 [ ] filters should track the actual pitch when possible (string osci)
 
 TODOLIST for alpha-20
+[ ] switch the env stage controls for MSEG editor
+[ ] pop-up editor with the current stuff
 [ ] import/export module
 [ ] copy/paste module and patch across sessions
 [ ] split large matrix dropdowns

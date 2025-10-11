@@ -17,6 +17,20 @@
 
 #include <cstring>
 
+#ifdef FF_IS_FX
+#if FF_IS_FX
+#define FF_PLUGIN_FEATURE CLAP_PLUGIN_FEATURE_AUDIO_EFFECT
+auto constexpr FFPlugName = FFPlugNameFX;
+auto constexpr FFPlugUniqueId = FFPlugUniqueIdFX;
+#else
+#define FF_PLUGIN_FEATURE CLAP_PLUGIN_FEATURE_INSTRUMENT
+auto constexpr FFPlugName = FFPlugNameInst;
+auto constexpr FFPlugUniqueId = FFPlugUniqueIdInst;
+#endif
+#else
+#error
+#endif
+
 // Just to make it work with the moodycamel queue without
 // introducing accidental copy/move support into the plugin itself.
 struct alignas(alignof(FFExchangeState)) FFCLAPExchangeState final
@@ -78,7 +92,7 @@ Deinit()
 static bool CLAP_ABI 
 Init(char const*) 
 { 
-  FBLogInit(FFPlugMeta(FBPlugFormat::CLAP));
+  FBLogInit(FFPlugMeta(FBPlugFormat::CLAP, FF_IS_FX != 0));
   FBGUIInit();
   FBTuningInit();
   return true;
@@ -116,7 +130,7 @@ CreatePlugin(
     auto const* desc = GetPluginDescriptor(nullptr, 0);
     if (strcmp(desc->id, pluginId))
       return static_cast<clap_plugin_t const*>(nullptr);
-    return (new FFCLAPPlugin(FFMakeTopo(FBPlugFormat::CLAP), desc, host))->clapPlugin();
+    return (new FFCLAPPlugin(FFMakeTopo(FBPlugFormat::CLAP, FF_IS_FX != 0), desc, host))->clapPlugin();
   });
 }
 

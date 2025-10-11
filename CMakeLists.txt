@@ -22,11 +22,16 @@ set (PROJECT_VERSION_PATCH 6)
 set (PROJECT_NAME_BASE firefly_base)
 set (PROJECT_NAME_PLUG firefly_synth)
 set (PROJECT_NAME_BASE_JUCE firefly_base_juce)
-set (PROJECT_NAME_PLUG_VST3 "${PROJECT_NAME_PLUG}_vst3")
 set (PROJECT_NAME_BASE_VST3 "${PROJECT_NAME_BASE}_vst3")
-set (PROJECT_NAME_PLUG_CLAP "${PROJECT_NAME_PLUG}_clap")
 set (PROJECT_NAME_BASE_CLAP "${PROJECT_NAME_BASE}_clap")
-set (PROJECT_NAME_OUT FireflySynth2)
+set (PROJECT_NAME_PLUG_VST3_DIR "${PROJECT_NAME_PLUG}_vst3")
+set (PROJECT_NAME_PLUG_VST3_FX "${PROJECT_NAME_PLUG}_vst3_fx")
+set (PROJECT_NAME_PLUG_VST3_INST "${PROJECT_NAME_PLUG}_vst3_inst")
+set (PROJECT_NAME_PLUG_CLAP_DIR "${PROJECT_NAME_PLUG}_clap")
+set (PROJECT_NAME_PLUG_CLAP_FX "${PROJECT_NAME_PLUG}_clap_fx")
+set (PROJECT_NAME_PLUG_CLAP_INST "${PROJECT_NAME_PLUG}_clap_inst")
+set (PROJECT_NAME_OUT_FX FireflySynth2FX)
+set (PROJECT_NAME_OUT_INST FireflySynth2)
 
 # want this only for dev
 if (NOT DEFINED FB_WARN_AS_ERROR)
@@ -188,121 +193,244 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   source_group(TREE ${PLUG_SRC_DIR} FILES ${PLUG_SRC_FILES})
 endif()
 
-# vst3 plug
-set (PLUG_VST3_SRC_DIR "${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_VST3}")
-file(GLOB_RECURSE PLUG_VST3_SRC_FILES "${PLUG_VST3_SRC_DIR}/*.*")
-add_library(${PROJECT_NAME_PLUG_VST3} SHARED ${PLUG_VST3_SRC_FILES})
-target_compile_options(${PROJECT_NAME_PLUG_VST3} PRIVATE "${FF_COMPILE_OPTIONS_DYN}")
-smtg_target_add_library_main(${PROJECT_NAME_PLUG_VST3})
-target_link_libraries(${PROJECT_NAME_PLUG_VST3} PRIVATE ${PROJECT_NAME_BASE_VST3})
-target_link_libraries(${PROJECT_NAME_PLUG_VST3} PRIVATE ${PROJECT_NAME_PLUG})
-target_link_libraries(${PROJECT_NAME_PLUG_VST3} PRIVATE ${PROJECT_NAME_BASE})
-target_link_libraries(${PROJECT_NAME_PLUG_VST3} PRIVATE juce_core juce_events juce_gui_basics juce_dsp base sdk sdk_common MTS-ESP)
-target_include_directories(${PROJECT_NAME_PLUG_VST3} SYSTEM PRIVATE ${JUCE_MODULES_DIR})
-target_include_directories(${PROJECT_NAME_PLUG_VST3} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/vst3)
-target_include_directories(${PROJECT_NAME_PLUG_VST3} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
-target_include_directories(${PROJECT_NAME_PLUG_VST3} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
-target_include_directories(${PROJECT_NAME_PLUG_VST3} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG})
-target_include_directories(${PROJECT_NAME_PLUG_VST3} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE_VST3})
-target_include_directories(${PROJECT_NAME_PLUG_VST3} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_VST3})
-target_compile_definitions(${PROJECT_NAME_PLUG_VST3} PRIVATE JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1)
-set_target_properties(${PROJECT_NAME_PLUG_VST3} PROPERTIES OUTPUT_NAME ${PROJECT_NAME_OUT})
+# vst3 plug fx
+set (PLUG_VST3_FX_SRC_DIR "${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_VST3_DIR}")
+file(GLOB_RECURSE PLUG_VST3_FX_SRC_FILES "${PLUG_VST3_FX_SRC_DIR}/*.*")
+add_library(${PROJECT_NAME_PLUG_VST3_FX} SHARED ${PLUG_VST3_FX_SRC_FILES})
+target_compile_options(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE "${FF_COMPILE_OPTIONS_DYN}")
+smtg_target_add_library_main(${PROJECT_NAME_PLUG_VST3_FX})
+target_link_libraries(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE ${PROJECT_NAME_BASE_VST3})
+target_link_libraries(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE ${PROJECT_NAME_PLUG})
+target_link_libraries(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE ${PROJECT_NAME_BASE})
+target_link_libraries(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE juce_core juce_events juce_gui_basics juce_dsp base sdk sdk_common MTS-ESP)
+target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} SYSTEM PRIVATE ${JUCE_MODULES_DIR})
+target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/vst3)
+target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
+target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
+target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG})
+target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE_VST3})
+target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_VST3_DIR})
+target_compile_definitions(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1)
+target_compile_definitions(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE FF_IS_FX=1)
+set_target_properties(${PROJECT_NAME_PLUG_VST3_FX} PROPERTIES OUTPUT_NAME ${PROJECT_NAME_OUT_FX})
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  source_group(TREE ${PLUG_VST3_SRC_DIR} FILES ${PLUG_VST3_SRC_FILES})
+  source_group(TREE ${PLUG_VST3_FX_SRC_DIR} FILES ${PLUG_VST3_FX_SRC_FILES})
 endif()
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-  set_target_properties(${PROJECT_NAME_PLUG_VST3} PROPERTIES SUFFIX ".vst3")
+  set_target_properties(${PROJECT_NAME_PLUG_VST3_FX} PROPERTIES SUFFIX ".vst3")
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-  set_target_properties(${PROJECT_NAME_PLUG_VST3} PROPERTIES PREFIX "" SUFFIX "")
+  set_target_properties(${PROJECT_NAME_PLUG_VST3_FX} PROPERTIES PREFIX "" SUFFIX "")
 endif ()
 
-# clap plug
-set (PLUG_CLAP_SRC_DIR "${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_CLAP}")
-file(GLOB_RECURSE PLUG_CLAP_SRC_FILES "${PLUG_CLAP_SRC_DIR}/*.*")
-add_library(${PROJECT_NAME_PLUG_CLAP} SHARED ${PLUG_CLAP_SRC_FILES})
-target_compile_options(${PROJECT_NAME_PLUG_CLAP} PRIVATE "${FF_COMPILE_OPTIONS_DYN}")
-target_link_libraries(${PROJECT_NAME_PLUG_CLAP} PRIVATE ${PROJECT_NAME_BASE_CLAP})
-target_link_libraries(${PROJECT_NAME_PLUG_CLAP} PRIVATE ${PROJECT_NAME_PLUG})
-target_link_libraries(${PROJECT_NAME_PLUG_CLAP} PRIVATE ${PROJECT_NAME_BASE})
-target_link_libraries(${PROJECT_NAME_PLUG_CLAP} PRIVATE juce_core juce_events juce_gui_basics juce_dsp MTS-ESP)
-target_include_directories(${PROJECT_NAME_PLUG_CLAP} SYSTEM PRIVATE ${JUCE_MODULES_DIR})
-target_include_directories(${PROJECT_NAME_PLUG_CLAP} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
-target_include_directories(${PROJECT_NAME_PLUG_CLAP} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/clap/include)
-target_include_directories(${PROJECT_NAME_PLUG_CLAP} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/clap-helpers/include)
-target_include_directories(${PROJECT_NAME_PLUG_CLAP} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
-target_include_directories(${PROJECT_NAME_PLUG_CLAP} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG})
-target_include_directories(${PROJECT_NAME_PLUG_CLAP} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE_CLAP})
-target_include_directories(${PROJECT_NAME_PLUG_CLAP} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_CLAP})
-target_include_directories(${PROJECT_NAME_PLUG_CLAP} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/readerwriterqueue)
-target_compile_definitions(${PROJECT_NAME_PLUG_CLAP} PRIVATE JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1)
-set_target_properties(${PROJECT_NAME_PLUG_CLAP} PROPERTIES OUTPUT_NAME ${PROJECT_NAME_OUT})
+# vst3 plug inst
+set (PLUG_VST3_INST_SRC_DIR "${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_VST3_DIR}")
+file(GLOB_RECURSE PLUG_VST3_INST_SRC_FILES "${PLUG_VST3_INST_SRC_DIR}/*.*")
+add_library(${PROJECT_NAME_PLUG_VST3_INST} SHARED ${PLUG_VST3_INST_SRC_FILES})
+target_compile_options(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE "${FF_COMPILE_OPTIONS_DYN}")
+smtg_target_add_library_main(${PROJECT_NAME_PLUG_VST3_INST})
+target_link_libraries(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE ${PROJECT_NAME_BASE_VST3})
+target_link_libraries(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE ${PROJECT_NAME_PLUG})
+target_link_libraries(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE ${PROJECT_NAME_BASE})
+target_link_libraries(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE juce_core juce_events juce_gui_basics juce_dsp base sdk sdk_common MTS-ESP)
+target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} SYSTEM PRIVATE ${JUCE_MODULES_DIR})
+target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/vst3)
+target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
+target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
+target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG})
+target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE_VST3})
+target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_VST3_DIR})
+target_compile_definitions(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1)
+target_compile_definitions(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE FF_IS_FX=0)
+set_target_properties(${PROJECT_NAME_PLUG_VST3_INST} PROPERTIES OUTPUT_NAME ${PROJECT_NAME_OUT_INST})
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  source_group(TREE ${PLUG_VST3_INST_SRC_DIR} FILES ${PLUG_VST3_INST_SRC_FILES})
+endif()
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+  set_target_properties(${PROJECT_NAME_PLUG_VST3_INST} PROPERTIES SUFFIX ".vst3")
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+  set_target_properties(${PROJECT_NAME_PLUG_VST3_INST} PROPERTIES PREFIX "" SUFFIX "")
+endif ()
+
+# clap plug fx
+set (PLUG_CLAP_FX_SRC_DIR "${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_CLAP_DIR}")
+file(GLOB_RECURSE PLUG_CLAP_FX_SRC_FILES "${PLUG_CLAP_FX_SRC_DIR}/*.*")
+add_library(${PROJECT_NAME_PLUG_CLAP_FX} SHARED ${PLUG_CLAP_FX_SRC_FILES})
+target_compile_options(${PROJECT_NAME_PLUG_CLAP_FX} PRIVATE "${FF_COMPILE_OPTIONS_DYN}")
+target_link_libraries(${PROJECT_NAME_PLUG_CLAP_FX} PRIVATE ${PROJECT_NAME_BASE_CLAP})
+target_link_libraries(${PROJECT_NAME_PLUG_CLAP_FX} PRIVATE ${PROJECT_NAME_PLUG})
+target_link_libraries(${PROJECT_NAME_PLUG_CLAP_FX} PRIVATE ${PROJECT_NAME_BASE})
+target_link_libraries(${PROJECT_NAME_PLUG_CLAP_FX} PRIVATE juce_core juce_events juce_gui_basics juce_dsp MTS-ESP)
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_FX} SYSTEM PRIVATE ${JUCE_MODULES_DIR})
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_FX} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_FX} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/clap/include)
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_FX} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/clap-helpers/include)
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_FX} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_FX} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG})
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_FX} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE_CLAP})
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_FX} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_CLAP_DIR})
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_FX} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/readerwriterqueue)
+target_compile_definitions(${PROJECT_NAME_PLUG_CLAP_FX} PRIVATE JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1)
+target_compile_definitions(${PROJECT_NAME_PLUG_CLAP_FX} PRIVATE FF_IS_FX=1)
+set_target_properties(${PROJECT_NAME_PLUG_CLAP_FX} PROPERTIES OUTPUT_NAME ${PROJECT_NAME_OUT_FX})
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-  set_target_properties(${PROJECT_NAME_PLUG_CLAP} PROPERTIES PREFIX "" SUFFIX "")
+  set_target_properties(${PROJECT_NAME_PLUG_CLAP_FX} PROPERTIES PREFIX "" SUFFIX "")
 else ()
-  set_target_properties(${PROJECT_NAME_PLUG_CLAP} PROPERTIES SUFFIX ".clap")
+  set_target_properties(${PROJECT_NAME_PLUG_CLAP_FX} PROPERTIES SUFFIX ".clap")
 endif ()
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  source_group(TREE ${PLUG_CLAP_SRC_DIR} FILES ${PLUG_CLAP_SRC_FILES})
+  source_group(TREE ${PLUG_CLAP_FX_SRC_DIR} FILES ${PLUG_CLAP_FX_SRC_FILES})
 endif()
 
-# vst3 to dist
+# clap plug inst
+set (PLUG_CLAP_INST_SRC_DIR "${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_CLAP_DIR}")
+file(GLOB_RECURSE PLUG_CLAP_INST_SRC_FILES "${PLUG_CLAP_INST_SRC_DIR}/*.*")
+add_library(${PROJECT_NAME_PLUG_CLAP_INST} SHARED ${PLUG_CLAP_INST_SRC_FILES})
+target_compile_options(${PROJECT_NAME_PLUG_CLAP_INST} PRIVATE "${FF_COMPILE_OPTIONS_DYN}")
+target_link_libraries(${PROJECT_NAME_PLUG_CLAP_INST} PRIVATE ${PROJECT_NAME_BASE_CLAP})
+target_link_libraries(${PROJECT_NAME_PLUG_CLAP_INST} PRIVATE ${PROJECT_NAME_PLUG})
+target_link_libraries(${PROJECT_NAME_PLUG_CLAP_INST} PRIVATE ${PROJECT_NAME_BASE})
+target_link_libraries(${PROJECT_NAME_PLUG_CLAP_INST} PRIVATE juce_core juce_events juce_gui_basics juce_dsp MTS-ESP)
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_INST} SYSTEM PRIVATE ${JUCE_MODULES_DIR})
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_INST} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_INST} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/clap/include)
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_INST} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/clap-helpers/include)
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_INST} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_INST} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG})
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_INST} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE_CLAP})
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_INST} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_CLAP_DIR})
+target_include_directories(${PROJECT_NAME_PLUG_CLAP_INST} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/readerwriterqueue)
+target_compile_definitions(${PROJECT_NAME_PLUG_CLAP_INST} PRIVATE JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1)
+target_compile_definitions(${PROJECT_NAME_PLUG_CLAP_INST} PRIVATE FF_IS_FX=0)
+set_target_properties(${PROJECT_NAME_PLUG_CLAP_INST} PROPERTIES OUTPUT_NAME ${PROJECT_NAME_OUT_INST})
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+  set_target_properties(${PROJECT_NAME_PLUG_CLAP_INST} PROPERTIES PREFIX "" SUFFIX "")
+else ()
+  set_target_properties(${PROJECT_NAME_PLUG_CLAP_INST} PROPERTIES SUFFIX ".clap")
+endif ()
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  source_group(TREE ${PLUG_CLAP_INST_SRC_DIR} FILES ${PLUG_CLAP_INST_SRC_FILES})
+endif()
+
+# vst3 fx to dist
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3} POST_BUILD
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3_FX} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT}.vst3/Contents/Resources")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_VST3}>
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT}.vst3/Contents/x86_64-win/${PROJECT_NAME_OUT}.vst3"
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE_DIR:${PROJECT_NAME_PLUG_VST3}>/${PROJECT_NAME_OUT}.pdb
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT}.vst3/Contents/x86_64-win/${PROJECT_NAME_OUT}.pdb" || (exit 0))
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_FX}.vst3/Contents/Resources")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3_FX} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_VST3_FX}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_FX}.vst3/Contents/x86_64-win/${PROJECT_NAME_OUT_FX}.vst3"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE_DIR:${PROJECT_NAME_PLUG_VST3_FX}>/${PROJECT_NAME_OUT_FX}.pdb
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_FX}.vst3/Contents/x86_64-win/${PROJECT_NAME_OUT_FX}.pdb" || (exit 0))
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_VST3}>
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.vst3/Contents/x86_64-linux/${PROJECT_NAME_OUT}.so")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3} POST_BUILD
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3_FX} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_VST3_FX}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_FX}.vst3/Contents/x86_64-linux/${PROJECT_NAME_OUT_FX}.so")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3_FX} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.vst3/Contents/Resources")
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_FX}.vst3/Contents/Resources")
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_VST3}>
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.vst3/Contents/MacOS/${PROJECT_NAME_OUT}")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP} POST_BUILD
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3_FX} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_VST3_FX}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_FX}.vst3/Contents/MacOS/${PROJECT_NAME_OUT_FX}")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_FX} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/macos
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.vst3/Contents")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3} POST_BUILD
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_FX}.vst3/Contents")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3_FX} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.vst3/Contents/Resources")
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_FX}.vst3/Contents/Resources")
 else ()
   message(FATAL_ERROR "Unsupported platform.")
 endif()
 
-# clap to dist
+# vst3 inst to dist
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP} POST_BUILD
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3_INST} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT}.clap/Contents/Resources")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP}>
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT}.clap/Contents/x86_64-win/${PROJECT_NAME_OUT}.clap"
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE_DIR:${PROJECT_NAME_PLUG_CLAP}>/${PROJECT_NAME_OUT}.pdb
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT}.clap/Contents/x86_64-win/${PROJECT_NAME_OUT}.pdb" || (exit 0))
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_INST}.vst3/Contents/Resources")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3_INST} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_VST3_INST}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_INST}.vst3/Contents/x86_64-win/${PROJECT_NAME_OUT_INST}.vst3"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE_DIR:${PROJECT_NAME_PLUG_VST3_INST}>/${PROJECT_NAME_OUT_INST}.pdb
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_INST}.vst3/Contents/x86_64-win/${PROJECT_NAME_OUT_INST}.pdb" || (exit 0))
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP}>
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.clap/Contents/x86_64-linux/${PROJECT_NAME_OUT}.clap")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP} POST_BUILD
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3_INST} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_VST3_INST}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_INST}.vst3/Contents/x86_64-linux/${PROJECT_NAME_OUT_INST}.so")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3_INST} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.clap/Contents/Resources")
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_INST}.vst3/Contents/Resources")
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP}>
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.clap/Contents/MacOS/${PROJECT_NAME_OUT}")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP} POST_BUILD
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3_INST} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_VST3_INST}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_INST}.vst3/Contents/MacOS/${PROJECT_NAME_OUT_INST}")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_INST} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/macos
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.clap/Contents")
-  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP} POST_BUILD
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_INST}.vst3/Contents")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3_INST} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.clap/Contents/Resources")
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_INST}.vst3/Contents/Resources")
+else ()
+  message(FATAL_ERROR "Unsupported platform.")
+endif()
+
+# clap fx to dist
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_FX} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_FX}.clap/Contents/Resources")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_FX} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP_FX}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_FX}.clap/Contents/x86_64-win/${PROJECT_NAME_OUT_FX}.clap"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE_DIR:${PROJECT_NAME_PLUG_CLAP_FX}>/${PROJECT_NAME_OUT_FX}.pdb
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_FX}.clap/Contents/x86_64-win/${PROJECT_NAME_OUT_FX}.pdb" || (exit 0))
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_FX} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP_FX}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_FX}.clap/Contents/x86_64-linux/${PROJECT_NAME_OUT_FX}.clap")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_FX} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_FX}.clap/Contents/Resources")
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_FX} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP_FX}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_FX}.clap/Contents/MacOS/${PROJECT_NAME_OUT_FX}")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_FX} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/macos
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_FX}.clap/Contents")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_FX} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_FX}.clap/Contents/Resources")
+else ()
+  message(FATAL_ERROR "Unsupported platform.")
+endif()
+
+# clap inst to dist
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_INST} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_INST}.clap/Contents/Resources")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_INST} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP_INST}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_INST}.clap/Contents/x86_64-win/${PROJECT_NAME_OUT_INST}.clap"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE_DIR:${PROJECT_NAME_PLUG_CLAP_INST}>/${PROJECT_NAME_OUT_INST}.pdb
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_INST}.clap/Contents/x86_64-win/${PROJECT_NAME_OUT_INST}.pdb" || (exit 0))
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_INST} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP_INST}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_INST}.clap/Contents/x86_64-linux/${PROJECT_NAME_OUT_INST}.clap")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_INST} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_INST}.clap/Contents/Resources")
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_INST} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP_INST}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_INST}.clap/Contents/MacOS/${PROJECT_NAME_OUT_INST}")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_INST} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/macos
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_INST}.clap/Contents")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_INST} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_INST}.clap/Contents/Resources")
 else ()
   message(FATAL_ERROR "Unsupported platform.")
 endif()

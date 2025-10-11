@@ -77,24 +77,24 @@ FFFormatBlockSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 }
 
 FBStaticTopoMeta
-FFPlugMeta(FBPlugFormat format)
+FFPlugMeta(FBPlugFormat format, bool isFx)
 {
   FBStaticTopoMeta result;
   result.format = format;
-  result.name = FFPlugName;
-  result.id = FFPlugUniqueId;
   result.vendor = FFVendorName;
   result.version.major = FF_PLUG_VERSION_MAJOR;
   result.version.minor = FF_PLUG_VERSION_MINOR;
   result.version.patch = FF_PLUG_VERSION_PATCH;
+  result.name = isFx? FFPlugNameFX: FFPlugNameInst;
+  result.id = isFx? FFPlugUniqueIdFX: FFPlugUniqueIdInst;
   return result;
 }
 
 std::unique_ptr<FFStaticTopo>
-FFMakeTopo(FBPlugFormat format)
+FFMakeTopo(FBPlugFormat format, bool isFX)
 {
   auto result = std::make_unique<FFStaticTopo>();
-  result->meta = FFPlugMeta(format);
+  result->meta = FFPlugMeta(format, isFX);
   result->maxUndoSize = 15;
   result->patchExtension = "ff2preset";
   result->guiWidth = 1200;
