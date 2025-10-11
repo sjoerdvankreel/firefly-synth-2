@@ -214,13 +214,20 @@ FFPlugProcessor::ProcessPostVoice(
   for (int v: input.voiceManager->ActiveVoices())
     voiceMixdown.Add(_procState->dsp.voice[v].output);
 
+  FBSArray2<float, FBFixedBlockSamples, 2> extAudio = {};
+  input.audio->CopyTo(extAudio);
+
   if (gEchoTarget == FFGEchoTarget::VoiceMix)
     ProcessGEcho(state, voiceMixdown);
+  if (gEchoTarget == FFGEchoTarget::ExtAudio)
+    ProcessGEcho(state, extAudio);
 
   for (int i = 0; i < FFEffectCount; i++)
   {
     globalDSP.gEffect[i].input.Fill(0.0f);
     auto const& voiceToGFXNorm = gMix.acc.voiceToGFX[i].Global().CV();
+    auto const& extAudioToGFXNorm = gMix.acc.extAudioToGFX[i].Global().CV();
+    globalDSP.gEffect[i].input.AddMul(extAudio, extAudioToGFXNorm);
     globalDSP.gEffect[i].input.AddMul(voiceMixdown, voiceToGFXNorm);
     for (int r = 0; r < FFMixFXToFXCount; r++)
       if (FFMixFXToFXGetTargetSlot(r) == i)
@@ -249,6 +256,8 @@ FFPlugProcessor::ProcessPostVoice(
 
   output.audio.Fill(0.0f);
   auto const& voiceToOutNorm = gMix.acc.voiceToOut[0].Global().CV();
+  auto const& extAudioToOutNorm = gMix.acc.extAudioToOut[0].Global().CV();
+  output.audio.AddMul(extAudio, extAudioToOutNorm);
   output.audio.AddMul(voiceMixdown, voiceToOutNorm);
   for (int i = 0; i < FFEffectCount; i++)
   {

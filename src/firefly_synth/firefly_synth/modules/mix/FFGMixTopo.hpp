@@ -10,5 +10,5 @@ std::unique_ptr<FBStaticModule> FFMakeGMixTopo();
 
 enum class FFGMixParam {
   Amp, LFO5ToAmp, Bal, LFO6ToBal,
-  VoiceToGFX, GFXToGFX,
-  VoiceToOut, GFXToOut, Count };
+  VoiceToGFX, ExtAudioToGFX, GFXToGFX,
+  VoiceToOut, ExtAudioToOut, GFXToOut, Count };

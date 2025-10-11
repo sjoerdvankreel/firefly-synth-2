@@ -21,8 +21,10 @@ class alignas(alignof(TAccurate)) FFGMixAccParamState final
   std::array<TAccurate, 1> lfo5ToAmp = {};
   std::array<TAccurate, 1> lfo6ToBal = {};
   std::array<TAccurate, 1> voiceToOut = {};
+  std::array<TAccurate, 1> extAudioToOut = {};
   std::array<TAccurate, FFEffectCount> GFXToOut = {};
   std::array<TAccurate, FFEffectCount> voiceToGFX = {};
+  std::array<TAccurate, FFEffectCount> extAudioToGFX = {};
   std::array<TAccurate, FFMixFXToFXCount> GFXToGFX = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGMixAccParamState);
