@@ -5,6 +5,7 @@ TODOLIST for alpha-18
 [ ] do midi-receive yesno, default 1/0 for inst/fx
 [ ] fx/inst + other guid
 [ ] check the defaults
+[ ] do the xchange data
 [ ] make the popouts moveable top level windows + also the matrix
 
 TODOLIST for alpha-19 - tuning and keytracking

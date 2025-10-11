@@ -6,10 +6,10 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
-FormatVoiceToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
+FormatVoiceMixToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
 {
   std::string fxName = "GFX " + std::to_string(mixSlot + 1);
-  return std::string("Voice\U00002192" + fxName);
+  return std::string("Voice Mix\U00002192" + fxName);
 }
 
 static std::string
@@ -138,7 +138,7 @@ FFMakeGMixTopo()
   auto& voiceToOut = result->params[(int)FFGMixParam::VoiceToOut];
   voiceToOut.mode = FBParamMode::Accurate;
   voiceToOut.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
-  voiceToOut.name = "Voice\U00002192Out";
+  voiceToOut.name = "Voice Mix\U00002192Out";
   voiceToOut.slotCount = 1;
   voiceToOut.unit = "%";
   voiceToOut.id = "{72FCC170-A112-401E-BF11-C91A59C26457}";
