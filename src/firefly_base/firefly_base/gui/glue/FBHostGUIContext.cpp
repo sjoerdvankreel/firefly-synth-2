@@ -65,7 +65,7 @@ FBHostGUIContext::GetUserScalePlain() const
   if (m == -1)
     return 1.0;
   double norm = *_guiState->Params()[_topo->gui.ParamAtTopo({ { m, 0 }, { p, 0 } })->runtimeParamIndex];
-  return _topo->static_->modules[m].guiParams[p].Linear().NormalizedToPlainFast(norm);
+  return _topo->static_->modules[m].guiParams[p].NonRealTime().NormalizedToPlain(norm);
 }
 
 void 
