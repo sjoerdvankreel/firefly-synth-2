@@ -5,7 +5,7 @@ TODOLIST for alpha-18
 [x] fx/inst + other guid
 [x] check the defaults
 [x] do the xchange data
-[ ] show in header
+[x] show in header
 [ ] shareable patches?
 [ ] as osci
 [ ] test the clap

@@ -17,7 +17,10 @@ FFMakeHeaderGUI(FFPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1, 1 } }, std::vector<int> { { 0, 0 } });
   grid->Add(0, 0, 2, 1, plugGUI->StoreComponent<FBImageComponent>(68, "header.png", RectanglePlacement::Flags::centred));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(FF_PLUG_VERSION));
+  std::string versionAndType = FF_PLUG_VERSION;
+  if (plugGUI->HostContext()->Topo()->static_->meta.isFx)
+    versionAndType += " FX";
+  grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(versionAndType));
   auto format = plugGUI->HostContext()->Topo()->static_->meta.format;
   std::string formatName = format == FBPlugFormat::VST3 ? "VST3" : "CLAP";
 #if FB_APPLE_AARCH64

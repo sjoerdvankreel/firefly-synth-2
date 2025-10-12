@@ -34,6 +34,7 @@ FBStaticTopoMeta
 FFPlugMeta(FBPlugFormat format, bool isFx)
 {
   FBStaticTopoMeta result;
+  result.isFx = isFx;
   result.format = format;
   result.vendor = FFVendorName;
   result.version.major = FF_PLUG_VERSION_MAJOR;

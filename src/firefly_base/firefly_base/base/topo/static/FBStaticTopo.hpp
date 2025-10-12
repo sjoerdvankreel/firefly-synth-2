@@ -38,6 +38,7 @@ struct FBPlugVersion final
 
 struct FBStaticTopoMeta final
 {
+  bool isFx;
   std::string id;
   std::string name;
   std::string vendor;
