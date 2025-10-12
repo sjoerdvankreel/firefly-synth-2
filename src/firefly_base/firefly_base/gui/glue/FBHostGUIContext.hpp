@@ -46,7 +46,7 @@ protected:
 public:
   virtual FBGUIStateContainer* GUIState() = 0;
   virtual FBRuntimeTopo const* Topo() const = 0;
-  virtual FBExchangeStateContainer const* ExchangeState() const = 0;
+  virtual FBExchangeStateContainer const* ExchangeFromDSPState() const = 0;
 
   virtual double GetUserScaleMin() const = 0;
   virtual double GetUserScaleMax() const = 0;

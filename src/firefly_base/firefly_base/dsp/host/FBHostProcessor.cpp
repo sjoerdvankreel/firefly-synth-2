@@ -26,7 +26,7 @@ FBHostProcessor(IFBHostDSPContext* hostContext):
 _sampleRate(hostContext->SampleRate()),
 _topo(hostContext->Topo()),
 _procState(hostContext->ProcState()),
-_exchangeState(hostContext->ExchangeState()),
+_exchangeState(hostContext->ExchangeToGUIState()),
 _plug(hostContext->MakePlugProcessor()),
 _voiceManager(std::make_unique<FBVoiceManager>(hostContext->ProcState())),
 _hostToPlug(std::make_unique<FBHostToPlugProcessor>()),

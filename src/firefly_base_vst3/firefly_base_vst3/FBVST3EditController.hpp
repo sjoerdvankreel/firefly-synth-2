@@ -57,7 +57,7 @@ public:
 
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
   FBGUIStateContainer* GUIState() override { return _guiState.get(); }
-  FBExchangeStateContainer const* ExchangeState() const override { return _exchangeState.get(); }
+  FBExchangeStateContainer const* ExchangeFromDSPState() const override { return _exchangeState.get(); }
 
   tresult PLUGIN_API notify(IMessage* message) override;
   tresult PLUGIN_API setState(IBStream* state) override;

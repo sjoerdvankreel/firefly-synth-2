@@ -87,7 +87,7 @@ FBGraphRenderState::ModuleProcState() const
 FBExchangeStateContainer const*
 FBGraphRenderState::ExchangeContainer() const
 {
-  return _plugGUI->HostContext()->ExchangeState();
+  return _plugGUI->HostContext()->ExchangeFromDSPState();
 }
 
 void 

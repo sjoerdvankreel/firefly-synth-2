@@ -21,7 +21,7 @@ FFPlugProcessor(IFBHostDSPContext* hostContext) :
 _sampleRate(hostContext->SampleRate()),
 _topo(hostContext->Topo()),
 _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
-_exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()))
+_exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeToGUIState()->Raw()))
 {
   _procState->dsp.global.master.mtsClient = hostContext->GetMTSClient();
   _procState->dsp.global.gMatrix.processor->InitBuffers(_topo);

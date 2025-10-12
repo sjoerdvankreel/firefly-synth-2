@@ -113,7 +113,7 @@ public:
   MTSClient* GetMTSClient() override { return _mtsClient; }
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
   FBProcStateContainer* ProcState() override { return _procState.get(); }
-  FBExchangeStateContainer* ExchangeState() override { return _dspExchangeState.get(); }
+  FBExchangeStateContainer* ExchangeToGUIState() override { return _dspExchangeState.get(); }
 
   double GetAudioParamNormalized(int index) const override;
   double GetGUIParamNormalized(int index) const override;
@@ -123,7 +123,7 @@ public:
   std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) override;
 
   FBGUIStateContainer* GUIState() override { return _guiState.get(); }
-  FBExchangeStateContainer const* ExchangeState() const override { return _guiExchangeState.get(); }
+  FBExchangeStateContainer const* ExchangeFromDSPState() const override { return _guiExchangeState.get(); }
 
   bool isValidParamId(clap_id paramId) const noexcept override;
   int32_t getParamIndexForParamId(clap_id paramId) const noexcept override;

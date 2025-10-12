@@ -50,7 +50,7 @@ public:
   MTSClient* GetMTSClient() override { return _mtsClient; }
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
   FBProcStateContainer* ProcState() override { return _procState.get(); }
-  FBExchangeStateContainer* ExchangeState() override { return _exchangeState.get(); }
+  FBExchangeStateContainer* ExchangeToGUIState() override { return _exchangeState.get(); }
 
   tresult PLUGIN_API setActive(TBool state) override;
   tresult PLUGIN_API setState(IBStream* state) override;
