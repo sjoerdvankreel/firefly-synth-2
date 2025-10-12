@@ -87,6 +87,11 @@ void
 FFPlugProcessor::LeaseVoices(
   FBPlugInputBlock const& input)
 {
+  float receiveNorm = _procState->param.global.master[0].block.receiveNotes[0].Value();
+  auto const& receiveTopo = _topo->static_->modules[(int)FFModuleType::Master].params[(int)FFMasterParam::ReceiveNotes];
+  if (!receiveTopo.Boolean().NormalizedToPlainFast(receiveNorm))
+    return;
+
   for (int n = 0; n < input.noteEvents->size(); n++)
     if ((*input.noteEvents)[n].on)
     {
