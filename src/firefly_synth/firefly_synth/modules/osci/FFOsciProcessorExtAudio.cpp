@@ -15,13 +15,11 @@ void
 FFOsciProcessor::ProcessExtAudio(
   FBModuleProcState& state)
 {
-  //int voice = state.voice->slot;
-  //auto* procState = state.ProcAs<FFProcState>();
-  //float sampleRate = state.input->sampleRate;
-  //float oversampledRate = sampleRate * _oversampleTimes;
-  //int totalSamples = FBFixedBlockSamples * _oversampleTimes;
-  //auto& voiceState = procState->dsp.voice[voice];
-  //auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  auto& voiceState = procState->dsp.voice[voice];
+  auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
   
   FBSArray<float, FBFixedBlockSamples> audioIn;
   switch (_type)
@@ -34,8 +32,11 @@ FFOsciProcessor::ProcessExtAudio(
     break;
   case FFOsciType::ExtAudioMono:
     audioIn.Fill(FBBatch<float>(0.0f));
-    //audioIn.AddMul((*state.input->audio)[0], 0.5f);
-    //audioIn.AddMul((*state.input->audio)[1], 0.5f);
+    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+    {
+      audioIn.Add(s, (*state.input->audio)[0].Load(s) * 0.5f);
+      audioIn.Add(s, (*state.input->audio)[1].Load(s) * 0.5f);
+    }
     break;
   default:
     FB_ASSERT(false);
@@ -44,6 +45,17 @@ FFOsciProcessor::ProcessExtAudio(
 
   if (_oversampleTimes == 1)
   {
-    
+    for (int u = 0; u < _uniCount; u++)
+      for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+        uniOutputOversampled[u].Store(s, audioIn.Load(s));
+    return;
   }
+
+  for (int u = 0; u < _uniCount; u++)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      _downsampledBlock.setSample(u, s, audioIn.Get(s));
+  auto oversampledBlock = _oversampler.processSamplesUp(_downsampledBlock.getSubsetChannelBlock(0, _uniCount));
+  for (int u = 0; u < _uniCount; u++)
+    for (int s = 0; s < totalSamples; s++)
+      uniOutputOversampled[u].Set(s, oversampledBlock.getSample(u, s));
 }
