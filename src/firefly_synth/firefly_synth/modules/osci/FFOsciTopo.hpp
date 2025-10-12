@@ -16,7 +16,6 @@ enum class FFOsciType {
   Off, 
   Wave, FM, String,
   ExtAudioL, ExtAudioR, ExtAudioMono };
-bool FFOsciTypeIsExtAudio(FFOsciType type);
 std::string FFOsciTypeToString(FFOsciType type);
 
 enum class FFOsciWaveDSFMode { Off, Over, BW };
@@ -48,3 +47,12 @@ enum class FFOsciParam {
   StringLPOn, StringLPFreq, StringLPRes, StringLPKTrk,
   StringHPOn, StringHPFreq, StringHPRes, StringHPKTrk,
   StringDamp, StringDampKTrk, StringFeedback, StringFeedbackKTrk, Count };
+
+inline bool
+FFOsciTypeIsExtAudio(FFOsciType type)
+{
+  return
+    type == FFOsciType::ExtAudioL ||
+    type == FFOsciType::ExtAudioR ||
+    type == FFOsciType::ExtAudioMono;
+}

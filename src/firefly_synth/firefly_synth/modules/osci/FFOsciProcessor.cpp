@@ -183,6 +183,9 @@ FFOsciProcessor::Process(
   if (_type == FFOsciType::Off)
     return 0;
 
+  float const defaultPitch = 60.0f;
+  float const defaultFreq = FBPitchToFreq(defaultPitch);
+
   float sampleRate = state.input->sampleRate;
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
@@ -211,11 +214,15 @@ FFOsciProcessor::Process(
   if (!graph)
   {
     FFApplyModulation(FFModulationOpType::UPMul, voiceState.env[state.moduleSlot + FFEnvSlotOffset].output, envToGain.CV(), gainNormModulated);
-    FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[state.moduleSlot].outputAll, lfoToFine.CV(), fineNormModulated);
-    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscPan, false, voice, -1, panNormModulated);
-    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscFine, false, voice, -1, fineNormModulated);
     procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscGain, false, voice, -1, gainNormModulated);
-    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscCoarse, false, voice, -1, coarseNormModulated);
+    procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscPan, false, voice, -1, panNormModulated);
+
+    if (!FFOsciTypeIsExtAudio(_type))
+    {
+      FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[state.moduleSlot].outputAll, lfoToFine.CV(), fineNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscFine, false, voice, -1, fineNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscCoarse, false, voice, -1, coarseNormModulated);
+    }
   }
 
   FBSArray<float, FFOsciFixedBlockOversamples> panPlain;
@@ -226,25 +233,34 @@ FFOsciProcessor::Process(
   FBSArray<float, FFOsciFixedBlockOversamples> basePitchPlain;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
-    auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNormModulated.Load(s));
-    auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNormModulated.Load(s));
-    auto pitch = _keyUntuned + coarse + fine + voicePitchOffsetSemis.Load(s);
-    if (masterPitchBendTarget == FFMasterPitchBendTarget::Osc1 && state.moduleSlot == 0 ||
-      masterPitchBendTarget == FFMasterPitchBendTarget::Osc2 && state.moduleSlot == 1 ||
-      masterPitchBendTarget == FFMasterPitchBendTarget::Osc3 && state.moduleSlot == 2 ||
-      masterPitchBendTarget == FFMasterPitchBendTarget::Osc4 && state.moduleSlot == 3)
-      pitch += masterPitchBendSemis.Load(s);
+    if (!FFOsciTypeIsExtAudio(_type))
+    {
+      auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNormModulated.Load(s));
+      auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNormModulated.Load(s));
+      auto pitch = _keyUntuned + coarse + fine + voicePitchOffsetSemis.Load(s);
+      if (masterPitchBendTarget == FFMasterPitchBendTarget::Osc1 && state.moduleSlot == 0 ||
+        masterPitchBendTarget == FFMasterPitchBendTarget::Osc2 && state.moduleSlot == 1 ||
+        masterPitchBendTarget == FFMasterPitchBendTarget::Osc3 && state.moduleSlot == 2 ||
+        masterPitchBendTarget == FFMasterPitchBendTarget::Osc4 && state.moduleSlot == 3)
+        pitch += masterPitchBendSemis.Load(s);
 
-    auto baseFreq = FBPitchToFreq(pitch);
-    basePitchPlain.Store(s, pitch);
-    if(_graph)
-      _graphPhaseGen.NextBatch(baseFreq / sampleRate);
+      auto baseFreq = FBPitchToFreq(pitch);
+      basePitchPlain.Store(s, pitch);
+      uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
+      if (_graph)
+        _graphPhaseGen.NextBatch(baseFreq / sampleRate);
+    }
+    else
+    {
+      basePitchPlain.Store(s, FBBatch<float>(defaultPitch));
+      if (_graph)
+        _graphPhaseGen.NextBatch(FBBatch<float>(defaultFreq / sampleRate));
+    }
 
     panPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::Pan, panNormModulated.Load(s)));
     gainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::Gain, gainNormModulated.Load(s)));
     uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
     uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
-    uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
   }
   if (_oversampleTimes != 1)
   {
@@ -258,6 +274,8 @@ FFOsciProcessor::Process(
     ProcessFM(state, basePitchPlain, uniDetunePlain);
   else if (_type == FFOsciType::String)
     ProcessString(state, basePitchPlain, uniDetunePlain);
+  else if (FFOsciTypeIsExtAudio(_type))
+    ProcessExtAudio(state);
   else
     FB_ASSERT(false);
 

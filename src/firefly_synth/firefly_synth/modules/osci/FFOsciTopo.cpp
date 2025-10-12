@@ -4,15 +4,6 @@
 #include <firefly_synth/modules/osci/FFOsciGraph.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
-bool
-FFOsciTypeIsExtAudio(FFOsciType type)
-{
-  return 
-    type == FFOsciType::ExtAudioL || 
-    type == FFOsciType::ExtAudioR || 
-    type == FFOsciType::ExtAudioMono;
-}
-
 static std::string
 FFOsciFMFormatRatioSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 {

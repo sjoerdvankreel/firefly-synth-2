@@ -118,6 +118,8 @@ class FFOsciProcessor final
     float excite, float colorNorm,
     float xNorm, float yNorm);
 
+  void ProcessExtAudio(
+    FBModuleProcState& state);
   void ProcessFM(
     FBModuleProcState& state,
     FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
