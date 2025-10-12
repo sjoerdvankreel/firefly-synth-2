@@ -12,7 +12,11 @@ enum class FFOsciFMMode { Linear, Exp };
 enum class FFOsciStringMode { Uni, Norm };
 enum class FFOsciFMRatioMode { Ratio, Free };
 
-enum class FFOsciType { Off, Wave, FM, String };
+enum class FFOsciType { 
+  Off, 
+  Wave, FM, String,
+  ExtAudioL, ExtAudioR, ExtAudioMono };
+bool FFOsciTypeIsExtAudio(FFOsciType type);
 std::string FFOsciTypeToString(FFOsciType type);
 
 enum class FFOsciWaveDSFMode { Off, Over, BW };
