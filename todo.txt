@@ -1,12 +1,12 @@
 TODOLIST for alpha-18
-[ ] recheck audio input in plug mode => needs cache clear / rescan
-[ ] in global section
+[x] recheck audio input in plug mode => needs cache clear / rescan
+[x] in global section
+[x] do midi-receive yesno, default 1/0 for inst/fx
+[x] fx/inst + other guid
+[x] check the defaults
+[x] do the xchange data
 [ ] as osci
-[ ] do midi-receive yesno, default 1/0 for inst/fx
-[ ] fx/inst + other guid
-[ ] check the defaults
-[ ] do the xchange data
-[ ] make the popouts moveable top level windows + also the matrix
+[ ] test the clap
 
 TODOLIST for alpha-19 - tuning and keytracking
 [ ] filter kbd track -- should it take into account all coarse pitch mods ?
@@ -20,6 +20,7 @@ TODOLIST for alpha-19 - tuning and keytracking
 [ ] filters should track the actual pitch when possible (string osci)
 
 TODOLIST for alpha-20
+[ ] make the popouts moveable top level windows + also the matrix
 [ ] switch the env stage controls for MSEG editor
 [ ] pop-up editor with the current stuff
 [ ] import/export module
