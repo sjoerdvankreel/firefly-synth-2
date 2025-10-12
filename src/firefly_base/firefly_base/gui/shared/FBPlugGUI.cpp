@@ -345,6 +345,6 @@ FBPlugGUI::LoadPatchFromFile()
       AlertWindow::showMessageBoxAsync(
         MessageBoxIconType::WarningIcon,
         "Error",
-        "Failed to load patch. See log for details.\r\n" + FBGetLogPath(HostContext()->Topo()->static_->meta).string());
+        "Failed to load patch. See log for details: " + FBGetLogPath(HostContext()->Topo()->static_->meta).string() + ".");
   });
 }
