@@ -15,7 +15,7 @@ template <class TAccurate>
 class alignas(alignof(TAccurate)) FFGMixAccParamState final
 {
   friend class FFPlugProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeGMixTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeGMixTopo(bool);
   std::array<TAccurate, 1> amp = {};
   std::array<TAccurate, 1> bal = {};
   std::array<TAccurate, 1> lfo5ToAmp = {};
@@ -34,7 +34,7 @@ template <class TAccurate>
 class alignas(alignof(TAccurate)) FFGMixParamState final
 {
   friend class FFPlugProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeGMixTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeGMixTopo(bool);
   FFGMixAccParamState<TAccurate> acc = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGMixParamState);

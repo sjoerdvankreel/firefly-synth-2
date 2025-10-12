@@ -4,7 +4,7 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 std::unique_ptr<FBStaticModule>
-FFMakeMasterTopo()
+FFMakeMasterTopo(bool isFx)
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
@@ -53,7 +53,7 @@ FFMakeMasterTopo()
   receiveNotes.name = "Receive MIDI Notes";
   receiveNotes.display = "Rcv Notes";
   receiveNotes.slotCount = 1;
-  receiveNotes.defaultText = "On";
+  receiveNotes.defaultText = isFx? "Off": "On";
   receiveNotes.id = "{92B2E390-F925-4170-BCA0-CFEDBF29970B}";
   receiveNotes.type = FBParamType::Boolean;
   auto selectReceiveNotes = [](auto& module) { return &module.block.receiveNotes; };

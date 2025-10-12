@@ -11,4 +11,4 @@ enum class FFMasterPitchBendTarget { Off, Voice, Osc1, Osc2, Osc3, Osc4 };
 enum class FFMasterParam { 
   Aux, ModWheel, HostSmoothTime, ReceiveNotes,
   PitchBend, PitchBendRange, PitchBendTarget, Count };
-std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
+std::unique_ptr<FBStaticModule> FFMakeMasterTopo(bool isFx);

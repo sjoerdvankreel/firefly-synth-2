@@ -20,7 +20,7 @@ FormatExtAudioToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
 }
 
 std::unique_ptr<FBStaticModule>
-FFMakeGMixTopo()
+FFMakeGMixTopo(bool isFx)
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
@@ -137,7 +137,7 @@ FFMakeGMixTopo()
 
   auto& voiceToOut = result->params[(int)FFGMixParam::VoiceToOut];
   voiceToOut.mode = FBParamMode::Accurate;
-  voiceToOut.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
+  voiceToOut.defaultText = isFx ? "0" : "100";
   voiceToOut.name = "Voice Mix\U00002192Out";
   voiceToOut.slotCount = 1;
   voiceToOut.unit = "%";
@@ -150,7 +150,7 @@ FFMakeGMixTopo()
 
   auto& extAudioToOut = result->params[(int)FFGMixParam::ExtAudioToOut];
   extAudioToOut.mode = FBParamMode::Accurate;
-  extAudioToOut.defaultText = "0";
+  extAudioToOut.defaultText = isFx? "100": "0";
   extAudioToOut.name = "Ext Audio\U00002192Out";
   extAudioToOut.slotCount = 1;
   extAudioToOut.unit = "%";

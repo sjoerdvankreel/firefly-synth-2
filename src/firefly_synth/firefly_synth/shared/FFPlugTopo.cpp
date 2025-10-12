@@ -76,7 +76,7 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->modules.resize((int)FFModuleType::Count);
   result->modules[(int)FFModuleType::MIDI] = std::move(*FFMakeMIDITopo());
   result->modules[(int)FFModuleType::GNote] = std::move(*FFMakeGNoteTopo());
-  result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
+  result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo(isFX));
   result->modules[(int)FFModuleType::GlobalUni] = std::move(*FFMakeGlobalUniTopo());
   result->modules[(int)FFModuleType::VoiceModule] = std::move(*FFMakeVoiceModuleTopo());
   result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
@@ -92,7 +92,7 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->modules[(int)FFModuleType::GLFO] = std::move(*FFMakeLFOTopo(true));
   result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
   result->modules[(int)FFModuleType::VMix] = std::move(*FFMakeVMixTopo());
-  result->modules[(int)FFModuleType::GMix] = std::move(*FFMakeGMixTopo());
+  result->modules[(int)FFModuleType::GMix] = std::move(*FFMakeGMixTopo(isFX));
 
   // These need to go last.
   result->gMatrixSources = FFModMatrixMakeSources(true, result.get());
