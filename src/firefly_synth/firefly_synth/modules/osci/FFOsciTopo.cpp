@@ -213,7 +213,7 @@ FFMakeOsciTopo()
   uniCount.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniCount);
   uniCount.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniCount);
   uniCount.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniCount);
-  uniCount.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0 && !FFOsciTypeIsExtAudio((FFOsciType)vs[0]); });
+  uniCount.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& uniOffset = result->params[(int)FFOsciParam::UniOffset];
   uniOffset.mode = FBParamMode::VoiceStart;
@@ -273,7 +273,7 @@ FFMakeOsciTopo()
   uniSpread.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniSpread);
   uniSpread.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniSpread);
   uniSpread.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniSpread);
-  uniSpread.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 1 && !FFOsciTypeIsExtAudio((FFOsciType)vs[0]); });
+  uniSpread.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 1; });
 
   auto& uniBlend = result->params[(int)FFOsciParam::UniBlend];
   uniBlend.mode = FBParamMode::Accurate;
