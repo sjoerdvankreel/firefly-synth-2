@@ -48,6 +48,11 @@ public:
   virtual FBRuntimeTopo const* Topo() const = 0;
   virtual FBExchangeStateContainer const* ExchangeState() const = 0;
 
+  virtual double GetUserScaleMin() const = 0;
+  virtual double GetUserScaleMax() const = 0;
+  virtual double GetUserScalePlain() const = 0;
+  virtual void SetUserScalePlain(double scale) = 0;
+
   virtual double GetAudioParamNormalized(int index) const = 0;
   virtual double GetGUIParamNormalized(int index) const = 0;
   virtual void SetGUIParamNormalized(int index, double normalized) = 0;

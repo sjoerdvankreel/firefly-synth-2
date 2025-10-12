@@ -37,19 +37,6 @@ MakeSpecialParam(
   return result;
 }
 
-static FBSpecialGUIParam
-MakeSpecialGUIParam(
-  FBStaticTopo const& topo, void* state,
-  int moduleIndex, int paramIndex)
-{
-  FBSpecialGUIParam result;
-  result.paramIndex = paramIndex;
-  result.moduleIndex = moduleIndex;
-  auto const& param = topo.modules[moduleIndex].guiParams[paramIndex];
-  result.state = param.scalarAddr(0, 0, state);
-  return result;
-}
-
 static FBSpecialParams
 SpecialParamsSelector(
   FBStaticTopo const& topo, void* state)
@@ -57,16 +44,6 @@ SpecialParamsSelector(
   FBSpecialParams result = {};
   result.hostSmoothTime = MakeSpecialParam(
     topo, state, (int)FFModuleType::Master, (int)FFMasterParam::HostSmoothTime);
-  return result;
-}
-
-static FBSpecialGUIParams
-SpecialGUIParamsSelector(
-  FBStaticTopo const& topo, void* state)
-{
-  FBSpecialGUIParams result = {};
-  result.userScale = MakeSpecialGUIParam(
-    topo, state, (int)FFModuleType::GUISettings, (int)FFGUISettingsGUIParam::UserScale);
   return result;
 }
 
@@ -106,7 +83,6 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
     return std::make_unique<FFDeserializationConverter>(oldVersion, topo); };
 
   result->specialSelector = SpecialParamsSelector;
-  result->specialGUISelector = SpecialGUIParamsSelector;
   result->exchangeStateSize = sizeof(FFExchangeState);
   result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };
   result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };

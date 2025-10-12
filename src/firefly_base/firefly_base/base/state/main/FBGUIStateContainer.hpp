@@ -15,7 +15,6 @@ class FBGUIStateContainer final
   std::vector<double*> _params;
   void* _rawState;
   void (*_freeRawState)(void*);
-  FBSpecialGUIParams _special;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBGUIStateContainer);
@@ -24,7 +23,6 @@ public:
 
   void CopyFrom(FBGUIStateContainer const& gui);
   std::vector<double*> const& Params() const { return _params; }
-  FBSpecialGUIParams const& Special() const { return _special; }
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }

@@ -54,22 +54,9 @@ struct FBSpecialParam final
   FBStaticParam const& ParamTopo(FBStaticTopo const& topo) const;
 };
 
-struct FBSpecialGUIParam final
-{
-  int paramIndex = -1;
-  int moduleIndex = -1;
-  double* state = nullptr;
-  FBStaticGUIParam const& ParamTopo(FBStaticTopo const& topo) const;
-};
-
 struct FBSpecialParams final
 {
   FBSpecialParam hostSmoothTime = {};
-};
-
-struct FBSpecialGUIParams final
-{
-  FBSpecialGUIParam userScale = {};
 };
 
 class FBDeserializationConverter
@@ -109,9 +96,6 @@ public:
 typedef std::function<FBSpecialParams(
 FBStaticTopo const& topo, void* state)>
 FBSpecialParamsSelector;
-typedef std::function<FBSpecialGUIParams(
-FBStaticTopo const& topo, void* state)>
-FBSpecialGUIParamsSelector;
 
 typedef std::function<FBHostExchangeState* (void* state)>
 FBHostExchangeAddrSelector;
@@ -151,7 +135,6 @@ struct FBStaticTopo
 
   int exchangeStateSize = {};
   FBSpecialParamsSelector specialSelector = {};
-  FBSpecialGUIParamsSelector specialGUISelector = {};
   FBHostExchangeAddrSelector hostExchangeAddr = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
 

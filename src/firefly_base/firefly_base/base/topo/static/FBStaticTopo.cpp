@@ -13,12 +13,6 @@ FBSpecialParam::ParamTopo(FBStaticTopo const& topo) const
   return topo.modules[moduleIndex].params[paramIndex];
 }
 
-FBStaticGUIParam const&
-FBSpecialGUIParam::ParamTopo(FBStaticTopo const& topo) const
-{
-  return topo.modules[moduleIndex].guiParams[paramIndex];
-}
-
 std::string
 FBStaticTopoMeta::NameVersionAndFormat() const
 {
