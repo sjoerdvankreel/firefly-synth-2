@@ -25,9 +25,6 @@ public IDataExchangeReceiver,
 public FBHostGUIContext
 {
   FBVST3GUIEditor* _guiEditor = {};
-  std::unique_ptr<FBRuntimeTopo> _topo;
-  std::unique_ptr<FBGUIStateContainer> _guiState;
-  std::unique_ptr<FBExchangeStateContainer> _exchangeState;
   DataExchangeReceiverHandler _exchangeHandler;
 
 protected:
@@ -49,15 +46,8 @@ public:
   void ResetView();
 
   double GetAudioParamNormalized(int index) const override;
-  double GetGUIParamNormalized(int index) const override;
-  void SetGUIParamNormalized(int index, double normalized) override;
-
   void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;
   std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) override;
-
-  FBRuntimeTopo const* Topo() const override { return _topo.get(); }
-  FBGUIStateContainer* GUIState() override { return _guiState.get(); }
-  FBExchangeStateContainer const* ExchangeFromDSPState() const override { return _exchangeState.get(); }
 
   tresult PLUGIN_API notify(IMessage* message) override;
   tresult PLUGIN_API setState(IBStream* state) override;

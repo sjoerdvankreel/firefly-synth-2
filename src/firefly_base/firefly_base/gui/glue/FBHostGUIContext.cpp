@@ -1,5 +1,7 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
+#include <firefly_base/base/state/main/FBGUIStateContainer.hpp>
+#include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <stack>
 #include <memory>
@@ -15,8 +17,65 @@ struct MenuBuilder
 };
 
 FBHostGUIContext::
-FBHostGUIContext():
-_undoState(this) {}
+FBHostGUIContext(std::unique_ptr<FBStaticTopo>&& topo):
+_undoState(this),
+_topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
+_guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
+_exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo))
+{
+}
+
+double 
+FBHostGUIContext::GetGUIParamNormalized(int index) const 
+{ 
+  return *_guiState->Params()[index];
+}
+
+void 
+FBHostGUIContext::SetGUIParamNormalized(int index, double normalized) 
+{ 
+  *_guiState->Params()[index] = normalized;
+}
+
+double 
+FBHostGUIContext::GetUserScaleMin() const
+{
+  int m = _topo->static_->guiUserScaleModule;
+  int p = _topo->static_->guiUserScaleParam;
+  if (m == -1)
+    return 1.0;
+  return _topo->static_->modules[m].params[p].Linear().min;
+}
+
+double 
+FBHostGUIContext::GetUserScaleMax() const
+{
+  int m = _topo->static_->guiUserScaleModule;
+  int p = _topo->static_->guiUserScaleParam;
+  if (m == -1)
+    return 1.0;
+  return _topo->static_->modules[m].params[p].Linear().max;
+}
+
+double 
+FBHostGUIContext::GetUserScalePlain() const
+{
+  int m = _topo->static_->guiUserScaleModule;
+  int p = _topo->static_->guiUserScaleParam;
+  if (m == -1)
+    return 1.0;
+  return *_guiState->Params()[_topo->gui.ParamAtTopo({ { m, 0 }, { p, 0 } })->runtimeParamIndex];
+}
+
+void 
+FBHostGUIContext::SetUserScalePlain(double scale)
+{
+  int m = _topo->static_->guiUserScaleModule;
+  int p = _topo->static_->guiUserScaleParam;
+  if (m == -1)
+    return;
+  *_guiState->Params()[_topo->gui.ParamAtTopo({ { m, 0 }, { p, 0 } })->runtimeParamIndex] = scale;
+}
 
 void
 FBHostGUIContext::BeginAudioParamChange(int index)

@@ -114,6 +114,8 @@ struct FBStaticTopo
   int guiWidth = {};
   int guiAspectRatioWidth = {};
   int guiAspectRatioHeight = {};
+  int guiUserScaleParam = -1;
+  int guiUserScaleModule = -1;
   FBPlugGUIFactory guiFactory = {};
   FBDeserializationConverterFactory deserializationConverterFactory = {};
 

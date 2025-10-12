@@ -77,6 +77,8 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->guiWidth = 1200;
   result->guiAspectRatioWidth = 32;
   result->guiAspectRatioHeight = 17;
+  result->guiUserScaleModule = (int)FFModuleType::GUISettings;
+  result->guiUserScaleParam = (int)FFGUISettingsGUIParam::UserScale;
   result->guiFactory = [](FBHostGUIContext* hostContext) { 
     return std::make_unique<FFPlugGUI>(hostContext); };
   result->deserializationConverterFactory = [](FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo) { 

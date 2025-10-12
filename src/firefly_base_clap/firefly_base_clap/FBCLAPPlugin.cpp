@@ -178,16 +178,14 @@ FBCLAPPlugin(
   MTSClient* mtsClient,
   std::unique_ptr<FBCLAPExchangeStateQueueBase>&& exchangeStateQueue):
 Plugin(desc, host),
+FBHostGUIContext(std::move(topo)),
 _audioToMainEvents(FBCLAPSyncEventReserve - 1),
 _mainToAudioEvents(FBCLAPSyncEventReserve - 1),
 _mtsClient(mtsClient),
 _gui(),
-_topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
-_guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
 _procState(std::make_unique<FBProcStateContainer>(*_topo)),
 _editState(std::make_unique<FBScalarStateContainer>(*_topo)),
-_dspExchangeState(std::make_unique<FBExchangeStateContainer>(*_topo)),
-_guiExchangeState(std::make_unique<FBExchangeStateContainer>(*_topo)),
+_exchangeToGUIState(std::make_unique<FBExchangeStateContainer>(*_topo)),
 _exchangeStateQueue(std::move(exchangeStateQueue))
 {
   FB_LOG_ENTRY_EXIT();
@@ -212,7 +210,7 @@ FBCLAPPlugin::timerCallback()
         _gui->SetAudioParamNormalizedFromHost(event.paramIndex, event.normalized);
 
     bool receivedExchange = false;
-    while (_exchangeStateQueue->TryDequeue(_guiExchangeState->Raw()))
+    while (_exchangeStateQueue->TryDequeue(_exchangeFromDSPState->Raw()))
       receivedExchange = true;
     if (receivedExchange && _gui)
       _gui->UpdateExchangeState();
@@ -421,7 +419,7 @@ FBCLAPPlugin::process(
       _input.audio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
 
     _hostProcessor->ProcessHost(_input, _output);
-    _exchangeStateQueue->TryEnqueue(_dspExchangeState->Raw());
+    _exchangeStateQueue->TryEnqueue(_exchangeToGUIState->Raw());
 
     for (auto const& op : _output.outputParams)
       _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(op.param, op.normalized));

@@ -46,12 +46,9 @@ public IFBHostDSPContext
 
   MTSClient* const _mtsClient;
   std::unique_ptr<FBPlugGUIContext> _gui;
-  std::unique_ptr<FBRuntimeTopo> _topo;
-  std::unique_ptr<FBGUIStateContainer> _guiState;
   std::unique_ptr<FBProcStateContainer> _procState;
   std::unique_ptr<FBScalarStateContainer> _editState;
-  std::unique_ptr<FBExchangeStateContainer> _dspExchangeState;
-  std::unique_ptr<FBExchangeStateContainer> _guiExchangeState;
+  std::unique_ptr<FBExchangeStateContainer> _exchangeToGUIState;
   std::unique_ptr<FBCLAPExchangeStateQueueBase> _exchangeStateQueue;
 
   float _sampleRate = 0.0f;
@@ -113,17 +110,11 @@ public:
   MTSClient* GetMTSClient() override { return _mtsClient; }
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
   FBProcStateContainer* ProcState() override { return _procState.get(); }
-  FBExchangeStateContainer* ExchangeToGUIState() override { return _dspExchangeState.get(); }
+  FBExchangeStateContainer* ExchangeToGUIState() override { return _exchangeToGUIState.get(); } 
 
   double GetAudioParamNormalized(int index) const override;
-  double GetGUIParamNormalized(int index) const override;
-  void SetGUIParamNormalized(int index, double normalized) override;
-  
   void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;
   std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) override;
-
-  FBGUIStateContainer* GUIState() override { return _guiState.get(); }
-  FBExchangeStateContainer const* ExchangeFromDSPState() const override { return _guiExchangeState.get(); }
 
   bool isValidParamId(clap_id paramId) const noexcept override;
   int32_t getParamIndexForParamId(clap_id paramId) const noexcept override;
