@@ -5,8 +5,11 @@ TODOLIST for alpha-18
 [x] fx/inst + other guid
 [x] check the defaults
 [x] do the xchange data
+[ ] show in header
+[ ] shareable patches?
 [ ] as osci
 [ ] test the clap
+[ ] loads of host test files
 
 TODOLIST for alpha-19 - tuning and keytracking
 [ ] filter kbd track -- should it take into account all coarse pitch mods ?
