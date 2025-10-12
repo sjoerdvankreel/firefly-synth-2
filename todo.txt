@@ -7,7 +7,7 @@ TODOLIST for alpha-18
 [x] do the xchange data
 [x] show in header
 [x] shareable patches?
-[ ] as osci
+[ ] as osci + graph
 [ ] test the clap
 [ ] loads of host test files
 
