@@ -7,7 +7,6 @@ TODOLIST for alpha-18
 [x] do the xchange data
 [x] show in header
 [x] shareable patches?
-[ ] extsmth/rcvn => dspsettings module, not save in patch, this later also hosts tuning settings
 [ ] as osci
 [ ] test the clap
 [ ] loads of host test files
@@ -24,6 +23,7 @@ TODOLIST for alpha-19 - tuning and keytracking
 [ ] filters should track the actual pitch when possible (string osci)
 
 TODOLIST for alpha-20
+[ ] extsmth/rcvn => settings module, not save in patch, this later also hosts tuning settings. also move all gui settings there
 [ ] make the popouts moveable top level windows + also the matrix
 [ ] switch the env stage controls for MSEG editor
 [ ] pop-up editor with the current stuff
