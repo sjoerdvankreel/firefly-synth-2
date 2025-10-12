@@ -159,8 +159,10 @@ FFOsciProcessor::BeginVoice(
     BeginVoiceFM(state, uniPhaseInit);
   else if (_type == FFOsciType::String)
     BeginVoiceString(state, graph);
+  else if (_type == FFOsciType::ExtAudio)
+    BeginVoiceExtAudio(state);
   else
-    FB_ASSERT(FFOsciTypeIsExtAudio((FFOsciType)_type));
+    FB_ASSERT(false);
 }
 
 int
@@ -217,7 +219,7 @@ FFOsciProcessor::Process(
     procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscGain, false, voice, -1, gainNormModulated);
     procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscPan, false, voice, -1, panNormModulated);
 
-    if (!FFOsciTypeIsExtAudio(_type))
+    if (_type != FFOsciType::ExtAudio)
     {
       FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[state.moduleSlot].outputAll, lfoToFine.CV(), fineNormModulated);
       procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscFine, false, voice, -1, fineNormModulated);
@@ -233,7 +235,7 @@ FFOsciProcessor::Process(
   FBSArray<float, FFOsciFixedBlockOversamples> basePitchPlain;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
-    if (!FFOsciTypeIsExtAudio(_type))
+    if (_type != FFOsciType::ExtAudio)
     {
       auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNormModulated.Load(s));
       auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNormModulated.Load(s));
@@ -274,7 +276,7 @@ FFOsciProcessor::Process(
     ProcessFM(state, basePitchPlain, uniDetunePlain);
   else if (_type == FFOsciType::String)
     ProcessString(state, basePitchPlain, uniDetunePlain);
-  else if (FFOsciTypeIsExtAudio(_type))
+  else if (_type == FFOsciType::ExtAudio)
     ProcessExtAudio(state);
   else
     FB_ASSERT(false);

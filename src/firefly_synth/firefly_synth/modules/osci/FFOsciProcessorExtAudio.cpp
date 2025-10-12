@@ -22,25 +22,11 @@ FFOsciProcessor::ProcessExtAudio(
   auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
   
   FBSArray<float, FBFixedBlockSamples> audioIn;
-  switch (_type)
+  audioIn.Fill(FBBatch<float>(0.0f));
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
-  case FFOsciType::ExtAudioL: 
-    (*state.input->audio)[0].CopyTo(audioIn); 
-    break;
-  case FFOsciType::ExtAudioR:
-    (*state.input->audio)[1].CopyTo(audioIn);
-    break;
-  case FFOsciType::ExtAudioMono:
-    audioIn.Fill(FBBatch<float>(0.0f));
-    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-    {
-      audioIn.Add(s, (*state.input->audio)[0].Load(s) * 0.5f);
-      audioIn.Add(s, (*state.input->audio)[1].Load(s) * 0.5f);
-    }
-    break;
-  default:
-    FB_ASSERT(false);
-    break;
+    audioIn.Add(s, (*state.input->audio)[0].Load(s) * 0.5f);
+    audioIn.Add(s, (*state.input->audio)[1].Load(s) * 0.5f); // TODO
   }
 
   if (_oversampleTimes == 1)

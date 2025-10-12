@@ -133,6 +133,7 @@ class FFOsciProcessor final
     FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
     FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain);
 
+  void BeginVoiceExtAudio(FBModuleProcState& state);
   void BeginVoiceString(FBModuleProcState& state, bool graph);
   void BeginVoiceFM(FBModuleProcState& state, FBSArray<float, FFOsciUniMaxCount> const& uniPhaseInit);
   void BeginVoiceWave(FBModuleProcState& state, FBSArray<float, FFOsciUniMaxCount> const& uniPhaseInit);
