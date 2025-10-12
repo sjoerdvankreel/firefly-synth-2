@@ -37,6 +37,7 @@ class alignas(alignof(TBlock)) FFMasterBlockParamState final
   friend class FFPlugProcessor;
   friend class FFMasterProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
+  std::array<TBlock, 1> receiveNotes = {};
   std::array<TBlock, 1> hostSmoothTime = {};
   std::array<TBlock, 1> pitchBendRange = {};
   std::array<TBlock, 1> pitchBendTarget = {};
