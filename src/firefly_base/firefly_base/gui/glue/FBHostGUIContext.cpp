@@ -44,7 +44,7 @@ FBHostGUIContext::GetUserScaleMin() const
   int p = _topo->static_->guiUserScaleParam;
   if (m == -1)
     return 1.0;
-  return _topo->static_->modules[m].params[p].Linear().min;
+  return _topo->static_->modules[m].guiParams[p].Linear().min;
 }
 
 double 
@@ -54,7 +54,7 @@ FBHostGUIContext::GetUserScaleMax() const
   int p = _topo->static_->guiUserScaleParam;
   if (m == -1)
     return 1.0;
-  return _topo->static_->modules[m].params[p].Linear().max;
+  return _topo->static_->modules[m].guiParams[p].Linear().max;
 }
 
 double 
@@ -64,7 +64,8 @@ FBHostGUIContext::GetUserScalePlain() const
   int p = _topo->static_->guiUserScaleParam;
   if (m == -1)
     return 1.0;
-  return *_guiState->Params()[_topo->gui.ParamAtTopo({ { m, 0 }, { p, 0 } })->runtimeParamIndex];
+  double norm = *_guiState->Params()[_topo->gui.ParamAtTopo({ { m, 0 }, { p, 0 } })->runtimeParamIndex];
+  return _topo->static_->modules[m].guiParams[p].Linear().NormalizedToPlainFast(norm);
 }
 
 void 
@@ -74,7 +75,8 @@ FBHostGUIContext::SetUserScalePlain(double scale)
   int p = _topo->static_->guiUserScaleParam;
   if (m == -1)
     return;
-  *_guiState->Params()[_topo->gui.ParamAtTopo({ { m, 0 }, { p, 0 } })->runtimeParamIndex] = scale;
+  double norm = _topo->static_->modules[m].guiParams[p].NonRealTime().PlainToNormalized(scale);
+  *_guiState->Params()[_topo->gui.ParamAtTopo({ { m, 0 }, { p, 0 } })->runtimeParamIndex] = norm;
 }
 
 void
