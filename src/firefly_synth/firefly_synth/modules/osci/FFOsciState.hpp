@@ -102,6 +102,8 @@ class alignas(alignof(TAccurate)) FFOsciAccParamState final
   std::array<TAccurate, 1> extAudioHPRes = {};
   std::array<TAccurate, 1> extAudioLPFreq = {};
   std::array<TAccurate, 1> extAudioHPFreq = {};
+  std::array<TAccurate, 1> extAudioInputBal = {};
+  std::array<TAccurate, 1> extAudioInputGain = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamState);
 };

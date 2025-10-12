@@ -1063,5 +1063,41 @@ FFMakeOsciTopo()
   extAudioHPRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioHPRes);
   extAudioHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::ExtAudioHPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio && vs[1] != 0; });
 
+  auto& extAudioInputBal = result->params[(int)FFOsciParam::ExtAudioInputBal];
+  extAudioInputBal.mode = FBParamMode::Accurate;
+  extAudioInputBal.defaultText = "0";
+  extAudioInputBal.name = "Ext Audio Input Balance";
+  extAudioInputBal.display = "Input Bal";
+  extAudioInputBal.slotCount = 1;
+  extAudioInputBal.unit = "%";
+  extAudioInputBal.id = "{4B587031-0785-46F2-9C62-414DDD5E588A}";
+  extAudioInputBal.type = FBParamType::Linear;
+  extAudioInputBal.Linear().displayMultiplier = 100;
+  extAudioInputBal.Linear().min = -1.0f;
+  extAudioInputBal.Linear().max = 1.0f;
+  auto selectExtAudioInputBal = [](auto& module) { return &module.acc.extAudioInputBal; };
+  extAudioInputBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioInputBal);
+  extAudioInputBal.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioInputBal);
+  extAudioInputBal.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioInputBal);
+  extAudioInputBal.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio; });
+
+  auto& extAudioInputGain = result->params[(int)FFOsciParam::ExtAudioInputGain];
+  extAudioInputGain.mode = FBParamMode::Accurate;
+  extAudioInputGain.defaultText = "100";
+  extAudioInputGain.name = "Ext Audio Input Gain";
+  extAudioInputGain.display = "Input Gain";
+  extAudioInputGain.slotCount = 1;
+  extAudioInputGain.unit = "%";
+  extAudioInputGain.id = "{3AAC96D0-3F29-49F1-BAD3-1F0EDB075409}";
+  extAudioInputGain.type = FBParamType::Linear;
+  extAudioInputGain.Linear().min = 0.0f;
+  extAudioInputGain.Linear().max = 32.0f;
+  extAudioInputGain.Linear().displayMultiplier = 100;
+  auto selectExtAudioInputGain = [](auto& module) { return &module.acc.extAudioInputGain; };
+  extAudioInputGain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioInputGain);
+  extAudioInputGain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioInputGain);
+  extAudioInputGain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioInputGain);
+  extAudioInputGain.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio; });
+
   return result;
 }
