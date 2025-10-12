@@ -160,7 +160,7 @@ FFOsciProcessor::BeginVoice(
   else if (_type == FFOsciType::String)
     BeginVoiceString(state, graph);
   else
-    FB_ASSERT(false);
+    FB_ASSERT(FFOsciTypeIsExtAudio((FFOsciType)_type));
 }
 
 int
