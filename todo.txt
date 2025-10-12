@@ -8,6 +8,8 @@ TODOLIST for alpha-18
 [x] show in header
 [x] shareable patches?
 [ ] as osci + graph ==> exchange the new controls
+[ ] be sure to not overlap the names of the string/extaudio filter controls
+[ ] recheck the matrix names
 [ ] test the clap
 [ ] loads of host test files
 

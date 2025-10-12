@@ -59,6 +59,9 @@ class FFOsciProcessor final
   float _uniOffsetPlain = {};
   float _uniRandomPlain = {};
 
+  bool _extAudioLPOn = {};
+  bool _extAudioHPOn = {};
+
   int _stringSeed = {};
   int _stringPoles = {};
   bool _stringLPOn = {};

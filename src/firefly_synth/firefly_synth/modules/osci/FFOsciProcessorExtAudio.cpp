@@ -12,6 +12,47 @@
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
 void 
+FFOsciProcessor::BeginVoiceExtAudio(
+  FBModuleProcState& state)
+{
+  (void)state;
+
+#if 0 // TODO
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& params = procState->param.voice.osci[state.moduleSlot];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
+
+  float waveHSModeNorm = params.block.waveHSMode[0].Voice()[voice];
+  float waveDSFModeNorm = params.block.waveDSFMode[0].Voice()[voice];
+  float waveDSFOverNorm = params.block.waveDSFOver[0].Voice()[voice];
+  float waveDSFDistanceNorm = params.block.waveDSFDistance[0].Voice()[voice];
+  _voiceStartSnapshotNorm.waveDSFBW[0] = params.voiceStart.waveDSFBW[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
+
+  _waveHSMode = topo.NormalizedToListFast<FFOsciWaveHSMode>(FFOsciParam::WaveHSMode, waveHSModeNorm);
+  _waveDSFMode = topo.NormalizedToListFast<FFOsciWaveDSFMode>(FFOsciParam::WaveDSFMode, waveDSFModeNorm);
+  _waveDSFBWPlain = topo.NormalizedToLog2Fast(FFOsciParam::WaveDSFBW, _voiceStartSnapshotNorm.waveDSFBW[0]);
+  _waveDSFOver = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::WaveDSFOver, waveDSFOverNorm));
+  _waveDSFDistance = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::WaveDSFDistance, waveDSFDistanceNorm));
+
+  for (int i = 0; i < FFOsciWavePWCount; i++)
+  {
+    float wavePWModeNorm = params.block.wavePWMode[i].Voice()[voice];
+    _wavePWMode[i] = topo.NormalizedToListFast<FFOsciWavePWMode>(FFOsciParam::WavePWMode, wavePWModeNorm);
+  }
+  for (int i = 0; i < FFOsciWaveBasicCount; i++)
+  {
+    float waveBasicModeNorm = params.block.waveBasicMode[i].Voice()[voice];
+    _waveBasicMode[i] = topo.NormalizedToListFast<FFOsciWaveBasicMode>(FFOsciParam::WaveBasicMode, waveBasicModeNorm);
+  }
+  for (int u = 0; u < _uniCount; u++)
+  {
+    _uniWavePhaseGens[u] = FFOsciWavePhaseGenerator(uniPhaseInit.Get(u));
+  }
+#endif
+}
+
+void 
 FFOsciProcessor::ProcessExtAudio(
   FBModuleProcState& state)
 {
