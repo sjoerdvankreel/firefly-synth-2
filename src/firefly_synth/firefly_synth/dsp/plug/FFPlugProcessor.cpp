@@ -303,12 +303,15 @@ FFPlugProcessor::ProcessPostVoice(
   exchangeParams.acc.lfo5ToAmp[0] = lfo5ToAmpNorm.Last();
   exchangeParams.acc.lfo6ToBal[0] = lfo6ToBalNorm.Last();
   exchangeParams.acc.voiceToOut[0] = gMix.acc.voiceToOut[0].Global().CV().Last();
-  for (int r = 0; r < FFEffectCount; r++)
-    exchangeParams.acc.GFXToOut[r] = gMix.acc.GFXToOut[r].Global().CV().Last();
-  for (int r = 0; r < FFEffectCount; r++)
-    exchangeParams.acc.voiceToGFX[r] = gMix.acc.voiceToGFX[r].Global().CV().Last();
+  exchangeParams.acc.extAudioToOut[0] = gMix.acc.extAudioToOut[0].Global().CV().Last();
   for (int r = 0; r < FFMixFXToFXCount; r++)
     exchangeParams.acc.GFXToGFX[r] = gMix.acc.GFXToGFX[r].Global().CV().Last();
+  for (int r = 0; r < FFEffectCount; r++)
+  {
+    exchangeParams.acc.GFXToOut[r] = gMix.acc.GFXToOut[r].Global().CV().Last();
+    exchangeParams.acc.voiceToGFX[r] = gMix.acc.voiceToGFX[r].Global().CV().Last();
+    exchangeParams.acc.extAudioToGFX[r] = gMix.acc.extAudioToGFX[r].Global().CV().Last();
+  }
   
   globalDSP.gMatrix.processor->EndModulationBlock(state);
 }
