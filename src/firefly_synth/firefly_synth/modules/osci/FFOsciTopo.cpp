@@ -297,7 +297,7 @@ FFMakeOsciTopo()
   uniBlend.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniBlend);
   uniBlend.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniBlend);
   uniBlend.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniBlend);
-  uniBlend.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 1 && !FFOsciTypeIsExtAudio((FFOsciType)vs[0]); });
+  uniBlend.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 1; });
 
   auto& waveBasicMode = result->params[(int)FFOsciParam::WaveBasicMode];
   waveBasicMode.mode = FBParamMode::Block;
