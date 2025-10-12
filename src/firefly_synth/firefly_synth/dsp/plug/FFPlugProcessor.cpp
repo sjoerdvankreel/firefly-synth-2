@@ -74,6 +74,15 @@ FFPlugProcessor::ProcessVoice(
     input.voiceManager->Return(voice);
 }
 
+void
+FFPlugProcessor::GetCurrentProcessSettings(
+  FBProcessSettings& settings) const
+{
+  float smoothNorm = _procState->param.global.master[0].block.hostSmoothTime[0].Value();
+  auto const& smoothTopo = _topo->static_->modules[(int)FFModuleType::Master].params[(int)FFMasterParam::HostSmoothTime];
+  settings.smoothingSamples = smoothTopo.Linear().NormalizedTimeToSamplesFast(smoothNorm, _sampleRate);
+}
+
 void 
 FFPlugProcessor::LeaseVoices(
   FBPlugInputBlock const& input)

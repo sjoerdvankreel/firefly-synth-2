@@ -7,12 +7,6 @@ FBRuntimeTopo const* topo) :
 _oldVersion(oldVersion),
 _topo(topo) {}
 
-FBStaticParam const&
-FBSpecialParam::ParamTopo(FBStaticTopo const& topo) const
-{
-  return topo.modules[moduleIndex].params[paramIndex];
-}
-
 std::string
 FBStaticTopoMeta::NameVersionAndFormat() const
 {

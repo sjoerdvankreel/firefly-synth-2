@@ -46,19 +46,6 @@ struct FBStaticTopoMeta final
   std::string NameVersionAndFormat() const;
 };
 
-struct FBSpecialParam final
-{
-  int paramIndex = -1;
-  int moduleIndex = -1;
-  FBGlobalBlockParamState* state = nullptr;
-  FBStaticParam const& ParamTopo(FBStaticTopo const& topo) const;
-};
-
-struct FBSpecialParams final
-{
-  FBSpecialParam hostSmoothTime = {};
-};
-
 class FBDeserializationConverter
 {
 protected:
@@ -92,10 +79,6 @@ public:
     std::string const& /*paramId*/, int /*paramSlot*/,
     std::string const& /*oldParamValue*/, std::string& /* newParamValue*/) const { return false;  }
 };
-
-typedef std::function<FBSpecialParams(
-FBStaticTopo const& topo, void* state)>
-FBSpecialParamsSelector;
 
 typedef std::function<FBHostExchangeState* (void* state)>
 FBHostExchangeAddrSelector;
@@ -136,7 +119,6 @@ struct FBStaticTopo
   std::vector<FBTopoIndices> moduleProcessOrder = {};
 
   int exchangeStateSize = {};
-  FBSpecialParamsSelector specialSelector = {};
   FBHostExchangeAddrSelector hostExchangeAddr = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
 

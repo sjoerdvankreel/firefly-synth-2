@@ -24,29 +24,6 @@
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
-static FBSpecialParam
-MakeSpecialParam(
-  FBStaticTopo const& topo, void* state, 
-  int moduleIndex, int paramIndex)
-{
-  FBSpecialParam result;
-  result.paramIndex = paramIndex;
-  result.moduleIndex = moduleIndex;
-  auto const& param = topo.modules[moduleIndex].params[paramIndex];
-  result.state = param.globalBlockProcAddr(0, 0, state);
-  return result;
-}
-
-static FBSpecialParams
-SpecialParamsSelector(
-  FBStaticTopo const& topo, void* state)
-{
-  FBSpecialParams result = {};
-  result.hostSmoothTime = MakeSpecialParam(
-    topo, state, (int)FFModuleType::Master, (int)FFMasterParam::HostSmoothTime);
-  return result;
-}
-
 std::string
 FFFormatBlockSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 {
@@ -84,7 +61,6 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->deserializationConverterFactory = [](FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo) { 
     return std::make_unique<FFDeserializationConverter>(oldVersion, topo); };
 
-  result->specialSelector = SpecialParamsSelector;
   result->exchangeStateSize = sizeof(FFExchangeState);
   result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };
   result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
