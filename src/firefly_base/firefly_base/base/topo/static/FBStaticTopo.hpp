@@ -44,6 +44,9 @@ struct FBStaticTopoMeta final
   std::string vendor;
   FBPlugVersion version;
   FBPlugFormat format = (FBPlugFormat)-1;
+
+  // To make patch loading across instrument/fx possible.
+  std::vector<std::string> allowLoadFromIds = {};
   std::string NameVersionAndFormat() const;
 };
 

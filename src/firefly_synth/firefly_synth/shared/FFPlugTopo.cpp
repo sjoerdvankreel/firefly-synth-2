@@ -42,6 +42,8 @@ FFPlugMeta(FBPlugFormat format, bool isFx)
   result.version.patch = FF_PLUG_VERSION_PATCH;
   result.name = isFx? FFPlugNameFX: FFPlugNameInst;
   result.id = isFx? FFPlugUniqueIdFX: FFPlugUniqueIdInst;
+  result.allowLoadFromIds.push_back(FFPlugUniqueIdFX);
+  result.allowLoadFromIds.push_back(FFPlugUniqueIdInst);
   return result;
 }
 
