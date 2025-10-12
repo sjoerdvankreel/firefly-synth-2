@@ -6,6 +6,7 @@ TODOLIST for alpha-18
 [x] check the defaults
 [x] do the xchange data
 [x] show in header
+[ ] extsmth/rcvn => dspsettings module, not save in patch, this later also hosts tuning settings
 [ ] shareable patches?
 [ ] as osci
 [ ] test the clap
