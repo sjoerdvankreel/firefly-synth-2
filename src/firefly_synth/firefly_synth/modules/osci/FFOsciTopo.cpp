@@ -1034,7 +1034,7 @@ FFMakeOsciTopo()
 
   auto& extAudioHPFreq = result->params[(int)FFOsciParam::ExtAudioHPFreq];
   extAudioHPFreq.mode = FBParamMode::Accurate;
-  extAudioHPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
+  extAudioHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   extAudioHPFreq.name = "Ext Audio HPF Freq";
   extAudioHPFreq.display = "Frq";
   extAudioHPFreq.slotCount = 1;
