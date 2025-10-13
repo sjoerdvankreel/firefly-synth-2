@@ -44,7 +44,7 @@ public:
   void InitProcessing(int index, float value);
   void InitProcessing(FBHostGUIContext const* context);
   void InitProcessing(FBScalarStateContainer const& scalar);
-  void InitProcessing(FBExchangeStateContainer const& exchange);
+  void InitProcessing(FBRuntimeTopo const* topo, FBExchangeStateContainer const& exchange);
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }

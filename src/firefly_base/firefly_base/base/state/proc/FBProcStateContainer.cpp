@@ -94,15 +94,20 @@ FBProcStateContainer::InitProcessing(
 
 void 
 FBProcStateContainer::InitProcessing(
+  FBRuntimeTopo const* topo,
   FBExchangeStateContainer const& exchange)
 {
+  // Need to verify exchange data is active before
+  // applying to (gui side) processor state to prevent filling with bogus values.
+  // The dsp side processor is allowed to leave anything inactive uninitialized.
   for (int p = 0; p < Params().size(); p++)
-    if (!Params()[p].IsVoice())
-      InitProcessing(p, *exchange.Params()[p].Global());
-    else
-      for(int v = 0; v < FBMaxVoices; v++)
-        if(exchange.Voices()[v].state == FBVoiceState::Active)
-          InitProcessing(p, v, exchange.Params()[p].Voice()[v]);
+    if (exchange.GetParamActiveState(&topo->audio.params[p]).active)
+      if (!Params()[p].IsVoice())
+        InitProcessing(p, *exchange.Params()[p].Global());
+      else
+        for(int v = 0; v < FBMaxVoices; v++)
+          if(exchange.Voices()[v].state == FBVoiceState::Active)
+            InitProcessing(p, v, exchange.Params()[p].Voice()[v]);
 }
 
 void

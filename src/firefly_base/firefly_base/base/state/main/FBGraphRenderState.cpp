@@ -126,7 +126,7 @@ FBGraphRenderState::PrepareForRenderExchange(FBNoteMatrix<float> const& noteMatr
 {
   _moduleState->voice = nullptr;
   _input->voiceManager = nullptr;
-  _procState->InitProcessing(*ExchangeContainer());
+  _procState->InitProcessing(_plugGUI->HostContext()->Topo(), *ExchangeContainer());
   _moduleState->exchangeFromGUIRaw = ExchangeContainer()->Raw();
   _exchangeVoiceManager->InitFromExchange(ExchangeContainer()->Voices());
   FBNoteMatrixInitArrayFromScalar(*_input->noteMatrixRaw, noteMatrix);
