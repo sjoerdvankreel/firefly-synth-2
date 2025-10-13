@@ -15,14 +15,6 @@ IsTweakableParam(FBRuntimeTopo const* topo, int index)
   }
 }
 
-static std::string
-GetParamTweakName(FBRuntimeParam const* param)
-{
-  if (param->static_.matrixName.size())
-    return param->static_.matrixName;
-  return param->displayName;
-}
-
 FBLastTweakedLabel::
 ~FBLastTweakedLabel()
 {
@@ -41,7 +33,7 @@ _plugGUI(plugGUI)
   for (int i = 0; i < topo->audio.params.size(); i++)
     if (IsTweakableParam(topo, i))
       _maxWidth = std::max(_maxWidth, 
-        FBGUIGetStringWidthCached(GetParamTweakName(&topo->audio.params[i])));
+        FBGUIGetStringWidthCached(topo->audio.params[i].displayName));
 }
 
 int
@@ -69,7 +61,7 @@ FBLastTweakedLabel::AudioParamChanged(int index, double /*normalized*/, bool cha
   auto const& param = topo->audio.params[index];
   auto const& module = topo->modules[param.runtimeModuleIndex];
   auto const& staticModule = topo->static_->modules[module.topoIndices.index];
-  auto const& tweakName = GetParamTweakName(&param);
+  auto const& tweakName = param.displayName;
   auto const& fullName = param.shortName;
   std::string const& moduleDisplay = staticModule.matrixName.size() ? staticModule.matrixName : module.name;
   std::string modulePlusFull = moduleDisplay + " " + fullName;
