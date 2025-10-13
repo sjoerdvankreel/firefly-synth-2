@@ -170,10 +170,9 @@ FBProcParamState::Value() const
 inline void
 FBProcParamState::Value(float value)
 {
-  // The dsp side is allowed to send us bogus values 
-  // (read: uninitialized) for a control that is not in use.
-  // FB_ASSERT(-1.5f <= value && value <= 1.5f);
-  // FB_ASSERT(!std::isnan(value));
+  // Actually normalized, but, just trying to find weird stuff.
+  FB_ASSERT(-1.5f <= value && value <= 1.5f);
+  FB_ASSERT(!std::isnan(value));
   switch (Type())
   {
   case FBProcParamType::GlobalAcc: GlobalAcc().Value(value); break;
