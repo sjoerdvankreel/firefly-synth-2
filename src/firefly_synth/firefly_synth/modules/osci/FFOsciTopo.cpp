@@ -967,7 +967,7 @@ FFMakeOsciTopo()
   stringTrackingKey.mode = FBParamMode::Accurate;
   stringTrackingKey.defaultText = "0";
   stringTrackingKey.name = "String Tracking Key";
-  stringTrackingKey.display = "Key";
+  stringTrackingKey.display = "TrkKey";
   stringTrackingKey.slotCount = 1;
   stringTrackingKey.unit = "Semitones";
   stringTrackingKey.id = "{469BF707-3F08-491B-95ED-F0C8DE75F8EA}";

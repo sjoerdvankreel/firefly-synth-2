@@ -7,13 +7,9 @@ TODOLIST for alpha-18
 [x] do the xchange data
 [x] show in header
 [x] shareable patches?
-keytrk->ktrk
-hunt "voice mix"
-hunt "lp(f) on"
-hunt feedback/reverb
+[x] be sure to not overlap the names of the string/extaudio filter controls
+[x] recheck the matrix names
 [ ] as osci + graph ==> exchange the new controls
-[ ] be sure to not overlap the names of the string/extaudio filter controls
-[ ] recheck the matrix names
 [ ] test the clap
 [ ] loads of host test files
 

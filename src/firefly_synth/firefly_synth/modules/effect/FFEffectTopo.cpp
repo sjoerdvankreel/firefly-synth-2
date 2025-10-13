@@ -74,7 +74,7 @@ FFMakeEffectTopo(bool global)
   trackingKey.mode = FBParamMode::Accurate;
   trackingKey.defaultText = "0";
   trackingKey.name = "Tracking Key";
-  trackingKey.display = "Key";
+  trackingKey.display = "TrkKey";
   trackingKey.slotCount = 1;
   trackingKey.unit = "Semitones";
   trackingKey.id = prefix + "{409B79DA-5F59-4C54-AA3D-3E7E84B1A303}";
@@ -92,7 +92,7 @@ FFMakeEffectTopo(bool global)
   auto& lastKeySmoothTime = result->params[(int)FFEffectParam::LastKeySmoothTime];
   lastKeySmoothTime.mode = FBParamMode::Block;
   lastKeySmoothTime.defaultText = "0.1";
-  lastKeySmoothTime.display = "Smth";
+  lastKeySmoothTime.display = "KeySmt";
   lastKeySmoothTime.name = "Last Key Smth Time";
   lastKeySmoothTime.slotCount = 1;
   lastKeySmoothTime.unit = "Sec";
