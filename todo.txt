@@ -9,6 +9,8 @@ TODOLIST for alpha-18
 [x] shareable patches?
 [x] be sure to not overlap the names of the string/extaudio filter controls
 [x] recheck the matrix names
+[ ] recheck the matrix target names
+[ ] matrix target matrixmodulename no workie (only source)
 [ ] as osci + graph ==> exchange the new controls
 [ ] test the clap
 [ ] loads of host test files

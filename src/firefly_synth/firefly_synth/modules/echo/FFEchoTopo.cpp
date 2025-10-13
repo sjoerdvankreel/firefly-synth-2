@@ -318,7 +318,7 @@ FFMakeEchoTopo(bool global)
   auto& tapLevel = result->params[(int)FFEchoParam::TapLevel];
   tapLevel.mode = FBParamMode::Accurate;
   tapLevel.unit = "%";
-  tapLevel.name = "Tap Level";
+  tapLevel.name = "Tap Lvl";
   tapLevel.display = "Lvl";
   tapLevel.slotCount = FFEchoTapCount;
   tapLevel.id = prefix + "{E3633411-F79D-4D2A-A748-82E03A35434E}";
