@@ -167,6 +167,7 @@ FFMakeGlobalUniTopo()
   auto& mode = result->params[(int)FFGlobalUniParam::Mode];
   mode.mode = FBParamMode::Block;
   mode.name = "Mode";
+  mode.display = "Mode";
   mode.defaultTextSelector = [](int, int, int ps) {
     return ps == (int)FFGlobalUniTarget::VoiceFine || ps == (int)FFGlobalUniTarget::OscPhaseOffset ? "AutoLin" : "Off"; };
   mode.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Mode"; };
