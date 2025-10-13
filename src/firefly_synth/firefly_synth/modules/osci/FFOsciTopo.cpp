@@ -664,7 +664,8 @@ FFMakeOsciTopo()
   auto& stringMode = result->params[(int)FFOsciParam::StringMode];
   stringMode.mode = FBParamMode::Block;
   stringMode.defaultText = "Uniform";
-  stringMode.name = "Mode";
+  stringMode.name = "String Mode";
+  stringMode.display = "Mode";
   stringMode.slotCount = 1;
   stringMode.id = "{83BC3F01-EF0B-4BAE-AA95-012E246C87B3}";
   stringMode.type = FBParamType::List;
@@ -680,7 +681,8 @@ FFMakeOsciTopo()
   auto& stringSeed = result->params[(int)FFOsciParam::StringSeed];
   stringSeed.mode = FBParamMode::Block;
   stringSeed.defaultText = "0";
-  stringSeed.name = "Seed";
+  stringSeed.name = "String Seed";
+  stringSeed.display = "Seed";
   stringSeed.slotCount = 1;
   stringSeed.id = "{D5715C38-3695-4572-B7C9-8B150FDC4EA5}";
   stringSeed.type = FBParamType::Discrete;
@@ -694,7 +696,7 @@ FFMakeOsciTopo()
   auto& stringPoles = result->params[(int)FFOsciParam::StringPoles];
   stringPoles.mode = FBParamMode::Block;
   stringPoles.defaultText = "4";
-  stringPoles.name = "Quality";
+  stringPoles.name = "String Quality";
   stringPoles.display = "Qlty";
   stringPoles.slotCount = 1;
   stringPoles.id = "{D3DFC350-647B-4492-A783-1373780023C6}";
@@ -710,7 +712,8 @@ FFMakeOsciTopo()
   auto& stringColor = result->params[(int)FFOsciParam::StringColor];
   stringColor.mode = FBParamMode::Accurate;
   stringColor.defaultText = "0";
-  stringColor.name = "Color";
+  stringColor.name = "String Color";
+  stringColor.display = "Color";
   stringColor.slotCount = 1;
   stringColor.unit = "%";
   stringColor.id = "{FB9AC808-8A86-45A9-8A4E-E7E1B3A8D112}";
@@ -724,7 +727,8 @@ FFMakeOsciTopo()
   auto& stringX = result->params[(int)FFOsciParam::StringX];
   stringX.mode = FBParamMode::Accurate;
   stringX.defaultText = "100";
-  stringX.name = "X";
+  stringX.name = "String X";
+  stringX.display = "X";
   stringX.slotCount = 1;
   stringX.unit = "%";
   stringX.id = "{1000958E-9D9E-475B-8EB1-246939A378C9}";
@@ -738,7 +742,8 @@ FFMakeOsciTopo()
   auto& stringY = result->params[(int)FFOsciParam::StringY];
   stringY.mode = FBParamMode::Accurate;
   stringY.defaultText = "100";
-  stringY.name = "Y";
+  stringY.name = "String Y";
+  stringY.display = "Y";
   stringY.slotCount = 1;
   stringY.unit = "%";
   stringY.id = "{1443614F-CE58-4666-BCD4-DE0F349AFB3E}";
@@ -752,7 +757,8 @@ FFMakeOsciTopo()
   auto& stringExcite = result->params[(int)FFOsciParam::StringExcite];
   stringExcite.mode = FBParamMode::Accurate;
   stringExcite.defaultText = "0";
-  stringExcite.name = "Excite";
+  stringExcite.name = "String Excite";
+  stringExcite.display = "Excite";
   stringExcite.slotCount = 1;
   stringExcite.unit = "%";
   stringExcite.id = "{02590DDB-B5B2-4FA6-94C5-8D0319450689}";
@@ -767,7 +773,7 @@ FFMakeOsciTopo()
 
   auto& stringLPOn = result->params[(int)FFOsciParam::StringLPOn];
   stringLPOn.mode = FBParamMode::Block;
-  stringLPOn.name = "LPF On";
+  stringLPOn.name = "String LP On";
   stringLPOn.display = "LPF";
   stringLPOn.slotCount = 1;
   stringLPOn.defaultText = "Off";
@@ -782,7 +788,7 @@ FFMakeOsciTopo()
   auto& stringLPFreq = result->params[(int)FFOsciParam::StringLPFreq];
   stringLPFreq.mode = FBParamMode::Accurate;
   stringLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
-  stringLPFreq.name = "LPF Freq";
+  stringLPFreq.name = "String LP Freq";
   stringLPFreq.display = "Frq";
   stringLPFreq.slotCount = 1;
   stringLPFreq.unit = "Hz";
@@ -798,7 +804,7 @@ FFMakeOsciTopo()
   auto& stringLPRes = result->params[(int)FFOsciParam::StringLPRes];
   stringLPRes.mode = FBParamMode::Accurate;
   stringLPRes.defaultText = "0";
-  stringLPRes.name = "LPF Res";
+  stringLPRes.name = "String LP Res";
   stringLPRes.display = "Res";
   stringLPRes.slotCount = 1;
   stringLPRes.unit = "%";
@@ -813,7 +819,7 @@ FFMakeOsciTopo()
   auto& stringLPKTrk = result->params[(int)FFOsciParam::StringLPKTrk];
   stringLPKTrk.mode = FBParamMode::Accurate;
   stringLPKTrk.defaultText = "0";
-  stringLPKTrk.name = "LPF KeyTrk";
+  stringLPKTrk.name = "String LP KTrk";
   stringLPKTrk.display = "KTrk";
   stringLPKTrk.slotCount = 1;
   stringLPKTrk.unit = "%";
@@ -830,7 +836,7 @@ FFMakeOsciTopo()
 
   auto& stringHPOn = result->params[(int)FFOsciParam::StringHPOn];
   stringHPOn.mode = FBParamMode::Block;
-  stringHPOn.name = "HPF On";
+  stringHPOn.name = "String HP On";
   stringHPOn.display = "HPF";
   stringHPOn.slotCount = 1;
   stringHPOn.defaultText = "Off";
@@ -845,7 +851,7 @@ FFMakeOsciTopo()
   auto& stringHPFreq = result->params[(int)FFOsciParam::StringHPFreq];
   stringHPFreq.mode = FBParamMode::Accurate;
   stringHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
-  stringHPFreq.name = "HPF Freq";
+  stringHPFreq.name = "String HP Freq";
   stringHPFreq.display = "Frq";
   stringHPFreq.slotCount = 1;
   stringHPFreq.unit = "Hz";
@@ -861,7 +867,7 @@ FFMakeOsciTopo()
   auto& stringHPRes = result->params[(int)FFOsciParam::StringHPRes];
   stringHPRes.mode = FBParamMode::Accurate;
   stringHPRes.defaultText = "0";
-  stringHPRes.name = "HPF Res";
+  stringHPRes.name = "String HP Res";
   stringHPRes.display = "Res";
   stringHPRes.slotCount = 1;
   stringHPRes.unit = "%";
@@ -876,7 +882,7 @@ FFMakeOsciTopo()
   auto& stringHPKTrk = result->params[(int)FFOsciParam::StringHPKTrk];
   stringHPKTrk.mode = FBParamMode::Accurate;
   stringHPKTrk.defaultText = "0";
-  stringHPKTrk.name = "HPF KeyTrk";
+  stringHPKTrk.name = "String HP KTrk";
   stringHPKTrk.display = "KTrk";
   stringHPKTrk.slotCount = 1;
   stringHPKTrk.unit = "%";
@@ -894,7 +900,8 @@ FFMakeOsciTopo()
   auto& stringDamp = result->params[(int)FFOsciParam::StringDamp];
   stringDamp.mode = FBParamMode::Accurate;
   stringDamp.defaultText = "67";
-  stringDamp.name = "Damp";
+  stringDamp.name = "String Damp";
+  stringDamp.display = "Damp";
   stringDamp.slotCount = 1;
   stringDamp.unit = "%";
   stringDamp.id = "{50FA6C2A-64FC-4B2B-BC64-55A8EA7472F4}";
@@ -908,7 +915,7 @@ FFMakeOsciTopo()
   auto& stringDampKTrk = result->params[(int)FFOsciParam::StringDampKTrk];
   stringDampKTrk.mode = FBParamMode::Accurate;
   stringDampKTrk.defaultText = "0";
-  stringDampKTrk.name = "Damp KTrk";
+  stringDampKTrk.name = "String Damp KTrk";
   stringDampKTrk.display = "KTrk";
   stringDampKTrk.slotCount = 1;
   stringDampKTrk.unit = "%";
@@ -926,7 +933,7 @@ FFMakeOsciTopo()
   auto& stringFeedback = result->params[(int)FFOsciParam::StringFeedback];
   stringFeedback.mode = FBParamMode::Accurate;
   stringFeedback.defaultText = "100";
-  stringFeedback.name = "Feedback";
+  stringFeedback.name = "String Fdbk";
   stringFeedback.display = "Fdbk";
   stringFeedback.slotCount = 1;
   stringFeedback.unit = "%";
@@ -941,7 +948,7 @@ FFMakeOsciTopo()
   auto& stringFeedbackKTrk = result->params[(int)FFOsciParam::StringFeedbackKTrk];
   stringFeedbackKTrk.mode = FBParamMode::Accurate;
   stringFeedbackKTrk.defaultText = "0";
-  stringFeedbackKTrk.name = "Feedback KTrk";
+  stringFeedbackKTrk.name = "String Fdbk KTrk";
   stringFeedbackKTrk.display = "KTrk";
   stringFeedbackKTrk.slotCount = 1;
   stringFeedbackKTrk.unit = "%";
@@ -959,7 +966,7 @@ FFMakeOsciTopo()
   auto& stringTrackingKey = result->params[(int)FFOsciParam::StringTrackingKey];
   stringTrackingKey.mode = FBParamMode::Accurate;
   stringTrackingKey.defaultText = "0";
-  stringTrackingKey.name = "Tracking Key";
+  stringTrackingKey.name = "String Tracking Key";
   stringTrackingKey.display = "Key";
   stringTrackingKey.slotCount = 1;
   stringTrackingKey.unit = "Semitones";
@@ -990,7 +997,7 @@ FFMakeOsciTopo()
   auto& extAudioLPFreq = result->params[(int)FFOsciParam::ExtAudioLPFreq];
   extAudioLPFreq.mode = FBParamMode::Accurate;
   extAudioLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
-  extAudioLPFreq.name = "Ext Audio LPF Freq";
+  extAudioLPFreq.name = "Ext Audio LP Freq";
   extAudioLPFreq.display = "Frq";
   extAudioLPFreq.slotCount = 1;
   extAudioLPFreq.unit = "Hz";
@@ -1006,7 +1013,7 @@ FFMakeOsciTopo()
   auto& extAudioLPRes = result->params[(int)FFOsciParam::ExtAudioLPRes];
   extAudioLPRes.mode = FBParamMode::Accurate;
   extAudioLPRes.defaultText = "0";
-  extAudioLPRes.name = "Ext Audio LPF Res";
+  extAudioLPRes.name = "Ext Audio LP Res";
   extAudioLPRes.display = "Res";
   extAudioLPRes.slotCount = 1;
   extAudioLPRes.unit = "%";
@@ -1035,7 +1042,7 @@ FFMakeOsciTopo()
   auto& extAudioHPFreq = result->params[(int)FFOsciParam::ExtAudioHPFreq];
   extAudioHPFreq.mode = FBParamMode::Accurate;
   extAudioHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
-  extAudioHPFreq.name = "Ext Audio HPF Freq";
+  extAudioHPFreq.name = "Ext Audio HP Freq";
   extAudioHPFreq.display = "Frq";
   extAudioHPFreq.slotCount = 1;
   extAudioHPFreq.unit = "Hz";
@@ -1051,7 +1058,7 @@ FFMakeOsciTopo()
   auto& extAudioHPRes = result->params[(int)FFOsciParam::ExtAudioHPRes];
   extAudioHPRes.mode = FBParamMode::Accurate;
   extAudioHPRes.defaultText = "0";
-  extAudioHPRes.name = "Ext Audio HPF Res";
+  extAudioHPRes.name = "Ext Audio HP Res";
   extAudioHPRes.display = "Res";
   extAudioHPRes.slotCount = 1;
   extAudioHPRes.unit = "%";
@@ -1066,7 +1073,7 @@ FFMakeOsciTopo()
   auto& extAudioInputBal = result->params[(int)FFOsciParam::ExtAudioInputBal];
   extAudioInputBal.mode = FBParamMode::Accurate;
   extAudioInputBal.defaultText = "0";
-  extAudioInputBal.name = "Ext Audio Input Balance";
+  extAudioInputBal.name = "Ext Audio In Bal";
   extAudioInputBal.display = "Input Bal";
   extAudioInputBal.slotCount = 1;
   extAudioInputBal.unit = "%";
@@ -1084,7 +1091,7 @@ FFMakeOsciTopo()
   auto& extAudioInputGain = result->params[(int)FFOsciParam::ExtAudioInputGain];
   extAudioInputGain.mode = FBParamMode::Accurate;
   extAudioInputGain.defaultText = "100";
-  extAudioInputGain.name = "Ext Audio Input Gain";
+  extAudioInputGain.name = "Ext Audio In Gain";
   extAudioInputGain.display = "Input Gain";
   extAudioInputGain.slotCount = 1;
   extAudioInputGain.unit = "%";

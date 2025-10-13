@@ -82,7 +82,7 @@ FFMakeVoiceModuleTopo()
 
   auto& portaType = result->params[(int)FFVoiceModuleParam::PortaType];
   portaType.mode = FBParamMode::Block;
-  portaType.name = "Portamento Type";
+  portaType.name = "Porta Type";
   portaType.display = "Porta";
   portaType.slotCount = 1;
   portaType.id = "{7F787457-02DE-4D98-ABB1-9E776A2DCBCD}";
@@ -99,7 +99,7 @@ FFMakeVoiceModuleTopo()
 
   auto& portaMode = result->params[(int)FFVoiceModuleParam::PortaMode];
   portaMode.mode = FBParamMode::Block;
-  portaMode.name = "Portamento Mode";
+  portaMode.name = "Porta Mode";
   portaMode.display = "Mode";
   portaMode.slotCount = 1;
   portaMode.id = "{1A0A6BC7-58A8-4017-B169-C48E25CEF74C}";
@@ -116,7 +116,7 @@ FFMakeVoiceModuleTopo()
 
   auto& portaSync = result->params[(int)FFVoiceModuleParam::PortaSync];
   portaSync.mode = FBParamMode::Block;
-  portaSync.name = "Portamento Tempo Sync";
+  portaSync.name = "Porta Tempo Sync";
   portaSync.display = "Sync";
   portaSync.slotCount = 1;
   portaSync.id = "{779E0303-8799-40C6-B654-85FC75FD8DEC}";
@@ -132,7 +132,7 @@ FFMakeVoiceModuleTopo()
   portaTime.mode = FBParamMode::VoiceStart;
   portaTime.defaultText = "0.1";
   portaTime.display = "Length";
-  portaTime.name = "Portamento Length Time";
+  portaTime.name = "Porta Length Time";
   portaTime.slotCount = 1;
   portaTime.unit = "Sec";
   portaTime.id = "{C3EF7F24-84C9-4F92-8D18-F4332E0BB874}";
@@ -151,7 +151,7 @@ FFMakeVoiceModuleTopo()
   portaBars.mode = FBParamMode::Block;
   portaBars.defaultText = "1/16";
   portaBars.display = "Length";
-  portaBars.name = "Portamento Length Bars";
+  portaBars.name = "Porta Length Bars";
   portaBars.slotCount = 1;
   portaBars.unit = "Bars";
   portaBars.id = "{983E1FAD-94A6-413C-A24B-0178D38A84B0}";
@@ -167,7 +167,7 @@ FFMakeVoiceModuleTopo()
   auto& portaSectionAmpAttack = result->params[(int)FFVoiceModuleParam::PortaSectionAmpAttack];
   portaSectionAmpAttack.mode = FBParamMode::VoiceStart;
   portaSectionAmpAttack.defaultText = "50";
-  portaSectionAmpAttack.name = "Portamento Section Amp Attack";
+  portaSectionAmpAttack.name = "Porta Sect Amp Att";
   portaSectionAmpAttack.display = "Amp Att";
   portaSectionAmpAttack.slotCount = 1;
   portaSectionAmpAttack.unit = "%";
@@ -182,7 +182,7 @@ FFMakeVoiceModuleTopo()
   auto& portaSectionAmpRelease = result->params[(int)FFVoiceModuleParam::PortaSectionAmpRelease];
   portaSectionAmpRelease.mode = FBParamMode::VoiceStart;
   portaSectionAmpRelease.defaultText = "50";
-  portaSectionAmpRelease.name = "Portamento Section Amp Release";
+  portaSectionAmpRelease.name = "Porta Sect Amp Rls";
   portaSectionAmpRelease.display = "Amp Rls";
   portaSectionAmpRelease.slotCount = 1;
   portaSectionAmpRelease.unit = "%";

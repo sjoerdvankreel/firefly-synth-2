@@ -9,7 +9,7 @@ static std::string
 FormatVoiceMixToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
 {
   std::string fxName = "GFX " + std::to_string(mixSlot + 1);
-  return std::string("Voice Mix\U00002192" + fxName);
+  return std::string("VMix\U00002192" + fxName);
 }
 
 static std::string
@@ -63,8 +63,7 @@ FFMakeGMixTopo(bool isFx)
   auto& bal = result->params[(int)FFGMixParam::Bal];
   bal.mode = FBParamMode::Accurate;
   bal.defaultText = "0";
-  bal.name = "Balance";
-  bal.display = "Bal";
+  bal.name = "Bal";
   bal.slotCount = 1;
   bal.unit = "%";
   bal.id = "{C85CEDAD-917D-444A-967C-6D9FCEA1828E}";
@@ -93,7 +92,7 @@ FFMakeGMixTopo(bool isFx)
   auto& voiceToGFX = result->params[(int)FFGMixParam::VoiceToGFX];
   voiceToGFX.mode = FBParamMode::Accurate;
   voiceToGFX.defaultText = "0";
-  voiceToGFX.name = "Voice Mix To GFX";
+  voiceToGFX.name = "VMix To GFX";
   voiceToGFX.slotCount = FFEffectCount;
   voiceToGFX.unit = "%";
   voiceToGFX.id = "{43E24F38-ADA0-41A0-88BD-B17333ABFA9C}";
@@ -138,7 +137,7 @@ FFMakeGMixTopo(bool isFx)
   auto& voiceToOut = result->params[(int)FFGMixParam::VoiceToOut];
   voiceToOut.mode = FBParamMode::Accurate;
   voiceToOut.defaultText = isFx ? "0" : "100";
-  voiceToOut.name = "Voice Mix\U00002192Out";
+  voiceToOut.name = "VMix\U00002192Out";
   voiceToOut.slotCount = 1;
   voiceToOut.unit = "%";
   voiceToOut.id = "{72FCC170-A112-401E-BF11-C91A59C26457}";

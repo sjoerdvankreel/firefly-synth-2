@@ -7,6 +7,10 @@ TODOLIST for alpha-18
 [x] do the xchange data
 [x] show in header
 [x] shareable patches?
+keytrk->ktrk
+hunt "voice mix"
+hunt "lp(f) on"
+hunt feedback/reverb
 [ ] as osci + graph ==> exchange the new controls
 [ ] be sure to not overlap the names of the string/extaudio filter controls
 [ ] recheck the matrix names
@@ -25,6 +29,7 @@ TODOLIST for alpha-19 - tuning and keytracking
 [ ] filters should track the actual pitch when possible (string osci)
 
 TODOLIST for alpha-20
+[ ] do tooltips on labels ("tap dly" => tap delay)
 [ ] extsmth/rcvn => settings module, not save in patch, this later also hosts tuning settings. also move all gui settings there
 [ ] make the popouts moveable top level windows + also the matrix
 [ ] switch the env stage controls for MSEG editor

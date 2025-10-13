@@ -20,7 +20,7 @@ MakeGMixSectionVoiceToGFXAndExtAudioToGFX(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Voice Mix\U00002192GFX"));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("VMix\U00002192GFX"));
   grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Ext Audio\U00002192GFX"));
   for (int e = 0; e < FFEffectCount; e++)
   {
