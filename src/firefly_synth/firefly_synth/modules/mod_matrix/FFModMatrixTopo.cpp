@@ -23,7 +23,9 @@ MakeRuntimeParamModName(
     param.slotCount, indices.param.slot,
     param.slotFormatter, param.slotFormatterOverrides);
   auto moduleName = FBMakeRuntimeModuleShortName(
-    topo, module.name, module.slotCount, indices.module.slot,
+    topo, 
+    module.matrixName.size()? module.matrixName: module.name,
+    module.slotCount, indices.module.slot,
     module.slotFormatter, module.slotFormatterOverrides);
   return moduleName + " " + paramName;
 }
@@ -318,8 +320,8 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     if (ps > 1)
       return "Off";
     if (ps == 0)
-      return "Master Mod Wheel"; // mod wheel
-    return "Master Pitch Bend"; // pitch bend
+      return "Mst Mod Wheel"; // mod wheel
+    return "Mst Pitch Bend"; // pitch bend
   };
   target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
   target.type = FBParamType::List;
