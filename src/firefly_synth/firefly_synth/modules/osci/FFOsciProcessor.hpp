@@ -98,6 +98,9 @@ class FFOsciProcessor final
   juce::dsp::AudioBlock<float> _downsampledBlock = {};
   std::array<float*, FFOsciUniMaxCount> _downsampledChannelPtrs = {};
 
+  FFStateVariableFilter<1> _extAudioLPFilter = {};
+  FFStateVariableFilter<1> _extAudioHPFilter = {};
+
   FFParkMillerPRNG _uniformPrng = {};
   FFMarsagliaPRNG<true> _stringNormalPrng = {};
   FFStateVariableFilter<FFOsciUniMaxCount> _stringLPFilter = {};

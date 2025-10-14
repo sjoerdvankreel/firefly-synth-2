@@ -25,6 +25,9 @@ FFOsciProcessor::BeginVoiceExtAudio(
   float extAudioHPOnNorm = params.block.extAudioHPOn[0].Voice()[voice];
   _extAudioLPOn = topo.NormalizedToBoolFast(FFOsciParam::ExtAudioLPOn, extAudioLPOnNorm);
   _extAudioHPOn = topo.NormalizedToBoolFast(FFOsciParam::ExtAudioHPOn, extAudioHPOnNorm);
+
+  _extAudioLPFilter.Reset();
+  _extAudioHPFilter.Reset();
 }
 
 void 
@@ -32,6 +35,7 @@ FFOsciProcessor::ProcessExtAudio(
   FBModuleProcState& state)
 {
   int voice = state.voice->slot;
+  float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   auto& voiceState = procState->dsp.voice[voice];
@@ -54,6 +58,22 @@ FFOsciProcessor::ProcessExtAudio(
     float inputBal = topo.NormalizedToLinearFast(FFOsciParam::ExtAudioInputBal, extAudioInputBalNorm.CV().Get(s));
     float inputGain = topo.NormalizedToLinearFast(FFOsciParam::ExtAudioInputGain, extAudioInputGainNorm.CV().Get(s));
     audioIn.Set(s, ((audioInL * FBStereoBalance(0, inputBal)) + (audioInR * FBStereoBalance(1, inputBal))) * inputGain);
+
+    if (_extAudioLPOn)
+    {
+      float lpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::ExtAudioLPRes, extAudioLPResNorm.CV().Get(s));
+      float lpFreqPlain = topo.NormalizedToIdentityFast(FFOsciParam::ExtAudioLPFreq, extAudioLPFreqNorm.CV().Get(s));
+      _extAudioLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0f);
+      audioIn.Set(s, _extAudioLPFilter.Next(0, audioIn.Get(s)));
+    }
+
+    if (_extAudioHPOn)
+    {
+      float hpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::ExtAudioHPRes, extAudioHPResNorm.CV().Get(s));
+      float hpFreqPlain = topo.NormalizedToIdentityFast(FFOsciParam::ExtAudioHPFreq, extAudioHPFreqNorm.CV().Get(s));
+      _extAudioHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0f);
+      audioIn.Set(s, _extAudioHPFilter.Next(0, audioIn.Get(s)));
+    }
   }
 
   if (_oversampleTimes == 1)
