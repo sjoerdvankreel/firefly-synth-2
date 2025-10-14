@@ -64,7 +64,7 @@ FFOsciProcessor::ProcessExtAudio(
       float lpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::ExtAudioLPRes, extAudioLPResNorm.CV().Get(s));
       float lpFreqPlain = topo.NormalizedToIdentityFast(FFOsciParam::ExtAudioLPFreq, extAudioLPFreqNorm.CV().Get(s));
       _extAudioLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0f);
-      audioIn.Set(s, _extAudioLPFilter.Next(0, audioIn.Get(s)));
+      audioIn.Set(s, (float)_extAudioLPFilter.Next(0, audioIn.Get(s)));
     }
 
     if (_extAudioHPOn)
@@ -72,7 +72,7 @@ FFOsciProcessor::ProcessExtAudio(
       float hpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::ExtAudioHPRes, extAudioHPResNorm.CV().Get(s));
       float hpFreqPlain = topo.NormalizedToIdentityFast(FFOsciParam::ExtAudioHPFreq, extAudioHPFreqNorm.CV().Get(s));
       _extAudioHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0f);
-      audioIn.Set(s, _extAudioHPFilter.Next(0, audioIn.Get(s)));
+      audioIn.Set(s, (float)_extAudioHPFilter.Next(0, audioIn.Get(s)));
     }
   }
 
