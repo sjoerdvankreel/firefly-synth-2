@@ -51,7 +51,7 @@ FFOsciProcessor::ProcessExtAudio(
   {
     float audioInL = (*state.input->audio)[0].Get(s);
     float audioInR = (*state.input->audio)[1].Get(s);
-    float inputBal = topo.NormalizedToLinearFast(FFOsciParam::ExtAudioInputBal, extAudioInputGainNorm.CV().Get(s));
+    float inputBal = topo.NormalizedToLinearFast(FFOsciParam::ExtAudioInputBal, extAudioInputBalNorm.CV().Get(s));
     float inputGain = topo.NormalizedToLinearFast(FFOsciParam::ExtAudioInputGain, extAudioInputGainNorm.CV().Get(s));
     audioIn.Set(s, ((audioInL * FBStereoBalance(0, inputBal)) + (audioInR * FBStereoBalance(1, inputBal))) * inputGain);
   }
