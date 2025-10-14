@@ -11,6 +11,7 @@ TODOLIST for alpha-18
 [x] recheck the matrix names
 [x] recheck the matrix target names
 [x] matrix target matrixmodulename no workie (only source)
+[ ] retest all the fx vs sidechain + make sidechain hosttests clap/vst3 for bitwig
 [ ] as osci + graph ==> exchange the new controls
 [ ] test the clap
 [ ] loads of host test files
