@@ -161,8 +161,14 @@ FBVST3AudioEffect::initialize(FUnknown* context)
     if (AudioEffect::initialize(context) != kResultTrue)
       return kResultFalse;
     addEventInput(STR16("Event In"));
-    addAudioInput(STR16("Stereo In"), SpeakerArr::kStereo);
     addAudioOutput(STR16("Stereo Out"), SpeakerArr::kStereo);
+
+    // The bustype is important to bitwig.
+    // With main, it wont accept sidechaining.
+    if(_topo->static_->meta.isFx)
+      addAudioInput(STR16("Stereo In"), SpeakerArr::kStereo, BusTypes::kMain);
+    else
+      addAudioInput(STR16("Sidechain"), SpeakerArr::kStereo, BusTypes::kAux);
     return kResultTrue;
   });
 }
