@@ -15,4 +15,6 @@ make
 cd ../../../dist/Darwin/"$1"
 zip -r FireflySynth2-mac-vst3-"$1".zip FireflySynth2.vst3
 zip -r FireflySynth2-mac-clap-"$1".zip FireflySynth2.clap
+zip -r FireflySynth2FX-mac-vst3-"$1".zip FireflySynth2FX.vst3
+zip -r FireflySynth2FX-mac-clap-"$1".zip FireflySynth2FX.clap
 cd ../../../scripts

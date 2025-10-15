@@ -1,3 +1,14 @@
+October 15, 2025 - Alpha 18.
+
+- Core
+* Add FX version of the plug, patches can be shared between FX/instrument (they are 99.9% the same).
+* Instrument version now supports sidechain input (if your host supports it).
+
+- Modules:
+* GMix now allows routing external audio.
+* Osci can now run external audio so you can use it for FM etc.
+* Master now has a "receive notes yes/no" switch for those hosts that allow sending MIDI notes to FX plugins.
+
 October 08, 2025 - Alpha 17.
 
 - Core

@@ -14,18 +14,6 @@ _hostContext(hostContext)
   FB_LOG_ENTRY_EXIT();
 }
 
-FBSpecialGUIParam const& 
-FBPlugGUIContext::UserScaleSpecial() const
-{
-  return _hostContext->GUIState()->Special().userScale;
-}
-
-FBStaticGUIParam const&
-FBPlugGUIContext::UserScaleParam() const
-{
-  return UserScaleSpecial().ParamTopo(*_hostContext->Topo()->static_);
-}
-
 void
 FBPlugGUIContext::SetSystemScale(double scale)
 {
@@ -43,17 +31,15 @@ FBPlugGUIContext::GetHeightForAspectRatio(int width) const
 double
 FBPlugGUIContext::CombinedScale() const
 {
-  double userScaleNorm = *UserScaleSpecial().state;
-  double userScalePlain = UserScaleParam().NonRealTime().NormalizedToPlain(userScaleNorm);
-  return _systemScale * userScalePlain;
+  return _systemScale * _hostContext->GetUserScalePlain();
 }
 
 int
 FBPlugGUIContext::ClampHostWidthForScale(int width) const
 {
   auto const& topo = _hostContext->Topo()->static_;
-  double minW = topo->guiWidth * UserScaleParam().Linear().min * _systemScale;
-  double maxW = topo->guiWidth * UserScaleParam().Linear().max * _systemScale;
+  double minW = topo->guiWidth * _hostContext->GetUserScaleMin() * _systemScale;
+  double maxW = topo->guiWidth * _hostContext->GetUserScaleMax() * _systemScale;
   return static_cast<int>(std::round(std::clamp(static_cast<double>(width), minW, maxW)));
 }
 
@@ -71,6 +57,6 @@ FBPlugGUIContext::SetUserScaleByHostWidth(int width)
 {
   auto const& topo = _hostContext->Topo()->static_;
   double userScalePlain = (static_cast<double>(width) / topo->guiWidth) / _systemScale;
-  *UserScaleSpecial().state = UserScaleParam().NonRealTime().PlainToNormalized(userScalePlain);
+  _hostContext->SetUserScalePlain(userScalePlain);
   RequestRescale(CombinedScale());
 }

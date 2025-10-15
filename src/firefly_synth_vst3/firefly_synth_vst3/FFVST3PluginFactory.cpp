@@ -19,6 +19,22 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
+#ifdef FF_IS_FX
+#if FF_IS_FX
+auto constexpr FFPlugType = PlugType::kFx;
+auto constexpr FFPlugName = FFPlugNameFX;
+auto constexpr FFPlugUniqueId = FFPlugUniqueIdFX;
+auto constexpr FFPlugControllerId = FFPlugControllerIdFX;
+#else
+auto constexpr FFPlugType = PlugType::kInstrument;
+auto constexpr FFPlugName = FFPlugNameInst;
+auto constexpr FFPlugUniqueId = FFPlugUniqueIdInst;
+auto constexpr FFPlugControllerId = FFPlugControllerIdInst;
+#endif
+#else
+#error
+#endif
+
 class MTSClient;
 
 class FFVST3AudioEffect:
@@ -45,7 +61,7 @@ DeinitModule()
 bool 
 InitModule()
 {
-  FBLogInit(FFPlugMeta(FBPlugFormat::VST3));
+  FBLogInit(FFPlugMeta(FBPlugFormat::VST3, FF_IS_FX != 0));
   FBGUIInit();
   FBTuningInit();
   return true;
@@ -64,7 +80,7 @@ ControllerFactory(void*)
 {
   return FBWithLogException([]() 
   {
-    auto result = new FBVST3EditController(FFMakeTopo(FBPlugFormat::VST3));
+    auto result = new FBVST3EditController(FFMakeTopo(FBPlugFormat::VST3, FF_IS_FX != 0));
     return static_cast<IEditController*>(result);
   });
 }
@@ -75,7 +91,7 @@ ComponentFactory(void*)
   return FBWithLogException([]() 
   {
     auto controllerFuid = TextToFUID(FFPlugControllerId);
-    auto result = new FFVST3AudioEffect(FFMakeTopo(FBPlugFormat::VST3), controllerFuid, FBTuningGetMTSClient());
+    auto result = new FFVST3AudioEffect(FFMakeTopo(FBPlugFormat::VST3, FF_IS_FX != 0), controllerFuid, FBTuningGetMTSClient());
     return static_cast<IAudioProcessor*>(result);
   });
 }
@@ -84,7 +100,7 @@ BEGIN_FACTORY_DEF(FFVendorName, FFVendorURL, FFVendorMail)
   DEF_CLASS2(
     INLINE_UID_FROM_FUID(TextToFUID(FFPlugUniqueId)),
       PClassInfo::kManyInstances, kVstAudioEffectClass, 
-    FFPlugName, kDistributable, PlugType::kInstrument,
+      FFPlugName, kDistributable, FFPlugType,
       FF_PLUG_VERSION, kVstVersionString, ComponentFactory);
   DEF_CLASS2(
     INLINE_UID_FROM_FUID(TextToFUID(FFPlugControllerId)),

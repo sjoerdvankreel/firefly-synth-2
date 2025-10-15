@@ -51,18 +51,6 @@ FBCLAPPlugin::GetAudioParamNormalized(int index) const
   return *_editState->Params()[index];
 }
 
-double
-FBCLAPPlugin::GetGUIParamNormalized(int index) const
-{
-  return *_guiState->Params()[index];
-}
-
-void
-FBCLAPPlugin::SetGUIParamNormalized(int index, double normalized)
-{
-  *_guiState->Params()[index] = normalized;
-}
-
 void
 FBCLAPPlugin::DoEndAudioParamChange(int index)
 {

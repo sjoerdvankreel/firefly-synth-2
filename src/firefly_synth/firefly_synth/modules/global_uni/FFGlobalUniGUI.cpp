@@ -89,22 +89,22 @@ MakeGlobalUniEditor(
     grid->Add(0, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
     grid->MarkSection({ { 0, guiCol }, { 1, 1 } });
     auto mode0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, 0 } });
-    grid->Add(0, guiCol + 1, plugGUI->StoreComponent<FBAutoSizeLabel>(mode0->static_.name));
+    grid->Add(0, guiCol + 1, plugGUI->StoreComponent<FBAutoSizeLabel>(mode0->static_.display));
     auto opType0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, 0 } });
     grid->Add(0, guiCol + 2, plugGUI->StoreComponent<FBAutoSizeLabel>(opType0->static_.name));
     grid->Add(0, guiCol + 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Out"));
     grid->MarkSection({ { 0, guiCol + 1 }, { 1, 3 } });
 
     auto spread0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, 0 } });
-    grid->Add(0, guiCol + 4, plugGUI->StoreComponent<FBAutoSizeLabel>(spread0->static_.name));
+    grid->Add(0, guiCol + 4, plugGUI->StoreComponent<FBAutoSizeLabel>(spread0->static_.display));
     auto skew0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSkew, 0 } });
-    grid->Add(0, guiCol + 5, plugGUI->StoreComponent<FBAutoSizeLabel>(skew0->static_.name));
+    grid->Add(0, guiCol + 5, plugGUI->StoreComponent<FBAutoSizeLabel>(skew0->static_.display));
     auto rand0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRand, 0 } });
-    grid->Add(0, guiCol + 6, plugGUI->StoreComponent<FBAutoSizeLabel>(rand0->static_.name));
+    grid->Add(0, guiCol + 6, plugGUI->StoreComponent<FBAutoSizeLabel>(rand0->static_.display));
     auto seed0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandSeed, 0 } });
-    grid->Add(0, guiCol + 7, plugGUI->StoreComponent<FBAutoSizeLabel>(seed0->static_.name));
+    grid->Add(0, guiCol + 7, plugGUI->StoreComponent<FBAutoSizeLabel>(seed0->static_.display));
     auto free0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandFree, 0 } });
-    grid->Add(0, guiCol + 8, plugGUI->StoreComponent<FBAutoSizeLabel>(free0->static_.name));
+    grid->Add(0, guiCol + 8, plugGUI->StoreComponent<FBAutoSizeLabel>(free0->static_.display));
     grid->MarkSection({ { 0, guiCol + 4 }, { 1, 5 } });
 
     for (int i = 0; i < FFGlobalUniMaxCount; i++)

@@ -51,7 +51,8 @@ FFMakeEchoTopo(bool global)
       { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "Off" },
       { "{38A69D55-AB3E-49F2-9CCD-44917FD24597}", "GMix In" },
       { "{C510F9C1-13A6-4929-A7EA-7C5F79BA6E42}", "GMix Out" },
-      { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "Voice Mix" },
+      { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "VMix" },
+      { "{746FE368-54F7-4BCA-A883-9B3C40163C84}", "Ext Audio" },
       { "{CDE64B50-C65D-43E9-B52E-325F544E5175}", "GFX1 In" },
       { "{1C7AA2CC-2116-45E4-B7C2-AA9678CC15B5}", "GFX1 Out" },
       { "{68C1469F-96FF-47D7-8A2E-B24309E10031}", "GFX2 In" },
@@ -317,7 +318,7 @@ FFMakeEchoTopo(bool global)
   auto& tapLevel = result->params[(int)FFEchoParam::TapLevel];
   tapLevel.mode = FBParamMode::Accurate;
   tapLevel.unit = "%";
-  tapLevel.name = "Tap Level";
+  tapLevel.name = "Tap Lvl";
   tapLevel.display = "Lvl";
   tapLevel.slotCount = FFEchoTapCount;
   tapLevel.id = prefix + "{E3633411-F79D-4D2A-A748-82E03A35434E}";
@@ -334,8 +335,7 @@ FFMakeEchoTopo(bool global)
   auto& tapDelayTime = result->params[(int)FFEchoParam::TapDelayTime];
   tapDelayTime.mode = FBParamMode::Accurate;
   tapDelayTime.display = "Dly";
-  tapDelayTime.name = "Tap Delay Time";
-  tapDelayTime.matrixName = "Tap Delay";
+  tapDelayTime.name = "Tap Dly Time";
   tapDelayTime.slotCount = FFEchoTapCount;
   tapDelayTime.unit = "Sec";
   tapDelayTime.id = prefix + "{7ADA9075-213B-4809-B32E-39B2794B010F}";
@@ -356,7 +356,7 @@ FFMakeEchoTopo(bool global)
   auto& tapDelayBars = result->params[(int)FFEchoParam::TapDelayBars];
   tapDelayBars.mode = FBParamMode::Block;
   tapDelayBars.display = "Dly";
-  tapDelayBars.name = "Tap Delay Bars";
+  tapDelayBars.name = "Tap Dly Bars";
   tapDelayBars.slotCount = FFEchoTapCount;
   tapDelayBars.unit = "Bars";
   tapDelayBars.id = prefix + "{BEDF76D3-211D-4A1F-AF42-85E9C4E5374F}";
@@ -374,8 +374,7 @@ FFMakeEchoTopo(bool global)
    
   auto& tapBal = result->params[(int)FFEchoParam::TapBalance];
   tapBal.mode = FBParamMode::Accurate;
-  tapBal.name = "Tap Balance";
-  tapBal.matrixName = "Tap Bal";
+  tapBal.name = "Tap Bal";
   tapBal.display = "Bal";
   tapBal.slotCount = FFEchoTapCount;
   tapBal.unit = "%";
@@ -397,8 +396,7 @@ FFMakeEchoTopo(bool global)
   tapXOver.mode = FBParamMode::Accurate;
   tapXOver.unit = "%";
   tapXOver.defaultText = "0";
-  tapXOver.name = "Tap L/R Crossover";
-  tapXOver.matrixName = "Tap LR";
+  tapXOver.name = "Tap LRX";
   tapXOver.display = "LRX";
   tapXOver.slotCount = FFEchoTapCount;
   tapXOver.id = prefix + "{C26420EA-2838-44E8-AA57-A4CA8E1A4759}";
@@ -430,7 +428,7 @@ FFMakeEchoTopo(bool global)
   auto& tapLPFreq = result->params[(int)FFEchoParam::TapLPFreq];
   tapLPFreq.mode = FBParamMode::Accurate;
   tapLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
-  tapLPFreq.name = "Tap LPF Freq";
+  tapLPFreq.name = "Tap LP Freq";
   tapLPFreq.display = "Frq";
   tapLPFreq.slotCount = FFEchoTapCount;
   tapLPFreq.unit = "Hz";
@@ -448,7 +446,7 @@ FFMakeEchoTopo(bool global)
   auto& tapLPRes = result->params[(int)FFEchoParam::TapLPRes];
   tapLPRes.mode = FBParamMode::Accurate;
   tapLPRes.defaultText = "0";
-  tapLPRes.name = "Tap LPF Res";
+  tapLPRes.name = "Tap LP Res";
   tapLPRes.display = "Res";
   tapLPRes.slotCount = FFEchoTapCount;
   tapLPRes.unit = "%";
@@ -481,7 +479,7 @@ FFMakeEchoTopo(bool global)
   auto& tapHPFreq = result->params[(int)FFEchoParam::TapHPFreq];
   tapHPFreq.mode = FBParamMode::Accurate;
   tapHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
-  tapHPFreq.name = "Tap HPF Freq";
+  tapHPFreq.name = "Tap HP Freq";
   tapHPFreq.display = "Frq";
   tapHPFreq.slotCount = FFEchoTapCount;
   tapHPFreq.unit = "Hz";
@@ -499,7 +497,7 @@ FFMakeEchoTopo(bool global)
   auto& tapHPRes = result->params[(int)FFEchoParam::TapHPRes];
   tapHPRes.mode = FBParamMode::Accurate;
   tapHPRes.defaultText = "0";
-  tapHPRes.name = "Tap HPF Res";
+  tapHPRes.name = "Tap HP Res";
   tapHPRes.display = "Res";
   tapHPRes.slotCount = FFEchoTapCount;
   tapHPRes.unit = "%";
@@ -515,7 +513,7 @@ FFMakeEchoTopo(bool global)
 
   auto& feedbackOn = result->params[(int)FFEchoParam::FeedbackOn];
   feedbackOn.mode = FBParamMode::Block;
-  feedbackOn.name = "Feedback On";
+  feedbackOn.name = "Fdbk On";
   feedbackOn.display = "Fdbk";
   feedbackOn.slotCount = 1;
   feedbackOn.defaultText = "On";
@@ -533,8 +531,7 @@ FFMakeEchoTopo(bool global)
   feedbackMix.mode = FBParamMode::Accurate;
   feedbackMix.unit = "%";
   feedbackMix.defaultText = "33";
-  feedbackMix.name = "Feedback Mix";
-  feedbackMix.matrixName = "Fdbk Mix";
+  feedbackMix.name = "Fdbk Mix";
   feedbackMix.display = "Mix";
   feedbackMix.slotCount = 1;
   feedbackMix.id = prefix + "{47D9FE5B-D161-4198-9AC2-44089966575E}";
@@ -551,8 +548,7 @@ FFMakeEchoTopo(bool global)
   feedbackXOver.unit = "%";
   feedbackXOver.mode = FBParamMode::Accurate;
   feedbackXOver.defaultText = "0";
-  feedbackXOver.name = "Feedback L/R Crossover";
-  feedbackXOver.matrixName = "Fdbk LR";
+  feedbackXOver.name = "Fdbk LRX";
   feedbackXOver.display = "LRX";
   feedbackXOver.slotCount = 1;
   feedbackXOver.id = prefix + "{C4D67CA6-41FE-4B54-8C2B-9C87F0DA6F0C}";
@@ -569,8 +565,7 @@ FFMakeEchoTopo(bool global)
   feedbackAmount.unit = "%";
   feedbackAmount.mode = FBParamMode::Accurate;
   feedbackAmount.defaultText = "67";
-  feedbackAmount.name = "Feedback Amount";
-  feedbackAmount.matrixName = "Fdbk Amt";
+  feedbackAmount.name = "Fdbk Amt";
   feedbackAmount.display = "Amt";
   feedbackAmount.slotCount = 1;
   feedbackAmount.id = prefix + "{56017DC9-4B7D-44A5-AB7C-B6158BA584C3}";
@@ -587,8 +582,7 @@ FFMakeEchoTopo(bool global)
   feedbackDelayTime.mode = FBParamMode::Accurate;
   feedbackDelayTime.defaultText = "0.375";
   feedbackDelayTime.display = "Dly";
-  feedbackDelayTime.name = "Feedback Delay Time";
-  feedbackDelayTime.matrixName = "Fdbk Delay";
+  feedbackDelayTime.name = "Fdbk Dly Time";
   feedbackDelayTime.slotCount = 1;
   feedbackDelayTime.unit = "Sec";
   feedbackDelayTime.id = prefix + "{CBD0A273-5E74-460E-A327-5EE9EE1C6F49}";
@@ -609,8 +603,7 @@ FFMakeEchoTopo(bool global)
   feedbackDelayBars.mode = FBParamMode::Block;
   feedbackDelayBars.defaultText = "3/16";
   feedbackDelayBars.display = "Dly";
-  feedbackDelayBars.name = "Feedback Delay Bars";
-  feedbackDelayBars.matrixName = "Fdbk Delay Bars";
+  feedbackDelayBars.name = "Fdbk Dly Bars";
   feedbackDelayBars.slotCount = 1;
   feedbackDelayBars.unit = "Bars";
   feedbackDelayBars.id = prefix + "{BAC85A14-5F60-4692-9D45-81AB29477F61}";
@@ -627,7 +620,7 @@ FFMakeEchoTopo(bool global)
   
   auto& feedbackLPOn = result->params[(int)FFEchoParam::FeedbackLPOn];
   feedbackLPOn.mode = FBParamMode::Block;
-  feedbackLPOn.name = "Feedback LP On";
+  feedbackLPOn.name = "Fdbk LP On";
   feedbackLPOn.display = "LPF";
   feedbackLPOn.slotCount = 1;
   feedbackLPOn.defaultText = "Off";
@@ -644,8 +637,7 @@ FFMakeEchoTopo(bool global)
   auto& feedbackLPFreq = result->params[(int)FFEchoParam::FeedbackLPFreq];
   feedbackLPFreq.mode = FBParamMode::Accurate;
   feedbackLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
-  feedbackLPFreq.name = "Feedback LPF Freq";
-  feedbackLPFreq.matrixName = "Fdbk LPF Freq";
+  feedbackLPFreq.name = "Fdbk LP Freq";
   feedbackLPFreq.display = "Frq";
   feedbackLPFreq.slotCount = 1;
   feedbackLPFreq.unit = "Hz";
@@ -663,8 +655,7 @@ FFMakeEchoTopo(bool global)
   auto& feedbackLPRes = result->params[(int)FFEchoParam::FeedbackLPRes];
   feedbackLPRes.mode = FBParamMode::Accurate;
   feedbackLPRes.defaultText = "0";
-  feedbackLPRes.name = "Feedback LPF Res";
-  feedbackLPRes.matrixName = "Fdbk LPF Res";
+  feedbackLPRes.name = "Fdbk LP Res";
   feedbackLPRes.display = "Res";
   feedbackLPRes.slotCount = 1;
   feedbackLPRes.unit = "%";
@@ -680,7 +671,7 @@ FFMakeEchoTopo(bool global)
 
   auto& feedbackHPOn = result->params[(int)FFEchoParam::FeedbackHPOn];
   feedbackHPOn.mode = FBParamMode::Block;
-  feedbackHPOn.name = "Feedback HP On";
+  feedbackHPOn.name = "Fdbk HP On";
   feedbackHPOn.display = "HPF";
   feedbackHPOn.slotCount = 1;
   feedbackHPOn.defaultText = "Off";
@@ -697,8 +688,7 @@ FFMakeEchoTopo(bool global)
   auto& feedbackHPFreq = result->params[(int)FFEchoParam::FeedbackHPFreq];
   feedbackHPFreq.mode = FBParamMode::Accurate;
   feedbackHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
-  feedbackHPFreq.name = "Feedback HPF Freq";
-  feedbackHPFreq.matrixName = "Fdbk HPF Freq";
+  feedbackHPFreq.name = "Fdbk HP Freq";
   feedbackHPFreq.display = "Frq";
   feedbackHPFreq.slotCount = 1;
   feedbackHPFreq.unit = "Hz";
@@ -716,8 +706,7 @@ FFMakeEchoTopo(bool global)
   auto& feedbackHPRes = result->params[(int)FFEchoParam::FeedbackHPRes];
   feedbackHPRes.mode = FBParamMode::Accurate;
   feedbackHPRes.defaultText = "0";
-  feedbackHPRes.name = "Feedback HPF Res";
-  feedbackHPRes.matrixName = "Fdbk HPF Res";
+  feedbackHPRes.name = "Fdbk HP Res";
   feedbackHPRes.display = "Res";
   feedbackHPRes.slotCount = 1;
   feedbackHPRes.unit = "%";
@@ -733,7 +722,7 @@ FFMakeEchoTopo(bool global)
 
   auto& reverbOn = result->params[(int)FFEchoParam::ReverbOn];
   reverbOn.mode = FBParamMode::Block;
-  reverbOn.name = "Reverb On";
+  reverbOn.name = "Rvrb On";
   reverbOn.display = "Rvrb";
   reverbOn.slotCount = 1;
   reverbOn.defaultText = "Off";
@@ -751,8 +740,7 @@ FFMakeEchoTopo(bool global)
   reverbMix.mode = FBParamMode::Accurate;
   reverbMix.unit = "%";
   reverbMix.defaultText = "33";
-  reverbMix.name = "Reverb Mix";
-  reverbMix.matrixName = "Rvrb Mix";
+  reverbMix.name = "Rvrb Mix";
   reverbMix.display = "Mix";
   reverbMix.slotCount = 1;
   reverbMix.id = prefix + "{D40CAAA2-186D-4296-BE87-7DFCCA33C4AF}";
@@ -769,8 +757,7 @@ FFMakeEchoTopo(bool global)
   reverbXOver.unit = "%";
   reverbXOver.mode = FBParamMode::Accurate;
   reverbXOver.defaultText = "0";
-  reverbXOver.name = "Reverb L/R Crossover";
-  reverbXOver.matrixName = "Rvrb LR";
+  reverbXOver.name = "Rvrb LRX";
   reverbXOver.display = "LRX";
   reverbXOver.slotCount = 1;
   reverbXOver.id = prefix + "{F31A5809-1558-4B9C-A953-EAC108530E3E}";
@@ -787,8 +774,7 @@ FFMakeEchoTopo(bool global)
   reverbAPF.unit = "%";
   reverbAPF.mode = FBParamMode::Accurate;
   reverbAPF.defaultText = "50";
-  reverbAPF.name = "Reverb APF";
-  reverbAPF.matrixName = "Rvrb APF";
+  reverbAPF.name = "Rvrb APF";
   reverbAPF.display = "APF";
   reverbAPF.slotCount = 1;
   reverbAPF.id = prefix + "{3D12C8EF-6891-4980-8BAD-33E74AD79298}";
@@ -805,8 +791,7 @@ FFMakeEchoTopo(bool global)
   reverbDamp.unit = "%";
   reverbDamp.mode = FBParamMode::Accurate;
   reverbDamp.defaultText = "50";
-  reverbDamp.name = "Reverb Damp";
-  reverbDamp.matrixName = "Rvrb Damp";
+  reverbDamp.name = "Rvrb Damp";
   reverbDamp.display = "Damp";
   reverbDamp.slotCount = 1;
   reverbDamp.id = prefix + "{5E33AA4C-F65E-432A-9DCB-E67F4AF46770}";
@@ -823,8 +808,7 @@ FFMakeEchoTopo(bool global)
   reverbSize.unit = "%";
   reverbSize.mode = FBParamMode::Accurate;
   reverbSize.defaultText = "50";
-  reverbSize.name = "Reverb Size";
-  reverbSize.matrixName = "Rvrb Size";
+  reverbSize.name = "Rvrb Size";
   reverbSize.display = "Size";
   reverbSize.slotCount = 1;
   reverbSize.id = prefix + "{2B4B1255-6875-49B3-B52D-CC9711C6D7A4}";
@@ -839,7 +823,7 @@ FFMakeEchoTopo(bool global)
 
   auto& reverbLPOn = result->params[(int)FFEchoParam::ReverbLPOn];
   reverbLPOn.mode = FBParamMode::Block;
-  reverbLPOn.name = "Reverb LP On";
+  reverbLPOn.name = "Rvrb LP On";
   reverbLPOn.display = "LPF";
   reverbLPOn.slotCount = 1;
   reverbLPOn.defaultText = "Off";
@@ -856,8 +840,7 @@ FFMakeEchoTopo(bool global)
   auto& reverbLPFreq = result->params[(int)FFEchoParam::ReverbLPFreq];
   reverbLPFreq.mode = FBParamMode::Accurate;
   reverbLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
-  reverbLPFreq.name = "Reverb LPF Freq";
-  reverbLPFreq.matrixName = "Rvrb LPF Freq";
+  reverbLPFreq.name = "Rvrb LP Freq";
   reverbLPFreq.display = "Frq";
   reverbLPFreq.slotCount = 1;
   reverbLPFreq.unit = "Hz";
@@ -875,8 +858,7 @@ FFMakeEchoTopo(bool global)
   auto& reverbLPRes = result->params[(int)FFEchoParam::ReverbLPRes];
   reverbLPRes.mode = FBParamMode::Accurate;
   reverbLPRes.defaultText = "0";
-  reverbLPRes.name = "Reverb LPF Res";
-  reverbLPRes.matrixName = "Rvrb LPF Res";
+  reverbLPRes.name = "Rvrb LP Res";
   reverbLPRes.display = "Res";
   reverbLPRes.slotCount = 1;
   reverbLPRes.unit = "%";
@@ -892,7 +874,7 @@ FFMakeEchoTopo(bool global)
 
   auto& reverbHPOn = result->params[(int)FFEchoParam::ReverbHPOn];
   reverbHPOn.mode = FBParamMode::Block;
-  reverbHPOn.name = "Reverb HP On";
+  reverbHPOn.name = "Rvrb HP On";
   reverbHPOn.display = "HPF";
   reverbHPOn.slotCount = 1;
   reverbHPOn.defaultText = "Off";
@@ -909,8 +891,7 @@ FFMakeEchoTopo(bool global)
   auto& reverbHPFreq = result->params[(int)FFEchoParam::ReverbHPFreq];
   reverbHPFreq.mode = FBParamMode::Accurate;
   reverbHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
-  reverbHPFreq.name = "Reverb HPF Freq";
-  reverbHPFreq.matrixName = "Rvrb HPF Freq";
+  reverbHPFreq.name = "Rvrb HP Freq";
   reverbHPFreq.display = "Frq";
   reverbHPFreq.slotCount = 1;
   reverbHPFreq.unit = "Hz";
@@ -928,8 +909,7 @@ FFMakeEchoTopo(bool global)
   auto& reverbHPRes = result->params[(int)FFEchoParam::ReverbHPRes];
   reverbHPRes.mode = FBParamMode::Accurate;
   reverbHPRes.defaultText = "0";
-  reverbHPRes.name = "Reverb HPF Res";
-  reverbHPRes.matrixName = "Rvrb HPF Res";
+  reverbHPRes.name = "Rvrb HP Res";
   reverbHPRes.display = "Res";
   reverbHPRes.slotCount = 1;
   reverbHPRes.unit = "%";

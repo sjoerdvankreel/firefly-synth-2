@@ -21,7 +21,7 @@ FFPlugProcessor(IFBHostDSPContext* hostContext) :
 _sampleRate(hostContext->SampleRate()),
 _topo(hostContext->Topo()),
 _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
-_exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()))
+_exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeToGUIState()->Raw()))
 {
   _procState->dsp.global.master.mtsClient = hostContext->GetMTSClient();
   _procState->dsp.global.gMatrix.processor->InitBuffers(_topo);
@@ -74,10 +74,24 @@ FFPlugProcessor::ProcessVoice(
     input.voiceManager->Return(voice);
 }
 
+void
+FFPlugProcessor::GetCurrentProcessSettings(
+  FBProcessSettings& settings) const
+{
+  float smoothNorm = _procState->param.global.master[0].block.hostSmoothTime[0].Value();
+  auto const& smoothTopo = _topo->static_->modules[(int)FFModuleType::Master].params[(int)FFMasterParam::HostSmoothTime];
+  settings.smoothingSamples = smoothTopo.Linear().NormalizedTimeToSamplesFast(smoothNorm, _sampleRate);
+}
+
 void 
 FFPlugProcessor::LeaseVoices(
   FBPlugInputBlock const& input)
 {
+  float receiveNorm = _procState->param.global.master[0].block.receiveNotes[0].Value();
+  auto const& receiveTopo = _topo->static_->modules[(int)FFModuleType::Master].params[(int)FFMasterParam::ReceiveNotes];
+  if (!receiveTopo.Boolean().NormalizedToPlainFast(receiveNorm))
+    return;
+
   for (int n = 0; n < input.noteEvents->size(); n++)
     if ((*input.noteEvents)[n].on)
     {
@@ -214,13 +228,20 @@ FFPlugProcessor::ProcessPostVoice(
   for (int v: input.voiceManager->ActiveVoices())
     voiceMixdown.Add(_procState->dsp.voice[v].output);
 
+  FBSArray2<float, FBFixedBlockSamples, 2> extAudio = {};
+  input.audio->CopyTo(extAudio);
+
   if (gEchoTarget == FFGEchoTarget::VoiceMix)
     ProcessGEcho(state, voiceMixdown);
+  if (gEchoTarget == FFGEchoTarget::ExtAudio)
+    ProcessGEcho(state, extAudio);
 
   for (int i = 0; i < FFEffectCount; i++)
   {
     globalDSP.gEffect[i].input.Fill(0.0f);
     auto const& voiceToGFXNorm = gMix.acc.voiceToGFX[i].Global().CV();
+    auto const& extAudioToGFXNorm = gMix.acc.extAudioToGFX[i].Global().CV();
+    globalDSP.gEffect[i].input.AddMul(extAudio, extAudioToGFXNorm);
     globalDSP.gEffect[i].input.AddMul(voiceMixdown, voiceToGFXNorm);
     for (int r = 0; r < FFMixFXToFXCount; r++)
       if (FFMixFXToFXGetTargetSlot(r) == i)
@@ -249,6 +270,8 @@ FFPlugProcessor::ProcessPostVoice(
 
   output.audio.Fill(0.0f);
   auto const& voiceToOutNorm = gMix.acc.voiceToOut[0].Global().CV();
+  auto const& extAudioToOutNorm = gMix.acc.extAudioToOut[0].Global().CV();
+  output.audio.AddMul(extAudio, extAudioToOutNorm);
   output.audio.AddMul(voiceMixdown, voiceToOutNorm);
   for (int i = 0; i < FFEffectCount; i++)
   {
@@ -294,12 +317,15 @@ FFPlugProcessor::ProcessPostVoice(
   exchangeParams.acc.lfo5ToAmp[0] = lfo5ToAmpNorm.Last();
   exchangeParams.acc.lfo6ToBal[0] = lfo6ToBalNorm.Last();
   exchangeParams.acc.voiceToOut[0] = gMix.acc.voiceToOut[0].Global().CV().Last();
-  for (int r = 0; r < FFEffectCount; r++)
-    exchangeParams.acc.GFXToOut[r] = gMix.acc.GFXToOut[r].Global().CV().Last();
-  for (int r = 0; r < FFEffectCount; r++)
-    exchangeParams.acc.voiceToGFX[r] = gMix.acc.voiceToGFX[r].Global().CV().Last();
+  exchangeParams.acc.extAudioToOut[0] = gMix.acc.extAudioToOut[0].Global().CV().Last();
   for (int r = 0; r < FFMixFXToFXCount; r++)
     exchangeParams.acc.GFXToGFX[r] = gMix.acc.GFXToGFX[r].Global().CV().Last();
+  for (int r = 0; r < FFEffectCount; r++)
+  {
+    exchangeParams.acc.GFXToOut[r] = gMix.acc.GFXToOut[r].Global().CV().Last();
+    exchangeParams.acc.voiceToGFX[r] = gMix.acc.voiceToGFX[r].Global().CV().Last();
+    exchangeParams.acc.extAudioToGFX[r] = gMix.acc.extAudioToGFX[r].Global().CV().Last();
+  }
   
   globalDSP.gMatrix.processor->EndModulationBlock(state);
 }

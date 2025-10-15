@@ -26,7 +26,7 @@ FBHostProcessor(IFBHostDSPContext* hostContext):
 _sampleRate(hostContext->SampleRate()),
 _topo(hostContext->Topo()),
 _procState(hostContext->ProcState()),
-_exchangeState(hostContext->ExchangeState()),
+_exchangeState(hostContext->ExchangeToGUIState()),
 _plug(hostContext->MakePlugProcessor()),
 _voiceManager(std::make_unique<FBVoiceManager>(hostContext->ProcState())),
 _hostToPlug(std::make_unique<FBHostToPlugProcessor>()),
@@ -112,10 +112,9 @@ FBHostProcessor::ProcessHost(
   // Must be AFTER setting block automation value to parameter state!
   _plug->AllocOnDemandBuffers(_topo, _procState);
 
-  auto const& hostSmoothTimeSpecial = _procState->Special().hostSmoothTime;
-  auto const& hostSmoothTimeTopo = hostSmoothTimeSpecial.ParamTopo(*_topo->static_);
-  int hostSmoothSamples = hostSmoothTimeTopo.Linear().NormalizedTimeToSamplesFast(hostSmoothTimeSpecial.state->Value(), _sampleRate);
-  _procState->SetSmoothingCoeffs(hostSmoothSamples);
+  FBProcessSettings processSettings = {};
+  _plug->GetCurrentProcessSettings(processSettings);
+  _procState->SetSmoothingCoeffs(processSettings.smoothingSamples);
 
   for (int m = 0; m < _topo->modules.size(); m++)
   {
@@ -183,7 +182,7 @@ FBHostProcessor::ProcessHost(
     // Also it's a good thing we updated the global note matrix already,
     // since portamento needs the very last last-key (1 sample before voice start).
     _plug->LeaseVoices(_plugIn);
-    _smoothing->ProcessSmoothing(*fixedIn, _plugOut, hostSmoothSamples);
+    _smoothing->ProcessSmoothing(*fixedIn, _plugOut, processSettings.smoothingSamples);
     _plug->ProcessPreVoice(_plugIn);
 
     // process active voices including newly acquired AND newly released

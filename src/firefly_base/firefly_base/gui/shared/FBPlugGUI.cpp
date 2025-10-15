@@ -230,7 +230,7 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
 {
   auto const& param = HostContext()->Topo()->audio.params[index];
   double normalized = HostContext()->GetAudioParamNormalized(index);
-  auto paramActive = HostContext()->ExchangeState()->GetParamActiveState(&param);
+  auto paramActive = HostContext()->ExchangeFromDSPState()->GetParamActiveState(&param);
   double engineMin = paramActive.active ? paramActive.minValue : normalized;
   double engineMax = paramActive.active ? paramActive.maxValue : normalized;
 
@@ -345,6 +345,6 @@ FBPlugGUI::LoadPatchFromFile()
       AlertWindow::showMessageBoxAsync(
         MessageBoxIconType::WarningIcon,
         "Error",
-        "Failed to load patch. See log for details.\r\n" + FBGetLogPath(HostContext()->Topo()->static_->meta).string());
+        "Failed to load patch. See log for details: " + FBGetLogPath(HostContext()->Topo()->static_->meta).string() + ".");
   });
 }

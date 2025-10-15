@@ -560,10 +560,10 @@ FFEchoProcessor<Global>::ProcessTaps(
   auto const& tapHPResNorm = params.acc.tapHPRes;
 
   FBSArray<float, FBFixedBlockSamples> tapsMixNormModulated;
-  std::array<FBSArray<float, FBFixedBlockSamples>, FFEchoTapCount> tapBalNormModulated;
-  std::array<FBSArray<float, FBFixedBlockSamples>, FFEchoTapCount> tapLPFreqNormModulated;
-  std::array<FBSArray<float, FBFixedBlockSamples>, FFEchoTapCount> tapHPFreqNormModulated;
-  std::array<FBSArray<float, FBFixedBlockSamples>, FFEchoTapCount> tapDelayTimeNormModulated;
+  std::array<FBSArray<float, FBFixedBlockSamples>, FFEchoTapCount> tapBalNormModulated = {};
+  std::array<FBSArray<float, FBFixedBlockSamples>, FFEchoTapCount> tapLPFreqNormModulated = {};
+  std::array<FBSArray<float, FBFixedBlockSamples>, FFEchoTapCount> tapHPFreqNormModulated = {};
+  std::array<FBSArray<float, FBFixedBlockSamples>, FFEchoTapCount> tapDelayTimeNormModulated = {};
 
   FFSelectDualProcAccParamNormalized<Global>(params.acc.tapsMix[0], voice).CV().CopyTo(tapsMixNormModulated);
   for(int t = 0; t < FFEchoTapCount; t++)

@@ -11,6 +11,11 @@ struct FBNoteEvent;
 class FBVoiceManager;
 class FBProcStateContainer;
 
+struct FBProcessSettings final
+{
+  int smoothingSamples = {};
+};
+
 struct FBPlugInputBlock final
 {
   float bpm = {};

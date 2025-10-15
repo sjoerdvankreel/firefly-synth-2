@@ -74,9 +74,7 @@ FBVST3EditController::
 
 FBVST3EditController::
 FBVST3EditController(std::unique_ptr<FBStaticTopo>&& topo) :
-_topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
-_guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
-_exchangeState(std::make_unique<FBExchangeStateContainer>(*_topo)),
+FBHostGUIContext(std::move(topo)),
 _exchangeHandler(this)
 {
   FB_LOG_ENTRY_EXIT();
@@ -118,18 +116,6 @@ double
 FBVST3EditController::GetAudioParamNormalized(int index) const
 {
   return parameters.getParameterByIndex(index)->getNormalized();
-}
-
-double
-FBVST3EditController::GetGUIParamNormalized(int index) const
-{
-  return *_guiState->Params()[index];
-}
-
-void 
-FBVST3EditController::SetGUIParamNormalized(int index, double normalized)
-{
-  *_guiState->Params()[index] = normalized;
 }
 
 std::vector<FBHostContextMenuItem>
@@ -282,7 +268,7 @@ FBVST3EditController::onDataExchangeBlocksReceived(
   {
     if (numBlocks == 0)
       return;
-    memcpy(_exchangeState->Raw(), blocks[numBlocks - 1].data, _topo->static_->exchangeStateSize);
+    memcpy(_exchangeFromDSPState->Raw(), blocks[numBlocks - 1].data, _topo->static_->exchangeStateSize);
     if (_guiEditor != nullptr)
       _guiEditor->UpdateExchangeState();
   });

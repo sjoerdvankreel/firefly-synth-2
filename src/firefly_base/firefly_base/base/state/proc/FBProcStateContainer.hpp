@@ -23,7 +23,6 @@ class FBProcStateContainer final
 
   void* _rawState;
   void (*_freeRawState)(void*);
-  FBSpecialParams _special;
 
   FBMemoryPool _memoryPool = {};
   int _smoothingDurationSamples = -1;
@@ -49,7 +48,6 @@ public:
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
-  FBSpecialParams const& Special() const { return _special; }
   template <class T> T* RawAs() { return static_cast<T*>(Raw()); }
   template <class T> T const* RawAs() const { return static_cast<T const*>(Raw()); }
 

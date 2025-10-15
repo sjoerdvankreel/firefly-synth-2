@@ -15,4 +15,6 @@ make
 cd ../../../dist/linux/"$1"
 zip -r FireflySynth2-linux-vst3-"$1".zip FireflySynth2.vst3
 zip -r FireflySynth2-linux-clap-"$1".zip FireflySynth2.clap
+zip -r FireflySynth2FX-linux-vst3-"$1".zip FireflySynth2FX.vst3
+zip -r FireflySynth2FX-linux-clap-"$1".zip FireflySynth2FX.clap
 cd ../../../scripts

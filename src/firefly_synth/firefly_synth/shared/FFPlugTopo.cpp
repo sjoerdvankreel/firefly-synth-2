@@ -24,52 +24,6 @@
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
-static FBSpecialParam
-MakeSpecialParam(
-  FBStaticTopo const& topo, void* state, 
-  int moduleIndex, int paramIndex)
-{
-  FBSpecialParam result;
-  result.paramIndex = paramIndex;
-  result.moduleIndex = moduleIndex;
-  auto const& param = topo.modules[moduleIndex].params[paramIndex];
-  result.state = param.globalBlockProcAddr(0, 0, state);
-  return result;
-}
-
-static FBSpecialGUIParam
-MakeSpecialGUIParam(
-  FBStaticTopo const& topo, void* state,
-  int moduleIndex, int paramIndex)
-{
-  FBSpecialGUIParam result;
-  result.paramIndex = paramIndex;
-  result.moduleIndex = moduleIndex;
-  auto const& param = topo.modules[moduleIndex].guiParams[paramIndex];
-  result.state = param.scalarAddr(0, 0, state);
-  return result;
-}
-
-static FBSpecialParams
-SpecialParamsSelector(
-  FBStaticTopo const& topo, void* state)
-{
-  FBSpecialParams result = {};
-  result.hostSmoothTime = MakeSpecialParam(
-    topo, state, (int)FFModuleType::Master, (int)FFMasterParam::HostSmoothTime);
-  return result;
-}
-
-static FBSpecialGUIParams
-SpecialGUIParamsSelector(
-  FBStaticTopo const& topo, void* state)
-{
-  FBSpecialGUIParams result = {};
-  result.userScale = MakeSpecialGUIParam(
-    topo, state, (int)FFModuleType::GUISettings, (int)FFGUISettingsGUIParam::UserScale);
-  return result;
-}
-
 std::string
 FFFormatBlockSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 {
@@ -77,36 +31,39 @@ FFFormatBlockSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 }
 
 FBStaticTopoMeta
-FFPlugMeta(FBPlugFormat format)
+FFPlugMeta(FBPlugFormat format, bool isFx)
 {
   FBStaticTopoMeta result;
+  result.isFx = isFx;
   result.format = format;
-  result.name = FFPlugName;
-  result.id = FFPlugUniqueId;
   result.vendor = FFVendorName;
   result.version.major = FF_PLUG_VERSION_MAJOR;
   result.version.minor = FF_PLUG_VERSION_MINOR;
   result.version.patch = FF_PLUG_VERSION_PATCH;
+  result.name = isFx? FFPlugNameFX: FFPlugNameInst;
+  result.id = isFx? FFPlugUniqueIdFX: FFPlugUniqueIdInst;
+  result.allowLoadFromIds.push_back(FFPlugUniqueIdFX);
+  result.allowLoadFromIds.push_back(FFPlugUniqueIdInst);
   return result;
 }
 
 std::unique_ptr<FFStaticTopo>
-FFMakeTopo(FBPlugFormat format)
+FFMakeTopo(FBPlugFormat format, bool isFX)
 {
   auto result = std::make_unique<FFStaticTopo>();
-  result->meta = FFPlugMeta(format);
+  result->meta = FFPlugMeta(format, isFX);
   result->maxUndoSize = 15;
   result->patchExtension = "ff2preset";
   result->guiWidth = 1200;
   result->guiAspectRatioWidth = 32;
   result->guiAspectRatioHeight = 17;
+  result->guiUserScaleModule = (int)FFModuleType::GUISettings;
+  result->guiUserScaleParam = (int)FFGUISettingsGUIParam::UserScale;
   result->guiFactory = [](FBHostGUIContext* hostContext) { 
     return std::make_unique<FFPlugGUI>(hostContext); };
   result->deserializationConverterFactory = [](FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo) { 
     return std::make_unique<FFDeserializationConverter>(oldVersion, topo); };
 
-  result->specialSelector = SpecialParamsSelector;
-  result->specialGUISelector = SpecialGUIParamsSelector;
   result->exchangeStateSize = sizeof(FFExchangeState);
   result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };
   result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
@@ -122,7 +79,7 @@ FFMakeTopo(FBPlugFormat format)
   result->modules.resize((int)FFModuleType::Count);
   result->modules[(int)FFModuleType::MIDI] = std::move(*FFMakeMIDITopo());
   result->modules[(int)FFModuleType::GNote] = std::move(*FFMakeGNoteTopo());
-  result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
+  result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo(isFX));
   result->modules[(int)FFModuleType::GlobalUni] = std::move(*FFMakeGlobalUniTopo());
   result->modules[(int)FFModuleType::VoiceModule] = std::move(*FFMakeVoiceModuleTopo());
   result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
@@ -138,7 +95,7 @@ FFMakeTopo(FBPlugFormat format)
   result->modules[(int)FFModuleType::GLFO] = std::move(*FFMakeLFOTopo(true));
   result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
   result->modules[(int)FFModuleType::VMix] = std::move(*FFMakeVMixTopo());
-  result->modules[(int)FFModuleType::GMix] = std::move(*FFMakeGMixTopo());
+  result->modules[(int)FFModuleType::GMix] = std::move(*FFMakeGMixTopo(isFX));
 
   // These need to go last.
   result->gMatrixSources = FFModMatrixMakeSources(true, result.get());

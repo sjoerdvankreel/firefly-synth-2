@@ -36,7 +36,8 @@ class alignas(alignof(TBlock)) FFMasterBlockParamState final
 {
   friend class FFPlugProcessor;
   friend class FFMasterProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo(bool);
+  std::array<TBlock, 1> receiveNotes = {};
   std::array<TBlock, 1> hostSmoothTime = {};
   std::array<TBlock, 1> pitchBendRange = {};
   std::array<TBlock, 1> pitchBendTarget = {};
@@ -48,7 +49,7 @@ template <class TAccurate>
 class alignas(alignof(TAccurate)) FFMasterAccParamState final
 {
   friend class FFMasterProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo(bool);
   std::array<TAccurate, 1> modWheel = {};
   std::array<TAccurate, 1> pitchBend = {};
   std::array<TAccurate, FFMasterAuxCount> aux = {};
@@ -61,7 +62,7 @@ class alignas(alignof(TAccurate)) FFMasterParamState final
 {
   friend class FFPlugProcessor;
   friend class FFMasterProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo(bool);
   FFMasterAccParamState<TAccurate> acc = {};
   FFMasterBlockParamState<TBlock> block = {};
 public:

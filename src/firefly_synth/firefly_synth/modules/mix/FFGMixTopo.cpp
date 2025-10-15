@@ -6,14 +6,21 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
-FormatVoiceToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
+FormatVoiceMixToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
 {
   std::string fxName = "GFX " + std::to_string(mixSlot + 1);
-  return std::string("Voice\U00002192" + fxName);
+  return std::string("VMix\U00002192" + fxName);
+}
+
+static std::string
+FormatExtAudioToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
+{
+  std::string fxName = "GFX " + std::to_string(mixSlot + 1);
+  return std::string("Ext Audio\U00002192" + fxName);
 }
 
 std::unique_ptr<FBStaticModule>
-FFMakeGMixTopo()
+FFMakeGMixTopo(bool isFx)
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
@@ -56,8 +63,7 @@ FFMakeGMixTopo()
   auto& bal = result->params[(int)FFGMixParam::Bal];
   bal.mode = FBParamMode::Accurate;
   bal.defaultText = "0";
-  bal.name = "Balance";
-  bal.display = "Bal";
+  bal.name = "Bal";
   bal.slotCount = 1;
   bal.unit = "%";
   bal.id = "{C85CEDAD-917D-444A-967C-6D9FCEA1828E}";
@@ -86,17 +92,32 @@ FFMakeGMixTopo()
   auto& voiceToGFX = result->params[(int)FFGMixParam::VoiceToGFX];
   voiceToGFX.mode = FBParamMode::Accurate;
   voiceToGFX.defaultText = "0";
-  voiceToGFX.name = "Voice To GFX";
+  voiceToGFX.name = "VMix To GFX";
   voiceToGFX.slotCount = FFEffectCount;
   voiceToGFX.unit = "%";
   voiceToGFX.id = "{43E24F38-ADA0-41A0-88BD-B17333ABFA9C}";
-  voiceToGFX.slotFormatter = FormatVoiceToGFXSlot;
+  voiceToGFX.slotFormatter = FormatVoiceMixToGFXSlot;
   voiceToGFX.slotFormatterOverrides = true;
   voiceToGFX.type = FBParamType::Identity;
   auto selectVoiceToGFX = [](auto& module) { return &module.acc.voiceToGFX; };
   voiceToGFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVoiceToGFX);
   voiceToGFX.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectVoiceToGFX);
   voiceToGFX.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoiceToGFX);
+
+  auto& extAudioToGFX = result->params[(int)FFGMixParam::ExtAudioToGFX];
+  extAudioToGFX.mode = FBParamMode::Accurate;
+  extAudioToGFX.defaultText = "0";
+  extAudioToGFX.name = "Ext Audio To GFX";
+  extAudioToGFX.slotCount = FFEffectCount;
+  extAudioToGFX.unit = "%";
+  extAudioToGFX.id = "{20FB04D5-30A4-4AE8-9D8B-7CF039DC5A12}";
+  extAudioToGFX.slotFormatter = FormatExtAudioToGFXSlot;
+  extAudioToGFX.slotFormatterOverrides = true;
+  extAudioToGFX.type = FBParamType::Identity;
+  auto selectExtAudioToGFX = [](auto& module) { return &module.acc.extAudioToGFX; };
+  extAudioToGFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioToGFX);
+  extAudioToGFX.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioToGFX);
+  extAudioToGFX.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioToGFX);
 
   auto& gfxToGFX = result->params[(int)FFGMixParam::GFXToGFX];
   gfxToGFX.mode = FBParamMode::Accurate;
@@ -115,8 +136,8 @@ FFMakeGMixTopo()
 
   auto& voiceToOut = result->params[(int)FFGMixParam::VoiceToOut];
   voiceToOut.mode = FBParamMode::Accurate;
-  voiceToOut.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
-  voiceToOut.name = "Voice\U00002192Out";
+  voiceToOut.defaultText = isFx ? "0" : "100";
+  voiceToOut.name = "VMix\U00002192Out";
   voiceToOut.slotCount = 1;
   voiceToOut.unit = "%";
   voiceToOut.id = "{72FCC170-A112-401E-BF11-C91A59C26457}";
@@ -125,6 +146,19 @@ FFMakeGMixTopo()
   voiceToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVoiceToOut);
   voiceToOut.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectVoiceToOut);
   voiceToOut.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoiceToOut);
+
+  auto& extAudioToOut = result->params[(int)FFGMixParam::ExtAudioToOut];
+  extAudioToOut.mode = FBParamMode::Accurate;
+  extAudioToOut.defaultText = isFx? "100": "0";
+  extAudioToOut.name = "Ext Audio\U00002192Out";
+  extAudioToOut.slotCount = 1;
+  extAudioToOut.unit = "%";
+  extAudioToOut.id = "{5037D6CD-CB68-42E5-AD48-2B3BA8FAB213}";
+  extAudioToOut.type = FBParamType::Identity;
+  auto selectExtAudioToOut = [](auto& module) { return &module.acc.extAudioToOut; };
+  extAudioToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioToOut);
+  extAudioToOut.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioToOut);
+  extAudioToOut.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioToOut);
 
   auto& gfxToOut = result->params[(int)FFGMixParam::GFXToOut];
   gfxToOut.mode = FBParamMode::Accurate;

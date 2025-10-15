@@ -4,7 +4,7 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 std::unique_ptr<FBStaticModule>
-FFMakeMasterTopo()
+FFMakeMasterTopo(bool isFx)
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
@@ -47,6 +47,19 @@ FFMakeMasterTopo()
   aux.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAux);
   aux.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAux);
   aux.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAux);
+
+  auto& receiveNotes = result->params[(int)FFMasterParam::ReceiveNotes];
+  receiveNotes.mode = FBParamMode::Block;
+  receiveNotes.name = "Receive MIDI Notes";
+  receiveNotes.display = "Rcv Notes";
+  receiveNotes.slotCount = 1;
+  receiveNotes.defaultText = isFx? "Off": "On";
+  receiveNotes.id = "{92B2E390-F925-4170-BCA0-CFEDBF29970B}";
+  receiveNotes.type = FBParamType::Boolean;
+  auto selectReceiveNotes = [](auto& module) { return &module.block.receiveNotes; };
+  receiveNotes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReceiveNotes);
+  receiveNotes.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReceiveNotes);
+  receiveNotes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReceiveNotes);;
 
   auto& modWheel = result->params[(int)FFMasterParam::ModWheel];
   modWheel.mode = FBParamMode::Accurate;

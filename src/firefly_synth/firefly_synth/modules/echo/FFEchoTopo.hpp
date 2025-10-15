@@ -9,7 +9,7 @@ inline int constexpr FFEchoMaxSeconds = 10;
 std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
 
 enum class FFGEchoTarget {
-  Off, MixIn, MixOut, VoiceMix,
+  Off, MixIn, MixOut, VoiceMix, ExtAudio,
   FX1In, FX1Out, FX2In, FX2Out,
   FX3In, FX3Out, FX4In, FX4Out };
 enum class FFVEchoTarget {

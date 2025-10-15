@@ -47,6 +47,7 @@ FFOsciTypeToString(FFOsciType type)
   case FFOsciType::Off: return "Off";
   case FFOsciType::Wave: return "Wave";
   case FFOsciType::String: return "String";
+  case FFOsciType::ExtAudio: return "Ext Audio";
   default: FB_ASSERT(false); return {};
   }
 }
@@ -76,7 +77,8 @@ FFMakeOsciTopo()
     { "{449E467A-2DC0-43B0-8487-57C4492F9FE2}", FFOsciTypeToString(FFOsciType::Off) },
     { "{3F55D6D7-5BDF-4B7F-B1E0-2E59B96EA5C0}", FFOsciTypeToString(FFOsciType::Wave)  },
     { "{83E9DBC4-5CBF-4C96-93EB-AB16C2E7C769}", FFOsciTypeToString(FFOsciType::FM)  } ,
-    { "{F4095D2B-688D-4A89-82FE-359A8902963C}", FFOsciTypeToString(FFOsciType::String)  } };
+    { "{F4095D2B-688D-4A89-82FE-359A8902963C}", FFOsciTypeToString(FFOsciType::String) },
+    { "{509BDB4D-7EF9-42DD-AEBE-85BA60EBC7ED}", FFOsciTypeToString(FFOsciType::ExtAudio) } };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
   type.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
@@ -112,7 +114,7 @@ FFMakeOsciTopo()
   phase.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPhase);
   phase.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectPhase);
   phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPhase);
-  phase.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String; });
+  phase.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[0] != (int)FFOsciType::ExtAudio; });
 
   auto& envToGain = result->params[(int)FFOsciParam::EnvToGain];
   envToGain.mode = FBParamMode::Accurate;
@@ -158,7 +160,7 @@ FFMakeOsciTopo()
   coarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCoarse);
   coarse.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCoarse);
   coarse.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCoarse);
-  coarse.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  coarse.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::ExtAudio; });
 
   auto& fine = result->params[(int)FFOsciParam::Fine];
   fine.mode = FBParamMode::Accurate;
@@ -175,7 +177,7 @@ FFMakeOsciTopo()
   fine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFine);
   fine.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFine);
   fine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFine);
-  fine.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  fine.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::ExtAudio; });
 
   auto& lfoToFine = result->params[(int)FFOsciParam::LFOToFine];
   lfoToFine.mode = FBParamMode::Accurate;
@@ -191,7 +193,7 @@ FFMakeOsciTopo()
   lfoToFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFOToFine);
   lfoToFine.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFOToFine);
   lfoToFine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFOToFine);
-  lfoToFine.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  lfoToFine.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::ExtAudio; });
 
   auto& uniCount = result->params[(int)FFOsciParam::UniCount];
   uniCount.mode = FBParamMode::Block;
@@ -222,7 +224,7 @@ FFMakeOsciTopo()
   uniOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniOffset);
   uniOffset.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniOffset);
   uniOffset.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniOffset);
-  uniOffset.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[1] != 1; });
+  uniOffset.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[1] != 1 && vs[0] != (int)FFOsciType::ExtAudio; });
 
   auto& uniRandom = result->params[(int)FFOsciParam::UniRandom];
   uniRandom.mode = FBParamMode::VoiceStart;
@@ -237,7 +239,7 @@ FFMakeOsciTopo()
   uniRandom.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniRandom);
   uniRandom.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniRandom);
   uniRandom.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniRandom);
-  uniRandom.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[1] != 1; });
+  uniRandom.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[1] != 1 && vs[0] != (int)FFOsciType::ExtAudio; });
 
   auto& uniDetune = result->params[(int)FFOsciParam::UniDetune];
   uniDetune.mode = FBParamMode::Accurate;
@@ -252,7 +254,7 @@ FFMakeOsciTopo()
   uniDetune.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniDetune);
   uniDetune.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniDetune);
   uniDetune.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniDetune);
-  uniDetune.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 1; });
+  uniDetune.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 1 && vs[0] != (int)FFOsciType::ExtAudio; });
 
   auto& uniSpread = result->params[(int)FFOsciParam::UniSpread];
   uniSpread.mode = FBParamMode::Accurate;
@@ -662,7 +664,8 @@ FFMakeOsciTopo()
   auto& stringMode = result->params[(int)FFOsciParam::StringMode];
   stringMode.mode = FBParamMode::Block;
   stringMode.defaultText = "Uniform";
-  stringMode.name = "Mode";
+  stringMode.name = "String Mode";
+  stringMode.display = "Mode";
   stringMode.slotCount = 1;
   stringMode.id = "{83BC3F01-EF0B-4BAE-AA95-012E246C87B3}";
   stringMode.type = FBParamType::List;
@@ -678,7 +681,8 @@ FFMakeOsciTopo()
   auto& stringSeed = result->params[(int)FFOsciParam::StringSeed];
   stringSeed.mode = FBParamMode::Block;
   stringSeed.defaultText = "0";
-  stringSeed.name = "Seed";
+  stringSeed.name = "String Seed";
+  stringSeed.display = "Seed";
   stringSeed.slotCount = 1;
   stringSeed.id = "{D5715C38-3695-4572-B7C9-8B150FDC4EA5}";
   stringSeed.type = FBParamType::Discrete;
@@ -692,7 +696,7 @@ FFMakeOsciTopo()
   auto& stringPoles = result->params[(int)FFOsciParam::StringPoles];
   stringPoles.mode = FBParamMode::Block;
   stringPoles.defaultText = "4";
-  stringPoles.name = "Quality";
+  stringPoles.name = "String Quality";
   stringPoles.display = "Qlty";
   stringPoles.slotCount = 1;
   stringPoles.id = "{D3DFC350-647B-4492-A783-1373780023C6}";
@@ -708,7 +712,8 @@ FFMakeOsciTopo()
   auto& stringColor = result->params[(int)FFOsciParam::StringColor];
   stringColor.mode = FBParamMode::Accurate;
   stringColor.defaultText = "0";
-  stringColor.name = "Color";
+  stringColor.name = "String Color";
+  stringColor.display = "Color";
   stringColor.slotCount = 1;
   stringColor.unit = "%";
   stringColor.id = "{FB9AC808-8A86-45A9-8A4E-E7E1B3A8D112}";
@@ -722,7 +727,8 @@ FFMakeOsciTopo()
   auto& stringX = result->params[(int)FFOsciParam::StringX];
   stringX.mode = FBParamMode::Accurate;
   stringX.defaultText = "100";
-  stringX.name = "X";
+  stringX.name = "String X";
+  stringX.display = "X";
   stringX.slotCount = 1;
   stringX.unit = "%";
   stringX.id = "{1000958E-9D9E-475B-8EB1-246939A378C9}";
@@ -736,7 +742,8 @@ FFMakeOsciTopo()
   auto& stringY = result->params[(int)FFOsciParam::StringY];
   stringY.mode = FBParamMode::Accurate;
   stringY.defaultText = "100";
-  stringY.name = "Y";
+  stringY.name = "String Y";
+  stringY.display = "Y";
   stringY.slotCount = 1;
   stringY.unit = "%";
   stringY.id = "{1443614F-CE58-4666-BCD4-DE0F349AFB3E}";
@@ -750,7 +757,8 @@ FFMakeOsciTopo()
   auto& stringExcite = result->params[(int)FFOsciParam::StringExcite];
   stringExcite.mode = FBParamMode::Accurate;
   stringExcite.defaultText = "0";
-  stringExcite.name = "Excite";
+  stringExcite.name = "String Excite";
+  stringExcite.display = "Excite";
   stringExcite.slotCount = 1;
   stringExcite.unit = "%";
   stringExcite.id = "{02590DDB-B5B2-4FA6-94C5-8D0319450689}";
@@ -765,7 +773,7 @@ FFMakeOsciTopo()
 
   auto& stringLPOn = result->params[(int)FFOsciParam::StringLPOn];
   stringLPOn.mode = FBParamMode::Block;
-  stringLPOn.name = "LPF On";
+  stringLPOn.name = "String LP On";
   stringLPOn.display = "LPF";
   stringLPOn.slotCount = 1;
   stringLPOn.defaultText = "Off";
@@ -780,7 +788,7 @@ FFMakeOsciTopo()
   auto& stringLPFreq = result->params[(int)FFOsciParam::StringLPFreq];
   stringLPFreq.mode = FBParamMode::Accurate;
   stringLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
-  stringLPFreq.name = "LPF Freq";
+  stringLPFreq.name = "String LP Freq";
   stringLPFreq.display = "Frq";
   stringLPFreq.slotCount = 1;
   stringLPFreq.unit = "Hz";
@@ -796,7 +804,7 @@ FFMakeOsciTopo()
   auto& stringLPRes = result->params[(int)FFOsciParam::StringLPRes];
   stringLPRes.mode = FBParamMode::Accurate;
   stringLPRes.defaultText = "0";
-  stringLPRes.name = "LPF Res";
+  stringLPRes.name = "String LP Res";
   stringLPRes.display = "Res";
   stringLPRes.slotCount = 1;
   stringLPRes.unit = "%";
@@ -811,7 +819,7 @@ FFMakeOsciTopo()
   auto& stringLPKTrk = result->params[(int)FFOsciParam::StringLPKTrk];
   stringLPKTrk.mode = FBParamMode::Accurate;
   stringLPKTrk.defaultText = "0";
-  stringLPKTrk.name = "LPF KeyTrk";
+  stringLPKTrk.name = "String LP KTrk";
   stringLPKTrk.display = "KTrk";
   stringLPKTrk.slotCount = 1;
   stringLPKTrk.unit = "%";
@@ -828,7 +836,7 @@ FFMakeOsciTopo()
 
   auto& stringHPOn = result->params[(int)FFOsciParam::StringHPOn];
   stringHPOn.mode = FBParamMode::Block;
-  stringHPOn.name = "HPF On";
+  stringHPOn.name = "String HP On";
   stringHPOn.display = "HPF";
   stringHPOn.slotCount = 1;
   stringHPOn.defaultText = "Off";
@@ -843,7 +851,7 @@ FFMakeOsciTopo()
   auto& stringHPFreq = result->params[(int)FFOsciParam::StringHPFreq];
   stringHPFreq.mode = FBParamMode::Accurate;
   stringHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
-  stringHPFreq.name = "HPF Freq";
+  stringHPFreq.name = "String HP Freq";
   stringHPFreq.display = "Frq";
   stringHPFreq.slotCount = 1;
   stringHPFreq.unit = "Hz";
@@ -859,7 +867,7 @@ FFMakeOsciTopo()
   auto& stringHPRes = result->params[(int)FFOsciParam::StringHPRes];
   stringHPRes.mode = FBParamMode::Accurate;
   stringHPRes.defaultText = "0";
-  stringHPRes.name = "HPF Res";
+  stringHPRes.name = "String HP Res";
   stringHPRes.display = "Res";
   stringHPRes.slotCount = 1;
   stringHPRes.unit = "%";
@@ -874,7 +882,7 @@ FFMakeOsciTopo()
   auto& stringHPKTrk = result->params[(int)FFOsciParam::StringHPKTrk];
   stringHPKTrk.mode = FBParamMode::Accurate;
   stringHPKTrk.defaultText = "0";
-  stringHPKTrk.name = "HPF KeyTrk";
+  stringHPKTrk.name = "String HP KTrk";
   stringHPKTrk.display = "KTrk";
   stringHPKTrk.slotCount = 1;
   stringHPKTrk.unit = "%";
@@ -892,7 +900,8 @@ FFMakeOsciTopo()
   auto& stringDamp = result->params[(int)FFOsciParam::StringDamp];
   stringDamp.mode = FBParamMode::Accurate;
   stringDamp.defaultText = "67";
-  stringDamp.name = "Damp";
+  stringDamp.name = "String Damp";
+  stringDamp.display = "Damp";
   stringDamp.slotCount = 1;
   stringDamp.unit = "%";
   stringDamp.id = "{50FA6C2A-64FC-4B2B-BC64-55A8EA7472F4}";
@@ -906,7 +915,7 @@ FFMakeOsciTopo()
   auto& stringDampKTrk = result->params[(int)FFOsciParam::StringDampKTrk];
   stringDampKTrk.mode = FBParamMode::Accurate;
   stringDampKTrk.defaultText = "0";
-  stringDampKTrk.name = "Damp KTrk";
+  stringDampKTrk.name = "String Damp KTrk";
   stringDampKTrk.display = "KTrk";
   stringDampKTrk.slotCount = 1;
   stringDampKTrk.unit = "%";
@@ -924,7 +933,7 @@ FFMakeOsciTopo()
   auto& stringFeedback = result->params[(int)FFOsciParam::StringFeedback];
   stringFeedback.mode = FBParamMode::Accurate;
   stringFeedback.defaultText = "100";
-  stringFeedback.name = "Feedback";
+  stringFeedback.name = "String Fdbk";
   stringFeedback.display = "Fdbk";
   stringFeedback.slotCount = 1;
   stringFeedback.unit = "%";
@@ -939,7 +948,7 @@ FFMakeOsciTopo()
   auto& stringFeedbackKTrk = result->params[(int)FFOsciParam::StringFeedbackKTrk];
   stringFeedbackKTrk.mode = FBParamMode::Accurate;
   stringFeedbackKTrk.defaultText = "0";
-  stringFeedbackKTrk.name = "Feedback KTrk";
+  stringFeedbackKTrk.name = "String Fdbk KTrk";
   stringFeedbackKTrk.display = "KTrk";
   stringFeedbackKTrk.slotCount = 1;
   stringFeedbackKTrk.unit = "%";
@@ -957,8 +966,8 @@ FFMakeOsciTopo()
   auto& stringTrackingKey = result->params[(int)FFOsciParam::StringTrackingKey];
   stringTrackingKey.mode = FBParamMode::Accurate;
   stringTrackingKey.defaultText = "0";
-  stringTrackingKey.name = "Tracking Key";
-  stringTrackingKey.display = "Key";
+  stringTrackingKey.name = "String Tracking Key";
+  stringTrackingKey.display = "TrkKey";
   stringTrackingKey.slotCount = 1;
   stringTrackingKey.unit = "Semitones";
   stringTrackingKey.id = "{469BF707-3F08-491B-95ED-F0C8DE75F8EA}";
@@ -970,6 +979,132 @@ FFMakeOsciTopo()
   stringTrackingKey.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringTrackingKey);
   stringTrackingKey.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringTrackingKey);
   stringTrackingKey.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& extAudioLPOn = result->params[(int)FFOsciParam::ExtAudioLPOn];
+  extAudioLPOn.mode = FBParamMode::Block;
+  extAudioLPOn.name = "Ext Audio LP On";
+  extAudioLPOn.display = "LPF";
+  extAudioLPOn.slotCount = 1;
+  extAudioLPOn.defaultText = "Off";
+  extAudioLPOn.id = "{63DBFD5D-68B2-40A7-A217-05355D09C54D}";
+  extAudioLPOn.type = FBParamType::Boolean;
+  auto selectExtAudioLPOn = [](auto& module) { return &module.block.extAudioLPOn; };
+  extAudioLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioLPOn);
+  extAudioLPOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioLPOn);
+  extAudioLPOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioLPOn);
+  extAudioLPOn.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio; });
+
+  auto& extAudioLPFreq = result->params[(int)FFOsciParam::ExtAudioLPFreq];
+  extAudioLPFreq.mode = FBParamMode::Accurate;
+  extAudioLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
+  extAudioLPFreq.name = "Ext Audio LP Freq";
+  extAudioLPFreq.display = "Frq";
+  extAudioLPFreq.slotCount = 1;
+  extAudioLPFreq.unit = "Hz";
+  extAudioLPFreq.id = "{E2C27D74-394C-4CB3-98C2-9EBBCDE23B6D}";
+  extAudioLPFreq.type = FBParamType::Log2;
+  extAudioLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  auto selectExtAudioLPFreq = [](auto& module) { return &module.acc.extAudioLPFreq; };
+  extAudioLPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioLPFreq);
+  extAudioLPFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioLPFreq);
+  extAudioLPFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioLPFreq);
+  extAudioLPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::ExtAudioLPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio && vs[1] != 0; });
+
+  auto& extAudioLPRes = result->params[(int)FFOsciParam::ExtAudioLPRes];
+  extAudioLPRes.mode = FBParamMode::Accurate;
+  extAudioLPRes.defaultText = "0";
+  extAudioLPRes.name = "Ext Audio LP Res";
+  extAudioLPRes.display = "Res";
+  extAudioLPRes.slotCount = 1;
+  extAudioLPRes.unit = "%";
+  extAudioLPRes.id = "{CFDA83CE-8D58-43E9-ADA8-DD67E2074B1E}";
+  extAudioLPRes.type = FBParamType::Identity;
+  auto selectExtAudioLPRes = [](auto& module) { return &module.acc.extAudioLPRes; };
+  extAudioLPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioLPRes);
+  extAudioLPRes.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioLPRes);
+  extAudioLPRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioLPRes);
+  extAudioLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::ExtAudioLPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio && vs[1] != 0; });
+
+  auto& extAudioHPOn = result->params[(int)FFOsciParam::ExtAudioHPOn];
+  extAudioHPOn.mode = FBParamMode::Block;
+  extAudioHPOn.name = "Ext Audio HP On";
+  extAudioHPOn.display = "HPF";
+  extAudioHPOn.slotCount = 1;
+  extAudioHPOn.defaultText = "Off";
+  extAudioHPOn.id = "{BE88EA0A-BD2F-49F1-9762-881D7FEFA7C1}";
+  extAudioHPOn.type = FBParamType::Boolean;
+  auto selectExtAudioHPOn = [](auto& module) { return &module.block.extAudioHPOn; };
+  extAudioHPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioHPOn);
+  extAudioHPOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioHPOn);
+  extAudioHPOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioHPOn);
+  extAudioHPOn.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio; });
+
+  auto& extAudioHPFreq = result->params[(int)FFOsciParam::ExtAudioHPFreq];
+  extAudioHPFreq.mode = FBParamMode::Accurate;
+  extAudioHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
+  extAudioHPFreq.name = "Ext Audio HP Freq";
+  extAudioHPFreq.display = "Frq";
+  extAudioHPFreq.slotCount = 1;
+  extAudioHPFreq.unit = "Hz";
+  extAudioHPFreq.id = "{FE65BB51-F63B-464F-91B2-7E8732ADF9CC}";
+  extAudioHPFreq.type = FBParamType::Log2;
+  extAudioHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  auto selectExtAudioHPFreq = [](auto& module) { return &module.acc.extAudioHPFreq; };
+  extAudioHPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioHPFreq);
+  extAudioHPFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioHPFreq);
+  extAudioHPFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioHPFreq);
+  extAudioHPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::ExtAudioHPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio && vs[1] != 0; });
+
+  auto& extAudioHPRes = result->params[(int)FFOsciParam::ExtAudioHPRes];
+  extAudioHPRes.mode = FBParamMode::Accurate;
+  extAudioHPRes.defaultText = "0";
+  extAudioHPRes.name = "Ext Audio HP Res";
+  extAudioHPRes.display = "Res";
+  extAudioHPRes.slotCount = 1;
+  extAudioHPRes.unit = "%";
+  extAudioHPRes.id = "{F9F7A9FE-5D3D-45A9-A15D-19D80634DF10}";
+  extAudioHPRes.type = FBParamType::Identity;
+  auto selectExtAudioHPRes = [](auto& module) { return &module.acc.extAudioHPRes; };
+  extAudioHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioHPRes);
+  extAudioHPRes.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioHPRes);
+  extAudioHPRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioHPRes);
+  extAudioHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::ExtAudioHPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio && vs[1] != 0; });
+
+  auto& extAudioInputBal = result->params[(int)FFOsciParam::ExtAudioInputBal];
+  extAudioInputBal.mode = FBParamMode::Accurate;
+  extAudioInputBal.defaultText = "0";
+  extAudioInputBal.name = "Ext Audio In Bal";
+  extAudioInputBal.display = "Input Bal";
+  extAudioInputBal.slotCount = 1;
+  extAudioInputBal.unit = "%";
+  extAudioInputBal.id = "{4B587031-0785-46F2-9C62-414DDD5E588A}";
+  extAudioInputBal.type = FBParamType::Linear;
+  extAudioInputBal.Linear().displayMultiplier = 100;
+  extAudioInputBal.Linear().min = -1.0f;
+  extAudioInputBal.Linear().max = 1.0f;
+  auto selectExtAudioInputBal = [](auto& module) { return &module.acc.extAudioInputBal; };
+  extAudioInputBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioInputBal);
+  extAudioInputBal.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioInputBal);
+  extAudioInputBal.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioInputBal);
+  extAudioInputBal.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio; });
+
+  auto& extAudioInputGain = result->params[(int)FFOsciParam::ExtAudioInputGain];
+  extAudioInputGain.mode = FBParamMode::Accurate;
+  extAudioInputGain.defaultText = "100";
+  extAudioInputGain.name = "Ext Audio In Gain";
+  extAudioInputGain.display = "Input Gain";
+  extAudioInputGain.slotCount = 1;
+  extAudioInputGain.unit = "%";
+  extAudioInputGain.id = "{3AAC96D0-3F29-49F1-BAD3-1F0EDB075409}";
+  extAudioInputGain.type = FBParamType::Linear;
+  extAudioInputGain.Linear().min = 0.0f;
+  extAudioInputGain.Linear().max = 32.0f;
+  extAudioInputGain.Linear().displayMultiplier = 100;
+  auto selectExtAudioInputGain = [](auto& module) { return &module.acc.extAudioInputGain; };
+  extAudioInputGain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioInputGain);
+  extAudioInputGain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioInputGain);
+  extAudioInputGain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioInputGain);
+  extAudioInputGain.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio; });
 
   return result;
 }

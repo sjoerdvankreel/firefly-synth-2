@@ -90,7 +90,12 @@ FBStaticParamBase::DefaultNormalizedByText(int moduleIndex, int moduleSlot, int 
   auto result = TextToNormalized(false, moduleIndex, text);
   if (result)
     return result.value();
+  // Debuggable.
   FB_ASSERT(false);
+#ifndef NDEBUG
+  text = GetDefaultText(moduleIndex, moduleSlot, paramSlot);
+  (void)text;
+#endif
   FB_LOG_WARN("Failed to parse default text.");
   return 0.0;
 }

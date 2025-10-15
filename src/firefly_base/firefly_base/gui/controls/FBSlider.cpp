@@ -161,7 +161,7 @@ FBParamSlider::UpdateExchangeState()
   FBParamActiveExchangeState paramActive = {};
   if (_plugGUI->GetKnobRenderType() == FBGUIRenderType::Full)
   {
-    auto const* exchangeState = _plugGUI->HostContext()->ExchangeState();
+    auto const* exchangeState = _plugGUI->HostContext()->ExchangeFromDSPState();
     paramActive = exchangeState->GetParamActiveState(_param);
 
     // So we can get away in the dsp code with not processing exchange data for unused stuff.

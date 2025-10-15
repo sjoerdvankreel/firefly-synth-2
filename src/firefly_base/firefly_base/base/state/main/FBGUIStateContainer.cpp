@@ -7,8 +7,7 @@ FBGUIStateContainer::
 FBGUIStateContainer(FBRuntimeTopo const& topo):
 _params(),
 _rawState(topo.static_->allocRawGUIState()),
-_freeRawState(topo.static_->freeRawGUIState),
-_special(topo.static_->specialGUISelector(*topo.static_, _rawState))
+_freeRawState(topo.static_->freeRawGUIState)
 {
   for (int p = 0; p < topo.gui.params.size(); p++)
     _params.push_back(

@@ -96,10 +96,6 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
   auto const& stringExciteNorm = params.acc.stringExcite[0].Voice()[voice];
   auto const& stringTrackingKeyNorm = params.acc.stringTrackingKey[0].Voice()[voice];
 
-  _stringGraphPosition = 0;
-  _stringGraphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(
-    graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
-
   _stringLPOn = topo.NormalizedToBoolFast(FFOsciParam::StringLPOn, stringLPOnNorm);
   _stringHPOn = topo.NormalizedToBoolFast(FFOsciParam::StringHPOn, stringHPOnNorm);
   _stringSeed = topo.NormalizedToDiscreteFast(FFOsciParam::StringSeed, stringSeedNorm);
@@ -128,7 +124,7 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
     stringLPFreqPlain = FFMultiplyClamp(stringLPFreqPlain,
       FFKeyboardTrackingMultiplier(_keyUntuned, stringTrackingKeyPlain, stringLPKTrkPlain),
       FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-    stringLPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
+    stringLPFreqPlain *= _graphStVarFilterFreqMultiplier;
     _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, stringLPFreqPlain, stringLPResPlain, 0.0f);
   }
 
@@ -137,7 +133,7 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
     stringHPFreqPlain = FFMultiplyClamp(stringHPFreqPlain,
       FFKeyboardTrackingMultiplier(_keyUntuned, stringTrackingKeyPlain, -stringHPKTrkPlain),
       FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-    stringHPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
+    stringHPFreqPlain *= _graphStVarFilterFreqMultiplier;
     _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, stringHPFreqPlain, stringHPResPlain, 0.0f);
   }
 
@@ -301,7 +297,7 @@ FFOsciProcessor::ProcessString(
       lpFreq = FFMultiplyClamp(lpFreq,
         FFKeyboardTrackingMultiplier(_keyUntuned, trackingKey, lpKTrk),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-      lpFreq *= _stringGraphStVarFilterFreqMultiplier;
+      lpFreq *= _graphStVarFilterFreqMultiplier;
       _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, lpFreq, lpRes, 0.0f);
     }
 
@@ -313,7 +309,7 @@ FFOsciProcessor::ProcessString(
       hpFreq = FFMultiplyClamp(hpFreq,
         FFKeyboardTrackingMultiplier(_keyUntuned, trackingKey, -hpKTrk),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-      hpFreq *= _stringGraphStVarFilterFreqMultiplier;
+      hpFreq *= _graphStVarFilterFreqMultiplier;
       _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, hpFreq, hpRes, 0.0f);
     }
 
@@ -349,7 +345,7 @@ FFOsciProcessor::ProcessString(
         uniOutputOversampled[u].Set(s, outVal);
       }
     }
-    _stringGraphPosition++;
+    _graphPosition++;
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();

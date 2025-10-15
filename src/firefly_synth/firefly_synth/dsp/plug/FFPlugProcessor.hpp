@@ -45,5 +45,6 @@ public:
   void ProcessPostVoice(FBPlugInputBlock const& input, FBPlugOutputBlock& output) override;
 
   void LeaseVoices(FBPlugInputBlock const& input) override;
+  void GetCurrentProcessSettings(FBProcessSettings& settings) const override;
   void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* procState) override;
 };

@@ -375,7 +375,11 @@ FBRuntimeTopo::LoadParamStateFromVar(
     FB_LOG_ERROR("Plugin id is not a string.");
     return false;
   }
-  if (id.toString().toStdString() != static_->meta.id)
+  auto allowedIdIter = std::find(
+    static_->meta.allowLoadFromIds.begin(),
+    static_->meta.allowLoadFromIds.end(),
+    id.toString().toStdString());
+  if (allowedIdIter == static_->meta.allowLoadFromIds.end())
   {
     FB_LOG_ERROR("Plugin id mismatch.");
     return false;

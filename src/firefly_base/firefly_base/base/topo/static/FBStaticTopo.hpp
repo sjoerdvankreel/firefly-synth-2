@@ -38,38 +38,16 @@ struct FBPlugVersion final
 
 struct FBStaticTopoMeta final
 {
+  bool isFx;
   std::string id;
   std::string name;
   std::string vendor;
   FBPlugVersion version;
   FBPlugFormat format = (FBPlugFormat)-1;
+
+  // To make patch loading across instrument/fx possible.
+  std::vector<std::string> allowLoadFromIds = {};
   std::string NameVersionAndFormat() const;
-};
-
-struct FBSpecialParam final
-{
-  int paramIndex = -1;
-  int moduleIndex = -1;
-  FBGlobalBlockParamState* state = nullptr;
-  FBStaticParam const& ParamTopo(FBStaticTopo const& topo) const;
-};
-
-struct FBSpecialGUIParam final
-{
-  int paramIndex = -1;
-  int moduleIndex = -1;
-  double* state = nullptr;
-  FBStaticGUIParam const& ParamTopo(FBStaticTopo const& topo) const;
-};
-
-struct FBSpecialParams final
-{
-  FBSpecialParam hostSmoothTime = {};
-};
-
-struct FBSpecialGUIParams final
-{
-  FBSpecialGUIParam userScale = {};
 };
 
 class FBDeserializationConverter
@@ -106,13 +84,6 @@ public:
     std::string const& /*oldParamValue*/, std::string& /* newParamValue*/) const { return false;  }
 };
 
-typedef std::function<FBSpecialParams(
-FBStaticTopo const& topo, void* state)>
-FBSpecialParamsSelector;
-typedef std::function<FBSpecialGUIParams(
-FBStaticTopo const& topo, void* state)>
-FBSpecialGUIParamsSelector;
-
 typedef std::function<FBHostExchangeState* (void* state)>
 FBHostExchangeAddrSelector;
 typedef std::function<std::array<FBVoiceInfo, FBMaxVoices>* (void* state)>
@@ -130,6 +101,8 @@ struct FBStaticTopo
   int guiWidth = {};
   int guiAspectRatioWidth = {};
   int guiAspectRatioHeight = {};
+  int guiUserScaleParam = -1;
+  int guiUserScaleModule = -1;
   FBPlugGUIFactory guiFactory = {};
   FBDeserializationConverterFactory deserializationConverterFactory = {};
 
@@ -150,8 +123,6 @@ struct FBStaticTopo
   std::vector<FBTopoIndices> moduleProcessOrder = {};
 
   int exchangeStateSize = {};
-  FBSpecialParamsSelector specialSelector = {};
-  FBSpecialGUIParamsSelector specialGUISelector = {};
   FBHostExchangeAddrSelector hostExchangeAddr = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
 

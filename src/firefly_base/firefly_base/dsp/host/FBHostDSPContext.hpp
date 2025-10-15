@@ -20,6 +20,6 @@ public:
   virtual MTSClient* GetMTSClient() = 0;
   virtual FBRuntimeTopo const* Topo() const = 0;
   virtual FBProcStateContainer* ProcState() = 0;
-  virtual FBExchangeStateContainer* ExchangeState() = 0;
+  virtual FBExchangeStateContainer* ExchangeToGUIState() = 0;
   virtual std::unique_ptr<IFBPlugProcessor> MakePlugProcessor() = 0;
 };

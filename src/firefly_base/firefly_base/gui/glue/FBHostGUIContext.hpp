@@ -36,26 +36,27 @@ class FBHostGUIContext
   FBUndoStateContainer _undoState;
 
 protected:
-  FBHostGUIContext();
+  std::unique_ptr<FBRuntimeTopo> _topo;
+  std::unique_ptr<FBGUIStateContainer> _guiState;
+  std::unique_ptr<FBExchangeStateContainer> _exchangeFromDSPState;
+
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostGUIContext);
+  FBHostGUIContext(std::unique_ptr<FBStaticTopo>&& topo);
 
   virtual void DoEndAudioParamChange(int index) = 0;
   virtual void DoBeginAudioParamChange(int index) = 0;
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
 
 public:
-  virtual FBGUIStateContainer* GUIState() = 0;
-  virtual FBRuntimeTopo const* Topo() const = 0;
-  virtual FBExchangeStateContainer const* ExchangeState() const = 0;
-
   virtual double GetAudioParamNormalized(int index) const = 0;
-  virtual double GetGUIParamNormalized(int index) const = 0;
-  virtual void SetGUIParamNormalized(int index, double normalized) = 0;
-
   virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;
   virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;
 
-  FBUndoStateContainer& UndoState() { return _undoState; }
+  double GetUserScaleMin() const;
+  double GetUserScaleMax() const;
+  double GetUserScalePlain() const;
+  void SetUserScalePlain(double scale);
+
   bool GetGUIParamBool(FBParamTopoIndices const& indices) const;
   int GetGUIParamDiscrete(FBParamTopoIndices const& indices) const;
 
@@ -76,6 +77,13 @@ public:
   void CopyAudioParam(FBParamTopoIndices const& from, FBParamTopoIndices const& to);
   void PerformImmediateAudioParamEdit(int index, double normalized);
   void PerformImmediateAudioParamEdit(FBParamTopoIndices const& indices, double normalized);
+
+  double GetGUIParamNormalized(int index) const;
+  void SetGUIParamNormalized(int index, double normalized);
+  FBUndoStateContainer& UndoState() { return _undoState; }
+  FBRuntimeTopo const* Topo() const { return _topo.get(); }
+  FBGUIStateContainer* GUIState() { return _guiState.get(); }
+  FBExchangeStateContainer const* ExchangeFromDSPState() const { return _exchangeFromDSPState.get(); }
 };
 
 template <class T>
