@@ -73,9 +73,9 @@ FFOsciProcessor::ProcessExtAudio(
       else if (pos < 0.5f) mul = 1.0f - ((pos - 0.25f) * 4.0f);
       else if (pos < 0.75f) mul = (pos - 0.5f) * 4.0f;
       else mul = 1.0f - ((pos - 0.75f) * 4.0f);
-      float phase = _graphPhaseGen.NextScalar(1.0f / sampleCount);
-      audioIn[0].Set(s, mul * std::sin(2.0f * FBPi * FBPhaseWrap(phase * periodCount)));
-      audioIn[1].Set(s, mul * std::cos(2.0f * FBPi * FBPhaseWrap(phase * periodCount)));
+      float phase = FBPhaseWrap(_graphPhaseGen.NextScalar(1.0f / sampleCount) * periodCount);
+      audioIn[0].Set(s, mul * (FBToBipolar(phase) + std::sin(2.0f * FBPi * phase)));
+      audioIn[1].Set(s, mul * (FBToBipolar(phase) + std::cos(2.0f * FBPi * phase)));
       _graphPosition++;
     }
   }
