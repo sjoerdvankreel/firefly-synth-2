@@ -112,6 +112,7 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
 
   auto const& scaleNorm = params.block.scale;
   auto const& sourceNorm = params.block.source;
+  auto const& sourceInvNorm = params.block.sourceInv;
   auto const& targetNorm = params.block.target;
   auto const& opTypeNorm = params.block.opType;
   auto const& scaleMinNorm = params.acc.scaleMin;
@@ -137,6 +138,9 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
     _source[i] = topo.NormalizedToListFast<int>(
       FFModMatrixParam::Source,
       FFSelectDualProcBlockParamNormalized<Global>(sourceNorm[i], voice));
+    _sourceInv[i] = topo.NormalizedToBoolFast(
+      FFModMatrixParam::SourceInv,
+      FFSelectDualProcBlockParamNormalized<Global>(sourceInvNorm[i], voice));
     _opType[i] = topo.NormalizedToListFast<FFModulationOpType>(
       FFModMatrixParam::OpType,
       FFSelectDualProcBlockParamNormalized<Global>(opTypeNorm[i], voice));
@@ -327,6 +331,8 @@ FFModMatrixProcessor<Global>::ApplyModulation(
         FBBoolBatch<float> highMinLowIsZero = (sourceHigh - sourceLow) == FBBatch<float>(0.0f);
         FBBatch<float> sourceLowHighOut = xsimd::clip((sourceLowHigh - sourceLow) / (sourceHigh - sourceLow), FBBatch<float>(0.0f), FBBatch<float>(1.0f));
         sourceOutBuffer.Store(s, xsimd::select(highMinLowIsZero, sourceLowHigh, sourceLowHighOut));
+        if (_sourceInv[i])
+          sourceOutBuffer.Store(s, 1.0f - sourceOutBuffer.Load(s));
       }
         
       if (scale.indices.module.index == -1)
