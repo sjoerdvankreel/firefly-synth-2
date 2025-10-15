@@ -84,8 +84,8 @@ class FFOsciProcessor final
   FFOsciVoiceStartParamState<float> _voiceStartSnapshotNorm = {};
 
   bool _graph = {};
-  int _stringGraphPosition = {};
-  float _stringGraphStVarFilterFreqMultiplier = {};
+  int _graphPosition = {};
+  float _graphStVarFilterFreqMultiplier = {};
   FFTrackingPhaseGenerator _graphPhaseGen = {};
 
   bool _modMatrixExpoFM = false;

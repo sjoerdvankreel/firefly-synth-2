@@ -94,7 +94,10 @@ FFOsciProcessor::BeginVoice(
   _voiceStartSnapshotNorm.uniRandom[0] = params.voiceStart.uniRandom[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
 
   _graph = graph;
+  _graphPosition = 0;
   _graphPhaseGen = {};
+  _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(
+    graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
   auto const& noteEvent = state.voice->event.note;
   _keyUntuned = static_cast<float>(noteEvent.keyUntuned);
@@ -249,13 +252,13 @@ FFOsciProcessor::Process(
       auto baseFreq = FBPitchToFreq(pitch);
       basePitchPlain.Store(s, pitch);
       uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
-      if (_graph)
+      if (_graph && _type != FFOsciType::ExtAudio)
         _graphPhaseGen.NextBatch(baseFreq / sampleRate);
     }
     else
     {
       basePitchPlain.Store(s, FBBatch<float>(defaultPitch));
-      if (_graph)
+      if (_graph && _type != FFOsciType::ExtAudio)
         _graphPhaseGen.NextBatch(FBBatch<float>(defaultFreq / sampleRate));
     }
 
@@ -333,7 +336,7 @@ FFOsciProcessor::Process(
     if (_type == FFOsciType::String)
     {
       int graphSamples = FBFreqToSamples(lastBaseFreq, sampleRate) * FFOsciStringGraphRounds;
-      return std::clamp(graphSamples - _stringGraphPosition, 0, FBFixedBlockSamples);
+      return std::clamp(graphSamples - _graphPosition, 0, FBFixedBlockSamples);
     }
     else
       return _graphPhaseGen.PositionSamplesUpToFirstCycle() - graphPrevPositionSamplesUpToFirstCycle;

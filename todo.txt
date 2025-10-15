@@ -15,7 +15,7 @@ TODOLIST for alpha-18
 [x] as osci ==> exchange the new controls
 [x] test the clap
 [x] loads of host test files
-[ ] osci graph
+[x] osci graph
 
 TODOLIST for alpha-19 - tuning and keytracking
 [ ] filter kbd track -- should it take into account all coarse pitch mods ?
