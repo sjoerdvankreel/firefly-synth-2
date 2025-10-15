@@ -1,5 +1,6 @@
 TODOLIST for alpha-19
 [x] inv on the matrix source
+[ ] global ext audio as fm source
 [ ] extsmth/rcvn => settings module, not save in patch, this later also hosts tuning settings. also move all gui settings there
 [ ] something with instance and patch naming
 [ ] make the popouts moveable top level windows + also the matrix
