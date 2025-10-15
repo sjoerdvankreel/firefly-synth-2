@@ -176,15 +176,9 @@ MakeGlobalUniSectionMain(
   std::vector<FBModuleGraphComponent*>* fixedGraphs)
 {
   FB_LOG_ENTRY_EXIT();
-  auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0 });
-  
-  auto voiceCount = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
-
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 0 });  
   auto editor = MakeGlobalUniEditor(plugGUI, graphRenderState, fixedGraphs);
-  auto showEditor = plugGUI->StoreComponent<FBParamValueLinkedButton>(plugGUI, voiceCount, "Edit", [](int v) { return v > 1; });
+  auto showEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Edit");
   showEditor->onClick = [plugGUI, editor]() {
     dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", editor, 1180, 550, false, [plugGUI]() {
       FBTopoIndices moduleIndices = { (int)FFModuleType::GlobalUni, 0 };
@@ -204,8 +198,8 @@ MakeGlobalUniSectionMain(
           plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
       });
     };
-  grid->Add(1, 0, 1, 2, showEditor);
-  grid->MarkSection({ { 0, 0 }, { 2, 2 } });
+  grid->Add(0, 0, showEditor);
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(subSection);
 }
