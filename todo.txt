@@ -1,22 +1,3 @@
-TODOLIST for alpha-18
-[x] recheck audio input in plug mode => needs cache clear / rescan
-[x] in global section
-[x] do midi-receive yesno, default 1/0 for inst/fx
-[x] fx/inst + other guid
-[x] check the defaults
-[x] do the xchange data
-[x] show in header
-[x] shareable patches?
-[x] be sure to not overlap the names of the string/extaudio filter controls
-[x] recheck the matrix names
-[x] recheck the matrix target names
-[x] matrix target matrixmodulename no workie (only source)
-[x] retest all the fx vs sidechain + make sidechain hosttests clap/vst3 for bitwig
-[x] as osci ==> exchange the new controls
-[x] test the clap
-[x] loads of host test files
-[x] osci graph
-
 TODOLIST for alpha-19 - tuning and keytracking
 [ ] filter kbd track -- should it take into account all coarse pitch mods ?
 [ ] make a dedicated tuning section with some options
