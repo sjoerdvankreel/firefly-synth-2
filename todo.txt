@@ -17,6 +17,7 @@ TODOLIST for alpha-19
 [ ] bright text when graph on
 [ ] get the text out of the graphs
 [ ] show visual clue if knob is being modulated
+[ ] inv on the matrix source
 
 TODOLIST for alpha-20 - tuning and keytracking
 [ ] filter kbd track -- should it take into account all coarse pitch mods ?

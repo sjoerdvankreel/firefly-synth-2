@@ -178,6 +178,21 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSource);
   source.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::Source, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
 
+  auto& sourceInv = result->params[(int)FFModMatrixParam::SourceInv];
+  sourceInv.mode = FBParamMode::Block;
+  sourceInv.name = "Source Inv";
+  sourceInv.display = "Inv";
+  sourceInv.slotCount = maxSlotCount;
+  sourceInv.defaultText = "Off";
+  sourceInv.id = prefix + "{1A234BC2-632D-478A-A7D9-B51099E4D320}";
+  sourceInv.type = FBParamType::Boolean;
+  auto selectSourceInv = [](auto& module) { return &module.block.sourceInv; };
+  sourceInv.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSourceInv);
+  sourceInv.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSourceInv);
+  sourceInv.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSourceInv);
+  sourceInv.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSourceInv);
+  sourceInv.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSourceInv);
+
   auto& sourceLow = result->params[(int)FFModMatrixParam::SourceLow];
   sourceLow.mode = FBParamMode::Accurate;
   sourceLow.defaultText = "0";
@@ -258,8 +273,10 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   }
 
   scale.List().linkedTargetEnabledSelector = [global, topo](int runtimeSourceValue, int runtimeTargetValue) {
-    if (runtimeSourceValue == 0 || runtimeTargetValue == 0)
+    if (runtimeTargetValue == 0)
       return true; // None
+    if (runtimeSourceValue == 0)
+      return false; // Off
     auto const& scaleCvOutputs = global ? topo->gMatrixSources : topo->vMatrixSources;
     auto const& sourceCvOutputs = global ? topo->gMatrixSources : topo->vMatrixSources;
     FB_ASSERT(0 <= runtimeTargetValue && runtimeTargetValue < scaleCvOutputs.size());
