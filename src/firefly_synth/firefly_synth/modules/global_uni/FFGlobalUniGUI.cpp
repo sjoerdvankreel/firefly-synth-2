@@ -105,13 +105,15 @@ MakeGlobalUniEditor(
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
 
+  auto upperGrid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 1, 1, 1 });
   auto voiceCount = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
-  grid->MarkSection({ { 0, 0 }, { 1, 1 } });
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 1 }, { 1, 3 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, voiceCount, std::to_string(FFGlobalUniMaxCount)));
-  grid->MarkSection({ { 0, 4 }, { 1, (int)columnSizes.size() - 4 } });
+  upperGrid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
+  upperGrid->MarkSection({ { 0, 0 }, { 1, 1 } });
+  upperGrid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
+  upperGrid->MarkSection({ { 0, 1 }, { 1, 1 } });
+  upperGrid->Add(0, 2, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, voiceCount, std::to_string(FFGlobalUniMaxCount)));
+  upperGrid->MarkSection({ { 0, 2 }, { 1, 1 } });
+  grid->Add(0, 0, 1, (int)columnSizes.size(), upperGrid);
 
   for (int c = 0; c < 2; c++)
   {
@@ -201,7 +203,7 @@ MakeGlobalUniSectionMain(
   showEditor->onClick = [plugGUI, editor]() {
     FFTopLevelEditorParams params = {};
     params.w = 1180;
-    params.h = 550;
+    params.h = 510;
     params.content = editor;
     params.title = "Global Unison";
     params.init = [plugGUI]() { GlobalUniInit(plugGUI); };

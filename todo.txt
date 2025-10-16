@@ -1,6 +1,7 @@
 TODOLIST for alpha-19
 [x] inv on the matrix source
 [ ] more bars to the audio meters
+[ ] make guni bigger
 [ ] drop visuals-if-focus
 [ ] the tooltips not work in separate dialog (need tooltipclient)
 [ ] osci phase not paint exchange state
