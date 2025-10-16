@@ -42,6 +42,7 @@ struct FBStaticTopoMeta final
   std::string id;
   std::string name;
   std::string vendor;
+  std::string shortName;
   FBPlugVersion version;
   FBPlugFormat format = (FBPlugFormat)-1;
 

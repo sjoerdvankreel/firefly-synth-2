@@ -211,13 +211,13 @@ FFPlugGUI::ShowTopLevelEditor(
   juce::DialogWindow::LaunchOptions options;
   options.resizable = false;
   options.useNativeTitleBar = true;
-  options.dialogTitle = params.title;
   options.componentToCentreAround = this;
   options.escapeKeyTriggersCloseButton = true;
   options.dialogBackgroundColour = Colours::black;
   options.content = OptionalScopedPointer<Component>(params.content, false);
   options.content->setBounds(0, 0, params.w, params.h);
-  
+  options.dialogTitle = HostContext()->Topo()->static_->meta.shortName + " " + params.title;
+
   FFTopLevelEditorParams paramsCopy = params;
   paramsCopy.dialog = options.create();
   _topLevelEditors[id] = paramsCopy;

@@ -24,6 +24,7 @@ inline int constexpr FFEnvSlotOffset = 1;
 inline constexpr char FFVendorName[] = "Sjoerd van Kreel";
 inline constexpr char FFVendorMail[] = "sjoerdvankreel@gmail.com";
 inline constexpr char FFVendorURL[] = "https://github.com/sjoerdvankreel";
+inline constexpr char FFPlugShortName[] = "FF2";
 inline constexpr char FFPlugNameFX[] = "Firefly Synth 2 FX";
 inline constexpr char FFPlugNameInst[] = "Firefly Synth 2";
 inline constexpr char FFPlugUniqueIdFX[] = "E761431919AC4A2087B3CF8EFCD6396F";

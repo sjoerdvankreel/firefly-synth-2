@@ -39,6 +39,7 @@ FFPlugMeta(FBPlugFormat format, bool isFx)
   result.isFx = isFx;
   result.format = format;
   result.vendor = FFVendorName;
+  result.shortName = FFPlugShortName;
   result.version.major = FF_PLUG_VERSION_MAJOR;
   result.version.minor = FF_PLUG_VERSION_MINOR;
   result.version.patch = FF_PLUG_VERSION_PATCH;
