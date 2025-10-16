@@ -11,6 +11,7 @@ class FFSettingsGUIState final
   friend struct FFGUIState;
   std::array<double, 1> userScale = {};
   std::array<double, 1> visualsMode = {};
+  std::array<double, 1> showGlobalUni = {};
   std::array<double, 1> fxSelectedTab = {};
   std::array<double, 1> oscSelectedTab = {};
   std::array<double, 1> mixSelectedTab = {};
