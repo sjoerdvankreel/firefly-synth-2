@@ -30,7 +30,7 @@ MakeSettingsTab(FBPlugGUI* plugGUI)
   grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, visualsMode));
   auto showGlobalUni = topo->gui.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::ShowGlobalUni, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, showGlobalUni));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, showGlobalUni));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, showGlobalUni));
   grid->MarkSection({ { 0, 0 }, { 2, 2 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(subSection);
