@@ -20,6 +20,25 @@
 
 using namespace juce;
 
+static void
+GlobalUniInit(FBPlugGUI* plugGUI)
+{
+  FBTopoIndices moduleIndices = { (int)FFModuleType::GlobalUni, 0 };
+  std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
+  plugGUI->HostContext()->UndoState().Snapshot("Init " + name);
+  for (int s = 0; s < (int)FFGlobalUniTarget::Count; s++)
+  {
+    plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { (int)FFGlobalUniParam::Mode, s} });
+    plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { (int)FFGlobalUniParam::OpType, s} });
+  }
+  for (int p = (int)FFGlobalUniParam::AutoFirst; p <= (int)FFGlobalUniParam::AutoLast; p++)
+    for (int s = 0; s < (int)FFGlobalUniTarget::Count; s++)
+      plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
+  for (int p = (int)FFGlobalUniParam::ManualFirst; p <= (int)FFGlobalUniParam::ManualLast; p++)
+    for (int s = 0; s < FFGlobalUniMaxCount; s++)
+      plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
+}
+
 FFGlobalUniParamListener::
 ~FFGlobalUniParamListener()
 {
@@ -180,24 +199,16 @@ MakeGlobalUniSectionMain(
   auto editor = MakeGlobalUniEditor(plugGUI, graphRenderState, fixedGraphs);
   auto showEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Edit");
   showEditor->onClick = [plugGUI, editor]() {
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", editor, 1180, 550, false, [plugGUI]() {
-      FBTopoIndices moduleIndices = { (int)FFModuleType::GlobalUni, 0 };
-      std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
-      plugGUI->HostContext()->UndoState().Snapshot("Init " + name);
-
-      for (int s = 0; s < (int)FFGlobalUniTarget::Count; s++)
-      {
-        plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { (int)FFGlobalUniParam::Mode, s} });
-        plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { (int)FFGlobalUniParam::OpType, s} });
-      }
-      for (int p = (int)FFGlobalUniParam::AutoFirst; p <= (int)FFGlobalUniParam::AutoLast; p++)
-        for (int s = 0; s < (int)FFGlobalUniTarget::Count; s++)
-          plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
-      for (int p = (int)FFGlobalUniParam::ManualFirst; p <= (int)FFGlobalUniParam::ManualLast; p++)
-        for (int s = 0; s < FFGlobalUniMaxCount; s++)
-          plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
-      });
-    };
+    FFTopLevelEditorParams params = {};
+    params.w = 1180;
+    params.h = 550;
+    params.content = editor;
+    params.title = "Global Unison";
+    params.init = [plugGUI]() { GlobalUniInit(plugGUI); };
+    params.toggleModuleIndex = (int)FFModuleType::Settings;
+    params.toggleParamIndex = (int)FFSettingsGUIParam::ShowGlobalUni;
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowTopLevelEditor(FFTopLevelEditorId::GlobalUni, params);
+  };
   grid->Add(0, 0, showEditor);
   grid->MarkSection({ { 0, 0 }, { 1, 1 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);

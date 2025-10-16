@@ -178,6 +178,33 @@ FFPlugGUI::ShowOverlayComponent(
   _overlayComponent = overlay;
 }
 
+void 
+FFPlugGUI::HideTopLevelEditor(
+  FFTopLevelEditorId id)
+{
+  if (_topLevelEditors.find(id) == _topLevelEditors.end())
+    return;
+}
+
+void 
+FFPlugGUI::ShowTopLevelEditor(
+  FFTopLevelEditorId id,
+  FFTopLevelEditorParams const& params)
+{
+  if (_topLevelEditors.find(id) != _topLevelEditors.end())
+    return;
+  juce::DialogWindow::LaunchOptions options;
+  options.resizable = false;
+  options.useNativeTitleBar = false;
+  options.dialogTitle = params.title;
+  options.componentToCentreAround = this;
+  options.escapeKeyTriggersCloseButton = true;
+  options.dialogBackgroundColour = Colours::black;
+  options.content = OptionalScopedPointer<Component>(params.content, false);
+  options.content->setBounds(0, 0, params.w, params.h);
+  options.launchAsync();
+}
+
 void
 FFPlugGUI::FlushAudio()
 {
