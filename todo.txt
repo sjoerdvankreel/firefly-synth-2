@@ -1,5 +1,8 @@
 TODOLIST for alpha-19
 [x] inv on the matrix source
+[ ] drop visuals-if-focus
+[ ] the tooltips not work in separate dialog (need tooltipclient)
+[ ] osci phase not paint exchange state
 [ ] not store fake params (mode::fake)
 [ ] do the not-in-patch thing
 [ ] extsmth/rcvn => settings module, not save in patch, this later also hosts tuning settings. also move all gui settings there
