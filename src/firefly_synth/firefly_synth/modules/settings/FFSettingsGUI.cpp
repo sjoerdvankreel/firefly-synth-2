@@ -33,7 +33,7 @@ MakeSettingsMain(FBPlugGUI* plugGUI)
 }
 
 Component*
-FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
+FFMakeSettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0 });
