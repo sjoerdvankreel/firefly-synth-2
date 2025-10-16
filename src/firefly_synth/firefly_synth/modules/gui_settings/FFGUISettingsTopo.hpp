@@ -3,11 +3,5 @@
 #include <memory>
 
 struct FBStaticModule;
-enum class FFGUISettingsVisualsMode { Basic, Always, IfFocus };
-
-enum class FFGUISettingsGUIParam {
-  UserScale, ShowMatrix, VisualsMode,
-  OscSelectedTab, FXSelectedTab, LFOSelectedTab, 
-  MixSelectedTab, EnvSelectedTab, EchoSelectedTab, Count };
-
+enum class FFGUISettingsGUIParam { ShowMatrix, Count };
 std::unique_ptr<FBStaticModule> FFMakeGUISettingsTopo();

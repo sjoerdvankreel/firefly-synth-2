@@ -24,16 +24,13 @@ MakeGUISettingsMain(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   auto showMatrix = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::ShowMatrix, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, showMatrix));
   auto showMatrixToggle = plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, showMatrix);
   showMatrixToggle->onClick = [plugGUI, showMatrixToggle]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ToggleMatrix(showMatrixToggle->getToggleState()); };
   grid->Add(0, 1, showMatrixToggle);
-  auto visualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::VisualsMode, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, visualsMode));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, visualsMode));
-  grid->MarkSection({ { 0, 0 }, { 1, 4 } });
+  grid->MarkSection({ { 0, 0 }, { 1, 2 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 

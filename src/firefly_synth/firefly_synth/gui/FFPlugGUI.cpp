@@ -11,6 +11,8 @@
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
+#include <firefly_synth/modules/settings/FFSettingsGUI.hpp>
+#include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleGUI.hpp>
@@ -124,13 +126,13 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
 FBGUIRenderType 
 FFPlugGUI::GetRenderType() const
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::VisualsMode, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::VisualsMode, 0 } };
   auto const* paramTopo = HostContext()->Topo()->gui.ParamAtTopo(indices);
   float normalized = static_cast<float>(HostContext()->GetGUIParamNormalized(paramTopo->runtimeParamIndex));
-  auto mode = static_cast<FFGUISettingsVisualsMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
-  if (mode == FFGUISettingsVisualsMode::Basic)
+  auto mode = static_cast<FFSettingsVisualsMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
+  if (mode == FFSettingsVisualsMode::Basic)
     return FBGUIRenderType::Basic;
-  if (mode == FFGUISettingsVisualsMode::Always)
+  if (mode == FFSettingsVisualsMode::Always)
     return FBGUIRenderType::Full;
   return hasKeyboardFocus(true) ? FBGUIRenderType::Full : FBGUIRenderType::Basic;
 }
@@ -201,10 +203,11 @@ FFPlugGUI::SetupGUI()
   _outputGUIAndPatch->Add(0, 1, FFMakeGUISettingsGUI(this));
   _outputGUIAndPatch->Add(0, 2, FFMakePatchGUI(this));
 
-  _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 1 } });
+  _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 1, 0 } });
   _topModules->Add(0, 0, FFMakeVoiceModuleGUI(this));
   _topModules->Add(0, 1, FFMakeGlobalUniGUI(this, _graphRenderState.get(), &_fixedGraphs));
   _topModules->Add(0, 2, FFMakeMasterGUI(this));
+  _topModules->Add(0, 3, FFMakeSettingsGUI(this));
   _globalUniParamListener = std::make_unique<FFGlobalUniParamListener>(this);
 
   _modules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 1 } });

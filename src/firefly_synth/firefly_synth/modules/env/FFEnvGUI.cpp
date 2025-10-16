@@ -1,7 +1,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
-#include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
+#include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
@@ -97,7 +97,7 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::EnvSelectedTab, 0 } });
+  auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::EnvSelectedTab, 0 } });
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
   tabs->SetTabSeparatorText(0, "Env");
   tabs->AddModuleTab(true, false, { (int)FFModuleType::Env, FFAmpEnvSlot }, MakeEnvTab(plugGUI, FFAmpEnvSlot));
