@@ -20,7 +20,7 @@
 using namespace juce;
 
 static Component*
-MakeSettingsMain(FBPlugGUI* plugGUI)
+MakeSettingsTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
@@ -29,14 +29,16 @@ MakeSettingsMain(FBPlugGUI* plugGUI)
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, visualsMode));
   grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, visualsMode));
   grid->MarkSection({ { 0, 0 }, { 2, 1 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(subSection);
 }
 
 Component*
 FFMakeSettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0 });
-  grid->Add(0, 0, MakeSettingsMain(plugGUI));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
+  auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::Settings].name;
+  tabs->addTab(name, {}, MakeSettingsTab(plugGUI), false);
+  return tabs;
 }
