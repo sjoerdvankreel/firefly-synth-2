@@ -164,10 +164,10 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   auto const& globalParam = _procState->param.global;
 
   // manual flush
-  bool flushToggle = globalParam.guiSettings[0].block.flushAudioToggle[0].Value() > 0.5f;
-  if (flushToggle != _prevFlushDelayToggle)
+  bool flushToggle = globalParam.output[0].block.flushAudioToggle[0].Value() > 0.5f;
+  if (flushToggle != _prevFlushAudioToggle)
   {
-    _prevFlushDelayToggle = flushToggle;
+    _prevFlushAudioToggle = flushToggle;
     globalDSP.gEcho.processor->FlushDelayLines();
     for (int v = 0; v < FBMaxVoices; v++)
       _procState->dsp.voice[v].vEcho.processor->FlushDelayLines();

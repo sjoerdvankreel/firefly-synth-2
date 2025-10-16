@@ -10,6 +10,7 @@
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
+#include <firefly_synth/modules/output/FFOutputTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleGUI.hpp>
@@ -178,7 +179,7 @@ FFPlugGUI::ShowOverlayComponent(
 void
 FFPlugGUI::FlushAudio()
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsParam::FlushAudioToggle, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::FlushAudioToggle, 0 } };
   double flushNorm = HostContext()->GetAudioParamNormalized(indices);
   double newFlushNorm = flushNorm > 0.5 ? 0.0 : 1.0;
   HostContext()->PerformImmediateAudioParamEdit(indices, newFlushNorm);

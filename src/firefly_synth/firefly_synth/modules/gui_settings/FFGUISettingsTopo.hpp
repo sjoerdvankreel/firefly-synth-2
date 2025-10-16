@@ -5,8 +5,6 @@
 struct FBStaticModule;
 enum class FFGUISettingsVisualsMode { Basic, Always, IfFocus };
 
-enum class FFGUISettingsParam {
-  FlushAudioToggle, Count };
 enum class FFGUISettingsGUIParam {
   UserScale, ShowMatrix, VisualsMode,
   OscSelectedTab, FXSelectedTab, LFOSelectedTab, 

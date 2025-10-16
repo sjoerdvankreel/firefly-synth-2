@@ -12,7 +12,6 @@ FFMakeGUISettingsTopo()
   result->name = "UI";
   result->slotCount = 1;
   result->id = "{2407B76A-7FB3-4BD6-B6FD-B1F610AF8147}";
-  result->params.resize((int)FFGUISettingsParam::Count);
   result->guiParams.resize((int)FFGUISettingsGUIParam::Count);
   auto selectGuiModule = [](auto& state) { return &state.guiSettings; }; 
   auto selectModule = [](auto& state) { return &state.global.guiSettings; };
@@ -110,19 +109,6 @@ FFMakeGUISettingsTopo()
   guiEchoSelectedTab.Discrete().valueCount = 2;
   auto selectGuiEchoSelectedTab = [](auto& module) { return &module.echoSelectedTab; };
   guiEchoSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiEchoSelectedTab);
-
-  // dummy which we check on the audio if it changed
-  auto& flushAudioToggle = result->params[(int)FFGUISettingsParam::FlushAudioToggle];
-  flushAudioToggle.mode = FBParamMode::Fake;
-  flushAudioToggle.name = "Flush Delay";
-  flushAudioToggle.slotCount = 1;
-  flushAudioToggle.defaultText = "Off";
-  flushAudioToggle.id = "{22F4FB2F-BAD8-43A0-BC28-88F5F3A3B7CF}";
-  flushAudioToggle.type = FBParamType::Boolean;
-  auto selectFlushAudioToggle = [](auto& module) { return &module.block.flushAudioToggle; };
-  flushAudioToggle.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFlushAudioToggle);
-  flushAudioToggle.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFlushAudioToggle);
-  flushAudioToggle.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFlushAudioToggle);
 
   return result;
 }
