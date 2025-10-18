@@ -28,7 +28,6 @@ struct FFTopLevelEditorParams
   int toggleParamIndex = -1;
   int toggleModuleIndex = -1;
   juce::Component* content = {};
-  std::function<void()> init = {};
   juce::DialogWindow* dialog = {};
 };
 
