@@ -12,6 +12,7 @@
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/controls/FBParamDisplay.hpp>
+#include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
@@ -111,6 +112,7 @@ MakeGlobalUniEditor(
   upperGrid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
   upperGrid->Add(0, 2, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, voiceCount, std::to_string(FFGlobalUniMaxCount)));
   upperGrid->MarkSection({ { 0, 0 }, { 1, 3 } });
+  upperGrid->Add(0, 3, plugGUI->StoreComponent<FBFillerComponent>(1, 1));
   auto initButton = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
   initButton->onClick = [plugGUI]() { GlobalUniInit(plugGUI); };
   upperGrid->Add(0, 4, initButton);
