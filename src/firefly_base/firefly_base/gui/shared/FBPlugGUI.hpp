@@ -74,6 +74,7 @@ protected:
   virtual void OnPatchChanged() = 0;
   virtual void UpdateExchangeStateTick() = 0;
   int GetControlCountForAudioParamIndex(int paramIndex) const;
+  FBGUIParamControl* GetControlForGUIParamIndex(int paramIndex) const;
   FBParamControl* GetControlForAudioParamIndex(int paramIndex, int controlIndex) const;
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 

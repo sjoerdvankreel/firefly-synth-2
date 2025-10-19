@@ -7,6 +7,7 @@
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
+#include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
@@ -98,6 +99,13 @@ FBPlugGUI::AudioParamNormalizedChangedFromHost(int index, double value)
     _paramListeners[i]->AudioParamChanged(index, value, false);
 }
 
+FBGUIParamControl* 
+FBPlugGUI::GetControlForGUIParamIndex(int paramIndex) const
+{
+  auto guiControl = _store[_guiParamIndexToComponent.at(paramIndex)].get();
+  return &dynamic_cast<FBGUIParamControl&>(*guiControl);
+}
+
 void
 FBPlugGUI::GUIParamNormalizedChanged(int index)
 {
@@ -115,10 +123,7 @@ FBPlugGUI::GUIParamNormalizedChanged(int index, double value)
 {
   auto iter = _guiParamIndexToComponent.find(index);
   if (iter != _guiParamIndexToComponent.end())
-  {
-    auto guiControl = _store[_guiParamIndexToComponent.at(index)].get();
-    dynamic_cast<FBGUIParamControl&>(*guiControl).SetValueNormalizedFromPlug(value);
-  }
+    GetControlForGUIParamIndex(index)->SetValueNormalizedFromPlug(value);
   GUIParamNormalizedChanged(index);
 }
 
@@ -476,6 +481,18 @@ FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params0)
   }
 
   int showParamIndex = HostContext()->Topo()->gui.ParamAtTopo({ { params.toggleModuleIndex, 0 }, { params.toggleParamIndex, 0 } })->runtimeParamIndex;
+  if (firstInit)
+  {
+    auto guiControl = GetControlForGUIParamIndex(showParamIndex);
+    auto guiToggle = &dynamic_cast<FBGUIParamToggleButton&>(*guiControl);
+    guiToggle->onClick = [this, id, guiToggle, params0]() {
+      if (guiToggle->getToggleState())
+        OpenTopLevelEditor(id, params0);
+      else
+        CloseTopLevelEditor(id);
+    };
+  }
+
   HostContext()->SetGUIParamNormalized(showParamIndex, 1.0);
   GUIParamNormalizedChanged(showParamIndex, 1.0);
 
