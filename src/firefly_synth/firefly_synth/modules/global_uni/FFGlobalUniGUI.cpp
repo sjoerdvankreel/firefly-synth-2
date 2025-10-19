@@ -220,7 +220,7 @@ MakeGlobalUniSectionMain(
     params.h = 510;
     params.content = editor;
     params.iconFile = "header.png";
-    params.title = "Global Unison";
+    params.title = "Unison";
     // todo params.toggleModuleIndex = (int)FFModuleType::Settings;
     // params.toggleParamIndex = (int)FFSettingsGUIParam::ShowGlobalUni;
     plugGUI->OpenTopLevelEditor(FFTopLevelEditorGlobalUni, params);

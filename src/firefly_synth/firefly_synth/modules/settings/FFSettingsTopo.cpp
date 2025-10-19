@@ -102,7 +102,7 @@ FFMakeSettingsTopo()
 
   auto& guiShowGlobalUni = result->guiParams[(int)FFSettingsGUIParam::ShowGlobalUni];
   guiShowGlobalUni.defaultText = "Off";
-  guiShowGlobalUni.name = "Show Global Uni";
+  guiShowGlobalUni.name = "Show Unison";
   guiShowGlobalUni.slotCount = 1;
   guiShowGlobalUni.id = "{7E90184F-6311-40D5-AC28-7CFBB0E2B426}";
   guiShowGlobalUni.type = FBParamType::Boolean;
