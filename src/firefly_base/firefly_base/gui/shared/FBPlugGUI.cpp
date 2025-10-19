@@ -380,7 +380,8 @@ FBPlugGUI::ShowTopLevelEditor(int id, FBTopLevelEditorParams const& params)
   auto iter = _topLevelEditors.find(id);
   if (iter != _topLevelEditors.end())
   {
-    iter->second.content->setTransform(AffineTransform::scale(static_cast<float>(_scale)));
+    iter->second.content->getChildComponent(0)->setTransform(AffineTransform::scale(static_cast<float>(_scale)));
+    iter->second.content->setBounds(0, 0, (int)std::round(params.w * _scale), (int)std::round(params.h * _scale));
     iter->second.dialog->setContentNonOwned(iter->second.content, true);
     iter->second.dialog->setVisible(true);
     iter->second.dialog->grabKeyboardFocus();
@@ -393,10 +394,15 @@ FBPlugGUI::ShowTopLevelEditor(int id, FBTopLevelEditorParams const& params)
   options.componentToCentreAround = this;
   options.escapeKeyTriggersCloseButton = true;
   options.dialogBackgroundColour = Colours::black;
-  options.content = OptionalScopedPointer<Component>(params.content, false);
-  options.content->setBounds(0, 0, params.w, params.h);
-  options.content->addAndMakeVisible(StoreComponent<TooltipWindow>());
-  options.content->setTransform(AffineTransform::scale(static_cast<float>(_scale)));
+  
+  auto* content = StoreComponent<Component>();
+  content->addChildComponent(params.content);
+  params.content->setTransform(AffineTransform::scale(static_cast<float>(_scale)));
+  params.content->setBounds(0, 0, params.w, params.h);
+  params.content->resized();
+  params.content->addAndMakeVisible(StoreComponent<TooltipWindow>());
+  options.content = OptionalScopedPointer<Component>(content, false);
+  options.content->setBounds(0, 0, (int)std::round(params.w * _scale), (int)std::round(params.h * _scale));
   options.dialogTitle = HostContext()->Topo()->static_->meta.shortName + " " + params.title;
 
   FBTopLevelEditorParams paramsCopy = params;
