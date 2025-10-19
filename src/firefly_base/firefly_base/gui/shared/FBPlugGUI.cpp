@@ -396,7 +396,7 @@ FBPlugGUI::ShowTopLevelEditor(int id, FBTopLevelEditorParams const& params)
   options.dialogBackgroundColour = Colours::black;
   
   auto* content = StoreComponent<Component>();
-  content->addChildComponent(params.content);
+  content->addAndMakeVisible(params.content);
   params.content->setTransform(AffineTransform::scale(static_cast<float>(_scale)));
   params.content->setBounds(0, 0, params.w, params.h);
   params.content->resized();
