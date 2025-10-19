@@ -296,16 +296,6 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
 }
 
 void 
-FBPlugGUI::setVisible(bool visible)
-{
-  Component::setVisible(visible);
-  if(visible)
-    for (auto const& entry : _topLevelEditors)
-      if (HostContext()->GetGUIParamBool({ { entry.second.toggleModuleIndex, 0 }, { entry.second.toggleParamIndex, 0 } }))
-        MessageManager::callAsync([this, id = entry.first]() { OpenTopLevelEditor(id); });
-}
-
-void 
 FBPlugGUI::mouseUp(const MouseEvent& event)
 {
   if (!event.mods.isRightButtonDown())
@@ -408,10 +398,6 @@ FBPlugGUI::CloseTopLevelEditor(int id)
     delete params.detail.dialog;
     params.detail.dialog = nullptr;
   }
-
-  int showParamIndex = HostContext()->Topo()->gui.ParamAtTopo({ { params.toggleModuleIndex, 0 }, { params.toggleParamIndex, 0 } })->runtimeParamIndex;
-  HostContext()->SetGUIParamNormalized(showParamIndex, 0.0);
-  GUIParamNormalizedChanged(showParamIndex, 0.0);
 }
 
 void
@@ -447,10 +433,6 @@ FBPlugGUI::OpenTopLevelEditor(int id)
     params.detail.dialog->setIcon(icon);
     params.detail.dialog->getPeer()->setIcon(icon);
   }
-
-  int showParamIndex = HostContext()->Topo()->gui.ParamAtTopo({ { params.toggleModuleIndex, 0 }, { params.toggleParamIndex, 0 } })->runtimeParamIndex;
-  HostContext()->SetGUIParamNormalized(showParamIndex, 1.0);
-  GUIParamNormalizedChanged(showParamIndex, 1.0);
 
   params.detail.dialog->setVisible(true);
   params.detail.dialog->grabKeyboardFocus();
@@ -495,14 +477,4 @@ FBPlugGUI::RegisterTopLevelEditor(int id, FBTopLevelEditorParams const& params0)
   auto* content = StoreComponent<Component>();
   params.detail.contentComponent = content;
   content->addAndMakeVisible(params.detail.contentGrid);
-
-  int showParamIndex = HostContext()->Topo()->gui.ParamAtTopo({ { params.toggleModuleIndex, 0 }, { params.toggleParamIndex, 0 } })->runtimeParamIndex;
-  auto guiControl = GetControlForGUIParamIndex(showParamIndex);
-  auto guiToggle = &dynamic_cast<FBGUIParamToggleButton&>(*guiControl);
-  guiToggle->onClick = [this, id, guiToggle]() {
-    if (guiToggle->getToggleState())
-      OpenTopLevelEditor(id);
-    else
-      CloseTopLevelEditor(id);
-  };
 }

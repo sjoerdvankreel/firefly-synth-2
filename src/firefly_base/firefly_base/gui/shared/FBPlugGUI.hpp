@@ -55,10 +55,10 @@ public:
 
   void UpdateExchangeState();
   void SetScale(double scale);
+  void OpenTopLevelEditor(int id);
   void ShowHostMenuForAudioParam(int index);
   void RegisterTopLevelEditor(int id, FBTopLevelEditorParams const& params);
 
-  void setVisible(bool visible) override;
   void mouseUp(const juce::MouseEvent& event) override;
 
   virtual FBGUIRenderType GetKnobRenderType() const = 0;
@@ -83,7 +83,6 @@ protected:
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
-  void OpenTopLevelEditor(int id);
   void CloseTopLevelEditor(int id);
   void GUIParamNormalizedChanged(int index);
   void AudioParamNormalizedChanged(int index);

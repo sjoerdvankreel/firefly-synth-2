@@ -100,14 +100,5 @@ FFMakeSettingsTopo()
   auto selectGuiEchoSelectedTab = [](auto& module) { return &module.echoSelectedTab; };
   guiEchoSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiEchoSelectedTab);
 
-  auto& guiShowGlobalUni = result->guiParams[(int)FFSettingsGUIParam::ShowGlobalUni];
-  guiShowGlobalUni.defaultText = "Off";
-  guiShowGlobalUni.name = "Show Unison";
-  guiShowGlobalUni.slotCount = 1;
-  guiShowGlobalUni.id = "{7E90184F-6311-40D5-AC28-7CFBB0E2B426}";
-  guiShowGlobalUni.type = FBParamType::Boolean;
-  auto selectGuiShowGlobalUni = [](auto& module) { return &module.showGlobalUni; };
-  guiShowGlobalUni.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiShowGlobalUni);
-
   return result;
 }

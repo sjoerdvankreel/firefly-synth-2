@@ -34,10 +34,6 @@ MakeSettingsTab(
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, visualsMode));
   grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, visualsMode));
   
-  auto showGlobalUni = topo->gui.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::ShowGlobalUni, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, showGlobalUni));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, showGlobalUni));
-
   auto globalUniEditorHeader = FFMakeGlobalUniEditorHeader(plugGUI);
   auto globalUniEditorContent = FFMakeGlobalUniEditorContent(plugGUI, graphRenderState, fixedGraphs);
   FBTopLevelEditorParams globalUniParams = {};
@@ -48,9 +44,11 @@ MakeSettingsTab(
   globalUniParams.header = globalUniEditorHeader;
   globalUniParams.content = globalUniEditorContent;
   globalUniParams.init = [plugGUI]() { FFGlobalUniInit(plugGUI); };
-  globalUniParams.toggleModuleIndex = (int)FFModuleType::Settings;
-  globalUniParams.toggleParamIndex = (int)FFSettingsGUIParam::ShowGlobalUni;
   plugGUI->RegisterTopLevelEditor(FFTopLevelEditorGlobalUni, globalUniParams);
+
+  auto showGlobalUniButton = plugGUI->StoreComponent<FBAutoSizeButton>("Show Unison");
+  showGlobalUniButton->onClick = [plugGUI]() { plugGUI->OpenTopLevelEditor(FFTopLevelEditorGlobalUni); };
+  grid->Add(1, 0, 1, 2, showGlobalUniButton);
 
   grid->MarkSection({ { 0, 0 }, { 2, 2 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
