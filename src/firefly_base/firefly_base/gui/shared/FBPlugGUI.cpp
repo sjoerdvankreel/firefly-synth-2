@@ -397,7 +397,7 @@ FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params)
   juce::DialogWindow::LaunchOptions options;
   options.resizable = false;
   options.useNativeTitleBar = true;
-  options.componentToCentreAround = nullptr;
+  options.componentToCentreAround = this;
   options.escapeKeyTriggersCloseButton = true;
   options.dialogBackgroundColour = Colours::black;
   

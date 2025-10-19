@@ -13,6 +13,7 @@ _plugGUI(plugGUI)
   setUsingNativeTitleBar(options.useNativeTitleBar);
   setContentNonOwned(options.content.release(), true);
   setResizable(options.resizable, options.useBottomRightCornerResizer);
+  centreAroundComponent(options.componentToCentreAround, getWidth(), getHeight());
 }
 
 void 
