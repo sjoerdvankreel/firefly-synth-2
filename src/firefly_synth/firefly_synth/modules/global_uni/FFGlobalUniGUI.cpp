@@ -219,8 +219,8 @@ MakeGlobalUniSectionMain(
     params.header = editorHeader;
     params.content = editorContent;
     params.init = [plugGUI]() { GlobalUniInit(plugGUI); };
-    // todo params.toggleModuleIndex = (int)FFModuleType::Settings;
-    // params.toggleParamIndex = (int)FFSettingsGUIParam::ShowGlobalUni;
+    params.toggleModuleIndex = (int)FFModuleType::Settings;
+    params.toggleParamIndex = (int)FFSettingsGUIParam::ShowGlobalUni;
     plugGUI->OpenTopLevelEditor(FFTopLevelEditorGlobalUni, params);
   };
   grid->Add(0, 0, showEditor);

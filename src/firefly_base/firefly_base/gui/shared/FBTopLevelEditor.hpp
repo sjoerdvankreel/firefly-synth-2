@@ -11,6 +11,8 @@ struct FBTopLevelEditorParams final
 {
   int w = -1;
   int h = -1;
+  int toggleParamIndex = -1;
+  int toggleModuleIndex = -1;
   std::string title = {};
   std::string iconFile = {};
   juce::Component* header = {};
