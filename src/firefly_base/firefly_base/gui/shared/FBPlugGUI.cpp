@@ -61,12 +61,6 @@ FBPlugGUI::InitAllDependencies()
 }
 
 void
-FBPlugGUI::GUIParamNormalizedChanged(int index, double /*value*/)
-{
-  GUIParamNormalizedChanged(index);
-}
-
-void
 FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double value)
 {
   AudioParamNormalizedChanged(index);
@@ -114,6 +108,18 @@ FBPlugGUI::GUIParamNormalizedChanged(int index)
     target->DependenciesChanged(true);
   for (auto target : _guiParamsEnabledDependents[index])
     target->DependenciesChanged(false);
+}
+
+void
+FBPlugGUI::GUIParamNormalizedChanged(int index, double value)
+{
+  auto iter = _guiParamIndexToComponent.find(index);
+  if (iter != _guiParamIndexToComponent.end())
+  {
+    auto guiControl = _store[_guiParamIndexToComponent.at(index)].get();
+    dynamic_cast<FBGUIParamControl&>(*guiControl).SetValueNormalizedFromPlug(value);
+  }
+  GUIParamNormalizedChanged(index);
 }
 
 void
