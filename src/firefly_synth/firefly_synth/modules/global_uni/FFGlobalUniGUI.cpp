@@ -212,8 +212,8 @@ MakeGlobalUniSectionMain(
   auto showEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Edit");
   showEditor->onClick = [plugGUI, editorContent, editorHeader]() {
     FBTopLevelEditorParams params = {};
-    params.w = 1180;
-    params.h = 510;
+    params.w = 1200;
+    params.h = 560;
     params.title = "Unison";
     params.iconFile = "header.png";
     params.header = editorHeader;
