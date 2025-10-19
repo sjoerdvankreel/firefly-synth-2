@@ -2,9 +2,11 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/settings/FFSettingsGUI.hpp>
 #include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
+#include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBTopLevelEditor.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
@@ -20,7 +22,10 @@
 using namespace juce;
 
 static Component*
-MakeSettingsTab(FBPlugGUI* plugGUI)
+MakeSettingsTab(
+  FBPlugGUI* plugGUI,
+  FBGraphRenderState* graphRenderState,
+  std::vector<FBModuleGraphComponent*>* fixedGraphs)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
@@ -28,20 +33,39 @@ MakeSettingsTab(FBPlugGUI* plugGUI)
   auto visualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::VisualsMode, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, visualsMode));
   grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, visualsMode));
+  
   auto showGlobalUni = topo->gui.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::ShowGlobalUni, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, showGlobalUni));
   grid->Add(1, 1, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, showGlobalUni));
+
+  auto globalUniEditorHeader = FFMakeGlobalUniEditorHeader(plugGUI);
+  auto globalUniEditorContent = FFMakeGlobalUniEditorContent(plugGUI, graphRenderState, fixedGraphs);
+  FBTopLevelEditorParams globalUniParams = {};
+  globalUniParams.w = 1200;
+  globalUniParams.h = 560;
+  globalUniParams.title = "Unison";
+  globalUniParams.iconFile = "header.png";
+  globalUniParams.header = globalUniEditorHeader;
+  globalUniParams.content = globalUniEditorContent;
+  globalUniParams.init = [plugGUI]() { FFGlobalUniInit(plugGUI); };
+  globalUniParams.toggleModuleIndex = (int)FFModuleType::Settings;
+  globalUniParams.toggleParamIndex = (int)FFSettingsGUIParam::ShowGlobalUni;
+  plugGUI->RegisterTopLevelEditor(FFTopLevelEditorGlobalUni, globalUniParams);
+
   grid->MarkSection({ { 0, 0 }, { 2, 2 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(subSection);
 }
 
 Component*
-FFMakeSettingsGUI(FBPlugGUI* plugGUI)
+FFMakeSettingsGUI(
+  FBPlugGUI* plugGUI,
+  FBGraphRenderState* graphRenderState,
+  std::vector<FBModuleGraphComponent*>* fixedGraphs)
 {
   FB_LOG_ENTRY_EXIT();
   auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
   auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::Settings].name;
-  tabs->addTab(name, {}, MakeSettingsTab(plugGUI), false);
+  tabs->addTab(name, {}, MakeSettingsTab(plugGUI, graphRenderState, fixedGraphs), false);
   return tabs;
 }

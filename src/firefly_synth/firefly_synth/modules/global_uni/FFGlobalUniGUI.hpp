@@ -1,7 +1,6 @@
 #pragma once
 
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
-
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <vector>
 
@@ -22,8 +21,12 @@ public:
   void AudioParamChanged(int index, double normalized, bool changedFromUI) override;
 };
 
+void 
+FFGlobalUniInit(FBPlugGUI* plugGUI);
+juce::Component* 
+FFMakeGlobalUniEditorHeader(FBPlugGUI* plugGUI);
 juce::Component*
-FFMakeGlobalUniGUI(
-  FBPlugGUI* plugGUI, 
-  FBGraphRenderState* graphRenderState, 
+FFMakeGlobalUniEditorContent(
+  FBPlugGUI* plugGUI,
+  FBGraphRenderState* graphRenderState,
   std::vector<FBModuleGraphComponent*>* fixedGraphs);

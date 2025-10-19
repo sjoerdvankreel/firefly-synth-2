@@ -390,73 +390,28 @@ FBPlugGUI::CloseTopLevelEditor(int id)
 {
   FB_LOG_ENTRY_EXIT();
   auto iter = _topLevelEditors.find(id);
-  if (iter != _topLevelEditors.end())
-  {
-    auto& params = _topLevelEditors.at(id);
-    params.detail.dialog->setVisible(false);
-    delete params.detail.dialog;
-    params.detail.dialog = nullptr;
+  FB_ASSERT(iter != _topLevelEditors.end());
+  auto& params = _topLevelEditors.at(id);
+  params.detail.dialog->setVisible(false);
+  delete params.detail.dialog;
+  params.detail.dialog = nullptr;
 
-    int showParamIndex = HostContext()->Topo()->gui.ParamAtTopo({ { params.toggleModuleIndex, 0 }, { params.toggleParamIndex, 0 } })->runtimeParamIndex;
-    HostContext()->SetGUIParamNormalized(showParamIndex, 0.0);
-    GUIParamNormalizedChanged(showParamIndex, 0.0);
-  }
+  int showParamIndex = HostContext()->Topo()->gui.ParamAtTopo({ { params.toggleModuleIndex, 0 }, { params.toggleParamIndex, 0 } })->runtimeParamIndex;
+  HostContext()->SetGUIParamNormalized(showParamIndex, 0.0);
+  GUIParamNormalizedChanged(showParamIndex, 0.0);
 }
 
 void
-FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params0)
+FBPlugGUI::OpenTopLevelEditor(int id)
 {
   FB_LOG_ENTRY_EXIT();
   auto iter = _topLevelEditors.find(id);
-  if (iter == _topLevelEditors.end())
-    _topLevelEditors[id] = params0;
+  FB_ASSERT(iter != _topLevelEditors.end());
   auto& params = _topLevelEditors.at(id);
-
-  // Don't check the dialog, that one gets deleted.
-  // All the rest -- init once and keep in memory.
-  bool firstInit = params.detail.contentComponent == nullptr;
-
-  if (firstInit)
-  {
-    auto upperGrid = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 1 });
-    upperGrid->Add(0, 0, params.header);
-    auto lastTweakedGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0 });
-    lastTweakedGrid->Add(0, 0, StoreComponent<FBLastTweakedLabel>(this));
-    lastTweakedGrid->Add(0, 1, StoreComponent<FBLastTweakedTextBox>(this, 80));
-    lastTweakedGrid->MarkSection({ { 0, 0 }, { 1, 2 } });
-    auto lastTweakedSubSection = StoreComponent<FBSubSectionComponent>(lastTweakedGrid);
-    auto lastTweakedSection = StoreComponent<FBSectionComponent>(lastTweakedSubSection);
-    upperGrid->Add(0, 1, lastTweakedSection);
-    auto initGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 1, 0 });
-    auto initButton = StoreComponent<FBAutoSizeButton>("Init");
-    initButton->onClick = params.init;
-    initGrid->Add(0, 0, StoreComponent<FBFillerComponent>(1, 1));
-    initGrid->Add(0, 1, initButton);
-    initGrid->MarkSection({ { 0, 0 }, { 1, 2 } });
-    auto initSubSection = StoreComponent<FBSubSectionComponent>(initGrid);
-    auto initSection = StoreComponent<FBSectionComponent>(initSubSection);
-    upperGrid->Add(0, 2, initSection);
-
-    auto grid = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { 0, 1 }, std::vector<int> { 1 });
-    grid->Add(0, 0, upperGrid);
-    auto contentSubSection = StoreComponent<FBSubSectionComponent>(params.content);
-    auto contentSection = StoreComponent<FBSectionComponent>(contentSubSection);
-    grid->Add(1, 0, contentSection);
-    grid->addAndMakeVisible(StoreComponent<TooltipWindow>());
-    params.detail.contentGrid = grid;
-  }
 
   params.detail.contentGrid->setTransform(AffineTransform::scale(static_cast<float>(_scale)));
   params.detail.contentGrid->setBounds(0, 0, params.w, params.h);
   params.detail.contentGrid->resized();
-
-  if (firstInit)
-  {
-    auto* content = StoreComponent<Component>();
-    params.detail.contentComponent = content;
-    content->addAndMakeVisible(params.detail.contentGrid);
-  }
-
   params.detail.contentComponent->setBounds(0, 0, (int)std::round(params.w * _scale), (int)std::round(params.h * _scale));
 
   if (params.detail.dialog == nullptr)
@@ -481,21 +436,60 @@ FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params0)
   }
 
   int showParamIndex = HostContext()->Topo()->gui.ParamAtTopo({ { params.toggleModuleIndex, 0 }, { params.toggleParamIndex, 0 } })->runtimeParamIndex;
-  if (firstInit)
-  {
-    auto guiControl = GetControlForGUIParamIndex(showParamIndex);
-    auto guiToggle = &dynamic_cast<FBGUIParamToggleButton&>(*guiControl);
-    guiToggle->onClick = [this, id, guiToggle, params0]() {
-      if (guiToggle->getToggleState())
-        OpenTopLevelEditor(id, params0);
-      else
-        CloseTopLevelEditor(id);
-    };
-  }
-
   HostContext()->SetGUIParamNormalized(showParamIndex, 1.0);
   GUIParamNormalizedChanged(showParamIndex, 1.0);
 
   params.detail.dialog->setVisible(true);
   params.detail.dialog->grabKeyboardFocus();
+}
+
+void
+FBPlugGUI::RegisterTopLevelEditor(int id, FBTopLevelEditorParams const& params0)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto iter = _topLevelEditors.find(id);
+  FB_ASSERT(iter == _topLevelEditors.end());
+  _topLevelEditors[id] = params0;
+  auto& params = _topLevelEditors.at(id);
+
+  auto upperGrid = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 1 });
+  upperGrid->Add(0, 0, params.header);
+  auto lastTweakedGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0 });
+  lastTweakedGrid->Add(0, 0, StoreComponent<FBLastTweakedLabel>(this));
+  lastTweakedGrid->Add(0, 1, StoreComponent<FBLastTweakedTextBox>(this, 80));
+  lastTweakedGrid->MarkSection({ { 0, 0 }, { 1, 2 } });
+  auto lastTweakedSubSection = StoreComponent<FBSubSectionComponent>(lastTweakedGrid);
+  auto lastTweakedSection = StoreComponent<FBSectionComponent>(lastTweakedSubSection);
+  upperGrid->Add(0, 1, lastTweakedSection);
+  auto initGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 1, 0 });
+  auto initButton = StoreComponent<FBAutoSizeButton>("Init");
+  initButton->onClick = params.init;
+  initGrid->Add(0, 0, StoreComponent<FBFillerComponent>(1, 1));
+  initGrid->Add(0, 1, initButton);
+  initGrid->MarkSection({ { 0, 0 }, { 1, 2 } });
+  auto initSubSection = StoreComponent<FBSubSectionComponent>(initGrid);
+  auto initSection = StoreComponent<FBSectionComponent>(initSubSection);
+  upperGrid->Add(0, 2, initSection);
+
+  auto grid = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { 0, 1 }, std::vector<int> { 1 });
+  grid->Add(0, 0, upperGrid);
+  auto contentSubSection = StoreComponent<FBSubSectionComponent>(params.content);
+  auto contentSection = StoreComponent<FBSectionComponent>(contentSubSection);
+  grid->Add(1, 0, contentSection);
+  grid->addAndMakeVisible(StoreComponent<TooltipWindow>());
+  params.detail.contentGrid = grid;
+
+  auto* content = StoreComponent<Component>();
+  params.detail.contentComponent = content;
+  content->addAndMakeVisible(params.detail.contentGrid);
+
+  int showParamIndex = HostContext()->Topo()->gui.ParamAtTopo({ { params.toggleModuleIndex, 0 }, { params.toggleParamIndex, 0 } })->runtimeParamIndex;
+  auto guiControl = GetControlForGUIParamIndex(showParamIndex);
+  auto guiToggle = &dynamic_cast<FBGUIParamToggleButton&>(*guiControl);
+  guiToggle->onClick = [this, id, guiToggle]() {
+    if (guiToggle->getToggleState())
+      OpenTopLevelEditor(id);
+    else
+      CloseTopLevelEditor(id);
+  };
 }

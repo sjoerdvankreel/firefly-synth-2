@@ -5,7 +5,6 @@
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
-#include <firefly_base/gui/shared/FBTopLevelEditor.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
@@ -22,26 +21,6 @@
 
 using namespace juce;
 
-static void
-GlobalUniInit(FBPlugGUI* plugGUI)
-{
-  FBTopoIndices moduleIndices = { (int)FFModuleType::GlobalUni, 0 };
-  std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
-  plugGUI->HostContext()->UndoState().Snapshot("Init " + name);
-  for (int s = 0; s < (int)FFGlobalUniTarget::Count; s++)
-  {
-    plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { (int)FFGlobalUniParam::Mode, s} });
-    plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { (int)FFGlobalUniParam::OpType, s} });
-  }
-  for (int p = (int)FFGlobalUniParam::AutoFirst; p <= (int)FFGlobalUniParam::AutoLast; p++)
-    for (int s = 0; s < (int)FFGlobalUniTarget::Count; s++)
-      plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
-  for (int p = (int)FFGlobalUniParam::ManualFirst; p <= (int)FFGlobalUniParam::ManualLast; p++)
-    for (int s = 0; s < FFGlobalUniMaxCount; s++)
-      plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
-}
-
-// todo drop?
 FFGlobalUniParamListener::
 ~FFGlobalUniParamListener()
 {
@@ -83,8 +62,27 @@ FFGlobalUniParamListener::AudioParamChanged(
   dynamic_cast<FFPlugGUI&>(*_plugGUI).SwitchMainGraphToModule((int)targetModule, 0);
 }
 
-static Component*
-MakeGlobalUniEditorHeader(
+void
+FFGlobalUniInit(FBPlugGUI* plugGUI)
+{
+  FBTopoIndices moduleIndices = { (int)FFModuleType::GlobalUni, 0 };
+  std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
+  plugGUI->HostContext()->UndoState().Snapshot("Init " + name);
+  for (int s = 0; s < (int)FFGlobalUniTarget::Count; s++)
+  {
+    plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { (int)FFGlobalUniParam::Mode, s} });
+    plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { (int)FFGlobalUniParam::OpType, s} });
+  }
+  for (int p = (int)FFGlobalUniParam::AutoFirst; p <= (int)FFGlobalUniParam::AutoLast; p++)
+    for (int s = 0; s < (int)FFGlobalUniTarget::Count; s++)
+      plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
+  for (int p = (int)FFGlobalUniParam::ManualFirst; p <= (int)FFGlobalUniParam::ManualLast; p++)
+    for (int s = 0; s < FFGlobalUniMaxCount; s++)
+      plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
+}
+
+Component*
+FFMakeGlobalUniEditorHeader(
   FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
@@ -99,8 +97,8 @@ MakeGlobalUniEditorHeader(
   return plugGUI->StoreComponent<FBSectionComponent>(subSection);
 }
 
-static Component* 
-MakeGlobalUniEditorContent(
+Component* 
+FFMakeGlobalUniEditorContent(
   FBPlugGUI* plugGUI,
   FBGraphRenderState* graphRenderState,
   std::vector<FBModuleGraphComponent*>* fixedGraphs)
@@ -197,47 +195,4 @@ MakeGlobalUniEditorContent(
   }
 
   return grid;
-}
-
-static Component*
-MakeGlobalUniSectionMain(
-  FBPlugGUI* plugGUI,
-  FBGraphRenderState* graphRenderState,
-  std::vector<FBModuleGraphComponent*>* fixedGraphs)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 0 });  
-  auto editorHeader = MakeGlobalUniEditorHeader(plugGUI);
-  auto editorContent = MakeGlobalUniEditorContent(plugGUI, graphRenderState, fixedGraphs);
-  auto showEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Edit");
-  showEditor->onClick = [plugGUI, editorContent, editorHeader]() {
-    FBTopLevelEditorParams params = {};
-    params.w = 1200;
-    params.h = 560;
-    params.title = "Unison";
-    params.iconFile = "header.png";
-    params.header = editorHeader;
-    params.content = editorContent;
-    params.init = [plugGUI]() { GlobalUniInit(plugGUI); };
-    params.toggleModuleIndex = (int)FFModuleType::Settings;
-    params.toggleParamIndex = (int)FFSettingsGUIParam::ShowGlobalUni;
-    plugGUI->OpenTopLevelEditor(FFTopLevelEditorGlobalUni, params);
-  };
-  grid->Add(0, 0, showEditor);
-  grid->MarkSection({ { 0, 0 }, { 1, 1 } });
-  auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBSectionComponent>(subSection);
-}
-
-Component*
-FFMakeGlobalUniGUI(
-  FBPlugGUI* plugGUI,
-  FBGraphRenderState* graphRenderState,
-  std::vector<FBModuleGraphComponent*>* fixedGraphs)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
-  auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::GlobalUni].name;
-  tabs->addTab(name, {}, MakeGlobalUniSectionMain(plugGUI, graphRenderState, fixedGraphs), false);
-  return tabs;
 }

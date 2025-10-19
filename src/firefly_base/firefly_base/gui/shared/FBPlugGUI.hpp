@@ -25,6 +25,8 @@ public:
 class FBPlugGUI:
 public juce::Component
 {
+  friend class FBTopLevelEditor;
+
   double _scale = 1.0;
   std::vector<IFBParamListener*> _paramListeners = {};
   std::map<int, FBTopLevelEditorParams> _topLevelEditors = {};
@@ -54,8 +56,7 @@ public:
   void UpdateExchangeState();
   void SetScale(double scale);
   void ShowHostMenuForAudioParam(int index);
-  void CloseTopLevelEditor(int id);
-  void OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params);
+  void RegisterTopLevelEditor(int id, FBTopLevelEditorParams const& params);
   void mouseUp(const juce::MouseEvent& event) override;
 
   virtual FBGUIRenderType GetKnobRenderType() const = 0;
@@ -79,6 +80,8 @@ protected:
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
+  void OpenTopLevelEditor(int id);
+  void CloseTopLevelEditor(int id);
   void GUIParamNormalizedChanged(int index);
   void AudioParamNormalizedChanged(int index);
 
