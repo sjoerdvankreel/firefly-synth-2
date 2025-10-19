@@ -34,6 +34,13 @@ _hostContext(hostContext)
 }
 
 void
+FBPlugGUI::SetScale(double scale)
+{
+  _scale = scale;
+  setTransform(AffineTransform::scale(static_cast<float>(scale)));
+}
+
+void
 FBPlugGUI::InitAllDependencies()
 {
   FB_LOG_ENTRY_EXIT();
@@ -373,6 +380,8 @@ FBPlugGUI::ShowTopLevelEditor(int id, FBTopLevelEditorParams const& params)
   auto iter = _topLevelEditors.find(id);
   if (iter != _topLevelEditors.end())
   {
+    iter->second.content->setTransform(AffineTransform::scale(static_cast<float>(_scale)));
+    iter->second.dialog->setContentNonOwned(iter->second.content, true);
     iter->second.dialog->setVisible(true);
     iter->second.dialog->grabKeyboardFocus();
     return;
@@ -386,6 +395,8 @@ FBPlugGUI::ShowTopLevelEditor(int id, FBTopLevelEditorParams const& params)
   options.dialogBackgroundColour = Colours::black;
   options.content = OptionalScopedPointer<Component>(params.content, false);
   options.content->setBounds(0, 0, params.w, params.h);
+  options.content->addAndMakeVisible(StoreComponent<TooltipWindow>());
+  options.content->setTransform(AffineTransform::scale(static_cast<float>(_scale)));
   options.dialogTitle = HostContext()->Topo()->static_->meta.shortName + " " + params.title;
 
   FBTopLevelEditorParams paramsCopy = params;
@@ -393,10 +404,12 @@ FBPlugGUI::ShowTopLevelEditor(int id, FBTopLevelEditorParams const& params)
   _topLevelEditors[id] = paramsCopy;
 
   auto iconPath = (FBGUIGetResourcesFolderPath() / params.iconFile).string();
-  paramsCopy.content->addAndMakeVisible(StoreComponent<TooltipWindow>());
+  auto icon = ImageCache::getFromFile(File(iconPath));
+  paramsCopy.dialog->setOpaque(true);
   paramsCopy.dialog->setUsingNativeTitleBar(true);
-  paramsCopy.dialog->setResizable(true, false);
-  paramsCopy.dialog->setIcon(ImageCache::getFromFile(File(iconPath)));
+  paramsCopy.dialog->setResizable(false, false);
+  paramsCopy.dialog->setIcon(icon);
+  paramsCopy.dialog->getPeer()->setIcon(icon);
   paramsCopy.dialog->setVisible(true);
   paramsCopy.dialog->grabKeyboardFocus();
 }

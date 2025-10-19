@@ -36,6 +36,7 @@ public:
 class FBPlugGUI:
 public juce::Component
 {
+  double _scale = 1.0;
   std::vector<IFBParamListener*> _paramListeners = {};
   std::map<int, FBTopLevelEditorParams> _topLevelEditors = {};
 
@@ -62,6 +63,7 @@ public:
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
   void UpdateExchangeState();
+  void SetScale(double scale);
   void ShowHostMenuForAudioParam(int index);
   void HideTopLevelEditor(int id);
   void ShowTopLevelEditor(int id, FBTopLevelEditorParams const& params);
