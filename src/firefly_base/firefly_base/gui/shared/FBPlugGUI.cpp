@@ -385,6 +385,9 @@ FBPlugGUI::CloseTopLevelEditor(int id)
     params.detail.dialog->setVisible(false);
     delete params.detail.dialog;
     params.detail.dialog = nullptr;
+
+    int showParamIndex = HostContext()->Topo()->gui.ParamAtTopo({ { params.toggleModuleIndex, 0 }, { params.toggleParamIndex, 0 } })->runtimeParamIndex;
+    HostContext()->SetGUIParamNormalized(showParamIndex, 0.0);
   }
 }
 
@@ -397,7 +400,11 @@ FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params0)
     _topLevelEditors[id] = params0;
   auto& params = _topLevelEditors.at(id);
 
-  if (params.detail.contentGrid == nullptr)
+  // Don't check the dialog, that one gets deleted.
+  // All the rest -- init once and keep in memory.
+  bool firstInit = params.detail.contentComponent == nullptr;
+
+  if (firstInit)
   {
     auto upperGrid = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 1 });
     upperGrid->Add(0, 0, params.header);
@@ -431,7 +438,7 @@ FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params0)
   params.detail.contentGrid->setBounds(0, 0, params.w, params.h);
   params.detail.contentGrid->resized();
 
-  if (params.detail.contentComponent == nullptr)
+  if (firstInit)
   {
     auto* content = StoreComponent<Component>();
     params.detail.contentComponent = content;
@@ -460,6 +467,9 @@ FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params0)
     params.detail.dialog->setIcon(icon);
     params.detail.dialog->getPeer()->setIcon(icon);
   }
+
+  int showParamIndex = HostContext()->Topo()->gui.ParamAtTopo({ { params.toggleModuleIndex, 0 }, { params.toggleParamIndex, 0 } })->runtimeParamIndex;
+  HostContext()->SetGUIParamNormalized(showParamIndex, 1.0);
 
   params.detail.dialog->setVisible(true);
   params.detail.dialog->grabKeyboardFocus();
