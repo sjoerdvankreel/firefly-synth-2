@@ -57,6 +57,8 @@ public:
   void SetScale(double scale);
   void ShowHostMenuForAudioParam(int index);
   void RegisterTopLevelEditor(int id, FBTopLevelEditorParams const& params);
+
+  void setVisible(bool visible) override;
   void mouseUp(const juce::MouseEvent& event) override;
 
   virtual FBGUIRenderType GetKnobRenderType() const = 0;
@@ -71,9 +73,10 @@ protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
   FBPlugGUI(FBHostGUIContext* hostContext);
 
-  void InitAllDependencies();
   virtual void OnPatchChanged() = 0;
   virtual void UpdateExchangeStateTick() = 0;
+
+  void InitAllDependencies();
   int GetControlCountForAudioParamIndex(int paramIndex) const;
   FBGUIParamControl* GetControlForGUIParamIndex(int paramIndex) const;
   FBParamControl* GetControlForAudioParamIndex(int paramIndex, int controlIndex) const;

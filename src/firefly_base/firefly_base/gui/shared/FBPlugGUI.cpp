@@ -296,6 +296,16 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
 }
 
 void 
+FBPlugGUI::setVisible(bool visible)
+{
+  Component::setVisible(visible);
+  if(visible)
+    for (auto const& entry : _topLevelEditors)
+      if (HostContext()->GetGUIParamBool({ { entry.second.toggleModuleIndex, 0 }, { entry.second.toggleParamIndex, 0 } }))
+        MessageManager::callAsync([this, id = entry.first]() { OpenTopLevelEditor(id); });
+}
+
+void 
 FBPlugGUI::mouseUp(const MouseEvent& event)
 {
   if (!event.mods.isRightButtonDown())
@@ -392,9 +402,12 @@ FBPlugGUI::CloseTopLevelEditor(int id)
   auto iter = _topLevelEditors.find(id);
   FB_ASSERT(iter != _topLevelEditors.end());
   auto& params = _topLevelEditors.at(id);
-  params.detail.dialog->setVisible(false);
-  delete params.detail.dialog;
-  params.detail.dialog = nullptr;
+  if (params.detail.dialog != nullptr)
+  {
+    params.detail.dialog->setVisible(false);
+    delete params.detail.dialog;
+    params.detail.dialog = nullptr;
+  }
 
   int showParamIndex = HostContext()->Topo()->gui.ParamAtTopo({ { params.toggleModuleIndex, 0 }, { params.toggleParamIndex, 0 } })->runtimeParamIndex;
   HostContext()->SetGUIParamNormalized(showParamIndex, 0.0);

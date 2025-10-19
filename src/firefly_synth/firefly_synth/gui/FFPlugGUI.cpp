@@ -205,8 +205,8 @@ FFPlugGUI::SetupGUI()
 
   _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1, 0 } });
   _topModules->Add(0, 0, FFMakeVoiceModuleGUI(this));
-  _topModules->Add(0, 2, FFMakeMasterGUI(this));
-  _topModules->Add(0, 3, FFMakeSettingsGUI(this, _graphRenderState.get(), &_fixedGraphs));
+  _topModules->Add(0, 1, FFMakeMasterGUI(this));
+  _topModules->Add(0, 2, FFMakeSettingsGUI(this, _graphRenderState.get(), &_fixedGraphs));
   _globalUniParamListener = std::make_unique<FFGlobalUniParamListener>(this);
 
   _modules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 1 } });
