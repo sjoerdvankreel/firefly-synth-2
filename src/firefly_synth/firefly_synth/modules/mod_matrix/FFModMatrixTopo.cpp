@@ -192,6 +192,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   sourceInv.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSourceInv);
   sourceInv.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSourceInv);
   sourceInv.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSourceInv);
+  sourceInv.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::SourceInv, -1 }, { (int)FFModMatrixParam::OpType, -1 }, { (int)FFModMatrixParam::Source, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0 && vs[3] != 0; });
 
   auto& sourceLow = result->params[(int)FFModMatrixParam::SourceLow];
   sourceLow.mode = FBParamMode::Accurate;
