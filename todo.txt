@@ -2,22 +2,23 @@ TODOLIST for alpha-19
 [x] inv on the matrix source
 [x] invert scale-none no workie => cannot do, need bipolar amount
 [x] icon into the taskbar
+[x] the tooltips not work in separate dialog (need tooltipclient)
+[x] headers on the popout windows
+[x] make the popouts moveable top level windows + 
+[ ] also the matrix
 [ ] last tweak into all windows?
 [ ] more bars to the audio meters
 [ ] make matrix bigger
 [ ] drop visuals-if-focus
-[ ] the tooltips not work in separate dialog (need tooltipclient)
 [ ] osci phase not paint exchange state
 [ ] not store fake params (mode::fake)
 [ ] do the not-in-patch thing
 [ ] extsmth/rcvn => settings module, not save in patch, this later also hosts tuning settings. also move all gui settings there
 [ ] something with instance and patch naming
-[ ] make the popouts moveable top level windows + also the matrix
 [ ] import/export module
 [ ] copy/paste module and patch across sessions
 [ ] split large matrix dropdowns
 [ ] check all linear horizontal + do sensitivity for linear horizontal
-[ ] headers on the popout windows
 [ ] highlight not default
 [ ] how the heck is the mod menu ordered?
 [ ] do display disabled/impossible items different in the mod matrix
