@@ -7,6 +7,13 @@
 
 class FBPlugGUI;
 
+struct FBTopLevelEditorParamsDetail final
+{
+  juce::DialogWindow* dialog = {};
+  juce::Component* contentGrid = {};
+  juce::Component* contentComponent = {};
+};
+
 struct FBTopLevelEditorParams final
 {
   int w = -1;
@@ -18,7 +25,7 @@ struct FBTopLevelEditorParams final
   juce::Component* header = {};
   juce::Component* content = {};
   std::function<void()> init = {};
-  juce::DialogWindow* dialog = {};
+  FBTopLevelEditorParamsDetail detail = {};
 };
 
 class FBTopLevelEditor final:
