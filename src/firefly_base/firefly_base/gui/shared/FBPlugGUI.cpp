@@ -4,8 +4,12 @@
 #include <firefly_base/gui/shared/FBParamComponent.hpp>
 #include <firefly_base/gui/shared/FBParamsDependent.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
+#include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
+#include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBSectionComponent.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
@@ -197,6 +201,7 @@ FBPlugGUI::UpdateExchangeState()
 void
 FBPlugGUI::ShowHostMenuForAudioParam(int index)
 {
+  FB_LOG_ENTRY_EXIT();
   auto menuItems = HostContext()->MakeAudioParamContextMenu(index);
   if (menuItems.empty())
     return;
@@ -371,6 +376,8 @@ FBPlugGUI::LoadPatchFromFile()
 void
 FBPlugGUI::CloseTopLevelEditor(int id)
 {
+  FB_LOG_ENTRY_EXIT();
+
   auto iter = _topLevelEditors.find(id);
   if (iter == _topLevelEditors.end())
     return;
@@ -383,6 +390,8 @@ FBPlugGUI::CloseTopLevelEditor(int id)
 void
 FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params)
 {
+  FB_LOG_ENTRY_EXIT();
+
   auto iter = _topLevelEditors.find(id);
   if (iter != _topLevelEditors.end())
   {
@@ -398,12 +407,35 @@ FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params)
   options.escapeKeyTriggersCloseButton = true;
   options.dialogBackgroundColour = Colours::black;
   
+  auto upperGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 1 });
+  auto headerSubSection = StoreComponent<FBSubSectionComponent>(params.header);
+  auto headerSection = StoreComponent<FBSectionComponent>(headerSubSection);
+  upperGrid->Add(0, 0, headerSection);
+  auto lastTweakedGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0 });
+  lastTweakedGrid->Add(0, 0, StoreComponent<FBLastTweakedLabel>(this));
+  lastTweakedGrid->Add(0, 1, StoreComponent<FBLastTweakedTextBox>(this, 80));
+  auto lastTweakedSubSection = StoreComponent<FBSubSectionComponent>(lastTweakedGrid);
+  auto lastTweakedSection = StoreComponent<FBSectionComponent>(lastTweakedSubSection);
+  upperGrid->Add(0, 1, lastTweakedSection);
+  auto initButton = StoreComponent<FBAutoSizeButton>("Init");
+  initButton->onClick = params.init;
+  auto initSubSection = StoreComponent<FBSubSectionComponent>(initButton);
+  auto initSection = StoreComponent<FBSectionComponent>(initSubSection);
+  upperGrid->Add(0, 2, initSection);
+
+  auto grid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 0, 1 }, std::vector<int> { 1 });
+  grid->Add(0, 0, upperGrid);
+  auto contentSubSection = StoreComponent<FBSubSectionComponent>(params.content);
+  auto contentSection = StoreComponent<FBSectionComponent>(contentSubSection);
+  grid->Add(1, 0, contentSection);
+
+  grid->setTransform(AffineTransform::scale(static_cast<float>(_scale)));
+  grid->setBounds(0, 0, params.w, params.h);
+  grid->resized();
+  grid->addAndMakeVisible(StoreComponent<TooltipWindow>());
+  
   auto* content = StoreComponent<Component>();
-  content->addAndMakeVisible(params.content);
-  params.content->setTransform(AffineTransform::scale(static_cast<float>(_scale)));
-  params.content->setBounds(0, 0, params.w, params.h);
-  params.content->resized();
-  params.content->addAndMakeVisible(StoreComponent<TooltipWindow>());
+  content->addAndMakeVisible(grid);
   options.content = OptionalScopedPointer<Component>(content, false);
   options.content->setBounds(0, 0, (int)std::round(params.w * _scale), (int)std::round(params.h * _scale));
   options.dialogTitle = HostContext()->Topo()->static_->meta.shortName + " " + params.title;

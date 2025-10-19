@@ -83,8 +83,22 @@ FFGlobalUniParamListener::AudioParamChanged(
   dynamic_cast<FFPlugGUI&>(*_plugGUI).SwitchMainGraphToModule((int)targetModule, 0);
 }
 
+static Component*
+MakeGlobalUniEditorHeader(
+  FBPlugGUI* plugGUI)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0 });
+  auto voiceCount = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, voiceCount, std::to_string(FFGlobalUniMaxCount)));
+  return grid;
+}
+
 static Component* 
-MakeGlobalUniEditor(
+MakeGlobalUniEditorContent(
   FBPlugGUI* plugGUI,
   FBGraphRenderState* graphRenderState,
   std::vector<FBModuleGraphComponent*>* fixedGraphs)
@@ -105,52 +119,35 @@ MakeGlobalUniEditor(
     columnSizes.push_back(0);
 
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 0, 1 }, std::vector<int> { 1 });
-
-  auto upperGrid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0, 1, 0 });
-  auto voiceCount = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } });
-  upperGrid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
-  upperGrid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
-  upperGrid->Add(0, 2, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, voiceCount, std::to_string(FFGlobalUniMaxCount)));
-  upperGrid->MarkSection({ { 0, 0 }, { 1, 3 } });
-  upperGrid->Add(0, 3, plugGUI->StoreComponent<FBFillerComponent>(1, 1));
-  auto initButton = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
-  initButton->onClick = [plugGUI]() { GlobalUniInit(plugGUI); };
-  upperGrid->Add(0, 4, initButton);
-  upperGrid->MarkSection({ { 0, 3 }, { 1, 2 } });
-  auto upperSubSection = plugGUI->StoreComponent<FBSubSectionComponent>(upperGrid);
-  auto upperSection = plugGUI->StoreComponent<FBSectionComponent>(upperSubSection);
-  grid->Add(0, 0, upperSection);
-
-  auto lowerGrid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
   for (int c = 0; c < 2; c++)
   {
     int rowOffset = 0;
     int guiCol = c * (FFGlobalUniMaxCount + 8 + 1);
-    lowerGrid->Add(rowOffset + 0, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
-    lowerGrid->MarkSection({ { rowOffset + 0, guiCol }, { 1, 1 } });
+    grid->Add(rowOffset + 0, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
+    grid->MarkSection({ { rowOffset + 0, guiCol }, { 1, 1 } });
     auto mode0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, 0 } });
-    lowerGrid->Add(rowOffset + 0, guiCol + 1, plugGUI->StoreComponent<FBAutoSizeLabel>(mode0->static_.display));
+    grid->Add(rowOffset + 0, guiCol + 1, plugGUI->StoreComponent<FBAutoSizeLabel>(mode0->static_.display));
     auto opType0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, 0 } });
-    lowerGrid->Add(rowOffset + 0, guiCol + 2, plugGUI->StoreComponent<FBAutoSizeLabel>(opType0->static_.name));
-    lowerGrid->Add(rowOffset + 0, guiCol + 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Out"));
-    lowerGrid->MarkSection({ { rowOffset + 0, guiCol + 1 }, { 1, 3 } });
+    grid->Add(rowOffset + 0, guiCol + 2, plugGUI->StoreComponent<FBAutoSizeLabel>(opType0->static_.name));
+    grid->Add(rowOffset + 0, guiCol + 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Out"));
+    grid->MarkSection({ { rowOffset + 0, guiCol + 1 }, { 1, 3 } });
 
     auto spread0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, 0 } });
-    lowerGrid->Add(rowOffset + 0, guiCol + 4, plugGUI->StoreComponent<FBAutoSizeLabel>(spread0->static_.display));
+    grid->Add(rowOffset + 0, guiCol + 4, plugGUI->StoreComponent<FBAutoSizeLabel>(spread0->static_.display));
     auto skew0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSkew, 0 } });
-    lowerGrid->Add(rowOffset + 0, guiCol + 5, plugGUI->StoreComponent<FBAutoSizeLabel>(skew0->static_.display));
+    grid->Add(rowOffset + 0, guiCol + 5, plugGUI->StoreComponent<FBAutoSizeLabel>(skew0->static_.display));
     auto rand0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRand, 0 } });
-    lowerGrid->Add(rowOffset + 0, guiCol + 6, plugGUI->StoreComponent<FBAutoSizeLabel>(rand0->static_.display));
+    grid->Add(rowOffset + 0, guiCol + 6, plugGUI->StoreComponent<FBAutoSizeLabel>(rand0->static_.display));
     auto seed0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandSeed, 0 } });
-    lowerGrid->Add(rowOffset + 0, guiCol + 7, plugGUI->StoreComponent<FBAutoSizeLabel>(seed0->static_.display));
+    grid->Add(rowOffset + 0, guiCol + 7, plugGUI->StoreComponent<FBAutoSizeLabel>(seed0->static_.display));
     auto free0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandFree, 0 } });
-    lowerGrid->Add(rowOffset + 0, guiCol + 8, plugGUI->StoreComponent<FBAutoSizeLabel>(free0->static_.display));
-    lowerGrid->MarkSection({ { rowOffset + 0, guiCol + 4 }, { 1, 5 } });
+    grid->Add(rowOffset + 0, guiCol + 8, plugGUI->StoreComponent<FBAutoSizeLabel>(free0->static_.display));
+    grid->MarkSection({ { rowOffset + 0, guiCol + 4 }, { 1, 5 } });
 
     for (int i = 0; i < FFGlobalUniMaxCount; i++)
-      lowerGrid->Add(rowOffset + 0, guiCol + i + 1 + 8, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1), true));
-    lowerGrid->MarkSection({ { rowOffset + 0, guiCol + 1 + 8 }, { 1, FFGlobalUniMaxCount } });
+      grid->Add(rowOffset + 0, guiCol + i + 1 + 8, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1), true));
+    grid->MarkSection({ { rowOffset + 0, guiCol + 1 + 8 }, { 1, FFGlobalUniMaxCount } });
   }
 
   for (int c = 0; c < 2; c++)
@@ -162,44 +159,40 @@ MakeGlobalUniEditor(
       int targetIndex = c * (uniTargetCount / 2) + r;
 
       auto targetName = FFGlobalUniTargetToString((FFGlobalUniTarget)targetIndex);
-      lowerGrid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>(targetName));
-      lowerGrid->MarkSection({ { guiRow, guiCol }, { 1, 1 } });
+      grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>(targetName));
+      grid->MarkSection({ { guiRow, guiCol }, { 1, 1 } });
 
       auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, targetIndex } });
-      lowerGrid->Add(guiRow, guiCol + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
+      grid->Add(guiRow, guiCol + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
       auto opType = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, targetIndex } });
-      lowerGrid->Add(guiRow, guiCol + 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
+      grid->Add(guiRow, guiCol + 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
       int moduleRuntimeIndex = topo->moduleTopoToRuntime.at({ (int)FFModuleType::GlobalUni, 0 });
       auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(graphRenderState, moduleRuntimeIndex, targetIndex, [plugGUI]() { return plugGUI->GetGraphRenderType(); });
-      lowerGrid->Add(guiRow, guiCol + 3, uniGraph);
+      grid->Add(guiRow, guiCol + 3, uniGraph);
       fixedGraphs->push_back(uniGraph);
-      lowerGrid->MarkSection({ { guiRow, guiCol + 1 }, { 1, 3 } });
+      grid->MarkSection({ { guiRow, guiCol + 1 }, { 1, 3 } });
 
       auto spread = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, targetIndex } });
-      lowerGrid->Add(guiRow, guiCol + 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, spread, Slider::SliderStyle::RotaryVerticalDrag));
+      grid->Add(guiRow, guiCol + 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, spread, Slider::SliderStyle::RotaryVerticalDrag));
       auto skew = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSkew, targetIndex } });
-      lowerGrid->Add(guiRow, guiCol + 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skew, Slider::SliderStyle::RotaryVerticalDrag));
+      grid->Add(guiRow, guiCol + 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skew, Slider::SliderStyle::RotaryVerticalDrag));
       auto random = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRand, targetIndex } });
-      lowerGrid->Add(guiRow, guiCol + 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, random, Slider::SliderStyle::RotaryVerticalDrag));
+      grid->Add(guiRow, guiCol + 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, random, Slider::SliderStyle::RotaryVerticalDrag));
       auto seed = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandSeed, targetIndex } });
-      lowerGrid->Add(guiRow, guiCol + 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag));
+      grid->Add(guiRow, guiCol + 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag));
       auto free = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandFree, targetIndex } });
-      lowerGrid->Add(guiRow, guiCol + 8, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, free));
-      lowerGrid->MarkSection({ { guiRow, guiCol + 4 }, { 1, 5 } });
+      grid->Add(guiRow, guiCol + 8, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, free));
+      grid->MarkSection({ { guiRow, guiCol + 4 }, { 1, 5 } });
 
       for (int p = 0; p < FFGlobalUniMaxCount; p++)
       {
         int manualParamOffset = c * uniTargetCount / 2 + r;
         auto param = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::ManualFirst + manualParamOffset, p } });
-        lowerGrid->Add(guiRow, guiCol + p + 1 + 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag));
+        grid->Add(guiRow, guiCol + p + 1 + 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag));
       }
-      lowerGrid->MarkSection({ { guiRow, guiCol + 1 + 8 }, { 1, FFGlobalUniMaxCount } });
+      grid->MarkSection({ { guiRow, guiCol + 1 + 8 }, { 1, FFGlobalUniMaxCount } });
     }
   }
-
-  auto lowerSubSection = plugGUI->StoreComponent<FBSubSectionComponent>(lowerGrid);
-  auto lowerSection = plugGUI->StoreComponent<FBSectionComponent>(lowerSubSection);
-  grid->Add(1, 0, lowerSection);
 
   return grid;
 }
@@ -212,15 +205,18 @@ MakeGlobalUniSectionMain(
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 0 });  
-  auto editor = MakeGlobalUniEditor(plugGUI, graphRenderState, fixedGraphs);
+  auto editorHeader = MakeGlobalUniEditorHeader(plugGUI);
+  auto editorContent = MakeGlobalUniEditorContent(plugGUI, graphRenderState, fixedGraphs);
   auto showEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Edit");
-  showEditor->onClick = [plugGUI, editor]() {
+  showEditor->onClick = [plugGUI, editorContent, editorHeader]() {
     FBTopLevelEditorParams params = {};
     params.w = 1180;
     params.h = 510;
-    params.content = editor;
-    params.iconFile = "header.png";
     params.title = "Unison";
+    params.iconFile = "header.png";
+    params.header = editorHeader;
+    params.content = editorContent;
+    params.init = [plugGUI]() { GlobalUniInit(plugGUI); };
     // todo params.toggleModuleIndex = (int)FFModuleType::Settings;
     // params.toggleParamIndex = (int)FFSettingsGUIParam::ShowGlobalUni;
     plugGUI->OpenTopLevelEditor(FFTopLevelEditorGlobalUni, params);
