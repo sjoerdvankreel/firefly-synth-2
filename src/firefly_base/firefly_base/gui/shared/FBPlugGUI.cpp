@@ -9,6 +9,7 @@
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
@@ -407,21 +408,23 @@ FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params)
   options.escapeKeyTriggersCloseButton = true;
   options.dialogBackgroundColour = Colours::black;
   
-  auto upperGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 1 });
-  auto headerSubSection = StoreComponent<FBSubSectionComponent>(params.header);
-  auto headerSection = StoreComponent<FBSectionComponent>(headerSubSection);
-  upperGrid->Add(0, 0, headerSection);
+  auto upperGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 1, 0 });
+  upperGrid->Add(0, 0, params.header);
+  upperGrid->MarkSection({ { 0, 0, }, { 1, 1 } });
   auto lastTweakedGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0 });
   lastTweakedGrid->Add(0, 0, StoreComponent<FBLastTweakedLabel>(this));
   lastTweakedGrid->Add(0, 1, StoreComponent<FBLastTweakedTextBox>(this, 80));
   auto lastTweakedSubSection = StoreComponent<FBSubSectionComponent>(lastTweakedGrid);
   auto lastTweakedSection = StoreComponent<FBSectionComponent>(lastTweakedSubSection);
   upperGrid->Add(0, 1, lastTweakedSection);
+  upperGrid->MarkSection({ { 0, 1, }, { 1, 1 } });
   auto initButton = StoreComponent<FBAutoSizeButton>("Init");
   initButton->onClick = params.init;
   auto initSubSection = StoreComponent<FBSubSectionComponent>(initButton);
   auto initSection = StoreComponent<FBSectionComponent>(initSubSection);
-  upperGrid->Add(0, 2, initSection);
+  upperGrid->Add(0, 2, StoreComponent<FBFillerComponent>(1, 1));
+  upperGrid->Add(0, 3, initSection);
+  upperGrid->MarkSection({ { 0, 2, }, { 1, 2 } });
 
   auto grid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 0, 1 }, std::vector<int> { 1 });
   grid->Add(0, 0, upperGrid);
