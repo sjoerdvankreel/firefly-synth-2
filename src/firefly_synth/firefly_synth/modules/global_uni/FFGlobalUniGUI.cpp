@@ -214,14 +214,15 @@ MakeGlobalUniSectionMain(
   auto editor = MakeGlobalUniEditor(plugGUI, graphRenderState, fixedGraphs);
   auto showEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Edit");
   showEditor->onClick = [plugGUI, editor]() {
-    FFTopLevelEditorParams params = {};
+    FBTopLevelEditorParams params = {};
     params.w = 1180;
     params.h = 510;
     params.content = editor;
+    params.iconFile = "header.png";
     params.title = "Global Unison";
     params.toggleModuleIndex = (int)FFModuleType::Settings;
     params.toggleParamIndex = (int)FFSettingsGUIParam::ShowGlobalUni;
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowTopLevelEditor(FFTopLevelEditorId::GlobalUni, params);
+    plugGUI->ShowTopLevelEditor(FFTopLevelEditorGlobalUni, params);
   };
   grid->Add(0, 0, showEditor);
   grid->MarkSection({ { 0, 0 }, { 1, 1 } });

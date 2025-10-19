@@ -32,16 +32,7 @@
 using namespace juce;
 
 FFPlugGUI::
-~FFPlugGUI() 
-{
-  for (auto& tle : _topLevelEditors)
-  {
-    tle.second.dialog->setVisible(false);
-    delete tle.second.dialog;
-    tle.second.dialog = nullptr;
-  }
-  _topLevelEditors.clear();
-}
+~FFPlugGUI() { }
 
 FFPlugGUI::
 FFPlugGUI(FBHostGUIContext* hostContext):
@@ -185,45 +176,6 @@ FFPlugGUI::ShowOverlayComponent(
   addAndMakeVisible(_overlayContainer, 1);
   _overlayContainer->resized();
   _overlayComponent = overlay;
-}
-
-void 
-FFPlugGUI::HideTopLevelEditor(
-  FFTopLevelEditorId id)
-{
-  if (_topLevelEditors.find(id) == _topLevelEditors.end())
-    return;
-}
-
-void 
-FFPlugGUI::ShowTopLevelEditor(
-  FFTopLevelEditorId id,
-  FFTopLevelEditorParams const& params)
-{
-  auto iter = _topLevelEditors.find(id);
-  if (iter != _topLevelEditors.end())
-  {
-    iter->second.dialog->setVisible(true);
-    iter->second.dialog->grabKeyboardFocus();
-    return;
-  }
-
-  juce::DialogWindow::LaunchOptions options;
-  options.resizable = false;
-  options.useNativeTitleBar = true;
-  options.componentToCentreAround = this;
-  options.escapeKeyTriggersCloseButton = true;
-  options.dialogBackgroundColour = Colours::black;
-  options.content = OptionalScopedPointer<Component>(params.content, false);
-  options.content->setBounds(0, 0, params.w, params.h);
-  options.dialogTitle = HostContext()->Topo()->static_->meta.shortName + " " + params.title;
-
-  FFTopLevelEditorParams paramsCopy = params;
-  paramsCopy.dialog = options.create();
-  _topLevelEditors[id] = paramsCopy;
-  paramsCopy.dialog->setVisible(true);
-  paramsCopy.dialog->grabKeyboardFocus();
-  paramsCopy.content->addAndMakeVisible(StoreComponent<TooltipWindow>());
 }
 
 void

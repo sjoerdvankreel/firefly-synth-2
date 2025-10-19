@@ -14,6 +14,18 @@
 
 class FBHostGUIContext;
 
+struct FBTopLevelEditorParams
+{
+  int w = -1;
+  int h = -1;
+  std::string title = {};
+  std::string iconFile = {};
+  int toggleParamIndex = -1;
+  int toggleModuleIndex = -1;
+  juce::Component* content = {};
+  juce::DialogWindow* dialog = {};
+};
+
 class IFBParamListener
 {
 public:
@@ -25,8 +37,11 @@ class FBPlugGUI:
 public juce::Component
 {
   std::vector<IFBParamListener*> _paramListeners = {};
+  std::map<int, FBTopLevelEditorParams> _topLevelEditors = {};
 
 public:
+  virtual ~FBPlugGUI();
+
   template <class TComponent, class... Args>
   TComponent* StoreComponent(Args&&... args);
 
@@ -44,11 +59,12 @@ public:
 
   std::string GetTooltipForGUIParam(int index) const;
   std::string GetTooltipForAudioParam(int index) const;
+  FBHostGUIContext* HostContext() const { return _hostContext; }
 
   void UpdateExchangeState();
   void ShowHostMenuForAudioParam(int index);
-  FBHostGUIContext* HostContext() const { return _hostContext; }
-
+  void HideTopLevelEditor(int id);
+  void ShowTopLevelEditor(int id, FBTopLevelEditorParams const& params);
   void mouseUp(const juce::MouseEvent& event) override;
 
   virtual FBGUIRenderType GetKnobRenderType() const = 0;

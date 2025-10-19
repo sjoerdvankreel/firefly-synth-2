@@ -14,6 +14,17 @@
 using namespace juce;
 
 FBPlugGUI::
+~FBPlugGUI()
+{
+  for (auto& tle : _topLevelEditors)
+  {
+    tle.second.dialog->setVisible(false);
+    delete tle.second.dialog;
+    tle.second.dialog = nullptr;
+  }
+}
+
+FBPlugGUI::
 FBPlugGUI(FBHostGUIContext* hostContext) :
 _hostContext(hostContext)
 {
@@ -347,4 +358,45 @@ FBPlugGUI::LoadPatchFromFile()
         "Error",
         "Failed to load patch. See log for details: " + FBGetLogPath(HostContext()->Topo()->static_->meta).string() + ".");
   });
+}
+
+void
+FBPlugGUI::HideTopLevelEditor(int id)
+{
+  if (_topLevelEditors.find(id) == _topLevelEditors.end())
+    return;
+}
+
+void
+FBPlugGUI::ShowTopLevelEditor(int id, FBTopLevelEditorParams const& params)
+{
+  auto iter = _topLevelEditors.find(id);
+  if (iter != _topLevelEditors.end())
+  {
+    iter->second.dialog->setVisible(true);
+    iter->second.dialog->grabKeyboardFocus();
+    return;
+  }
+
+  juce::DialogWindow::LaunchOptions options;
+  options.resizable = false;
+  options.useNativeTitleBar = true;
+  options.componentToCentreAround = this;
+  options.escapeKeyTriggersCloseButton = true;
+  options.dialogBackgroundColour = Colours::black;
+  options.content = OptionalScopedPointer<Component>(params.content, false);
+  options.content->setBounds(0, 0, params.w, params.h);
+  options.dialogTitle = HostContext()->Topo()->static_->meta.shortName + " " + params.title;
+
+  FBTopLevelEditorParams paramsCopy = params;
+  paramsCopy.dialog = options.create();
+  _topLevelEditors[id] = paramsCopy;
+
+  auto iconPath = (FBGUIGetResourcesFolderPath() / params.iconFile).string();
+  paramsCopy.content->addAndMakeVisible(StoreComponent<TooltipWindow>());
+  paramsCopy.dialog->setUsingNativeTitleBar(true);
+  paramsCopy.dialog->setResizable(true, false);
+  paramsCopy.dialog->setIcon(ImageCache::getFromFile(File(iconPath)));
+  paramsCopy.dialog->setVisible(true);
+  paramsCopy.dialog->grabKeyboardFocus();
 }

@@ -18,18 +18,7 @@ class FBHostGUIContext;
 class FBGraphRenderState;
 class FBModuleGraphComponent;
 
-enum class FFTopLevelEditorId { GlobalUni };
-
-struct FFTopLevelEditorParams
-{
-  int w = -1;
-  int h = -1;
-  std::string title = {};
-  int toggleParamIndex = -1;
-  int toggleModuleIndex = -1;
-  juce::Component* content = {};
-  juce::DialogWindow* dialog = {};
-};
+enum { FFTopLevelEditorGlobalUni };
 
 class FFPlugGUI final:
 public FBPlugGUI
@@ -55,7 +44,6 @@ public FBPlugGUI
 
   // TODO drop it?
   std::unique_ptr<FFGlobalUniParamListener> _globalUniParamListener = {};
-  std::map<FFTopLevelEditorId, FFTopLevelEditorParams> _topLevelEditors = {};
 
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
@@ -83,12 +71,6 @@ public:
     juce::Component* overlay, 
     int w, int h, bool vCenter,
     std::function<void()> init);
-
-  void HideTopLevelEditor(
-    FFTopLevelEditorId id);
-  void ShowTopLevelEditor(
-    FFTopLevelEditorId id, 
-    FFTopLevelEditorParams const& params);
 
   FBGUIRenderType GetKnobRenderType() const override { return GetRenderType(); }
   FBGUIRenderType GetGraphRenderType() const override { return GetRenderType(); }

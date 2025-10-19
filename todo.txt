@@ -1,5 +1,8 @@
 TODOLIST for alpha-19
 [x] inv on the matrix source
+[x] invert scale-none no workie => cannot do, need bipolar amount
+[ ] last tweak into all windows?
+[ ] icon into the taskbar
 [ ] more bars to the audio meters
 [ ] make matrix bigger
 [ ] drop visuals-if-focus
@@ -18,7 +21,6 @@ TODOLIST for alpha-19
 [ ] highlight not default
 [ ] how the heck is the mod menu ordered?
 [ ] do display disabled/impossible items different in the mod matrix
-[ ] invert scale-none no workie => cannot do, need bipolar amount
 [ ] bright text when graph on
 [ ] get the text out of the graphs
 [ ] show visual clue if knob is being modulated
