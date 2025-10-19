@@ -5,8 +5,8 @@ TODOLIST for alpha-19
 [x] the tooltips not work in separate dialog (need tooltipclient)
 [x] headers on the popout windows
 [x] make the popouts moveable top level windows + 
+[x] last tweak into all windows?
 [ ] also the matrix
-[ ] last tweak into all windows?
 [ ] more bars to the audio meters
 [ ] make matrix bigger
 [ ] drop visuals-if-focus
