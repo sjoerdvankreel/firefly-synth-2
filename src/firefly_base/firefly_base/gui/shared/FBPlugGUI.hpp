@@ -2,6 +2,7 @@
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBParamComponent.hpp>
+#include <firefly_base/gui/shared/FBTopLevelEditor.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
