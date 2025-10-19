@@ -1,8 +1,8 @@
 TODOLIST for alpha-19
 [x] inv on the matrix source
 [x] invert scale-none no workie => cannot do, need bipolar amount
+[x] icon into the taskbar
 [ ] last tweak into all windows?
-[ ] icon into the taskbar
 [ ] more bars to the audio meters
 [ ] make matrix bigger
 [ ] drop visuals-if-focus

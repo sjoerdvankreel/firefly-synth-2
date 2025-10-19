@@ -374,10 +374,10 @@ FBPlugGUI::CloseTopLevelEditor(int id)
   auto iter = _topLevelEditors.find(id);
   if (iter == _topLevelEditors.end())
     return;
-  if (iter->second.dialog != nullptr)
-  {
-    iter->second.dialog->setVisible(false);
-  }
+  iter->second.dialog->setVisible(false);
+  delete iter->second.dialog;
+  iter->second.dialog = nullptr;
+  _topLevelEditors.erase(id);
 }
 
 void
@@ -386,9 +386,6 @@ FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params)
   auto iter = _topLevelEditors.find(id);
   if (iter != _topLevelEditors.end())
   {
-    iter->second.content->getChildComponent(0)->setTransform(AffineTransform::scale(static_cast<float>(_scale)));
-    iter->second.content->setBounds(0, 0, (int)std::round(params.w * _scale), (int)std::round(params.h * _scale));
-    iter->second.dialog->setContentNonOwned(iter->second.content, true);
     iter->second.dialog->setVisible(true);
     iter->second.dialog->grabKeyboardFocus();
     return;
