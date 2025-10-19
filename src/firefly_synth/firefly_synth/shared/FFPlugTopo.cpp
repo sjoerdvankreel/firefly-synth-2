@@ -39,12 +39,12 @@ FFPlugMeta(FBPlugFormat format, bool isFx)
   result.isFx = isFx;
   result.format = format;
   result.vendor = FFVendorName;
-  result.shortName = FFPlugShortName;
   result.version.major = FF_PLUG_VERSION_MAJOR;
   result.version.minor = FF_PLUG_VERSION_MINOR;
   result.version.patch = FF_PLUG_VERSION_PATCH;
   result.name = isFx? FFPlugNameFX: FFPlugNameInst;
   result.id = isFx? FFPlugUniqueIdFX: FFPlugUniqueIdInst;
+  result.shortName = isFx ? FFPlugShortNameFX : FFPlugShortNameInst;
   result.allowLoadFromIds.push_back(FFPlugUniqueIdFX);
   result.allowLoadFromIds.push_back(FFPlugUniqueIdInst);
   return result;
