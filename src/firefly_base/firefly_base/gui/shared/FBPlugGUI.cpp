@@ -1,5 +1,6 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBTopLevelEditor.hpp>
 #include <firefly_base/gui/shared/FBParamComponent.hpp>
 #include <firefly_base/gui/shared/FBParamsDependent.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
@@ -368,14 +369,19 @@ FBPlugGUI::LoadPatchFromFile()
 }
 
 void
-FBPlugGUI::HideTopLevelEditor(int id)
+FBPlugGUI::CloseTopLevelEditor(int id)
 {
-  if (_topLevelEditors.find(id) == _topLevelEditors.end())
+  auto iter = _topLevelEditors.find(id);
+  if (iter == _topLevelEditors.end())
     return;
+  if (iter->second.dialog != nullptr)
+  {
+    iter->second.dialog->setVisible(false);
+  }
 }
 
 void
-FBPlugGUI::ShowTopLevelEditor(int id, FBTopLevelEditorParams const& params)
+FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params)
 {
   auto iter = _topLevelEditors.find(id);
   if (iter != _topLevelEditors.end())
@@ -391,7 +397,7 @@ FBPlugGUI::ShowTopLevelEditor(int id, FBTopLevelEditorParams const& params)
   juce::DialogWindow::LaunchOptions options;
   options.resizable = false;
   options.useNativeTitleBar = true;
-  options.componentToCentreAround = this;
+  options.componentToCentreAround = nullptr;
   options.escapeKeyTriggersCloseButton = true;
   options.dialogBackgroundColour = Colours::black;
   
@@ -406,7 +412,7 @@ FBPlugGUI::ShowTopLevelEditor(int id, FBTopLevelEditorParams const& params)
   options.dialogTitle = HostContext()->Topo()->static_->meta.shortName + " " + params.title;
 
   FBTopLevelEditorParams paramsCopy = params;
-  paramsCopy.dialog = options.create();
+  paramsCopy.dialog = new FBTopLevelEditor(this, id, options);
   _topLevelEditors[id] = paramsCopy;
 
   auto iconPath = (FBGUIGetResourcesFolderPath() / params.iconFile).string();

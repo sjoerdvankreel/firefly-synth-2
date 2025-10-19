@@ -13,18 +13,7 @@
 #include <unordered_set>
 
 class FBHostGUIContext;
-
-struct FBTopLevelEditorParams
-{
-  int w = -1;
-  int h = -1;
-  std::string title = {};
-  std::string iconFile = {};
-  int toggleParamIndex = -1;
-  int toggleModuleIndex = -1;
-  juce::Component* content = {};
-  juce::DialogWindow* dialog = {};
-};
+struct FBTopLevelEditorParams;
 
 class IFBParamListener
 {
@@ -65,8 +54,8 @@ public:
   void UpdateExchangeState();
   void SetScale(double scale);
   void ShowHostMenuForAudioParam(int index);
-  void HideTopLevelEditor(int id);
-  void ShowTopLevelEditor(int id, FBTopLevelEditorParams const& params);
+  void CloseTopLevelEditor(int id);
+  void OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params);
   void mouseUp(const juce::MouseEvent& event) override;
 
   virtual FBGUIRenderType GetKnobRenderType() const = 0;

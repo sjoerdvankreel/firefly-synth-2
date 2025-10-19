@@ -5,6 +5,7 @@
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBTopLevelEditor.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
@@ -220,9 +221,9 @@ MakeGlobalUniSectionMain(
     params.content = editor;
     params.iconFile = "header.png";
     params.title = "Global Unison";
-    params.toggleModuleIndex = (int)FFModuleType::Settings;
-    params.toggleParamIndex = (int)FFSettingsGUIParam::ShowGlobalUni;
-    plugGUI->ShowTopLevelEditor(FFTopLevelEditorGlobalUni, params);
+    // todo params.toggleModuleIndex = (int)FFModuleType::Settings;
+    // params.toggleParamIndex = (int)FFSettingsGUIParam::ShowGlobalUni;
+    plugGUI->OpenTopLevelEditor(FFTopLevelEditorGlobalUni, params);
   };
   grid->Add(0, 0, showEditor);
   grid->MarkSection({ { 0, 0 }, { 1, 1 } });
