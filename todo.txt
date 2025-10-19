@@ -6,6 +6,7 @@ TODOLIST for alpha-19
 [x] headers on the popout windows
 [x] make the popouts moveable top level windows + 
 [x] last tweak into all windows?
+[ ] test the heck out of the toplevel windows on all hosts and platforms, vst3 and clap
 [ ] also the matrix
 [ ] more bars to the audio meters
 [ ] make matrix bigger

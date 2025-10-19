@@ -394,6 +394,7 @@ FBPlugGUI::CloseTopLevelEditor(int id)
 
     int showParamIndex = HostContext()->Topo()->gui.ParamAtTopo({ { params.toggleModuleIndex, 0 }, { params.toggleParamIndex, 0 } })->runtimeParamIndex;
     HostContext()->SetGUIParamNormalized(showParamIndex, 0.0);
+    GUIParamNormalizedChanged(showParamIndex, 0.0);
   }
 }
 
@@ -476,6 +477,7 @@ FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params0)
 
   int showParamIndex = HostContext()->Topo()->gui.ParamAtTopo({ { params.toggleModuleIndex, 0 }, { params.toggleParamIndex, 0 } })->runtimeParamIndex;
   HostContext()->SetGUIParamNormalized(showParamIndex, 1.0);
+  GUIParamNormalizedChanged(showParamIndex, 1.0);
 
   params.detail.dialog->setVisible(true);
   params.detail.dialog->grabKeyboardFocus();
