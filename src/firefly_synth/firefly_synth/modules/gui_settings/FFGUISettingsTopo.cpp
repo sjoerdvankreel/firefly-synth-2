@@ -14,7 +14,6 @@ FFMakeGUISettingsTopo()
   result->id = "{2407B76A-7FB3-4BD6-B6FD-B1F610AF8147}";
   result->guiParams.resize((int)FFGUISettingsGUIParam::Count);
   auto selectGuiModule = [](auto& state) { return &state.guiSettings; }; 
-  auto selectModule = [](auto& state) { return &state.global.guiSettings; };
 
   auto& guiShowMatrix = result->guiParams[(int)FFGUISettingsGUIParam::ShowMatrix];
   guiShowMatrix.defaultText = "Off";
