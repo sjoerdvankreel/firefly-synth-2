@@ -24,11 +24,12 @@ FBPlugGUI::
 ~FBPlugGUI()
 {
   for (auto& tle : _topLevelEditors)
-  {
-    tle.second.detail.dialog->setVisible(false);
-    delete tle.second.detail.dialog;
-    tle.second.detail.dialog = nullptr;
-  }
+    if (tle.second.detail.dialog != nullptr)
+    {
+      tle.second.detail.dialog->setVisible(false);
+      delete tle.second.detail.dialog;
+      tle.second.detail.dialog = nullptr;
+    }
 }
 
 FBPlugGUI::
