@@ -408,25 +408,26 @@ FBPlugGUI::OpenTopLevelEditor(int id, FBTopLevelEditorParams const& params)
   options.escapeKeyTriggersCloseButton = true;
   options.dialogBackgroundColour = Colours::black;
   
-  auto upperGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 1, 0 });
+  auto upperGrid = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 1 });
   upperGrid->Add(0, 0, params.header);
-  upperGrid->MarkSection({ { 0, 0, }, { 1, 1 } });
   auto lastTweakedGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0 });
   lastTweakedGrid->Add(0, 0, StoreComponent<FBLastTweakedLabel>(this));
   lastTweakedGrid->Add(0, 1, StoreComponent<FBLastTweakedTextBox>(this, 80));
+  lastTweakedGrid->MarkSection({ { 0, 0 }, { 1, 2 } });
   auto lastTweakedSubSection = StoreComponent<FBSubSectionComponent>(lastTweakedGrid);
   auto lastTweakedSection = StoreComponent<FBSectionComponent>(lastTweakedSubSection);
   upperGrid->Add(0, 1, lastTweakedSection);
-  upperGrid->MarkSection({ { 0, 1, }, { 1, 1 } });
+  auto initGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 1, 0 });
   auto initButton = StoreComponent<FBAutoSizeButton>("Init");
   initButton->onClick = params.init;
-  auto initSubSection = StoreComponent<FBSubSectionComponent>(initButton);
+  initGrid->Add(0, 0, StoreComponent<FBFillerComponent>(1, 1));
+  initGrid->Add(0, 1, initButton);
+  initGrid->MarkSection({ { 0, 0 }, { 1, 2 } });
+  auto initSubSection = StoreComponent<FBSubSectionComponent>(initGrid);
   auto initSection = StoreComponent<FBSectionComponent>(initSubSection);
-  upperGrid->Add(0, 2, StoreComponent<FBFillerComponent>(1, 1));
-  upperGrid->Add(0, 3, initSection);
-  upperGrid->MarkSection({ { 0, 2, }, { 1, 2 } });
+  upperGrid->Add(0, 2, initSection);
 
-  auto grid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 0, 1 }, std::vector<int> { 1 });
+  auto grid = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { 0, 1 }, std::vector<int> { 1 });
   grid->Add(0, 0, upperGrid);
   auto contentSubSection = StoreComponent<FBSubSectionComponent>(params.content);
   auto contentSection = StoreComponent<FBSectionComponent>(contentSubSection);

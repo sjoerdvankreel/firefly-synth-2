@@ -94,6 +94,7 @@ MakeGlobalUniEditorHeader(
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, voiceCount, std::to_string(FFGlobalUniMaxCount)));
+  grid->MarkSection({ { 0, 0, }, { 1, 3 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(subSection);
 }
