@@ -429,7 +429,6 @@ FBPlugGUI::OpenTopLevelEditor(int id)
     auto icon = ImageCache::getFromFile(File(iconPath));
     params.detail.dialog = new FBTopLevelEditor(this, id, options);
     params.detail.dialog->setOpaque(true);
-    params.detail.dialog->addToDesktop();
     params.detail.dialog->setUsingNativeTitleBar(true);
     params.detail.dialog->setResizable(false, false);
     params.detail.dialog->setIcon(icon);
@@ -437,7 +436,7 @@ FBPlugGUI::OpenTopLevelEditor(int id)
   }
 
   params.detail.dialog->setVisible(true);
-  params.detail.dialog->grabKeyboardFocus();
+  params.detail.dialog->enterModalState(true);
 }
 
 void
