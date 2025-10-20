@@ -7,6 +7,7 @@ TODOLIST for alpha-19
 [x] make the popouts moveable top level windows + 
 [x] last tweak into all windows?
 [ ] drop "g.uni", just call it unison
+[ ] rename ofst  to phase
 [ ] drop the overlay infra
 [ ] test the heck out of the toplevel windows on all hosts and platforms, vst3 and clap
 [ ] also the matrix
