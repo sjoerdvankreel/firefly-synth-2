@@ -429,6 +429,8 @@ FBPlugGUI::OpenTopLevelEditor(int id)
     auto icon = ImageCache::getFromFile(File(iconPath));
     params.detail.dialog = new FBTopLevelEditor(this, id, options);
     params.detail.dialog->setOpaque(true);
+    // needed for mac, hate it, no way around it
+    params.detail.dialog->setAlwaysOnTop(true); 
     params.detail.dialog->setUsingNativeTitleBar(true);
     params.detail.dialog->setResizable(false, false);
     params.detail.dialog->setIcon(icon);

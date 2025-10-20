@@ -6,6 +6,7 @@ TODOLIST for alpha-19
 [x] headers on the popout windows
 [x] make the popouts moveable top level windows + 
 [x] last tweak into all windows?
+[ ] make it a switch for top-level window y/n
 [ ] drop "g.uni", just call it unison
 [ ] rename ofst  to phase
 [ ] drop the overlay infra
