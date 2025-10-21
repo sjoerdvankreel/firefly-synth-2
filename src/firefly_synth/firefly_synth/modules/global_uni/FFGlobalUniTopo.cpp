@@ -139,8 +139,7 @@ FFMakeGlobalUniTopo()
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
-  result->name = "Global Uni";
-  result->matrixName = "G.Uni";
+  result->name = "Unison";
   result->slotCount = 1;
   result->graphCount = 1;
   result->graphParticipatesInMain = false;
