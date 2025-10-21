@@ -47,21 +47,47 @@ FFModMatrixParamListener::AudioParamChanged(
   auto& ffGUI = dynamic_cast<FFPlugGUI&>(*_plugGUI);
   auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
   auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*_plugGUI->HostContext()->Topo()->static_.get());
-  if (indices.module.index == (int)FFModuleType::VMatrix)
+  if (indices.module.index != (int)FFModuleType::VMatrix && indices.module.index != (int)FFModuleType::GMatrix)
+    return;
+  
+  bool global = indices.module.index == (int)FFModuleType::GMatrix;
+  auto const& sources = global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
+  auto const& targets = global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
+
+  if (indices.param.index == (int)FFModMatrixParam::Source ||
+    indices.param.index == (int)FFModMatrixParam::SourceInv ||
+    indices.param.index == (int)FFModMatrixParam::SourceLow ||
+    indices.param.index == (int)FFModMatrixParam::SourceHigh)
   {
-    // TODO the rest
-    if (indices.param.index == (int)FFModMatrixParam::Source ||
-      indices.param.index == (int)FFModMatrixParam::SourceInv ||
-      indices.param.index == (int)FFModMatrixParam::SourceLow ||
-      indices.param.index == (int)FFModMatrixParam::SourceHigh)
-    {
-      auto sourceIndices = indices;
-      sourceIndices.param.index = (int)FFModMatrixParam::Source;
-      int sourceVal = _plugGUI->HostContext()->GetAudioParamList<int>(sourceIndices);
-      auto const& moduleIndices = ffTopo.vMatrixSources[sourceVal].indices.module;
-      if (moduleIndices.index != -1)
-        ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
-    }
+    auto sourceIndices = indices;
+    sourceIndices.param.index = (int)FFModMatrixParam::Source;
+    int sourceVal = _plugGUI->HostContext()->GetAudioParamList<int>(sourceIndices);
+    auto const& moduleIndices = sources[sourceVal].indices.module;
+    if (moduleIndices.index != -1)
+      ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
+  }  
+
+  if (indices.param.index == (int)FFModMatrixParam::Scale ||
+    indices.param.index == (int)FFModMatrixParam::ScaleMin ||
+    indices.param.index == (int)FFModMatrixParam::ScaleMax)
+  {
+    auto scaleIndices = indices;
+    scaleIndices.param.index = (int)FFModMatrixParam::Scale;
+    int scaleVal = _plugGUI->HostContext()->GetAudioParamList<int>(scaleIndices);
+    auto const& moduleIndices = sources[scaleVal].indices.module;
+    if (moduleIndices.index != -1)
+      ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
+  }
+
+  if (indices.param.index == (int)FFModMatrixParam::Target ||
+    indices.param.index == (int)FFModMatrixParam::TargetAmt)
+  {
+    auto targetIndices = indices;
+    targetIndices.param.index = (int)FFModMatrixParam::Target;
+    int targetVal = _plugGUI->HostContext()->GetAudioParamList<int>(targetIndices);
+    auto const& moduleIndices = targets[targetVal].module;
+    if (moduleIndices.index != -1)
+      ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
   }
 }
 
