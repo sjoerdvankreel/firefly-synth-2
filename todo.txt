@@ -1,24 +1,13 @@
 TODOLIST for alpha-19
 [x] inv on the matrix source
 [x] invert scale-none no workie => cannot do, need bipolar amount
-[x] icon into the taskbar
-[x] the tooltips not work in separate dialog (need tooltipclient)
-[x] headers on the popout windows
-[x] make the popouts moveable top level windows + 
-[x] last tweak into all windows?
+[x] more bars to the audio meters
+[ ] do graph/knob gui separate again
 [ ] recheck the guni and modmatrix param listeners -> only on non-automatable
 [ ] drop toplevel infra
 [ ] move overlay infra to base
-[ ] make it a switch for top-level window y/n
-[ ] rename overlay/toplevel to secondary
 [ ] drop "g.uni", just call it unison
 [ ] rename ofst  to phase
-[ ] drop the overlay infra
-[ ] test the heck out of the toplevel windows on all hosts and platforms, vst3 and clap
-[ ] also the matrix
-[ ] more bars to the audio meters
-[ ] make matrix bigger
-[ ] drop visuals-if-focus
 [ ] osci phase not paint exchange state
 [ ] not store fake params (mode::fake)
 [ ] do the not-in-patch thing
@@ -27,9 +16,7 @@ TODOLIST for alpha-19
 [ ] import/export module
 [ ] copy/paste module and patch across sessions
 [ ] split large matrix dropdowns
-[ ] check all linear horizontal + do sensitivity for linear horizontal
 [ ] highlight not default
-[ ] how the heck is the mod menu ordered?
 [ ] do display disabled/impossible items different in the mod matrix
 [ ] bright text when graph on
 [ ] get the text out of the graphs
@@ -57,8 +44,6 @@ TODOLIST for alpha-21
 
 TODOLIST for alpha-22
 [ ] theme the gui
-[??] save modulation as actual value not normalized + display that way too
-[??] show modulation amount in terms of the mod target unit for matrix and easy access
 
 decrease the build times -- recheck all the includes, forward decls, try juce into staticlib once more
 write the manual + note about disable everything unused for performance including unused matrix slots
