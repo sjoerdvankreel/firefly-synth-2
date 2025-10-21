@@ -17,21 +17,22 @@
 class FBHostGUIContext;
 class FBGraphRenderState;
 class FBModuleGraphComponent;
+class FBAutoSizeTabComponent;
 
 enum { FFTopLevelEditorGlobalUni };
 
 class FFPlugGUI final:
 public FBPlugGUI
 {
+  std::unique_ptr<FBGraphRenderState> _graphRenderState;
+
+  FBGridComponent* _main = {};
   juce::Component* _matrix = {};
-  FBGridComponent* _modules = {};
   FBGridComponent* _container = {};
   FBGridComponent* _topModules = {};
+  FBAutoSizeTabComponent* _tabs = {};
   FBGridComponent* _headerAndGraph = {};
-  FBGridComponent* _outputGUIAndPatch = {};
-
-  // TODO drop it after matrix to toplevel
-  FBContentComponent* _content = {};
+  FBGridComponent* _outputTweakAndPatch = {};
 
   juce::Label* _overlayCaption = {};
   std::function<void()> _overlayInit = {};
@@ -41,11 +42,7 @@ public FBPlugGUI
 
   FBModuleGraphComponent* _mainGraph = {};
   std::vector<FBModuleGraphComponent*> _fixedGraphs = {};
-
-  // TODO drop it?
   std::unique_ptr<FFGlobalUniParamListener> _globalUniParamListener = {};
-
-  std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   void SetupGUI();
   FBGUIRenderType GetRenderType() const;
@@ -60,7 +57,6 @@ public:
   FFPlugGUI(FBHostGUIContext* hostContext);
 
   void FlushAudio();
-  void ToggleMatrix(bool on);
   void RequestFixedGraphsRerender(int moduleIndex);
   void SwitchMainGraphToModule(int index, int slot);
   

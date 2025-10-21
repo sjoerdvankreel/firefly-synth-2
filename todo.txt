@@ -6,6 +6,8 @@ TODOLIST for alpha-19
 [x] headers on the popout windows
 [x] make the popouts moveable top level windows + 
 [x] last tweak into all windows?
+[ ] drop toplevel infra
+[ ] move overlay infra to base
 [ ] make it a switch for top-level window y/n
 [ ] rename overlay/toplevel to secondary
 [ ] drop "g.uni", just call it unison
@@ -57,7 +59,7 @@ TODOLIST for alpha-22
 [??] save modulation as actual value not normalized + display that way too
 [??] show modulation amount in terms of the mod target unit for matrix and easy access
 
-decrease the build times
+decrease the build times -- recheck all the includes, forward decls, try juce into staticlib once more
 write the manual + note about disable everything unused for performance including unused matrix slots
 routing / order diagram
 figure out bitwig dataexchange on Linux

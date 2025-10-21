@@ -5,4 +5,4 @@
 class FBPlugGUI;
 
 juce::Component*
-FFMakeGUISettingsGUI(FBPlugGUI* plugGUI);
+FFMakeTweakGUI(FBPlugGUI* plugGUI);
