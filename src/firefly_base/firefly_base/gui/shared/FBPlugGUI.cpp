@@ -11,6 +11,7 @@
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
+#include <firefly_base/gui/components/FBContentComponent.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
@@ -29,6 +30,7 @@ _hostContext(hostContext)
   _tooltipWindow = StoreComponent<TooltipWindow>();
   addAndMakeVisible(_tooltipWindow);
   addMouseListener(this, true);
+  SetupOverlayGUI();
 }
 
 void
@@ -374,4 +376,62 @@ FBPlugGUI::LoadPatchFromFile()
         "Error",
         "Failed to load patch. See log for details: " + FBGetLogPath(HostContext()->Topo()->static_->meta).string() + ".");
   });
+}
+
+void
+FBPlugGUI::SetupOverlayGUI()
+{
+  auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 0, 0 } });
+  _overlayCaption = StoreComponent<Label>();
+  overlayGrid->Add(0, 0, _overlayCaption);
+
+  auto overlayInit = StoreComponent<FBAutoSizeButton>("Init");
+  overlayInit->onClick = [this] { _overlayInit(); };
+  auto overlayInitSection = StoreComponent<FBSectionComponent>(overlayInit);
+  overlayGrid->Add(0, 1, overlayInitSection);
+
+  auto overlayClose = StoreComponent<FBAutoSizeButton>("Close");
+  overlayClose->onClick = [this] { HideOverlayComponent(); };
+  auto overlayCloseSection = StoreComponent<FBSectionComponent>(overlayClose);
+  overlayGrid->Add(0, 2, overlayCloseSection);
+
+  overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } });
+  _overlayContent = StoreComponent<FBContentComponent>();
+  overlayGrid->Add(1, 0, 1, 3, _overlayContent);
+  _overlayContainer = StoreComponent<FBSubSectionComponent>(overlayGrid, true);
+}
+
+void
+FBPlugGUI::HideOverlayComponent()
+{
+  if (_overlayComponent == nullptr)
+    return;
+  _overlayInit = {};
+  _overlayComponent->setVisible(false);
+  _overlayContent->SetContent(nullptr);
+  _overlayContainer->setVisible(false);
+  _overlayCaption->setText("", dontSendNotification);
+  removeChildComponent(_overlayContainer);
+}
+
+void
+FBPlugGUI::ShowOverlayComponent(
+  std::string const& title,
+  Component* overlay,
+  int w, int h, bool vCenter,
+  std::function<void()> init)
+{
+  if (_overlayComponent != nullptr)
+    HideOverlayComponent();
+  int x = (getWidth() - w) / 2;
+  int y = (getHeight() - h) / 2;
+  if (!vCenter)
+    y = (int)((getHeight() - h) * 0.9);
+  _overlayInit = init;
+  _overlayContent->SetContent(overlay);
+  _overlayContainer->setBounds(x, y, w, h);
+  _overlayCaption->setText(title, dontSendNotification);
+  addAndMakeVisible(_overlayContainer, 1);
+  _overlayContainer->resized();
+  _overlayComponent = overlay;
 }

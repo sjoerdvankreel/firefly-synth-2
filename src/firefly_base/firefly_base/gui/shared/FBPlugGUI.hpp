@@ -13,6 +13,7 @@
 #include <unordered_set>
 
 class FBHostGUIContext;
+class FBContentComponent;
 
 class IFBParamListener
 {
@@ -25,6 +26,11 @@ class FBPlugGUI:
 public juce::Component
 {
   double _scale = 1.0;
+  juce::Label* _overlayCaption = {};
+  std::function<void()> _overlayInit = {};
+  juce::Component* _overlayComponent = {};
+  juce::Component* _overlayContainer = {};
+  FBContentComponent* _overlayContent = {};
   std::vector<IFBParamListener*> _paramListeners = {};
 
 public:
@@ -41,6 +47,13 @@ public:
   void InitPatch();
   void SavePatchToFile();
   void LoadPatchFromFile();
+
+  void HideOverlayComponent();
+  void ShowOverlayComponent(
+    std::string const& title,
+    juce::Component* overlay,
+    int w, int h, bool vCenter,
+    std::function<void()> init);
 
   void AddParamListener(IFBParamListener* listener);
   void RemoveParamListener(IFBParamListener* listener);
@@ -77,6 +90,7 @@ protected:
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
+  void SetupOverlayGUI();
   void GUIParamNormalizedChanged(int index);
   void AudioParamNormalizedChanged(int index);
 

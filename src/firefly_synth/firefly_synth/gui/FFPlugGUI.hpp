@@ -34,15 +34,8 @@ public FBPlugGUI
   FBGridComponent* _headerAndGraph = {};
   FBGridComponent* _outputTweakAndPatch = {};
 
-  juce::Label* _overlayCaption = {};
-  std::function<void()> _overlayInit = {};
-  juce::Component* _overlayComponent = {};
-  juce::Component* _overlayContainer = {};
-  FBContentComponent* _overlayContent = {};
-
   FBModuleGraphComponent* _mainGraph = {};
-  std::vector<FBModuleGraphComponent*> _fixedGraphs = {};
-  
+  std::vector<FBModuleGraphComponent*> _fixedGraphs = {};  
   std::unique_ptr<FFModMatrixParamListener> _modMatrixParamListener = {};
   std::unique_ptr<FFGlobalUniParamListener> _globalUniParamListener = {};
 
@@ -61,14 +54,6 @@ public:
   void FlushAudio();
   void RequestFixedGraphsRerender(int moduleIndex);
   void SwitchMainGraphToModule(int index, int slot);
-  
-  // TODO drop it
-  void HideOverlayComponent();
-  void ShowOverlayComponent(
-    std::string const& title, 
-    juce::Component* overlay, 
-    int w, int h, bool vCenter,
-    std::function<void()> init);
 
   FBGUIRenderType GetKnobRenderType() const override { return GetRenderType(); }
   FBGUIRenderType GetGraphRenderType() const override { return GetRenderType(); }

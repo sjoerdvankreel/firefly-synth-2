@@ -4,9 +4,10 @@ TODOLIST for alpha-19
 [x] more bars to the audio meters
 [x] drop toplevel infra
 [x] drop "g.uni", just call it unison
+[x] recheck the guni and modmatrix param listeners -> only on non-automatable
+[x] move overlay infra to base
+[ ] preset infra
 [ ] do graph/knob gui separate again
-[ ] recheck the guni and modmatrix param listeners -> only on non-automatable
-[ ] move overlay infra to base
 [ ] rename ofst  to phase
 [ ] osci phase not paint exchange state
 [ ] not store fake params (mode::fake)
@@ -40,7 +41,6 @@ TODOLIST for alpha-20 - tuning and keytracking
 TODOLIST for alpha-21
 [ ] switch the env stage controls for MSEG editor
 [ ] pop-up editor with the current stuff
-[ ] preset infra
 [ ] env stage length edit is annoying
 
 TODOLIST for alpha-22
