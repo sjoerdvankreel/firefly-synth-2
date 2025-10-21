@@ -6,6 +6,7 @@ TODOLIST for alpha-19
 [x] drop "g.uni", just call it unison
 [x] recheck the guni and modmatrix param listeners -> only on non-automatable
 [x] move overlay infra to base
+[ ] osc mix->out not fit, go to 1280?
 [ ] preset infra
 [ ] do graph/knob gui separate again
 [ ] rename ofst  to phase
