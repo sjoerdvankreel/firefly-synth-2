@@ -21,12 +21,8 @@ public:
   void AudioParamChanged(int index, double normalized, bool changedFromUI) override;
 };
 
-void 
-FFGlobalUniInit(FBPlugGUI* plugGUI);
-juce::Component* 
-FFMakeGlobalUniEditorHeader(FBPlugGUI* plugGUI);
 juce::Component*
-FFMakeGlobalUniEditorContent(
+FFMakeGlobalUniGUI(
   FBPlugGUI* plugGUI,
   FBGraphRenderState* graphRenderState,
   std::vector<FBModuleGraphComponent*>* fixedGraphs);

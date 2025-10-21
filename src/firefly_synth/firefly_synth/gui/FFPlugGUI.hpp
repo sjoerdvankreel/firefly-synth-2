@@ -19,8 +19,6 @@ class FBGraphRenderState;
 class FBModuleGraphComponent;
 class FBAutoSizeTabComponent;
 
-enum { FFTopLevelEditorGlobalUni };
-
 class FFPlugGUI final:
 public FBPlugGUI
 {
@@ -28,6 +26,7 @@ public FBPlugGUI
 
   FBGridComponent* _main = {};
   juce::Component* _matrix = {};
+  juce::Component* _globalUni = {};
   FBGridComponent* _container = {};
   FBGridComponent* _topModules = {};
   FBAutoSizeTabComponent* _tabs = {};

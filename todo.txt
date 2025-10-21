@@ -6,6 +6,7 @@ TODOLIST for alpha-19
 [x] headers on the popout windows
 [x] make the popouts moveable top level windows + 
 [x] last tweak into all windows?
+[ ] recheck the guni and modmatrix param listeners -> only on non-automatable
 [ ] drop toplevel infra
 [ ] move overlay infra to base
 [ ] make it a switch for top-level window y/n

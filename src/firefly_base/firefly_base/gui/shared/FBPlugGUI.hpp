@@ -2,7 +2,6 @@
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBParamComponent.hpp>
-#include <firefly_base/gui/shared/FBTopLevelEditor.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
@@ -14,7 +13,6 @@
 #include <unordered_set>
 
 class FBHostGUIContext;
-struct FBTopLevelEditorParams;
 
 class IFBParamListener
 {
@@ -26,11 +24,8 @@ public:
 class FBPlugGUI:
 public juce::Component
 {
-  friend class FBTopLevelEditor;
-
   double _scale = 1.0;
   std::vector<IFBParamListener*> _paramListeners = {};
-  std::map<int, FBTopLevelEditorParams> _topLevelEditors = {};
 
 public:
   virtual ~FBPlugGUI();
@@ -56,9 +51,7 @@ public:
 
   void UpdateExchangeState();
   void SetScale(double scale);
-  void OpenTopLevelEditor(int id);
   void ShowHostMenuForAudioParam(int index);
-  void RegisterTopLevelEditor(int id, FBTopLevelEditorParams const& params);
 
   void mouseUp(const juce::MouseEvent& event) override;
 
@@ -84,7 +77,6 @@ protected:
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
-  void CloseTopLevelEditor(int id);
   void GUIParamNormalizedChanged(int index);
   void AudioParamNormalizedChanged(int index);
 

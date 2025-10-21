@@ -1,6 +1,5 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
-#include <firefly_base/gui/shared/FBTopLevelEditor.hpp>
 #include <firefly_base/gui/shared/FBParamComponent.hpp>
 #include <firefly_base/gui/shared/FBParamsDependent.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
@@ -21,16 +20,7 @@
 using namespace juce;
 
 FBPlugGUI::
-~FBPlugGUI()
-{
-  for (auto& tle : _topLevelEditors)
-    if (tle.second.detail.dialog != nullptr)
-    {
-      tle.second.detail.dialog->setVisible(false);
-      delete tle.second.detail.dialog;
-      tle.second.detail.dialog = nullptr;
-    }
-}
+~FBPlugGUI() {}
 
 FBPlugGUI::
 FBPlugGUI(FBHostGUIContext* hostContext) :
@@ -384,100 +374,4 @@ FBPlugGUI::LoadPatchFromFile()
         "Error",
         "Failed to load patch. See log for details: " + FBGetLogPath(HostContext()->Topo()->static_->meta).string() + ".");
   });
-}
-
-void
-FBPlugGUI::CloseTopLevelEditor(int id)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto iter = _topLevelEditors.find(id);
-  FB_ASSERT(iter != _topLevelEditors.end());
-  auto& params = _topLevelEditors.at(id);
-  if (params.detail.dialog != nullptr)
-  {
-    params.detail.dialog->setVisible(false);
-    delete params.detail.dialog;
-    params.detail.dialog = nullptr;
-  }
-}
-
-void
-FBPlugGUI::OpenTopLevelEditor(int id)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto iter = _topLevelEditors.find(id);
-  FB_ASSERT(iter != _topLevelEditors.end());
-  auto& params = _topLevelEditors.at(id);
-
-  params.detail.contentGrid->setTransform(AffineTransform::scale(static_cast<float>(_scale)));
-  params.detail.contentGrid->setBounds(0, 0, params.w, params.h);
-  params.detail.contentGrid->resized();
-  params.detail.contentComponent->setBounds(0, 0, (int)std::round(params.w * _scale), (int)std::round(params.h * _scale));
-
-  if (params.detail.dialog == nullptr)
-  {
-    juce::DialogWindow::LaunchOptions options;
-    options.resizable = false;
-    options.useNativeTitleBar = true;
-    options.componentToCentreAround = this;
-    options.escapeKeyTriggersCloseButton = true;
-    options.dialogBackgroundColour = Colours::black;
-    options.content = OptionalScopedPointer<Component>(params.detail.contentComponent, false);
-    options.dialogTitle = HostContext()->Topo()->static_->meta.shortName + " " + params.title;
-
-    auto iconPath = (FBGUIGetResourcesFolderPath() / params.iconFile).string();
-    auto icon = ImageCache::getFromFile(File(iconPath));
-    params.detail.dialog = new FBTopLevelEditor(this, id, options);
-    params.detail.dialog->setOpaque(true);
-    // needed for mac, hate it, no way around it
-    params.detail.dialog->setAlwaysOnTop(true); 
-    params.detail.dialog->setUsingNativeTitleBar(true);
-    params.detail.dialog->setResizable(false, false);
-    params.detail.dialog->setIcon(icon);
-    params.detail.dialog->getPeer()->setIcon(icon);
-  }
-
-  params.detail.dialog->setVisible(true);
-  params.detail.dialog->enterModalState(true);
-}
-
-void
-FBPlugGUI::RegisterTopLevelEditor(int id, FBTopLevelEditorParams const& params0)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto iter = _topLevelEditors.find(id);
-  FB_ASSERT(iter == _topLevelEditors.end());
-  _topLevelEditors[id] = params0;
-  auto& params = _topLevelEditors.at(id);
-
-  auto upperGrid = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 1 });
-  upperGrid->Add(0, 0, params.header);
-  auto lastTweakedGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0 });
-  lastTweakedGrid->Add(0, 0, StoreComponent<FBLastTweakedLabel>(this));
-  lastTweakedGrid->Add(0, 1, StoreComponent<FBLastTweakedTextBox>(this, 80));
-  lastTweakedGrid->MarkSection({ { 0, 0 }, { 1, 2 } });
-  auto lastTweakedSubSection = StoreComponent<FBSubSectionComponent>(lastTweakedGrid);
-  auto lastTweakedSection = StoreComponent<FBSectionComponent>(lastTweakedSubSection);
-  upperGrid->Add(0, 1, lastTweakedSection);
-  auto initGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 1, 0 });
-  auto initButton = StoreComponent<FBAutoSizeButton>("Init");
-  initButton->onClick = params.init;
-  initGrid->Add(0, 0, StoreComponent<FBFillerComponent>(1, 1));
-  initGrid->Add(0, 1, initButton);
-  initGrid->MarkSection({ { 0, 0 }, { 1, 2 } });
-  auto initSubSection = StoreComponent<FBSubSectionComponent>(initGrid);
-  auto initSection = StoreComponent<FBSectionComponent>(initSubSection);
-  upperGrid->Add(0, 2, initSection);
-
-  auto grid = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { 0, 1 }, std::vector<int> { 1 });
-  grid->Add(0, 0, upperGrid);
-  auto contentSubSection = StoreComponent<FBSubSectionComponent>(params.content);
-  auto contentSection = StoreComponent<FBSectionComponent>(contentSubSection);
-  grid->Add(1, 0, contentSection);
-  grid->addAndMakeVisible(StoreComponent<TooltipWindow>());
-  params.detail.contentGrid = grid;
-
-  auto* content = StoreComponent<Component>();
-  params.detail.contentComponent = content;
-  content->addAndMakeVisible(params.detail.contentGrid);
 }
