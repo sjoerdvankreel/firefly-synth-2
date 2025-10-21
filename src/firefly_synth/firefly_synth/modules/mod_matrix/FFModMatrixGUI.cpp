@@ -25,6 +25,44 @@ using namespace juce;
 // +5 for "V"/"G"/+/-/up/down
 static int const MatrixControlCount = 15;
 
+FFModMatrixParamListener::
+~FFModMatrixParamListener()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FFModMatrixParamListener::
+FFModMatrixParamListener(FBPlugGUI* plugGUI):
+_plugGUI(plugGUI)
+{
+  _plugGUI->AddParamListener(this);
+}
+
+void 
+FFModMatrixParamListener::AudioParamChanged(
+  int index, double normalized, bool changedFromUI)
+{
+  if (!changedFromUI)
+    return;
+  auto& ffGUI = dynamic_cast<FFPlugGUI&>(*_plugGUI);
+  auto const& audioParams = _plugGUI->HostContext()->Topo()->audio.params;
+  auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
+  auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*_plugGUI->HostContext()->Topo()->static_.get());
+  if (indices.module.index == (int)FFModuleType::VMatrix)
+  {
+    if (indices.param.index == (int)FFModMatrixParam::Source ||
+      indices.param.index == (int)FFModMatrixParam::SourceInv ||
+      indices.param.index == (int)FFModMatrixParam::SourceLow ||
+      indices.param.index == (int)FFModMatrixParam::SourceHigh)
+    {
+      int sourceVal = audioParams[(int)FFModMatrixParam::Source].static_.List().NormalizedToPlainFast((float)normalized);
+      auto const& moduleIndices = ffTopo.vMatrixSources[sourceVal].indices.module;
+      if (moduleIndices.index != -1)
+        ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
+    }
+  }
+}
+
 static Component*
 MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
 {

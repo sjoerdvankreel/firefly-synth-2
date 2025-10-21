@@ -199,10 +199,11 @@ FFPlugGUI::SetupGUI()
   _topModules->Add(0, 0, FFMakeVoiceModuleGUI(this));
   _topModules->Add(0, 1, FFMakeMasterGUI(this));
   _topModules->Add(0, 2, FFMakeSettingsGUI(this));
-  _globalUniParamListener = std::make_unique<FFGlobalUniParamListener>(this);
 
   _matrix = FFMakeModMatrixGUI(this);
+  _modMatrixParamListener = std::make_unique<FFModMatrixParamListener>(this);
   _globalUni = FFMakeGlobalUniGUI(this, _graphRenderState.get(), &_fixedGraphs);
+  _globalUniParamListener = std::make_unique<FFGlobalUniParamListener>(this);
   _main = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 1 } });
   _main->Add(0, 0, _topModules);
   _main->Add(1, 0, FFMakeMixGUI(this));
