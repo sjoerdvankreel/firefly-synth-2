@@ -304,7 +304,7 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI)
   for (int r = FFModMatrixGlobalMaxSlotCount; r < rowCount - 1; r++)
     AddMatrixSlotRow(plugGUI, grid, false, 2 + r, MatrixControlCount, r + rowCount - FFModMatrixGlobalMaxSlotCount);
 
-  for(int r = 0; r < rowCount; r++)
+  for(int r = 0; r < rowCount + 1; r++)
     for (int c = 0; c < 2; c++)
     {
       grid->MarkSection({ { r, c * MatrixControlCount + 0 }, { 1, 5 } });
