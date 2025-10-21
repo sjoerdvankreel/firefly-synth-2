@@ -82,20 +82,31 @@ GlobalUniInit(FBPlugGUI* plugGUI)
 }
 
 static Component*
-MakeGlobalUniHeader(
+MakeGlobalUniVoices(
   FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0 });
   auto voiceCount = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, voiceCount, std::to_string(FFGlobalUniMaxCount)));
+  grid->MarkSection({ { 0, 0, }, { 1, 3 } });
+  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+}
+
+static Component*
+MakeGlobalUniInit(
+  FBPlugGUI* plugGUI)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 1, 0 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBFillerComponent>(1, 1));
   auto initButton = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
-  grid->Add(0, 3, initButton);
+  grid->Add(0, 1, initButton);
   initButton->onClick = [plugGUI]() { GlobalUniInit(plugGUI); };
-  grid->MarkSection({ { 0, 0, }, { 1, 4 } });
+  grid->MarkSection({ { 0, 0, }, { 1, 2 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
@@ -205,8 +216,9 @@ FFMakeGlobalUniGUI(
   std::vector<FBModuleGraphComponent*>* fixedGraphs)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1 } });
-  grid->Add(0, 0, MakeGlobalUniHeader(plugGUI));
-  grid->Add(1, 0, MakeGlobalUniContent(plugGUI, graphRenderState, fixedGraphs));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 0, 1 } });
+  grid->Add(0, 0, MakeGlobalUniVoices(plugGUI));
+  grid->Add(0, 1, MakeGlobalUniInit(plugGUI));
+  grid->Add(1, 0, 1, 2, MakeGlobalUniContent(plugGUI, graphRenderState, fixedGraphs));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }

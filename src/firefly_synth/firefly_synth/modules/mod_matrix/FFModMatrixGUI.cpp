@@ -97,13 +97,13 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
     hostContext->PerformImmediateAudioParamEdit(slotsParam->runtimeParamIndex, slotsNorm);
   };
 
-  auto reset = plugGUI->StoreComponent<FBAutoSizeButton>("Reset");
-  grid->Add(0, 6, reset);
-  reset->onClick = [plugGUI, global]() {
+  auto initButton = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
+  grid->Add(0, 6, initButton);
+  initButton->onClick = [plugGUI, global]() {
     int moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
     FBTopoIndices moduleIndices = { moduleType, 0 };
     std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
-    plugGUI->HostContext()->UndoState().Snapshot("Reset " + name);
+    plugGUI->HostContext()->UndoState().Snapshot("Init " + name);
     plugGUI->HostContext()->ClearModuleAudioParams(moduleIndices);
   };
 
