@@ -212,7 +212,8 @@ FFPlugGUI::SetupGUI()
   _main->Add(6, 0, FFMakeEnvGUI(this));
 
   _tabs = StoreComponent<FBAutoSizeTabComponent>();
-  _tabs->addTab("Main", Colours::black, _matrix, false);
+  _tabs->addTab("Main", Colours::black, _main, false);
+  _tabs->addTab("Matrix", Colours::black, _matrix, false);
 
   _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 6, 9, 92 } }, std::vector<int> { { 1 } });
   _container->Add(0, 0, _outputTweakAndPatch);

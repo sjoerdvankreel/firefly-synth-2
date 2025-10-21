@@ -140,16 +140,13 @@ int
 FBLookAndFeel::getTabButtonBestWidth(
   juce::TabBarButton& button, int /*tabDepth*/)
 {
-  bool large = false;
-  bool hasSeparatorText = false;
   if (button.getTabbedButtonBar().getNumTabs() == 1)
     return button.getTabbedButtonBar().getWidth();
   FBModuleTabBarButton* fbButton = dynamic_cast<FBModuleTabBarButton*>(&button);
-  if (fbButton != nullptr)
-  {
-    large = fbButton->large;
-    hasSeparatorText = !fbButton->GetSeparatorText().empty();
-  }
+  if (fbButton == nullptr)
+    return TabSizeLarge * 2;
+  bool large = fbButton->large;
+  bool hasSeparatorText = !fbButton->GetSeparatorText().empty();
   int result = large ? TabSizeLarge : TabSizeSmall;
   if (hasSeparatorText)
     result += TabSizeLarge;
