@@ -2,11 +2,11 @@ TODOLIST for alpha-19
 [x] inv on the matrix source
 [x] invert scale-none no workie => cannot do, need bipolar amount
 [x] more bars to the audio meters
+[x] drop toplevel infra
+[x] drop "g.uni", just call it unison
 [ ] do graph/knob gui separate again
 [ ] recheck the guni and modmatrix param listeners -> only on non-automatable
-[ ] drop toplevel infra
 [ ] move overlay infra to base
-[ ] drop "g.uni", just call it unison
 [ ] rename ofst  to phase
 [ ] osci phase not paint exchange state
 [ ] not store fake params (mode::fake)
