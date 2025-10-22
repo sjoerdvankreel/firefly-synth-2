@@ -179,7 +179,7 @@ FFMakeEffectTopo(bool global)
   stVarMode.mode = FBParamMode::Block;
   stVarMode.defaultText = "LPF";
   stVarMode.name = "StVar Mode";
-  stVarMode.display = "Mod";
+  stVarMode.display = "Mode";
   stVarMode.slotCount = FFEffectBlockCount;
   stVarMode.slotFormatter = FFFormatBlockSlot;
   stVarMode.id = prefix + "{275B2C8D-6D21-4741-AB69-D21FA95CD7F5}";
@@ -209,7 +209,7 @@ FFMakeEffectTopo(bool global)
   stVarKeyTrk.mode = FBParamMode::Accurate;
   stVarKeyTrk.defaultText = "0";
   stVarKeyTrk.name = "StVar KTrk";
-  stVarKeyTrk.display = "KTr";
+  stVarKeyTrk.display = "KTrk";
   stVarKeyTrk.slotCount = FFEffectBlockCount;
   stVarKeyTrk.slotFormatter = FFFormatBlockSlot;
   stVarKeyTrk.unit = "%";
@@ -276,7 +276,7 @@ FFMakeEffectTopo(bool global)
   stVarGain.mode = FBParamMode::Accurate;
   stVarGain.defaultText = "0";
   stVarGain.name = "StVar Gain";
-  stVarGain.display = "Gn";
+  stVarGain.display = "Gain";
   stVarGain.slotCount = FFEffectBlockCount;
   stVarGain.slotFormatter = FFFormatBlockSlot;
   stVarGain.unit = "dB";
@@ -299,7 +299,7 @@ FFMakeEffectTopo(bool global)
   combKeyTrk.mode = FBParamMode::Accurate;
   combKeyTrk.defaultText = "0";
   combKeyTrk.name = "Comb KTrk";
-  combKeyTrk.display = "KTr";
+  combKeyTrk.display = "KTrk";
   combKeyTrk.slotCount = FFEffectBlockCount;
   combKeyTrk.slotFormatter = FFFormatBlockSlot;
   combKeyTrk.unit = "%";
@@ -415,7 +415,7 @@ FFMakeEffectTopo(bool global)
   clipMode.mode = FBParamMode::Block;
   clipMode.defaultText = "TanH";
   clipMode.name = "Clip Mode";
-  clipMode.display = "Mod";
+  clipMode.display = "Mode";
   clipMode.slotCount = FFEffectBlockCount;
   clipMode.slotFormatter = FFFormatBlockSlot;
   clipMode.id = prefix + "{D1F80BB8-4076-4296-A678-94E8442C51A5}";
@@ -443,7 +443,7 @@ FFMakeEffectTopo(bool global)
   foldMode.mode = FBParamMode::Block;
   foldMode.defaultText = "Sin";
   foldMode.name = "Fold Mode";
-  foldMode.display = "Mod";
+  foldMode.display = "Mode";
   foldMode.slotCount = FFEffectBlockCount;
   foldMode.slotFormatter = FFFormatBlockSlot;
   foldMode.id = prefix + "{317BA4AC-8E9A-47B9-A289-294047E29C78}";
@@ -483,7 +483,7 @@ FFMakeEffectTopo(bool global)
   skewMode.mode = FBParamMode::Block;
   skewMode.defaultText = "UP";
   skewMode.name = "Skew Mode";
-  skewMode.display = "Mod";
+  skewMode.display = "Mode";
   skewMode.slotCount = FFEffectBlockCount;
   skewMode.slotFormatter = FFFormatBlockSlot;
   skewMode.id = prefix + "{DCA38D64-3791-4542-A6C7-FCA66DA45FEE}";
