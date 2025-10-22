@@ -6,14 +6,14 @@ TODOLIST for alpha-19
 [x] drop "g.uni", just call it unison
 [x] recheck the guni and modmatrix param listeners -> only on non-automatable
 [x] move overlay infra to base
-[ ] osc mix->out not fit, go to 1280?
-[ ] preset infra
-[ ] do graph/knob gui separate again
+[x] osc mix->out not fit, go to 1280?
 [ ] rename ofst  to phase
-[ ] osci phase not paint exchange state
-[ ] not store fake params (mode::fake)
+[ ] do graph/knob gui separate again
 [ ] do the not-in-patch thing
 [ ] extsmth/rcvn => settings module, not save in patch, this later also hosts tuning settings. also move all gui settings there
+[ ] not store fake params (mode::fake)
+[ ] preset infra
+[ ] osci phase not paint exchange state
 [ ] something with instance and patch naming
 [ ] import/export module
 [ ] copy/paste module and patch across sessions
