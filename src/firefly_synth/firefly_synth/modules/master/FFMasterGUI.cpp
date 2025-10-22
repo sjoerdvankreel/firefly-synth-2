@@ -32,12 +32,12 @@ MakeMasterSectionMain(FBPlugGUI* plugGUI)
   auto bendRange = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::PitchBendRange, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bendRange));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bendRange));
-  auto bendTarget = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::PitchBendTarget, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bendTarget));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bendTarget));
   auto mod = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::ModWheel, 0 } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mod));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mod, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mod));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mod, Slider::SliderStyle::RotaryVerticalDrag));
+  auto bendTarget = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::PitchBendTarget, 0 } });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bendTarget));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bendTarget));
   grid->MarkSection({ { 0, 0 }, { 2, 4 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }

@@ -62,7 +62,7 @@ FFMakeMasterTopo()
   auto& bendRange = result->params[(int)FFMasterParam::PitchBendRange];
   bendRange.mode = FBParamMode::Block;
   bendRange.name = "Bend Range";
-  bendRange.display = "Range";
+  bendRange.display = "PB Range";
   bendRange.slotCount = 1;
   bendRange.id = "{71DCB9FB-D46F-413C-9AD5-28F0DD5DA7A5}";
   bendRange.unit = "Semitones";
@@ -80,7 +80,7 @@ FFMakeMasterTopo()
   auto& bendTarget = result->params[(int)FFMasterParam::PitchBendTarget];
   bendTarget.mode = FBParamMode::Block;
   bendTarget.name = "Bend Target";
-  bendTarget.display = "Target";
+  bendTarget.display = "PB Target";
   bendTarget.slotCount = 1;
   bendTarget.id = "{CA922D71-6FDF-42F7-893D-2286EDAA91F1}";
   bendTarget.defaultText = "Voice";
