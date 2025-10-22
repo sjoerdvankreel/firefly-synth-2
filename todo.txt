@@ -9,6 +9,7 @@ TODOLIST for alpha-19
 [x] osc mix->out not fit, go to 1280?
 [x] rename ofst  to phase
 [x] do graph/knob gui separate again
+[ ] "knob visual" clips
 [ ] do the not-in-patch thing
 [ ] extsmth/rcvn => settings module, not save in patch, this later also hosts tuning settings. also move all gui settings there
 [ ] not store fake params (mode::fake)
