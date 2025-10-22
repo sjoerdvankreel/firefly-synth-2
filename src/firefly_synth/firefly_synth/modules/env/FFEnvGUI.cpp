@@ -63,7 +63,7 @@ MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
   grid->MarkSection({ { 0, 0 }, { 2, 1 } });
   for (int i = 0; i < FFEnvStageCount; i++)
   {
-    auto upper = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
+    auto upper = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
     grid->Add(0, 1 + i, upper);
     auto time = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
     upper->Add(0, 0, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, time, std::to_string(i + 1)));
