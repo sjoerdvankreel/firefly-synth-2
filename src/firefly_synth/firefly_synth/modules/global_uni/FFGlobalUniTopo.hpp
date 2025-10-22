@@ -10,7 +10,7 @@ struct FBStaticModule;
 inline int constexpr FFGlobalUniMaxCount = 8;
 inline int constexpr FFGlobalUniMaxSeed = 255;
 
-enum class FFGlobalUniMode { Off, AutoLinear, AutoSkew, Manual };
+enum class FFGlobalUniMode { Off, Manual, AutoLinear, AutoExp };
 
 enum class FFGlobalUniTarget {
   VoiceCoarse, VoiceFine, VMixAmp, VMixBal,
