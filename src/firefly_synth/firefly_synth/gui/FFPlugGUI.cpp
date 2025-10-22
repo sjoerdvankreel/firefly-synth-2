@@ -123,9 +123,10 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
 }
 
 FBGUIRenderType 
-FFPlugGUI::GetRenderType() const
+FFPlugGUI::GetRenderType(bool graphOrKnob) const
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::VisualsMode, 0 } };
+  FFSettingsGUIParam param = graphOrKnob ? FFSettingsGUIParam::GraphVisualsMode : FFSettingsGUIParam::KnobVisualsMode;
+  FBParamTopoIndices indices = { { (int)FFModuleType::Settings, 0 }, { (int)param, 0 } };
   auto const* paramTopo = HostContext()->Topo()->gui.ParamAtTopo(indices);
   float normalized = static_cast<float>(HostContext()->GetGUIParamNormalized(paramTopo->runtimeParamIndex));
   auto mode = static_cast<FFSettingsVisualsMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
@@ -150,7 +151,7 @@ FFPlugGUI::SetupGUI()
 {
   FB_LOG_ENTRY_EXIT();
 
-  _mainGraph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get(), -1, -1, [this]() { return GetGraphRenderType(); });
+  _mainGraph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
   _headerAndGraph = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
   _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
   _headerAndGraph->Add(0, 1, _mainGraph);

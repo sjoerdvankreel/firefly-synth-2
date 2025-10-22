@@ -180,7 +180,7 @@ MakeGlobalUniContent(
       auto opType = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, targetIndex } });
       grid->Add(guiRow, guiCol + 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
       int moduleRuntimeIndex = topo->moduleTopoToRuntime.at({ (int)FFModuleType::GlobalUni, 0 });
-      auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(graphRenderState, moduleRuntimeIndex, targetIndex, [plugGUI]() { return plugGUI->GetGraphRenderType(); });
+      auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(graphRenderState, moduleRuntimeIndex, targetIndex, [plugGUI]() { return plugGUI->GetRenderType(true); });
       grid->Add(guiRow, guiCol + 3, uniGraph);
       fixedGraphs->push_back(uniGraph);
       grid->MarkSection({ { guiRow, guiCol + 1 }, { 1, 3 } });

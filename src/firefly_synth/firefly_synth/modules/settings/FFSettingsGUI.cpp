@@ -25,11 +25,14 @@ MakeSettingsTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0 });
-  auto visualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::VisualsMode, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, visualsMode));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, visualsMode));
-  grid->MarkSection({ { 0, 0 }, { 2, 1 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0 });
+  auto knobVisualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::KnobVisualsMode, 0 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, knobVisualsMode));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, knobVisualsMode));
+  auto graphVisualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::GraphVisualsMode, 0 } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, graphVisualsMode));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, graphVisualsMode));
+  grid->MarkSection({ { 0, 0 }, { 2, 2 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(subSection);
 }

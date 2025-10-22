@@ -40,7 +40,7 @@ public FBPlugGUI
   std::unique_ptr<FFGlobalUniParamListener> _globalUniParamListener = {};
 
   void SetupGUI();
-  FBGUIRenderType GetRenderType() const;
+  FBGUIRenderType GetRenderType(bool graphOrKnob) const override;
 
 protected:
   void OnPatchChanged() override;
@@ -54,9 +54,6 @@ public:
   void FlushAudio();
   void RequestFixedGraphsRerender(int moduleIndex);
   void SwitchMainGraphToModule(int index, int slot);
-
-  FBGUIRenderType GetKnobRenderType() const override { return GetRenderType(); }
-  FBGUIRenderType GetGraphRenderType() const override { return GetRenderType(); }
 
   void resized() override;
   void ModuleSlotClicked(int index, int slot) override;

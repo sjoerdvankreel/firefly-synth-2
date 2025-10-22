@@ -27,18 +27,31 @@ FFMakeSettingsTopo()
   auto selectGuiUserScale = [](auto& module) { return &module.userScale; };
   guiUserScale.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
 
-  auto& guiVisualsMode = result->guiParams[(int)FFSettingsGUIParam::VisualsMode];
-  guiVisualsMode.defaultText = "If Focus";
-  guiVisualsMode.name = "Visuals";
-  guiVisualsMode.slotCount = 1;
-  guiVisualsMode.id = "{6C5F2DC2-C796-444C-8D43-077708580609}";
-  guiVisualsMode.type = FBParamType::List;
-  guiVisualsMode.List().items = {
+  auto& guiKnobVisualsMode = result->guiParams[(int)FFSettingsGUIParam::KnobVisualsMode];
+  guiKnobVisualsMode.defaultText = "If Focus";
+  guiKnobVisualsMode.name = "Knob Visuals";
+  guiKnobVisualsMode.slotCount = 1;
+  guiKnobVisualsMode.id = "{75702E18-0499-45ED-935E-A1BC1D0348C3}";
+  guiKnobVisualsMode.type = FBParamType::List;
+  guiKnobVisualsMode.List().items = {
+    { "{74535D7D-90EC-407D-A439-946A9C09351D}", "Basic" },
+    { "{C1A672E9-332D-4A33-8FAC-D8D60A892561}", "Always" },
+    { "{B2BA8788-B64E-4BF8-8584-DA13916ADC59}", "If Focus" } };
+  auto selectGuiKnobVisualsMode = [](auto& module) { return &module.knobVisualsMode; };
+  guiKnobVisualsMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiKnobVisualsMode);
+
+  auto& guiGraphVisualsMode = result->guiParams[(int)FFSettingsGUIParam::GraphVisualsMode];
+  guiGraphVisualsMode.defaultText = "If Focus";
+  guiGraphVisualsMode.name = "Plot Visuals";
+  guiGraphVisualsMode.slotCount = 1;
+  guiGraphVisualsMode.id = "{6C5F2DC2-C796-444C-8D43-077708580609}";
+  guiGraphVisualsMode.type = FBParamType::List;
+  guiGraphVisualsMode.List().items = {
     { "{D5C9FC77-0DE8-4077-9D07-073B44F5076F}", "Basic" },
     { "{8291740E-D7DC-4481-B430-9C73F3343E10}", "Always" },
     { "{A5369260-7E9F-4C23-8FED-0C42CAA9DD91}", "If Focus" } };
-  auto selectGuiVisualsMode = [](auto& module) { return &module.visualsMode; };
-  guiVisualsMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiVisualsMode);
+  auto selectGuiGraphVisualsMode = [](auto& module) { return &module.graphVisualsMode; };
+  guiGraphVisualsMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphVisualsMode);
 
   auto& guiOscSelectedTab = result->guiParams[(int)FFSettingsGUIParam::OscSelectedTab];
   guiOscSelectedTab.defaultText = "0";

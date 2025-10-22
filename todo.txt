@@ -8,7 +8,8 @@ TODOLIST for alpha-19
 [x] move overlay infra to base
 [x] osc mix->out not fit, go to 1280?
 [x] rename ofst  to phase
-[ ] do graph/knob gui separate again
+[x] do graph/knob gui separate again
+[ ] main /matr/guni selected store tab
 [ ] do the not-in-patch thing
 [ ] extsmth/rcvn => settings module, not save in patch, this later also hosts tuning settings. also move all gui settings there
 [ ] not store fake params (mode::fake)
