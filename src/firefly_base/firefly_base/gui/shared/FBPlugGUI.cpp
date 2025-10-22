@@ -347,7 +347,7 @@ FBPlugGUI::SavePatchToFile()
     if (file.getFullPathName().length() == 0) return;
     FBScalarStateContainer editState(*HostContext()->Topo());
     editState.CopyFrom(HostContext());
-    file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState));
+    file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState, true));
   });
 }
 
@@ -364,7 +364,7 @@ FBPlugGUI::LoadPatchFromFile()
     if (file.getFullPathName().length() == 0) return;
     auto text = file.loadFileAsString().toStdString();
     FBScalarStateContainer editState(*HostContext()->Topo());
-    if (HostContext()->Topo()->LoadEditStateFromString(text, editState))
+    if (HostContext()->Topo()->LoadEditStateFromString(text, editState, true))
     {
       HostContext()->UndoState().Snapshot("Load Patch");
       editState.CopyTo(HostContext());

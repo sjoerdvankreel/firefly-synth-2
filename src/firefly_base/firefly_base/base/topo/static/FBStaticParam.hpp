@@ -120,17 +120,20 @@ struct FBStaticGUIParam final :
 {
 public:
   bool IsOutput() const { return false; }
+  bool IsFakeParam() const { return false; }
+  bool StoreInPatch() const { return false; }
   FBScalarParamAddrSelector scalarAddr = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticGUIParam);
 };
 
 struct FBStaticParam final :
-  public FBStaticParamBase
+public FBStaticParamBase
 {
 public:
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 
   FBParamMode mode = {};
+  bool storeInPatch = true; // or session only
   FBScalarParamAddrSelector scalarAddr = {};
   FBVoiceExchangeParamAddrSelector voiceExchangeAddr = {};
   FBGlobalExchangeParamAddrSelector globalExchangeAddr = {};
@@ -139,7 +142,10 @@ public:
   FBVoiceBlockProcParamAddrSelector voiceBlockProcAddr = {};
   FBGlobalBlockProcParamAddrSelector globalBlockProcAddr = {};
 
+  bool StoreInPatch() const { return storeInPatch; }
   bool IsOutput() const { return mode == FBParamMode::Output; }
+  bool IsFakeParam() const { return mode == FBParamMode::Fake; }
+
   bool IsAcc() const { return IsVoiceAcc() || IsGlobalAcc(); }
   bool IsVoice() const { return IsVoiceAcc() || IsVoiceBlock(); }
   bool IsVoiceAcc() const { return voiceAccProcAddr != nullptr; }

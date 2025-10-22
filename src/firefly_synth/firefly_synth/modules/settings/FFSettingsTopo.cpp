@@ -18,6 +18,7 @@ FFMakeSettingsTopo(bool isFx)
   auto selectModule = [](auto& state) { return &state.global.settings; };
 
   auto& hostSmoothTime = result->params[(int)FFSettingsParam::HostSmoothTime];
+  hostSmoothTime.storeInPatch = false;
   hostSmoothTime.mode = FBParamMode::Block;
   hostSmoothTime.defaultText = "2";
   hostSmoothTime.name = "External MIDI/Automation Smoothing";
@@ -36,6 +37,7 @@ FFMakeSettingsTopo(bool isFx)
   hostSmoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectHostSmoothTime);
 
   auto& receiveNotes = result->params[(int)FFSettingsParam::ReceiveNotes];
+  receiveNotes.storeInPatch = false;
   receiveNotes.mode = FBParamMode::Block;
   receiveNotes.name = "Receive MIDI Notes";
   receiveNotes.display = "Receive Notes";
