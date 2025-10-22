@@ -7,7 +7,7 @@ TODOLIST for alpha-19
 [x] recheck the guni and modmatrix param listeners -> only on non-automatable
 [x] move overlay infra to base
 [x] osc mix->out not fit, go to 1280?
-[ ] rename ofst  to phase
+[x] rename ofst  to phase
 [ ] do graph/knob gui separate again
 [ ] do the not-in-patch thing
 [ ] extsmth/rcvn => settings module, not save in patch, this later also hosts tuning settings. also move all gui settings there

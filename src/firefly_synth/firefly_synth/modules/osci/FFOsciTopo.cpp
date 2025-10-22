@@ -214,8 +214,8 @@ FFMakeOsciTopo()
   auto& uniOffset = result->params[(int)FFOsciParam::UniOffset];
   uniOffset.mode = FBParamMode::VoiceStart;
   uniOffset.defaultText = "50";
-  uniOffset.display = "Ofst";
-  uniOffset.name = "Uni Offset";
+  uniOffset.display = "Phs";
+  uniOffset.name = "Uni Phase";
   uniOffset.slotCount = 1;
   uniOffset.unit = "%";
   uniOffset.id = "{6F5754E1-BDF4-4685-98FC-8C613128EE8D}";
@@ -230,7 +230,7 @@ FFMakeOsciTopo()
   uniRandom.mode = FBParamMode::VoiceStart;
   uniRandom.defaultText = "50";
   uniRandom.display = "Rand";
-  uniRandom.name = "Uni Random";
+  uniRandom.name = "Uni Phs Rnd";
   uniRandom.slotCount = 1;
   uniRandom.unit = "%";
   uniRandom.id = "{6F7F6D55-5740-44AB-8442-267A5730E2DA}";
