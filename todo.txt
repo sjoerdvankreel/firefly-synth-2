@@ -13,6 +13,8 @@ TODOLIST for alpha-19
 [x] extsmth/rcvn => settings module, not save in patch, this later also hosts tuning settings. also move all gui settings there
 [x] do the not-in-patch thing
 [x] not store fake params (mode::fake)
+[ ] bright text when graph on
+[ ] get the text out of the graphs
 [ ] re-save everything
 [ ] preset infra
 [ ] osci phase not paint exchange state
@@ -22,8 +24,6 @@ TODOLIST for alpha-19
 [ ] split large matrix dropdowns
 [ ] highlight not default
 [ ] do display disabled/impossible items different in the mod matrix
-[ ] bright text when graph on
-[ ] get the text out of the graphs
 [ ] show visual clue if knob is being modulated
 [ ] do tooltips on labels ("tap dly" => tap delay)
 [ ] guni voice not pick up guni voice-start automation right away (reaper)
