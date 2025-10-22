@@ -13,6 +13,7 @@ TODOLIST for alpha-19
 [x] extsmth/rcvn => settings module, not save in patch, this later also hosts tuning settings. also move all gui settings there
 [x] do the not-in-patch thing
 [x] not store fake params (mode::fake)
+[ ] re-save everything
 [ ] preset infra
 [ ] osci phase not paint exchange state
 [ ] something with instance and patch naming
