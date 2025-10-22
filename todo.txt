@@ -17,7 +17,6 @@ TODOLIST for alpha-19
 [ ] get the text out of the graphs
 [ ] re-save everything
 [ ] preset infra
-[ ] osci phase not paint exchange state
 [ ] something with instance and patch naming
 [ ] import/export module
 [ ] copy/paste module and patch across sessions
