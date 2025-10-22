@@ -27,7 +27,7 @@ MakeSettingsTab(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
-  auto receiveNotes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFSettingsParam::ReceiveNotes, 0 } });
+  auto receiveNotes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::ReceiveNotes, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, receiveNotes));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, receiveNotes));
   auto smooth = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::HostSmoothTime, 0 } });
