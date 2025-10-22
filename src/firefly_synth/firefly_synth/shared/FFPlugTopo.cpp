@@ -80,11 +80,11 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->modules.resize((int)FFModuleType::Count);
   result->modules[(int)FFModuleType::MIDI] = std::move(*FFMakeMIDITopo());
   result->modules[(int)FFModuleType::GNote] = std::move(*FFMakeGNoteTopo());
-  result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo(isFX));
+  result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
   result->modules[(int)FFModuleType::GlobalUni] = std::move(*FFMakeGlobalUniTopo());
   result->modules[(int)FFModuleType::VoiceModule] = std::move(*FFMakeVoiceModuleTopo());
   result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
-  result->modules[(int)FFModuleType::Settings] = std::move(*FFMakeSettingsTopo());
+  result->modules[(int)FFModuleType::Settings] = std::move(*FFMakeSettingsTopo(isFX));
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::OsciMod] = std::move(*FFMakeOsciModTopo());
   result->modules[(int)FFModuleType::VNote] = std::move(*FFMakeVNoteTopo());

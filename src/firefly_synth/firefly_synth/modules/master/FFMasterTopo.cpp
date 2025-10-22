@@ -4,7 +4,7 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 std::unique_ptr<FBStaticModule>
-FFMakeMasterTopo(bool isFx)
+FFMakeMasterTopo()
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
@@ -16,24 +16,6 @@ FFMakeMasterTopo(bool isFx)
   result->cvOutputs.resize((int)FFMasterCVOutput::Count);
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.master; });
   auto selectModule = [](auto& state) { return &state.global.master; };
-
-  auto& hostSmoothTime = result->params[(int)FFMasterParam::HostSmoothTime];
-  hostSmoothTime.mode = FBParamMode::Block;
-  hostSmoothTime.defaultText = "2";
-  hostSmoothTime.name = "External MIDI/Automation Smoothing";
-  hostSmoothTime.display = "Ext. Smth";
-  hostSmoothTime.slotCount = 1;
-  hostSmoothTime.unit = "Ms";
-  hostSmoothTime.id = "{47B38412-40B9-474E-9305-062E7FF7C800}";
-  hostSmoothTime.type = FBParamType::Linear;
-  hostSmoothTime.Linear().min = 0.0f;
-  hostSmoothTime.Linear().max = 0.2f;
-  hostSmoothTime.Linear().editSkewFactor = 0.5f;
-  hostSmoothTime.Linear().displayMultiplier = 1000.0f;
-  auto selectHostSmoothTime = [](auto& module) { return &module.block.hostSmoothTime; };
-  hostSmoothTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectHostSmoothTime);
-  hostSmoothTime.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectHostSmoothTime);
-  hostSmoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectHostSmoothTime);;
 
   auto& aux = result->params[(int)FFMasterParam::Aux];
   aux.mode = FBParamMode::Accurate;
@@ -47,19 +29,6 @@ FFMakeMasterTopo(bool isFx)
   aux.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAux);
   aux.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAux);
   aux.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAux);
-
-  auto& receiveNotes = result->params[(int)FFMasterParam::ReceiveNotes];
-  receiveNotes.mode = FBParamMode::Block;
-  receiveNotes.name = "Receive MIDI Notes";
-  receiveNotes.display = "Rcv Notes";
-  receiveNotes.slotCount = 1;
-  receiveNotes.defaultText = isFx? "Off": "On";
-  receiveNotes.id = "{92B2E390-F925-4170-BCA0-CFEDBF29970B}";
-  receiveNotes.type = FBParamType::Boolean;
-  auto selectReceiveNotes = [](auto& module) { return &module.block.receiveNotes; };
-  receiveNotes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReceiveNotes);
-  receiveNotes.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReceiveNotes);
-  receiveNotes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReceiveNotes);;
 
   auto& modWheel = result->params[(int)FFMasterParam::ModWheel];
   modWheel.mode = FBParamMode::Accurate;

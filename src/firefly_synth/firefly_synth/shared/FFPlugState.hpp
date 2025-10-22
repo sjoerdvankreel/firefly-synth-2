@@ -47,6 +47,7 @@ struct alignas(FBSIMDAlign) FFGlobalExchangeState final
   std::array<FBModuleProcSingleExchangeState, 1> master = {};
   std::array<FBModuleProcSingleExchangeState, 1> output = {};
   std::array<FBModuleProcSingleExchangeState, 1> gMatrix = {};
+  std::array<FBModuleProcSingleExchangeState, 1> settings = {};
   std::array<FBModuleProcSingleExchangeState, FFEffectCount> gEffect = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
 };
@@ -107,6 +108,7 @@ struct alignas(alignof(TAccurate)) FFGlobalParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalParamState);
   std::array<FFGMixParamState<TAccurate>, 1> gMix = {};
+  std::array<FFSettingsParamState<TBlock>, 1> settings = {};
   std::array<FFEchoParamState<TBlock, TAccurate>, 1> gEcho = {};
   std::array<FFMasterParamState<TBlock, TAccurate>, 1> master = {};
   std::array<FFOutputParamState<TBlock, TAccurate>, 1> output = {};

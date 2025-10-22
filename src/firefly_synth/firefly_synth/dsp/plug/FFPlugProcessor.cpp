@@ -3,6 +3,7 @@
 #include <firefly_synth/dsp/plug/FFPlugProcessor.hpp>
 #include <firefly_synth/modules/env/FFEnvProcessor.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
+#include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputProcessor.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
  
@@ -78,8 +79,8 @@ void
 FFPlugProcessor::GetCurrentProcessSettings(
   FBProcessSettings& settings) const
 {
-  float smoothNorm = _procState->param.global.master[0].block.hostSmoothTime[0].Value();
-  auto const& smoothTopo = _topo->static_->modules[(int)FFModuleType::Master].params[(int)FFMasterParam::HostSmoothTime];
+  float smoothNorm = _procState->param.global.settings[0].block.hostSmoothTime[0].Value();
+  auto const& smoothTopo = _topo->static_->modules[(int)FFModuleType::Settings].params[(int)FFSettingsParam::HostSmoothTime];
   settings.smoothingSamples = smoothTopo.Linear().NormalizedTimeToSamplesFast(smoothNorm, _sampleRate);
 }
 
@@ -87,8 +88,8 @@ void
 FFPlugProcessor::LeaseVoices(
   FBPlugInputBlock const& input)
 {
-  float receiveNorm = _procState->param.global.master[0].block.receiveNotes[0].Value();
-  auto const& receiveTopo = _topo->static_->modules[(int)FFModuleType::Master].params[(int)FFMasterParam::ReceiveNotes];
+  float receiveNorm = _procState->param.global.settings[0].block.receiveNotes[0].Value();
+  auto const& receiveTopo = _topo->static_->modules[(int)FFModuleType::Settings].params[(int)FFSettingsParam::ReceiveNotes];
   if (!receiveTopo.Boolean().NormalizedToPlainFast(receiveNorm))
     return;
 

@@ -5,15 +5,48 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 std::unique_ptr<FBStaticModule>
-FFMakeSettingsTopo()
+FFMakeSettingsTopo(bool isFx)
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
   result->name = "Settings";
   result->slotCount = 1;
   result->id = "{E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B}";
+  result->params.resize((int)FFSettingsParam::Count);
   result->guiParams.resize((int)FFSettingsGUIParam::Count);
   auto selectGuiModule = [](auto& state) { return &state.settings; }; 
+  auto selectModule = [](auto& state) { return &state.global.settings; };
+
+  auto& hostSmoothTime = result->params[(int)FFSettingsParam::HostSmoothTime];
+  hostSmoothTime.mode = FBParamMode::Block;
+  hostSmoothTime.defaultText = "2";
+  hostSmoothTime.name = "External MIDI/Automation Smoothing";
+  hostSmoothTime.display = "Ext. Smth";
+  hostSmoothTime.slotCount = 1;
+  hostSmoothTime.unit = "Ms";
+  hostSmoothTime.id = "{47B38412-40B9-474E-9305-062E7FF7C800}";
+  hostSmoothTime.type = FBParamType::Linear;
+  hostSmoothTime.Linear().min = 0.0f;
+  hostSmoothTime.Linear().max = 0.2f;
+  hostSmoothTime.Linear().editSkewFactor = 0.5f;
+  hostSmoothTime.Linear().displayMultiplier = 1000.0f;
+  auto selectHostSmoothTime = [](auto& module) { return &module.block.hostSmoothTime; };
+  hostSmoothTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectHostSmoothTime);
+  hostSmoothTime.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectHostSmoothTime);
+  hostSmoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectHostSmoothTime);
+
+  auto& receiveNotes = result->params[(int)FFSettingsParam::ReceiveNotes];
+  receiveNotes.mode = FBParamMode::Block;
+  receiveNotes.name = "Receive MIDI Notes";
+  receiveNotes.display = "Rcv Notes";
+  receiveNotes.slotCount = 1;
+  receiveNotes.defaultText = isFx ? "Off" : "On";
+  receiveNotes.id = "{92B2E390-F925-4170-BCA0-CFEDBF29970B}";
+  receiveNotes.type = FBParamType::Boolean;
+  auto selectReceiveNotes = [](auto& module) { return &module.block.receiveNotes; };
+  receiveNotes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReceiveNotes);
+  receiveNotes.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReceiveNotes);
+  receiveNotes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReceiveNotes);
 
   auto& guiUserScale = result->guiParams[(int)FFSettingsGUIParam::UserScale];
   guiUserScale.unit = "%";
