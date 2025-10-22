@@ -51,6 +51,7 @@ TODOLIST for alpha-21
 TODOLIST for alpha-22
 [ ] theme the gui
 
+PatchFromScratch video
 decrease the build times -- recheck all the includes, forward decls, try juce into staticlib once more
 write the manual + note about disable everything unused for performance including unused matrix slots
 routing / order diagram
