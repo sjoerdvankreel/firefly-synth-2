@@ -85,6 +85,10 @@ FBDisableDenormal();
 void 
 FBRestoreDenormal(FBDenormalState state);
 
+// Oh c'mon cpp, don't make me resort to ICU when i *know* input is in ascii.
+std::string
+FBAsciiToUpper(std::string const& in);
+
 std::string
 FBFormatDouble(double val, int precision);
 

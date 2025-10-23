@@ -13,6 +13,18 @@ MakeEnvBarsItems()
   return FBMakeBarsItems(true, { 1, 128 }, { 4, 1 });
 }
 
+std::string 
+FFEnvTypeToString(FFEnvType type)
+{
+  switch (type)
+  {
+  case FFEnvType::Off: return "Off";
+  case FFEnvType::Exp: return "Exp";
+  case FFEnvType::Linear: return "Linear";
+  default: FB_ASSERT(false); return "";
+  }
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeEnvTopo()
 {

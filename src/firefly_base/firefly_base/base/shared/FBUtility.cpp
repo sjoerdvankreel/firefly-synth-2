@@ -19,6 +19,15 @@ FBFormatDouble(double val, int precision)
   return ss.str();
 }
 
+std::string
+FBAsciiToUpper(std::string const& in)
+{
+  std::string result = {};
+  for (int i = 0; i < in.size(); i++)
+    result.push_back((char)std::toupper(in[i]));
+  return result;
+}
+
 std::optional<double>
 FBStringToDoubleOptCLocale(std::string const& text)
 {

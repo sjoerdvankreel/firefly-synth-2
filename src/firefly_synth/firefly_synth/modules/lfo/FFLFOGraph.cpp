@@ -154,14 +154,10 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
     else
     {
       FBParamTopoIndices opTypeIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };
-      FBParamTopoIndices waveModeIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::WaveMode, i } };
-      auto waveMode = renderState->AudioParamList<FFLFOWaveMode>(waveModeIndices, false, -1);
       auto opType = renderState->AudioParamList<FFModulationOpType>(opTypeIndices, false, -1);
       bool blockOn = type != FFLFOType::Off && opType != FFModulationOpType::Off;
-      graphData->graphs[i].title = moduleName + std::string(1, static_cast<char>('A' + i));
-      if (blockOn)
-        graphData->graphs[i].title += " " + FFLFOWaveModeToString(waveMode);
-      else
+      graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
+      if (!blockOn)
         graphData->graphs[i].subtext = "OFF";
     }
   }
