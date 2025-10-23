@@ -254,14 +254,14 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     if (graphData.title.size())
     {
       float const labelPad = 4.0f;
-      auto newFont = FBGUIGetFont();
+      auto newFont = FBGUIGetFont().withHeight(14.0f);
       auto textSize = TextLayout::getStringBounds(newFont, graphData.title);
       auto textBounds = Rectangle<float>(
         graphBounds.getX() + graphBounds.getWidth() - textSize.getWidth() - 2.0f * labelPad,
         (float)graphBounds.getY() + labelPad,
         textSize.getWidth() + labelPad,
         textSize.getHeight() + labelPad);
-      g.setColour(Colour(0xFF333333));
+      g.setColour(Colour(0xE0333333));
       g.fillRoundedRectangle(textBounds, 2.0f);
       g.setColour(getLookAndFeel().findColour(Slider::ColourIds::thumbColourId));
       g.setFont(newFont);
