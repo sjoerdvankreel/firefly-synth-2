@@ -4,12 +4,16 @@
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
 #include <cmath>
+#include <string>
 
 enum class FFModulationOpType { 
   Off,
   UPAdd, UPMul, UPStack, UPRemap,
   BPAdd, BPAdd2, BPMul, BPStack, BPRemap,
   PhaseWrap };
+
+std::string
+FFModulationOpTypeToString(FFModulationOpType opType);
 
 inline bool 
 FFModulationOpTypeIsBipolar(FFModulationOpType opType)
