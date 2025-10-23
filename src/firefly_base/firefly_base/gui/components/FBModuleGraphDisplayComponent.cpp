@@ -193,9 +193,12 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       }
     }
 
-    g.setColour(Colours::darkgrey);
-    g.setFont(FBGUIGetFont().withHeight(20.0f));
-    g.drawText(graphData.text, graphBounds, Justification::centred, false);
+    if (graphData.subtext.size())
+    {
+      g.setColour(Colours::darkgrey);
+      g.setFont(FBGUIGetFont().withHeight(20.0f));
+      g.drawText(graphData.subtext, graphBounds, Justification::centred, false);
+    }
 
     if (maxSizeAllSeries != 0)
     {
@@ -248,18 +251,21 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       }
     }
 
-    float const labelPad = 4.0f;
-    auto newFont = FBGUIGetFont();
-    auto textSize = TextLayout::getStringBounds(newFont, graphData.text);
-    auto textBounds = Rectangle<float>(
-      graphBounds.getX() + graphBounds.getWidth() - textSize.getWidth() - 2.0f * labelPad,
-      (float)graphBounds.getY() + labelPad, 
-      textSize.getWidth() + labelPad,
-      textSize.getHeight() + labelPad);
-    g.setColour(Colour(0xFF333333));
-    g.fillRoundedRectangle(textBounds, 2.0f);
-    g.setColour(getLookAndFeel().findColour(Slider::ColourIds::thumbColourId));
-    g.setFont(newFont);
-    g.drawText(graphData.text, textBounds, Justification::centred, false);
+    if (graphData.title.size())
+    {
+      float const labelPad = 4.0f;
+      auto newFont = FBGUIGetFont();
+      auto textSize = TextLayout::getStringBounds(newFont, graphData.title);
+      auto textBounds = Rectangle<float>(
+        graphBounds.getX() + graphBounds.getWidth() - textSize.getWidth() - 2.0f * labelPad,
+        (float)graphBounds.getY() + labelPad,
+        textSize.getWidth() + labelPad,
+        textSize.getHeight() + labelPad);
+      g.setColour(Colour(0xFF333333));
+      g.fillRoundedRectangle(textBounds, 2.0f);
+      g.setColour(getLookAndFeel().findColour(Slider::ColourIds::thumbColourId));
+      g.setFont(newFont);
+      g.drawText(graphData.title, textBounds, Justification::centred, false);
+    }
   }
 }

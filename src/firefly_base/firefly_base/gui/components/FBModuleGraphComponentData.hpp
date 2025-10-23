@@ -34,7 +34,8 @@ private:
   mutable float _absMaxValueAllSeries = {};
 
 public:
-  std::string text = {};
+  std::string title = {};
+  std::string subtext = {};
   std::vector<int> primaryMarkers = {};
   FBModuleGraphPoints primarySeries = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};

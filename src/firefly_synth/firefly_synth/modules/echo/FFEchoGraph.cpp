@@ -170,27 +170,27 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
 
   int tapsOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Taps);
   FBRenderModuleGraph<Global, true>(renderData, tapsOrder);
-  graphData->graphs[tapsOrder].text = moduleName + " Taps";
+  graphData->graphs[tapsOrder].title = moduleName + " Taps";
   if(!on || !IsTapsOn(renderState, Global, false, -1))
-    graphData->graphs[tapsOrder].text += " Off";
+    graphData->graphs[tapsOrder].subtext = "OFF";
 
   int feedbackOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Feedback);
   FBRenderModuleGraph<Global, true>(renderData, feedbackOrder);
-  graphData->graphs[feedbackOrder].text = moduleName + " Feedback";
+  graphData->graphs[feedbackOrder].title = moduleName + " Fdbk";
   if (!on || !IsFeedbackOn(renderState, Global, false, -1))
-    graphData->graphs[feedbackOrder].text += " Off";
+    graphData->graphs[feedbackOrder].subtext = "OFF";
 
   int reverbOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Reverb);
   FBRenderModuleGraph<Global, true>(renderData, reverbOrder);
-  graphData->graphs[reverbOrder].text = moduleName + " Reverb";
+  graphData->graphs[reverbOrder].title = moduleName + " Rvrb";
   if (!on || !IsReverbOn(renderState, Global, false, -1))
-    graphData->graphs[reverbOrder].text += " Off";
+    graphData->graphs[reverbOrder].subtext = "OFF";
 
   int allOrder = (int)FFEchoModule::Count;
   FBRenderModuleGraph<Global, true>(renderData, allOrder);
-  graphData->graphs[allOrder].text = moduleName;
+  graphData->graphs[allOrder].title = moduleName;
   if (!on)
-    graphData->graphs[allOrder].text += " Off";
+    graphData->graphs[allOrder].subtext = "OFF";
 }
 
 template struct EchoGraphRenderData<true>;
