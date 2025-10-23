@@ -195,7 +195,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
 
     if (graphData.subtext.size())
     {
-      g.setColour(Colour(0xFF333333));
+      g.setColour(Colour(0xFF404040));
       g.setFont(FBGUIGetFont().withHeight(20.0f));
       g.drawText(graphData.subtext, graphBounds, Justification::centred, false);
     }
