@@ -193,7 +193,6 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       }
     }
 
-    // TODO
     g.setColour(Colours::darkgrey);
     g.setFont(FBGUIGetFont().withHeight(20.0f));
     g.drawText(graphData.text, graphBounds, Justification::centred, false);
@@ -249,10 +248,15 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       }
     }
 
-    // TODO
-    auto textBounds = graphBounds.reduced(3, 3);
+    auto newFont = FBGUIGetFont().withHeight(16.0f);
+    auto textSize = TextLayout::getStringBounds(newFont, graphData.text);
+    auto textBounds = Rectangle<float>(
+      graphBounds.getX() + graphBounds.getWidth() - textSize.getWidth(),
+      (float)graphBounds.getY(), 
+      textSize.getWidth(),
+      textSize.getHeight());
     g.setColour(getLookAndFeel().findColour(Slider::ColourIds::thumbColourId));
-    g.setFont(FBGUIGetFont().withHeight(16.0f));
-    g.drawText(graphData.text, textBounds, Justification::topRight, false);
+    g.setFont(newFont);
+    g.drawText(graphData.text, textBounds.toFloat(), Justification::centred, false);
   }
 }
