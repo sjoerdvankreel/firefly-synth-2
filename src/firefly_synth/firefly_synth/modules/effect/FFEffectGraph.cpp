@@ -171,18 +171,14 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
     if (i == FFEffectBlockCount)
     {
       graphData->graphs[i].title = moduleName;
-      if(!on)
-        graphData->graphs[i].subtext = "OFF";
+      graphData->graphs[i].subtext = on? "ON": "OFF";
     }
     else
     {
       FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } };
       auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
-      graphData->graphs[i].title = moduleName + std::string(1, static_cast<char>('A' + i));
-      if (on)
-        graphData->graphs[i].title += " " + FFEffectKindToString(kind);
-      else
-        graphData->graphs[i].subtext = "OFF";
+      graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
+      graphData->graphs[i].subtext = FBAsciiToUpper(FFEffectKindToString(kind));
     }
   }
 }
