@@ -248,15 +248,18 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       }
     }
 
-    auto newFont = FBGUIGetFont().withHeight(16.0f);
+    float const labelPad = 4.0f;
+    auto newFont = FBGUIGetFont();
     auto textSize = TextLayout::getStringBounds(newFont, graphData.text);
     auto textBounds = Rectangle<float>(
-      graphBounds.getX() + graphBounds.getWidth() - textSize.getWidth(),
-      (float)graphBounds.getY(), 
-      textSize.getWidth(),
-      textSize.getHeight());
+      graphBounds.getX() + graphBounds.getWidth() - textSize.getWidth() - 2.0f * labelPad,
+      (float)graphBounds.getY() + labelPad, 
+      textSize.getWidth() + labelPad,
+      textSize.getHeight() + labelPad);
+    g.setColour(Colour(0xFF333333));
+    g.fillRoundedRectangle(textBounds, 2.0f);
     g.setColour(getLookAndFeel().findColour(Slider::ColourIds::thumbColourId));
     g.setFont(newFont);
-    g.drawText(graphData.text, textBounds.toFloat(), Justification::centred, false);
+    g.drawText(graphData.text, textBounds, Justification::centred, false);
   }
 }
