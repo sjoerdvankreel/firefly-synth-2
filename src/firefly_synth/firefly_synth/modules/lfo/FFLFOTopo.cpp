@@ -6,6 +6,18 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 std::string 
+FFLFOTypeToString(FFLFOType type, bool global)
+{
+  switch (type)
+  {
+  case FFLFOType::Off: return "Off";
+  case FFLFOType::Free: return "Free";
+  case FFLFOType::SnapOrOneShot: return global ? "Snap" : "One Shot";
+  default: FB_ASSERT(false); return "";
+  }
+}
+
+std::string 
 FFLFOWaveModeToString(int mode)
 {
   switch (mode)

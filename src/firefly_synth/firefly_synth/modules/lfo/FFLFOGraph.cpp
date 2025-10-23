@@ -148,8 +148,7 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
     if (i == FFLFOBlockCount)
     {
       graphData->graphs[i].title = moduleName;
-      if(type == FFLFOType::Off)
-        graphData->graphs[i].subtext = "OFF";
+      graphData->graphs[i].subtext = FFLFOTypeToString(type, Global);
     }
     else
     {

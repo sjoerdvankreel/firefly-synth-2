@@ -13,11 +13,13 @@ inline int constexpr FFLFOBlockCount = 3;
 std::unique_ptr<FBStaticModule> FFMakeLFOTopo(bool global);
 
 enum class FFLFOCVOutput { All, Raw, Count };
-enum class FFLFOType { Off, Free, SnapOrOneShot };
 enum class FFLFOSkewYMode { Off, ExpUnipolar, ExpBipolar };
 enum class FFLFOSkewXMode { Off, ScaleUnipolar, ScaleBipolar, ExpUnipolar, ExpBipolar };
 
-enum FFLFOWaveMode { 
+enum class FFLFOType { Off, Free, SnapOrOneShot };
+std::string FFLFOTypeToString(FFLFOType type, bool global);
+
+enum FFLFOWaveMode {
   FFLFOWaveModeSaw = FFTrigCount, FFLFOWaveModeTri, FFLFOWaveModeSqr, 
   FFLFOWaveModeUniRandom, FFLFOWaveModeNormRandom,
   FFLFOWaveModeFreeUniRandom, FFLFOWaveModeFreeNormRandom,
