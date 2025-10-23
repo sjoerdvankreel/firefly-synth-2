@@ -148,16 +148,14 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
     if (i == FFLFOBlockCount)
     {
       graphData->graphs[i].title = moduleName;
-      graphData->graphs[i].subtext = FFLFOTypeToString(type, Global);
+      graphData->graphs[i].subtext = FBAsciiToUpper(FFLFOTypeToString(type, Global));
     }
     else
     {
       FBParamTopoIndices opTypeIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };
       auto opType = renderState->AudioParamList<FFModulationOpType>(opTypeIndices, false, -1);
-      bool blockOn = type != FFLFOType::Off && opType != FFModulationOpType::Off;
       graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
-      if (!blockOn)
-        graphData->graphs[i].subtext = "OFF";
+      graphData->graphs[i].subtext = FBAsciiToUpper(FFModulationOpTypeToString(opType));
     }
   }
 }
