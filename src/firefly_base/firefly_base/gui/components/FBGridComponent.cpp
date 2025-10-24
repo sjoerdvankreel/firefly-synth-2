@@ -64,7 +64,7 @@ FBGridComponent::FixedHeight() const
   for (int i = 0; i < _rows.size(); i++)
     result += FixedRowHeight(i);
   auto totalRowGap = _grid.rowGap.pixels * (_rows.size() - 1);
-  return result + static_cast<int>(std::round(totalRowGap));
+  return result + static_cast<int>(std::ceil(totalRowGap));
 }
 
 int
@@ -74,7 +74,7 @@ FBGridComponent::FixedWidth(int height) const
   for (int i = 0; i < _cols.size(); i++)
     result += FixedColWidth(i, height);
   auto totalColumnGap = _grid.columnGap.pixels * (_cols.size() - 1);
-  return result + static_cast<int>(std::round(totalColumnGap));
+  return result + static_cast<int>(std::ceil(totalColumnGap));
 }
 
 void
@@ -154,7 +154,7 @@ FBGridComponent::FixedColWidth(int col, int height) const
   int totalRelativeHeight = 0;
   for (int i = 0; i < _rows.size(); i++)
     totalRelativeHeight += _rows[i];
-  auto totalRowGap = std::round((_rows.size() - 1) * _grid.rowGap.pixels);
+  auto totalRowGap = std::ceil((_rows.size() - 1) * _grid.rowGap.pixels);
   int availableGridHeight = height - static_cast<int>(totalRowGap);
   for (int i = 0; i < _rows.size(); i++)
     if (_rows[i] == 0)
@@ -172,7 +172,7 @@ FBGridComponent::FixedColWidth(int col, int height) const
     if (_rows[r] == 0)
       rowHeight = FixedRowHeight(r);
     else
-      rowHeight = static_cast<int>(std::round(_rows[r] / static_cast<float>(totalRelativeHeight) * availableGridHeight));
+      rowHeight = static_cast<int>(std::ceil(_rows[r] / static_cast<float>(totalRelativeHeight) * availableGridHeight));
     for (int i = 0; i < sizingChildren.size(); i++)
     {
       auto sizingChild = dynamic_cast<IFBHorizontalAutoSize*>(sizingChildren[i]);
