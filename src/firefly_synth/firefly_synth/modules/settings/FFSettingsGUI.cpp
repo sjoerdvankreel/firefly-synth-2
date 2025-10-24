@@ -26,7 +26,7 @@ MakeSettingsTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   auto receiveNotes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::ReceiveNotes, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, receiveNotes));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, receiveNotes));
@@ -45,9 +45,7 @@ MakeSettingsTab(FBPlugGUI* plugGUI)
   auto graphVisualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::GraphVisualsMode, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, graphVisualsMode));
   grid->Add(1, 5, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, graphVisualsMode));
-  grid->Add(0, 6, plugGUI->StoreComponent<FBFillerComponent>(8, 1));
-  grid->Add(1, 6, plugGUI->StoreComponent<FBFillerComponent>(8, 1));
-  grid->MarkSection({ { 0, 0 }, { 2, 7 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(subSection);
 }
