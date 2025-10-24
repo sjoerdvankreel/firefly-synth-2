@@ -22,7 +22,7 @@ FFMakeSettingsTopo(bool isFx)
   hostSmoothTime.mode = FBParamMode::Block;
   hostSmoothTime.defaultText = "2";
   hostSmoothTime.name = "External MIDI/Automation Smoothing";
-  hostSmoothTime.display = "MIDI/Auto Smth";
+  hostSmoothTime.display = "Ext Smth";
   hostSmoothTime.slotCount = 1;
   hostSmoothTime.unit = "Ms";
   hostSmoothTime.id = "{47B38412-40B9-474E-9305-062E7FF7C800}";
@@ -40,7 +40,7 @@ FFMakeSettingsTopo(bool isFx)
   receiveNotes.storeInPatch = false;
   receiveNotes.mode = FBParamMode::Block;
   receiveNotes.name = "Receive MIDI Notes";
-  receiveNotes.display = "Receive Notes";
+  receiveNotes.display = "Rcve Notes";
   receiveNotes.slotCount = 1;
   receiveNotes.defaultText = isFx ? "Off" : "On";
   receiveNotes.id = "{92B2E390-F925-4170-BCA0-CFEDBF29970B}";
