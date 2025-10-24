@@ -62,6 +62,24 @@ FFMakeSettingsTopo(bool isFx)
   auto selectGuiUserScale = [](auto& module) { return &module.userScale; };
   guiUserScale.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
 
+  auto& guiHilightMod = result->guiParams[(int)FFSettingsGUIParam::HilightMod];
+  guiHilightMod.name = "Hilight Mod";
+  guiHilightMod.slotCount = 1;
+  guiHilightMod.defaultText = "On";
+  guiHilightMod.id = "{193F0F95-D4D2-46A5-A978-C8740E0C08B3}";
+  guiHilightMod.type = FBParamType::Boolean;
+  auto selectGuiHilightMod = [](auto& module) { return &module.hilightMod; };
+  guiHilightMod.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightMod);
+
+  auto& guiHilightTweak = result->guiParams[(int)FFSettingsGUIParam::HilightTweak];
+  guiHilightTweak.name = "Hilight Tweak";
+  guiHilightTweak.slotCount = 1;
+  guiHilightTweak.defaultText = "Off";
+  guiHilightTweak.id = "{486DAE85-F8CC-4825-ACEA-D13D3D8A6933}";
+  guiHilightTweak.type = FBParamType::Boolean;
+  auto selectGuiHilightTweak = [](auto& module) { return &module.hilightTweak; };
+  guiHilightTweak.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightTweak);
+
   auto& guiKnobVisualsMode = result->guiParams[(int)FFSettingsGUIParam::KnobVisualsMode];
   guiKnobVisualsMode.defaultText = "If Focus";
   guiKnobVisualsMode.name = "Knob Visuals";

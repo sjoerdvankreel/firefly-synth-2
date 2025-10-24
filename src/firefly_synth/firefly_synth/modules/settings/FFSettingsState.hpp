@@ -33,6 +33,8 @@ class FFSettingsGUIState final
   friend std::unique_ptr<FBStaticModule> FFMakeSettingsTopo(bool);
 
   std::array<double, 1> userScale = {};
+  std::array<double, 1> hilightMod = {};
+  std::array<double, 1> hilightTweak = {};
   std::array<double, 1> fxSelectedTab = {};
   std::array<double, 1> oscSelectedTab = {};
   std::array<double, 1> mixSelectedTab = {};
