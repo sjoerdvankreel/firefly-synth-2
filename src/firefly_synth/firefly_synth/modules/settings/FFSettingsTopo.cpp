@@ -50,6 +50,25 @@ FFMakeSettingsTopo(bool isFx)
   receiveNotes.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReceiveNotes);
   receiveNotes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReceiveNotes);
 
+  auto& tuningMode = result->params[(int)FFSettingsParam::TuningMode];
+  tuningMode.storeInPatch = false;
+  tuningMode.mode = FBParamMode::Block;
+  tuningMode.name = "Tuning Mode";
+  tuningMode.display = "Tuning";
+  tuningMode.slotCount = 1;
+  tuningMode.defaultText = "Off";
+  tuningMode.id = "{8E17AB52-CC80-4CFA-A575-77D189F31B83}";
+  tuningMode.type = FBParamType::List;
+  tuningMode.List().items = {
+    { "{A29F8B05-2485-4C91-B1E3-8D8A6755604B}", "Off" },
+    { "{0D0035E5-3429-48FD-A8AF-E5126B3AB8DE}", "On" },
+    { "{28A85D43-1EAE-4573-B20E-EAE3F4CF277C}", "Note" } };
+  auto selectTuningMode = [](auto& module) { return &module.block.tuningMode; };
+  tuningMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuningMode);
+  tuningMode.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuningMode);
+  tuningMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuningMode);
+// TODO  tuningMode.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::TuningMode }, [](auto const& vs) { return false; });
+
   auto& guiUserScale = result->guiParams[(int)FFSettingsGUIParam::UserScale];
   guiUserScale.unit = "%";
   guiUserScale.defaultText = "1";

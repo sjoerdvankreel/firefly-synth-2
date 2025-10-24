@@ -3,9 +3,11 @@
 #include <memory>
 
 struct FBStaticModule;
+
+enum class FFSettingsTuningMode { Off, On, Note };
 enum class FFSettingsVisualsMode { Basic, Always, IfFocus };
-enum class FFSettingsParam {
-  HostSmoothTime, ReceiveNotes, Count };
+enum class FFSettingsParam { HostSmoothTime, ReceiveNotes, TuningMode, Count };
+
 enum class FFSettingsGUIParam {
   UserScale, 
   HilightMod, HilightTweak,
