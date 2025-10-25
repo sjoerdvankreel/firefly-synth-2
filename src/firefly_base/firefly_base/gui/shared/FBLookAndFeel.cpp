@@ -1,6 +1,7 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
+#include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
@@ -237,7 +238,12 @@ FBLookAndFeel::drawTickBox(
   const bool /*shouldDrawButtonAsDown*/)
 {
   Rectangle<float> tickBounds(x, y, w, h);
-  g.setColour(component.findColour(ToggleButton::tickDisabledColourId));
+
+  auto* paramToggle = dynamic_cast<FBParamToggleButton*>(&component);
+  if (paramToggle != nullptr && paramToggle->IsHighlightTweaked())
+    g.setColour(Colours::white.withAlpha(component.isEnabled() ? 1.0f : 0.75f));
+  else
+    g.setColour(component.findColour(ToggleButton::tickDisabledColourId));
   g.drawRoundedRectangle(tickBounds, 4.0f, 1.0f);
 
   if (ticked)
