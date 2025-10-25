@@ -295,18 +295,6 @@ FBLookAndFeel::drawLinearSlider(
   g.setColour(slider.findColour(Slider::backgroundColourId));
   g.strokePath(backgroundTrackFull, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
-  double modMin, modMax;
-  if (GetSliderModulationBounds(slider, modMin, modMax))
-  {
-    Path backgroundTrackMod;
-    Point<float> startPointMod((float)(x + width * modMin), (float)y + (float)height * 0.5f);
-    Point<float> endPointMod((float)(width * modMax + x), startPointMod.y);
-    backgroundTrackMod.startNewSubPath(startPointMod);
-    backgroundTrackMod.lineTo(endPointMod);
-    g.setColour(Colours::green);
-    g.strokePath(backgroundTrackMod, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
-  }
-
   Path valueTrack;
   Point<float> minPoint, maxPoint, thumbPoint;
   auto kx = slider.isHorizontal() ? sliderPos : ((float)x + (float)width * 0.5f);
@@ -319,6 +307,19 @@ FBLookAndFeel::drawLinearSlider(
   valueTrack.lineTo(isThreeVal ? thumbPoint : maxPoint);
   g.setColour(slider.findColour(Slider::trackColourId));
   g.strokePath(valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+
+  double modMin, modMax;
+  if (GetSliderModulationBounds(slider, modMin, modMax))
+  {
+    Path backgroundTrackMod;
+    Point<float> startPointMod((float)(x + width * modMin), (float)y + (float)height * 0.5f);
+    Point<float> endPointMod((float)(width * modMax + x), startPointMod.y);
+    backgroundTrackMod.startNewSubPath(startPointMod);
+    backgroundTrackMod.lineTo(endPointMod);
+    g.setColour(Colours::green);
+    g.strokePath(backgroundTrackMod, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+  }
+
   g.setColour(GetSliderThumbColor(slider));
   g.fillEllipse(Rectangle<float>(static_cast<float> (thumbWidth), static_cast<float> (thumbWidth)).withCentre(isThreeVal ? thumbPoint : maxPoint));
 
