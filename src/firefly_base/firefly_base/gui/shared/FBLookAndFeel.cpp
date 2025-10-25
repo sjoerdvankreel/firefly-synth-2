@@ -13,6 +13,15 @@ using namespace juce;
 static const int TabSizeSmall = 40;
 static const int TabSizeLarge = 60;
 
+static double
+ConvertValueFromSkewed(FBStaticParamBase const& param, double normalized)
+{
+  if (param.type != FBParamType::Linear)
+    return normalized;
+  NormalisableRange<double> range(0.0, 1.0, 0.0, param.Linear().editSkewFactor);
+  return range.convertTo0to1(normalized);
+}
+
 static Colour
 GetSliderThumbColor(Slider const& s)
 {
@@ -37,9 +46,11 @@ GetSliderModulationBounds(Slider const& s, double& minNorm, double& maxNorm)
   double currentNorm = ps->PlugGUI()->HostContext()->GetAudioParamNormalized(ps->Param()->runtimeParamIndex);
   if (!ps->PlugGUI()->GetModulationBounds(currentNorm, minNorm, maxNorm))
     return false;
+  auto const& staticParam = ps->Param()->static_;
+  minNorm = ConvertValueFromSkewed(staticParam, minNorm);
+  maxNorm = ConvertValueFromSkewed(staticParam, maxNorm);
   return true;
 }
-
 
 static void CreateTabTextLayout(
   const TabBarButton& button, 
@@ -56,15 +67,6 @@ static void CreateTabTextLayout(
   }
   s.append(text, font, colour);
   textLayout.createLayout(s, length);
-}
-
-static double
-ConvertValueFromSkewed(FBStaticParamBase const& param, double normalized)
-{
-  if (param.type != FBParamType::Linear)
-    return normalized;
-  NormalisableRange<double> range(0.0, 1.0, 0.0, param.Linear().editSkewFactor);
-  return range.convertTo0to1(normalized);
 }
 
 void 
@@ -313,9 +315,6 @@ FBLookAndFeel::drawLinearSlider(
   if (GetSliderModulationBounds(slider, modMin, modMax))
   {
     Path backgroundTrackMod;
-    auto const& staticParam = paramSlider->Param()->static_;
-    modMin = ConvertValueFromSkewed(staticParam, modMin);
-    modMax = ConvertValueFromSkewed(staticParam, modMax);
     Point<float> startPointMod((float)(x + width * modMin), (float)y + (float)height * 0.5f);
     Point<float> endPointMod((float)(width * modMax + x), startPointMod.y);
     backgroundTrackMod.startNewSubPath(startPointMod);
@@ -444,6 +443,20 @@ FBLookAndFeel::drawRotarySlider(
       0.0f, rotaryStartAngle, toAngle, true);
     g.setColour(fill);
     g.strokePath(valueArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::rounded));
+  }
+
+  double minNorm;
+  double maxNorm;
+  if (GetSliderModulationBounds(slider, minNorm, maxNorm))
+  {
+    Path modArc;
+    auto minAngle = rotaryStartAngle + minNorm * (rotaryEndAngle - rotaryStartAngle);
+    auto maxAngle = rotaryStartAngle + maxNorm * (rotaryEndAngle - rotaryStartAngle);
+    modArc.addCentredArc(
+      bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
+      0.0f, (float)minAngle, (float)maxAngle, true);
+    g.setColour(Colours::white.withAlpha(0.5f));
+    g.strokePath(modArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::rounded));
   }
 
   auto thumbWidth = lineW * 2.0f;
