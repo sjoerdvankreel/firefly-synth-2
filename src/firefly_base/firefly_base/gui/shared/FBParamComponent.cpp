@@ -24,7 +24,10 @@ FBParamComponent(plugGUI, param) {}
 bool 
 FBParamControl::IsHighlightTweaked() const
 {
+  double const epsilon = 1.0e-4;
   if (!_plugGUI->HighlightTweaked())
     return false;
-  return _plugGUI->HostContext()->GetAudioParamNormalized(_param->runtimeParamIndex) != _param->DefaultNormalizedByText();
+  double default_ = _param->DefaultNormalizedByText();
+  double norm = _plugGUI->HostContext()->GetAudioParamNormalized(_param->runtimeParamIndex);
+  return std::abs(default_ - norm) >= epsilon;
 }

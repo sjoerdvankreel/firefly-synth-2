@@ -10,15 +10,12 @@ static const int TabSizeSmall = 40;
 static const int TabSizeLarge = 60;
 
 static Colour
-getSliderThumbColor(Slider const& s, bool exchange)
+getSliderThumbColor(Slider const& s)
 {
   bool isHighlightTweaked = false;
-  if (!exchange)
-  {
-    FBParamSlider const* ps = dynamic_cast<FBParamSlider const*>(&s);
-    if (ps != nullptr)
-      isHighlightTweaked = ps->IsHighlightTweaked();
-  }
+  FBParamSlider const* ps = dynamic_cast<FBParamSlider const*>(&s);
+  if (ps != nullptr)
+    isHighlightTweaked = ps->IsHighlightTweaked();
   auto result = isHighlightTweaked? Colours::white : s.findColour(Slider::thumbColourId);
   return s.isEnabled() ? result : result.darker(0.6f);
 }
@@ -63,7 +60,7 @@ FBLookAndFeel::DrawLinearSliderExchangeThumb(
   float ky = static_cast<float>(y) + height * 0.5f;
   Point<float> maxPoint = { kx, ky };
   float thumbWidth = static_cast<float>(getSliderThumbRadius(slider));
-  g.setColour(getSliderThumbColor(slider, true).withAlpha(0.5f));
+  g.setColour(getSliderThumbColor(slider).withAlpha(0.5f));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(maxPoint));
 }
 
@@ -84,7 +81,7 @@ FBLookAndFeel::DrawRotarySliderExchangeThumb(
   Point<float> thumbPoint(
     bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(getSliderThumbColor(slider, true).withAlpha(0.5f));
+  g.setColour(getSliderThumbColor(slider).withAlpha(0.5f));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 }
 
@@ -282,7 +279,7 @@ FBLookAndFeel::drawLinearSlider(
   valueTrack.lineTo(isThreeVal ? thumbPoint : maxPoint);
   g.setColour(slider.findColour(Slider::trackColourId));
   g.strokePath(valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
-  g.setColour(getSliderThumbColor(slider, false));
+  g.setColour(getSliderThumbColor(slider));
   g.fillEllipse(Rectangle<float>(static_cast<float> (thumbWidth), static_cast<float> (thumbWidth)).withCentre(isThreeVal ? thumbPoint : maxPoint));
 
   FBParamSlider* paramSlider;
@@ -408,7 +405,7 @@ FBLookAndFeel::drawRotarySlider(
   auto thumbWidth = lineW * 2.0f;
   Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(getSliderThumbColor(slider, false));
+  g.setColour(getSliderThumbColor(slider));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 
   FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
