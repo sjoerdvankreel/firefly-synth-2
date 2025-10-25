@@ -1,5 +1,6 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
+#include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
@@ -218,7 +219,11 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   g.setColour(box.findColour(ComboBox::backgroundColourId));
   g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
 
-  g.setColour(box.findColour(ComboBox::outlineColourId));
+  auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
+  if(paramCombo != nullptr && paramCombo->IsHighlightTweaked())
+    g.setColour(Colours::white.withAlpha(box.isEnabled()? 1.0f: 0.75f));
+  else
+    g.setColour(box.findColour(ComboBox::outlineColourId));
   g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
 }
 
