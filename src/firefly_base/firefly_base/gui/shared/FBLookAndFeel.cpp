@@ -285,25 +285,32 @@ FBLookAndFeel::drawLinearSlider(
   auto isThreeVal = (style == Slider::SliderStyle::ThreeValueVertical || style == Slider::SliderStyle::ThreeValueHorizontal);
   auto trackWidth = jmin(6.0f, slider.isHorizontal() ? (float)height * 0.25f : (float)width * 0.25f);
 
-  Point<float> startPoint(slider.isHorizontal() ? (float)x : (float)x + (float)width * 0.5f,
-   slider.isHorizontal() ? (float)y + (float)height * 0.5f : (float)(height + y));
-  Point<float> endPoint(slider.isHorizontal() ? (float)(width + x) : startPoint.x,
-    slider.isHorizontal() ? startPoint.y : (float)y);
-
-  Path backgroundTrack;
-  backgroundTrack.startNewSubPath(startPoint);
-  backgroundTrack.lineTo(endPoint);
+  FB_ASSERT(slider.isHorizontal());
+  Path backgroundTrackFull;
+  Point<float> startPointFull((float)x, (float)y + (float)height * 0.5f);
+  Point<float> endPointFull((float)(width + x), startPointFull.y);
+  backgroundTrackFull.startNewSubPath(startPointFull);
+  backgroundTrackFull.lineTo(endPointFull);
   g.setColour(slider.findColour(Slider::backgroundColourId));
-  g.setColour(Colours::red);
-  double zork = 0;
-  GetSliderModulationBounds(slider, zork, zork);
-  g.strokePath(backgroundTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+  g.strokePath(backgroundTrackFull, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+
+  double modMin, modMax;
+  if (GetSliderModulationBounds(slider, modMin, modMax))
+  {
+    Path backgroundTrackMod;
+    Point<float> startPointMod((float)(x + width * modMin), (float)y + (float)height * 0.5f);
+    Point<float> endPointMod((float)(width * modMax + x), startPointMod.y);
+    backgroundTrackMod.startNewSubPath(startPointMod);
+    backgroundTrackMod.lineTo(endPointMod);
+    g.setColour(Colours::green);
+    g.strokePath(backgroundTrackMod, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+  }
 
   Path valueTrack;
   Point<float> minPoint, maxPoint, thumbPoint;
   auto kx = slider.isHorizontal() ? sliderPos : ((float)x + (float)width * 0.5f);
   auto ky = slider.isHorizontal() ? ((float)y + (float)height * 0.5f) : sliderPos;
-  minPoint = startPoint;
+  minPoint = startPointFull;
   maxPoint = { kx, ky };
   auto thumbWidth = getSliderThumbRadius(slider);
 
