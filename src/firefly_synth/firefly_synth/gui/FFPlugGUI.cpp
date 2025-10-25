@@ -99,6 +99,10 @@ FFPlugGUI::GUIParamNormalizedChanged(int index, double normalized)
   int moduleIndex = HostContext()->Topo()->gui.params[index].runtimeModuleIndex;
   _mainGraph->RequestRerender(moduleIndex);
   RequestFixedGraphsRerender(moduleIndex);
+
+  FBParamTopoIndices indices = { { (int)FFModuleType::Settings, 0}, {(int)FFSettingsGUIParam::HilightTweak, 0 } };
+  if (index == HostContext()->Topo()->gui.ParamAtTopo(indices)->runtimeParamIndex)
+    repaint();
 }
 
 void 
