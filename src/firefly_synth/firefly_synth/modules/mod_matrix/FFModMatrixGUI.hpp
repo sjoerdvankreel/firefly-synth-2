@@ -4,6 +4,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class FFPlugGUI;
+class FBHostGUIContext;
 
 class FFModMatrixParamListener:
 public IFBParamListener
@@ -20,3 +21,6 @@ public:
 
 juce::Component*
 FFMakeModMatrixGUI(FFPlugGUI* plugGUI);
+bool
+FFModMatrixGetParamModulationBounds(
+  FBHostGUIContext const* ctx, int index, double& minNorm, double& maxNorm);

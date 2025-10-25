@@ -391,3 +391,14 @@ FFMakeModMatrixGUI(FFPlugGUI* plugGUI)
   grid->Add(1, 0, MakeModMatrixSlotsGUI(plugGUI));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
+
+bool
+FFModMatrixGetParamModulationBounds(
+  FBHostGUIContext const* ctx, int index, double& minNorm, double& maxNorm)
+{
+  (void)ctx;
+  (void)index;
+  minNorm = 0.5;
+  maxNorm = 1.0;
+  return true;
+}

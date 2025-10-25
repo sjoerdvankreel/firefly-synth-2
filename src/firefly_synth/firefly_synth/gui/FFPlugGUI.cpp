@@ -132,11 +132,7 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
 bool 
 FFPlugGUI::GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const
 {
-  // TODO
-  (void)index;
-  minNorm = 0.33f;
-  maxNorm = 0.67f;
-  return true;
+  return FFModMatrixGetParamModulationBounds(HostContext(), index, minNorm, maxNorm);
 }
 
 bool
