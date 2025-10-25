@@ -57,5 +57,6 @@ public:
     FBParamsDependencies const& dependencies);
 
   void DependenciesChanged(bool visible);
+  FBPlugGUI const* PlugGUI() const { return _plugGUI; }
   std::vector<int> const& RuntimeDependencies(bool audio, bool visible) const;
 };

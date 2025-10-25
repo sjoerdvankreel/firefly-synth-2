@@ -126,6 +126,22 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
   RequestFixedGraphsRerender(tweakedModule);
 }
 
+void 
+FFPlugGUI::GetModulationBounds(double currentNorm, double& minNorm, double& maxNorm) const
+{
+  // TODO
+  (void)currentNorm;
+  minNorm = 0.33f;
+  maxNorm = 0.67f;
+}
+
+bool
+FFPlugGUI::HighlightModulationBounds() const
+{
+  FBParamTopoIndices indices = { { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::HilightMod, 0 } };
+  return HostContext()->GetGUIParamBool(indices);
+}
+
 bool 
 FFPlugGUI::HighlightTweaked() const
 {

@@ -68,14 +68,16 @@ public:
 
   void mouseUp(const juce::MouseEvent& event) override;
 
-  virtual bool HighlightTweaked() const = 0;
-  virtual FBGUIRenderType GetRenderType(bool graphOrKnob) const = 0;
-
   virtual void ModuleSlotClicked(int index, int slot) = 0;
   virtual void ActiveModuleSlotChanged(int index, int slot) = 0;
   virtual void GUIParamNormalizedChanged(int index, double normalized);
   virtual void AudioParamNormalizedChangedFromUI(int index, double normalized);
   virtual void AudioParamNormalizedChangedFromHost(int index, double normalized);
+
+  virtual bool HighlightTweaked() const = 0;
+  virtual bool HighlightModulationBounds() const = 0;
+  virtual FBGUIRenderType GetRenderType(bool graphOrKnob) const = 0;
+  virtual void GetModulationBounds(double currentNorm, double& minNorm, double& maxNorm) const = 0;
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);

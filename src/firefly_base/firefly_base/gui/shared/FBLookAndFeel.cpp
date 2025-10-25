@@ -1,7 +1,9 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
@@ -12,7 +14,7 @@ static const int TabSizeSmall = 40;
 static const int TabSizeLarge = 60;
 
 static Colour
-getSliderThumbColor(Slider const& s)
+GetSliderThumbColor(Slider const& s)
 {
   bool isHighlightTweaked = false;
   FBParamSlider const* ps = dynamic_cast<FBParamSlider const*>(&s);
@@ -22,7 +24,23 @@ getSliderThumbColor(Slider const& s)
   return s.isEnabled() ? result : result.darker(0.6f);
 }
 
-static void createTabTextLayout(
+static bool
+GetSliderModulationBounds(Slider const& s, double& minNorm, double& maxNorm)
+{
+  if (!s.isEnabled())
+    return false;
+  FBParamSlider const* ps = dynamic_cast<FBParamSlider const*>(&s);
+  if (ps == nullptr)
+    return false;
+  if (!ps->PlugGUI()->HighlightModulationBounds())
+    return false;
+  double currentNorm = ps->PlugGUI()->HostContext()->GetAudioParamNormalized(ps->Param()->runtimeParamIndex);
+  ps->PlugGUI()->GetModulationBounds(currentNorm, minNorm, maxNorm);
+  return true;
+}
+
+
+static void CreateTabTextLayout(
   const TabBarButton& button, 
   float length, Colour colour, 
   Font const& font, bool centerText, 
@@ -62,7 +80,7 @@ FBLookAndFeel::DrawLinearSliderExchangeThumb(
   float ky = static_cast<float>(y) + height * 0.5f;
   Point<float> maxPoint = { kx, ky };
   float thumbWidth = static_cast<float>(getSliderThumbRadius(slider));
-  g.setColour(getSliderThumbColor(slider).withAlpha(0.5f));
+  g.setColour(GetSliderThumbColor(slider).withAlpha(0.5f));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(maxPoint));
 }
 
@@ -83,7 +101,7 @@ FBLookAndFeel::DrawRotarySliderExchangeThumb(
   Point<float> thumbPoint(
     bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(getSliderThumbColor(slider).withAlpha(0.5f));
+  g.setColour(GetSliderThumbColor(slider).withAlpha(0.5f));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 }
 
@@ -129,7 +147,7 @@ FBLookAndFeel::DrawTabButtonPart(
   const Rectangle<float> area(activeArea.toFloat());
   float length = area.getWidth();
   float depth = area.getHeight();
-  ::createTabTextLayout(button, length, col, FBGUIGetFont(), centerText, text, textLayout);
+  ::CreateTabTextLayout(button, length, col, FBGUIGetFont(), centerText, text, textLayout);
 
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));
   textLayout.draw(g, Rectangle<float>(length, depth));
@@ -290,7 +308,7 @@ FBLookAndFeel::drawLinearSlider(
   valueTrack.lineTo(isThreeVal ? thumbPoint : maxPoint);
   g.setColour(slider.findColour(Slider::trackColourId));
   g.strokePath(valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
-  g.setColour(getSliderThumbColor(slider));
+  g.setColour(GetSliderThumbColor(slider));
   g.fillEllipse(Rectangle<float>(static_cast<float> (thumbWidth), static_cast<float> (thumbWidth)).withCentre(isThreeVal ? thumbPoint : maxPoint));
 
   FBParamSlider* paramSlider;
@@ -416,7 +434,7 @@ FBLookAndFeel::drawRotarySlider(
   auto thumbWidth = lineW * 2.0f;
   Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(getSliderThumbColor(slider));
+  g.setColour(GetSliderThumbColor(slider));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 
   FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);

@@ -16,7 +16,7 @@ TODOLIST for alpha-19
 [x] bright text when graph on
 [x] get the text out of the graphs
 [x] highlight not default
-[ ] show visual clue if knob is being modulated
+[ ] show visual clue if knob is being modulated => todo skewing
 [ ] re-save everything
 [ ] preset infra
 [ ] something with instance and patch naming
