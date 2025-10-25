@@ -103,6 +103,9 @@ FFPlugGUI::GUIParamNormalizedChanged(int index, double normalized)
   FBParamTopoIndices indices = { { (int)FFModuleType::Settings, 0}, {(int)FFSettingsGUIParam::HilightTweak, 0 } };
   if (index == HostContext()->Topo()->gui.ParamAtTopo(indices)->runtimeParamIndex)
     repaint();
+  indices = { { (int)FFModuleType::Settings, 0}, {(int)FFSettingsGUIParam::HilightMod, 0 } };
+  if (index == HostContext()->Topo()->gui.ParamAtTopo(indices)->runtimeParamIndex)
+    repaint();
 }
 
 void 
@@ -126,13 +129,14 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
   RequestFixedGraphsRerender(tweakedModule);
 }
 
-void 
+bool 
 FFPlugGUI::GetModulationBounds(double currentNorm, double& minNorm, double& maxNorm) const
 {
   // TODO
   (void)currentNorm;
   minNorm = 0.33f;
   maxNorm = 0.67f;
+  return true;
 }
 
 bool

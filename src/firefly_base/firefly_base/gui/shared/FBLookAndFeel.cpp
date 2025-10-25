@@ -35,7 +35,8 @@ GetSliderModulationBounds(Slider const& s, double& minNorm, double& maxNorm)
   if (!ps->PlugGUI()->HighlightModulationBounds())
     return false;
   double currentNorm = ps->PlugGUI()->HostContext()->GetAudioParamNormalized(ps->Param()->runtimeParamIndex);
-  ps->PlugGUI()->GetModulationBounds(currentNorm, minNorm, maxNorm);
+  if (!ps->PlugGUI()->GetModulationBounds(currentNorm, minNorm, maxNorm))
+    return false;
   return true;
 }
 
