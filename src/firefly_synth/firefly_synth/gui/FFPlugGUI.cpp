@@ -122,6 +122,13 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
   RequestFixedGraphsRerender(tweakedModule);
 }
 
+bool 
+FFPlugGUI::HighlightTweaked() const
+{
+  FBParamTopoIndices indices = { { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::HilightTweak, 0 } };
+  return HostContext()->GetGUIParamBool(indices);
+}
+
 FBGUIRenderType 
 FFPlugGUI::GetRenderType(bool graphOrKnob) const
 {

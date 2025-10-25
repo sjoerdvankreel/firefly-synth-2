@@ -40,6 +40,7 @@ public FBPlugGUI
   std::unique_ptr<FFGlobalUniParamListener> _globalUniParamListener = {};
 
   void SetupGUI();
+  bool HighlightTweaked() const override;
   FBGUIRenderType GetRenderType(bool graphOrKnob) const override;
 
 protected:
