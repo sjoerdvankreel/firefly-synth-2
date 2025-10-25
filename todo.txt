@@ -15,7 +15,7 @@ TODOLIST for alpha-19
 [x] not store fake params (mode::fake)
 [x] bright text when graph on
 [x] get the text out of the graphs
-[ ] highlight not default
+[x] highlight not default
 [ ] show visual clue if knob is being modulated
 [ ] re-save everything
 [ ] preset infra
