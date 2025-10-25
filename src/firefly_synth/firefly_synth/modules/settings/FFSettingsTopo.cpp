@@ -93,7 +93,7 @@ FFMakeSettingsTopo(bool isFx)
   auto& guiHilightTweak = result->guiParams[(int)FFSettingsGUIParam::HilightTweak];
   guiHilightTweak.name = "Hilite Tweak";
   guiHilightTweak.slotCount = 1;
-  guiHilightTweak.defaultText = "Off";
+  guiHilightTweak.defaultText = "On";
   guiHilightTweak.id = "{486DAE85-F8CC-4825-ACEA-D13D3D8A6933}";
   guiHilightTweak.type = FBParamType::Boolean;
   auto selectGuiHilightTweak = [](auto& module) { return &module.hilightTweak; };
