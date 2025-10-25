@@ -67,7 +67,7 @@ FFMakeSettingsTopo(bool isFx)
   tuningMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuningMode);
   tuningMode.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuningMode);
   tuningMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuningMode);
-// TODO  tuningMode.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::TuningMode }, [](auto const& vs) { return false; });
+  tuningMode.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::TuningMode }, [](auto const& vs) { return false; });
 
   auto& guiUserScale = result->guiParams[(int)FFSettingsGUIParam::UserScale];
   guiUserScale.unit = "%";

@@ -40,6 +40,8 @@ public IFBParamListener
   FBPlugGUI* const _plugGUI;
   FBRuntimeParam const* _param;
   std::function<bool(int)> _enabledIf;
+
+  void ToggleEnabled();
 public:
   ~FBParamValueLinkedButton();
   FBParamValueLinkedButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string const& text, std::function<bool(int)> enabledIf);

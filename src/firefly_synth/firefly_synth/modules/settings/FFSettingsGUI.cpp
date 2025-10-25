@@ -26,17 +26,17 @@ MakeSettingsTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 1 });
+  auto receiveNotes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::ReceiveNotes, 0 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, receiveNotes));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, receiveNotes));
+  auto smooth = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::HostSmoothTime, 0 } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smooth));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::RotaryVerticalDrag));
   auto tuningMode = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuningMode, 0 } });
   auto tuningButton = plugGUI->StoreComponent<FBParamValueLinkedButton>(plugGUI, tuningMode, "Tuning", [](int v) { return v != 0; });
-  grid->Add(0, 0, tuningButton);
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, tuningMode));
-  auto receiveNotes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::ReceiveNotes, 0 } });
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, receiveNotes));
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, receiveNotes));
-  auto smooth = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::HostSmoothTime, 0 } });
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smooth));
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 2, tuningButton);
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, tuningMode));
   auto hilightMod = topo->gui.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::HilightMod, 0 } });
   grid->Add(0, 3, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightMod));
   grid->Add(0, 4, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, hilightMod));
