@@ -58,12 +58,12 @@ static void CreateTabTextLayout(
   textLayout.createLayout(s, length);
 }
 
-static float
-ConvertExchangeValueFromSkewed(FBStaticParamBase const& param, float normalized)
+static double
+ConvertValueFromSkewed(FBStaticParamBase const& param, double normalized)
 {
   if (param.type != FBParamType::Linear)
     return normalized;
-  NormalisableRange<float> range(0.0f, 1.0f, 0.0f, static_cast<float>(param.Linear().editSkewFactor));
+  NormalisableRange<double> range(0.0, 1.0, 0.0, param.Linear().editSkewFactor);
   return range.convertTo0to1(normalized);
 }
 
@@ -75,7 +75,7 @@ FBLookAndFeel::DrawLinearSliderExchangeThumb(
   auto layout = getSliderLayout(slider);
   int sliderRegionStart = layout.sliderBounds.getX();
   int sliderRegionSize = layout.sliderBounds.getWidth();
-  float skewed = ConvertExchangeValueFromSkewed(slider.Param()->static_, exchangeValue);
+  float skewed = (float)ConvertValueFromSkewed(slider.Param()->static_, exchangeValue);
   float minExchangePos = static_cast<float>(sliderRegionStart + skewed * sliderRegionSize);
   float kx = minExchangePos;
   float ky = static_cast<float>(y) + height * 0.5f;
@@ -94,7 +94,7 @@ FBLookAndFeel::DrawRotarySliderExchangeThumb(
 {
   auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(10);
   auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
-  float skewed = ConvertExchangeValueFromSkewed(slider.Param()->static_, exchangeValue);
+  float skewed = (float)ConvertValueFromSkewed(slider.Param()->static_, exchangeValue);
   auto toAngle = rotaryStartAngle + skewed * (rotaryEndAngle - rotaryStartAngle);
   auto lineW = jmin(8.0f, radius * 0.5f);
   auto arcRadius = radius - lineW * 0.5f;
@@ -309,9 +309,13 @@ FBLookAndFeel::drawLinearSlider(
   g.strokePath(valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
   double modMin, modMax;
+  FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
   if (GetSliderModulationBounds(slider, modMin, modMax))
   {
     Path backgroundTrackMod;
+    auto const& staticParam = paramSlider->Param()->static_;
+    modMin = ConvertValueFromSkewed(staticParam, modMin);
+    modMax = ConvertValueFromSkewed(staticParam, modMax);
     Point<float> startPointMod((float)(x + width * modMin), (float)y + (float)height * 0.5f);
     Point<float> endPointMod((float)(width * modMax + x), startPointMod.y);
     backgroundTrackMod.startNewSubPath(startPointMod);
@@ -323,8 +327,7 @@ FBLookAndFeel::drawLinearSlider(
   g.setColour(GetSliderThumbColor(slider));
   g.fillEllipse(Rectangle<float>(static_cast<float> (thumbWidth), static_cast<float> (thumbWidth)).withCentre(isThreeVal ? thumbPoint : maxPoint));
 
-  FBParamSlider* paramSlider;
-  if ((paramSlider = dynamic_cast<FBParamSlider*>(&slider)) == nullptr)
+  if (paramSlider == nullptr)
     return;
   auto paramActive = paramSlider->ParamActiveExchangeState();
   if (!paramActive.active)
