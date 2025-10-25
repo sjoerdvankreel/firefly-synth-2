@@ -18,6 +18,10 @@ FBMakeRuntimeParamLongName(
 
 struct FBRuntimeParamBase
 {
+protected:
+  mutable double defaultNormalized = -1.0;
+
+public:
   int runtimeModuleIndex;
   int runtimeParamIndex;
   FBParamTopoIndices topoIndices;
@@ -67,6 +71,7 @@ public FBRuntimeParamBase
 struct FBRuntimeParam final:
 public FBRuntimeParamBase
 {
+public:
   FBStaticParam static_;
   std::string GetDefaultText() const;
   double DefaultNormalizedByText() const;

@@ -399,13 +399,14 @@ FBLookAndFeel::drawRotarySlider(
   }
 
   auto thumbWidth = lineW * 2.0f;
+  FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
   Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(getSliderThumbColor(slider));
+  bool isHighlightTweaked = paramSlider->IsHighlightTweaked();
+  g.setColour(isHighlightTweaked? Colours::white: getSliderThumbColor(slider));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 
-  FBParamSlider* paramSlider;
-  if ((paramSlider = dynamic_cast<FBParamSlider*>(&slider)) == nullptr)
+  if (paramSlider == nullptr)
     return;
   auto paramActive = paramSlider->ParamActiveExchangeState();
   if (!paramActive.active)

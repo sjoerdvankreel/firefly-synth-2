@@ -137,11 +137,15 @@ FBRuntimeGUIParam::GetDefaultText() const
 double
 FBRuntimeParam::DefaultNormalizedByText() const
 {
-  return static_.DefaultNormalizedByText(topoIndices.module.index, topoIndices.module.slot, topoIndices.param.slot);
+  if(defaultNormalized < 0.0)
+     defaultNormalized = static_.DefaultNormalizedByText(topoIndices.module.index, topoIndices.module.slot, topoIndices.param.slot);
+  return defaultNormalized;
 }
 
 double
 FBRuntimeGUIParam::DefaultNormalizedByText() const
 {
-  return static_.DefaultNormalizedByText(topoIndices.module.index, topoIndices.module.slot, topoIndices.param.slot);
+  if (defaultNormalized < 0.0)
+    defaultNormalized = static_.DefaultNormalizedByText(topoIndices.module.index, topoIndices.module.slot, topoIndices.param.slot);
+  return defaultNormalized;
 }
