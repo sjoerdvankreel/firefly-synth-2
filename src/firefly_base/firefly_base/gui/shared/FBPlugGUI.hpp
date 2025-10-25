@@ -77,7 +77,7 @@ public:
   virtual bool HighlightTweaked() const = 0;
   virtual bool HighlightModulationBounds() const = 0;
   virtual FBGUIRenderType GetRenderType(bool graphOrKnob) const = 0;
-  virtual bool GetModulationBounds(double currentNorm, double& minNorm, double& maxNorm) const = 0;
+  virtual bool GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const = 0;
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);

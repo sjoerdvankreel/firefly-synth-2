@@ -43,8 +43,7 @@ GetSliderModulationBounds(Slider const& s, double& minNorm, double& maxNorm)
     return false;
   if (!ps->PlugGUI()->HighlightModulationBounds())
     return false;
-  double currentNorm = ps->PlugGUI()->HostContext()->GetAudioParamNormalized(ps->Param()->runtimeParamIndex);
-  if (!ps->PlugGUI()->GetModulationBounds(currentNorm, minNorm, maxNorm))
+  if (!ps->PlugGUI()->GetParamModulationBounds(ps->Param()->runtimeParamIndex, minNorm, maxNorm))
     return false;
   auto const& staticParam = ps->Param()->static_;
   minNorm = ConvertValueFromSkewed(staticParam, minNorm);

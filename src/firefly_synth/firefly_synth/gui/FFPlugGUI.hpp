@@ -43,7 +43,7 @@ public FBPlugGUI
   bool HighlightTweaked() const override;
   bool HighlightModulationBounds() const override;
   FBGUIRenderType GetRenderType(bool graphOrKnob) const override;
-  bool GetModulationBounds(double currentNorm, double& minNorm, double& maxNorm) const override;
+  bool GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const override;
 
 protected:
   void OnPatchChanged() override;
