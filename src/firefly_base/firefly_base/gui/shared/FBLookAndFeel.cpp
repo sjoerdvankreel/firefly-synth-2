@@ -294,6 +294,9 @@ FBLookAndFeel::drawLinearSlider(
   backgroundTrack.startNewSubPath(startPoint);
   backgroundTrack.lineTo(endPoint);
   g.setColour(slider.findColour(Slider::backgroundColourId));
+  g.setColour(Colours::red);
+  double zork = 0;
+  GetSliderModulationBounds(slider, zork, zork);
   g.strokePath(backgroundTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
   Path valueTrack;
