@@ -1,4 +1,5 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/dsp/shared/FFModulate.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModGUI.hpp>
@@ -19,6 +20,58 @@
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
 
 using namespace juce;
+
+FFOsciParamListener::
+~FFOsciParamListener()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FFOsciParamListener::
+FFOsciParamListener(FBPlugGUI* plugGUI):
+_plugGUI(plugGUI)
+{
+  _plugGUI->AddParamListener(this);
+}
+
+void 
+FFOsciParamListener::AudioParamChanged(
+  int index, double /*normalized*/, bool /*changedFromUI*/)
+{
+  auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
+  if (indices.module.index != (int)FFModuleType::Osci)
+    return;
+  if (indices.param.index == (int)FFOsciParam::EnvToGain)
+    _plugGUI->RepaintSlidersForAudioParam({ { (int)FFModuleType::Osci, indices.module.slot }, { (int)FFOsciParam::Gain, 0 } });
+  if (indices.param.index == (int)FFOsciParam::LFOToFine)
+    _plugGUI->RepaintSlidersForAudioParam({ { (int)FFModuleType::Osci, indices.module.slot }, { (int)FFOsciParam::Fine, 0 } });
+}
+
+bool
+FFOsciAdjustParamModulationGUIBounds(
+  FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
+{
+  auto const& rtParam = ctx->Topo()->audio.params[index];
+  int staticIndex = ctx->Topo()->modules[rtParam.runtimeModuleIndex].topoIndices.index;
+  if (staticIndex != (int)FFModuleType::Osci)
+    return false;
+
+  if (rtParam.topoIndices.param.index == (int)FFOsciParam::Gain)
+  {
+    double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::Osci, rtParam.topoIndices.module.index }, { (int)FFOsciParam::EnvToGain, 0 } });
+    FFApplyGUIModulationBounds(FFModulationOpType::UPMul, (float)modAmount, currentMinNorm, currentMaxNorm);
+    return true;
+  }
+
+  if (rtParam.topoIndices.param.index == (int)FFOsciParam::Fine)
+  {
+    double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::Osci, rtParam.topoIndices.module.index }, { (int)FFOsciParam::LFOToFine, 0 } });
+    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, (float)modAmount, currentMinNorm, currentMaxNorm);
+    return true;
+  }
+
+  return false;
+}
 
 static Component*
 MakeOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
