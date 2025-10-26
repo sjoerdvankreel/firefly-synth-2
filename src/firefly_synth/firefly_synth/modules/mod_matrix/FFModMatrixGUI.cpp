@@ -43,8 +43,6 @@ void
 FFModMatrixParamListener::AudioParamChanged(
   int index, double /*normalized*/, bool changedFromUI)
 {
-  if (!changedFromUI)
-    return;
   auto& ffGUI = dynamic_cast<FFPlugGUI&>(*_plugGUI);
   auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
   auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*_plugGUI->HostContext()->Topo()->static_.get());
@@ -55,40 +53,59 @@ FFModMatrixParamListener::AudioParamChanged(
   auto const& sources = global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
   auto const& targets = global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
 
-  if (indices.param.index == (int)FFModMatrixParam::Source ||
-    indices.param.index == (int)FFModMatrixParam::SourceInv ||
-    indices.param.index == (int)FFModMatrixParam::SourceLow ||
-    indices.param.index == (int)FFModMatrixParam::SourceHigh)
+  if (changedFromUI)
   {
-    auto sourceIndices = indices;
-    sourceIndices.param.index = (int)FFModMatrixParam::Source;
-    int sourceVal = _plugGUI->HostContext()->GetAudioParamList<int>(sourceIndices);
-    auto const& moduleIndices = sources[sourceVal].indices.module;
-    if (moduleIndices.index != -1)
-      ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
-  }  
+    if (indices.param.index == (int)FFModMatrixParam::Source ||
+      indices.param.index == (int)FFModMatrixParam::SourceInv ||
+      indices.param.index == (int)FFModMatrixParam::SourceLow ||
+      indices.param.index == (int)FFModMatrixParam::SourceHigh)
+    {
+      auto sourceIndices = indices;
+      sourceIndices.param.index = (int)FFModMatrixParam::Source;
+      int sourceVal = _plugGUI->HostContext()->GetAudioParamList<int>(sourceIndices);
+      auto const& moduleIndices = sources[sourceVal].indices.module;
+      if (moduleIndices.index != -1)
+        ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
+    }
 
-  if (indices.param.index == (int)FFModMatrixParam::Scale ||
-    indices.param.index == (int)FFModMatrixParam::ScaleMin ||
-    indices.param.index == (int)FFModMatrixParam::ScaleMax)
-  {
-    auto scaleIndices = indices;
-    scaleIndices.param.index = (int)FFModMatrixParam::Scale;
-    int scaleVal = _plugGUI->HostContext()->GetAudioParamList<int>(scaleIndices);
-    auto const& moduleIndices = sources[scaleVal].indices.module;
-    if (moduleIndices.index != -1)
-      ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
+    if (indices.param.index == (int)FFModMatrixParam::Scale ||
+      indices.param.index == (int)FFModMatrixParam::ScaleMin ||
+      indices.param.index == (int)FFModMatrixParam::ScaleMax)
+    {
+      auto scaleIndices = indices;
+      scaleIndices.param.index = (int)FFModMatrixParam::Scale;
+      int scaleVal = _plugGUI->HostContext()->GetAudioParamList<int>(scaleIndices);
+      auto const& moduleIndices = sources[scaleVal].indices.module;
+      if (moduleIndices.index != -1)
+        ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
+    }
+
+    if (indices.param.index == (int)FFModMatrixParam::Target ||
+      indices.param.index == (int)FFModMatrixParam::TargetAmt)
+    {
+      auto targetIndices = indices;
+      targetIndices.param.index = (int)FFModMatrixParam::Target;
+      int targetVal = _plugGUI->HostContext()->GetAudioParamList<int>(targetIndices);
+      auto const& moduleIndices = targets[targetVal].module;
+      if (moduleIndices.index != -1)
+        ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
+    }
   }
 
-  if (indices.param.index == (int)FFModMatrixParam::Target ||
-    indices.param.index == (int)FFModMatrixParam::TargetAmt)
+  int maxSlotCount = global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount;
+  bool updateModHighlight = ffTopo.modules[indices.module.index].params[indices.param.index].slotCount == maxSlotCount;
+  if (updateModHighlight)
   {
     auto targetIndices = indices;
     targetIndices.param.index = (int)FFModMatrixParam::Target;
     int targetVal = _plugGUI->HostContext()->GetAudioParamList<int>(targetIndices);
-    auto const& moduleIndices = targets[targetVal].module;
-    if (moduleIndices.index != -1)
-      ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
+    if (targets[targetVal].module.index != -1)
+    {
+      int targetIndex = _plugGUI->HostContext()->Topo()->audio.ParamAtTopo(targets[targetVal])->runtimeParamIndex;
+      int sliderCount = _plugGUI->GetControlCountForAudioParamIndex(targetIndex);
+      for (int s = 0; s < sliderCount; s++)
+        dynamic_cast<FBParamSlider&>(*_plugGUI->GetControlForAudioParamIndex(targetIndex, s)).repaint();
+    }
   }
 }
 

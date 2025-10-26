@@ -62,11 +62,13 @@ public:
   std::string GetTooltipForAudioParam(int index) const;
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
+  void mouseUp(const juce::MouseEvent& event) override;
+
   void UpdateExchangeState();
   void SetScale(double scale);
   void ShowHostMenuForAudioParam(int index);
-
-  void mouseUp(const juce::MouseEvent& event) override;
+  int GetControlCountForAudioParamIndex(int paramIndex) const;
+  FBParamControl* GetControlForAudioParamIndex(int paramIndex, int controlIndex) const;
 
   virtual void ModuleSlotClicked(int index, int slot) = 0;
   virtual void ActiveModuleSlotChanged(int index, int slot) = 0;
@@ -87,9 +89,7 @@ protected:
   virtual void UpdateExchangeStateTick() = 0;
 
   void InitAllDependencies();
-  int GetControlCountForAudioParamIndex(int paramIndex) const;
   FBGUIParamControl* GetControlForGUIParamIndex(int paramIndex) const;
-  FBParamControl* GetControlForAudioParamIndex(int paramIndex, int controlIndex) const;
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
