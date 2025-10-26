@@ -410,42 +410,41 @@ FFModMatrixGetParamModulationBounds(
   bool isGlobal = !ctx->Topo()->static_->modules[staticIndex].voice;
   auto const& ffTopo = static_cast<FFStaticTopo const&>(*ctx->Topo()->static_);
 
-  if (isGlobal)
+  int moduleType = (int)(isGlobal ? FFModuleType::GMatrix : FFModuleType::VMatrix);
+  auto const& targets = isGlobal ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
+  auto const& sources = isGlobal ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
+  int slotCount = ctx->GetAudioParamDiscrete({ { moduleType, 0, }, { (int)FFModMatrixParam::Slots, 0 } });
+
+  for (int s = 0; s < slotCount; s++)
   {
-    auto const& targets = ffTopo.gMatrixTargets;
-    auto const& sources = ffTopo.gMatrixSources;
-    int globalSlots = ctx->GetAudioParamDiscrete({ { (int)FFModuleType::GMatrix, 0, }, { (int)FFModMatrixParam::Slots, 0 } });
-    for (int s = 0; s < globalSlots; s++)
-    {
-      int source = ctx->GetAudioParamList<int>({ { (int)FFModuleType::GMatrix, 0, }, { (int)FFModMatrixParam::Source, s } });
-      int target = ctx->GetAudioParamList<int>({ { (int)FFModuleType::GMatrix, 0, }, { (int)FFModMatrixParam::Target, s } });
-      if(sources[source].indices.module.index != -1 && targets[target].module.index != -1)
-        if (ctx->Topo()->audio.ParamAtTopo(targets[target])->runtimeParamIndex == index)
+    int source = ctx->GetAudioParamList<int>({ { moduleType, 0, }, { (int)FFModMatrixParam::Source, s } });
+    int target = ctx->GetAudioParamList<int>({ { moduleType, 0, }, { (int)FFModMatrixParam::Target, s } });
+    if(sources[source].indices.module.index != -1 && targets[target].module.index != -1)
+      if (ctx->Topo()->audio.ParamAtTopo(targets[target])->runtimeParamIndex == index)
+      {
+        auto opType = ctx->GetAudioParamList<FFModulationOpType>({ { moduleType, 0, }, { (int)FFModMatrixParam::OpType, s } });
+        if (opType != FFModulationOpType::Off)
         {
-          auto opType = ctx->GetAudioParamList<FFModulationOpType>({ { (int)FFModuleType::GMatrix, 0, }, { (int)FFModMatrixParam::OpType, s } });
-          if (opType != FFModulationOpType::Off)
-          {
-            float scaleMin = (float)ctx->GetAudioParamNormalized({ { (int)FFModuleType::GMatrix, 0, }, { (int)FFModMatrixParam::ScaleMin, s } });
-            float scaleMax = (float)ctx->GetAudioParamNormalized({ { (int)FFModuleType::GMatrix, 0, }, { (int)FFModMatrixParam::ScaleMax, s } });
-            float targetAmt = (float)ctx->GetAudioParamNormalized({ { (int)FFModuleType::GMatrix, 0, }, { (int)FFModMatrixParam::TargetAmt, s } });
-            float scaledTargetAmt = scaleMin + (scaleMax - scaleMin) * targetAmt;
+          float scaleMin = (float)ctx->GetAudioParamNormalized({ { moduleType, 0, }, { (int)FFModMatrixParam::ScaleMin, s } });
+          float scaleMax = (float)ctx->GetAudioParamNormalized({ { moduleType, 0, }, { (int)FFModMatrixParam::ScaleMax, s } });
+          float targetAmt = (float)ctx->GetAudioParamNormalized({ { moduleType, 0, }, { (int)FFModMatrixParam::TargetAmt, s } });
+          float scaledTargetAmt = scaleMin + (scaleMax - scaleMin) * targetAmt;
 
-            float newMinNorm0 = minNorm;
-            float newMinNorm1 = minNorm;
-            FFApplyModulation(opType, 0.0f, scaledTargetAmt, newMinNorm0);
-            FFApplyModulation(opType, 1.0f, scaledTargetAmt, newMinNorm1);
-            minNorm = std::min(newMinNorm0, newMinNorm1);
+          float newMinNorm0 = minNorm;
+          float newMinNorm1 = minNorm;
+          FFApplyModulation(opType, 0.0f, scaledTargetAmt, newMinNorm0);
+          FFApplyModulation(opType, 1.0f, scaledTargetAmt, newMinNorm1);
+          minNorm = std::min(newMinNorm0, newMinNorm1);
 
-            float newMaxNorm0 = maxNorm;
-            float newMaxNorm1 = maxNorm;
-            FFApplyModulation(opType, 0.0f, scaledTargetAmt, newMaxNorm0);
-            FFApplyModulation(opType, 1.0f, scaledTargetAmt, newMaxNorm1);
-            maxNorm = std::max(newMaxNorm0, newMaxNorm1);
+          float newMaxNorm0 = maxNorm;
+          float newMaxNorm1 = maxNorm;
+          FFApplyModulation(opType, 0.0f, scaledTargetAmt, newMaxNorm0);
+          FFApplyModulation(opType, 1.0f, scaledTargetAmt, newMaxNorm1);
+          maxNorm = std::max(newMaxNorm0, newMaxNorm1);
 
-            haveAny = true;
-          }
+          haveAny = true;
         }
-    }
+      }
   }
 
   minNormOut = minNorm;
