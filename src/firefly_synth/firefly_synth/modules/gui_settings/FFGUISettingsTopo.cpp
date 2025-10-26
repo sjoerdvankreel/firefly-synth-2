@@ -28,7 +28,7 @@ FFMakeGUISettingsTopo()
   guiUserScale.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
 
   auto& guiHilightMod = result->guiParams[(int)FFGUISettingsGUIParam::HilightMod];
-  guiHilightMod.name = "Hilite Mod";
+  guiHilightMod.name = "Highlight Modulation Bounds";
   guiHilightMod.slotCount = 1;
   guiHilightMod.defaultText = "On";
   guiHilightMod.id = "{193F0F95-D4D2-46A5-A978-C8740E0C08B3}";
@@ -37,7 +37,7 @@ FFMakeGUISettingsTopo()
   guiHilightMod.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightMod);
 
   auto& guiHilightTweak = result->guiParams[(int)FFGUISettingsGUIParam::HilightTweak];
-  guiHilightTweak.name = "Hilite Tweak";
+  guiHilightTweak.name = "Highlight Tweaked From Default";
   guiHilightTweak.slotCount = 1;
   guiHilightTweak.defaultText = "On";
   guiHilightTweak.id = "{486DAE85-F8CC-4825-ACEA-D13D3D8A6933}";
@@ -47,26 +47,26 @@ FFMakeGUISettingsTopo()
 
   auto& guiKnobVisualsMode = result->guiParams[(int)FFGUISettingsGUIParam::KnobVisualsMode];
   guiKnobVisualsMode.defaultText = "If Focus";
-  guiKnobVisualsMode.name = "Knob Visuals";
+  guiKnobVisualsMode.name = "Knob Visuals From Engine";
   guiKnobVisualsMode.slotCount = 1;
   guiKnobVisualsMode.id = "{75702E18-0499-45ED-935E-A1BC1D0348C3}";
   guiKnobVisualsMode.type = FBParamType::List;
   guiKnobVisualsMode.List().items = {
-    { "{74535D7D-90EC-407D-A439-946A9C09351D}", "Basic" },
-    { "{C1A672E9-332D-4A33-8FAC-D8D60A892561}", "Always" },
+    { "{74535D7D-90EC-407D-A439-946A9C09351D}", "On" },
+    { "{C1A672E9-332D-4A33-8FAC-D8D60A892561}", "Off" },
     { "{B2BA8788-B64E-4BF8-8584-DA13916ADC59}", "If Focus" } };
   auto selectGuiKnobVisualsMode = [](auto& module) { return &module.knobVisualsMode; };
   guiKnobVisualsMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiKnobVisualsMode);
 
   auto& guiGraphVisualsMode = result->guiParams[(int)FFGUISettingsGUIParam::GraphVisualsMode];
   guiGraphVisualsMode.defaultText = "If Focus";
-  guiGraphVisualsMode.name = "Plot Visuals";
+  guiGraphVisualsMode.name = "Plot Visuals From Engine";
   guiGraphVisualsMode.slotCount = 1;
   guiGraphVisualsMode.id = "{6C5F2DC2-C796-444C-8D43-077708580609}";
   guiGraphVisualsMode.type = FBParamType::List;
   guiGraphVisualsMode.List().items = {
-    { "{D5C9FC77-0DE8-4077-9D07-073B44F5076F}", "Basic" },
-    { "{8291740E-D7DC-4481-B430-9C73F3343E10}", "Always" },
+    { "{D5C9FC77-0DE8-4077-9D07-073B44F5076F}", "On" },
+    { "{8291740E-D7DC-4481-B430-9C73F3343E10}", "Off" },
     { "{A5369260-7E9F-4C23-8FED-0C42CAA9DD91}", "If Focus" } };
   auto selectGuiGraphVisualsMode = [](auto& module) { return &module.graphVisualsMode; };
   guiGraphVisualsMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphVisualsMode);

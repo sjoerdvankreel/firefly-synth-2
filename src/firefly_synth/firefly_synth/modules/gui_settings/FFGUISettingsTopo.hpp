@@ -4,8 +4,7 @@
 
 struct FBStaticModule;
 
-// TODO better names
-enum class FFGUISettingsVisualsMode { Basic, Always, IfFocus };
+enum class FFGUISettingsVisualsFromEngineMode { Off, On, IfFocus };
 enum class FFGUISettingsGUIParam {
   UserScale, 
   HilightMod, HilightTweak,

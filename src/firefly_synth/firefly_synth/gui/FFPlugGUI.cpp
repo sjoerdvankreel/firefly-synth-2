@@ -160,10 +160,10 @@ FFPlugGUI::GetRenderType(bool graphOrKnob) const
   FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)param, 0 } };
   auto const* paramTopo = HostContext()->Topo()->gui.ParamAtTopo(indices);
   float normalized = static_cast<float>(HostContext()->GetGUIParamNormalized(paramTopo->runtimeParamIndex));
-  auto mode = static_cast<FFGUISettingsVisualsMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
-  if (mode == FFGUISettingsVisualsMode::Basic)
+  auto mode = static_cast<FFGUISettingsVisualsFromEngineMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
+  if (mode == FFGUISettingsVisualsFromEngineMode::Off)
     return FBGUIRenderType::Basic;
-  if (mode == FFGUISettingsVisualsMode::Always)
+  if (mode == FFGUISettingsVisualsFromEngineMode::On)
     return FBGUIRenderType::Full;
   return hasKeyboardFocus(true) ? FBGUIRenderType::Full : FBGUIRenderType::Basic;
 }
