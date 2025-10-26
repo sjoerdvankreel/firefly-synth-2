@@ -20,8 +20,8 @@
 
 using namespace juce;
 
-static Component*
-MakeSettingsTab(FBPlugGUI* plugGUI)
+Component*
+FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
@@ -41,14 +41,4 @@ MakeSettingsTab(FBPlugGUI* plugGUI)
   grid->MarkSection({ { 0, 0 }, { 1, 8 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(subSection);
-}
-
-Component*
-FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
-  auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::GUISettings].name;
-  tabs->addTab(name, {}, MakeSettingsTab(plugGUI), false);
-  return tabs;
 }
