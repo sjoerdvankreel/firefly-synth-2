@@ -19,7 +19,7 @@ TODOLIST for alpha-19
 [x] hilite def on
 [x] show visual clue if knob is being modulated => todo skewing
 [x] tweak and name into gui gui
-[ ] modbounds for guni and easy access?
+[x] modbounds for guni and easy access?
 
 TODOLIST for alpha-20 - rest of the gui stuff
 [ ] fix string patch sharing samplerate bug
