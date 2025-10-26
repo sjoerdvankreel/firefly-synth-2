@@ -1,5 +1,6 @@
 #include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/dsp/shared/FFModulate.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGraph.hpp>
@@ -394,11 +395,55 @@ FFMakeModMatrixGUI(FFPlugGUI* plugGUI)
 
 bool
 FFModMatrixGetParamModulationBounds(
-  FBHostGUIContext const* ctx, int index, double& minNorm, double& maxNorm)
+  FBHostGUIContext const* ctx, int index, double& minNormOut, double& maxNormOut)
 {
-  (void)ctx;
-  (void)index;
-  minNorm = 0.5;
-  maxNorm = 1.0;
-  return true;
+  // Figure out maximum bounds of what the mod matrix would do to the 
+  // current value if all sources/scales would use the full 0..1 range.
+
+  bool haveAny = false;
+  float valueNorm = (float)ctx->GetAudioParamNormalized(index);
+  float minNorm = valueNorm;
+  float maxNorm = valueNorm;
+
+  int rtIndex = ctx->Topo()->audio.params[index].runtimeModuleIndex;
+  int staticIndex = ctx->Topo()->modules[rtIndex].topoIndices.index;
+  bool isGlobal = !ctx->Topo()->static_->modules[staticIndex].voice;
+  auto const& ffTopo = static_cast<FFStaticTopo const&>(*ctx->Topo()->static_);
+
+  if (isGlobal)
+  {
+    auto const& targets = ffTopo.gMatrixTargets;
+    int globalSlots = ctx->GetAudioParamDiscrete({ { (int)FFModuleType::GMatrix, 0, }, { (int)FFModMatrixParam::Slots, 0 } });
+    for (int s = 0; s < globalSlots; s++)
+    {
+      int target = ctx->GetAudioParamList<int>({ { (int)FFModuleType::GMatrix, 0, }, { (int)FFModMatrixParam::Target, s } });
+      if(targets[target].module.index != -1)
+        if (ctx->Topo()->audio.ParamAtTopo(targets[target])->runtimeParamIndex == index)
+        {
+          float scaleMin = (float)ctx->GetAudioParamNormalized({ { (int)FFModuleType::GMatrix, 0, }, { (int)FFModMatrixParam::ScaleMin, s } });
+          float scaleMax = (float)ctx->GetAudioParamNormalized({ { (int)FFModuleType::GMatrix, 0, }, { (int)FFModMatrixParam::ScaleMax, s } });
+          float targetAmt = (float)ctx->GetAudioParamNormalized({ { (int)FFModuleType::GMatrix, 0, }, { (int)FFModMatrixParam::TargetAmt, s } });
+          float scaledTargetAmt = scaleMin + (scaleMax - scaleMin) * targetAmt;
+          auto opType = ctx->GetAudioParamList<FFModulationOpType>({ { (int)FFModuleType::GMatrix, 0, }, { (int)FFModMatrixParam::OpType, s } });
+
+          float newMinNorm0 = minNorm;
+          float newMinNorm1 = minNorm;
+          FFApplyModulation(opType, 0.0f, scaledTargetAmt, newMinNorm0);
+          FFApplyModulation(opType, 1.0f, scaledTargetAmt, newMinNorm1);
+          minNorm = std::min(newMinNorm0, newMinNorm1);
+
+          float newMaxNorm0 = maxNorm;
+          float newMaxNorm1 = maxNorm;
+          FFApplyModulation(opType, 0.0f, scaledTargetAmt, newMaxNorm0);
+          FFApplyModulation(opType, 1.0f, scaledTargetAmt, newMaxNorm1);
+          maxNorm = std::max(newMaxNorm0, newMaxNorm1);
+
+          haveAny = true;
+        }
+    }
+  }
+
+  minNormOut = minNorm;
+  maxNormOut = maxNorm;
+  return haveAny;
 }
