@@ -39,7 +39,6 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 6, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, graphVisualsMode));
   grid->Add(0, 7, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, graphVisualsMode));
   grid->Add(0, 8, plugGUI->StoreComponent<FBFillerComponent>(15, 1));
-  grid->Add(1, 8, plugGUI->StoreComponent<FBFillerComponent>(15, 1));
   grid->MarkSection({ { 0, 0 }, { 1, 9 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(subSection);
