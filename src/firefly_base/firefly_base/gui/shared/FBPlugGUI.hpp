@@ -69,6 +69,7 @@ public:
   void ShowHostMenuForAudioParam(int index);
   int GetControlCountForAudioParamIndex(int paramIndex) const;
   FBParamControl* GetControlForAudioParamIndex(int paramIndex, int controlIndex) const;
+  void RepaintSlidersForAudioParam(FBParamTopoIndices const& indices);
 
   virtual void ModuleSlotClicked(int index, int slot) = 0;
   virtual void ActiveModuleSlotChanged(int index, int slot) = 0;
@@ -79,7 +80,7 @@ public:
   virtual bool HighlightTweaked() const = 0;
   virtual bool HighlightModulationBounds() const = 0;
   virtual FBGUIRenderType GetRenderType(bool graphOrKnob) const = 0;
-  virtual bool GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const = 0;
+  virtual bool GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const = 0;  
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);

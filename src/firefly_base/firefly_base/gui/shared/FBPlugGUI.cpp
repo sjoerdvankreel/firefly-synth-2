@@ -132,6 +132,15 @@ FBPlugGUI::AudioParamNormalizedChanged(int index)
     target->DependenciesChanged(false);
 }
 
+void 
+FBPlugGUI::RepaintSlidersForAudioParam(FBParamTopoIndices const& indices)
+{
+  int targetIndex = HostContext()->Topo()->audio.ParamAtTopo(indices)->runtimeParamIndex;
+  int controlCount = GetControlCountForAudioParamIndex(targetIndex);
+  for(int i = 0; i < controlCount; i++)
+    dynamic_cast<FBParamSlider&>(*GetControlForAudioParamIndex(targetIndex, i)).repaint();
+}
+
 int 
 FBPlugGUI::GetControlCountForAudioParamIndex(int paramIndex) const
 {

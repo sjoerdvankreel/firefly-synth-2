@@ -100,12 +100,7 @@ FFModMatrixParamListener::AudioParamChanged(
     targetIndices.param.index = (int)FFModMatrixParam::Target;
     int targetVal = _plugGUI->HostContext()->GetAudioParamList<int>(targetIndices);
     if (targets[targetVal].module.index != -1)
-    {
-      int targetIndex = _plugGUI->HostContext()->Topo()->audio.ParamAtTopo(targets[targetVal])->runtimeParamIndex;
-      int sliderCount = _plugGUI->GetControlCountForAudioParamIndex(targetIndex);
-      for (int s = 0; s < sliderCount; s++)
-        dynamic_cast<FBParamSlider&>(*_plugGUI->GetControlForAudioParamIndex(targetIndex, s)).repaint();
-    }
+      _plugGUI->RepaintSlidersForAudioParam(targets[targetVal]);
   }
 }
 

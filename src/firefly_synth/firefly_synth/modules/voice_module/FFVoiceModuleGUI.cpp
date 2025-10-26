@@ -39,11 +39,9 @@ FFVoiceModuleParamListener::AudioParamChanged(
   if (indices.module.index != (int)FFModuleType::VoiceModule)
     return;
   if (indices.param.index == (int)FFVoiceModuleParam::Env5ToCoarse)
-  {
-    FBParamTopoIndices targetIndices = { { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::Coarse, 0 } };
-    int targetIndex = _plugGUI->HostContext()->Topo()->audio.ParamAtTopo(targetIndices)->runtimeParamIndex;
-    dynamic_cast<FBParamSlider&>(*_plugGUI->GetControlForAudioParamIndex(targetIndex, 0)).repaint();
-  }
+    _plugGUI->RepaintSlidersForAudioParam({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::Coarse, 0 } });
+  if (indices.param.index == (int)FFVoiceModuleParam::LFO5ToFine)
+    _plugGUI->RepaintSlidersForAudioParam({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::Fine, 0 } });
 }
 
 bool
@@ -59,6 +57,13 @@ FFVoiceModuleAdjustParamModulationGUIBounds(
   {
     double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::Env5ToCoarse, 0 } });
     FFApplyGUIModulationBounds(FFModulationOpType::UPStack, (float)modAmount, currentMinNorm, currentMaxNorm);
+    return true;
+  }
+
+  if (rtParam.topoIndices.param.index == (int)FFVoiceModuleParam::Fine)
+  {
+    double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::LFO5ToFine, 0 } });
+    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, (float)modAmount, currentMinNorm, currentMaxNorm);
     return true;
   }
 
