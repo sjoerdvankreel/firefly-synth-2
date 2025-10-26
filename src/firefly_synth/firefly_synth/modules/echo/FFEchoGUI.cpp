@@ -2,7 +2,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/echo/FFEchoGUI.hpp>
 #include <firefly_synth/modules/echo/FFEchoTopo.hpp>
-#include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
+#include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -322,7 +322,7 @@ FFMakeEchoGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::EchoSelectedTab, 0 } });
+  auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::EchoSelectedTab, 0 } });
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
   tabs->AddModuleTab(false, true, { (int)FFModuleType::VEcho, 0 }, MakeGEchoTab(plugGUI, false));
   tabs->AddModuleTab(false, true, { (int)FFModuleType::GEcho, 0 }, MakeGEchoTab(plugGUI, true));

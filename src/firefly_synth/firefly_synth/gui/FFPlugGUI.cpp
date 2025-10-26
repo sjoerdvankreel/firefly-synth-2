@@ -13,7 +13,9 @@
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
 #include <firefly_synth/modules/settings/FFSettingsGUI.hpp>
+#include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
+#include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleGUI.hpp>
@@ -100,10 +102,10 @@ FFPlugGUI::GUIParamNormalizedChanged(int index, double normalized)
   _mainGraph->RequestRerender(moduleIndex);
   RequestFixedGraphsRerender(moduleIndex);
 
-  FBParamTopoIndices indices = { { (int)FFModuleType::Settings, 0}, {(int)FFSettingsGUIParam::HilightTweak, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0}, {(int)FFGUISettingsGUIParam::HilightTweak, 0 } };
   if (index == HostContext()->Topo()->gui.ParamAtTopo(indices)->runtimeParamIndex)
     repaint();
-  indices = { { (int)FFModuleType::Settings, 0}, {(int)FFSettingsGUIParam::HilightMod, 0 } };
+  indices = { { (int)FFModuleType::GUISettings, 0}, {(int)FFGUISettingsGUIParam::HilightMod, 0 } };
   if (index == HostContext()->Topo()->gui.ParamAtTopo(indices)->runtimeParamIndex)
     repaint();
 }
@@ -140,28 +142,28 @@ FFPlugGUI::GetParamModulationBounds(int index, double& minNorm, double& maxNorm)
 bool
 FFPlugGUI::HighlightModulationBounds() const
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::HilightMod, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightMod, 0 } };
   return HostContext()->GetGUIParamBool(indices);
 }
 
 bool 
 FFPlugGUI::HighlightTweaked() const
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsGUIParam::HilightTweak, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightTweak, 0 } };
   return HostContext()->GetGUIParamBool(indices);
 }
 
 FBGUIRenderType 
 FFPlugGUI::GetRenderType(bool graphOrKnob) const
 {
-  FFSettingsGUIParam param = graphOrKnob ? FFSettingsGUIParam::GraphVisualsMode : FFSettingsGUIParam::KnobVisualsMode;
-  FBParamTopoIndices indices = { { (int)FFModuleType::Settings, 0 }, { (int)param, 0 } };
+  FFGUISettingsGUIParam param = graphOrKnob ? FFGUISettingsGUIParam::GraphVisualsMode : FFGUISettingsGUIParam::KnobVisualsMode;
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)param, 0 } };
   auto const* paramTopo = HostContext()->Topo()->gui.ParamAtTopo(indices);
   float normalized = static_cast<float>(HostContext()->GetGUIParamNormalized(paramTopo->runtimeParamIndex));
-  auto mode = static_cast<FFSettingsVisualsMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
-  if (mode == FFSettingsVisualsMode::Basic)
+  auto mode = static_cast<FFGUISettingsVisualsMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
+  if (mode == FFGUISettingsVisualsMode::Basic)
     return FBGUIRenderType::Basic;
-  if (mode == FFSettingsVisualsMode::Always)
+  if (mode == FFGUISettingsVisualsMode::Always)
     return FBGUIRenderType::Full;
   return hasKeyboardFocus(true) ? FBGUIRenderType::Full : FBGUIRenderType::Basic;
 }
@@ -190,6 +192,8 @@ FFPlugGUI::SetupGUI()
   _outputTweakAndPatch->Add(0, 1, FFMakeTweakGUI(this));
   _outputTweakAndPatch->Add(0, 2, FFMakePatchGUI(this));
 
+  _guiSettings = FFMakeGUISettingsGUI(this);
+
   _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 0, 1 } });
   _topModules->Add(0, 0, FFMakeVoiceModuleGUI(this));
   _topModules->Add(0, 1, FFMakeMasterGUI(this));
@@ -213,9 +217,10 @@ FFPlugGUI::SetupGUI()
   _tabs->addTab("Matrix", Colours::black, _matrix, false);
   _tabs->addTab("Unison", Colours::black, _globalUni, false);
 
-  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 6, 9, 92 } }, std::vector<int> { { 1 } });
+  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 6, 6, 9, 92 } }, std::vector<int> { { 1 } });
   _container->Add(0, 0, _outputTweakAndPatch);
-  _container->Add(1, 0, _headerAndGraph);
-  _container->Add(2, 0, _tabs);
+  _container->Add(1, 0, _guiSettings);
+  _container->Add(2, 0, _headerAndGraph);
+  _container->Add(3, 0, _tabs);
   addAndMakeVisible(_container);
 }

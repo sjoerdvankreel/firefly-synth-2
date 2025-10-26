@@ -18,6 +18,7 @@ TODOLIST for alpha-19
 [x] highlight not default
 [x] hilite def on
 [x] show visual clue if knob is being modulated => todo skewing
+[ ] tweak and name into gui gui
 [ ] something with instance and patch naming
 [ ] modbounds for guni and easy access?
 [ ] re-save everything

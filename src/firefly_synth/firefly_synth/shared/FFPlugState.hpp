@@ -17,6 +17,7 @@
 #include <firefly_synth/modules/settings/FFSettingsState.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniState.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixState.hpp>
+#include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleState.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -34,7 +35,7 @@ class MTSClient;
 
 struct FFGUIState final
 {
-  std::array<FFSettingsGUIState, 1> settings = {};
+  std::array<FFGUISettingsGUIState, 1> guiSettings = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGUIState);
 };
 

@@ -17,6 +17,8 @@
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
 #include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
 #include <firefly_synth/modules/settings/FFSettingsState.hpp>
+#include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
+#include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
@@ -56,10 +58,10 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->maxUndoSize = 15;
   result->patchExtension = "ff2preset";
   result->guiWidth = 1260;
-  result->guiAspectRatioWidth = 16;
-  result->guiAspectRatioHeight = 9;
-  result->guiUserScaleModule = (int)FFModuleType::Settings;
-  result->guiUserScaleParam = (int)FFSettingsGUIParam::UserScale;
+  result->guiAspectRatioWidth = 32;
+  result->guiAspectRatioHeight = 19;
+  result->guiUserScaleModule = (int)FFModuleType::GUISettings;
+  result->guiUserScaleParam = (int)FFGUISettingsGUIParam::UserScale;
   result->guiFactory = [](FBHostGUIContext* hostContext) { 
     return std::make_unique<FFPlugGUI>(hostContext); };
   result->deserializationConverterFactory = [](FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo) { 
@@ -84,6 +86,7 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->modules[(int)FFModuleType::GlobalUni] = std::move(*FFMakeGlobalUniTopo());
   result->modules[(int)FFModuleType::VoiceModule] = std::move(*FFMakeVoiceModuleTopo());
   result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
+  result->modules[(int)FFModuleType::GUISettings] = std::move(*FFMakeGUISettingsTopo());
   result->modules[(int)FFModuleType::Settings] = std::move(*FFMakeSettingsTopo(isFX));
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::OsciMod] = std::move(*FFMakeOsciModTopo());
@@ -109,6 +112,7 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   // This better lines up with the audio engine.
   // Process order is used to determine what-can-modulate-what when building the
   // mod matrix. So if we get it wrong you get stuff like "lfo2 can mod lfo1".
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::GUISettings, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::Settings, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GMatrix, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::MIDI, 0 });
