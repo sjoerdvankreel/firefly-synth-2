@@ -28,7 +28,7 @@ FFMakeGUISettingsTopo()
   guiUserScale.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
 
   auto& guiHilightMod = result->guiParams[(int)FFGUISettingsGUIParam::HilightMod];
-  guiHilightMod.name = "Highlight Modulation Bounds";
+  guiHilightMod.name = "Show Modulation Bounds";
   guiHilightMod.slotCount = 1;
   guiHilightMod.defaultText = "On";
   guiHilightMod.id = "{193F0F95-D4D2-46A5-A978-C8740E0C08B3}";
@@ -37,7 +37,7 @@ FFMakeGUISettingsTopo()
   guiHilightMod.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightMod);
 
   auto& guiHilightTweak = result->guiParams[(int)FFGUISettingsGUIParam::HilightTweak];
-  guiHilightTweak.name = "Highlight Tweaked From Default";
+  guiHilightTweak.name = "Show Tweaked From Default";
   guiHilightTweak.slotCount = 1;
   guiHilightTweak.defaultText = "On";
   guiHilightTweak.id = "{486DAE85-F8CC-4825-ACEA-D13D3D8A6933}";

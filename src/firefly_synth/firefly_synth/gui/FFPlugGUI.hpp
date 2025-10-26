@@ -1,5 +1,7 @@
 #pragma once
 
+#include <firefly_synth/modules/mix/FFVMixGUI.hpp>
+#include <firefly_synth/modules/mix/FFGMixGUI.hpp>
 #include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
@@ -38,6 +40,8 @@ public FBPlugGUI
 
   FBModuleGraphComponent* _mainGraph = {};
   std::vector<FBModuleGraphComponent*> _fixedGraphs = {};  
+  std::unique_ptr<FFVMixParamListener> _vMixParamListener = {};
+  std::unique_ptr<FFGMixParamListener> _gMixParamListener = {};
   std::unique_ptr<FFModMatrixParamListener> _modMatrixParamListener = {};
   std::unique_ptr<FFGlobalUniParamListener> _globalUniParamListener = {};
   std::unique_ptr<FFVoiceModuleParamListener> _voiceModuleParamListener = {};

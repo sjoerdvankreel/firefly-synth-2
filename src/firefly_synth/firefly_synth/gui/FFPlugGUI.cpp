@@ -139,7 +139,11 @@ FFPlugGUI::GetParamModulationBounds(int index, double& minNorm, double& maxNorm)
   float valueNorm = (float)HostContext()->GetAudioParamNormalized(index);
   float currentMinNorm = valueNorm;
   float currentMaxNorm = valueNorm;    
+
+  // Matrix goes first, as in DSP!
   result |= FFModMatrixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
+  result |= FFVMixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
+  result |= FFGMixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
   result |= FFVoiceModuleAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
   minNorm = result? currentMinNorm: 0.0;
   maxNorm = result ? currentMaxNorm : 0.0f;
@@ -229,6 +233,8 @@ FFPlugGUI::SetupGUI()
   _container->Add(2, 0, _headerAndGraph);
   _container->Add(3, 0, _tabs);
 
+  _vMixParamListener = std::make_unique<FFVMixParamListener>(this);
+  _gMixParamListener = std::make_unique<FFGMixParamListener>(this);
   _modMatrixParamListener = std::make_unique<FFModMatrixParamListener>(this);
   _globalUniParamListener = std::make_unique<FFGlobalUniParamListener>(this);
   _voiceModuleParamListener = std::make_unique<FFVoiceModuleParamListener>(this);

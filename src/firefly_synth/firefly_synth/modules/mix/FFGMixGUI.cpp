@@ -1,4 +1,5 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/dsp/shared/FFModulate.hpp>
 #include <firefly_synth/modules/mix/FFMixGUI.hpp>
 #include <firefly_synth/modules/mix/FFGMixGUI.hpp>
 #include <firefly_synth/modules/mix/FFGMixTopo.hpp>
@@ -13,6 +14,58 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
+
+FFGMixParamListener::
+~FFGMixParamListener()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FFGMixParamListener::
+FFGMixParamListener(FBPlugGUI* plugGUI):
+_plugGUI(plugGUI)
+{
+  _plugGUI->AddParamListener(this);
+}
+
+void 
+FFGMixParamListener::AudioParamChanged(
+  int index, double /*normalized*/, bool /*changedFromUI*/)
+{
+  auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
+  if (indices.module.index != (int)FFModuleType::GMix)
+    return;
+  if (indices.param.index == (int)FFGMixParam::LFO5ToAmp)
+    _plugGUI->RepaintSlidersForAudioParam({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::Amp, 0 } });
+  if (indices.param.index == (int)FFGMixParam::LFO6ToBal)
+    _plugGUI->RepaintSlidersForAudioParam({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::Bal, 0 } });
+}
+
+bool
+FFGMixAdjustParamModulationGUIBounds(
+  FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
+{
+  auto const& rtParam = ctx->Topo()->audio.params[index];
+  int staticIndex = ctx->Topo()->modules[rtParam.runtimeModuleIndex].topoIndices.index;
+  if (staticIndex != (int)FFModuleType::GMix)
+    return false;
+
+  if (rtParam.topoIndices.param.index == (int)FFGMixParam::Amp)
+  {
+    double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::LFO5ToAmp, 0 } });
+    FFApplyGUIModulationBounds(FFModulationOpType::UPMul, (float)modAmount, currentMinNorm, currentMaxNorm);
+    return true;
+  }
+
+  if (rtParam.topoIndices.param.index == (int)FFGMixParam::Bal)
+  {
+    double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::LFO6ToBal, 0 } });
+    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, (float)modAmount, currentMinNorm, currentMaxNorm);
+    return true;
+  }
+
+  return false;
+}
 
 static Component*
 MakeGMixSectionVoiceToGFXAndExtAudioToGFX(FBPlugGUI* plugGUI)
