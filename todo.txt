@@ -23,6 +23,7 @@ TODOLIST for alpha-19
 [ ] make it clear clap and guni can go outside bounds
 
 TODOLIST for alpha-20 - rest of the gui stuff
+[ ] param menu : set to default / set to patch
 [ ] fix string patch sharing samplerate bug
 [ ] not crash Linux on enable sync echo
 [ ] something with instance and patch naming
