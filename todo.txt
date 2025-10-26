@@ -20,6 +20,7 @@ TODOLIST for alpha-19
 [x] show visual clue if knob is being modulated => todo skewing
 [x] tweak and name into gui gui
 [x] modbounds for guni and easy access?
+[ ] make it clear clap and guni can go outside bounds
 
 TODOLIST for alpha-20 - rest of the gui stuff
 [ ] fix string patch sharing samplerate bug
