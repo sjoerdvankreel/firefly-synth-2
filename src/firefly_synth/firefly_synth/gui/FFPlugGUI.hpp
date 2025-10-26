@@ -3,6 +3,7 @@
 #include <firefly_synth/modules/mix/FFVMixGUI.hpp>
 #include <firefly_synth/modules/mix/FFGMixGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
+#include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
@@ -44,6 +45,7 @@ public FBPlugGUI
   std::unique_ptr<FFOsciParamListener> _osciParamListener = {};
   std::unique_ptr<FFVMixParamListener> _vMixParamListener = {};
   std::unique_ptr<FFGMixParamListener> _gMixParamListener = {};
+  std::unique_ptr<FFEffectParamListener> _effectParamListener = {};
   std::unique_ptr<FFModMatrixParamListener> _modMatrixParamListener = {};
   std::unique_ptr<FFGlobalUniParamListener> _globalUniParamListener = {};
   std::unique_ptr<FFVoiceModuleParamListener> _voiceModuleParamListener = {};

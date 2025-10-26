@@ -1,4 +1,5 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/dsp/shared/FFModulate.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
@@ -18,6 +19,59 @@
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
 
 using namespace juce;
+
+FFEffectParamListener::
+~FFEffectParamListener()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FFEffectParamListener::
+FFEffectParamListener(FBPlugGUI* plugGUI):
+_plugGUI(plugGUI)
+{
+  _plugGUI->AddParamListener(this);
+}
+
+void 
+FFEffectParamListener::AudioParamChanged(
+  int index, double /*normalized*/, bool /*changedFromUI*/)
+{
+  auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
+  if (indices.module.index != (int)FFModuleType::VEffect && indices.module.index != (int)FFModuleType::GEffect)
+    return;
+  if (indices.param.index == (int)FFEffectParam::EnvAmt || indices.param.index == (int)FFEffectParam::LFOAmt)
+  {
+    _plugGUI->RepaintSlidersForAudioParam({ { indices.module.index, indices.module.slot }, { (int)FFEffectParam::DistDrive, indices.param.slot } });
+    _plugGUI->RepaintSlidersForAudioParam({ { indices.module.index, indices.module.slot }, { (int)FFEffectParam::StVarFreq, indices.param.slot } });
+    _plugGUI->RepaintSlidersForAudioParam({ { indices.module.index, indices.module.slot }, { (int)FFEffectParam::CombFreqMin, indices.param.slot } });
+    _plugGUI->RepaintSlidersForAudioParam({ { indices.module.index, indices.module.slot }, { (int)FFEffectParam::CombFreqPlus, indices.param.slot } });
+  }
+}
+
+bool
+FFEffectAdjustParamModulationGUIBounds(
+  FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
+{
+  auto const& rtParam = ctx->Topo()->audio.params[index];
+  int staticIndex = ctx->Topo()->modules[rtParam.runtimeModuleIndex].topoIndices.index;
+  if (staticIndex != (int)FFModuleType::VEffect && staticIndex != (int)FFModuleType::GEffect)
+    return false;
+
+  if (rtParam.topoIndices.param.index == (int)FFEffectParam::DistDrive ||
+    rtParam.topoIndices.param.index == (int)FFEffectParam::StVarFreq ||
+    rtParam.topoIndices.param.index == (int)FFEffectParam::CombFreqMin ||
+    rtParam.topoIndices.param.index == (int)FFEffectParam::CombFreqPlus)
+  {
+    double modAmountEnv = ctx->GetAudioParamNormalized({ { staticIndex, rtParam.topoIndices.module.slot }, { (int)FFEffectParam::EnvAmt, rtParam.topoIndices.param.slot } });
+    FFApplyGUIModulationBounds(FFModulationOpType::UPMul, (float)modAmountEnv, currentMinNorm, currentMaxNorm);
+    double modAmountLFO = ctx->GetAudioParamNormalized({ { staticIndex, rtParam.topoIndices.module.slot }, { (int)FFEffectParam::LFOAmt, rtParam.topoIndices.param.slot } });
+    FFApplyGUIModulationBounds(FFModulationOpType::UPMul, (float)modAmountLFO, currentMinNorm, currentMaxNorm);
+    return true;
+  }
+
+  return false;
+}
 
 static Component*
 MakeEffectSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
