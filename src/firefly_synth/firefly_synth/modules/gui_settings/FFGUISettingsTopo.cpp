@@ -52,8 +52,8 @@ FFMakeGUISettingsTopo()
   guiKnobVisualsMode.id = "{75702E18-0499-45ED-935E-A1BC1D0348C3}";
   guiKnobVisualsMode.type = FBParamType::List;
   guiKnobVisualsMode.List().items = {
-    { "{74535D7D-90EC-407D-A439-946A9C09351D}", "On" },
-    { "{C1A672E9-332D-4A33-8FAC-D8D60A892561}", "Off" },
+    { "{74535D7D-90EC-407D-A439-946A9C09351D}", "Off" },
+    { "{C1A672E9-332D-4A33-8FAC-D8D60A892561}", "On" },
     { "{B2BA8788-B64E-4BF8-8584-DA13916ADC59}", "If Focus" } };
   auto selectGuiKnobVisualsMode = [](auto& module) { return &module.knobVisualsMode; };
   guiKnobVisualsMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiKnobVisualsMode);
@@ -65,8 +65,8 @@ FFMakeGUISettingsTopo()
   guiGraphVisualsMode.id = "{6C5F2DC2-C796-444C-8D43-077708580609}";
   guiGraphVisualsMode.type = FBParamType::List;
   guiGraphVisualsMode.List().items = {
-    { "{D5C9FC77-0DE8-4077-9D07-073B44F5076F}", "On" },
-    { "{8291740E-D7DC-4481-B430-9C73F3343E10}", "Off" },
+    { "{D5C9FC77-0DE8-4077-9D07-073B44F5076F}", "Off" },
+    { "{8291740E-D7DC-4481-B430-9C73F3343E10}", "On" },
     { "{A5369260-7E9F-4C23-8FED-0C42CAA9DD91}", "If Focus" } };
   auto selectGuiGraphVisualsMode = [](auto& module) { return &module.graphVisualsMode; };
   guiGraphVisualsMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphVisualsMode);
