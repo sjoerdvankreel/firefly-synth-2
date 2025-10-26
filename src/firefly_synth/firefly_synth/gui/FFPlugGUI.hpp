@@ -30,10 +30,10 @@ public FBPlugGUI
   juce::Component* _globalUni = {};
   FBGridComponent* _container = {};
   FBGridComponent* _topModules = {};
-  juce::Component* _guiSettings = {};
   FBAutoSizeTabComponent* _tabs = {};
   FBGridComponent* _headerAndGraph = {};
-  FBGridComponent* _outputTweakAndPatch = {}; // todo nottweak
+  FBGridComponent* _outputAndPatch = {};
+  FBGridComponent* _guiSettingsAndTweak = {};
 
   FBModuleGraphComponent* _mainGraph = {};
   std::vector<FBModuleGraphComponent*> _fixedGraphs = {};  

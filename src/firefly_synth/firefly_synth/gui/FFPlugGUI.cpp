@@ -187,12 +187,13 @@ FFPlugGUI::SetupGUI()
   _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
   _headerAndGraph->Add(0, 1, _mainGraph);
 
-  _outputTweakAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
-  _outputTweakAndPatch->Add(0, 0, FFMakeOutputGUI(this));
-  _outputTweakAndPatch->Add(0, 1, FFMakeTweakGUI(this));
-  _outputTweakAndPatch->Add(0, 2, FFMakePatchGUI(this));
+  _outputAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0 } });
+  _outputAndPatch->Add(0, 0, FFMakeOutputGUI(this));
+  _outputAndPatch->Add(0, 1, FFMakePatchGUI(this));
 
-  _guiSettings = FFMakeGUISettingsGUI(this);
+  _guiSettingsAndTweak = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
+  _guiSettingsAndTweak->Add(0, 0, FFMakeGUISettingsGUI(this));
+  _guiSettingsAndTweak->Add(0, 1, FFMakeTweakGUI(this));
 
   _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 5, 4, 0 } });
   _topModules->Add(0, 0, FFMakeVoiceModuleGUI(this));
@@ -218,8 +219,8 @@ FFPlugGUI::SetupGUI()
   _tabs->addTab("Unison", Colours::black, _globalUni, false);
 
   _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 6, 6, 9, 92 } }, std::vector<int> { { 1 } });
-  _container->Add(0, 0, _outputTweakAndPatch);
-  _container->Add(1, 0, _guiSettings);
+  _container->Add(0, 0, _outputAndPatch);
+  _container->Add(1, 0, _guiSettingsAndTweak);
   _container->Add(2, 0, _headerAndGraph);
   _container->Add(3, 0, _tabs);
   addAndMakeVisible(_container);
