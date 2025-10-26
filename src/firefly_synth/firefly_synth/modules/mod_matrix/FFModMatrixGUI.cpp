@@ -411,17 +411,13 @@ FFMakeModMatrixGUI(FFPlugGUI* plugGUI)
 }
 
 bool
-FFModMatrixGetParamModulationBounds(
-  FBHostGUIContext const* ctx, int index, double& minNormOut, double& maxNormOut)
+FFModMatrixAdjustParamModulationGUIBounds(
+  FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
 {
   // Figure out maximum bounds of what the mod matrix would do to the 
   // current value if all sources/scales would use the full 0..1 range.
 
   bool haveAny = false;
-  float valueNorm = (float)ctx->GetAudioParamNormalized(index);
-  float minNorm = valueNorm;
-  float maxNorm = valueNorm;
-
   int rtIndex = ctx->Topo()->audio.params[index].runtimeModuleIndex;
   int staticIndex = ctx->Topo()->modules[rtIndex].topoIndices.index;
   bool isGlobal = !ctx->Topo()->static_->modules[staticIndex].voice;
@@ -446,25 +442,11 @@ FFModMatrixGetParamModulationBounds(
           float scaleMax = (float)ctx->GetAudioParamNormalized({ { moduleType, 0, }, { (int)FFModMatrixParam::ScaleMax, s } });
           float targetAmt = (float)ctx->GetAudioParamNormalized({ { moduleType, 0, }, { (int)FFModMatrixParam::TargetAmt, s } });
           float scaledTargetAmt = scaleMin + (scaleMax - scaleMin) * targetAmt;
-
-          float newMinNorm0 = minNorm;
-          float newMinNorm1 = minNorm;
-          FFApplyModulation(opType, 0.0f, scaledTargetAmt, newMinNorm0);
-          FFApplyModulation(opType, 1.0f, scaledTargetAmt, newMinNorm1);
-          minNorm = std::min(newMinNorm0, newMinNorm1);
-
-          float newMaxNorm0 = maxNorm;
-          float newMaxNorm1 = maxNorm;
-          FFApplyModulation(opType, 0.0f, scaledTargetAmt, newMaxNorm0);
-          FFApplyModulation(opType, 1.0f, scaledTargetAmt, newMaxNorm1);
-          maxNorm = std::max(newMaxNorm0, newMaxNorm1);
-
+          FFApplyGUIModulationBounds(opType, scaledTargetAmt, currentMinNorm, currentMaxNorm);
           haveAny = true;
         }
       }
   }
 
-  minNormOut = minNorm;
-  maxNormOut = maxNorm;
   return haveAny;
 }

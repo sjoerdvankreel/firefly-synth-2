@@ -21,6 +21,5 @@ public:
 
 juce::Component*
 FFMakeModMatrixGUI(FFPlugGUI* plugGUI);
-bool
-FFModMatrixGetParamModulationBounds(
-  FBHostGUIContext const* ctx, int index, double& minNorm, double& maxNorm);
+bool FFModMatrixAdjustParamModulationGUIBounds(
+FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm);

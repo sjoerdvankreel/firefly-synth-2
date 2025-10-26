@@ -3,6 +3,7 @@
 #include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
+#include <firefly_synth/modules/voice_module/FFVoiceModuleGUI.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
@@ -39,6 +40,7 @@ public FBPlugGUI
   std::vector<FBModuleGraphComponent*> _fixedGraphs = {};  
   std::unique_ptr<FFModMatrixParamListener> _modMatrixParamListener = {};
   std::unique_ptr<FFGlobalUniParamListener> _globalUniParamListener = {};
+  std::unique_ptr<FFVoiceModuleParamListener> _voiceModuleParamListener = {};
 
   void SetupGUI();
   bool HighlightTweaked() const override;

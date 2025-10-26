@@ -309,3 +309,19 @@ FFApplyModulation(
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     target.Store(s, FFModulate(opType, source.Load(s), amount.Load(s), target.Load(s)));
 }
+
+inline void
+FFApplyGUIModulationBounds(FFModulationOpType opType, float amount, float& minNorm, float& maxNorm)
+{
+  float newMinNorm0 = minNorm;
+  float newMinNorm1 = minNorm;
+  FFApplyModulation(opType, 0.0f, amount, newMinNorm0);
+  FFApplyModulation(opType, 1.0f, amount, newMinNorm1);
+  minNorm = std::min(newMinNorm0, newMinNorm1);
+
+  float newMaxNorm0 = maxNorm;
+  float newMaxNorm1 = maxNorm;
+  FFApplyModulation(opType, 0.0f, amount, newMaxNorm0);
+  FFApplyModulation(opType, 1.0f, amount, newMaxNorm1);
+  maxNorm = std::max(newMaxNorm0, newMaxNorm1);
+}

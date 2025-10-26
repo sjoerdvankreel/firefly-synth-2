@@ -1,4 +1,5 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/dsp/shared/FFModulate.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleGUI.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
 
@@ -16,6 +17,53 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
+
+FFVoiceModuleParamListener::
+~FFVoiceModuleParamListener()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FFVoiceModuleParamListener::
+FFVoiceModuleParamListener(FBPlugGUI* plugGUI):
+_plugGUI(plugGUI)
+{
+  _plugGUI->AddParamListener(this);
+}
+
+void 
+FFVoiceModuleParamListener::AudioParamChanged(
+  int index, double /*normalized*/, bool /*changedFromUI*/)
+{
+  auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
+  if (indices.module.index != (int)FFModuleType::VoiceModule)
+    return;
+  if (indices.param.index == (int)FFVoiceModuleParam::Env5ToCoarse)
+  {
+    FBParamTopoIndices targetIndices = { { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::Coarse, 0 } };
+    int targetIndex = _plugGUI->HostContext()->Topo()->audio.ParamAtTopo(targetIndices)->runtimeParamIndex;
+    dynamic_cast<FBParamSlider&>(*_plugGUI->GetControlForAudioParamIndex(targetIndex, 0)).repaint();
+  }
+}
+
+bool
+FFVoiceModuleAdjustParamModulationGUIBounds(
+  FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
+{
+  auto const& rtParam = ctx->Topo()->audio.params[index];
+  int staticIndex = ctx->Topo()->modules[rtParam.runtimeModuleIndex].topoIndices.index;
+  if (staticIndex != (int)FFModuleType::VoiceModule)
+    return;
+
+  if (rtParam.topoIndices.param.index == (int)FFVoiceModuleParam::Coarse)
+  {
+    double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::Env5ToCoarse, 0 } });
+    FFApplyGUIModulationBounds(FFModulationOpType::UPStack, (float)modAmount, currentMinNorm, currentMaxNorm);
+    return true;
+  }
+
+  return false;
+}
 
 static Component*
 MakeVoiceModuleSectionPorta(FBPlugGUI* plugGUI)

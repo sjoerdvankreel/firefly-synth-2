@@ -134,9 +134,16 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
 bool 
 FFPlugGUI::GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const
 {
-  // Note: we only take into account the matrix,
-  // not the easy-access modulators or the unison.
-  return FFModMatrixGetParamModulationBounds(HostContext(), index, minNorm, maxNorm);
+  // Note: we only take into account the matrix and the easy-access controls, not the unison.
+  bool result = false;
+  float valueNorm = (float)HostContext()->GetAudioParamNormalized(index);
+  float currentMinNorm = valueNorm;
+  float currentMaxNorm = valueNorm;    
+  result |= FFModMatrixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
+  result |= FFVoiceModuleAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
+  minNorm = result? currentMinNorm: 0.0;
+  maxNorm = result ? currentMaxNorm : 0.0f;
+  return result;
 }
 
 bool
@@ -201,9 +208,7 @@ FFPlugGUI::SetupGUI()
   _topModules->Add(0, 2, FFMakeSettingsGUI(this));
 
   _matrix = FFMakeModMatrixGUI(this);
-  _modMatrixParamListener = std::make_unique<FFModMatrixParamListener>(this);
   _globalUni = FFMakeGlobalUniGUI(this, _graphRenderState.get(), &_fixedGraphs);
-  _globalUniParamListener = std::make_unique<FFGlobalUniParamListener>(this);
   _main = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 1 } });
   _main->Add(0, 0, _topModules);
   _main->Add(1, 0, FFMakeMixGUI(this));
@@ -223,5 +228,10 @@ FFPlugGUI::SetupGUI()
   _container->Add(1, 0, _guiSettingsAndTweak);
   _container->Add(2, 0, _headerAndGraph);
   _container->Add(3, 0, _tabs);
+
+  _modMatrixParamListener = std::make_unique<FFModMatrixParamListener>(this);
+  _globalUniParamListener = std::make_unique<FFGlobalUniParamListener>(this);
+  _voiceModuleParamListener = std::make_unique<FFVoiceModuleParamListener>(this);
+
   addAndMakeVisible(_container);
 }
