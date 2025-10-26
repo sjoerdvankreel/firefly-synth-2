@@ -53,7 +53,7 @@ FFVoiceModuleAdjustParamModulationGUIBounds(
   auto const& rtParam = ctx->Topo()->audio.params[index];
   int staticIndex = ctx->Topo()->modules[rtParam.runtimeModuleIndex].topoIndices.index;
   if (staticIndex != (int)FFModuleType::VoiceModule)
-    return;
+    return false;
 
   if (rtParam.topoIndices.param.index == (int)FFVoiceModuleParam::Coarse)
   {
