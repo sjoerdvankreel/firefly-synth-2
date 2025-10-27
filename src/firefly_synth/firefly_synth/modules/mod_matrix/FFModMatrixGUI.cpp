@@ -436,8 +436,8 @@ FFModMatrixAdjustParamModulationGUIBounds(
           float scaleMin = (float)ctx->GetAudioParamNormalized({ { moduleType, 0, }, { (int)FFModMatrixParam::ScaleMin, s } });
           float scaleMax = (float)ctx->GetAudioParamNormalized({ { moduleType, 0, }, { (int)FFModMatrixParam::ScaleMax, s } });
           float targetAmt = (float)ctx->GetAudioParamNormalized({ { moduleType, 0, }, { (int)FFModMatrixParam::TargetAmt, s } });
-          float scaledTargetAmt = scaleMin + (scaleMax - scaleMin) * targetAmt;
-          FFApplyGUIModulationBounds(opType, scaledTargetAmt, currentMinNorm, currentMaxNorm);
+          FFApplyGUIModulationBounds(opType, scaleMin * targetAmt, currentMinNorm, currentMaxNorm);
+          FFApplyGUIModulationBounds(opType, scaleMax * targetAmt, currentMinNorm, currentMaxNorm);
           haveAny = true;
         }
       }
