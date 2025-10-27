@@ -24,6 +24,7 @@ TODOLIST for alpha-19
 [ ] make it clear clap and guni can go outside bounds
 
 TODOLIST for alpha-20 - tuning and keytracking
+[ ] the ktrk is already faulty even without tuning bc it tracks literally just the key, not base pitch
 [ ] filter kbd track -- should it take into account all coarse pitch mods ?
 [ ] make a dedicated tuning section with some options
 [ ] need per-instance params for microtuning
