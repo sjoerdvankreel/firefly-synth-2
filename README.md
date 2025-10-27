@@ -221,7 +221,6 @@ These go out of bounds reasonably fast, so i soft-clip the feedback path at +/- 
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
 
 # Screenshots
-<img alt="Screenshot" src="static/screenshot.png"/>
+<img alt="Screenshot Main" src="static/screenshot_main.png"/>
 <img alt="Screenshot Matrix" src="static/screenshot_matrix.png"/>
-<img alt="Screenshot Multitap" src="static/screenshot_multi_tap.png"/>
-<img alt="Screenshot Global Unison" src="static/screenshot_global_uni.png"/>
+<img alt="Screenshot Unison" src="static/screenshot_unison.png"/>
