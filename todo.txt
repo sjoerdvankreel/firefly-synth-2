@@ -1,28 +1,3 @@
-TODOLIST for alpha-19
-[x] inv on the matrix source
-[x] invert scale-none no workie => cannot do, need bipolar amount
-[x] more bars to the audio meters
-[x] drop toplevel infra
-[x] drop "g.uni", just call it unison
-[x] recheck the guni and modmatrix param listeners -> only on non-automatable
-[x] move overlay infra to base
-[x] osc mix->out not fit, go to 1280?
-[x] rename ofst  to phase
-[x] do graph/knob gui separate again
-[x] "knob visual" clips
-[x] extsmth/rcvn => settings module, not save in patch, this later also hosts tuning settings. also move all gui settings there
-[x] do the not-in-patch thing
-[x] not store fake params (mode::fake)
-[x] bright text when graph on
-[x] get the text out of the graphs
-[x] highlight not default
-[x] hilite def on
-[x] show visual clue if knob is being modulated => todo skewing
-[x] tweak and name into gui gui
-[x] modbounds for guni and easy access?
-[x] modmat scale minmax not good plot bounds for gui
-[ ] make it clear clap and guni can go outside bounds
-
 TODOLIST for alpha-20 - tuning and keytracking
 [ ] the ktrk is already faulty even without tuning bc it tracks literally just the key, not base pitch
 [ ] filter kbd track -- should it take into account all coarse pitch mods ?

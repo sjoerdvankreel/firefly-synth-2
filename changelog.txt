@@ -1,3 +1,17 @@
+October 27, 2025 - Alpha 19.
+
+- Modules:
+* Matrix: add "invert source" option.
+* Global unison: bugfix, graph plots are now only switched by user interaction, not automation.
+* Master "external smoothing" and "receive notes" parameters moved to new Settings module. Saved per-session, not per-patch.
+
+- UI:
+* Went slightly bigger to accommodate UI changes.
+* Brushed up the graph plots a bit, look more pretty now.
+* GUI settings now have their own dedicated screen space.
+* New GUI option: highlight parameters that divert from their default value.
+* New GUI option: highlight modulation bounds on sliders. This takes into account modmatrix and easy-access controls, but not global unison or CLAP host modulation.
+
 October 15, 2025 - Alpha 18.
 
 - Core
