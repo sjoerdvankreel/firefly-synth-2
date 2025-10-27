@@ -29,7 +29,7 @@ public IFBPlugProcessor
   FFMarsagliaPRNG<false> _onNoteRandomNorm = {};
 
   // connect to manual-click button, sick of dealing with this
-  bool _prevFlushDelayToggle = false;
+  bool _prevFlushAudioToggle = false;
 
   FBModuleProcState MakeModuleState(FBPlugInputBlock const& input);
   FBModuleProcState MakeModuleVoiceState(FBPlugInputBlock const& input, int voice);

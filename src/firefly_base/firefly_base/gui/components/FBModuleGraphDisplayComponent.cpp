@@ -69,9 +69,9 @@ FBModuleGraphDisplayComponent::PaintVerticalIndicator(
   int maxSizeAllSeries, float absMaxValueAllSeries)
 {
   float dashes[2] = { 4, 2 };
-  g.setColour(Colours::white);
+  g.setColour(Colours::white.withAlpha(0.5f));
   if (!primary)
-    g.setColour(Colours::white.withAlpha(0.5f));
+    g.setColour(Colours::white.withAlpha(0.25f));
   float x = PointXLocation(graph, point / static_cast<float>(maxSizeAllSeries), true);
   float y0 = PointYLocation(0.0f, false, false, absMaxValueAllSeries, true);
   float y1 = PointYLocation(absMaxValueAllSeries, false, false, absMaxValueAllSeries, true);
@@ -123,7 +123,7 @@ FBModuleGraphDisplayComponent::PaintClipBoundaries(
   float x1 = PointXLocation(graph, 1.0f, true);
   float upperY = PointYLocation(1.0f, stereo, left, absMaxValueAllSeries, true);
   float lowerY = PointYLocation(_data->bipolar? -1.0f: 0.0f, stereo, left, absMaxValueAllSeries, true);
-  g.setColour(Colours::white);
+  g.setColour(Colours::white.withAlpha(0.25f));
   g.drawDashedLine(Line<float>(x0, upperY, x1, upperY), dashes, 2);
   g.drawDashedLine(Line<float>(x0, lowerY, x1, lowerY), dashes, 2);
 }
@@ -193,9 +193,12 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       }
     }
 
-    g.setColour(Colours::darkgrey);
-    g.setFont(FBGUIGetFont().withHeight(20.0f));
-    g.drawText(graphData.text, graphBounds, Justification::centred, false);
+    if (graphData.subtext.size())
+    {
+      g.setColour(Colour(0xFF404040));
+      g.setFont(FBGUIGetFont().withHeight(20.0f));
+      g.drawText(graphData.subtext, graphBounds, Justification::centred, false);
+    }
 
     if (maxSizeAllSeries != 0)
     {
@@ -246,6 +249,23 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         if (stereo)
           PaintClipBoundaries(g, graph, stereo, true, absMaxValueAllSeries);
       }
+    }
+
+    if (graphData.title.size())
+    {
+      float const labelPad = 4.0f;
+      auto newFont = FBGUIGetFont().withHeight(14.0f);
+      auto textSize = TextLayout::getStringBounds(newFont, graphData.title);
+      auto textBounds = Rectangle<float>(
+        graphBounds.getX() + graphBounds.getWidth() - textSize.getWidth() - 2.0f * labelPad,
+        (float)graphBounds.getY() + labelPad,
+        textSize.getWidth() + labelPad,
+        textSize.getHeight() + labelPad);
+      g.setColour(Colour(0xE0333333));
+      g.fillRoundedRectangle(textBounds, 2.0f);
+      g.setColour(getLookAndFeel().findColour(Slider::ColourIds::thumbColourId));
+      g.setFont(newFont);
+      g.drawText(graphData.title, textBounds, Justification::centred, false);
     }
   }
 }

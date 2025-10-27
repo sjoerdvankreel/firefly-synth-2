@@ -3,8 +3,15 @@
 #include <firefly_base/gui/shared/FBParamComponent.hpp>
 #include <firefly_base/gui/shared/FBParamsDependent.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
+#include <firefly_base/gui/controls/FBLastTweaked.hpp>
+#include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
+#include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBFillerComponent.hpp>
+#include <firefly_base/gui/components/FBSectionComponent.hpp>
+#include <firefly_base/gui/components/FBContentComponent.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
@@ -14,12 +21,23 @@
 using namespace juce;
 
 FBPlugGUI::
+~FBPlugGUI() {}
+
+FBPlugGUI::
 FBPlugGUI(FBHostGUIContext* hostContext) :
 _hostContext(hostContext)
 {
   _tooltipWindow = StoreComponent<TooltipWindow>();
   addAndMakeVisible(_tooltipWindow);
   addMouseListener(this, true);
+  SetupOverlayGUI();
+}
+
+void
+FBPlugGUI::SetScale(double scale)
+{
+  _scale = scale;
+  setTransform(AffineTransform::scale(static_cast<float>(scale)));
 }
 
 void
@@ -34,12 +52,6 @@ FBPlugGUI::InitAllDependencies()
   auto const& audioParams = HostContext()->Topo()->audio.params;
   for (int i = 0; i < audioParams.size(); i++)
     AudioParamNormalizedChanged(i);
-}
-
-void
-FBPlugGUI::GUIParamNormalizedChanged(int index, double /*value*/)
-{
-  GUIParamNormalizedChanged(index);
 }
 
 void
@@ -80,6 +92,13 @@ FBPlugGUI::AudioParamNormalizedChangedFromHost(int index, double value)
     _paramListeners[i]->AudioParamChanged(index, value, false);
 }
 
+FBGUIParamControl* 
+FBPlugGUI::GetControlForGUIParamIndex(int paramIndex) const
+{
+  auto guiControl = _store[_guiParamIndexToComponent.at(paramIndex)].get();
+  return &dynamic_cast<FBGUIParamControl&>(*guiControl);
+}
+
 void
 FBPlugGUI::GUIParamNormalizedChanged(int index)
 {
@@ -93,6 +112,15 @@ FBPlugGUI::GUIParamNormalizedChanged(int index)
 }
 
 void
+FBPlugGUI::GUIParamNormalizedChanged(int index, double value)
+{
+  auto iter = _guiParamIndexToComponent.find(index);
+  if (iter != _guiParamIndexToComponent.end())
+    GetControlForGUIParamIndex(index)->SetValueNormalizedFromPlug(value);
+  GUIParamNormalizedChanged(index);
+}
+
+void
 FBPlugGUI::AudioParamNormalizedChanged(int index)
 {
   auto const& paramTopo = HostContext()->Topo()->audio.params[index].static_;
@@ -102,6 +130,15 @@ FBPlugGUI::AudioParamNormalizedChanged(int index)
     target->DependenciesChanged(true);
   for (auto target : _audioParamsEnabledDependents[index])
     target->DependenciesChanged(false);
+}
+
+void 
+FBPlugGUI::RepaintSlidersForAudioParam(FBParamTopoIndices const& indices)
+{
+  int targetIndex = HostContext()->Topo()->audio.ParamAtTopo(indices)->runtimeParamIndex;
+  int controlCount = GetControlCountForAudioParamIndex(targetIndex);
+  for(int i = 0; i < controlCount; i++)
+    dynamic_cast<FBParamSlider&>(*GetControlForAudioParamIndex(targetIndex, i)).repaint();
 }
 
 int 
@@ -178,6 +215,7 @@ FBPlugGUI::UpdateExchangeState()
 void
 FBPlugGUI::ShowHostMenuForAudioParam(int index)
 {
+  FB_LOG_ENTRY_EXIT();
   auto menuItems = HostContext()->MakeAudioParamContextMenu(index);
   if (menuItems.empty())
     return;
@@ -318,7 +356,7 @@ FBPlugGUI::SavePatchToFile()
     if (file.getFullPathName().length() == 0) return;
     FBScalarStateContainer editState(*HostContext()->Topo());
     editState.CopyFrom(HostContext());
-    file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState));
+    file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState, true));
   });
 }
 
@@ -335,7 +373,7 @@ FBPlugGUI::LoadPatchFromFile()
     if (file.getFullPathName().length() == 0) return;
     auto text = file.loadFileAsString().toStdString();
     FBScalarStateContainer editState(*HostContext()->Topo());
-    if (HostContext()->Topo()->LoadEditStateFromString(text, editState))
+    if (HostContext()->Topo()->LoadEditStateFromString(text, editState, true))
     {
       HostContext()->UndoState().Snapshot("Load Patch");
       editState.CopyTo(HostContext());
@@ -347,4 +385,62 @@ FBPlugGUI::LoadPatchFromFile()
         "Error",
         "Failed to load patch. See log for details: " + FBGetLogPath(HostContext()->Topo()->static_->meta).string() + ".");
   });
+}
+
+void
+FBPlugGUI::SetupOverlayGUI()
+{
+  auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 0, 0 } });
+  _overlayCaption = StoreComponent<Label>();
+  overlayGrid->Add(0, 0, _overlayCaption);
+
+  auto overlayInit = StoreComponent<FBAutoSizeButton>("Init");
+  overlayInit->onClick = [this] { _overlayInit(); };
+  auto overlayInitSection = StoreComponent<FBSectionComponent>(overlayInit);
+  overlayGrid->Add(0, 1, overlayInitSection);
+
+  auto overlayClose = StoreComponent<FBAutoSizeButton>("Close");
+  overlayClose->onClick = [this] { HideOverlayComponent(); };
+  auto overlayCloseSection = StoreComponent<FBSectionComponent>(overlayClose);
+  overlayGrid->Add(0, 2, overlayCloseSection);
+
+  overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } });
+  _overlayContent = StoreComponent<FBContentComponent>();
+  overlayGrid->Add(1, 0, 1, 3, _overlayContent);
+  _overlayContainer = StoreComponent<FBSubSectionComponent>(overlayGrid, true);
+}
+
+void
+FBPlugGUI::HideOverlayComponent()
+{
+  if (_overlayComponent == nullptr)
+    return;
+  _overlayInit = {};
+  _overlayComponent->setVisible(false);
+  _overlayContent->SetContent(nullptr);
+  _overlayContainer->setVisible(false);
+  _overlayCaption->setText("", dontSendNotification);
+  removeChildComponent(_overlayContainer);
+}
+
+void
+FBPlugGUI::ShowOverlayComponent(
+  std::string const& title,
+  Component* overlay,
+  int w, int h, bool vCenter,
+  std::function<void()> init)
+{
+  if (_overlayComponent != nullptr)
+    HideOverlayComponent();
+  int x = (getWidth() - w) / 2;
+  int y = (getHeight() - h) / 2;
+  if (!vCenter)
+    y = (int)((getHeight() - h) * 0.9);
+  _overlayInit = init;
+  _overlayContent->SetContent(overlay);
+  _overlayContainer->setBounds(x, y, w, h);
+  _overlayCaption->setText(title, dontSendNotification);
+  addAndMakeVisible(_overlayContainer, 1);
+  _overlayContainer->resized();
+  _overlayComponent = overlay;
 }

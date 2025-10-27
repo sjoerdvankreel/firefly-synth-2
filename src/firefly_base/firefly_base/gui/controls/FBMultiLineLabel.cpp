@@ -23,6 +23,6 @@ FBAutoSizeMultiLineLabel::paint(Graphics& g)
   Label dummy;
   g.setFont(getLookAndFeel().getLabelFont(dummy));
   g.setColour(getLookAndFeel().findColour(Label::ColourIds::textColourId));
-  int y = static_cast<int>(std::round((getBounds().getHeight() - _textSize.y) * 0.5f) + _vOffset);
+  int y = static_cast<int>(std::ceil((getBounds().getHeight() - _textSize.y) * 0.5f) + _vOffset);
   g.drawMultiLineText(_text, 1, y, _textSize.x, Justification::centred);
 }

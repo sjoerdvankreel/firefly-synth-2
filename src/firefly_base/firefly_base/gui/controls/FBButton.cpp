@@ -53,12 +53,23 @@ _param(param),
 _enabledIf(enabledIf)
 {
   plugGUI->AddParamListener(this);
-  setEnabled(_enabledIf(_plugGUI->HostContext()->GetAudioParamDiscrete(param->topoIndices)));
+  ToggleEnabled();
+}
+
+void 
+FBParamValueLinkedButton::ToggleEnabled()
+{
+  if (_param->static_.type == FBParamType::Discrete)
+    setEnabled(_enabledIf(_plugGUI->HostContext()->GetAudioParamDiscrete(_param->topoIndices)));
+  else if (_param->static_.type == FBParamType::List)
+    setEnabled(_enabledIf(_plugGUI->HostContext()->GetAudioParamList<int>(_param->topoIndices)));
+  else
+    FB_ASSERT(false);
 }
 
 void
 FBParamValueLinkedButton::AudioParamChanged(int index, double /*normalized*/, bool /*changedFromUI*/)
 {
-  if(_param->runtimeParamIndex == index)
-    setEnabled(_enabledIf(_plugGUI->HostContext()->GetAudioParamDiscrete(_param->topoIndices)));
+  if (_param->runtimeParamIndex == index)
+    ToggleEnabled();
 }

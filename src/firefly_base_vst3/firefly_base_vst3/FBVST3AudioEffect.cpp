@@ -117,7 +117,7 @@ FBVST3AudioEffect::getState(IBStream* state)
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, state]()
   {
-    std::string json = _topo->SaveProcStateToString(*_procState);
+    std::string json = _topo->SaveProcStateToString(*_procState, false);
     if (!FBVST3SaveIBStream(state, json))
       return kResultFalse;
     return kResultOk;
@@ -133,7 +133,7 @@ FBVST3AudioEffect::setState(IBStream* state)
     std::string json;
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
-    _topo->LoadProcStateFromStringWithDryRun(json, *_procState);
+    _topo->LoadProcStateFromStringWithDryRun(json, *_procState, false);
     return kResultOk;
   });
 }

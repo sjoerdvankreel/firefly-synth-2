@@ -105,7 +105,7 @@ FFMakeOsciTopo()
   phase.mode = FBParamMode::VoiceStart;
   phase.defaultText = "0";
   phase.name = "Phase";
-  phase.display = "Phs";
+  phase.display = "Phase";
   phase.slotCount = 1;
   phase.unit = "%";
   phase.id = "{4BB87878-BB20-4253-85AD-E1B608A4B3D9}";
@@ -214,8 +214,8 @@ FFMakeOsciTopo()
   auto& uniOffset = result->params[(int)FFOsciParam::UniOffset];
   uniOffset.mode = FBParamMode::VoiceStart;
   uniOffset.defaultText = "50";
-  uniOffset.display = "Ofst";
-  uniOffset.name = "Uni Offset";
+  uniOffset.display = "Phs";
+  uniOffset.name = "Uni Phase";
   uniOffset.slotCount = 1;
   uniOffset.unit = "%";
   uniOffset.id = "{6F5754E1-BDF4-4685-98FC-8C613128EE8D}";
@@ -230,7 +230,7 @@ FFMakeOsciTopo()
   uniRandom.mode = FBParamMode::VoiceStart;
   uniRandom.defaultText = "50";
   uniRandom.display = "Rand";
-  uniRandom.name = "Uni Random";
+  uniRandom.name = "Uni Phs Rnd";
   uniRandom.slotCount = 1;
   uniRandom.unit = "%";
   uniRandom.id = "{6F7F6D55-5740-44AB-8442-267A5730E2DA}";
@@ -289,7 +289,7 @@ FFMakeOsciTopo()
   auto& waveBasicMode = result->params[(int)FFOsciParam::WaveBasicMode];
   waveBasicMode.mode = FBParamMode::Block;
   waveBasicMode.name = "Basic Mode";
-  waveBasicMode.display = "Bsc";
+  waveBasicMode.display = "Basic";
   waveBasicMode.slotFormatDisplay = true;
   waveBasicMode.slotCount = FFOsciWaveBasicCount;
   waveBasicMode.slotFormatter = FFFormatBlockSlot;
@@ -413,7 +413,7 @@ FFMakeOsciTopo()
   waveHSMode.mode = FBParamMode::Block;
   waveHSMode.defaultText = "Off";
   waveHSMode.name = "HardSync Mode";
-  waveHSMode.display = "HS";
+  waveHSMode.display = "H.Sync";
   waveHSMode.slotFormatDisplay = true;
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";

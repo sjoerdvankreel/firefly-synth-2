@@ -139,8 +139,7 @@ FFMakeGlobalUniTopo()
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
-  result->name = "Global Uni";
-  result->matrixName = "G.Uni";
+  result->name = "Unison";
   result->slotCount = 1;
   result->graphCount = 1;
   result->graphParticipatesInMain = false;
@@ -169,7 +168,7 @@ FFMakeGlobalUniTopo()
   mode.name = "Mode";
   mode.display = "Mode";
   mode.defaultTextSelector = [](int, int, int ps) {
-    return ps == (int)FFGlobalUniTarget::VoiceFine || ps == (int)FFGlobalUniTarget::OscPhaseOffset ? "AutoLin" : "Off"; };
+    return ps == (int)FFGlobalUniTarget::VoiceFine || ps == (int)FFGlobalUniTarget::OscPhaseOffset ? "Auto Lin" : "Off"; };
   mode.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Mode"; };
   mode.slotFormatterOverrides = true;
   mode.slotCount = (int)FFGlobalUniTarget::Count;
@@ -177,9 +176,9 @@ FFMakeGlobalUniTopo()
   mode.type = FBParamType::List;
   mode.List().items = {
     { "{328055DD-795F-402B-9B16-F30589866295}", "Off" },
-    { "{A7C3D7CD-2C1E-4691-831B-2688B751335C}", "AutoLin" },
-    { "{770E5F05-0041-4750-805F-BF08A5135B1B}", "AutoSkw" },
-    { "{7645E42A-1249-4483-9019-4F92AD9D0FF7}", "Manual" } };
+    { "{7645E42A-1249-4483-9019-4F92AD9D0FF7}", "Manual" },
+    { "{A7C3D7CD-2C1E-4691-831B-2688B751335C}", "Auto Lin" },
+    { "{770E5F05-0041-4750-805F-BF08A5135B1B}", "Auto Exp" } };
   auto selectMode = [](auto& module) { return &module.block.mode; };
   mode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectMode);
   mode.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectMode);
@@ -213,17 +212,17 @@ FFMakeGlobalUniTopo()
   };
   opType.type = FBParamType::List;
   opType.List().items = {
-    { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", "Off" },
-    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "UP Add" },
-    { "{AD641260-F205-497E-B483-330CFA025378}", "UP Mul" },
-    { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "UP Stk" },
-    { "{01014CF0-B70C-4E60-9A78-FF560CF05ECF}", "UP Rmp" },
-    { "{C18F6A70-944C-4A9B-8A01-561E1B6B93D4}", "BP Add" },
-    { "{4464FDBF-1CDA-4023-85CC-D3A90CC4F47B}", "BP Ad2" },
-    { "{3130BBE8-D204-450D-A3D2-AC4266FB8E4B}", "BP Mul" },
-    { "{69D5AD4B-BD0B-42A6-A252-A0A43D425F89}", "BP Stk" },
-    { "{D96CFB4F-1F3C-434C-A78D-BA624B3DFA10}", "BP Rmp" },
-    { "{79662DE0-C38D-4ECD-BCC1-5CDD210E0015}", "Ph Wrp" } };
+    { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", FFModulationOpTypeToString(FFModulationOpType::Off) },
+    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", FFModulationOpTypeToString(FFModulationOpType::UPAdd) },
+    { "{AD641260-F205-497E-B483-330CFA025378}", FFModulationOpTypeToString(FFModulationOpType::UPMul) },
+    { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", FFModulationOpTypeToString(FFModulationOpType::UPStack) },
+    { "{01014CF0-B70C-4E60-9A78-FF560CF05ECF}", FFModulationOpTypeToString(FFModulationOpType::UPRemap) },
+    { "{C18F6A70-944C-4A9B-8A01-561E1B6B93D4}", FFModulationOpTypeToString(FFModulationOpType::BPAdd) },
+    { "{4464FDBF-1CDA-4023-85CC-D3A90CC4F47B}", FFModulationOpTypeToString(FFModulationOpType::BPAdd2) },
+    { "{3130BBE8-D204-450D-A3D2-AC4266FB8E4B}", FFModulationOpTypeToString(FFModulationOpType::BPMul) },
+    { "{69D5AD4B-BD0B-42A6-A252-A0A43D425F89}", FFModulationOpTypeToString(FFModulationOpType::BPStack) },
+    { "{D96CFB4F-1F3C-434C-A78D-BA624B3DFA10}", FFModulationOpTypeToString(FFModulationOpType::BPRemap) },
+    { "{79662DE0-C38D-4ECD-BCC1-5CDD210E0015}", FFModulationOpTypeToString(FFModulationOpType::PhaseWrap) } };
   auto selectOpType = [](auto& module) { return &module.block.opType; };
   opType.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOpType);
   opType.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectOpType);
@@ -253,13 +252,13 @@ FFMakeGlobalUniTopo()
   autoSpread.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoSpread);
   autoSpread.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAutoSpread);
   autoSpread.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoSpread);
-  autoSpread.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount, (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return (vs[0] == (int)FFGlobalUniMode::AutoLinear || vs[0] == (int)FFGlobalUniMode::AutoSkew) && vs[1] > 1 && vs[2] != 0; });
+  autoSpread.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount, (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return (vs[0] == (int)FFGlobalUniMode::AutoLinear || vs[0] == (int)FFGlobalUniMode::AutoExp) && vs[1] > 1 && vs[2] != 0; });
 
   auto& autoSkew = result->params[(int)FFGlobalUniParam::AutoSkew];
   autoSkew.mode = FBParamMode::Accurate;
   autoSkew.defaultText = "50";
   autoSkew.name = "Auto Skew";
-  autoSkew.display = "Skw";
+  autoSkew.display = "Skew";
   autoSkew.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Skew"; };
   autoSkew.slotFormatterOverrides = true;
   autoSkew.slotCount = (int)FFGlobalUniTarget::Count;
@@ -271,12 +270,12 @@ FFMakeGlobalUniTopo()
   autoSkew.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAutoSkew);
   autoSkew.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoSkew);
   // Only enabled for 4+ voices, as near/far/center are fixed.
-  autoSkew.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount, (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::AutoSkew && vs[1] > 3 && vs[2] != 0; });
+  autoSkew.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount, (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return vs[0] == (int)FFGlobalUniMode::AutoExp && vs[1] > 3 && vs[2] != 0; });
 
   auto& autoRand = result->params[(int)FFGlobalUniParam::AutoRand];
   autoRand.mode = FBParamMode::VoiceStart;
   autoRand.display = "Rnd";
-  autoRand.name = "Audo Rnd Amt";
+  autoRand.name = "Audo Rand Amt";
   autoRand.defaultTextSelector = [](int, int, int ps) {
     if (ps == (int)FFGlobalUniTarget::OscPhaseOffset)
       return "50";
@@ -292,12 +291,12 @@ FFMakeGlobalUniTopo()
   autoRand.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoRand);
   autoRand.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAutoRand);
   autoRand.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoRand);
-  autoRand.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount, (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return (vs[0] == (int)FFGlobalUniMode::AutoLinear || vs[0] == (int)FFGlobalUniMode::AutoSkew) && vs[1] > 1 && vs[2] != 0; });
+  autoRand.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount, (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return (vs[0] == (int)FFGlobalUniMode::AutoLinear || vs[0] == (int)FFGlobalUniMode::AutoExp) && vs[1] > 1 && vs[2] != 0; });
 
   auto& autoRandSeed = result->params[(int)FFGlobalUniParam::AutoRandSeed];
   autoRandSeed.mode = FBParamMode::Block;
   autoRandSeed.defaultText = "0";
-  autoRandSeed.display = "Sd";
+  autoRandSeed.display = "Seed";
   autoRandSeed.name = "Auto Rand Seed";
   autoRandSeed.slotFormatter = [](auto const&, auto, int s) { return FFGlobalUniTargetToString((FFGlobalUniTarget)s) + " Seed"; };
   autoRandSeed.slotFormatterOverrides = true;
@@ -309,7 +308,7 @@ FFMakeGlobalUniTopo()
   autoRandSeed.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoRandSeed);
   autoRandSeed.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectAutoRandSeed);
   autoRandSeed.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoRandSeed);
-  autoRandSeed.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount,  (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return (vs[0] == (int)FFGlobalUniMode::AutoLinear || vs[0] == (int)FFGlobalUniMode::AutoSkew) && vs[1] > 1 && vs[2] != 0; });
+  autoRandSeed.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount,  (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return (vs[0] == (int)FFGlobalUniMode::AutoLinear || vs[0] == (int)FFGlobalUniMode::AutoExp) && vs[1] > 1 && vs[2] != 0; });
 
   auto& autoRandFree = result->params[(int)FFGlobalUniParam::AutoRandFree];
   autoRandFree.mode = FBParamMode::Block;
@@ -325,7 +324,7 @@ FFMakeGlobalUniTopo()
   autoRandFree.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoRandFree);
   autoRandFree.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectAutoRandFree);
   autoRandFree.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoRandFree);
-  autoRandFree.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount, (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return (vs[0] == (int)FFGlobalUniMode::AutoLinear || vs[0] == (int)FFGlobalUniMode::AutoSkew) && vs[1] > 1 && vs[2] != 0; });
+  autoRandFree.dependencies.enabled.audio.WhenSimple({ { (int)FFGlobalUniParam::Mode, (int)FFGlobalUniParam::VoiceCount, (int)FFGlobalUniParam::OpType } }, [](auto const& vs) { return (vs[0] == (int)FFGlobalUniMode::AutoLinear || vs[0] == (int)FFGlobalUniMode::AutoExp) && vs[1] > 1 && vs[2] != 0; });
 
   auto& manualVoiceCoarse = result->params[(int)FFGlobalUniParam::ManualVoiceCoarse];
   manualVoiceCoarse.mode = FBParamMode::Accurate;

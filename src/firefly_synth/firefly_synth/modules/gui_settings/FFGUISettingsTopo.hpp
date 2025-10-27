@@ -3,13 +3,12 @@
 #include <memory>
 
 struct FBStaticModule;
-enum class FFGUISettingsVisualsMode { Basic, Always, IfFocus };
 
-enum class FFGUISettingsParam {
-  FlushAudioToggle, Count };
+enum class FFGUISettingsVisualsFromEngineMode { Off, On, IfFocus };
 enum class FFGUISettingsGUIParam {
-  UserScale, ShowMatrix, VisualsMode,
+  UserScale, 
+  HilightMod, HilightTweak,
+  GraphVisualsMode, KnobVisualsMode,
   OscSelectedTab, FXSelectedTab, LFOSelectedTab, 
   MixSelectedTab, EnvSelectedTab, EchoSelectedTab, Count };
-
 std::unique_ptr<FBStaticModule> FFMakeGUISettingsTopo();

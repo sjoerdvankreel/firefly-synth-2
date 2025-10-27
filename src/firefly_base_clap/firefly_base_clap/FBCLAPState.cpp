@@ -20,7 +20,7 @@ FBCLAPPlugin::stateSave(const clap_ostream* stream) noexcept
   {
     int64_t written = 0;
     int64_t numWritten = 0;
-    std::string json = _topo->SaveEditAndGUIStateToString(*_editState, *_guiState);
+    std::string json = _topo->SaveEditAndGUIStateToString(*_editState, *_guiState, false);
     while ((numWritten = stream->write(stream, json.data() + written, json.size() - written)) != 0)
       if (numWritten == -1)
         return false;
@@ -48,7 +48,7 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
       else
         json.append(buffer, read);
 
-    _topo->LoadEditAndGUIStateFromStringWithDryRun(json, *_editState, *_guiState);
+    _topo->LoadEditAndGUIStateFromStringWithDryRun(json, *_editState, *_guiState, false);
     for (int i = 0; i < _editState->Params().size(); i++)
     {
       double normalized = *_editState->Params()[i];

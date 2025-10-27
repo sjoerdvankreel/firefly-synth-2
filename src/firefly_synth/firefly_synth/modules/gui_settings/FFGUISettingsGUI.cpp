@@ -7,6 +7,7 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
+#include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
@@ -19,45 +20,26 @@
 
 using namespace juce;
 
-static Component*
-MakeGUISettingsMain(FBPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0 });
-  auto showMatrix = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::ShowMatrix, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, showMatrix));
-  auto showMatrixToggle = plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, showMatrix);
-  showMatrixToggle->onClick = [plugGUI, showMatrixToggle]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ToggleMatrix(showMatrixToggle->getToggleState()); };
-  grid->Add(0, 1, showMatrixToggle);
-  auto visualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::VisualsMode, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, visualsMode));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, visualsMode));
-  auto flushDelayButton = plugGUI->StoreComponent<FBAutoSizeButton>("Flush Audio");
-  flushDelayButton->setTooltip("Flush all buffers");
-  flushDelayButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushAudio(); };
-  grid->Add(0, 4, flushDelayButton);
-  grid->MarkSection({ { 0, 0 }, { 1, 5 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-}
-
-static Component*
-MakeGUISettingsTweak(FBPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBLastTweakedLabel>(plugGUI));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBLastTweakedTextBox>(plugGUI, 80));
-  grid->MarkSection({ { 0, 0 }, { 1, 2 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-}
-
 Component*
 FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
-  grid->Add(0, 0, MakeGUISettingsMain(plugGUI));
-  grid->Add(0, 1, MakeGUISettingsTweak(plugGUI));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto hilightMod = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightMod, 0 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightMod));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, hilightMod));
+  auto hilightTweak = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightTweak, 0 } });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightTweak));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, hilightTweak));
+  auto knobVisualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::KnobVisualsMode, 0 } });
+  grid->Add(0, 4, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, knobVisualsMode));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, knobVisualsMode));
+  auto graphVisualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::GraphVisualsMode, 0 } });
+  grid->Add(0, 6, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, graphVisualsMode));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, graphVisualsMode));
+  grid->Add(0, 8, plugGUI->StoreComponent<FBFillerComponent>(15, 1));
+  grid->MarkSection({ { 0, 0 }, { 1, 9 } });
+  auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(subSection);
 }

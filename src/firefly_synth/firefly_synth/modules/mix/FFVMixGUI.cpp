@@ -1,4 +1,5 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/dsp/shared/FFModulate.hpp>
 #include <firefly_synth/modules/mix/FFMixGUI.hpp>
 #include <firefly_synth/modules/mix/FFVMixGUI.hpp>
 #include <firefly_synth/modules/mix/FFVMixTopo.hpp>
@@ -14,6 +15,58 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
+
+FFVMixParamListener::
+~FFVMixParamListener()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FFVMixParamListener::
+FFVMixParamListener(FBPlugGUI* plugGUI):
+_plugGUI(plugGUI)
+{
+  _plugGUI->AddParamListener(this);
+}
+
+void 
+FFVMixParamListener::AudioParamChanged(
+  int index, double /*normalized*/, bool /*changedFromUI*/)
+{
+  auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
+  if (indices.module.index != (int)FFModuleType::VMix)
+    return;
+  if (indices.param.index == (int)FFVMixParam::AmpEnvToAmp)
+    _plugGUI->RepaintSlidersForAudioParam({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::Amp, 0 } });
+  if (indices.param.index == (int)FFVMixParam::LFO6ToBal)
+    _plugGUI->RepaintSlidersForAudioParam({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::Bal, 0 } });
+}
+
+bool
+FFVMixAdjustParamModulationGUIBounds(
+  FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
+{
+  auto const& rtParam = ctx->Topo()->audio.params[index];
+  int staticIndex = ctx->Topo()->modules[rtParam.runtimeModuleIndex].topoIndices.index;
+  if (staticIndex != (int)FFModuleType::VMix)
+    return false;
+
+  if (rtParam.topoIndices.param.index == (int)FFVMixParam::Amp)
+  {
+    double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::AmpEnvToAmp, 0 } });
+    FFApplyGUIModulationBounds(FFModulationOpType::UPMul, (float)modAmount, currentMinNorm, currentMaxNorm);
+    return true;
+  }
+
+  if (rtParam.topoIndices.param.index == (int)FFVMixParam::Bal)
+  {
+    double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::LFO6ToBal, 0 } });
+    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, (float)modAmount, currentMinNorm, currentMaxNorm);
+    return true;
+  }
+
+  return false;
+}
 
 static Component*
 MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)

@@ -42,9 +42,10 @@ class alignas(alignof(TBlock)) FFModMatrixBlockParamState final
 
   std::array<TBlock, 1> slots = {};
   std::array<TBlock, MaxSlotCount> scale = {};
-  std::array<TBlock, MaxSlotCount> source = {};
   std::array<TBlock, MaxSlotCount> target = {};
   std::array<TBlock, MaxSlotCount> opType = {};
+  std::array<TBlock, MaxSlotCount> source = {};
+  std::array<TBlock, MaxSlotCount> sourceInv = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixBlockParamState);
 };

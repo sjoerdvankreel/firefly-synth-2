@@ -162,7 +162,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
   auto moduleType = Global ? FFModuleType::GEcho : FFModuleType::VEcho;
   FBTopoIndices modIndices = { (int)moduleType, 0 };
   FBParamTopoIndices paramIndices = { modIndices, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
-  bool on = renderState->AudioParamList<int>(paramIndices, false, -1) != 0;
+  auto target = renderState->AudioParamList<int>(paramIndices, false, -1);
 
   paramIndices = { modIndices, { (int)FFEchoParam::Order, 0 } };
   auto order = renderState->AudioParamList<FFEchoOrder>(paramIndices, false, -1);
@@ -170,27 +170,25 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
 
   int tapsOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Taps);
   FBRenderModuleGraph<Global, true>(renderData, tapsOrder);
-  graphData->graphs[tapsOrder].text = moduleName + " Taps";
-  if(!on || !IsTapsOn(renderState, Global, false, -1))
-    graphData->graphs[tapsOrder].text += " Off";
+  graphData->graphs[tapsOrder].title = FBAsciiToUpper(moduleName + " Taps");
+  graphData->graphs[tapsOrder].subtext = IsTapsOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   int feedbackOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Feedback);
   FBRenderModuleGraph<Global, true>(renderData, feedbackOrder);
-  graphData->graphs[feedbackOrder].text = moduleName + " Feedback";
-  if (!on || !IsFeedbackOn(renderState, Global, false, -1))
-    graphData->graphs[feedbackOrder].text += " Off";
+  graphData->graphs[feedbackOrder].title = FBAsciiToUpper(moduleName + " Fdbk");
+  graphData->graphs[feedbackOrder].subtext = IsFeedbackOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   int reverbOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Reverb);
   FBRenderModuleGraph<Global, true>(renderData, reverbOrder);
-  graphData->graphs[reverbOrder].text = moduleName + " Reverb";
-  if (!on || !IsReverbOn(renderState, Global, false, -1))
-    graphData->graphs[reverbOrder].text += " Off";
+  graphData->graphs[reverbOrder].title = FBAsciiToUpper(moduleName + " Rvrb");
+  graphData->graphs[reverbOrder].subtext = IsReverbOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   int allOrder = (int)FFEchoModule::Count;
   FBRenderModuleGraph<Global, true>(renderData, allOrder);
-  graphData->graphs[allOrder].text = moduleName;
-  if (!on)
-    graphData->graphs[allOrder].text += " Off";
+  graphData->graphs[allOrder].title = FBAsciiToUpper(moduleName);
+  graphData->graphs[allOrder].subtext = FBAsciiToUpper(Global ? 
+    FFGEchoTargetToString((FFGEchoTarget)target) : 
+    FFVEchoTargetToString((FFVEchoTarget)target));
 }
 
 template struct EchoGraphRenderData<true>;

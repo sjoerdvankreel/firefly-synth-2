@@ -79,5 +79,5 @@ FBPlugGUIContainer::RequestRescale(double combinedScale)
 {
   auto hostSize = GetHostSize();
   setSize(hostSize.first, hostSize.second);
-  _gui->setTransform(AffineTransform::scale(static_cast<float>(combinedScale)));
+  _gui->SetScale(combinedScale);
 }

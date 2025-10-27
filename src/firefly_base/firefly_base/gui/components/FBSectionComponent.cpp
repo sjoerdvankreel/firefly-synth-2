@@ -20,13 +20,13 @@ int
 FBSectionComponent::FixedHeight() const
 {
   auto sizingChild = dynamic_cast<IFBVerticalAutoSize*>(getChildComponent(0));
-  return sizingChild != nullptr ? sizingChild->FixedHeight() : 0;
+  return sizingChild != nullptr ? sizingChild->FixedHeight() + 4 : 0;
 }
 
 int
 FBSectionComponent::FixedWidth(int height) const
 {
-  return dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height - 4) + 6;
+  return dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height - 4) + 4;
 }
 
 FBSubSectionComponent::

@@ -1,3 +1,4 @@
+#include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
@@ -23,7 +24,7 @@ FFMakeOutputGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0, 1, 0, 1, 0, 0 } );
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0, 1, 0, 1, 0, 0, 0 } );
   auto cpu = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Cpu, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, cpu));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamDisplayMeter>(plugGUI, cpu));
@@ -36,7 +37,11 @@ FFMakeOutputGUI(FBPlugGUI* plugGUI)
   auto mtsEspOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::MtsEspOn, 0 } });
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mtsEspOn));
   grid->Add(0, 7, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, mtsEspOn));
-  grid->MarkSection({ { 0, 0 }, { 1, 8 } });
+  auto flushAudioButton = plugGUI->StoreComponent<FBAutoSizeButton>("Flush Audio");
+  flushAudioButton->setTooltip("Flush all buffers");
+  flushAudioButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushAudio(); };
+  grid->Add(0, 8, flushAudioButton);
+  grid->MarkSection({ { 0, 0 }, { 1, 9 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);
 }

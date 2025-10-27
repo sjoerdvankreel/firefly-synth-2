@@ -24,6 +24,7 @@ class FFModMatrixProcessor final
 
   std::array<int, MaxSlotCount> _scale = {};
   std::array<int, MaxSlotCount> _source = {};
+  std::array<bool, MaxSlotCount> _sourceInv = {};
   std::array<int, MaxSlotCount> _target = {};
   std::array<FFModulationOpType, MaxSlotCount> _opType = {};
 

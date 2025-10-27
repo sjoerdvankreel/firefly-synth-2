@@ -1,7 +1,6 @@
 #pragma once
 
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
-
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <vector>
 
@@ -24,6 +23,6 @@ public:
 
 juce::Component*
 FFMakeGlobalUniGUI(
-  FBPlugGUI* plugGUI, 
-  FBGraphRenderState* graphRenderState, 
+  FBPlugGUI* plugGUI,
+  FBGraphRenderState* graphRenderState,
   std::vector<FBModuleGraphComponent*>* fixedGraphs);

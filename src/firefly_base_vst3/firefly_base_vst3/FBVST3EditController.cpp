@@ -206,7 +206,7 @@ FBVST3EditController::setComponentState(IBStream* state)
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
     FBScalarStateContainer edit(*_topo);
-    if (!_topo->LoadEditStateFromString(json, edit))
+    if (!_topo->LoadEditStateFromString(json, edit, false))
       return kResultFalse;
     for (int i = 0; i < edit.Params().size(); i++)
       setParamNormalized(_topo->audio.params[i].tag, *edit.Params()[i]);

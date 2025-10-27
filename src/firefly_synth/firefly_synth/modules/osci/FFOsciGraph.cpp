@@ -132,9 +132,9 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData)
     FBRenderModuleGraph<false, true>(renderData, o);
     FBTopoIndices modIndices = { (int)FFModuleType::Osci, o };
     FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::Type, 0 } };
-    graphData->graphs[o].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
+    graphData->graphs[o].title = FBAsciiToUpper(graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name);
     auto osciType = graphData->renderState->AudioParamList<FFOsciType>(paramIndices, false, -1);
-    graphData->graphs[o].text += " " + FFOsciTypeToString(osciType);
+    graphData->graphs[o].subtext = FBAsciiToUpper(FFOsciTypeToString(osciType));
   }
   graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;
 }

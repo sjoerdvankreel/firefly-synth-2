@@ -13,6 +13,7 @@
 #include <unordered_set>
 
 class FBHostGUIContext;
+class FBContentComponent;
 
 class IFBParamListener
 {
@@ -24,9 +25,17 @@ public:
 class FBPlugGUI:
 public juce::Component
 {
+  double _scale = 1.0;
+  juce::Label* _overlayCaption = {};
+  std::function<void()> _overlayInit = {};
+  juce::Component* _overlayComponent = {};
+  juce::Component* _overlayContainer = {};
+  FBContentComponent* _overlayContent = {};
   std::vector<IFBParamListener*> _paramListeners = {};
 
 public:
+  virtual ~FBPlugGUI();
+
   template <class TComponent, class... Args>
   TComponent* StoreComponent(Args&&... args);
 
@@ -39,38 +48,53 @@ public:
   void SavePatchToFile();
   void LoadPatchFromFile();
 
+  void HideOverlayComponent();
+  void ShowOverlayComponent(
+    std::string const& title,
+    juce::Component* overlay,
+    int w, int h, bool vCenter,
+    std::function<void()> init);
+
   void AddParamListener(IFBParamListener* listener);
   void RemoveParamListener(IFBParamListener* listener);
 
   std::string GetTooltipForGUIParam(int index) const;
   std::string GetTooltipForAudioParam(int index) const;
-
-  void UpdateExchangeState();
-  void ShowHostMenuForAudioParam(int index);
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
   void mouseUp(const juce::MouseEvent& event) override;
 
-  virtual FBGUIRenderType GetKnobRenderType() const = 0;
-  virtual FBGUIRenderType GetGraphRenderType() const = 0;
+  void UpdateExchangeState();
+  void SetScale(double scale);
+  void ShowHostMenuForAudioParam(int index);
+  int GetControlCountForAudioParamIndex(int paramIndex) const;
+  FBParamControl* GetControlForAudioParamIndex(int paramIndex, int controlIndex) const;
+  void RepaintSlidersForAudioParam(FBParamTopoIndices const& indices);
+
   virtual void ModuleSlotClicked(int index, int slot) = 0;
   virtual void ActiveModuleSlotChanged(int index, int slot) = 0;
   virtual void GUIParamNormalizedChanged(int index, double normalized);
   virtual void AudioParamNormalizedChangedFromUI(int index, double normalized);
   virtual void AudioParamNormalizedChangedFromHost(int index, double normalized);
 
+  virtual bool HighlightTweaked() const = 0;
+  virtual bool HighlightModulationBounds() const = 0;
+  virtual FBGUIRenderType GetRenderType(bool graphOrKnob) const = 0;
+  virtual bool GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const = 0;  
+
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
   FBPlugGUI(FBHostGUIContext* hostContext);
 
-  void InitAllDependencies();
   virtual void OnPatchChanged() = 0;
   virtual void UpdateExchangeStateTick() = 0;
-  int GetControlCountForAudioParamIndex(int paramIndex) const;
-  FBParamControl* GetControlForAudioParamIndex(int paramIndex, int controlIndex) const;
+
+  void InitAllDependencies();
+  FBGUIParamControl* GetControlForGUIParamIndex(int paramIndex) const;
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
+  void SetupOverlayGUI();
   void GUIParamNormalizedChanged(int index);
   void AudioParamNormalizedChanged(int index);
 

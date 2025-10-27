@@ -30,7 +30,7 @@ FFMakePatchGUI(FBPlugGUI* plugGUI)
   auto preset = plugGUI->StoreComponent<FBAutoSizeButton>("Preset");
   preset->setEnabled(false);
   grid->Add(0, 4, preset);
-  grid->Add(0, 5, plugGUI->StoreComponent<FBFillerComponent>(6, 1));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBFillerComponent>(8, 1));
   grid->MarkSection({ { 0, 0 }, { 1, 6 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);

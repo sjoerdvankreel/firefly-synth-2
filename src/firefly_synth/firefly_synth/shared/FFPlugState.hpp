@@ -14,6 +14,7 @@
 #include <firefly_synth/modules/master/FFMasterState.hpp>
 #include <firefly_synth/modules/output/FFOutputState.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModState.hpp>
+#include <firefly_synth/modules/settings/FFSettingsState.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniState.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixState.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
@@ -47,6 +48,7 @@ struct alignas(FBSIMDAlign) FFGlobalExchangeState final
   std::array<FBModuleProcSingleExchangeState, 1> master = {};
   std::array<FBModuleProcSingleExchangeState, 1> output = {};
   std::array<FBModuleProcSingleExchangeState, 1> gMatrix = {};
+  std::array<FBModuleProcSingleExchangeState, 1> settings = {};
   std::array<FBModuleProcSingleExchangeState, FFEffectCount> gEffect = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
 };
@@ -107,8 +109,8 @@ struct alignas(alignof(TAccurate)) FFGlobalParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalParamState);
   std::array<FFGMixParamState<TAccurate>, 1> gMix = {};
+  std::array<FFSettingsParamState<TBlock>, 1> settings = {};
   std::array<FFEchoParamState<TBlock, TAccurate>, 1> gEcho = {};
-  std::array<FFGUISettingsParamState<TBlock>, 1> guiSettings = {};
   std::array<FFMasterParamState<TBlock, TAccurate>, 1> master = {};
   std::array<FFOutputParamState<TBlock, TAccurate>, 1> output = {};
   std::array<FFGlobalUniParamState<TBlock, TAccurate>, 1> globalUni = {};

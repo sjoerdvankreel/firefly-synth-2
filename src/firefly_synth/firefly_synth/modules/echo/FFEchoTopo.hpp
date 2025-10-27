@@ -1,6 +1,8 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBSArray.hpp>
+
+#include <string>
 #include <memory>
 
 struct FBStaticModule;
@@ -12,6 +14,8 @@ enum class FFGEchoTarget {
   Off, MixIn, MixOut, VoiceMix, ExtAudio,
   FX1In, FX1Out, FX2In, FX2Out,
   FX3In, FX3Out, FX4In, FX4Out };
+std::string FFGEchoTargetToString(FFGEchoTarget target);
+
 enum class FFVEchoTarget {
   Off, MixIn, MixOut, OscMix,
   Osc1PreMix, Osc1PostMix,
@@ -20,6 +24,7 @@ enum class FFVEchoTarget {
   Osc4PreMix, Osc4PostMix,
   FX1In, FX1Out, FX2In, FX2Out,
   FX3In, FX3Out, FX4In, FX4Out };
+std::string FFVEchoTargetToString(FFVEchoTarget target);
 
 enum class FFEchoModule {
   Taps, Feedback, Reverb, Count };

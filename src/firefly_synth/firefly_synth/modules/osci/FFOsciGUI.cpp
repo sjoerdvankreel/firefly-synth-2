@@ -1,4 +1,5 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/dsp/shared/FFModulate.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModGUI.hpp>
@@ -19,6 +20,58 @@
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
 
 using namespace juce;
+
+FFOsciParamListener::
+~FFOsciParamListener()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FFOsciParamListener::
+FFOsciParamListener(FBPlugGUI* plugGUI):
+_plugGUI(plugGUI)
+{
+  _plugGUI->AddParamListener(this);
+}
+
+void 
+FFOsciParamListener::AudioParamChanged(
+  int index, double /*normalized*/, bool /*changedFromUI*/)
+{
+  auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
+  if (indices.module.index != (int)FFModuleType::Osci)
+    return;
+  if (indices.param.index == (int)FFOsciParam::EnvToGain)
+    _plugGUI->RepaintSlidersForAudioParam({ { (int)FFModuleType::Osci, indices.module.slot }, { (int)FFOsciParam::Gain, 0 } });
+  if (indices.param.index == (int)FFOsciParam::LFOToFine)
+    _plugGUI->RepaintSlidersForAudioParam({ { (int)FFModuleType::Osci, indices.module.slot }, { (int)FFOsciParam::Fine, 0 } });
+}
+
+bool
+FFOsciAdjustParamModulationGUIBounds(
+  FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
+{
+  auto const& rtParam = ctx->Topo()->audio.params[index];
+  int staticIndex = ctx->Topo()->modules[rtParam.runtimeModuleIndex].topoIndices.index;
+  if (staticIndex != (int)FFModuleType::Osci)
+    return false;
+
+  if (rtParam.topoIndices.param.index == (int)FFOsciParam::Gain)
+  {
+    double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::Osci, rtParam.topoIndices.module.slot }, { (int)FFOsciParam::EnvToGain, 0 } });
+    FFApplyGUIModulationBounds(FFModulationOpType::UPMul, (float)modAmount, currentMinNorm, currentMaxNorm);
+    return true;
+  }
+
+  if (rtParam.topoIndices.param.index == (int)FFOsciParam::Fine)
+  {
+    double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::Osci, rtParam.topoIndices.module.slot }, { (int)FFOsciParam::LFOToFine, 0 } });
+    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, (float)modAmount, currentMinNorm, currentMaxNorm);
+    return true;
+  }
+
+  return false;
+}
 
 static Component*
 MakeOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
@@ -177,7 +230,7 @@ MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(0 + i, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmRatioFree, Slider::SliderStyle::RotaryVerticalDrag));
   }
 
-  grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Idx 1\U000021921/2/3"));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Index 1\U000021921/2/3"));
   auto fmIndex11 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 0 } });
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex11, Slider::SliderStyle::LinearHorizontal));
   auto fmIndex12 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 1 } });
@@ -185,7 +238,7 @@ MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
   auto fmIndex13 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 2 } });
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex13, Slider::SliderStyle::LinearHorizontal));
 
-  grid->Add(0, 6, plugGUI->StoreComponent<FBAutoSizeLabel>("Idx 2\U000021921/2/3"));
+  grid->Add(0, 6, plugGUI->StoreComponent<FBAutoSizeLabel>("Index 2\U000021921/2/3"));
   auto fmIndex21 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 3 } });
   grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex21, Slider::SliderStyle::LinearHorizontal));
   auto fmIndex22 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 4 } });
@@ -193,7 +246,7 @@ MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
   auto fmIndex23 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 5 } });
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex23, Slider::SliderStyle::LinearHorizontal));
 
-  grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>("Idx 3\U000021921/2/3"));
+  grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>("Index 3\U000021921/2/3"));
   auto fmIndex31 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 6 } });
   grid->Add(0, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex31, Slider::SliderStyle::LinearHorizontal));
   auto fmIndex32 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 7 } });

@@ -24,6 +24,8 @@ inline int constexpr FFEnvSlotOffset = 1;
 inline constexpr char FFVendorName[] = "Sjoerd van Kreel";
 inline constexpr char FFVendorMail[] = "sjoerdvankreel@gmail.com";
 inline constexpr char FFVendorURL[] = "https://github.com/sjoerdvankreel";
+inline constexpr char FFPlugShortNameFX[] = "FF2 FX";
+inline constexpr char FFPlugShortNameInst[] = "FF2";
 inline constexpr char FFPlugNameFX[] = "Firefly Synth 2 FX";
 inline constexpr char FFPlugNameInst[] = "Firefly Synth 2";
 inline constexpr char FFPlugUniqueIdFX[] = "E761431919AC4A2087B3CF8EFCD6396F";
@@ -32,7 +34,7 @@ inline constexpr char FFPlugControllerIdFX[] = "51E397E58B694A129208424AEF1C7A84
 inline constexpr char FFPlugControllerIdInst[] = "959E6302402B461A8C9AA5A6737BCAAD"; 
 
 enum class FFModuleType {
-  GUISettings, MIDI, GNote, Master, GlobalUni, VoiceModule, Osci, OsciMod, VNote, Env, 
+  GUISettings, Settings, MIDI, GNote, Master, GlobalUni, VoiceModule, Osci, OsciMod, VNote, Env, 
   VEffect, GEffect, VLFO, GLFO, VMix, GMix, VEcho, GEcho, VMatrix, GMatrix, Output, Count };
 
 struct FFStaticTopo:

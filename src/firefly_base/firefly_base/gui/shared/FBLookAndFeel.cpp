@@ -1,5 +1,9 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
+#include <firefly_base/gui/controls/FBComboBox.hpp>
+#include <firefly_base/gui/controls/FBToggleButton.hpp>
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
@@ -9,14 +13,45 @@ using namespace juce;
 static const int TabSizeSmall = 40;
 static const int TabSizeLarge = 60;
 
-static Colour
-getSliderThumbColor(Slider const& s)
+static double
+ConvertValueFromSkewed(FBStaticParamBase const& param, double normalized)
 {
-  auto result = s.findColour(Slider::thumbColourId);
+  if (param.type != FBParamType::Linear)
+    return normalized;
+  NormalisableRange<double> range(0.0, 1.0, 0.0, param.Linear().editSkewFactor);
+  return range.convertTo0to1(normalized);
+}
+
+static Colour
+GetSliderThumbColor(Slider const& s)
+{
+  bool isHighlightTweaked = false;
+  FBParamSlider const* ps = dynamic_cast<FBParamSlider const*>(&s);
+  if (ps != nullptr)
+    isHighlightTweaked = ps->IsHighlightTweaked();
+  auto result = isHighlightTweaked? Colours::white : s.findColour(Slider::thumbColourId);
   return s.isEnabled() ? result : result.darker(0.6f);
 }
 
-static void createTabTextLayout(
+static bool
+GetSliderModulationBounds(Slider const& s, double& minNorm, double& maxNorm)
+{
+  if (!s.isEnabled())
+    return false;
+  FBParamSlider const* ps = dynamic_cast<FBParamSlider const*>(&s);
+  if (ps == nullptr)
+    return false;
+  if (!ps->PlugGUI()->HighlightModulationBounds())
+    return false;
+  if (!ps->PlugGUI()->GetParamModulationBounds(ps->Param()->runtimeParamIndex, minNorm, maxNorm))
+    return false;
+  auto const& staticParam = ps->Param()->static_;
+  minNorm = ConvertValueFromSkewed(staticParam, minNorm);
+  maxNorm = ConvertValueFromSkewed(staticParam, maxNorm);
+  return true;
+}
+
+static void CreateTabTextLayout(
   const TabBarButton& button, 
   float length, Colour colour, 
   Font const& font, bool centerText, 
@@ -33,15 +68,6 @@ static void createTabTextLayout(
   textLayout.createLayout(s, length);
 }
 
-static float
-ConvertExchangeValueFromSkewed(FBStaticParamBase const& param, float normalized)
-{
-  if (param.type != FBParamType::Linear)
-    return normalized;
-  NormalisableRange<float> range(0.0f, 1.0f, 0.0f, static_cast<float>(param.Linear().editSkewFactor));
-  return range.convertTo0to1(normalized);
-}
-
 void 
 FBLookAndFeel::DrawLinearSliderExchangeThumb(
   Graphics& g, FBParamSlider& slider, 
@@ -50,13 +76,13 @@ FBLookAndFeel::DrawLinearSliderExchangeThumb(
   auto layout = getSliderLayout(slider);
   int sliderRegionStart = layout.sliderBounds.getX();
   int sliderRegionSize = layout.sliderBounds.getWidth();
-  float skewed = ConvertExchangeValueFromSkewed(slider.Param()->static_, exchangeValue);
+  float skewed = (float)ConvertValueFromSkewed(slider.Param()->static_, exchangeValue);
   float minExchangePos = static_cast<float>(sliderRegionStart + skewed * sliderRegionSize);
   float kx = minExchangePos;
   float ky = static_cast<float>(y) + height * 0.5f;
   Point<float> maxPoint = { kx, ky };
   float thumbWidth = static_cast<float>(getSliderThumbRadius(slider));
-  g.setColour(getSliderThumbColor(slider).withAlpha(0.5f));
+  g.setColour(GetSliderThumbColor(slider).withAlpha(0.5f));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(maxPoint));
 }
 
@@ -69,7 +95,7 @@ FBLookAndFeel::DrawRotarySliderExchangeThumb(
 {
   auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(10);
   auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
-  float skewed = ConvertExchangeValueFromSkewed(slider.Param()->static_, exchangeValue);
+  float skewed = (float)ConvertValueFromSkewed(slider.Param()->static_, exchangeValue);
   auto toAngle = rotaryStartAngle + skewed * (rotaryEndAngle - rotaryStartAngle);
   auto lineW = jmin(8.0f, radius * 0.5f);
   auto arcRadius = radius - lineW * 0.5f;
@@ -77,7 +103,7 @@ FBLookAndFeel::DrawRotarySliderExchangeThumb(
   Point<float> thumbPoint(
     bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(getSliderThumbColor(slider).withAlpha(0.5f));
+  g.setColour(GetSliderThumbColor(slider).withAlpha(0.5f));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 }
 
@@ -123,7 +149,7 @@ FBLookAndFeel::DrawTabButtonPart(
   const Rectangle<float> area(activeArea.toFloat());
   float length = area.getWidth();
   float depth = area.getHeight();
-  ::createTabTextLayout(button, length, col, FBGUIGetFont(), centerText, text, textLayout);
+  ::CreateTabTextLayout(button, length, col, FBGUIGetFont(), centerText, text, textLayout);
 
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));
   textLayout.draw(g, Rectangle<float>(length, depth));
@@ -140,16 +166,21 @@ int
 FBLookAndFeel::getTabButtonBestWidth(
   juce::TabBarButton& button, int /*tabDepth*/)
 {
-  bool large = false;
-  bool hasSeparatorText = false;
-  if (button.getTabbedButtonBar().getNumTabs() == 1)
-    return button.getTabbedButtonBar().getWidth();
+  int barWidth = button.getTabbedButtonBar().getWidth();
+  int numTabs = button.getTabbedButtonBar().getNumTabs();
+  if (numTabs == 1)
+    return barWidth;
   FBModuleTabBarButton* fbButton = dynamic_cast<FBModuleTabBarButton*>(&button);
-  if (fbButton != nullptr)
+  if (fbButton == nullptr)
   {
-    large = fbButton->large;
-    hasSeparatorText = !fbButton->GetSeparatorText().empty();
+    int tabWidth = barWidth / numTabs;
+    int remain = barWidth - tabWidth * numTabs;    
+    if (button.getTabbedButtonBar().indexOfTabButton(&button) == numTabs - 1)
+      tabWidth += remain;
+    return tabWidth;
   }
+  bool large = fbButton->large;
+  bool hasSeparatorText = !fbButton->GetSeparatorText().empty();
   int result = large ? TabSizeLarge : TabSizeSmall;
   if (hasSeparatorText)
     result += TabSizeLarge;
@@ -209,7 +240,11 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   g.setColour(box.findColour(ComboBox::backgroundColourId));
   g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
 
-  g.setColour(box.findColour(ComboBox::outlineColourId));
+  auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
+  if(paramCombo != nullptr && paramCombo->IsHighlightTweaked())
+    g.setColour(Colours::white.withAlpha(box.isEnabled()? 1.0f: 0.75f));
+  else
+    g.setColour(box.findColour(ComboBox::outlineColourId));
   g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
 }
 
@@ -223,7 +258,12 @@ FBLookAndFeel::drawTickBox(
   const bool /*shouldDrawButtonAsDown*/)
 {
   Rectangle<float> tickBounds(x, y, w, h);
-  g.setColour(component.findColour(ToggleButton::tickDisabledColourId));
+
+  auto* paramToggle = dynamic_cast<FBParamToggleButton*>(&component);
+  if (paramToggle != nullptr && paramToggle->IsHighlightTweaked())
+    g.setColour(Colours::white.withAlpha(component.isEnabled() ? 1.0f : 0.75f));
+  else
+    g.setColour(component.findColour(ToggleButton::tickDisabledColourId));
   g.drawRoundedRectangle(tickBounds, 4.0f, 1.0f);
 
   if (ticked)
@@ -247,22 +287,20 @@ FBLookAndFeel::drawLinearSlider(
   auto isThreeVal = (style == Slider::SliderStyle::ThreeValueVertical || style == Slider::SliderStyle::ThreeValueHorizontal);
   auto trackWidth = jmin(6.0f, slider.isHorizontal() ? (float)height * 0.25f : (float)width * 0.25f);
 
-  Point<float> startPoint(slider.isHorizontal() ? (float)x : (float)x + (float)width * 0.5f,
-   slider.isHorizontal() ? (float)y + (float)height * 0.5f : (float)(height + y));
-  Point<float> endPoint(slider.isHorizontal() ? (float)(width + x) : startPoint.x,
-    slider.isHorizontal() ? startPoint.y : (float)y);
-
-  Path backgroundTrack;
-  backgroundTrack.startNewSubPath(startPoint);
-  backgroundTrack.lineTo(endPoint);
+  FB_ASSERT(slider.isHorizontal());
+  Path backgroundTrackFull;
+  Point<float> startPointFull((float)x, (float)y + (float)height * 0.5f);
+  Point<float> endPointFull((float)(width + x), startPointFull.y);
+  backgroundTrackFull.startNewSubPath(startPointFull);
+  backgroundTrackFull.lineTo(endPointFull);
   g.setColour(slider.findColour(Slider::backgroundColourId));
-  g.strokePath(backgroundTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+  g.strokePath(backgroundTrackFull, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
   Path valueTrack;
   Point<float> minPoint, maxPoint, thumbPoint;
   auto kx = slider.isHorizontal() ? sliderPos : ((float)x + (float)width * 0.5f);
   auto ky = slider.isHorizontal() ? ((float)y + (float)height * 0.5f) : sliderPos;
-  minPoint = startPoint;
+  minPoint = startPointFull;
   maxPoint = { kx, ky };
   auto thumbWidth = getSliderThumbRadius(slider);
 
@@ -270,11 +308,24 @@ FBLookAndFeel::drawLinearSlider(
   valueTrack.lineTo(isThreeVal ? thumbPoint : maxPoint);
   g.setColour(slider.findColour(Slider::trackColourId));
   g.strokePath(valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
-  g.setColour(getSliderThumbColor(slider));
+
+  double modMin, modMax;
+  FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
+  if (GetSliderModulationBounds(slider, modMin, modMax))
+  {
+    Path backgroundTrackMod;
+    Point<float> startPointMod((float)(x + width * modMin), (float)y + (float)height * 0.5f);
+    Point<float> endPointMod((float)(width * modMax + x), startPointMod.y);
+    backgroundTrackMod.startNewSubPath(startPointMod);
+    backgroundTrackMod.lineTo(endPointMod);
+    g.setColour(Colours::white.withAlpha(0.5f));
+    g.strokePath(backgroundTrackMod, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+  }
+
+  g.setColour(GetSliderThumbColor(slider));
   g.fillEllipse(Rectangle<float>(static_cast<float> (thumbWidth), static_cast<float> (thumbWidth)).withCentre(isThreeVal ? thumbPoint : maxPoint));
 
-  FBParamSlider* paramSlider;
-  if ((paramSlider = dynamic_cast<FBParamSlider*>(&slider)) == nullptr)
+  if (paramSlider == nullptr)
     return;
   auto paramActive = paramSlider->ParamActiveExchangeState();
   if (!paramActive.active)
@@ -393,14 +444,28 @@ FBLookAndFeel::drawRotarySlider(
     g.strokePath(valueArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::rounded));
   }
 
+  double minNorm;
+  double maxNorm;
+  if (GetSliderModulationBounds(slider, minNorm, maxNorm))
+  {
+    Path modArc;
+    auto minAngle = rotaryStartAngle + minNorm * (rotaryEndAngle - rotaryStartAngle);
+    auto maxAngle = rotaryStartAngle + maxNorm * (rotaryEndAngle - rotaryStartAngle);
+    modArc.addCentredArc(
+      bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
+      0.0f, (float)minAngle, (float)maxAngle, true);
+    g.setColour(Colours::white.withAlpha(0.5f));
+    g.strokePath(modArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::rounded));
+  }
+
   auto thumbWidth = lineW * 2.0f;
   Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(getSliderThumbColor(slider));
+  g.setColour(GetSliderThumbColor(slider));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 
-  FBParamSlider* paramSlider;
-  if ((paramSlider = dynamic_cast<FBParamSlider*>(&slider)) == nullptr)
+  FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
+  if (paramSlider == nullptr)
     return;
   auto paramActive = paramSlider->ParamActiveExchangeState();
   if (!paramActive.active)

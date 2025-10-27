@@ -16,6 +16,57 @@ MakeEchoSmoothBarsItems()
   return FBMakeBarsItems(false, { 1, 16 }, { 4, 1 });
 }
 
+std::string 
+FFGEchoTargetToString(FFGEchoTarget target)
+{
+  switch (target)
+  {
+  case FFGEchoTarget::Off: return "Off";
+  case FFGEchoTarget::MixIn: return "GMix In";
+  case FFGEchoTarget::MixOut: return "GMix Out";
+  case FFGEchoTarget::VoiceMix: return "VMix";
+  case FFGEchoTarget::ExtAudio: return "Ext Audio";
+  case FFGEchoTarget::FX1In: return "GFX1 In";
+  case FFGEchoTarget::FX1Out: return "GFX1 Out";
+  case FFGEchoTarget::FX2In: return "GFX2 In";
+  case FFGEchoTarget::FX2Out: return "GFX2 Out";
+  case FFGEchoTarget::FX3In: return "GFX3 In";
+  case FFGEchoTarget::FX3Out: return "GFX3 Out";
+  case FFGEchoTarget::FX4In: return "GFX4 In";
+  case FFGEchoTarget::FX4Out: return "GFX4 Out";
+  default: FB_ASSERT(false); return "";
+  }
+}
+
+std::string 
+FFVEchoTargetToString(FFVEchoTarget target)
+{
+  switch (target)
+  {
+  case FFVEchoTarget::Off: return "Off";
+  case FFVEchoTarget::MixIn: return "VMIx In";
+  case FFVEchoTarget::MixOut: return "VMix Out";
+  case FFVEchoTarget::OscMix: return "Osc Mix";
+  case FFVEchoTarget::Osc1PreMix: return "Osc 1 PreMix";
+  case FFVEchoTarget::Osc1PostMix: return "Osc 1 PostMix";
+  case FFVEchoTarget::Osc2PreMix: return "Osc 2 PreMix";
+  case FFVEchoTarget::Osc2PostMix: return "Osc 2 PostMix";
+  case FFVEchoTarget::Osc3PreMix: return "Osc 3 PreMix";
+  case FFVEchoTarget::Osc3PostMix: return "Osc 3 PostMix";
+  case FFVEchoTarget::Osc4PreMix: return "Osc 4 PreMix";
+  case FFVEchoTarget::Osc4PostMix: return "Osc 4 PostMix";
+  case FFVEchoTarget::FX1In: return "VFX1 In";
+  case FFVEchoTarget::FX1Out: return "VFX1 Out";
+  case FFVEchoTarget::FX2In: return "VFX2 In";
+  case FFVEchoTarget::FX2Out: return "VFX2 Out";
+  case FFVEchoTarget::FX3In: return "VFX3 In";
+  case FFVEchoTarget::FX3Out: return "VFX3 Out";
+  case FFVEchoTarget::FX4In: return "VFX4 In";
+  case FFVEchoTarget::FX4Out: return "VFX4 Out";
+  default: FB_ASSERT(false); return "";
+  }
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeEchoTopo(bool global)
 {
@@ -48,41 +99,41 @@ FFMakeEchoTopo(bool global)
   vTargetOrGTarget.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVTargetOrGTarget);
   if (global)
     vTargetOrGTarget.List().items = {
-      { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "Off" },
-      { "{38A69D55-AB3E-49F2-9CCD-44917FD24597}", "GMix In" },
-      { "{C510F9C1-13A6-4929-A7EA-7C5F79BA6E42}", "GMix Out" },
-      { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "VMix" },
-      { "{746FE368-54F7-4BCA-A883-9B3C40163C84}", "Ext Audio" },
-      { "{CDE64B50-C65D-43E9-B52E-325F544E5175}", "GFX1 In" },
-      { "{1C7AA2CC-2116-45E4-B7C2-AA9678CC15B5}", "GFX1 Out" },
-      { "{68C1469F-96FF-47D7-8A2E-B24309E10031}", "GFX2 In" },
-      { "{A043114B-C471-46A8-A526-B93E1897B1A0}", "GFX2 Out" },
-      { "{883FA130-AB68-42D5-B56A-C61039DAD9A6}", "GFX3 In" },
-      { "{56CE90EE-F9D0-4CCF-93B8-9BB0501DCBEF}", "GFX3 Out" },
-      { "{80ECC9AA-AC6B-44DC-B305-43057720A4AC}", "GFX4 In" },
-      { "{050E8D54-BFD2-4821-B14F-717D161D69DB}", "GFX4 Out" } };
+      { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", FFGEchoTargetToString(FFGEchoTarget::Off) },
+      { "{38A69D55-AB3E-49F2-9CCD-44917FD24597}", FFGEchoTargetToString(FFGEchoTarget::MixIn)  },
+      { "{C510F9C1-13A6-4929-A7EA-7C5F79BA6E42}", FFGEchoTargetToString(FFGEchoTarget::MixOut)  },
+      { "{9A195809-A9A8-454A-ACD1-5376892EE416}", FFGEchoTargetToString(FFGEchoTarget::VoiceMix)  },
+      { "{746FE368-54F7-4BCA-A883-9B3C40163C84}", FFGEchoTargetToString(FFGEchoTarget::ExtAudio)  },
+      { "{CDE64B50-C65D-43E9-B52E-325F544E5175}", FFGEchoTargetToString(FFGEchoTarget::FX1In)  },
+      { "{1C7AA2CC-2116-45E4-B7C2-AA9678CC15B5}", FFGEchoTargetToString(FFGEchoTarget::FX1Out)  },
+      { "{68C1469F-96FF-47D7-8A2E-B24309E10031}", FFGEchoTargetToString(FFGEchoTarget::FX2In)  },
+      { "{A043114B-C471-46A8-A526-B93E1897B1A0}", FFGEchoTargetToString(FFGEchoTarget::FX2Out)  },
+      { "{883FA130-AB68-42D5-B56A-C61039DAD9A6}", FFGEchoTargetToString(FFGEchoTarget::FX3In)  },
+      { "{56CE90EE-F9D0-4CCF-93B8-9BB0501DCBEF}", FFGEchoTargetToString(FFGEchoTarget::FX3Out)  },
+      { "{80ECC9AA-AC6B-44DC-B305-43057720A4AC}", FFGEchoTargetToString(FFGEchoTarget::FX4In)  },
+      { "{050E8D54-BFD2-4821-B14F-717D161D69DB}", FFGEchoTargetToString(FFGEchoTarget::FX4Out)  } };
   else
     vTargetOrGTarget.List().items = {
-      { "{0EFCD973-BAA5-47B9-B61B-23FC8B82DC03}", "Off" },
-      { "{41E82846-7503-4DBA-B2B2-880482DE7970}", "VMIx In" },
-      { "{4E37CD52-00B3-455A-9958-99F7ACBE544E}", "VMix Out" },
-      { "{CFD09E84-2938-4113-867F-31941D722578}", "Osc Mix" },
-      { "{26FABB4C-7E94-4CAF-ABC3-7ED3610D514E}", "Osc 1 PreMix" },
-      { "{12F8A4E6-7D4F-4E7E-80AC-3502B801C76E}", "Osc 1 PostMix" },
-      { "{66805E87-E1B2-4B1C-87F1-487CAF824EE7}", "Osc 2 PreMix" },
-      { "{75EB8B97-D30E-4912-BDDD-656E267FD698}", "Osc 2 PostMix" },
-      { "{6FB91E2B-179B-43BA-BBD8-7C1DDF2EDD15}", "Osc 3 PreMix" },
-      { "{E3C5A47A-68D7-4FF5-BEE4-9C022736263C}", "Osc 3 PostMix" },
-      { "{3004C2C5-BBE2-47F1-93AE-C4E5CE4618C7}", "Osc 4 PreMix" },
-      { "{C42EFDE3-444D-42EA-906D-FE5563E86250}", "Osc 4 PostMix" },
-      { "{76D95D3E-0D97-434A-B960-A7BD3667F57D}", "VFX1 In" },
-      { "{F7432F58-5DA1-45DD-9B02-90D32ABE6B3F}", "VFX1 Out" },
-      { "{371838D8-5D97-459E-A553-29CB416793DE}", "VFX2 In" },
-      { "{4379BE69-288E-4C96-81C0-10BF312E73C9}", "VFX2 Out" },
-      { "{CBA10ED2-7C2F-4312-BBD9-45957AD840D7}", "VFX3 In" },
-      { "{F2E5F511-BC7C-4759-9FCC-98E369E6B641}", "VFX3 Out" },
-      { "{D9140819-6982-4B2C-883E-0D6325815FB8}", "VFX4 In" },
-      { "{86AA4803-EA25-4C52-B2AB-0CEEA44BE0C0}", "VFX4 Out" } };
+      { "{0EFCD973-BAA5-47B9-B61B-23FC8B82DC03}", FFVEchoTargetToString(FFVEchoTarget::Off) },
+      { "{41E82846-7503-4DBA-B2B2-880482DE7970}", FFVEchoTargetToString(FFVEchoTarget::MixIn) },
+      { "{4E37CD52-00B3-455A-9958-99F7ACBE544E}", FFVEchoTargetToString(FFVEchoTarget::MixOut) },
+      { "{CFD09E84-2938-4113-867F-31941D722578}", FFVEchoTargetToString(FFVEchoTarget::OscMix) },
+      { "{26FABB4C-7E94-4CAF-ABC3-7ED3610D514E}", FFVEchoTargetToString(FFVEchoTarget::Osc1PreMix) },
+      { "{12F8A4E6-7D4F-4E7E-80AC-3502B801C76E}", FFVEchoTargetToString(FFVEchoTarget::Osc1PostMix) },
+      { "{66805E87-E1B2-4B1C-87F1-487CAF824EE7}", FFVEchoTargetToString(FFVEchoTarget::Osc2PreMix) },
+      { "{75EB8B97-D30E-4912-BDDD-656E267FD698}", FFVEchoTargetToString(FFVEchoTarget::Osc2PostMix) },
+      { "{6FB91E2B-179B-43BA-BBD8-7C1DDF2EDD15}", FFVEchoTargetToString(FFVEchoTarget::Osc3PreMix)},
+      { "{E3C5A47A-68D7-4FF5-BEE4-9C022736263C}", FFVEchoTargetToString(FFVEchoTarget::Osc3PostMix) },
+      { "{3004C2C5-BBE2-47F1-93AE-C4E5CE4618C7}", FFVEchoTargetToString(FFVEchoTarget::Osc4PreMix) },
+      { "{C42EFDE3-444D-42EA-906D-FE5563E86250}", FFVEchoTargetToString(FFVEchoTarget::Osc4PostMix) },
+      { "{76D95D3E-0D97-434A-B960-A7BD3667F57D}", FFVEchoTargetToString(FFVEchoTarget::FX1In) },
+      { "{F7432F58-5DA1-45DD-9B02-90D32ABE6B3F}", FFVEchoTargetToString(FFVEchoTarget::FX1Out) },
+      { "{371838D8-5D97-459E-A553-29CB416793DE}", FFVEchoTargetToString(FFVEchoTarget::FX2In) },
+      { "{4379BE69-288E-4C96-81C0-10BF312E73C9}", FFVEchoTargetToString(FFVEchoTarget::FX2Out) },
+      { "{CBA10ED2-7C2F-4312-BBD9-45957AD840D7}", FFVEchoTargetToString(FFVEchoTarget::FX3In) },
+      { "{F2E5F511-BC7C-4759-9FCC-98E369E6B641}", FFVEchoTargetToString(FFVEchoTarget::FX3Out) },
+      { "{D9140819-6982-4B2C-883E-0D6325815FB8}", FFVEchoTargetToString(FFVEchoTarget::FX4In) },
+      { "{86AA4803-EA25-4C52-B2AB-0CEEA44BE0C0}", FFVEchoTargetToString(FFVEchoTarget::FX4Out) } };
 
   auto& order = result->params[(int)FFEchoParam::Order];
   order.mode = FBParamMode::Block;

@@ -10,9 +10,10 @@
 using namespace juce;
 
 static float
-GraphGetSource(float x)
+GraphGetSource(float x, bool inv)
 {
-  return FBToUnipolar(std::sin(2.0f * FBPi * x));
+  float y = FBToUnipolar(std::sin(2.0f * FBPi * x));
+  return inv ? 1.0f - y : y;
 }
 
 static float
@@ -78,6 +79,7 @@ FFModMatrixGraph::paint(Graphics& g)
   int scaleType = 0;
   int sourceType = 0;
   int targetType = 0;
+  bool sourceInv = false;
   float scaleMin = 0.0f;
   float scaleMax = 1.0f;
   float targetAmt = 1.0f;
@@ -95,6 +97,7 @@ FFModMatrixGraph::paint(Graphics& g)
     scaleMin = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMin, slot } });
     scaleMax = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMax, slot } });
     targetAmt = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::TargetAmt, slot } });
+    sourceInv = (float)_plugGUI->HostContext()->GetAudioParamBool({ module, { (int)FFModMatrixParam::SourceInv, slot } });
     sourceLow = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceLow, slot } });
     sourceHigh = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceHigh, slot } });
     opType = _plugGUI->HostContext()->GetAudioParamList<FFModulationOpType>({ module, { (int)FFModMatrixParam::OpType, slot } });
@@ -114,7 +117,7 @@ FFModMatrixGraph::paint(Graphics& g)
     text = "Src";
     for (int i = 0; i < bounds.getWidth(); i++)
     {
-      float sourceNorm = GraphGetSource(i / (float)bounds.getWidth());
+      float sourceNorm = GraphGetSource(i / (float)bounds.getWidth(), sourceInv);
       if (sourceType == 0 || opType == FFModulationOpType::Off)
         yNormalized.push_back(sourceNorm);
       else
@@ -126,7 +129,7 @@ FFModMatrixGraph::paint(Graphics& g)
     if (sourceType != 0 && opType != FFModulationOpType::Off)
       for (int i = 0; i < bounds.getWidth(); i++)
       {
-        float sourceNorm = GraphGetSource(i / (float)bounds.getWidth());
+        float sourceNorm = GraphGetSource(i / (float)bounds.getWidth(), sourceInv);
         float sourceLowHigh = GraphGetSourceLowHigh(sourceNorm, sourceLow, sourceHigh);
         if (sourceHigh - sourceLow == 0.0f)
           yNormalized.push_back(sourceLowHigh);
@@ -160,7 +163,7 @@ FFModMatrixGraph::paint(Graphics& g)
       {
         float x = i / (float)bounds.getWidth();
         float target = GraphGetTarget(x);
-        float source = GraphGetSource(x);
+        float source = GraphGetSource(x, sourceInv);
         float scale = scaleType == 0 ? 1.0f : GraphGetScale(x);
         float scaleMinMax = GraphGetScaleMinMax(scale, scaleMin, scaleMax);
         FFApplyModulation(opType, source, scaleMinMax * targetAmt, target);

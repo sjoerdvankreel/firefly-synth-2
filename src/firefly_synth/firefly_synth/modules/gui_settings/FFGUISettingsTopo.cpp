@@ -9,13 +9,11 @@ FFMakeGUISettingsTopo()
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
-  result->name = "UI";
+  result->name = "GUI Settings";
   result->slotCount = 1;
-  result->id = "{2407B76A-7FB3-4BD6-B6FD-B1F610AF8147}";
-  result->params.resize((int)FFGUISettingsParam::Count);
+  result->id = "{E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B}";
   result->guiParams.resize((int)FFGUISettingsGUIParam::Count);
   auto selectGuiModule = [](auto& state) { return &state.guiSettings; }; 
-  auto selectModule = [](auto& state) { return &state.global.guiSettings; };
 
   auto& guiUserScale = result->guiParams[(int)FFGUISettingsGUIParam::UserScale];
   guiUserScale.unit = "%";
@@ -29,27 +27,49 @@ FFMakeGUISettingsTopo()
   auto selectGuiUserScale = [](auto& module) { return &module.userScale; };
   guiUserScale.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
 
-  auto& guiShowMatrix = result->guiParams[(int)FFGUISettingsGUIParam::ShowMatrix];
-  guiShowMatrix.defaultText = "Off";
-  guiShowMatrix.name = "Show Matrix";
-  guiShowMatrix.slotCount = 1;
-  guiShowMatrix.id = "{FEB66217-BE68-4B94-A8D3-009EE307BBB5}";
-  guiShowMatrix.type = FBParamType::Boolean;
-  auto selectGuiShowMatrix = [](auto& module) { return &module.showMatrix; };
-  guiShowMatrix.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiShowMatrix);
+  auto& guiHilightMod = result->guiParams[(int)FFGUISettingsGUIParam::HilightMod];
+  guiHilightMod.name = "Show Modulation Bounds";
+  guiHilightMod.slotCount = 1;
+  guiHilightMod.defaultText = "On";
+  guiHilightMod.id = "{193F0F95-D4D2-46A5-A978-C8740E0C08B3}";
+  guiHilightMod.type = FBParamType::Boolean;
+  auto selectGuiHilightMod = [](auto& module) { return &module.hilightMod; };
+  guiHilightMod.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightMod);
 
-  auto& guiVisualsMode = result->guiParams[(int)FFGUISettingsGUIParam::VisualsMode];
-  guiVisualsMode.defaultText = "If Focus";
-  guiVisualsMode.name = "Visuals";
-  guiVisualsMode.slotCount = 1;
-  guiVisualsMode.id = "{6C5F2DC2-C796-444C-8D43-077708580609}";
-  guiVisualsMode.type = FBParamType::List;
-  guiVisualsMode.List().items = {
-    { "{D5C9FC77-0DE8-4077-9D07-073B44F5076F}", "Basic" },
-    { "{8291740E-D7DC-4481-B430-9C73F3343E10}", "Always" },
+  auto& guiHilightTweak = result->guiParams[(int)FFGUISettingsGUIParam::HilightTweak];
+  guiHilightTweak.name = "Show Tweaked From Default";
+  guiHilightTweak.slotCount = 1;
+  guiHilightTweak.defaultText = "On";
+  guiHilightTweak.id = "{486DAE85-F8CC-4825-ACEA-D13D3D8A6933}";
+  guiHilightTweak.type = FBParamType::Boolean;
+  auto selectGuiHilightTweak = [](auto& module) { return &module.hilightTweak; };
+  guiHilightTweak.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightTweak);
+
+  auto& guiKnobVisualsMode = result->guiParams[(int)FFGUISettingsGUIParam::KnobVisualsMode];
+  guiKnobVisualsMode.defaultText = "If Focus";
+  guiKnobVisualsMode.name = "Knob Visuals From Engine";
+  guiKnobVisualsMode.slotCount = 1;
+  guiKnobVisualsMode.id = "{75702E18-0499-45ED-935E-A1BC1D0348C3}";
+  guiKnobVisualsMode.type = FBParamType::List;
+  guiKnobVisualsMode.List().items = {
+    { "{74535D7D-90EC-407D-A439-946A9C09351D}", "Off" },
+    { "{C1A672E9-332D-4A33-8FAC-D8D60A892561}", "On" },
+    { "{B2BA8788-B64E-4BF8-8584-DA13916ADC59}", "If Focus" } };
+  auto selectGuiKnobVisualsMode = [](auto& module) { return &module.knobVisualsMode; };
+  guiKnobVisualsMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiKnobVisualsMode);
+
+  auto& guiGraphVisualsMode = result->guiParams[(int)FFGUISettingsGUIParam::GraphVisualsMode];
+  guiGraphVisualsMode.defaultText = "If Focus";
+  guiGraphVisualsMode.name = "Plot Visuals From Engine";
+  guiGraphVisualsMode.slotCount = 1;
+  guiGraphVisualsMode.id = "{6C5F2DC2-C796-444C-8D43-077708580609}";
+  guiGraphVisualsMode.type = FBParamType::List;
+  guiGraphVisualsMode.List().items = {
+    { "{D5C9FC77-0DE8-4077-9D07-073B44F5076F}", "Off" },
+    { "{8291740E-D7DC-4481-B430-9C73F3343E10}", "On" },
     { "{A5369260-7E9F-4C23-8FED-0C42CAA9DD91}", "If Focus" } };
-  auto selectGuiVisualsMode = [](auto& module) { return &module.visualsMode; };
-  guiVisualsMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiVisualsMode);
+  auto selectGuiGraphVisualsMode = [](auto& module) { return &module.graphVisualsMode; };
+  guiGraphVisualsMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphVisualsMode);
 
   auto& guiOscSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::OscSelectedTab];
   guiOscSelectedTab.defaultText = "0";
@@ -110,19 +130,6 @@ FFMakeGUISettingsTopo()
   guiEchoSelectedTab.Discrete().valueCount = 2;
   auto selectGuiEchoSelectedTab = [](auto& module) { return &module.echoSelectedTab; };
   guiEchoSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiEchoSelectedTab);
-
-  // dummy which we check on the audio if it changed
-  auto& flushAudioToggle = result->params[(int)FFGUISettingsParam::FlushAudioToggle];
-  flushAudioToggle.mode = FBParamMode::Fake;
-  flushAudioToggle.name = "Flush Delay";
-  flushAudioToggle.slotCount = 1;
-  flushAudioToggle.defaultText = "Off";
-  flushAudioToggle.id = "{22F4FB2F-BAD8-43A0-BC28-88F5F3A3B7CF}";
-  flushAudioToggle.type = FBParamType::Boolean;
-  auto selectFlushAudioToggle = [](auto& module) { return &module.block.flushAudioToggle; };
-  flushAudioToggle.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFlushAudioToggle);
-  flushAudioToggle.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFlushAudioToggle);
-  flushAudioToggle.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFlushAudioToggle);
 
   return result;
 }
