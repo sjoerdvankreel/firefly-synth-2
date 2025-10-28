@@ -19,8 +19,8 @@ FBEntryExitLog::
 
 FBEntryExitLog::
 FBEntryExitLog(
-char const* file_, int line_, char const* func_):
-line(line_), file(file_), func(func_)
+char const* file, int line, char const* func):
+line(line), file(file), func(func)
 {
   FBLogWrite(FBLogLevel::Info, file, line, func, "Enter.");
 }
@@ -36,7 +36,6 @@ FBLogTerminate()
 {
   FB_LOG_INFO("Terminating log.");
   _logger.reset();
-  // DON'T log "terminated log" (i actually made that mistake).
 }
 
 void
@@ -44,7 +43,6 @@ FBLogInit(FBStaticTopoMeta const& meta)
 {
   auto path = FBGetLogPath(meta);
   auto file = File(String(path.string()));
-  // DON'T log "initializing log" (i actually made that mistake).
   _logger = std::make_unique<FileLogger>(file, meta.NameVersionAndFormat(), 0);
   FB_LOG_INFO("Initialized log.");
 }
