@@ -2,6 +2,7 @@ TODOLIST for alpha-20
 [ ] decrease build times
 [ ] it crashes Carla and ardour on scan
 [ ] it crashes bitwig+linux+vst on enable echo sync
+[ ] more test hosts (Carla, ardour, anything free)
 [ ] take a look at the string samplerate bug again
 
 TODOLIST for alpha-21 - tuning and keytracking
