@@ -1,9 +1,9 @@
 TODOLIST for alpha-20
-[ ] decrease build times
-[ ] it crashes Carla and ardour on scan
-[ ] it crashes bitwig+linux+vst on enable echo sync
+[x] decrease build times - dont build juce 4 times
+[x] it crashes bitwig+linux+vst on enable echo sync
+[x] make host test Carla file
+[ ] it crashes ardour on scan
 [ ] more test hosts (Carla, ardour, anything free)
-[ ] take a look at the string samplerate bug again
 
 TODOLIST for alpha-21 - tuning and keytracking
 [ ] the ktrk is already faulty even without tuning bc it tracks literally just the key, not base pitch
@@ -18,6 +18,7 @@ TODOLIST for alpha-21 - tuning and keytracking
 [ ] filters should track the actual pitch when possible (string osci)
 
 TODOLIST for alpha-22 - rest of the gui stuff
+[ ] decrease build times - check the includes/forward decls
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
 [ ] param menu : set to default / set to patch
 [ ] fix string patch sharing samplerate bug
@@ -67,3 +68,4 @@ fix todos
 todo document the thing a bit
 vst3 note expr + midi mpe
 explain processing order and modulation order including auto/external/internal
+[ ] take a look at the string samplerate bug again
