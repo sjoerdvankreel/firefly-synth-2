@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Session version="7003" name="ArdourVST3FX" sample-rate="48000" session-range-is-free="1" id-counter="22126" rg-counter="10" name-counter="1" event-counter="914" vca-counter="1">
+<Session version="7003" name="ArdourWindowsVST3FX" sample-rate="48000" session-range-is-free="1" id-counter="30906" rg-counter="11" name-counter="1" event-counter="1001" vca-counter="1">
   <ProgramVersion created-with="Ardour 8.12" modified-with="Ardour 8.12"/>
   <EngineHints backend="PortAudio" input-device="None" output-device="Headphones (Realtek(R) Audio)"/>
   <MIDIPorts>
