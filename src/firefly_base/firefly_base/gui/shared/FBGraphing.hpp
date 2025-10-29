@@ -146,6 +146,9 @@ template <bool Global, bool Stereo, class Derived>
 void
 FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex) 
 {
+  float const defaultPlotBPM = 120.0f;
+  float const defaultPlotSampleRate = 50.0f;
+
   auto graphData = renderData.graphData;
   auto renderState = graphData->renderState;
   auto guiRenderType = graphData->guiRenderType;
@@ -199,17 +202,19 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   float guiSampleRate;
   float guiSampleCount;
   auto hostExchange = renderState->ExchangeContainer()->Host();
+  float hostBPM = hostExchange->bpm == 0.0f ? defaultPlotBPM : hostExchange->bpm;
+  float hostSampleRate = hostExchange->sampleRate == 0.0f ? defaultPlotSampleRate : hostExchange->sampleRate;
   if (plotParams.autoSampleRate)
   {
     guiSampleCount = static_cast<float>(graphData->pixelWidth);
-    guiSampleRate = hostExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
+    guiSampleRate = hostSampleRate / (maxDspSampleCount / guiSampleCount);
   }
   else
   {
     guiSampleRate = plotParams.sampleRate;
     guiSampleCount = static_cast<float>(plotParams.sampleCount);
   }
-  renderState->PrepareForRenderPrimary(guiSampleRate, hostExchange->bpm);
+  renderState->PrepareForRenderPrimary(guiSampleRate, hostBPM);
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();
   moduleProcState->renderType = FBRenderType::GraphPrimary;
