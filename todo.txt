@@ -1,3 +1,5 @@
+recheck known issues
+
 TODOLIST for alpha-21 - tuning and keytracking
 [ ] the ktrk is already faulty even without tuning bc it tracks literally just the key, not base pitch
 [ ] filter kbd track -- should it take into account all coarse pitch mods ?
