@@ -146,9 +146,6 @@ template <bool Global, bool Stereo, class Derived>
 void
 FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex) 
 {
-  float const defaultPlotBPM = 120.0f;
-  float const defaultPlotSampleRate = 50.0f;
-
   auto graphData = renderData.graphData;
   auto renderState = graphData->renderState;
   auto guiRenderType = graphData->guiRenderType;
@@ -205,8 +202,8 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
 
   // Some linux vst3 hosts dont get this right.
   // See https://forums.steinberg.net/t/dataexchange-on-linux/917660/5.
-  float hostBPM = hostExchange->bpm == 0.0f ? defaultPlotBPM : hostExchange->bpm;
-  float hostSampleRate = hostExchange->sampleRate == 0.0f ? defaultPlotSampleRate : hostExchange->sampleRate;
+  float hostBPM = hostExchange->bpm == 0.0f ? FBExchangeDefaultPlotBPM : hostExchange->bpm;
+  float hostSampleRate = hostExchange->sampleRate == 0.0f ? FBExchangeDefaultPlotSampleRate : hostExchange->sampleRate;
   if (plotParams.autoSampleRate)
   {
     guiSampleCount = static_cast<float>(graphData->pixelWidth);
