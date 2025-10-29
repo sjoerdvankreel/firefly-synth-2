@@ -19,8 +19,8 @@ FBEntryExitLog::
 
 FBEntryExitLog::
 FBEntryExitLog(
-char const* file, int line, char const* func):
-line(line), file(file), func(func)
+char const* file_, int line_, char const* func_):
+line(line_), file(file_), func(func_)
 {
   FBLogWrite(FBLogLevel::Info, file, line, func, "Enter.");
 }

@@ -14,10 +14,13 @@
 struct FBRuntimeTopo;
 struct FBRuntimeParam;
 
+inline float constexpr FBExchangeDefaultHostBPM = 120.0f;
+inline float constexpr FBExchangeDefaultHostSampleRate = 48000.0f;
+
 struct alignas(FBSIMDAlign) FBHostExchangeState final
 {
-  float bpm = {};
-  float sampleRate = {};
+  float bpm = FBExchangeDefaultHostBPM;
+  float sampleRate = FBExchangeDefaultHostSampleRate;
   FBNoteMatrix<float> noteMatrix = {};
 };
 

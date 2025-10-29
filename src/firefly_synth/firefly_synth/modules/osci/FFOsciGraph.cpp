@@ -106,7 +106,11 @@ PlotParams(FBModuleGraphComponentData const* data, int /*graphIndex*/)
   pitch += state->AudioParamLinear({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Fine, 0 } }, false, -1);
   auto type = state->AudioParamList<FFOsciType>({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Type, 0 } }, false, -1);
   int rounds = type == FFOsciType::String? FFOsciStringGraphRounds : 1;
-  result.sampleCount = FBFreqToSamples(FBPitchToFreq(pitch), sampleRate) * rounds;
+
+  // make it debuggable, ardour acts weird
+  auto freq = FBPitchToFreq(pitch);
+  auto samples = FBFreqToSamples(freq, sampleRate);
+  result.sampleCount = samples * rounds;
   return result;
 }
 

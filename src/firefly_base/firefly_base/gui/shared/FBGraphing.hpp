@@ -199,17 +199,22 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   float guiSampleRate;
   float guiSampleCount;
   auto hostExchange = renderState->ExchangeContainer()->Host();
+
+  // Some vst3 hosts dont get this right.
+  // See https://forums.steinberg.net/t/dataexchange-on-linux/917660/5.
+  float hostBPM = hostExchange->bpm == 0.0f ? FBExchangeDefaultHostBPM : hostExchange->bpm;
+  float hostSampleRate = hostExchange->sampleRate == 0.0f ? FBExchangeDefaultHostSampleRate : hostExchange->sampleRate;
   if (plotParams.autoSampleRate)
   {
     guiSampleCount = static_cast<float>(graphData->pixelWidth);
-    guiSampleRate = hostExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
+    guiSampleRate = hostSampleRate / (maxDspSampleCount / guiSampleCount);
   }
   else
   {
     guiSampleRate = plotParams.sampleRate;
     guiSampleCount = static_cast<float>(plotParams.sampleCount);
   }
-  renderState->PrepareForRenderPrimary(guiSampleRate, hostExchange->bpm);
+  renderState->PrepareForRenderPrimary(guiSampleRate, hostBPM);
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();
   moduleProcState->renderType = FBRenderType::GraphPrimary;

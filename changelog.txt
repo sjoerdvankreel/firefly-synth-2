@@ -1,3 +1,15 @@
+October 29, 2025 - Alpha 20.
+
+- Build:
+* Moved JUCE into a static library so it doesn't build 4 times.
+
+- Other:
+* Bugfix: some hosts do not provide the VST3 exchange data, deal with it. This crashed the GUI on Linux+Bitwig/Carla/Renoise. Also solves painting problems on other hosts.
+* Bugfix: Ardour does not call VST3's Connect() before Activate(). Don't know if that's allowed or not - deal with it.
+
+- Testing efforts:
+* Added Carla and Ardour to the standard test set (VST3 only, Win/Lin only for now).
+
 October 27, 2025 - Alpha 19.
 
 - Modules:

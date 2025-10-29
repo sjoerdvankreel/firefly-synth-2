@@ -1,4 +1,4 @@
-TODOLIST for alpha-20 - tuning and keytracking
+TODOLIST for alpha-21 - tuning and keytracking
 [ ] the ktrk is already faulty even without tuning bc it tracks literally just the key, not base pitch
 [ ] filter kbd track -- should it take into account all coarse pitch mods ?
 [ ] make a dedicated tuning section with some options
@@ -10,7 +10,10 @@ TODOLIST for alpha-20 - tuning and keytracking
 [ ] MTS take into account all pitch modulators (eg pitchbend + 1 must be +1 semitones of the retuned scale, also for all coarse/fine, unison, etc etc)
 [ ] filters should track the actual pitch when possible (string osci)
 
-TODOLIST for alpha-21 - rest of the gui stuff
+TODOLIST for alpha-22 - rest of the gui stuff
+[ ] add Carla/ardour for mac as test targets
+[ ] decrease build times - check the includes/forward decls
+[ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
 [ ] param menu : set to default / set to patch
 [ ] fix string patch sharing samplerate bug
 [ ] not crash Linux on enable sync echo
@@ -59,3 +62,4 @@ fix todos
 todo document the thing a bit
 vst3 note expr + midi mpe
 explain processing order and modulation order including auto/external/internal
+[ ] take a look at the string samplerate bug again
