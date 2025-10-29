@@ -175,7 +175,7 @@
     <NoteDiffCommand midi-source="4225">
       <ChangedNotes/>
       <AddedNotes>
-        <note id="35" note="65" channel="0" time="19.711458333333333" length="3.4130208333333334" velocity="64"/>
+        <note id="35" note="65" channel="0" time="19.7109375" length="3.4130208333333334" velocity="64"/>
       </AddedNotes>
       <RemovedNotes/>
     </NoteDiffCommand>
@@ -206,7 +206,7 @@
     <NoteDiffCommand midi-source="4225">
       <ChangedNotes/>
       <AddedNotes>
-        <note id="48" note="64" channel="0" time="23.125" length="2.9859374999999999" velocity="64"/>
+        <note id="48" note="64" channel="0" time="23.125" length="2.9854166666666666" velocity="64"/>
       </AddedNotes>
       <RemovedNotes/>
     </NoteDiffCommand>
