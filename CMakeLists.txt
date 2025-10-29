@@ -34,10 +34,12 @@ set (PROJECT_NAME_OUT_INST FireflySynth2)
 
 # want this only for dev
 if (NOT DEFINED FB_WARN_AS_ERROR)
-  message(FATAL_ERROR "FB_WARN_AS_ERROR is not set.")
+  set (FB_WARN_AS_ERROR 1)
+  message(WARNING "FB_WARN_AS_ERROR is not set.")
 endif()
 if (NOT DEFINED FB_ENABLE_ASAN)
-  message(FATAL_ERROR "FB_ENABLE_ASAN is not set.")
+  set (FB_ENABLE_ASAN 0)
+  message(WARNING "FB_ENABLE_ASAN is not set.")
 endif()
 
 # stuff that should apply to all code
