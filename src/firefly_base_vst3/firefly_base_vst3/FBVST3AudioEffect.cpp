@@ -103,10 +103,15 @@ FBVST3AudioEffect::setActive(TBool state)
 {
   return FBWithLogException([this, state]()
   {
-    if (state)
-      _exchangeHandler->onActivate(processSetup);
-    else
-      _exchangeHandler->onDeactivate();
+    // Ardour calls this before connect (windows linux both).
+    // Seems sketchy but i have no clue if this is actually inside the bounds of what vst3 allows or not.
+    if (_exchangeHandler)
+    {
+      if (state)
+        _exchangeHandler->onActivate(processSetup);
+      else
+        _exchangeHandler->onDeactivate();
+    }
     return AudioEffect::setActive(state);
   });
 }
