@@ -1,7 +1,6 @@
 #pragma once
 
 #include <firefly_base/base/topo/static/FBParamNonRealTime.hpp>
-
 #include <string>
 #include <optional>
 

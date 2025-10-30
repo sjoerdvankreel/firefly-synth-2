@@ -1,6 +1,5 @@
 #pragma once
 
-#include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 #include <firefly_base/base/topo/static/FBBarsItem.hpp>
 #include <firefly_base/base/topo/static/FBParamNonRealTime.hpp>
 

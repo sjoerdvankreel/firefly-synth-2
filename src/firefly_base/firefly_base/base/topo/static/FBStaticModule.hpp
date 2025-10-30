@@ -5,12 +5,8 @@
 #include <firefly_base/base/topo/static/FBSlotFormatter.hpp>
 #include <firefly_base/base/topo/static/FBStaticCVOutput.hpp>
 
-#include <juce_gui_basics/juce_gui_basics.h>
-
-#include <array>
 #include <string>
 #include <vector>
-#include <memory>
 #include <functional>
 
 class FBPlugGUI;

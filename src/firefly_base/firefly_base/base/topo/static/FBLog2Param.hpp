@@ -7,7 +7,6 @@
 #include <cmath>
 #include <string>
 #include <optional>
-#include <algorithm>
 
 struct FBLog2Param
 {

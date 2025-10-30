@@ -2,7 +2,6 @@
 
 #include <firefly_base/base/topo/static/FBParamNonRealTime.hpp>
 
-#include <cmath>
 #include <string>
 #include <optional>
 #include <algorithm>

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
-#include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/state/proc/FBAccParamState.hpp>
 #include <firefly_base/base/topo/static/FBParamNonRealTime.hpp>
 

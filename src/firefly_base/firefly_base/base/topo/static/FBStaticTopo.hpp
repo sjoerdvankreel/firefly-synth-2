@@ -6,7 +6,6 @@
 #include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 
 #include <vector>
-#include <memory>
 #include <functional>
 
 struct FBStaticTopo;
