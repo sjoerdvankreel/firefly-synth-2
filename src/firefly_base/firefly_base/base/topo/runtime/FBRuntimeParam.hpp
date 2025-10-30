@@ -2,12 +2,12 @@
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/topo/static/FBStaticParam.hpp>
-#include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 
 #include <string>
 
 struct FBStaticTopo;
 struct FBStaticModule;
+struct FBParamTopoIndices;
 
 std::string
 FBMakeRuntimeParamLongName(

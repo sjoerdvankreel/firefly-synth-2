@@ -1,12 +1,12 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeModule.hpp>
 
-#include <map>
 #include <vector>
 #include <unordered_map>
+
+struct FBParamTopoIndices;
 
 template <class TParam>
 struct FBRuntimeParamsTopo final
