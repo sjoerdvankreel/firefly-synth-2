@@ -1,11 +1,8 @@
 #include <firefly_synth/gui/FFPatchGUI.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
-#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
-#include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
