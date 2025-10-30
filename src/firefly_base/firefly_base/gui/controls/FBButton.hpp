@@ -2,12 +2,9 @@
 
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBAutoSize.hpp>
-#include <firefly_base/gui/shared/FBParamComponent.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
-
 #include <string>
-#include <functional>
 
 class FBPlugGUI;
 struct FBRuntimeParam;

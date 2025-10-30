@@ -2,7 +2,6 @@
 
 #include <firefly_base/gui/shared/FBAutoSize.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
-
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class FBLastTweakedLabel:
