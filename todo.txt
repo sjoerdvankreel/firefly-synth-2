@@ -9,7 +9,6 @@ TODOLIST for alpha-22 - tuning and keytracking
 [ ] the ktrk is already faulty even without tuning bc it tracks literally just the key, not base pitch
 [ ] filter kbd track -- should it take into account all coarse pitch mods ?
 [ ] make a dedicated tuning section with some options
-[ ] need per-instance params for microtuning
 [ ] note filtering
 [ ] tune the filters
 [ ] figure out all places where is used midi note
@@ -19,11 +18,9 @@ TODOLIST for alpha-22 - tuning and keytracking
 
 TODOLIST for alpha-23 - rest of the gui stuff
 [ ] add Carla/ardour for mac as test targets
-[ ] decrease build times - check the includes/forward decls
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
 [ ] param menu : set to default / set to patch
 [ ] fix string patch sharing samplerate bug
-[ ] not crash Linux on enable sync echo
 [ ] something with instance and patch naming
 [ ] re-save everything
 [ ] preset infra
@@ -48,10 +45,8 @@ TODOLIST for alpha-25
 
 keep profiling
 PatchFromScratch video
-decrease the build times -- recheck all the includes, forward decls, try juce into staticlib once more
 write the manual + note about disable everything unused for performance including unused matrix slots
 routing / order diagram
-figure out bitwig dataexchange on Linux
 make a percussion demo
 make porta lead demo
 make a tune before release
@@ -69,4 +64,4 @@ fix todos
 todo document the thing a bit
 vst3 note expr + midi mpe
 explain processing order and modulation order including auto/external/internal
-[ ] take a look at the string samplerate bug again
+take a look at the string samplerate bug again
