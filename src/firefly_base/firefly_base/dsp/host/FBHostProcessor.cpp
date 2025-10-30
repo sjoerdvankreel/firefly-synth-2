@@ -1,3 +1,4 @@
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBAccParamState.hpp>
 #include <firefly_base/base/state/proc/FBVoiceAccParamState.hpp>
