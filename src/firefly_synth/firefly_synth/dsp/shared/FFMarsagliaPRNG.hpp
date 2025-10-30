@@ -1,8 +1,8 @@
 #pragma once
 
-#include <firefly_synth/dsp/shared/FFParkMillerPRNG.hpp>
-#include <firefly_base/base/shared/FBSArray.hpp>
+#include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
+#include <firefly_synth/dsp/shared/FFParkMillerPRNG.hpp>
 
 #include <limits>
 #include <cstdint>
