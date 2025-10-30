@@ -1,20 +1,13 @@
 #pragma once
 
-#include <firefly_base/base/shared/FBSArray.hpp>
-#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
-#include <firefly_base/base/state/proc/FBModuleProcState.hpp>
-#include <firefly_base/base/state/main/FBGraphRenderState.hpp>
-#include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
-#include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
-
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
-#include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
 
 #include <vector>
 #include <functional>
 
-struct FBStaticTopo;
+class FBGraphRenderState;
 struct FBModuleGraphComponentData;
 
 struct FBModuleGraphPlotParams

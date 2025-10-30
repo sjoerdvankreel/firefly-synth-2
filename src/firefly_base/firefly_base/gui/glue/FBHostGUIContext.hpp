@@ -1,7 +1,6 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBUndoStateContainer.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -9,6 +8,7 @@
 #include <string>
 #include <vector>
 
+struct FBStaticTopo;
 struct FBTopoIndices;
 struct FBRuntimeTopo;
 struct FBParamTopoIndices;
