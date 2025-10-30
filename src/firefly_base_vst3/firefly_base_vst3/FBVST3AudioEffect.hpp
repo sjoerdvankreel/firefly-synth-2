@@ -1,6 +1,6 @@
 #pragma once
 
-#include <firefly_base/base/shared/FBSArray.hpp>
+#include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
 #include <firefly_base/dsp/host/FBHostDSPContext.hpp>
 

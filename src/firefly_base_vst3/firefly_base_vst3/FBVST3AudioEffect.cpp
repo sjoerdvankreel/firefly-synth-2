@@ -4,6 +4,7 @@
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
 #include <firefly_base/dsp/plug/FBPlugProcessor.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
