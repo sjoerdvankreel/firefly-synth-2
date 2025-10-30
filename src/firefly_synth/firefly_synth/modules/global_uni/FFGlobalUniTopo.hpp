@@ -1,8 +1,5 @@
 #pragma once
 
-#include <firefly_synth/shared/FFPlugTopo.hpp>
-#include <firefly_synth/dsp/shared/FFModulate.hpp>
-
 #include <memory>
 
 struct FBStaticModule;

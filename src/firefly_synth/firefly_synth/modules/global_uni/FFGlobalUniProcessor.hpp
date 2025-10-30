@@ -2,15 +2,10 @@
 
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
-#include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniTopo.hpp>
 
-#include <firefly_base/dsp/plug/FBPlugBlock.hpp>
 #include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
-#include <firefly_base/base/state/proc/FBModuleProcState.hpp>
-#include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 
 #include <array>
 #include <xsimd/xsimd.hpp>
@@ -40,5 +35,5 @@ public:
   void ApplyToVoice(
     FBModuleProcState& state, FFGlobalUniTarget targetParam, 
     bool graph, int voice, int voiceSlotInGroup,
-    FBSArray<float, 16>& targetSignal);
+    FBSArray<float, FBFixedBlockSamples>& targetSignal);
 };
