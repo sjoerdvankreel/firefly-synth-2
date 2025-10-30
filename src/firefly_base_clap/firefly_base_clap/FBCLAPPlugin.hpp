@@ -4,7 +4,6 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base_clap/FBCLAPSyncEvent.hpp>
 
-#include <juce_events/juce_events.h>
 #include <clap/helpers/plugin.hh>
 #include <readerwriterqueue.h>
 #include <memory>
