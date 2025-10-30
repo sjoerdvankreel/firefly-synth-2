@@ -2,8 +2,6 @@
 
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/mix/FFMixTopo.hpp>
-
-#include <firefly_base/base/shared/FBSArray.hpp>
 #include <memory>
 
 struct FBStaticModule;
