@@ -1,6 +1,5 @@
 #pragma once
 
-#include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
 #include <xsimd/xsimd.hpp>

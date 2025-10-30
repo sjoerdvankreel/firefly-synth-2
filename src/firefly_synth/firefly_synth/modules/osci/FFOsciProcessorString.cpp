@@ -7,7 +7,6 @@
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
-#include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
