@@ -3,6 +3,7 @@
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 using namespace juce;

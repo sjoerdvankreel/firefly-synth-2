@@ -5,6 +5,7 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 using namespace juce;
 
