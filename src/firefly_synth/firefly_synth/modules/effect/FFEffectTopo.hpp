@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_synth/dsp/shared/FFTrigFunctions.hpp>
 #include <string>
 #include <memory>
 
