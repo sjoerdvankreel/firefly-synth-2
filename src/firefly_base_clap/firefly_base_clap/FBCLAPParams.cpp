@@ -5,6 +5,7 @@
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
+#include <firefly_base/dsp/host/FBHostProcessor.hpp>
 
 bool 
 FBCLAPPlugin::implementsParams() const noexcept 

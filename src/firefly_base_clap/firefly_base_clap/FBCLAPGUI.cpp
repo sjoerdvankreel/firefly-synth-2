@@ -3,6 +3,7 @@
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContainer.hpp>
+#include <firefly_base/dsp/host/FBHostProcessor.hpp>
 
 #include <clap/helpers/host-proxy.hxx>
 #include <juce_gui_basics/juce_gui_basics.h>

@@ -1,4 +1,5 @@
 #include <firefly_base_clap/FBCLAPPlugin.hpp>
+#include <firefly_base/dsp/host/FBHostProcessor.hpp>
 
 bool 
 FBCLAPPlugin::implementsNotePorts() const noexcept
