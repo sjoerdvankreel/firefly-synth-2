@@ -1,8 +1,6 @@
 #pragma once
 
 #include <firefly_synth/modules/output/FFOutputProcessor.hpp>
-
-#include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 
 #include <array>
