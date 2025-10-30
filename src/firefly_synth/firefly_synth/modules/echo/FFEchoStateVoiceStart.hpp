@@ -1,5 +1,8 @@
 #pragma once
 
+#include <array>
+#include <memory>
+
 template <bool Global>
 class FFEchoProcessor;
 
