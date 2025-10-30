@@ -1,8 +1,6 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/dsp/host/FBHostBlock.hpp>
-#include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
 #include <array>
 #include <vector>
