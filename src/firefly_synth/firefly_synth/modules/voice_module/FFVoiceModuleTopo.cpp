@@ -1,6 +1,5 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFTopoDetail.hpp>
-#include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 

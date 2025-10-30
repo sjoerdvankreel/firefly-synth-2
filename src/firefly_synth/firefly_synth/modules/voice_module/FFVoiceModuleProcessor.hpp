@@ -2,9 +2,7 @@
 
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleStateVoiceStart.hpp>
-
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <array>
 
 class FBAccParamState;
 struct FBModuleProcState;
