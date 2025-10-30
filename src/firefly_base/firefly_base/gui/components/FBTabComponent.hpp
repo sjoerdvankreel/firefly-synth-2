@@ -8,6 +8,7 @@
 #include <map>
 
 class FBPlugGUI;
+struct FBRuntimeGUIParam;
 
 inline int constexpr FBTabBarDepth = 20;
 

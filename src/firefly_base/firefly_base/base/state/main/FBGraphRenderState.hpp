@@ -3,6 +3,7 @@
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/shared/FBNoteMatrix.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 #include <juce_dsp/juce_dsp.h>
 #include <vector>

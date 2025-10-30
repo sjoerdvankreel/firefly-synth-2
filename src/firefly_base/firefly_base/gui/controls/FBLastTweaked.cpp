@@ -1,6 +1,8 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
 
