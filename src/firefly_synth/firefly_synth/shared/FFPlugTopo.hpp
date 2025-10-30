@@ -12,8 +12,6 @@
 
 #define FF_PLUG_VERSION FB_STRINGIFY(FF_PLUG_VERSION_MAJOR.FF_PLUG_VERSION_MINOR.FF_PLUG_VERSION_PATCH)
 
-struct FBStaticTopoMeta;
-
 inline int constexpr FFLFOCount = 6;
 inline int constexpr FFOsciCount = 4; // easy access mod needs env/lfo >= this
 inline int constexpr FFEffectCount = FFOsciCount; // easy access mod needs env/lfo >= this, also GUI needs these to be equal
