@@ -10,7 +10,6 @@
 
 #include <array>
 #include <memory>
-#include <cstdint>
 
 struct FBStaticModule; 
 template <bool Global>
