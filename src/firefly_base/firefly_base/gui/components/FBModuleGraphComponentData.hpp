@@ -5,7 +5,6 @@
 
 #include <vector>
 #include <string>
-#include <optional>
 #include <functional>
 
 typedef std::function<bool(int graphIndex)>

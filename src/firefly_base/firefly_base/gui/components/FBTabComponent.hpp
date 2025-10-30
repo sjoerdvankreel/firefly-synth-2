@@ -1,7 +1,6 @@
 #pragma once
 
 #include <firefly_base/gui/shared/FBAutoSize.hpp>
-#include <firefly_base/gui/shared/FBParamComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>

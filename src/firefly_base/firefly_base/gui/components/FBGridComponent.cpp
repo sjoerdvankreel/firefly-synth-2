@@ -1,4 +1,3 @@
-#include <firefly_base/gui/shared/FBAutoSize.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 
 using namespace juce;
