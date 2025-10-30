@@ -5,7 +5,6 @@
 #include <firefly_synth/modules/mod_matrix/FFModMatrixProcessor.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 
-#include <map>
 #include <array>
 #include <vector>
 

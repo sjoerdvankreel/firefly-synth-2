@@ -1,12 +1,9 @@
 #pragma once
 
 #include <firefly_synth/modules/mod_matrix/FFModMatrixSource.hpp>
-#include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 
-#include <string>
 #include <memory>
 #include <vector>
-#include <utility>
 
 struct FBStaticTopo;
 
