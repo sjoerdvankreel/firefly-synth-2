@@ -1,6 +1,5 @@
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
-#include <firefly_base/base/state/proc/FBVoiceBlockParamState.hpp>
 
 #include <limits>
 

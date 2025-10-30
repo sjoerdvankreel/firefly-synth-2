@@ -10,7 +10,6 @@
 class FBProcStateContainer;
 
 inline int constexpr FBMaxVoices = 64;
-
 enum class FBVoiceState { Free, Active, Returned };
 
 struct FBVoiceInfo final
