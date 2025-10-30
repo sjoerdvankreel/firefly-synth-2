@@ -1,6 +1,5 @@
 #pragma once
 
-#include <firefly_base/base/shared/FBUtility.hpp>
 #include <xsimd/xsimd.hpp>
 
 // better make sure this all lines up

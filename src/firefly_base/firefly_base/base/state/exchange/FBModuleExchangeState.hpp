@@ -2,7 +2,6 @@
 
 #include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 
 #include <array>
 
