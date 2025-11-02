@@ -283,8 +283,8 @@ FFMakeEffectTopo(bool global)
   auto& stVarCoarse = result->params[(int)FFEffectParam::StVarCoarse];
   stVarCoarse.mode = FBParamMode::Accurate;
   stVarCoarse.defaultText = "0";
-  stVarCoarse.name = "StVar Coarse";
-  stVarCoarse.display = "Note";
+  stVarCoarse.name = "StVar Note";
+  stVarCoarse.display = "Nte";
   stVarCoarse.slotCount = FFEffectBlockCount;
   stVarCoarse.slotFormatter = FFFormatBlockSlot;
   stVarCoarse.unit = "Semitones";
