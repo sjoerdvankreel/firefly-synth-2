@@ -15,14 +15,14 @@ FFEffectKindToString(FFEffectKind kind)
   case FFEffectKind::Clip: return "Clip";
   case FFEffectKind::Fold: return "Fold";
   case FFEffectKind::Skew: return "Skew";
-  case FFEffectKind::CombFreq: return "Comb (Freq)";
-  case FFEffectKind::CombPitch: return "Comb (Note)";
-  case FFEffectKind::StVarFreq: return "StVar (Freq)";
-  case FFEffectKind::StVarPitch: return "StVar (Note)";
-  case FFEffectKind::CombMinFreq: return "Comb- (Freq)";
-  case FFEffectKind::CombMinPitch: return "Comb- (Note)";
-  case FFEffectKind::CombPlusFreq: return "Comb+ (Freq)";
-  case FFEffectKind::CombPlusPitch: return "Comb+ (Pitch)";
+  case FFEffectKind::CombFreq: return "Comb Frq";
+  case FFEffectKind::CombPitch: return "Comb Nte";
+  case FFEffectKind::StVarFreq: return "StVar Frq";
+  case FFEffectKind::StVarPitch: return "StVar Nte";
+  case FFEffectKind::CombMinFreq: return "Comb- Frq";
+  case FFEffectKind::CombMinPitch: return "Comb- Nte";
+  case FFEffectKind::CombPlusFreq: return "Comb+ Frq";
+  case FFEffectKind::CombPlusPitch: return "Comb+ Nte";
   default: FB_ASSERT(false); return {};
   }
 }

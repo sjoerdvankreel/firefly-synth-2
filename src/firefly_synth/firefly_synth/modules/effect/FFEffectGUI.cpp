@@ -101,10 +101,11 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
   FB_LOG_ENTRY_EXIT();
 
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
+  std::vector<int> autoSizeColForRow = { -1, -1 };
+  std::vector<int> autoSizeRowForCol = { 1, 1, -1, -1, -1, -1, -1, -1 };
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, autoSizeRowForCol, autoSizeColForRow, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
   auto kind = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, block } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, kind, std::string(1, static_cast<char>('A' + block))));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, kind));
+  grid->Add(0, 0, 1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, kind));
   
   auto combKeyTrk = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombKeyTrk, block } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combKeyTrk));
