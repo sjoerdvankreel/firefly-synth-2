@@ -244,6 +244,8 @@ FFOsciProcessor::ProcessString(
     }
   }
 
+  float lastLPFreqPlain = 0.0f;
+  float lastHPFreqPlain = 0.0f;
   for (int s = 0; s < totalSamples; s++)
   {
     float x = stringXPlain.Get(s);
@@ -274,6 +276,7 @@ FFOsciProcessor::ProcessString(
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
       lpFreq *= _graphStVarFilterFreqMultiplier;
       _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, lpFreq, lpRes, 0.0f);
+      lastLPFreqPlain = lpFreq;
     }
 
     if (_stringHPOn)
@@ -286,6 +289,7 @@ FFOsciProcessor::ProcessString(
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
       hpFreq *= _graphStVarFilterFreqMultiplier;
       _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, hpFreq, hpRes, 0.0f);
+      lastHPFreqPlain = hpFreq;
     }
 
     for (int ub = 0; ub < _uniCount; ub += FBSIMDFloatCount)
@@ -326,13 +330,21 @@ FFOsciProcessor::ProcessString(
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;
+  
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
+
+  // Need to translate filter freqs back to normalized because keytracking is applied on plain, not normalized.
+  if (_stringLPOn)
+    exchangeParams.acc.stringLPFreq[0][voice] = 
+      topo.params[(int)FFOsciParam::StringLPFreq].Log2().PlainToNormalizedFast(lastLPFreqPlain);
+  if (_stringHPOn)
+    exchangeParams.acc.stringHPFreq[0][voice] =
+      topo.params[(int)FFOsciParam::StringHPFreq].Log2().PlainToNormalizedFast(lastHPFreqPlain);
+
   exchangeParams.acc.stringX[0][voice] = stringXNorm.Last();
   exchangeParams.acc.stringY[0][voice] = stringYNorm.Last();
   exchangeParams.acc.stringLPRes[0][voice] = stringLPResNorm.Last();
   exchangeParams.acc.stringHPRes[0][voice] = stringHPResNorm.Last();
-  exchangeParams.acc.stringLPFreq[0][voice] = stringLPFreqNorm.Last();
-  exchangeParams.acc.stringHPFreq[0][voice] = stringHPFreqNorm.Last();
   exchangeParams.acc.stringLPKTrk[0][voice] = stringLPKTrkNorm.Last();
   exchangeParams.acc.stringHPKTrk[0][voice] = stringHPKTrkNorm.Last();
   exchangeParams.acc.stringExcite[0][voice] = stringExciteNorm.Last();
