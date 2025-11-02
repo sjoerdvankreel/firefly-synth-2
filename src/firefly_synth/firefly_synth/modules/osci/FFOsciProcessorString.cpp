@@ -244,6 +244,8 @@ FFOsciProcessor::ProcessString(
     }
   }
 
+  float lastDampNorm = 0.0f;
+  float lastFdbkNorm = 0.0f;
   float lastLPFreqPlain = 0.0f;
   float lastHPFreqPlain = 0.0f;
   for (int s = 0; s < totalSamples; s++)
@@ -264,7 +266,10 @@ FFOsciProcessor::ProcessString(
     float pitchDiffNorm = std::clamp(pitchDiffSemis / 24.0f, -1.0f, 1.0f);
     damp = std::clamp(damp - 0.5f * dampKTrk * pitchDiffNorm, 0.0f, 1.0f);
     feedback = std::clamp(feedback + 0.5f * feedbackKTrk * pitchDiffNorm, 0.0f, 1.0f);
+
     float realFeedback = 0.9f + 0.1f * feedback;
+    lastDampNorm = damp;
+    lastFdbkNorm = feedback;
 
     if (_stringLPOn)
     {
@@ -341,6 +346,10 @@ FFOsciProcessor::ProcessString(
     exchangeParams.acc.stringHPFreq[0][voice] =
       topo.params[(int)FFOsciParam::StringHPFreq].Log2().PlainToNormalizedFast(lastHPFreqPlain);
 
+  // For these keytracking is applied to normalized.
+  exchangeParams.acc.stringDamp[0][voice] = lastDampNorm;
+  exchangeParams.acc.stringFeedback[0][voice] = lastFdbkNorm;
+
   exchangeParams.acc.stringX[0][voice] = stringXNorm.Last();
   exchangeParams.acc.stringY[0][voice] = stringYNorm.Last();
   exchangeParams.acc.stringLPRes[0][voice] = stringLPResNorm.Last();
@@ -348,10 +357,8 @@ FFOsciProcessor::ProcessString(
   exchangeParams.acc.stringLPKTrk[0][voice] = stringLPKTrkNorm.Last();
   exchangeParams.acc.stringHPKTrk[0][voice] = stringHPKTrkNorm.Last();
   exchangeParams.acc.stringExcite[0][voice] = stringExciteNorm.Last();
-  exchangeParams.acc.stringDamp[0][voice] = stringDampNorm.Last();
   exchangeParams.acc.stringDampKTrk[0][voice] = stringDampKTrkNorm.Last();
   exchangeParams.acc.stringTrackingKey[0][voice] = stringTrackingKeyNorm.Last();
-  exchangeParams.acc.stringFeedback[0][voice] = stringFeedbackNorm.Last();
   exchangeParams.acc.stringFeedbackKTrk[0][voice] = stringFeedbackKTrkNorm.Last();
   exchangeParams.acc.stringColor[0][voice] = stringColorNorm.Last();
 }
