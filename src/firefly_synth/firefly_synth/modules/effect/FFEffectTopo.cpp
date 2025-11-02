@@ -380,7 +380,7 @@ FFMakeEffectTopo(bool global)
   combCoarsePlus.slotCount = FFEffectBlockCount;
   combCoarsePlus.slotFormatter = FFFormatBlockSlot;
   combCoarsePlus.unit = "Semitones";
-  combCoarsePlus.id = "{CCB595F7-3270-4BBD-8CE5-FE18EFA27E94}";
+  combCoarsePlus.id = prefix + "{CCB595F7-3270-4BBD-8CE5-FE18EFA27E94}";
   combCoarsePlus.type = FBParamType::Linear;
   combCoarsePlus.Linear().min = -FFModCoarseSemis;
   combCoarsePlus.Linear().max = FFModCoarseSemis;
@@ -425,7 +425,7 @@ FFMakeEffectTopo(bool global)
   combCoarseMin.slotCount = FFEffectBlockCount;
   combCoarseMin.slotFormatter = FFFormatBlockSlot;
   combCoarseMin.unit = "Semitones";
-  combCoarseMin.id = "{0EEFA4DF-9A80-4E60-8A42-E802DDA2384F}";
+  combCoarseMin.id = prefix + "{0EEFA4DF-9A80-4E60-8A42-E802DDA2384F}";
   combCoarseMin.type = FBParamType::Linear;
   combCoarseMin.Linear().min = -FFModCoarseSemis;
   combCoarseMin.Linear().max = FFModCoarseSemis;
