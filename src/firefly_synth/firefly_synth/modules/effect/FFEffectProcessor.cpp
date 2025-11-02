@@ -330,7 +330,7 @@ FFEffectProcessor::Process(
         if (_kind[i] == FFEffectKind::StVarFreq)
         {
           auto freqFreqPlain = topo.NormalizedToLog2Fast(FFEffectParam::StVarFreqFreq, stVarFreqFreqNormModulated[i].Load(s));
-          freqFreqPlain = FFMultiplyClamp(freqPlain, FFKeyboardTrackingMultiplier(NextBasePitchBatch<Global>(s), trkk, ktrk),
+          freqFreqPlain = FFMultiplyClamp(freqFreqPlain, FFKeyboardTrackingMultiplier(NextBasePitchBatch<Global>(s), trkk, ktrk),
             FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
           stVarFreqFreqPlain[i].Store(s, freqFreqPlain);
           realFreqPlain = freqFreqPlain;
@@ -340,7 +340,7 @@ FFEffectProcessor::Process(
           auto basePitch = NextBasePitchBatch<Global>(s);
           auto coarsePlain = topo.NormalizedToLinearFast(FFEffectParam::StVarPitchCoarse, stVarPitchCoarseNormModulated[i].Load(s));
           coarsePlain += (basePitch - trkk) * ktrk;
-          coarsePlain = xsimd::clip(coarsePlain, FBBatch<float>(-FFModCoarseSemis, FFModCoarseSemis));
+          coarsePlain = xsimd::clip(coarsePlain, FBBatch<float>(-FFModCoarseSemis), FBBatch<float>(FFModCoarseSemis));
           stVarPitchCoarsePlain[i].Store(s, coarsePlain);
           realFreqPlain = FBPitchToFreq(basePitch + coarsePlain);
         }
