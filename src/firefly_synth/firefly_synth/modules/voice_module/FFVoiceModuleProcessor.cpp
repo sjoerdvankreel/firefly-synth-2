@@ -128,7 +128,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     auto coarsePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Coarse, coarseNormModulated.Load(s));
     auto finePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Fine, fineNormModulated.Load(s));
     auto pitch = coarsePlain + finePlain;
-    if (masterPitchBendTarget == FFMasterPitchBendTarget::Voice)
+    if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
       pitch += masterPitchBendSemis.Load(s);
     pitchOffsetInSemis.Store(s, pitch);
   }

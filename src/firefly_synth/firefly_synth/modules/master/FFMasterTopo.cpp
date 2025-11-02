@@ -83,11 +83,11 @@ FFMakeMasterTopo()
   bendTarget.display = "PB Target";
   bendTarget.slotCount = 1;
   bendTarget.id = "{CA922D71-6FDF-42F7-893D-2286EDAA91F1}";
-  bendTarget.defaultText = "Voice";
+  bendTarget.defaultText = "Global";
   bendTarget.type = FBParamType::List;
   bendTarget.List().items = {
     { "{70648B58-31C4-4124-92B4-E16930EFF7CD}", "Off" },
-    { "{3298B04A-315C-4E13-95DC-8ABC863E2227}", "Voice" },
+    { "{3298B04A-315C-4E13-95DC-8ABC863E2227}", "Global" },
     { "{73D34B8C-5227-4819-B246-26EECB524FC1}", "Osc 1" },
     { "{9D1F8C23-9685-49CD-815E-687CBDF22426}", "Osc 2" },
     { "{0E3973C6-A037-4456-B476-74ADDE0A4AAA}", "Osc 3" },

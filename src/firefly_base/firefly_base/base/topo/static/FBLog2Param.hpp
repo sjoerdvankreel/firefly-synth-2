@@ -18,6 +18,7 @@ protected:
 public:
   double displayMultiplier = 1.0;
 
+  float PlainToNormalizedFast(float plain) const;
   float NormalizedToPlainFast(float normalized) const;
   void Init(float offset, float curveStart, float curveEnd);
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
@@ -43,6 +44,14 @@ public FBParamNonRealTime
   std::string PlainToText(bool io, int moduleIndex, double plain) const override;
   std::optional<double> TextToPlainInternal(bool io, int moduleIndex, std::string const& text) const override;
 };
+
+inline float
+FBLog2Param::PlainToNormalizedFast(float plain) const
+{
+  float result = std::log2((plain - _offset) / _curveStart) / _expo;
+  FB_ASSERT(0.0f <= result && result <= 1.0f);
+  return result;
+}
 
 inline float
 FBLog2Param::NormalizedToPlainFast(float normalized) const

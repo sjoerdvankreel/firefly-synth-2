@@ -35,14 +35,16 @@ class FFEffectProcessor final
   float _graphCombFilterFreqMultiplier = {};
   float _graphStVarFilterFreqMultiplier = {};
 
-  FBBasicLPFilter _MIDIKeyUntunedSmoother = {};
   juce::dsp::Oversampling<float> _oversampler;
+  FBBasicLPFilter _basePitchSmoother = {};
+  FBSArray<float, FFEffectFixedBlockOversamples> _basePitch = {};
   std::array<FFCombFilter<2>, FFEffectBlockCount> _combFilters = {};
-  FBSArray<float, FFEffectFixedBlockOversamples> _MIDIKeyUntuned = {};
   std::array<FFStateVariableFilter<2>, FFEffectBlockCount> _stVarFilters = {};
 
   template <bool Global>
-  float NextMIDIKeyUntuned(int sample);
+  float NextBasePitchScalar(int sample);
+  template <bool Global>
+  FBBatch<float> NextBasePitchBatch(int pos);
 
   template <bool Global, bool PlusOn, bool MinOn>
   void ProcessComb(
@@ -59,11 +61,9 @@ class FFEffectProcessor final
   void ProcessStVar(
     int block, float oversampledRate,
     FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
-    FBSArray<float, FFEffectFixedBlockOversamples> const& trackingKeyPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarFreqPlain,
-    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarGainPlain,
-    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarKeyTrkPlain);
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarGainPlain);
 
   void ProcessSkew(
     int block,
