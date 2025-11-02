@@ -1,5 +1,5 @@
 TODOLIST for alpha-21
-[ ] header cleanup
+[x] header cleanup
 [ ] recheck known issues
 [ ] add qtractor to the list
 [ ] do sidechain tests on new hosts
