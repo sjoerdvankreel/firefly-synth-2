@@ -154,8 +154,8 @@ FFMakeOsciTopo()
   coarse.unit = "Semitones";
   coarse.id = "{E122CA2C-C1B1-47E5-A1BB-DEAC6A4030E0}";
   coarse.type = FBParamType::Linear;
-  coarse.Linear().min = -FFOsciCoarseSemis;
-  coarse.Linear().max = FFOsciCoarseSemis;
+  coarse.Linear().min = -FFModCoarseSemis;
+  coarse.Linear().max = FFModCoarseSemis;
   auto selectCoarse = [](auto& module) { return &module.acc.coarse; };
   coarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCoarse);
   coarse.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCoarse);

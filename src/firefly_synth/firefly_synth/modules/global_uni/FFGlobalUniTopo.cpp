@@ -334,8 +334,8 @@ FFMakeGlobalUniTopo()
   manualVoiceCoarse.slotCount = FFGlobalUniMaxCount;
   manualVoiceCoarse.id = "{0D24BD6A-DE67-4CE6-8272-BC290D5D7D2D}";
   manualVoiceCoarse.type = FBParamType::Linear;
-  manualVoiceCoarse.Linear().min = -FFOsciCoarseSemis;
-  manualVoiceCoarse.Linear().max = FFOsciCoarseSemis;
+  manualVoiceCoarse.Linear().min = -FFModCoarseSemis;
+  manualVoiceCoarse.Linear().max = FFModCoarseSemis;
   auto selectManualVoiceCoarse = [](auto& module) { return &module.acc.manualVoiceCoarse; };
   manualVoiceCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualVoiceCoarse);
   manualVoiceCoarse.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualVoiceCoarse);
@@ -425,8 +425,8 @@ FFMakeGlobalUniTopo()
   manualOscCoarse.slotCount = FFGlobalUniMaxCount;
   manualOscCoarse.id = "{C16C50D5-00C0-4393-87F9-1A7C457F4483}";
   manualOscCoarse.type = FBParamType::Linear;
-  manualOscCoarse.Linear().min = -FFOsciCoarseSemis;
-  manualOscCoarse.Linear().max = FFOsciCoarseSemis;
+  manualOscCoarse.Linear().min = -FFModCoarseSemis;
+  manualOscCoarse.Linear().max = FFModCoarseSemis;
   auto selectmanualOscCoarse = [](auto& module) { return &module.acc.manualOscCoarse; };
   manualOscCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectmanualOscCoarse);
   manualOscCoarse.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectmanualOscCoarse);

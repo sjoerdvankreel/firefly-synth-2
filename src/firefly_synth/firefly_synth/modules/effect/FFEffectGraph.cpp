@@ -101,7 +101,10 @@ EffectGraphRenderData<Global>::DoPostProcess(
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
   FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
   auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
-  if (kind != FFEffectKind::StVar && kind != FFEffectKind::Comb && kind != FFEffectKind::CombPlus && kind != FFEffectKind::CombMin)
+  if (kind != FFEffectKind::StVarFreq && kind != FFEffectKind::StVarPitch && 
+    kind != FFEffectKind::CombFreq && kind != FFEffectKind::CombPitch &&
+    kind != FFEffectKind::CombPlusFreq && kind != FFEffectKind::CombPlusPitch &&
+    kind != FFEffectKind::CombMinFreq && kind != FFEffectKind::CombMinPitch)
     return;
   if (points.l.size() == 0)
     return;
@@ -128,7 +131,10 @@ EffectGraphRenderData<Global>::DoProcess(
   {
     indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
     auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
-    plotSpecificFilter = kind == FFEffectKind::StVar || kind == FFEffectKind::Comb || kind == FFEffectKind::CombPlus || kind == FFEffectKind::CombMin;
+    plotSpecificFilter = kind == FFEffectKind::StVarFreq || kind == FFEffectKind::StVarPitch ||
+      kind == FFEffectKind::CombFreq || kind == FFEffectKind::CombPitch ||
+      kind == FFEffectKind::CombPlusFreq || kind == FFEffectKind::CombPlusPitch ||
+      kind == FFEffectKind::CombMinFreq || kind == FFEffectKind::CombMinPitch;
     if (kind == FFEffectKind::Off)
       return 0;
   }
