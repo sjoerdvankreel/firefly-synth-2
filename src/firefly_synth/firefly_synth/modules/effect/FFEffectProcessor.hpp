@@ -50,8 +50,6 @@ class FFEffectProcessor final
   void ProcessComb(
     int block, float oversampledRate,
     FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
-    FBSArray<float, FFEffectFixedBlockOversamples> const& trackingKeyPlain,
-    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combKeyTrkPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combResMinPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combResPlusPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqMinPlain,
