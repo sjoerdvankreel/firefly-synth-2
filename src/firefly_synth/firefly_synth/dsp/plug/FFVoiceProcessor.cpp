@@ -175,7 +175,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
     if (_ampEnvFinishedThisRound)
       voiceDSP.osci[i].output.Fill(0.0);
     else
-      voiceDSP.osci[i].processor->Process(state, false);
+      voiceDSP.osci[i].processor->Process(state, nullptr, false);
 
     if (_ampEnvTarget == FFVMixAmpEnvTarget::OscPreMix)
       voiceDSP.osci[i].output.Mul(ampPlainModulated);    

@@ -169,6 +169,7 @@ FFOsciProcessor::BeginVoice(
 int
 FFOsciProcessor::Process(
   FBModuleProcState& state, 
+  FFOsciExchangeState const* exchangeFromDSP,
   bool graph)
 {
   int voice = state.voice->slot;
@@ -177,9 +178,9 @@ FFOsciProcessor::Process(
   auto& output = voiceState.osci[state.moduleSlot].output;
   auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
 
+  FBSArray<float, FBFixedBlockSamples> voiceBasePitch;
   auto masterPitchBendTarget = procState->dsp.global.master.bendTarget;
   auto const& masterPitchBendSemis = procState->dsp.global.master.bendAmountInSemis;
-  auto const& voicePitchOffsetSemis = procState->dsp.voice[voice].voiceModule.pitchOffsetInSemis;
 
   output.Fill(0.0f);
   uniOutputOversampled.Fill(0.0f);
@@ -214,8 +215,16 @@ FFOsciProcessor::Process(
   gainNormIn.CV().CopyTo(gainNormModulated);
   fineNormIn.CV().CopyTo(fineNormModulated);
   coarseNormIn.CV().CopyTo(coarseNormModulated);
-  if (!graph)
+  if (graph)
   {
+    if (exchangeFromDSP != nullptr)
+      voiceBasePitch.Fill(FBBatch<float>(exchangeFromDSP->voiceBasePitch));
+    else
+      voiceBasePitch.Fill(FBBatch<float>(60.0f));
+  }
+  else
+  {
+    procState->dsp.voice[voice].voiceModule.basePitchSemis.CopyTo(voiceBasePitch);
     FFApplyModulation(FFModulationOpType::UPMul, voiceState.env[state.moduleSlot + FFEnvSlotOffset].output, envToGain.CV(), gainNormModulated);
     procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscGain, false, voice, -1, gainNormModulated);
     procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscPan, false, voice, -1, panNormModulated);
@@ -240,7 +249,7 @@ FFOsciProcessor::Process(
     {
       auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNormModulated.Load(s));
       auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNormModulated.Load(s));
-      auto pitch = _keyUntuned + coarse + fine + voicePitchOffsetSemis.Load(s);
+      auto pitch = voiceBasePitch.Load(s) + coarse + fine;
       if (masterPitchBendTarget == FFMasterPitchBendTarget::Osc1 && state.moduleSlot == 0 ||
         masterPitchBendTarget == FFMasterPitchBendTarget::Osc2 && state.moduleSlot == 1 ||
         masterPitchBendTarget == FFMasterPitchBendTarget::Osc3 && state.moduleSlot == 2 ||
@@ -342,6 +351,7 @@ FFOsciProcessor::Process(
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
   exchangeDSP.boolIsActive = 1;
+  exchangeDSP.voiceBasePitch = voiceBasePitch.Last();
   exchangeDSP.lengthSamples = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];

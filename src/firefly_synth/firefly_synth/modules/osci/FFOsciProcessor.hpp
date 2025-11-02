@@ -147,8 +147,11 @@ class FFOsciProcessor final
 public:
   FFOsciProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciProcessor);
-  int Process(FBModuleProcState& state, bool graph);
-
+  
+  int Process(
+    FBModuleProcState& state, 
+    FFOsciExchangeState const* exchangeFromDSP,
+    bool graph);
   void BeginVoice(
     FBModuleProcState& state,
     FFOsciExchangeState const* exchangeFromDSP,

@@ -120,6 +120,7 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
 
   if (_stringLPOn)
   {
+    // TODO
     stringLPFreqPlain = FFMultiplyClamp(stringLPFreqPlain,
       FFKeyboardTrackingMultiplier(_keyUntuned, stringTrackingKeyPlain, stringLPKTrkPlain),
       FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);

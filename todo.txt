@@ -1,9 +1,11 @@
 TODOLIST for alpha-21
 [x] header cleanup
-[ ] bugfix: global filter keytracking did not take pitchbend into account
-[ ] bugfix: global filter keytracking followed normalized value, not pitch
-[ ] bugfix: effect of keyboard tracking on filter frequency did not show up in the gui
-[ ] todo: the combs and the per voice filters and the filters in the osci
+[x] bugfix: global filter keytracking did not take pitchbend into account
+[x] bugfix: global filter keytracking followed normalized value, not pitch
+[x] bugfix: per voice filter keytracking did not take pitchbend and portamento into account
+[x] bugfix: effect of keyboard tracking on filter frequency did not show up in the gui
+[x] todo: the combs and the per voice filters 
+[x] and the filters in the osci
 [ ] tuned filter versions
 
 [ ] rename "untuned"

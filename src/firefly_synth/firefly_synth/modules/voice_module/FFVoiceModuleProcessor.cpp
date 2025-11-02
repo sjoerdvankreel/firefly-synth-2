@@ -100,11 +100,12 @@ void
 FFVoiceModuleProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
+  float basePitchFromKey = (float)state.voice->event.note.keyUntuned;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
   auto const& procParams = procState->param.voice.voiceModule[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
-  auto& pitchOffsetInSemis = voiceState.voiceModule.pitchOffsetInSemis;  
+  auto& basePitchSemis = voiceState.voiceModule.basePitchSemis;
 
   auto masterPitchBendTarget = procState->dsp.global.master.bendTarget;
   auto const& masterPitchBendSemis = procState->dsp.global.master.bendAmountInSemis;
@@ -127,17 +128,17 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   {
     auto coarsePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Coarse, coarseNormModulated.Load(s));
     auto finePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Fine, fineNormModulated.Load(s));
-    auto pitch = coarsePlain + finePlain;
+    auto pitch = basePitchFromKey + coarsePlain + finePlain;
     if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
       pitch += masterPitchBendSemis.Load(s);
-    pitchOffsetInSemis.Store(s, pitch);
+    basePitchSemis.Store(s, pitch);
   }
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     if (_portaPitchSamplesProcessed++ <= _portaPitchSamplesTotal)
       _portaPitchOffsetCurrent -= _portaPitchDelta;
-    pitchOffsetInSemis.Set(s, pitchOffsetInSemis.Get(s) - _portaPitchOffsetCurrent);
+    basePitchSemis.Set(s, basePitchSemis.Get(s) - _portaPitchOffsetCurrent);
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();

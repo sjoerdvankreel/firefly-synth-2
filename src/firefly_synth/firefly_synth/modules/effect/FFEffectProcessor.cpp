@@ -145,7 +145,10 @@ FFEffectProcessor::BeginVoiceOrBlock(
         _basePitch.Add(s, procState->dsp.global.master.bendAmountInSemis.Load(s));
   }
   else
-    _basePitch.Fill(static_cast<float>(state.voice->event.note.keyUntuned)); // TODO
+  {
+    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+      _basePitch.Store(s, procState->dsp.voice[voice].voiceModule.basePitchSemis.Load(s));
+  }
   if (_oversampleTimes != 1)
     _basePitch.UpsampleStretch<FFEffectOversampleTimes>();
   int smoothSamples = topo.NormalizedToLinearTimeSamplesFast(

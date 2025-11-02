@@ -16,6 +16,7 @@ struct alignas(FBSIMDAlign) FFOsciExchangeState final:
 public FBModuleProcSingleExchangeState
 {
   std::array<float, FFOsciUniMaxCount> phases = {};
+  float voiceBasePitch = {};
 };
 
 class alignas(FBSIMDAlign) FFOsciDSPState final
