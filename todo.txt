@@ -11,10 +11,11 @@ TODOLIST for alpha-21
 [x] tune the filters
 [x] figure out all places where is used midi note
 [x] filters should track the actual pitch when possible (string osci)
-[ ] tuned filter versions
+[x] tuned stvar filter versions
+[ ] tuned comb filter versions
 [ ] do mac tests on new hosts
 
-TODOLIST for alpha-22 - tuning
+TODOLIST for alpha-22 - microtuning
 [ ] make a dedicated tuning section with some options ==> only PB and optionally unison coarse
 [ ] note filtering
 [ ] MTS into master: off / note / continuous 
