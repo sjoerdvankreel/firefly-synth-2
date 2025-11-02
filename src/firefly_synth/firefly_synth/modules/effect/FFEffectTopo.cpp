@@ -288,7 +288,7 @@ FFMakeEffectTopo(bool global)
   stVarCoarse.slotCount = FFEffectBlockCount;
   stVarCoarse.slotFormatter = FFFormatBlockSlot;
   stVarCoarse.unit = "Semitones";
-  stVarCoarse.id = "{C04596FE-F65F-459B-B68D-D278D3866E5D}";
+  stVarCoarse.id = prefix + "{C04596FE-F65F-459B-B68D-D278D3866E5D}";
   stVarCoarse.type = FBParamType::Linear;
   stVarCoarse.Linear().min = -FFModCoarseSemis;
   stVarCoarse.Linear().max = FFModCoarseSemis;
