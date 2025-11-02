@@ -297,7 +297,7 @@ FFEffectProcessor::Process(
                 FFSelectDualProcAccParamNormalized<Global>(stVarFreqFreqNormIn[i], voice).CV().Load(s)));
           else
             stVarPitchCoarseNormModulated[i].Store(s,
-              FFModulate(FFModulationOpType::BPAdd, lfoOutput[i].outputAll.Load(s),
+              FFModulate(FFModulationOpType::BPStack, lfoOutput[i].outputAll.Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).CV().Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(stVarPitchCoarseNormIn[i], voice).CV().Load(s)));
 
@@ -316,7 +316,7 @@ FFEffectProcessor::Process(
             else
             {
               stVarPitchCoarseNormModulated[i].Store(s,
-                FFModulate(FFModulationOpType::UPAdd, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
+                FFModulate(FFModulationOpType::UPStack, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
                   FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                   stVarPitchCoarseNormModulated[i].Load(s)));
               procState->dsp.global.globalUni.processor->ApplyToVoice(state, uniTargetParam, false, voice, -1, stVarPitchCoarseNormModulated[i]);
@@ -339,10 +339,10 @@ FFEffectProcessor::Process(
         {
           auto basePitch = NextBasePitchBatch<Global>(s);
           auto coarsePlain = topo.NormalizedToLinearFast(FFEffectParam::StVarPitchCoarse, stVarPitchCoarseNormModulated[i].Load(s));
-          coarsePlain += (basePitch - trkk) * ktrk;
+          coarsePlain += (basePitch - (trkk + 60.0f)) * ktrk;
           coarsePlain = xsimd::clip(coarsePlain, FBBatch<float>(-FFModCoarseSemis), FBBatch<float>(FFModCoarseSemis));
           stVarPitchCoarsePlain[i].Store(s, coarsePlain);
-          realFreqPlain = FBPitchToFreq(basePitch + coarsePlain);
+          realFreqPlain = xsimd::clip(FBPitchToFreq(basePitch + coarsePlain), FBBatch<float>(FFMinStateVariableFilterFreq), FBBatch<float>(FFMaxStateVariableFilterFreq));
         }
 
         if (_graph)
