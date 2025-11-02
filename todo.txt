@@ -6,19 +6,18 @@ TODOLIST for alpha-21
 [x] bugfix: effect of keyboard tracking on filter frequency did not show up in the gui
 [x] todo: the combs and the per voice filters 
 [x] and the filters in the osci and the feedback and the damping
+[x] the ktrk is already faulty even without tuning bc it tracks literally just the key, not base pitch
+[x] filter kbd track -- should it take into account all coarse pitch mods ?
+[x] tune the filters
+[x] figure out all places where is used midi note
+[x] filters should track the actual pitch when possible (string osci)
 [ ] tuned filter versions
 [ ] do mac tests on new hosts
 
-TODOLIST for alpha-22 - tuning and keytracking
-[ ] the ktrk is already faulty even without tuning bc it tracks literally just the key, not base pitch
-[ ] filter kbd track -- should it take into account all coarse pitch mods ?
-[ ] make a dedicated tuning section with some options
+TODOLIST for alpha-22 - tuning
+[ ] make a dedicated tuning section with some options ==> only PB and optionally unison coarse
 [ ] note filtering
-[ ] tune the filters
-[ ] figure out all places where is used midi note
 [ ] MTS into master: off / note / continuous 
-[ ] MTS take into account all pitch modulators (eg pitchbend + 1 must be +1 semitones of the retuned scale, also for all coarse/fine, unison, etc etc)
-[ ] filters should track the actual pitch when possible (string osci)
 
 TODOLIST for alpha-23 - rest of the gui stuff
 [ ] add Carla/ardour for mac as test targets
