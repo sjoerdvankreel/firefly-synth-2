@@ -258,49 +258,49 @@ FFMakeEffectTopo(bool global)
   stVarRes.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::StVarFreq || vs[1] == (int)FFEffectKind::StVarPitch); });
 
-  auto& stVarFreq = result->params[(int)FFEffectParam::StVarFreq];
-  stVarFreq.mode = FBParamMode::Accurate;
-  stVarFreq.defaultText = "1000";
-  stVarFreq.name = "StVar Freq";
-  stVarFreq.display = "Frq";
-  stVarFreq.slotCount = FFEffectBlockCount;
-  stVarFreq.slotFormatter = FFFormatBlockSlot;
-  stVarFreq.unit = "Hz";
-  stVarFreq.id = prefix + "{4ACF9D3E-D1F0-4B3B-8F6F-6FEE6BCDE449}";
-  stVarFreq.type = FBParamType::Log2;
-  stVarFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-  auto selectStVarFreq = [](auto& module) { return &module.acc.stVarFreq; };
-  stVarFreq.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectStVarFreq);
-  stVarFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectStVarFreq);
-  stVarFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectStVarFreq);
-  stVarFreq.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectStVarFreq);
-  stVarFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectStVarFreq);
-  stVarFreq.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+  auto& stVarFreqFreq = result->params[(int)FFEffectParam::StVarFreqFreq];
+  stVarFreqFreq.mode = FBParamMode::Accurate;
+  stVarFreqFreq.defaultText = "1000";
+  stVarFreqFreq.name = "StVar Freq";
+  stVarFreqFreq.display = "Frq";
+  stVarFreqFreq.slotCount = FFEffectBlockCount;
+  stVarFreqFreq.slotFormatter = FFFormatBlockSlot;
+  stVarFreqFreq.unit = "Hz";
+  stVarFreqFreq.id = prefix + "{4ACF9D3E-D1F0-4B3B-8F6F-6FEE6BCDE449}";
+  stVarFreqFreq.type = FBParamType::Log2;
+  stVarFreqFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  auto selectStVarFreqFreq = [](auto& module) { return &module.acc.stVarFreqFreq; };
+  stVarFreqFreq.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectStVarFreqFreq);
+  stVarFreqFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectStVarFreqFreq);
+  stVarFreqFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectStVarFreqFreq);
+  stVarFreqFreq.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectStVarFreqFreq);
+  stVarFreqFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectStVarFreqFreq);
+  stVarFreqFreq.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectKind::StVarFreq; });
-  stVarFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+  stVarFreqFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::StVarFreq; });
 
-  auto& stVarCoarse = result->params[(int)FFEffectParam::StVarCoarse];
-  stVarCoarse.mode = FBParamMode::Accurate;
-  stVarCoarse.defaultText = "0";
-  stVarCoarse.name = "StVar Note";
-  stVarCoarse.display = "Nte";
-  stVarCoarse.slotCount = FFEffectBlockCount;
-  stVarCoarse.slotFormatter = FFFormatBlockSlot;
-  stVarCoarse.unit = "Semitones";
-  stVarCoarse.id = prefix + "{C04596FE-F65F-459B-B68D-D278D3866E5D}";
-  stVarCoarse.type = FBParamType::Linear;
-  stVarCoarse.Linear().min = -FFModCoarseSemis;
-  stVarCoarse.Linear().max = FFModCoarseSemis;
-  auto selectStVarCoarse = [](auto& module) { return &module.acc.stVarCoarse; };
-  stVarCoarse.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectStVarCoarse);
-  stVarCoarse.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectStVarCoarse);
-  stVarCoarse.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectStVarCoarse);
-  stVarCoarse.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectStVarCoarse);
-  stVarCoarse.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectStVarCoarse);
-  stVarCoarse.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+  auto& stVarPitchCoarse = result->params[(int)FFEffectParam::StVarPitchCoarse];
+  stVarPitchCoarse.mode = FBParamMode::Accurate;
+  stVarPitchCoarse.defaultText = "0";
+  stVarPitchCoarse.name = "StVar Coarse";
+  stVarPitchCoarse.display = "Crse";
+  stVarPitchCoarse.slotCount = FFEffectBlockCount;
+  stVarPitchCoarse.slotFormatter = FFFormatBlockSlot;
+  stVarPitchCoarse.unit = "Semitones";
+  stVarPitchCoarse.id = prefix + "{C04596FE-F65F-459B-B68D-D278D3866E5D}";
+  stVarPitchCoarse.type = FBParamType::Linear;
+  stVarPitchCoarse.Linear().min = -FFModCoarseSemis;
+  stVarPitchCoarse.Linear().max = FFModCoarseSemis;
+  auto selectStVarPitchCoarse = [](auto& module) { return &module.acc.stVarPitchCoarse; };
+  stVarPitchCoarse.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectStVarPitchCoarse);
+  stVarPitchCoarse.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectStVarPitchCoarse);
+  stVarPitchCoarse.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectStVarPitchCoarse);
+  stVarPitchCoarse.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectStVarPitchCoarse);
+  stVarPitchCoarse.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectStVarPitchCoarse);
+  stVarPitchCoarse.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] == (int)FFEffectKind::StVarPitch; });
-  stVarCoarse.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+  stVarPitchCoarse.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::StVarPitch; });
 
   auto& stVarGain = result->params[(int)FFEffectParam::StVarGain];
@@ -350,94 +350,94 @@ FFMakeEffectTopo(bool global)
   combKeyTrk.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && (int)FFEffectKind::CombFreq <= vs[1] && vs[1] <= (int)FFEffectKind::CombMinPitch; });
   
-  auto& combFreqPlus = result->params[(int)FFEffectParam::CombFreqPlus];
-  combFreqPlus.mode = FBParamMode::Accurate;
-  combFreqPlus.defaultText = "1000";
-  combFreqPlus.name = "Comb Freq+";
-  combFreqPlus.display = "Frq+";
-  combFreqPlus.slotCount = FFEffectBlockCount;
-  combFreqPlus.slotFormatter = FFFormatBlockSlot;
-  combFreqPlus.unit = "Hz";
-  combFreqPlus.id = prefix + "{19B8B573-C49D-4D34-8078-02B2A30F40E8}";
-  combFreqPlus.type = FBParamType::Log2;
-  combFreqPlus.Log2().Init(0.0f, FFMinCombFilterFreq, FFMaxCombFilterFreq);
-  auto selectCombFreqPlus = [](auto& module) { return &module.acc.combFreqPlus; };
-  combFreqPlus.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCombFreqPlus);
-  combFreqPlus.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCombFreqPlus);
-  combFreqPlus.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCombFreqPlus);
-  combFreqPlus.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombFreqPlus);
-  combFreqPlus.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombFreqPlus);
-  combFreqPlus.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+  auto& combFreqFreqPlus = result->params[(int)FFEffectParam::CombFreqFreqPlus];
+  combFreqFreqPlus.mode = FBParamMode::Accurate;
+  combFreqFreqPlus.defaultText = "1000";
+  combFreqFreqPlus.name = "Comb Freq+";
+  combFreqFreqPlus.display = "Frq+";
+  combFreqFreqPlus.slotCount = FFEffectBlockCount;
+  combFreqFreqPlus.slotFormatter = FFFormatBlockSlot;
+  combFreqFreqPlus.unit = "Hz";
+  combFreqFreqPlus.id = prefix + "{19B8B573-C49D-4D34-8078-02B2A30F40E8}";
+  combFreqFreqPlus.type = FBParamType::Log2;
+  combFreqFreqPlus.Log2().Init(0.0f, FFMinCombFilterFreq, FFMaxCombFilterFreq);
+  auto selectCombFreqFreqPlus = [](auto& module) { return &module.acc.combFreqFreqPlus; };
+  combFreqFreqPlus.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCombFreqFreqPlus);
+  combFreqFreqPlus.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCombFreqFreqPlus);
+  combFreqFreqPlus.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCombFreqFreqPlus);
+  combFreqFreqPlus.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombFreqFreqPlus);
+  combFreqFreqPlus.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombFreqFreqPlus);
+  combFreqFreqPlus.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] == (int)FFEffectKind::CombFreq || vs[0] == (int)FFEffectKind::CombPlusFreq || vs[0] == (int)FFEffectKind::CombMinFreq; });
-  combFreqPlus.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+  combFreqFreqPlus.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::CombFreq || vs[1] == (int)FFEffectKind::CombPlusFreq); });
 
-  auto& combCoarsePlus = result->params[(int)FFEffectParam::CombCoarsePlus];
-  combCoarsePlus.mode = FBParamMode::Accurate;
-  combCoarsePlus.defaultText = "0";
-  combCoarsePlus.name = "Comb Note+";
-  combCoarsePlus.display = "Nte+";
-  combCoarsePlus.slotCount = FFEffectBlockCount;
-  combCoarsePlus.slotFormatter = FFFormatBlockSlot;
-  combCoarsePlus.unit = "Semitones";
-  combCoarsePlus.id = prefix + "{CCB595F7-3270-4BBD-8CE5-FE18EFA27E94}";
-  combCoarsePlus.type = FBParamType::Linear;
-  combCoarsePlus.Linear().min = -FFModCoarseSemis;
-  combCoarsePlus.Linear().max = FFModCoarseSemis;
-  auto selectCombCoarsePlus = [](auto& module) { return &module.acc.combCoarsePlus; };
-  combCoarsePlus.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCombCoarsePlus);
-  combCoarsePlus.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCombCoarsePlus);
-  combCoarsePlus.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCombCoarsePlus);
-  combCoarsePlus.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombCoarsePlus);
-  combCoarsePlus.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombCoarsePlus);
-  combCoarsePlus.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+  auto& combPitchCoarsePlus = result->params[(int)FFEffectParam::CombPitchCoarsePlus];
+  combPitchCoarsePlus.mode = FBParamMode::Accurate;
+  combPitchCoarsePlus.defaultText = "0";
+  combPitchCoarsePlus.name = "Comb Coarse+";
+  combPitchCoarsePlus.display = "Crs+";
+  combPitchCoarsePlus.slotCount = FFEffectBlockCount;
+  combPitchCoarsePlus.slotFormatter = FFFormatBlockSlot;
+  combPitchCoarsePlus.unit = "Semitones";
+  combPitchCoarsePlus.id = prefix + "{CCB595F7-3270-4BBD-8CE5-FE18EFA27E94}";
+  combPitchCoarsePlus.type = FBParamType::Linear;
+  combPitchCoarsePlus.Linear().min = -FFModCoarseSemis;
+  combPitchCoarsePlus.Linear().max = FFModCoarseSemis;
+  auto selectCombPitchCoarsePlus = [](auto& module) { return &module.acc.combPitchCoarsePlus; };
+  combPitchCoarsePlus.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCombPitchCoarsePlus);
+  combPitchCoarsePlus.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCombPitchCoarsePlus);
+  combPitchCoarsePlus.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCombPitchCoarsePlus);
+  combPitchCoarsePlus.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombPitchCoarsePlus);
+  combPitchCoarsePlus.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombPitchCoarsePlus);
+  combPitchCoarsePlus.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] == (int)FFEffectKind::CombPitch || vs[0] == (int)FFEffectKind::CombPlusPitch || vs[0] == (int)FFEffectKind::CombMinPitch; });
-  combCoarsePlus.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+  combPitchCoarsePlus.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::CombPitch || vs[1] == (int)FFEffectKind::CombPlusPitch); });
 
-  auto& combFreqMin = result->params[(int)FFEffectParam::CombFreqMin];
-  combFreqMin.mode = FBParamMode::Accurate;
-  combFreqMin.defaultText = "1000";
-  combFreqMin.name = "Comb Freq-";
-  combFreqMin.display = "Frq-";
-  combFreqMin.slotCount = FFEffectBlockCount;
-  combFreqMin.slotFormatter = FFFormatBlockSlot;
-  combFreqMin.unit = "Hz";
-  combFreqMin.id = prefix + "{B2C0AEB8-F2C1-4553-961C-7B61021C8B70}";
-  combFreqMin.type = FBParamType::Log2;
-  combFreqMin.Log2().Init(0.0f, FFMinCombFilterFreq, FFMaxCombFilterFreq);
-  auto selectCombFreqMin = [](auto& module) { return &module.acc.combFreqMin; };
-  combFreqMin.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCombFreqMin);
-  combFreqMin.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCombFreqMin);
-  combFreqMin.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCombFreqMin);
-  combFreqMin.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombFreqMin);
-  combFreqMin.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombFreqMin);
-  combFreqMin.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+  auto& combFreqFreqMin = result->params[(int)FFEffectParam::CombFreqFreqMin];
+  combFreqFreqMin.mode = FBParamMode::Accurate;
+  combFreqFreqMin.defaultText = "1000";
+  combFreqFreqMin.name = "Comb Freq-";
+  combFreqFreqMin.display = "Frq-";
+  combFreqFreqMin.slotCount = FFEffectBlockCount;
+  combFreqFreqMin.slotFormatter = FFFormatBlockSlot;
+  combFreqFreqMin.unit = "Hz";
+  combFreqFreqMin.id = prefix + "{B2C0AEB8-F2C1-4553-961C-7B61021C8B70}";
+  combFreqFreqMin.type = FBParamType::Log2;
+  combFreqFreqMin.Log2().Init(0.0f, FFMinCombFilterFreq, FFMaxCombFilterFreq);
+  auto selectCombFreqFreqMin = [](auto& module) { return &module.acc.combFreqFreqMin; };
+  combFreqFreqMin.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCombFreqFreqMin);
+  combFreqFreqMin.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCombFreqFreqMin);
+  combFreqFreqMin.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCombFreqFreqMin);
+  combFreqFreqMin.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombFreqFreqMin);
+  combFreqFreqMin.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombFreqFreqMin);
+  combFreqFreqMin.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] == (int)FFEffectKind::CombFreq || vs[0] == (int)FFEffectKind::CombPlusFreq || vs[0] == (int)FFEffectKind::CombMinFreq; });
-  combFreqMin.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+  combFreqFreqMin.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::CombFreq || vs[1] == (int)FFEffectKind::CombMinFreq); });
 
-  auto& combCoarseMin = result->params[(int)FFEffectParam::CombCoarseMin];
-  combCoarseMin.mode = FBParamMode::Accurate;
-  combCoarseMin.defaultText = "0";
-  combCoarseMin.name = "Comb Note-";
-  combCoarseMin.display = "Nte-";
-  combCoarseMin.slotCount = FFEffectBlockCount;
-  combCoarseMin.slotFormatter = FFFormatBlockSlot;
-  combCoarseMin.unit = "Semitones";
-  combCoarseMin.id = prefix + "{0EEFA4DF-9A80-4E60-8A42-E802DDA2384F}";
-  combCoarseMin.type = FBParamType::Linear;
-  combCoarseMin.Linear().min = -FFModCoarseSemis;
-  combCoarseMin.Linear().max = FFModCoarseSemis;
-  auto selectCombCoarseMin = [](auto& module) { return &module.acc.combCoarseMin; };
-  combCoarseMin.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCombCoarseMin);
-  combCoarseMin.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCombCoarseMin);
-  combCoarseMin.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCombCoarseMin);
-  combCoarseMin.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombCoarseMin);
-  combCoarseMin.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombCoarseMin);
-  combCoarseMin.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+  auto& combPitchCoarseMin = result->params[(int)FFEffectParam::CombPitchCoarseMin];
+  combPitchCoarseMin.mode = FBParamMode::Accurate;
+  combPitchCoarseMin.defaultText = "0";
+  combPitchCoarseMin.name = "Comb Coarse-";
+  combPitchCoarseMin.display = "Crs-";
+  combPitchCoarseMin.slotCount = FFEffectBlockCount;
+  combPitchCoarseMin.slotFormatter = FFFormatBlockSlot;
+  combPitchCoarseMin.unit = "Semitones";
+  combPitchCoarseMin.id = prefix + "{0EEFA4DF-9A80-4E60-8A42-E802DDA2384F}";
+  combPitchCoarseMin.type = FBParamType::Linear;
+  combPitchCoarseMin.Linear().min = -FFModCoarseSemis;
+  combPitchCoarseMin.Linear().max = FFModCoarseSemis;
+  auto selectCombPitchCoarseMin = [](auto& module) { return &module.acc.combPitchCoarseMin; };
+  combPitchCoarseMin.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCombPitchCoarseMin);
+  combPitchCoarseMin.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCombPitchCoarseMin);
+  combPitchCoarseMin.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCombPitchCoarseMin);
+  combPitchCoarseMin.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombPitchCoarseMin);
+  combPitchCoarseMin.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombPitchCoarseMin);
+  combPitchCoarseMin.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] == (int)FFEffectKind::CombPitch || vs[0] == (int)FFEffectKind::CombPlusPitch || vs[0] == (int)FFEffectKind::CombMinPitch; });
-  combCoarseMin.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+  combPitchCoarseMin.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::CombPitch || vs[1] == (int)FFEffectKind::CombMinPitch); });
 
   auto& combResPlus = result->params[(int)FFEffectParam::CombResPlus];

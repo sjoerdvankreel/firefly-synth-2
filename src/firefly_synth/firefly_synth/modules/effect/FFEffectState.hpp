@@ -65,17 +65,17 @@ class alignas(alignof(TAccurate)) FFEffectAccParamState final
   std::array<TAccurate, FFEffectBlockCount> distBias = {};
   std::array<TAccurate, FFEffectBlockCount> distDrive = {};
   std::array<TAccurate, FFEffectBlockCount> stVarRes = {};
-  std::array<TAccurate, FFEffectBlockCount> stVarFreq = {};
   std::array<TAccurate, FFEffectBlockCount> stVarGain = {};
   std::array<TAccurate, FFEffectBlockCount> stVarKeyTrk = {};
-  std::array<TAccurate, FFEffectBlockCount> stVarCoarse = {};
+  std::array<TAccurate, FFEffectBlockCount> stVarFreqFreq = {};
+  std::array<TAccurate, FFEffectBlockCount> stVarPitchCoarse = {};
   std::array<TAccurate, FFEffectBlockCount> combKeyTrk = {};
   std::array<TAccurate, FFEffectBlockCount> combResMin = {};
   std::array<TAccurate, FFEffectBlockCount> combResPlus = {};
-  std::array<TAccurate, FFEffectBlockCount> combFreqMin = {};
-  std::array<TAccurate, FFEffectBlockCount> combFreqPlus = {};
-  std::array<TAccurate, FFEffectBlockCount> combCoarseMin = {};
-  std::array<TAccurate, FFEffectBlockCount> combCoarsePlus = {};
+  std::array<TAccurate, FFEffectBlockCount> combFreqFreqMin = {};
+  std::array<TAccurate, FFEffectBlockCount> combFreqFreqPlus = {};
+  std::array<TAccurate, FFEffectBlockCount> combPitchCoarseMin = {};
+  std::array<TAccurate, FFEffectBlockCount> combPitchCoarsePlus = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectAccParamState);
 };

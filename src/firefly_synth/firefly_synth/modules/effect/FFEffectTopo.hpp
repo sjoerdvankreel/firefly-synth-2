@@ -23,6 +23,6 @@ std::string FFEffectKindToString(FFEffectKind kind);
 
 enum class FFEffectParam { On, Oversample, TrackingKey, LastKeySmoothTime, 
   Kind, EnvAmt, LFOAmt,
-  CombKeyTrk, CombFreqPlus, CombCoarsePlus, CombResPlus, CombFreqMin, CombCoarseMin, CombResMin, 
-  StVarMode, StVarKeyTrak, StVarFreq, StVarCoarse, StVarRes, StVarGain,  
+  CombKeyTrk, CombFreqFreqPlus, CombPitchCoarsePlus, CombResPlus, CombFreqFreqMin, CombPitchCoarseMin, CombResMin, 
+  StVarMode, StVarKeyTrak, StVarFreqFreq, StVarPitchCoarse, StVarRes, StVarGain,  
   ClipMode, FoldMode, SkewMode, DistDrive, DistMix, DistBias, DistAmt, Count };
