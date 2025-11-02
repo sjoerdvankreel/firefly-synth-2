@@ -256,7 +256,7 @@ FFMakeEffectTopo(bool global)
   stVarRes.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectKind::StVarFreq || vs[0] == (int)FFEffectKind::StVarPitch; });
   stVarRes.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] != 0 && ((int)FFEffectKind::StVarFreq || vs[1] == (int)FFEffectKind::StVarPitch); });
+    [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::StVarFreq || vs[1] == (int)FFEffectKind::StVarPitch); });
 
   auto& stVarFreq = result->params[(int)FFEffectParam::StVarFreq];
   stVarFreq.mode = FBParamMode::Accurate;
