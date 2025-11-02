@@ -212,20 +212,24 @@ FFEffectProcessor::Process(
   auto const& lfoAmtNorm = procParams.acc.lfoAmt;
   auto const& distDriveNormIn = procParams.acc.distDrive;
   auto const& stVarFreqFreqNormIn = procParams.acc.stVarFreqFreq;
+  auto const& stVarPitchCoarseNormIn = procParams.acc.stVarPitchCoarse;
   auto const& combFreqFreqMinNormIn = procParams.acc.combFreqFreqMin;
   auto const& combFreqFreqPlusNormIn = procParams.acc.combFreqFreqPlus;
   FBSArray2<float, FBFixedBlockSamples, FFEffectBlockCount> distDriveNormModulated = {};
   FBSArray2<float, FBFixedBlockSamples, FFEffectBlockCount> stVarFreqFreqNormModulated = {};
+  FBSArray2<float, FBFixedBlockSamples, FFEffectBlockCount> stVarPitchCoarseNormModulated = {};
   FBSArray2<float, FBFixedBlockSamples, FFEffectBlockCount> combFreqFreqMinNormModulated = {};
   FBSArray2<float, FBFixedBlockSamples, FFEffectBlockCount> combFreqFreqPlusNormModulated = {};
 
+  FBSArray2<float, FBFixedBlockSamples, FFEffectBlockCount> stVarFreqFreqPlain;
+  FBSArray2<float, FBFixedBlockSamples, FFEffectBlockCount> stVarPitchCoarsePlain;
   FBSArray<float, FFEffectFixedBlockOversamples> trackingKeyPlain;
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> distAmtPlain;
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> distMixPlain;
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> distBiasPlain;
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> distDrivePlain;
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> stVarResPlain;
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> stVarFreqFreqPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> stVarRealFreqPlain;
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> stVarGainPlain;
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> stVarKeyTrkPlain;
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combKeyTrkPlain;
@@ -268,8 +272,6 @@ FFEffectProcessor::Process(
     trackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFEffectParam::TrackingKey, trackingKeyNorm, s));
     for (int i = 0; i < FFEffectBlockCount; i++)
     {
-      distDriveNormModulated[i].Store(s, FFSelectDualProcAccParamNormalized<Global>(distDriveNormIn[i], voice).CV().Load(s));
-      stVarFreqFreqNormModulated[i].Store(s, FFSelectDualProcAccParamNormalized<Global>(stVarFreqFreqNormIn[i], voice).CV().Load(s));
       combFreqFreqMinNormModulated[i].Store(s, FFSelectDualProcAccParamNormalized<Global>(combFreqFreqMinNormIn[i], voice).CV().Load(s));
       combFreqFreqPlusNormModulated[i].Store(s, FFSelectDualProcAccParamNormalized<Global>(combFreqFreqPlusNormIn[i], voice).CV().Load(s));
       if (_kind[i] == FFEffectKind::StVarFreq || _kind[i] == FFEffectKind::StVarPitch)
@@ -281,42 +283,77 @@ FFEffectProcessor::Process(
         stVarKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarKeyTrak,
           FFSelectDualProcAccParamNormalized<Global>(stVarKeyTrkNorm[i], voice), s));
 
+        if(_kind[i] == FFEffectKind::StVarFreq)
+          stVarFreqFreqNormModulated[i].Store(s, FFSelectDualProcAccParamNormalized<Global>(stVarFreqFreqNormIn[i], voice).CV().Load(s));
+        else
+          stVarPitchCoarseNormModulated[i].Store(s, FFSelectDualProcAccParamNormalized<Global>(stVarPitchCoarseNormIn[i], voice).CV().Load(s));
+
         if (!_graph)
         {
-          stVarFreqFreqNormModulated[i].Store(s,
-            FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
-              FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).CV().Load(s),
-              FFSelectDualProcAccParamNormalized<Global>(stVarFreqFreqNormIn[i], voice).CV().Load(s)));
+          if (_kind[i] == FFEffectKind::StVarFreq)
+            stVarFreqFreqNormModulated[i].Store(s,
+              FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
+                FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).CV().Load(s),
+                FFSelectDualProcAccParamNormalized<Global>(stVarFreqFreqNormIn[i], voice).CV().Load(s)));
+          else
+            stVarPitchCoarseNormModulated[i].Store(s,
+              FFModulate(FFModulationOpType::BPAdd, lfoOutput[i].outputAll.Load(s),
+                FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).CV().Load(s),
+                FFSelectDualProcAccParamNormalized<Global>(stVarPitchCoarseNormIn[i], voice).CV().Load(s)));
 
           if constexpr (!Global)
           {
-            stVarFreqFreqNormModulated[i].Store(s,
-              FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
-                FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
-                stVarFreqFreqNormModulated[i].Load(s)));
-
             int uniTargetParamBase = (int)FFGlobalUniTarget::VFXParamA;
             FFGlobalUniTarget uniTargetParam = (FFGlobalUniTarget)(uniTargetParamBase + i);
-            procState->dsp.global.globalUni.processor->ApplyToVoice(state, uniTargetParam, false, voice, -1, stVarFreqFreqNormModulated[i]);
+            if (_kind[i] == FFEffectKind::StVarFreq)
+            {
+              stVarFreqFreqNormModulated[i].Store(s,
+                FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
+                  FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
+                  stVarFreqFreqNormModulated[i].Load(s)));
+              procState->dsp.global.globalUni.processor->ApplyToVoice(state, uniTargetParam, false, voice, -1, stVarFreqFreqNormModulated[i]);
+            }
+            else
+            {
+              stVarPitchCoarseNormModulated[i].Store(s,
+                FFModulate(FFModulationOpType::UPAdd, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
+                  FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
+                  stVarPitchCoarseNormModulated[i].Load(s)));
+              procState->dsp.global.globalUni.processor->ApplyToVoice(state, uniTargetParam, false, voice, -1, stVarPitchCoarseNormModulated[i]);
+            }
           }
         }
 
-        auto freqPlain = topo.NormalizedToLog2Fast(FFEffectParam::StVarFreqFreq, stVarFreqFreqNormModulated[i].Load(s));
-        if (_graph)
+        FBBatch<float> realFreqPlain;
+        auto trkk = trackingKeyPlain.Load(s);
+        auto ktrk = stVarKeyTrkPlain[i].Load(s);
+        if (_kind[i] == FFEffectKind::StVarFreq)
         {
-          freqPlain *= _graphStVarFilterFreqMultiplier;
-          FBBatch<float> clampMin = 1.01f * _graphStVarFilterFreqMultiplier * FFMinStateVariableFilterFreq;
-          FBBatch<float> clampMax = 0.99f * _graphStVarFilterFreqMultiplier * FFMaxStateVariableFilterFreq;
-          freqPlain = xsimd::clip(freqPlain, clampMin, clampMax);
+          auto freqFreqPlain = topo.NormalizedToLog2Fast(FFEffectParam::StVarFreqFreq, stVarFreqFreqNormModulated[i].Load(s));
+          freqFreqPlain = FFMultiplyClamp(freqPlain, FFKeyboardTrackingMultiplier(NextBasePitchBatch<Global>(s), trkk, ktrk),
+            FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+          stVarFreqFreqPlain[i].Store(s, freqFreqPlain);
+          realFreqPlain = freqFreqPlain;
         }
         else
         {
-          auto trkk = trackingKeyPlain.Load(s);
-          auto ktrk = stVarKeyTrkPlain[i].Load(s);
-          freqPlain = FFMultiplyClamp(freqPlain, FFKeyboardTrackingMultiplier(NextBasePitchBatch<Global>(s), trkk, ktrk),
-            FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+          auto basePitch = NextBasePitchBatch<Global>(s);
+          auto coarsePlain = topo.NormalizedToLinearFast(FFEffectParam::StVarPitchCoarse, stVarPitchCoarseNormModulated[i].Load(s));
+          coarsePlain += (basePitch - trkk) * ktrk;
+          coarsePlain = xsimd::clip(coarsePlain, FBBatch<float>(-FFModCoarseSemis, FFModCoarseSemis));
+          stVarPitchCoarsePlain[i].Store(s, coarsePlain);
+          realFreqPlain = FBPitchToFreq(basePitch + coarsePlain);
         }
-        stVarFreqFreqPlain[i].Store(s, freqPlain);
+
+        if (_graph)
+        {
+          realFreqPlain *= _graphStVarFilterFreqMultiplier;
+          FBBatch<float> clampMin = 1.01f * _graphStVarFilterFreqMultiplier * FFMinStateVariableFilterFreq;
+          FBBatch<float> clampMax = 0.99f * _graphStVarFilterFreqMultiplier * FFMaxStateVariableFilterFreq;
+          realFreqPlain = xsimd::clip(realFreqPlain, clampMin, clampMax);
+        }
+
+        stVarRealFreqPlain[i].Store(s, realFreqPlain);
       }
       else if (_kind[i] == FFEffectKind::CombFreq || _kind[i] == FFEffectKind::CombPitch || 
         _kind[i] == FFEffectKind::CombPlusFreq || _kind[i] == FFEffectKind::CombPlusPitch || 
@@ -417,7 +454,8 @@ FFEffectProcessor::Process(
           FFSelectDualProcAccParamNormalized<Global>(distMixNorm[i], voice), s));
         distBiasPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistBias,
           FFSelectDualProcAccParamNormalized<Global>(distBiasNorm[i], voice), s));
-        
+        distDriveNormModulated[i].Store(s, FFSelectDualProcAccParamNormalized<Global>(distDriveNormIn[i], voice).CV().Load(s));
+
         if (!_graph)
         {
           distDriveNormModulated[i].Store(s,
@@ -454,7 +492,7 @@ FFEffectProcessor::Process(
         stVarResPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         stVarGainPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         stVarKeyTrkPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
-        stVarFreqFreqPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        stVarRealFreqPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
       }
       else if (_kind[i] == FFEffectKind::CombFreq || _kind[i] == FFEffectKind::CombPitch ||
         _kind[i] == FFEffectKind::CombPlusFreq || _kind[i] == FFEffectKind::CombPlusPitch ||
@@ -519,7 +557,7 @@ FFEffectProcessor::Process(
       break;
     case FFEffectKind::StVarFreq:
     case FFEffectKind::StVarPitch:
-      ProcessStVar<Global>(i, oversampledRate, oversampled, stVarResPlain, stVarFreqFreqPlain, stVarGainPlain);
+      ProcessStVar<Global>(i, oversampledRate, oversampled, stVarResPlain, stVarRealFreqPlain, stVarGainPlain);
       break;
     case FFEffectKind::CombFreq:
     case FFEffectKind::CombPitch:
@@ -573,11 +611,13 @@ FFEffectProcessor::Process(
   FFSelectDualExchangeState<Global>(exchangeParams.acc.trackingKey[0], voice) = trackingKeyNorm.Last();
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
-    // TODO coarse
-    // Need to translate filter freqs back to normalized because keytracking is applied on plain, not normalized.
+    // Need to translate filter freqs/pitches back to normalized because keytracking is applied on plain, not normalized.
     if (_on && _kind[i] == FFEffectKind::StVarFreq)
       FFSelectDualExchangeState<Global>(exchangeParams.acc.stVarFreqFreq[i], voice) =
         topo.params[(int)FFEffectParam::StVarFreqFreq].Log2().PlainToNormalizedFast(stVarFreqFreqPlain[i].Get(FBFixedBlockSamples - 1));
+    if (_on && _kind[i] == FFEffectKind::StVarPitch)
+      FFSelectDualExchangeState<Global>(exchangeParams.acc.stVarPitchCoarse[i], voice) =
+      topo.params[(int)FFEffectParam::StVarPitchCoarse].Linear().PlainToNormalizedFast(stVarPitchCoarsePlain[i].Get(FBFixedBlockSamples - 1));
     if (_on && (_kind[i] == FFEffectKind::CombFreq || _kind[i] == FFEffectKind::CombMinFreq))
       FFSelectDualExchangeState<Global>(exchangeParams.acc.combFreqFreqMin[i], voice) =
         topo.params[(int)FFEffectParam::CombFreqFreqMin].Log2().PlainToNormalizedFast(combFreqFreqMinPlain[i].Get(FBFixedBlockSamples - 1));

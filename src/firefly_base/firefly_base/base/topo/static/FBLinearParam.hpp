@@ -16,6 +16,7 @@ struct FBLinearParam
   double editSkewFactor = 1.0;
   double displayMultiplier = 1.0;
 
+  float PlainToNormalizedFast(float plain) const;
   float NormalizedToPlainFast(float normalized) const;
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
   int NormalizedFreqToSamplesFast(float normalized, float sampleRate) const;
@@ -42,6 +43,12 @@ public FBParamNonRealTime
   std::string PlainToText(bool io, int moduleIndex, double plain) const override;
   std::optional<double> TextToPlainInternal(bool io, int moduleIndex, std::string const& text) const override;
 };
+
+inline float
+FBLinearParam::PlainToNormalizedFast(float plain) const
+{
+  return std::clamp((plain - min) / (max - min), 0.0f, 1.0f);
+}
 
 inline float
 FBLinearParam::NormalizedToPlainFast(float normalized) const
