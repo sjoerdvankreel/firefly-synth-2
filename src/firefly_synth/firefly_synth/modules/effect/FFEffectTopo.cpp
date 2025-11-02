@@ -375,8 +375,8 @@ FFMakeEffectTopo(bool global)
   auto& combCoarsePlus = result->params[(int)FFEffectParam::CombCoarsePlus];
   combCoarsePlus.mode = FBParamMode::Accurate;
   combCoarsePlus.defaultText = "0";
-  combCoarsePlus.name = "Comb Coarse+";
-  combCoarsePlus.display = "Note";
+  combCoarsePlus.name = "Comb Note+";
+  combCoarsePlus.display = "Nte+";
   combCoarsePlus.slotCount = FFEffectBlockCount;
   combCoarsePlus.slotFormatter = FFFormatBlockSlot;
   combCoarsePlus.unit = "Semitones";
@@ -420,8 +420,8 @@ FFMakeEffectTopo(bool global)
   auto& combCoarseMin = result->params[(int)FFEffectParam::CombCoarseMin];
   combCoarseMin.mode = FBParamMode::Accurate;
   combCoarseMin.defaultText = "0";
-  combCoarseMin.name = "Comb Coarse-";
-  combCoarseMin.display = "Note";
+  combCoarseMin.name = "Comb Note-";
+  combCoarseMin.display = "Nte-";
   combCoarseMin.slotCount = FFEffectBlockCount;
   combCoarseMin.slotFormatter = FFFormatBlockSlot;
   combCoarseMin.unit = "Semitones";
