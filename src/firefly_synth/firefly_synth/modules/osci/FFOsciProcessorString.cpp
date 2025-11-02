@@ -118,25 +118,6 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
   _stringNormalPrng = FFMarsagliaPRNG<true>(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
   _uniformPrng = FFParkMillerPRNG(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
 
-  if (_stringLPOn)
-  {
-    // TODO
-    stringLPFreqPlain = FFMultiplyClamp(stringLPFreqPlain,
-      FFKeyboardTrackingMultiplier(_keyUntuned, stringTrackingKeyPlain, stringLPKTrkPlain),
-      FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-    stringLPFreqPlain *= _graphStVarFilterFreqMultiplier;
-    _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, stringLPFreqPlain, stringLPResPlain, 0.0f);
-  }
-
-  if (_stringHPOn)
-  {
-    stringHPFreqPlain = FFMultiplyClamp(stringHPFreqPlain,
-      FFKeyboardTrackingMultiplier(_keyUntuned, stringTrackingKeyPlain, -stringHPKTrkPlain),
-      FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-    stringHPFreqPlain *= _graphStVarFilterFreqMultiplier;
-    _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, stringHPFreqPlain, stringHPResPlain, 0.0f);
-  }
-
   int delayLineSize = static_cast<int>(std::ceil(oversampledRate / FFOsciStringMinFreq));
   for (int u = 0; u < _uniCount; u++)
   {
@@ -150,22 +131,6 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
       _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize());
     else
       _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() * _oversampleTimes / FFOsciOversampleTimes);
-
-    for (int p = 0; p < _stringPoles; p++)
-      _stringUniState[u].colorFilterBuffer.Set(p, StringDraw());
-
-    float basePitch = _keyUntuned + coarsePlain + finePlain;
-    float uniPitch = basePitch + _uniPosMHalfToHalf.Get(u) * uniDetunePlain;
-    float uniFreq = FBPitchToFreq(uniPitch);
-    for (int i = 0; i < delayLineSize; i++)
-    {
-      double dNextVal = StringNext(u, oversampledRate, uniFreq, stringExcitePlain, stringColorPlain, stringXPlain, stringYPlain);
-      if (_stringHPOn)
-        dNextVal = _stringHPFilter.Next(u, dNextVal);
-      if (_stringLPOn)
-        dNextVal = _stringLPFilter.Next(u, dNextVal);
-      _stringUniState[u].delayLine.Push(static_cast<float>(dNextVal));
-    }
   }
 }
 
@@ -173,7 +138,8 @@ void
 FFOsciProcessor::ProcessString(
   FBModuleProcState& state,
   FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
-  FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain)
+  FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain,
+  FBSArray<float, FFOsciFixedBlockOversamples> const& voiceBasePitch)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -215,7 +181,8 @@ FFOsciProcessor::ProcessString(
   FBSArray<float, FFOsciFixedBlockOversamples> stringFeedbackPlain = {};
   FBSArray<float, FFOsciFixedBlockOversamples> stringDampKTrkPlain = {};
   FBSArray<float, FFOsciFixedBlockOversamples> stringTrackingKeyPlain = {};
-  FBSArray<float, FFOsciFixedBlockOversamples> stringFeedbackKTrkPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringFeedbackKTrkPlain = {};  
+
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     if (_stringLPOn)
@@ -242,6 +209,7 @@ FFOsciProcessor::ProcessString(
     stringDampKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringDampKTrk, stringDampKTrkNorm, s));
     stringFeedbackKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringFeedbackKTrk, stringFeedbackKTrkNorm, s));
   }
+
   if (_oversampleTimes != 1)
   {
     if (_stringLPOn)
@@ -269,6 +237,47 @@ FFOsciProcessor::ProcessString(
     stringFeedbackKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
   }
 
+  // Cannot do this in BeginVoice because we need access to voice base pitch after modulation.
+  if (_firstProcess)
+  {
+    if (_stringLPOn)
+    {
+      float stringLPFreqPlain0 = FFMultiplyClamp(stringLPFreqPlain.Get(0),
+        FFKeyboardTrackingMultiplier(voiceBasePitch.Get(0), stringTrackingKeyPlain.Get(0), stringLPKTrkPlain.Get(0)),
+        FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+      stringLPFreqPlain0 *= _graphStVarFilterFreqMultiplier;
+      _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, stringLPFreqPlain0, stringLPResPlain.Get(0), 0.0f);
+    }
+
+    if (_stringHPOn)
+    {
+      float stringHPFreqPlain0 = FFMultiplyClamp(stringHPFreqPlain.Get(0),
+        FFKeyboardTrackingMultiplier(voiceBasePitch.Get(0), stringTrackingKeyPlain.Get(0), -stringHPKTrkPlain.Get(0)),
+        FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+      stringHPFreqPlain0 *= _graphStVarFilterFreqMultiplier;
+      _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, stringHPFreqPlain0, stringHPResPlain.Get(0), 0.0f);
+    }
+
+    int delayLineSize = static_cast<int>(std::ceil(oversampledRate / FFOsciStringMinFreq));
+    for (int u = 0; u < _uniCount; u++)
+    {
+      for (int p = 0; p < _stringPoles; p++)
+        _stringUniState[u].colorFilterBuffer.Set(p, StringDraw());
+      float basePitch = voiceBasePitch.Get(0) + coarsePlain + finePlain;
+      float uniPitch = basePitch + _uniPosMHalfToHalf.Get(u) * uniDetunePlain;
+      float uniFreq = FBPitchToFreq(uniPitch);
+      for (int i = 0; i < delayLineSize; i++)
+      {
+        double dNextVal = StringNext(u, oversampledRate, uniFreq, stringExcitePlain, stringColorPlain, stringXPlain, stringYPlain);
+        if (_stringHPOn)
+          dNextVal = _stringHPFilter.Next(u, dNextVal);
+        if (_stringLPOn)
+          dNextVal = _stringLPFilter.Next(u, dNextVal);
+        _stringUniState[u].delayLine.Push(static_cast<float>(dNextVal));
+      }
+    }
+  }
+
   for (int s = 0; s < totalSamples; s++)
   {
     float x = stringXPlain.Get(s);
@@ -283,7 +292,7 @@ FFOsciProcessor::ProcessString(
     float uniDetune = uniDetunePlain.Get(s);
     float centerPitch = 60.0f + trackingKey;
     float feedbackKTrk = stringFeedbackKTrkPlain.Get(s);
-    float pitchDiffSemis = _keyUntuned - centerPitch;
+    float pitchDiffSemis = voiceBasePitch.Get(s) - centerPitch;
     float pitchDiffNorm = std::clamp(pitchDiffSemis / 24.0f, -1.0f, 1.0f);
     damp = std::clamp(damp - 0.5f * dampKTrk * pitchDiffNorm, 0.0f, 1.0f);
     feedback = std::clamp(feedback + 0.5f * feedbackKTrk * pitchDiffNorm, 0.0f, 1.0f);
@@ -295,7 +304,7 @@ FFOsciProcessor::ProcessString(
       float lpFreq = stringLPFreqPlain.Get(s);
       float lpKTrk = stringLPKTrkPlain.Get(s);
       lpFreq = FFMultiplyClamp(lpFreq,
-        FFKeyboardTrackingMultiplier(_keyUntuned, trackingKey, lpKTrk),
+        FFKeyboardTrackingMultiplier(voiceBasePitch.Get(s), trackingKey, lpKTrk),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
       lpFreq *= _graphStVarFilterFreqMultiplier;
       _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, lpFreq, lpRes, 0.0f);
@@ -307,7 +316,7 @@ FFOsciProcessor::ProcessString(
       float hpFreq = stringHPFreqPlain.Get(s);
       float hpKTrk = stringHPKTrkPlain.Get(s);
       hpFreq = FFMultiplyClamp(hpFreq,
-        FFKeyboardTrackingMultiplier(_keyUntuned, trackingKey, -hpKTrk),
+        FFKeyboardTrackingMultiplier(voiceBasePitch.Get(s), trackingKey, -hpKTrk),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
       hpFreq *= _graphStVarFilterFreqMultiplier;
       _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, hpFreq, hpRes, 0.0f);

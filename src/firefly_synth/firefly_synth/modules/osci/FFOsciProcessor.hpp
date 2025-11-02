@@ -50,9 +50,6 @@ struct FFOsciStringUniVoiceState final
 
 class FFOsciProcessor final
 {
-  // TODO get rid of this thing everywhere -- or not?
-  float _keyUntuned = {};
-
   FFOsciType _type = {};
   int _uniCount = {};
   int _oversampleTimes = {};
@@ -87,6 +84,7 @@ class FFOsciProcessor final
   int _graphPosition = {};
   float _graphStVarFilterFreqMultiplier = {};
   FFTrackingPhaseGenerator _graphPhaseGen = {};
+  bool _firstProcess = true;
 
   bool _modMatrixExpoFM = false;
   std::array<bool, FFOsciCount - 1> _modSourceFMOn = {};
@@ -137,7 +135,8 @@ class FFOsciProcessor final
   void ProcessString(
     FBModuleProcState& state,
     FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
-    FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain);
+    FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain,
+    FBSArray<float, FFOsciFixedBlockOversamples> const& voiceBasePitch);
 
   void BeginVoiceExtAudio(FBModuleProcState& state);
   void BeginVoiceString(FBModuleProcState& state, bool graph);
