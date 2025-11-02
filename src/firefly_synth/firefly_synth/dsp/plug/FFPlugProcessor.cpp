@@ -256,7 +256,7 @@ FFPlugProcessor::ProcessPostVoice(
     
     state.moduleSlot = i; // gecho changes it!
     globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(state, false, -1, -1);
-    globalDSP.gEffect[i].processor->Process<true>(state);
+    globalDSP.gEffect[i].processor->Process<true>(state, nullptr, false);
 
     if (gEchoTarget == FFGEchoTarget::FX1Out && i == 0 ||
       gEchoTarget == FFGEchoTarget::FX2Out && i == 1 ||

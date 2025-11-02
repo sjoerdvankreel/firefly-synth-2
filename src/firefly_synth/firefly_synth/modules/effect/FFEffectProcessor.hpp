@@ -12,6 +12,7 @@
 
 class FBAccParamState;
 struct FBModuleProcState;
+struct FFEffectExchangeState;
 
 // Show at least 1 sample of the comb filter.
 inline float constexpr FFEffectPlotLengthSeconds = 2.0f / FFMinCombFilterFreq;
@@ -98,7 +99,12 @@ public:
     FBRuntimeTopo const* topo, FBProcStateContainer* state);
 
   template <bool Global>
-  int Process(FBModuleProcState& state);
+  void BeginVoiceOrBlock(
+    FBModuleProcState& state, bool graph,
+    int graphIndex, int graphSampleCount);
   template <bool Global>
-  void BeginVoiceOrBlock(FBModuleProcState& state, bool graph, int graphIndex, int graphSampleCount);
+  int Process(
+    FBModuleProcState& state,
+    FFEffectExchangeState const* exchangeFromDSP,
+    bool graph);
 };

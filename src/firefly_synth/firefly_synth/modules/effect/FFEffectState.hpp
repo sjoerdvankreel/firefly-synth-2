@@ -15,6 +15,12 @@ struct FBStaticModule;
 template <bool Global>
 struct EffectGraphRenderData;
 
+struct alignas(FBSIMDAlign) FFEffectExchangeState final:
+public FBModuleProcSingleExchangeState
+{
+  float basePitch = {};
+};
+
 class alignas(FBSIMDAlign) FFEffectDSPState final
 {
   friend class FFPlugProcessor;

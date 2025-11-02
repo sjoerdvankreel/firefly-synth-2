@@ -133,29 +133,9 @@ FFEffectProcessor::BeginVoiceOrBlock(
   _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
   bool oversample = topo.NormalizedToBoolFast(FFEffectParam::Oversample, oversampleNorm);
   _oversampleTimes = !graph && oversample ? FFEffectOversampleTimes : 1;
-
-  if constexpr (Global)
-  {
-    // raw because we provide our own smoothing filter
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-      _basePitch.Set(s, state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Get(s) * 127.0f);
-    auto masterPitchBendTarget = procState->dsp.global.master.bendTarget;
-    if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
-      for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-        _basePitch.Add(s, procState->dsp.global.master.bendAmountInSemis.Load(s));
-  }
-  else
-  {
-    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-      _basePitch.Store(s, procState->dsp.voice[voice].voiceModule.basePitchSemis.Load(s));
-  }
-  if (_oversampleTimes != 1)
-    _basePitch.UpsampleStretch<FFEffectOversampleTimes>();
   int smoothSamples = topo.NormalizedToLinearTimeSamplesFast(
     FFEffectParam::LastKeySmoothTime, lastKeySmoothTimeNorm, state.input->sampleRate);
   _basePitchSmoother.SetCoeffs(smoothSamples);
-  if(graph)
-    _basePitchSmoother.State(_basePitch.Get(0));
 
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
@@ -186,7 +166,10 @@ FFEffectProcessor::BeginVoiceOrBlock(
 
 template <bool Global>
 int
-FFEffectProcessor::Process(FBModuleProcState& state)
+FFEffectProcessor::Process(
+  FBModuleProcState& state,
+  FFEffectExchangeState const* exchangeFromDSP,
+  bool graph)
 {
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -247,6 +230,35 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combResPlusPlain;
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combFreqMinPlain;
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combFreqPlusPlain;
+
+  if (graph)
+  {
+    if (exchangeFromDSP != nullptr)
+      _basePitch.Fill(FBBatch<float>(exchangeFromDSP->basePitch));
+    else
+      _basePitch.Fill(FBBatch<float>(60.0f));
+  }
+  else
+  {
+    if constexpr (Global)
+    {
+      // raw because we provide our own smoothing filter
+      for (int s = 0; s < FBFixedBlockSamples; s++)
+        _basePitch.Set(s, state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Get(s) * 127.0f);
+      auto masterPitchBendTarget = procState->dsp.global.master.bendTarget;
+      if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
+        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+          _basePitch.Add(s, procState->dsp.global.master.bendAmountInSemis.Load(s));
+    }
+    else
+    {
+      for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+        _basePitch.Store(s, procState->dsp.voice[voice].voiceModule.basePitchSemis.Load(s));
+    }
+  }
+
+  if (_oversampleTimes != 1)
+    _basePitch.UpsampleStretch<FFEffectOversampleTimes>();
   
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
@@ -537,6 +549,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
     [exchangeToGUI, &state]() { return &exchangeToGUI->global.gEffect[state.moduleSlot]; },
     [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vEffect[state.moduleSlot]; });
   exchangeDSP.boolIsActive = 1;
+  exchangeDSP.basePitch = _basePitch.Get(FBFixedBlockSamples - 1);
   exchangeDSP.lengthSamples = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
 
   auto& exchangeParams = *FFSelectDualState<Global>(
@@ -766,9 +779,9 @@ FFEffectProcessor::ProcessFold(
   }
 }
 
-template int FFEffectProcessor::Process<true>(FBModuleProcState&);
-template int FFEffectProcessor::Process<false>(FBModuleProcState&);
 template void FFEffectProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, bool, int, int);
 template void FFEffectProcessor::BeginVoiceOrBlock<false>(FBModuleProcState&, bool, int, int);
+template int FFEffectProcessor::Process<true>(FBModuleProcState&, FFEffectExchangeState const*, bool);
+template int FFEffectProcessor::Process<false>(FBModuleProcState&, FFEffectExchangeState const*, bool);
 template void FFEffectProcessor::AllocOnDemandBuffers<true>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);
 template void FFEffectProcessor::AllocOnDemandBuffers<false>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);

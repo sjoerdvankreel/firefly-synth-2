@@ -25,6 +25,19 @@ public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
   void DoProcessIndicators(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
 
+static FFEffectExchangeState const*
+GetEffectExchangeStateFromDSP(FBGraphRenderState* state, bool global, int slot, bool exchange, int exchangeVoice)
+{
+  auto* moduleProcState = state->ModuleProcState();
+  FFEffectExchangeState const* exchangeFromDSP = nullptr;
+  auto moduleType = global ? FFModuleType::GEffect : FFModuleType::VEffect;
+  int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ (int)moduleType, slot });
+  auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
+  if (exchange)
+    exchangeFromDSP = &dynamic_cast<FFEffectExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
+  return exchangeFromDSP;
+}
+
 static FBModuleGraphPlotParams
 PlotParams(FBModuleGraphComponentData const* data, bool global, int /*graphIndex*/)
 {
@@ -131,8 +144,9 @@ EffectGraphRenderData<Global>::DoProcess(
       else
         input[c].Set(s, ((samplesProcessed[graphIndex] + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
   
+  auto const* exchangeFromDSP = GetEffectExchangeStateFromDSP(state, Global, moduleSlot, exchange, exchangeVoice);
   samplesProcessed[graphIndex] += FBFixedBlockSamples;
-  return GetProcessor(*moduleProcState).template Process<Global>(*moduleProcState);
+  return GetProcessor(*moduleProcState).template Process<Global>(*moduleProcState, exchangeFromDSP, true);
 }
 
 template <bool Global>

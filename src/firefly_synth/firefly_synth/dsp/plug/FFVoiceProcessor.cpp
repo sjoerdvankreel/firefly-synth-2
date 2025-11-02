@@ -245,7 +245,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
     state.moduleSlot = i; // vecho changes it!
     if (!_ampEnvFinishedThisRound)
-      voiceDSP.vEffect[i].processor->Process<false>(state);
+      voiceDSP.vEffect[i].processor->Process<false>(state, nullptr, false);
     else
       voiceDSP.vEffect[i].output.Fill(0.0f);
 

@@ -49,7 +49,7 @@ struct alignas(FBSIMDAlign) FFGlobalExchangeState final
   std::array<FBModuleProcSingleExchangeState, 1> output = {};
   std::array<FBModuleProcSingleExchangeState, 1> gMatrix = {};
   std::array<FBModuleProcSingleExchangeState, 1> settings = {};
-  std::array<FBModuleProcSingleExchangeState, FFEffectCount> gEffect = {};
+  std::array<FFEffectExchangeState, FFEffectCount> gEffect = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
 };
 
@@ -58,12 +58,12 @@ struct alignas(FBSIMDAlign) FFVoiceExchangeState final
   std::array<FFEnvExchangeState, FFEnvCount> env = {};
   std::array<FFLFOExchangeState, FFLFOCount> vLFO = {};
   std::array<FFOsciExchangeState, FFOsciCount> osci = {};
+  std::array<FFEffectExchangeState, FFEffectCount> vEffect = {};
   std::array<FBModuleProcSingleExchangeState, 1> vMix = {};
   std::array<FBModuleProcSingleExchangeState, 1> vEcho = {};
   std::array<FBModuleProcSingleExchangeState, 1> vMatrix = {};
   std::array<FBModuleProcSingleExchangeState, 1> osciMod = {};
   std::array<FBModuleProcSingleExchangeState, 1> voiceModule = {};
-  std::array<FBModuleProcSingleExchangeState, FFEffectCount> vEffect = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
 };
 
