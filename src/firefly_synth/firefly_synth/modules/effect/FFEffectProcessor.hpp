@@ -43,8 +43,6 @@ class FFEffectProcessor final
   std::array<FFStateVariableFilter<2>, FFEffectBlockCount> _stVarFilters = {};
 
   template <bool Global>
-  float NextBasePitchScalar(int sample);
-  template <bool Global>
   FBBatch<float> NextBasePitchBatch(int pos);
 
   template <bool Global, bool PlusOn, bool MinOn>
