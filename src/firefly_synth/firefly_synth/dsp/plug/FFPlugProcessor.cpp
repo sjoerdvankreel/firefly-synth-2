@@ -1,11 +1,7 @@
-#include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/dsp/plug/FFPlugProcessor.hpp>
-#include <firefly_synth/modules/env/FFEnvProcessor.hpp>
-#include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
 #include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputProcessor.hpp>
-#include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
  
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
@@ -260,7 +256,7 @@ FFPlugProcessor::ProcessPostVoice(
     
     state.moduleSlot = i; // gecho changes it!
     globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(state, false, -1, -1);
-    globalDSP.gEffect[i].processor->Process<true>(state);
+    globalDSP.gEffect[i].processor->Process<true>(state, nullptr, false);
 
     if (gEchoTarget == FFGEchoTarget::FX1Out && i == 0 ||
       gEchoTarget == FFGEchoTarget::FX2Out && i == 1 ||

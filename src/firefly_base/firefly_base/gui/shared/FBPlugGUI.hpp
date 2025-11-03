@@ -1,10 +1,7 @@
 #pragma once
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
-#include <firefly_base/gui/shared/FBParamComponent.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
-
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <chrono>
@@ -12,8 +9,12 @@
 #include <unordered_map>
 #include <unordered_set>
 
+class FBParamControl;
+class FBGUIParamControl;
+class FBParamsDependent;
 class FBHostGUIContext;
 class FBContentComponent;
+struct FBParamTopoIndices;
 
 class IFBParamListener
 {

@@ -4,7 +4,6 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
 
-#include <array>
 #include <algorithm>
 
 class alignas(FBSIMDAlign) FBAccParamState final

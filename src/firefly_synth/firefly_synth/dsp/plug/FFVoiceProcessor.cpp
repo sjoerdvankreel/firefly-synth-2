@@ -4,7 +4,6 @@
 #include <firefly_synth/modules/env/FFEnvProcessor.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
 #include <firefly_synth/modules/note/FFVNoteProcessor.hpp>
-#include <firefly_synth/modules/output/FFOutputProcessor.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
 
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
@@ -176,7 +175,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
     if (_ampEnvFinishedThisRound)
       voiceDSP.osci[i].output.Fill(0.0);
     else
-      voiceDSP.osci[i].processor->Process(state, false);
+      voiceDSP.osci[i].processor->Process(state, nullptr, false);
 
     if (_ampEnvTarget == FFVMixAmpEnvTarget::OscPreMix)
       voiceDSP.osci[i].output.Mul(ampPlainModulated);    
@@ -246,7 +245,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
     state.moduleSlot = i; // vecho changes it!
     if (!_ampEnvFinishedThisRound)
-      voiceDSP.vEffect[i].processor->Process<false>(state);
+      voiceDSP.vEffect[i].processor->Process<false>(state, nullptr, false);
     else
       voiceDSP.vEffect[i].output.Fill(0.0f);
 

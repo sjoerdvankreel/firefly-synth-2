@@ -1,5 +1,7 @@
 #include <firefly_base_clap/FBCLAPPlugin.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 bool 
 FBCLAPPlugin::implementsAudioPorts() const noexcept

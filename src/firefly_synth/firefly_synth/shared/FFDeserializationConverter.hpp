@@ -1,6 +1,5 @@
 #pragma once
 
-#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <string>
 
 struct FBPlugVersion;

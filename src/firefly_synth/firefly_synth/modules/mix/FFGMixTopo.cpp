@@ -2,7 +2,6 @@
 #include <firefly_synth/shared/FFTopoDetail.hpp>
 #include <firefly_synth/modules/mix/FFGMixTopo.hpp>
 #include <firefly_synth/modules/mix/FFGMixState.hpp>
-#include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string

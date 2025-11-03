@@ -50,9 +50,6 @@ struct FFOsciStringUniVoiceState final
 
 class FFOsciProcessor final
 {
-  // TODO get rid of this thing everywhere -- or not?
-  float _keyUntuned = {};
-
   FFOsciType _type = {};
   int _uniCount = {};
   int _oversampleTimes = {};
@@ -87,6 +84,7 @@ class FFOsciProcessor final
   int _graphPosition = {};
   float _graphStVarFilterFreqMultiplier = {};
   FFTrackingPhaseGenerator _graphPhaseGen = {};
+  bool _firstProcess = true;
 
   bool _modMatrixExpoFM = false;
   std::array<bool, FFOsciCount - 1> _modSourceFMOn = {};
@@ -136,6 +134,8 @@ class FFOsciProcessor final
     FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain);
   void ProcessString(
     FBModuleProcState& state,
+    float coarsePlain0, float finePlain0, float uniDetunePlain0,
+    FBSArray<float, FFOsciFixedBlockOversamples> const& voiceBasePitch,
     FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
     FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain);
 
@@ -147,8 +147,11 @@ class FFOsciProcessor final
 public:
   FFOsciProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciProcessor);
-  int Process(FBModuleProcState& state, bool graph);
-
+  
+  int Process(
+    FBModuleProcState& state, 
+    FFOsciExchangeState const* exchangeFromDSP,
+    bool graph);
   void BeginVoice(
     FBModuleProcState& state,
     FFOsciExchangeState const* exchangeFromDSP,

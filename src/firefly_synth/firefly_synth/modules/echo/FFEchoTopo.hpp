@@ -1,7 +1,5 @@
 #pragma once
 
-#include <firefly_base/base/shared/FBSArray.hpp>
-
 #include <string>
 #include <memory>
 

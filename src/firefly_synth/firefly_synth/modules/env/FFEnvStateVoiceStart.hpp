@@ -1,5 +1,8 @@
 #pragma once
 
+#include <array>
+#include <memory>
+
 template <class TAccurate>
 class alignas(alignof(TAccurate)) FFEnvVoiceStartParamState final
 {

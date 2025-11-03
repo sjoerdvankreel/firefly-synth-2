@@ -4,7 +4,6 @@
 
 #include <string>
 #include <memory>
-#include <utility>
 
 inline int constexpr FFOsciModSlotCount = (FFOsciCount * (FFOsciCount - 1)) / 2;
 

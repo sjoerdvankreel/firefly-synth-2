@@ -1,18 +1,15 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
-#include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeModule.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParamsTopo.hpp>
 
 #include <juce_core/juce_core.h>
-
 #include <map>
 #include <vector>
 #include <memory>
-#include <unordered_map>
 
+struct FBStaticTopo;
 class FBGUIStateContainer;
 class FBProcStateContainer;
 class FBScalarStateContainer;

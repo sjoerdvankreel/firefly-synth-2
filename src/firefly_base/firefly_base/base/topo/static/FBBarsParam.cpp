@@ -1,5 +1,4 @@
 #include <firefly_base/base/topo/static/FBBarsParam.hpp>
-
 #include <set>
 
 using namespace juce;

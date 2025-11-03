@@ -1,5 +1,6 @@
 #include <firefly_base_clap/FBCLAPUtility.hpp>
 #include <firefly_base/base/topo/static/FBStaticParam.hpp>
+#include <firefly_base/dsp/host/FBHostProcessor.hpp>
 
 #include <cmath>
 

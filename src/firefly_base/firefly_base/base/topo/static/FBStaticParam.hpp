@@ -15,9 +15,7 @@
 
 #include <array>
 #include <string>
-#include <vector>
 #include <optional>
-#include <algorithm>
 #include <functional>
 
 struct FBStaticTopo;

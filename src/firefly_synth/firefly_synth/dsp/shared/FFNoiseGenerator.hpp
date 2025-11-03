@@ -1,12 +1,10 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBSIMD.hpp>
-#include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
 #include <array>
-#include <cassert>
 #include <cstdint>
 
 // https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html

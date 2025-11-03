@@ -7,7 +7,6 @@
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
-#include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
@@ -70,31 +69,11 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
   auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
 
-  auto const& fineNorm = params.acc.fine[0].Voice()[voice];
-  auto const& coarseNorm = params.acc.coarse[0].Voice()[voice];
-  auto const& uniDetuneNorm = params.acc.uniDetune[0].Voice()[voice];
-
-  float finePlain = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm.CV().Get(0));
-  float coarsePlain = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
-  float uniDetunePlain = topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm.CV().Get(0));
-
   float stringLPOnNorm = params.block.stringLPOn[0].Voice()[voice];
   float stringHPOnNorm = params.block.stringHPOn[0].Voice()[voice];
   float stringModeNorm = params.block.stringMode[0].Voice()[voice];
   float stringSeedNorm = params.block.stringSeed[0].Voice()[voice];
   float stringPolesNorm = params.block.stringPoles[0].Voice()[voice];
-
-  auto const& stringXNorm = params.acc.stringX[0].Voice()[voice];
-  auto const& stringYNorm = params.acc.stringY[0].Voice()[voice];
-  auto const& stringLPResNorm = params.acc.stringLPRes[0].Voice()[voice];
-  auto const& stringHPResNorm = params.acc.stringHPRes[0].Voice()[voice];
-  auto const& stringLPFreqNorm = params.acc.stringLPFreq[0].Voice()[voice];
-  auto const& stringHPFreqNorm = params.acc.stringHPFreq[0].Voice()[voice];
-  auto const& stringLPKTrkNorm = params.acc.stringLPKTrk[0].Voice()[voice];
-  auto const& stringHPKTrkNorm = params.acc.stringHPKTrk[0].Voice()[voice];
-  auto const& stringColorNorm = params.acc.stringColor[0].Voice()[voice];
-  auto const& stringExciteNorm = params.acc.stringExcite[0].Voice()[voice];
-  auto const& stringTrackingKeyNorm = params.acc.stringTrackingKey[0].Voice()[voice];
 
   _stringLPOn = topo.NormalizedToBoolFast(FFOsciParam::StringLPOn, stringLPOnNorm);
   _stringHPOn = topo.NormalizedToBoolFast(FFOsciParam::StringHPOn, stringHPOnNorm);
@@ -102,42 +81,10 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
   _stringPoles = topo.NormalizedToDiscreteFast(FFOsciParam::StringPoles, stringPolesNorm);
   _stringMode = topo.NormalizedToListFast<FFOsciStringMode>(FFOsciParam::StringMode, stringModeNorm);
 
-  float stringLPResPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringLPRes, stringLPResNorm.CV().Get(0));
-  float stringHPResPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringHPRes, stringHPResNorm.CV().Get(0));
-  float stringLPFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::StringLPFreq, stringLPFreqNorm.CV().Get(0));
-  float stringHPFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::StringHPFreq, stringHPFreqNorm.CV().Get(0));
-  float stringLPKTrkPlain = topo.NormalizedToLinearFast(FFOsciParam::StringLPKTrk, stringLPKTrkNorm.CV().Get(0));
-  float stringHPKTrkPlain = topo.NormalizedToLinearFast(FFOsciParam::StringHPKTrk, stringHPKTrkNorm.CV().Get(0));
-  float stringXPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringX, stringXNorm.CV().Get(0));
-  float stringYPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringY, stringYNorm.CV().Get(0));
-  float stringExcitePlain = topo.NormalizedToLog2Fast(FFOsciParam::StringExcite, stringExciteNorm.CV().Get(0));
-  float stringColorPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringColor, stringColorNorm.CV().Get(0));
-  float stringTrackingKeyPlain = topo.NormalizedToLinearFast(FFOsciParam::StringTrackingKey, stringTrackingKeyNorm.CV().Get(0));
-
   _stringLPFilter.Reset();
   _stringHPFilter.Reset();
   _stringNormalPrng = FFMarsagliaPRNG<true>(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
   _uniformPrng = FFParkMillerPRNG(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
-
-  if (_stringLPOn)
-  {
-    stringLPFreqPlain = FFMultiplyClamp(stringLPFreqPlain,
-      FFKeyboardTrackingMultiplier(_keyUntuned, stringTrackingKeyPlain, stringLPKTrkPlain),
-      FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-    stringLPFreqPlain *= _graphStVarFilterFreqMultiplier;
-    _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, stringLPFreqPlain, stringLPResPlain, 0.0f);
-  }
-
-  if (_stringHPOn)
-  {
-    stringHPFreqPlain = FFMultiplyClamp(stringHPFreqPlain,
-      FFKeyboardTrackingMultiplier(_keyUntuned, stringTrackingKeyPlain, -stringHPKTrkPlain),
-      FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-    stringHPFreqPlain *= _graphStVarFilterFreqMultiplier;
-    _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, stringHPFreqPlain, stringHPResPlain, 0.0f);
-  }
-
-  int delayLineSize = static_cast<int>(std::ceil(oversampledRate / FFOsciStringMinFreq));
   for (int u = 0; u < _uniCount; u++)
   {
     _stringUniState[u].phaseGen = {};
@@ -150,28 +97,16 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
       _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize());
     else
       _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() * _oversampleTimes / FFOsciOversampleTimes);
-
     for (int p = 0; p < _stringPoles; p++)
       _stringUniState[u].colorFilterBuffer.Set(p, StringDraw());
-
-    float basePitch = _keyUntuned + coarsePlain + finePlain;
-    float uniPitch = basePitch + _uniPosMHalfToHalf.Get(u) * uniDetunePlain;
-    float uniFreq = FBPitchToFreq(uniPitch);
-    for (int i = 0; i < delayLineSize; i++)
-    {
-      double dNextVal = StringNext(u, oversampledRate, uniFreq, stringExcitePlain, stringColorPlain, stringXPlain, stringYPlain);
-      if (_stringHPOn)
-        dNextVal = _stringHPFilter.Next(u, dNextVal);
-      if (_stringLPOn)
-        dNextVal = _stringLPFilter.Next(u, dNextVal);
-      _stringUniState[u].delayLine.Push(static_cast<float>(dNextVal));
-    }
   }
 }
 
 void 
 FFOsciProcessor::ProcessString(
   FBModuleProcState& state,
+  float coarsePlain0, float finePlain0, float uniDetunePlain0,
+  FBSArray<float, FFOsciFixedBlockOversamples> const& voiceBasePitch,
   FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
   FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain)
 {
@@ -269,6 +204,50 @@ FFOsciProcessor::ProcessString(
     stringFeedbackKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
   }
 
+  if (_firstProcess)
+  {
+    // Need access to modulated voice base pitch for this.
+
+    if (_stringLPOn)
+    {
+      float stringLPFreqPlain0 = FFMultiplyClamp(stringLPFreqPlain.Get(0),
+        FFKeyboardTrackingMultiplier(voiceBasePitch.Get(0), stringTrackingKeyPlain.Get(0), stringLPKTrkPlain.Get(0)),
+        FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+      stringLPFreqPlain0 *= _graphStVarFilterFreqMultiplier;
+      _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, stringLPFreqPlain0, stringLPResPlain.Get(0), 0.0f);
+    }
+
+    if (_stringHPOn)
+    {
+      float stringHPFreqPlain0 = FFMultiplyClamp(stringHPFreqPlain.Get(0),
+        FFKeyboardTrackingMultiplier(voiceBasePitch.Get(0), stringTrackingKeyPlain.Get(0), -stringHPKTrkPlain.Get(0)),
+        FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+      stringHPFreqPlain0 *= _graphStVarFilterFreqMultiplier;
+      _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, stringHPFreqPlain0, stringHPResPlain.Get(0), 0.0f);
+    }
+
+    int delayLineSize = static_cast<int>(std::ceil(oversampledRate / FFOsciStringMinFreq));
+    for (int u = 0; u < _uniCount; u++)
+    {
+      float basePitch = voiceBasePitch.Get(0) + coarsePlain0 + finePlain0;
+      float uniPitch = basePitch + _uniPosMHalfToHalf.Get(u) * uniDetunePlain0;
+      float uniFreq = FBPitchToFreq(uniPitch);
+      for (int i = 0; i < delayLineSize; i++)
+      {
+        double dNextVal = StringNext(u, oversampledRate, uniFreq, stringExcitePlain.Get(0), stringColorPlain.Get(0), stringXPlain.Get(0), stringYPlain.Get(0));
+        if (_stringHPOn)
+          dNextVal = _stringHPFilter.Next(u, dNextVal);
+        if (_stringLPOn)
+          dNextVal = _stringLPFilter.Next(u, dNextVal);
+        _stringUniState[u].delayLine.Push(static_cast<float>(dNextVal));
+      }
+    }
+  }
+
+  float lastDampNorm = 0.0f;
+  float lastFdbkNorm = 0.0f;
+  float lastLPFreqPlain = 0.0f;
+  float lastHPFreqPlain = 0.0f;
   for (int s = 0; s < totalSamples; s++)
   {
     float x = stringXPlain.Get(s);
@@ -283,11 +262,14 @@ FFOsciProcessor::ProcessString(
     float uniDetune = uniDetunePlain.Get(s);
     float centerPitch = 60.0f + trackingKey;
     float feedbackKTrk = stringFeedbackKTrkPlain.Get(s);
-    float pitchDiffSemis = _keyUntuned - centerPitch;
+    float pitchDiffSemis = voiceBasePitch.Get(s) - centerPitch;
     float pitchDiffNorm = std::clamp(pitchDiffSemis / 24.0f, -1.0f, 1.0f);
     damp = std::clamp(damp - 0.5f * dampKTrk * pitchDiffNorm, 0.0f, 1.0f);
     feedback = std::clamp(feedback + 0.5f * feedbackKTrk * pitchDiffNorm, 0.0f, 1.0f);
+
     float realFeedback = 0.9f + 0.1f * feedback;
+    lastDampNorm = damp;
+    lastFdbkNorm = feedback;
 
     if (_stringLPOn)
     {
@@ -295,10 +277,11 @@ FFOsciProcessor::ProcessString(
       float lpFreq = stringLPFreqPlain.Get(s);
       float lpKTrk = stringLPKTrkPlain.Get(s);
       lpFreq = FFMultiplyClamp(lpFreq,
-        FFKeyboardTrackingMultiplier(_keyUntuned, trackingKey, lpKTrk),
+        FFKeyboardTrackingMultiplier(voiceBasePitch.Get(s), trackingKey, lpKTrk),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
       lpFreq *= _graphStVarFilterFreqMultiplier;
       _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, lpFreq, lpRes, 0.0f);
+      lastLPFreqPlain = lpFreq;
     }
 
     if (_stringHPOn)
@@ -307,10 +290,11 @@ FFOsciProcessor::ProcessString(
       float hpFreq = stringHPFreqPlain.Get(s);
       float hpKTrk = stringHPKTrkPlain.Get(s);
       hpFreq = FFMultiplyClamp(hpFreq,
-        FFKeyboardTrackingMultiplier(_keyUntuned, trackingKey, -hpKTrk),
+        FFKeyboardTrackingMultiplier(voiceBasePitch.Get(s), trackingKey, -hpKTrk),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
       hpFreq *= _graphStVarFilterFreqMultiplier;
       _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, hpFreq, hpRes, 0.0f);
+      lastHPFreqPlain = hpFreq;
     }
 
     for (int ub = 0; ub < _uniCount; ub += FBSIMDFloatCount)
@@ -351,20 +335,30 @@ FFOsciProcessor::ProcessString(
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;
+  
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
+
+  // Need to translate filter freqs back to normalized because keytracking is applied on plain, not normalized.
+  if (_stringLPOn)
+    exchangeParams.acc.stringLPFreq[0][voice] = 
+      topo.params[(int)FFOsciParam::StringLPFreq].Log2().PlainToNormalizedFast(lastLPFreqPlain);
+  if (_stringHPOn)
+    exchangeParams.acc.stringHPFreq[0][voice] =
+      topo.params[(int)FFOsciParam::StringHPFreq].Log2().PlainToNormalizedFast(lastHPFreqPlain);
+
+  // For these keytracking is applied to normalized.
+  exchangeParams.acc.stringDamp[0][voice] = lastDampNorm;
+  exchangeParams.acc.stringFeedback[0][voice] = lastFdbkNorm;
+
   exchangeParams.acc.stringX[0][voice] = stringXNorm.Last();
   exchangeParams.acc.stringY[0][voice] = stringYNorm.Last();
   exchangeParams.acc.stringLPRes[0][voice] = stringLPResNorm.Last();
   exchangeParams.acc.stringHPRes[0][voice] = stringHPResNorm.Last();
-  exchangeParams.acc.stringLPFreq[0][voice] = stringLPFreqNorm.Last();
-  exchangeParams.acc.stringHPFreq[0][voice] = stringHPFreqNorm.Last();
   exchangeParams.acc.stringLPKTrk[0][voice] = stringLPKTrkNorm.Last();
   exchangeParams.acc.stringHPKTrk[0][voice] = stringHPKTrkNorm.Last();
   exchangeParams.acc.stringExcite[0][voice] = stringExciteNorm.Last();
-  exchangeParams.acc.stringDamp[0][voice] = stringDampNorm.Last();
   exchangeParams.acc.stringDampKTrk[0][voice] = stringDampKTrkNorm.Last();
   exchangeParams.acc.stringTrackingKey[0][voice] = stringTrackingKeyNorm.Last();
-  exchangeParams.acc.stringFeedback[0][voice] = stringFeedbackNorm.Last();
   exchangeParams.acc.stringFeedbackKTrk[0][voice] = stringFeedbackKTrkNorm.Last();
   exchangeParams.acc.stringColor[0][voice] = stringColorNorm.Last();
 }

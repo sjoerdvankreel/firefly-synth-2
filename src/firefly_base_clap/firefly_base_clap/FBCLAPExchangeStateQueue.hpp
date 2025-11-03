@@ -1,9 +1,7 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
-
 #include <readerwriterqueue.h>
-#include <cstddef>
 
 class FBCLAPExchangeStateQueueBase
 {

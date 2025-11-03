@@ -1,13 +1,11 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBSIMD.hpp>
-#include <firefly_base/base/shared/FBSArray.hpp>
+#include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/topo/static/FBBarsItem.hpp>
 
 #include <xsimd/xsimd.hpp>
-
 #include <cmath>
-#include <array>
 #include <numbers>
 #include <algorithm>
 

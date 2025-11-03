@@ -4,7 +4,6 @@
 #include <firefly_synth/modules/mix/FFGMixGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
-#include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleGUI.hpp>
@@ -12,13 +11,9 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
-#include <firefly_base/gui/components/FBContentComponent.hpp>
 
-#include <map>
 #include <memory>
 #include <vector>
-#include <functional>
-#include <unordered_map>
 
 class FBHostGUIContext;
 class FBGraphRenderState;

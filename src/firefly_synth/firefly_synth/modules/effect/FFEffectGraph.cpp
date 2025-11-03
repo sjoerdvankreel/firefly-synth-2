@@ -5,7 +5,6 @@
 
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBGraphing.hpp>
-#include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 
 #include <bit>
@@ -25,6 +24,19 @@ public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
   void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
   void DoProcessIndicators(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
+
+static FFEffectExchangeState const*
+GetEffectExchangeStateFromDSP(FBGraphRenderState* state, bool global, int slot, bool exchange, int exchangeVoice)
+{
+  auto* moduleProcState = state->ModuleProcState();
+  FFEffectExchangeState const* exchangeFromDSP = nullptr;
+  auto moduleType = global ? FFModuleType::GEffect : FFModuleType::VEffect;
+  int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ (int)moduleType, slot });
+  auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
+  if (exchange)
+    exchangeFromDSP = &dynamic_cast<FFEffectExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
+  return exchangeFromDSP;
+}
 
 static FBModuleGraphPlotParams
 PlotParams(FBModuleGraphComponentData const* data, bool global, int /*graphIndex*/)
@@ -89,7 +101,10 @@ EffectGraphRenderData<Global>::DoPostProcess(
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
   FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
   auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
-  if (kind != FFEffectKind::StVar && kind != FFEffectKind::Comb && kind != FFEffectKind::CombPlus && kind != FFEffectKind::CombMin)
+  if (kind != FFEffectKind::StVarFreq && kind != FFEffectKind::StVarPitch && 
+    kind != FFEffectKind::CombFreq && kind != FFEffectKind::CombPitch &&
+    kind != FFEffectKind::CombPlusFreq && kind != FFEffectKind::CombPlusPitch &&
+    kind != FFEffectKind::CombMinFreq && kind != FFEffectKind::CombMinPitch)
     return;
   if (points.l.size() == 0)
     return;
@@ -116,7 +131,10 @@ EffectGraphRenderData<Global>::DoProcess(
   {
     indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
     auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
-    plotSpecificFilter = kind == FFEffectKind::StVar || kind == FFEffectKind::Comb || kind == FFEffectKind::CombPlus || kind == FFEffectKind::CombMin;
+    plotSpecificFilter = kind == FFEffectKind::StVarFreq || kind == FFEffectKind::StVarPitch ||
+      kind == FFEffectKind::CombFreq || kind == FFEffectKind::CombPitch ||
+      kind == FFEffectKind::CombPlusFreq || kind == FFEffectKind::CombPlusPitch ||
+      kind == FFEffectKind::CombMinFreq || kind == FFEffectKind::CombMinPitch;
     if (kind == FFEffectKind::Off)
       return 0;
   }
@@ -132,8 +150,9 @@ EffectGraphRenderData<Global>::DoProcess(
       else
         input[c].Set(s, ((samplesProcessed[graphIndex] + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
   
+  auto const* exchangeFromDSP = GetEffectExchangeStateFromDSP(state, Global, moduleSlot, exchange, exchangeVoice);
   samplesProcessed[graphIndex] += FBFixedBlockSamples;
-  return GetProcessor(*moduleProcState).template Process<Global>(*moduleProcState);
+  return GetProcessor(*moduleProcState).template Process<Global>(*moduleProcState, exchangeFromDSP, true);
 }
 
 template <bool Global>

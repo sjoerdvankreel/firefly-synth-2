@@ -3,9 +3,7 @@
 #include <firefly_synth/modules/midi/FFMIDIProcessor.hpp>
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/dsp/host/FBHostBlock.hpp>
 
-#include <array>
 #include <memory>
 
 struct FBStaticModule;

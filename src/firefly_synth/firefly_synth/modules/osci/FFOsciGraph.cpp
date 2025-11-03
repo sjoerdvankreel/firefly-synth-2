@@ -4,7 +4,6 @@
 
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBGraphing.hpp>
-#include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 
 #include <algorithm>
@@ -24,6 +23,18 @@ FFVoiceDSPState&
 OsciGraphRenderData::GetVoiceDSPState(FBModuleProcState& state)
 {
   return state.ProcAs<FFProcState>()->dsp.voice[state.voice->slot];
+}
+
+static FFOsciExchangeState const*
+GetOsciExchangeStateFromDSP(FBGraphRenderState* state, int slot, bool exchange, int exchangeVoice)
+{
+  auto* moduleProcState = state->ModuleProcState();
+  FFOsciExchangeState const* exchangeFromDSP = nullptr;
+  int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ (int)FFModuleType::Osci, slot });
+  auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
+  if (exchange)
+    exchangeFromDSP = &dynamic_cast<FFOsciExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
+  return exchangeFromDSP;
 }
 
 void 
@@ -55,11 +66,7 @@ OsciGraphRenderData::DoBeginVoiceOrBlock(
   for (int i = 0; i <= graphIndex; i++)
   {
     moduleProcState->moduleSlot = i;
-    FFOsciExchangeState const* exchangeFromDSP = nullptr;
-    int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ (int)FFModuleType::Osci, i });
-    auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
-    if (exchange)
-      exchangeFromDSP = &dynamic_cast<FFOsciExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
+    FFOsciExchangeState const* exchangeFromDSP = GetOsciExchangeStateFromDSP(state, i, exchange, exchangeVoice);
     auto& processor = GetVoiceDSPState(*moduleProcState).osci[i].processor;
     processor->AllocOnDemandBuffers(
       state->PlugGUI()->HostContext()->Topo(), 
@@ -72,7 +79,7 @@ OsciGraphRenderData::DoBeginVoiceOrBlock(
 
 int 
 OsciGraphRenderData::DoProcess(
-  FBGraphRenderState* state, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
+  FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   // need to handle all oscis up to this one + mod matrix
   auto* moduleProcState = state->ModuleProcState();
@@ -83,7 +90,8 @@ OsciGraphRenderData::DoProcess(
   for (int i = 0; i <= graphIndex; i++)
   {
     moduleProcState->moduleSlot = i;
-    int processed = GetVoiceDSPState(*moduleProcState).osci[i].processor->Process(*moduleProcState, true);
+    FFOsciExchangeState const* exchangeFromDSP = GetOsciExchangeStateFromDSP(state, i, exchange, exchangeVoice);
+    int processed = GetVoiceDSPState(*moduleProcState).osci[i].processor->Process(*moduleProcState, exchangeFromDSP, true);
     if (i == graphIndex) result = processed;
   }
   moduleProcState->moduleSlot = slot;

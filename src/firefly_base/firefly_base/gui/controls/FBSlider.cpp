@@ -2,7 +2,6 @@
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
-#include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 using namespace juce;
 

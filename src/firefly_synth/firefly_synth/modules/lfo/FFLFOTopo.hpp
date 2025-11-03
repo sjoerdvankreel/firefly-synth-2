@@ -1,9 +1,6 @@
 #pragma once
 
-#include <firefly_base/base/shared/FBSArray.hpp>
-#include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
 #include <firefly_synth/dsp/shared/FFTrigFunctions.hpp>
-
 #include <memory>
 
 struct FBStaticModule;

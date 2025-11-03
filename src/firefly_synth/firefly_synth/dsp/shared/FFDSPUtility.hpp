@@ -23,6 +23,13 @@ FFMultiplyClamp(
   return std::clamp(val * mul, min, max);
 }
 
+inline FBBatch<float>
+FFMultiplyClamp(
+  FBBatch<float> val, FBBatch<float> mul, FBBatch<float> min, FBBatch<float> max)
+{
+  return xsimd::clip(val * mul, min, max);
+}
+
 inline float
 FFGraphFilterFreqMultiplier(
   bool graph, float sampleRate, float maxFilterFreq)
@@ -39,6 +46,15 @@ FFKeyboardTrackingMultiplier(
   if (trackingAmt == 0.0f)
     return 1.0f;
   return std::pow(2.0f, (key - 60.0f + trackingKey) / 12.0f * trackingAmt);
+}
+
+inline FBBatch<float>
+FFKeyboardTrackingMultiplier(
+  FBBatch<float> key, FBBatch<float> trackingKey, FBBatch<float> trackingAmt)
+{
+  if (xsimd::all(xsimd::eq(trackingAmt, FBBatch<float>(0.0f))))
+    return FBBatch<float>(1.0f);
+  return xsimd::pow(FBBatch<float>(2.0f), (key - 60.0f + trackingKey) / 12.0f * trackingAmt);
 }
 
 inline FBBatch<float>

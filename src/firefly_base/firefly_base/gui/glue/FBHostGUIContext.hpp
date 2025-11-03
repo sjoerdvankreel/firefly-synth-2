@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+struct FBStaticTopo;
 struct FBTopoIndices;
 struct FBRuntimeTopo;
 struct FBParamTopoIndices;

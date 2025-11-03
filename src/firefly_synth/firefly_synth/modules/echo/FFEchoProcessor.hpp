@@ -8,7 +8,6 @@
 #include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
 
 #include <juce_dsp/juce_dsp.h>
-
 #include <array>
 #include <vector>
 

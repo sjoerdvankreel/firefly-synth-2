@@ -1,7 +1,6 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <juce_gui_basics/juce_gui_basics.h>
 
 class IFBVerticalAutoSize
 {

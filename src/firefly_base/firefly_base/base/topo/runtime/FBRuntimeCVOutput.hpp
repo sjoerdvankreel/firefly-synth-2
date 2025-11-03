@@ -1,13 +1,13 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
-#include <firefly_base/base/topo/static/FBStaticCVOutput.hpp>
 
 #include <string>
 
 struct FBStaticTopo;
 struct FBStaticModule;
+struct FBStaticCVOutput;
+struct FBCVOutputTopoIndices;
 
 // Guess this one is set in stone.
 // It gets serialized with the item ids.

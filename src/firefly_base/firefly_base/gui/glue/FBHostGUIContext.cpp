@@ -1,4 +1,5 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBGUIStateContainer.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>

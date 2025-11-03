@@ -2,12 +2,10 @@
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/shared/FBAutoSize.hpp>
-
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <map>
 #include <vector>
-#include <utility>
 
 struct FBGridCell final
 {

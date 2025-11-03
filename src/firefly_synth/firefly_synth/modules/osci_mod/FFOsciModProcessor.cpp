@@ -1,7 +1,6 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
 
-#include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 

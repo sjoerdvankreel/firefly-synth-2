@@ -1,3 +1,26 @@
+November 3, 2025 - Alpha 21.
+
+- Build:
+
+* Cleaned up the #includes.
+
+- Bugfixes:
+
+* Global filter keytracking did not take pitchbend into account.
+* Global filter keytracking followed normalized value, not pitch.
+* The effect of keyboard tracking on filter frequency did not show up in the gui.
+* Per voice filter keytracking did not take pitchbend and portamento into account, for state variable, comb, and dedicated filters in the string osci.
+
+- Filters:
+
+* Added pitch-following versions of state variable and comb filters ("filter type Freq" vs "filter type "Note").
+* These track the voice base pitch including midi key, pitchbend, voice pitch offsets and portamento.
+* No need to keyboard-track these, but it's still possible. They have a pitch offset control (instead of frequency control) which is a regular target for global unison, mod matrix, and easy-access modulators (env->pitch_offset, lfo->pitch_offset).
+
+- Breaking changes:
+
+* Easy-access modulators to the effect section changed to "add" instead of "multiply" for the envelope modulators.
+
 October 29, 2025 - Alpha 20.
 
 - Build:

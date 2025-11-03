@@ -1,7 +1,5 @@
 #pragma once
 
-#include <firefly_base/base/shared/FBSArray.hpp>
-
 #include <memory>
 #include <string>
 
@@ -31,7 +29,6 @@ inline int constexpr FFOsciStringGraphRounds = 5;
 inline int constexpr FFOsciFMRatioCount = 16;
 inline int constexpr FFOsciFMOperatorCount = 3;
 inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperatorCount;
-inline float constexpr FFOsciCoarseSemis = 128.0f;
 
 enum class FFOsciParam {
   Type, Phase, Gain, EnvToGain, Pan, Coarse, Fine, LFOToFine,

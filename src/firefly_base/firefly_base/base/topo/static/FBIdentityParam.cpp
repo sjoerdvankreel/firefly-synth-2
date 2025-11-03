@@ -1,4 +1,3 @@
-#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/static/FBIdentityParam.hpp>
 
 bool FBIdentityParamNonRealTime::IsItems() const { return false; }

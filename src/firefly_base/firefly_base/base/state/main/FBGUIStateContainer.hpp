@@ -1,7 +1,6 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 
 #include <vector>
 #include <utility>

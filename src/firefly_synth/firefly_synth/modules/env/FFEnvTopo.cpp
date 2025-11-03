@@ -1,7 +1,6 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/shared/FFTopoDetail.hpp>
-#include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGraph.hpp>
 

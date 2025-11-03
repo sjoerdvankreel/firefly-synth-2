@@ -1,7 +1,7 @@
 #include <firefly_base/base/state/main/FBUndoStateContainer.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
-#include <juce_gui_basics/juce_gui_basics.h>
 
 FBUndoStateContainer::
 FBUndoStateContainer(FBHostGUIContext* hostContext):

@@ -2,18 +2,15 @@
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/dsp/shared/FBNoteMatrix.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
-#include <firefly_base/dsp/host/FBHostBlock.hpp>
-#include <firefly_base/dsp/shared/FBNoteMatrix.hpp>
-
 #include <juce_dsp/juce_dsp.h>
-
 #include <vector>
 #include <memory>
 
 struct FBPlugInputBlock;
-struct FBModuleProcState;
 
 class FBPlugGUI;
 class FBVoiceManager;

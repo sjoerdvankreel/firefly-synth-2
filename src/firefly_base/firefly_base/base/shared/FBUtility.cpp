@@ -3,7 +3,6 @@
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 
 #include <juce_core/juce_core.h>
-#include <string>
 #include <sstream>
 #include <fstream>
 

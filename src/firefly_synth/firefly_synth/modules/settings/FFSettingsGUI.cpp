@@ -2,15 +2,11 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/settings/FFSettingsGUI.hpp>
 #include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
-#include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
-#include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
-#include <firefly_base/gui/controls/FBComboBox.hpp>
-#include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>

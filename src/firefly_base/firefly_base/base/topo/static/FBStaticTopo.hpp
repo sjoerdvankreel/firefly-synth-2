@@ -6,7 +6,6 @@
 #include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 
 #include <vector>
-#include <memory>
 #include <functional>
 
 struct FBStaticTopo;
@@ -38,12 +37,12 @@ struct FBPlugVersion final
 
 struct FBStaticTopoMeta final
 {
-  bool isFx;
-  std::string id;
-  std::string name;
-  std::string vendor;
-  std::string shortName;
-  FBPlugVersion version;
+  bool isFx = {};
+  std::string id = {};
+  std::string name = {};
+  std::string vendor = {};
+  std::string shortName = {};
+  FBPlugVersion version = {};
   FBPlugFormat format = (FBPlugFormat)-1;
 
   // To make patch loading across instrument/fx possible.

@@ -1,15 +1,11 @@
 #pragma once
 
-#include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixProcessor.hpp>
-
-#include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 
 #include <array>
 #include <memory>
-#include <cstdint>
 
 struct FFStaticTopo;
 struct FBStaticModule;

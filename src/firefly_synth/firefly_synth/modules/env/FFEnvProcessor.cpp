@@ -4,7 +4,6 @@
 #include <firefly_synth/modules/env/FFEnvProcessor.hpp>
 
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
-#include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 

@@ -16,9 +16,7 @@
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
 #include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
-#include <firefly_synth/modules/settings/FFSettingsState.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
-#include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>

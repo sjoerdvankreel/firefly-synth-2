@@ -1,5 +1,4 @@
 #include <firefly_base/base/shared/FBLogging.hpp>
-#include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 

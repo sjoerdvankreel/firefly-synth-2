@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 
 #include <array>

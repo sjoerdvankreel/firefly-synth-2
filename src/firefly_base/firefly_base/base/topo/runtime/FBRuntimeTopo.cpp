@@ -1,3 +1,4 @@
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBTopoDetail.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 

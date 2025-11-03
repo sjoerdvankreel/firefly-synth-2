@@ -24,7 +24,7 @@ public:
   float portaSectionAmpRelease = {};
   bool thisVoiceIsSubSectionStart = {};
   bool otherVoiceSubSectionTookOver = {}; // need this to apply release multiplier
-  FBSArray<float, FBFixedBlockSamples> pitchOffsetInSemis = {};
+  FBSArray<float, FBFixedBlockSamples> basePitchSemis = {};
 };
 
 template <class TBlock>
