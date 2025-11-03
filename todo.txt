@@ -22,6 +22,7 @@ TODOLIST for alpha-22 - microtuning
 [ ] MTS into master: off / note / continuous 
 
 TODOLIST for alpha-23 - rest of the gui stuff
+[ ] the gui clips on Mac, f.e. orc mix->out. Make the whole thing wider
 [ ] do mac tests on new hosts
 [ ] add Carla/ardour for mac as test targets
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
