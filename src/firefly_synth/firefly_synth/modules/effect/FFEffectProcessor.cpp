@@ -696,13 +696,13 @@ FFEffectProcessor::Process(
         topo.params[(int)FFEffectParam::CombFreqFreqMin].Log2().PlainToNormalizedFast(combFreqFreqMinPlain[i].Get(FBFixedBlockSamples - 1));
     if (_on && (_kind[i] == FFEffectKind::CombPitch || _kind[i] == FFEffectKind::CombMinPitch))
       FFSelectDualExchangeState<Global>(exchangeParams.acc.combPitchCoarseMin[i], voice) =
-        topo.params[(int)FFEffectParam::CombPitchCoarseMin].Log2().PlainToNormalizedFast(combPitchCoarseMinPlain[i].Get(FBFixedBlockSamples - 1));
+        topo.params[(int)FFEffectParam::CombPitchCoarseMin].Linear().PlainToNormalizedFast(combPitchCoarseMinPlain[i].Get(FBFixedBlockSamples - 1));
     if (_on && (_kind[i] == FFEffectKind::CombFreq || _kind[i] == FFEffectKind::CombPlusFreq))
       FFSelectDualExchangeState<Global>(exchangeParams.acc.combFreqFreqPlus[i], voice) =
         topo.params[(int)FFEffectParam::CombFreqFreqPlus].Log2().PlainToNormalizedFast(combFreqFreqPlusPlain[i].Get(FBFixedBlockSamples - 1));
     if (_on && (_kind[i] == FFEffectKind::CombPitch || _kind[i] == FFEffectKind::CombPlusPitch))
       FFSelectDualExchangeState<Global>(exchangeParams.acc.combPitchCoarsePlus[i], voice) =
-        topo.params[(int)FFEffectParam::CombPitchCoarsePlus].Log2().PlainToNormalizedFast(combPitchCoarsePlusPlain[i].Get(FBFixedBlockSamples - 1));
+        topo.params[(int)FFEffectParam::CombPitchCoarsePlus].Linear().PlainToNormalizedFast(combPitchCoarsePlusPlain[i].Get(FBFixedBlockSamples - 1));
 
     FFSelectDualExchangeState<Global>(exchangeParams.acc.distDrive[i], voice) = distDriveNormModulated[i].Last();
     FFSelectDualExchangeState<Global>(exchangeParams.acc.envAmt[i], voice) = FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).Last();
