@@ -13,6 +13,8 @@ TODOLIST for alpha-21
 [x] filters should track the actual pitch when possible (string osci)
 [x] tuned stvar filter versions
 [ ] tuned comb filter versions
+[ ] make a tuned filter demo
+[ ] recheck if the easy access mods should be add or mul
 [ ] do mac tests on new hosts
 
 TODOLIST for alpha-22 - microtuning
