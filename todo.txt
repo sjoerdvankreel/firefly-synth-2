@@ -12,9 +12,9 @@ TODOLIST for alpha-21
 [x] figure out all places where is used midi note
 [x] filters should track the actual pitch when possible (string osci)
 [x] tuned stvar filter versions
-[ ] tuned comb filter versions
-[ ] make a tuned filter demo
-[ ] recheck if the easy access mods should be add or mul
+[x] tuned comb filter versions
+[x] make a tuned filter demo
+[x] recheck if the easy access mods should be add or mul => is now upstack not mul for freq
 [ ] do mac tests on new hosts
 
 TODOLIST for alpha-22 - microtuning

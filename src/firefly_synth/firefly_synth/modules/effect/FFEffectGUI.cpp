@@ -68,19 +68,10 @@ FFEffectAdjustParamModulationGUIBounds(
     rtParam.topoIndices.param.index == (int)FFEffectParam::CombFreqFreqPlus ||
     rtParam.topoIndices.param.index == (int)FFEffectParam::CombPitchCoarsePlus)
   {
-    auto opTypeEnv = FFModulationOpType::UPMul;
-    auto opTypeLFO = FFModulationOpType::UPMul;
-    if (rtParam.topoIndices.param.index == (int)FFEffectParam::StVarPitchCoarse ||
-      rtParam.topoIndices.param.index == (int)FFEffectParam::CombPitchCoarseMin ||
-      rtParam.topoIndices.param.index == (int)FFEffectParam::CombPitchCoarsePlus)
-    {
-      opTypeEnv = FFModulationOpType::UPStack;
-      opTypeLFO = FFModulationOpType::BPStack;
-    }
     double modAmountEnv = ctx->GetAudioParamNormalized({ { staticIndex, rtParam.topoIndices.module.slot }, { (int)FFEffectParam::EnvAmt, rtParam.topoIndices.param.slot } });
-    FFApplyGUIModulationBounds(opTypeEnv, (float)modAmountEnv, currentMinNorm, currentMaxNorm);
+    FFApplyGUIModulationBounds(FFModulationOpType::UPStack, (float)modAmountEnv, currentMinNorm, currentMaxNorm);
     double modAmountLFO = ctx->GetAudioParamNormalized({ { staticIndex, rtParam.topoIndices.module.slot }, { (int)FFEffectParam::LFOAmt, rtParam.topoIndices.param.slot } });
-    FFApplyGUIModulationBounds(opTypeLFO, (float)modAmountLFO, currentMinNorm, currentMaxNorm);
+    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, (float)modAmountLFO, currentMinNorm, currentMaxNorm);
     return true;
   }
 
