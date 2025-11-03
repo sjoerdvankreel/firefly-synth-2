@@ -17,6 +17,10 @@ November 3, 2025 - Alpha 21.
 * These track the voice base pitch including midi key, pitchbend, voice pitch offsets and portamento.
 * No need to keyboard-track these, but it's still possible. They have a pitch offset control (instead of frequency control) which is a regular target for global unison, mod matrix, and easy-access modulators (env->pitch_offset, lfo->pitch_offset).
 
+- Breaking changes:
+
+* Easy-access modulators to the effect section changed to "add" instead of "multiply" for the envelope modulators.
+
 October 29, 2025 - Alpha 20.
 
 - Build:
