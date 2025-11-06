@@ -4,6 +4,8 @@ TODOLIST for alpha-23 - microtuning
 [ ] MTS into master: off / note / continuous 
 
 TODOLIST for alpha-24 - rest of the gui stuff
+[ ] go back to 1260
+[ ] still need getheightforaspectratio?
 [ ] flush audio should kill all voices (panic)
 [ ] the gui clips on Mac, f.e. osc mix->out. Make the whole thing wider -> no workie, need change aspect ratio?
 [ ] do mac tests on new hosts
