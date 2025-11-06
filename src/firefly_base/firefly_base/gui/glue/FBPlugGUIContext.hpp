@@ -20,8 +20,8 @@ public:
   void SetSystemScale(double scale);
   void SetUserScaleByHostWidth(int width);
   std::pair<int, int> GetHostSize() const;
-  int ClampHostWidthForScale(int width) const;
   int GetHeightForAspectRatio(int width) const;
+  void ClampHostSizeForScale(int& width, int& height) const;
   FBHostGUIContext* HostContext() { return _hostContext; }
   FBHostGUIContext const* HostContext() const { return _hostContext; }
 

@@ -149,8 +149,11 @@ FBVST3GUIEditor::checkSizeConstraint(ViewRect* rect_)
 {
   return FBWithLogException([this, rect_]()
   {
-    rect_->right = rect_->left + _gui->ClampHostWidthForScale(rect_->getWidth());
-    rect_->bottom = rect_->top + _gui->GetHeightForAspectRatio(rect_->getWidth());
+    int w = rect_->getWidth();
+    int h = rect_->getHeight();
+    _gui->ClampHostSizeForScale(w, h);
+    rect_->right = rect_->left + w;
+    rect_->bottom = rect_->top + h;
     return kResultTrue;
   });
 }
