@@ -5,7 +5,7 @@ TODOLIST for alpha-23 - microtuning
 
 TODOLIST for alpha-24 - rest of the gui stuff
 [ ] flush audio should kill all voices (panic)
-[ ] the gui clips on Mac, f.e. osc mix->out. Make the whole thing wider
+[ ] the gui clips on Mac, f.e. osc mix->out. Make the whole thing wider -> no workie, need change aspect ratio?
 [ ] do mac tests on new hosts
 [ ] add Carla/ardour for mac as test targets
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
