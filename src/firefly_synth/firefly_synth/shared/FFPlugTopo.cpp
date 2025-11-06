@@ -55,7 +55,7 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->meta = FFPlugMeta(format, isFX);
   result->maxUndoSize = 15;
   result->patchExtension = "ff2preset";
-  result->guiWidth = 1260;
+  result->guiWidth = 1280;
   result->guiAspectRatioWidth = 32;
   result->guiAspectRatioHeight = 19;
   result->guiUserScaleModule = (int)FFModuleType::GUISettings;

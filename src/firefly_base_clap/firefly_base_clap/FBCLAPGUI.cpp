@@ -141,8 +141,11 @@ FBCLAPPlugin::guiAdjustSize(uint32_t* width, uint32_t* height) noexcept
   {
     if (!_gui)
       return false;
-    *width = _gui->ClampHostWidthForScale(*width);
-    *height = _gui->GetHeightForAspectRatio(*width);
+    int w = (int)*width;
+    int h = (int)*height;
+    _gui->ClampHostSizeForScale(w, h);
+    *width = w;
+    *height = h;
     return true;
   });
 }
