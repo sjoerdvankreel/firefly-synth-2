@@ -175,10 +175,10 @@ MakeVMixGUISectionAmpBalAndOsciMixToOut(FBPlugGUI* plugGUI)
   ampEnvTargetGrid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, ampEnvTarget));
   ampEnvTargetGrid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, ampEnvTarget));
   grid->Add(0, 4, ampEnvTargetGrid);
-  auto oscMixToOutGrid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
+  auto oscMixToOutGrid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   auto oscMixToOut = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::OsciMixToOut, 0 } });
   oscMixToOutGrid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Osc Mix\U00002192Out"));
-  oscMixToOutGrid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, oscMixToOut, Slider::SliderStyle::RotaryVerticalDrag));
+  oscMixToOutGrid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, oscMixToOut, Slider::SliderStyle::LinearHorizontal));
   grid->Add(1, 4, oscMixToOutGrid);
   grid->MarkSection({ { 0, 0 }, { 2, 5 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
