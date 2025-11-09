@@ -96,21 +96,21 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   if (_firstRoundThisVoice)
   {
     bool anyNoteWasOnAlready = false;
-    float previousMidiKeyUntuned = -1.0f;
+    float previousMidiKey = -1.0f;
     int voiceStartSamplesInBlock = state.voice->offsetInBlock;
     if (voiceStartSamplesInBlock == 0)
     {
       anyNoteWasOnAlready = state.input->anyNoteWasOnLastSamplePrevRound;
-      previousMidiKeyUntuned = state.input->lastKeyRawLastSamplePrevRound * 127.0f;
+      previousMidiKey = state.input->lastKeyRawLastSamplePrevRound * 127.0f;
     }
     else
     {
       anyNoteWasOnAlready = (*state.input->anyNoteIsOn)[voiceStartSamplesInBlock - 1];
-      previousMidiKeyUntuned = state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Get(voiceStartSamplesInBlock - 1) * 127.0f;
+      previousMidiKey = state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKey].Get(voiceStartSamplesInBlock - 1) * 127.0f;
     }
 
     state.moduleSlot = 0;
-    procState->dsp.voice[voice].voiceModule.processor->BeginVoice(state, previousMidiKeyUntuned, anyNoteWasOnAlready);
+    procState->dsp.voice[voice].voiceModule.processor->BeginVoice(state, previousMidiKey, anyNoteWasOnAlready);
   }
 
   // Determine this on block boundaries.

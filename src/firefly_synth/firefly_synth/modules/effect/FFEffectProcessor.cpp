@@ -251,7 +251,7 @@ FFEffectProcessor::Process(
     {
       // raw because we provide our own smoothing filter
       for (int s = 0; s < FBFixedBlockSamples; s++)
-        _basePitch.Set(s, state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Get(s) * 127.0f);
+        _basePitch.Set(s, state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKey].Get(s) * 127.0f);
       auto masterPitchBendTarget = procState->dsp.global.master.bendTarget;
       if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
         for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)

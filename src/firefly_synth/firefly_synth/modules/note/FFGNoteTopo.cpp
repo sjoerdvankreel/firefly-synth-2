@@ -22,11 +22,11 @@ FFMakeGNoteTopo()
     case FBNoteMatrixEntry::HighKeyVelo: return " " + prefix + " HighKey Velo";
     case FBNoteMatrixEntry::LowVeloVelo: return " " + prefix + " LowVelo Velo";
     case FBNoteMatrixEntry::HighVeloVelo: return " " + prefix + " HighVelo Velo";
-    case FBNoteMatrixEntry::LastKeyUntuned: return " " + prefix + " Last Key";
-    case FBNoteMatrixEntry::LowKeyKeyUntuned: return " " + prefix + " LowKey Key";
-    case FBNoteMatrixEntry::HighKeyKeyUntuned: return " " + prefix + " HighKey Key";
-    case FBNoteMatrixEntry::LowVeloKeyUntuned: return " " + prefix + " LowVelo Key";
-    case FBNoteMatrixEntry::HighVeloKeyUntuned: return " " + prefix + " HighVelo Key";
+    case FBNoteMatrixEntry::LastKey: return " " + prefix + " Last Key";
+    case FBNoteMatrixEntry::LowKeyKey: return " " + prefix + " LowKey Key";
+    case FBNoteMatrixEntry::HighKeyKey: return " " + prefix + " HighKey Key";
+    case FBNoteMatrixEntry::LowVeloKey: return " " + prefix + " LowVelo Key";
+    case FBNoteMatrixEntry::HighVeloKey: return " " + prefix + " HighVelo Key";
     default: FB_ASSERT(false); return std::string("");
     }
   };

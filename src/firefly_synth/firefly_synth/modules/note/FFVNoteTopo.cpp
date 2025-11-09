@@ -13,11 +13,11 @@ FFMakeVNoteTopo()
   result->id = "{CE604F90-99E9-43D0-BF49-A7EE53BB1F4F}";
   result->cvOutputs.resize((int)FFVNoteCVOutput::Count);
 
-  auto& outputKeyUntuned = result->cvOutputs[(int)FFVNoteCVOutput::KeyUntuned];
-  outputKeyUntuned.name = "Key";
-  outputKeyUntuned.slotCount = 1;
-  outputKeyUntuned.id = "{684BB946-8B26-4256-AFF7-4F5C7CF19599}";
-  outputKeyUntuned.voiceAddr = [](int, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vNote.outputKeyUntuned; };
+  auto& outputKey = result->cvOutputs[(int)FFVNoteCVOutput::Key];
+  outputKey.name = "Key";
+  outputKey.slotCount = 1;
+  outputKey.id = "{684BB946-8B26-4256-AFF7-4F5C7CF19599}";
+  outputKey.voiceAddr = [](int, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vNote.outputKey; };
 
   auto& outputVelo = result->cvOutputs[(int)FFVNoteCVOutput::Velo];
   outputVelo.name = "Velo";

@@ -17,7 +17,7 @@
 void
 FFVoiceModuleProcessor::BeginVoice(
   FBModuleProcState& state,
-  float previousMidiKeyUntuned,
+  float previousMidiKey,
   bool anyNoteWasOnAlready)
 {
   int voice = state.voice->slot;
@@ -45,13 +45,13 @@ FFVoiceModuleProcessor::BeginVoice(
   procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease = _voiceStartSnapshotNorm.portaSectionAmpRelease[0];
 
   float portaPitchStart;
-  if (previousMidiKeyUntuned < 0.0f
+  if (previousMidiKey< 0.0f
     || portaType == FFVoiceModulePortaType::Off
     || portaMode == FFVoiceModulePortaMode::Section && !anyNoteWasOnAlready)
-    portaPitchStart = (float)state.voice->event.note.keyUntuned;
+    portaPitchStart = (float)state.voice->event.note.key;
   else
   {
-    portaPitchStart = previousMidiKeyUntuned;
+    portaPitchStart = previousMidiKey;
     if (portaMode == FFVoiceModulePortaMode::Section && anyNoteWasOnAlready)
     {
       procState->dsp.voice[voice].voiceModule.thisVoiceIsSubSectionStart = true;
@@ -62,12 +62,12 @@ FFVoiceModuleProcessor::BeginVoice(
       // Since the takeover mechanism in the envelope is a simple fade out, should be ok.
       int myChannel = state.voice->event.note.channel;
       FBVoiceManager const* vManager = state.input->voiceManager;
-      int tookOverThisKey = (int)std::round(previousMidiKeyUntuned);
+      int tookOverThisKey = (int)std::round(previousMidiKey);
       for (int v: vManager->ActiveAndReturnedVoices())
         if (v != voice)
         {
           auto const& thatEventNote = vManager->Voices()[v].event.note;
-          if (thatEventNote.channel == myChannel && thatEventNote.keyUntuned == tookOverThisKey)
+          if (thatEventNote.channel == myChannel && thatEventNote.key == tookOverThisKey)
             procState->dsp.voice[v].voiceModule.otherVoiceSubSectionTookOver = true;
         }
     }
@@ -80,7 +80,7 @@ FFVoiceModuleProcessor::BeginVoice(
     _portaPitchSamplesTotal = topo.NormalizedToLinearTimeSamplesFast(
       FFVoiceModuleParam::PortaTime, _voiceStartSnapshotNorm.portaTime[0], sampleRate);
 
-  int portaDiffSemis = state.voice->event.note.keyUntuned - (int)std::round(portaPitchStart);
+  int portaDiffSemis = state.voice->event.note.key - (int)std::round(portaPitchStart);
   int slideMultiplier = portaType == FFVoiceModulePortaType::Auto ? 1 : std::abs(portaDiffSemis);
   _portaPitchSamplesTotal *= slideMultiplier;
   _portaPitchSamplesProcessed = 0;
@@ -100,7 +100,7 @@ void
 FFVoiceModuleProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
-  float basePitchFromKey = (float)state.voice->event.note.keyUntuned;
+  float basePitchFromKey = (float)state.voice->event.note.key;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
   auto const& procParams = procState->param.voice.voiceModule[0];

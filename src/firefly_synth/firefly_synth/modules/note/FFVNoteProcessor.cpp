@@ -17,7 +17,7 @@ FFVNoteProcessor::BeginVoice(
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   procState->dsp.voice[voice].vNote.outputVelo.Fill(state.voice->event.velo);
-  procState->dsp.voice[voice].vNote.outputKeyUntuned.Fill(state.voice->event.note.keyUntuned / 127.0f);
+  procState->dsp.voice[voice].vNote.outputKey.Fill(state.voice->event.note.key / 127.0f);
   for(int i = 0; i < FFVNoteOnNoteRandomCount; i++)
   {
     procState->dsp.voice[voice].vNote.outputRandomUni[i].Fill(randomUni[i]);

@@ -19,5 +19,5 @@ class FFVoiceModuleProcessor final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceModuleProcessor);
   void Process(FBModuleProcState& state);
-  void BeginVoice(FBModuleProcState& state, float previousMidiKeyUntuned, bool anyNoteWasOnAlready);
+  void BeginVoice(FBModuleProcState& state, float previousMidiKey, bool anyNoteWasOnAlready);
 };
