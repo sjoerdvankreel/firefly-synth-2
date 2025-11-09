@@ -10,6 +10,7 @@ TODOLIST for alpha-23 - tuning and small stuff
 [ ] split the gnote smth etc
 [ ] make new matrix sources "Voice" and "Global"
 [ ] test: non-ktrk osci + all parts equals ktrak osci. non-ktrk osci + final pitch equals ktrk osci. likewise for vfilters and gfilters (with global final pitch)
+[ ] modrate/modamt dedicated osci in the feedback echo
 
 TODOLIST for alpha-24 - microtuning
 [ ] make a dedicated tuning section with some options ==> only PB and optionally unison coarse
