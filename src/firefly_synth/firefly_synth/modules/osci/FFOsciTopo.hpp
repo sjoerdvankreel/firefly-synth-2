@@ -31,7 +31,7 @@ inline int constexpr FFOsciFMOperatorCount = 3;
 inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperatorCount;
 
 enum class FFOsciParam {
-  Type, Phase, Gain, EnvToGain, Pan, Coarse, Fine, LFOToFine,
+  Type, Phase, KeyTrack, Gain, EnvToGain, Pan, Coarse, Fine, LFOToFine,
   UniCount, UniOffset, UniRandom, UniDetune, UniSpread, UniBlend,
   WaveBasicMode, WaveBasicGain, WavePWMode, WavePWGain, WavePWPW,
   WaveHSMode, WaveHSGain, WaveHSPitch,
