@@ -170,7 +170,6 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   {
     _flushThisRound = true;
     _prevFlushAudioToggle = flushToggle;
-    globalDSP.gEcho.processor->FlushDelayLines();
     for (int v = 0; v < FBMaxVoices; v++)
       _procState->dsp.voice[v].vEcho.processor->FlushDelayLines();
     for (int v = 0; v < FBMaxVoices; v++)
@@ -227,6 +226,10 @@ FFPlugProcessor::ProcessPostVoice(
   FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
   float gEchoTargetNorm = gEcho.block.vTargetOrGTarget[0].Value();
   auto gEchoTarget = gEchoModuleTopo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VTargetOrGTarget, gEchoTargetNorm);
+
+  // Get out pops/clicks from voices we killed halfway.
+  if(_flushThisRound)
+    globalDSP.gEcho.processor->FlushDelayLines();
 
   FBSArray2<float, FBFixedBlockSamples, 2> voiceMixdown = {};
   voiceMixdown.Fill(0.0f);
