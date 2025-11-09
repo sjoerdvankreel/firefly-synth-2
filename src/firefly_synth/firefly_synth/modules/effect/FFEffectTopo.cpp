@@ -62,7 +62,6 @@ FFMakeEffectTopo(bool global)
   oversample.mode = FBParamMode::Block;
   oversample.defaultText = "Off";
   oversample.name = "Oversample";
-  oversample.display = "Ovsmp";
   oversample.slotCount = 1;
   oversample.id = prefix + "{D8AA4B9D-EAFD-4E87-9DC9-108B8894A4D0}";
   oversample.type = FBParamType::Boolean;
