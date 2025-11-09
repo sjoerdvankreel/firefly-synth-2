@@ -165,7 +165,7 @@ FBHostProcessor::ProcessHost(
     std::array<bool, FBMaxVoices> voiceOffPositions = {};
     for (int n2 = 0; n2 < _plugIn.noteEvents->size(); n2++)
       if (!(*_plugIn.noteEvents)[n2].on)
-        for(int v: _plugIn.voiceManager->ActiveVoices())
+        for(int v: _plugIn.voiceManager->ActiveAndReturnedVoices())
           if ((*_plugIn.noteEvents)[n2].note.Matches(_plugIn.voiceManager->Voices()[v].event.note))
           {
             seenVoiceOff[v] = true;
@@ -187,11 +187,11 @@ FBHostProcessor::ProcessHost(
     _plug->ProcessPreVoice(_plugIn);
 
     // process active voices including newly acquired AND newly released
-    for (int v: _plugIn.voiceManager->ActiveVoices())
+    for (int v: _plugIn.voiceManager->ActiveAndReturnedVoices())
       _plug->ProcessVoice(_plugIn, v, seenVoiceOff[v] ? voiceOffPositions[v] : -1);
 
     // Voice offsetInBlock is 0 for the rest of the voice lifetime.
-    for (int v: _voiceManager->ActiveVoices())
+    for (int v: _voiceManager->ActiveAndReturnedVoices())
       _voiceManager->_voices[v].offsetInBlock = 0;
 
     _plug->ProcessPostVoice(_plugIn, _plugOut);
@@ -221,7 +221,7 @@ FBHostProcessor::ProcessHost(
         *_exchangeState->Params()[i].Global() =
         _procState->Params()[i].GlobalBlock().Value();
       else
-        for (int v: _voiceManager->ActiveVoices())
+        for (int v: _voiceManager->ActiveAndReturnedVoices())
           _exchangeState->Params()[i].Voice()[v] =
           _procState->Params()[i].VoiceBlock().Voice()[v];
     }

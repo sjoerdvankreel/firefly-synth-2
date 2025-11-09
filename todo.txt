@@ -1,8 +1,6 @@
 TODOLIST for alpha-23 - tuning and small stuff
-[ ] go back to 1260
-[ ] still need getheightforaspectratio?
-[ ] flush audio should kill all voices (panic)
-[ ] the gui clips on Mac, f.e. osc mix->out. Make the whole thing wider -> no workie, need change aspect ratio?
+[x] CHECK THIS the gui clips on Mac, f.e. osc mix->out. Make the whole thing wider -> no workie, need change aspect ratio?
+[x] flush audio should kill all voices (panic)
 [ ] notrack oscis
 [ ] master pb should not be an automatable parameter - not a parameter at all, apply midi pb directly to global
 [ ] stvar nte -> stvar pitch. also combs. recheck whats being taken into account.

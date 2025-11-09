@@ -63,7 +63,7 @@ FFVoiceModuleProcessor::BeginVoice(
       int myChannel = state.voice->event.note.channel;
       FBVoiceManager const* vManager = state.input->voiceManager;
       int tookOverThisKey = (int)std::round(previousMidiKeyUntuned);
-      for (int v: vManager->ActiveVoices())
+      for (int v: vManager->ActiveAndReturnedVoices())
         if (v != voice)
         {
           auto const& thatEventNote = vManager->Voices()[v].event.note;

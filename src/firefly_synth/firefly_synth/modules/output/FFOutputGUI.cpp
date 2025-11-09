@@ -33,10 +33,10 @@ FFMakeOutputGUI(FBPlugGUI* plugGUI)
   auto mtsEspOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::MtsEspOn, 0 } });
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mtsEspOn));
   grid->Add(0, 7, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, mtsEspOn));
-  auto flushAudioButton = plugGUI->StoreComponent<FBAutoSizeButton>("Flush Audio");
-  flushAudioButton->setTooltip("Flush all buffers");
-  flushAudioButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushAudio(); };
-  grid->Add(0, 8, flushAudioButton);
+  auto panicButton = plugGUI->StoreComponent<FBAutoSizeButton>("Panic");
+  panicButton->setTooltip("Reset voices and delay lines");
+  panicButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushAudio(); };
+  grid->Add(0, 8, panicButton);
   grid->MarkSection({ { 0, 0 }, { 1, 9 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);

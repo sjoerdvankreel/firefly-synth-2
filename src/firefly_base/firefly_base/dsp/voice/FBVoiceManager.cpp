@@ -7,13 +7,14 @@ FBVoiceManager::
 FBVoiceManager(FBProcStateContainer* procState) :
 _procState(procState)
 {
-  _activeVoices.reserve(FBMaxVoices);
+  _activeAndReturnedVoices.reserve(FBMaxVoices);
 }
 
 void
 FBVoiceManager::Return(int slot)
 {
   FB_ASSERT(_voiceCount > 0);
+  FB_ASSERT(_voices[slot].state == FBVoiceState::Active);
   _voiceCount--;
   _voices[slot].state = FBVoiceState::Returned;
   _returnedVoices.push_back(_voices[slot]);
@@ -31,10 +32,10 @@ FBVoiceManager::ResetReturnedVoices()
 
       // It's only really not active once it's free, not returned.
       // There's probably some logic to this which i forgot. Don't touch it.
-      auto iter = std::find(_activeVoices.begin(), _activeVoices.end(), v);
-      FB_ASSERT(iter != _activeVoices.end());
-      _activeVoices.erase(iter);
-      std::sort(_activeVoices.begin(), _activeVoices.end());
+      auto iter = std::find(_activeAndReturnedVoices.begin(), _activeAndReturnedVoices.end(), v);
+      FB_ASSERT(iter != _activeAndReturnedVoices.end());
+      _activeAndReturnedVoices.erase(iter);
+      std::sort(_activeAndReturnedVoices.begin(), _activeAndReturnedVoices.end());
     }
 }
 
@@ -96,11 +97,11 @@ FBVoiceManager::Lease(FBNoteEvent const& event, std::int64_t groupId, int slotIn
   _voices[slot].state = FBVoiceState::Active;
 
   // Can't assert it became newly active, because voice stealing.
-  auto iter = std::find(_activeVoices.begin(), _activeVoices.end(), slot);
-  if (iter == _activeVoices.end())
+  auto iter = std::find(_activeAndReturnedVoices.begin(), _activeAndReturnedVoices.end(), slot);
+  if (iter == _activeAndReturnedVoices.end())
   {
-    _activeVoices.push_back(slot);
-    std::sort(_activeVoices.begin(), _activeVoices.end());
+    _activeAndReturnedVoices.push_back(slot);
+    std::sort(_activeAndReturnedVoices.begin(), _activeAndReturnedVoices.end());
   }
 
   for (int p = 0; p < _procState->Params().size(); p++)
