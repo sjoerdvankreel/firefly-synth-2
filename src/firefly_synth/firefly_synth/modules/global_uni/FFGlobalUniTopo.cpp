@@ -213,13 +213,13 @@ FFMakeGlobalUniTopo()
   opType.type = FBParamType::List;
   opType.List().items = {
     { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", FFModulationOpTypeToString(FFModulationOpType::Off) },
-    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", FFModulationOpTypeToString(FFModulationOpType::UPAdd) },
-    { "{F45E048F-41C0-43CA-875A-8CE67A6D4815}", FFModulationOpTypeToString(FFModulationOpType::UPAdd2) },
+    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", FFModulationOpTypeToString(FFModulationOpType::UPAddU) },
+    { "{F45E048F-41C0-43CA-875A-8CE67A6D4815}", FFModulationOpTypeToString(FFModulationOpType::UPAddB) },
     { "{AD641260-F205-497E-B483-330CFA025378}", FFModulationOpTypeToString(FFModulationOpType::UPMul) },
     { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", FFModulationOpTypeToString(FFModulationOpType::UPStack) },
     { "{01014CF0-B70C-4E60-9A78-FF560CF05ECF}", FFModulationOpTypeToString(FFModulationOpType::UPRemap) },
-    { "{C18F6A70-944C-4A9B-8A01-561E1B6B93D4}", FFModulationOpTypeToString(FFModulationOpType::BPAdd) },
-    { "{4464FDBF-1CDA-4023-85CC-D3A90CC4F47B}", FFModulationOpTypeToString(FFModulationOpType::BPAdd2) },
+    { "{C18F6A70-944C-4A9B-8A01-561E1B6B93D4}", FFModulationOpTypeToString(FFModulationOpType::BPAddB) },
+    { "{4464FDBF-1CDA-4023-85CC-D3A90CC4F47B}", FFModulationOpTypeToString(FFModulationOpType::BPAddU) },
     { "{3130BBE8-D204-450D-A3D2-AC4266FB8E4B}", FFModulationOpTypeToString(FFModulationOpType::BPMul) },
     { "{69D5AD4B-BD0B-42A6-A252-A0A43D425F89}", FFModulationOpTypeToString(FFModulationOpType::BPStack) },
     { "{D96CFB4F-1F3C-434C-A78D-BA624B3DFA10}", FFModulationOpTypeToString(FFModulationOpType::BPRemap) },

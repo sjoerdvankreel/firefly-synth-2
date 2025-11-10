@@ -6,13 +6,13 @@ FFModulationOpTypeToString(FFModulationOpType opType)
   switch (opType)
   {
   case FFModulationOpType::Off: return "Off";
-  case FFModulationOpType::UPAdd: return "UP Add";
-  case FFModulationOpType::UPAdd2: return "UP Ad2";
+  case FFModulationOpType::UPAddU: return "UP AdU";
+  case FFModulationOpType::UPAddB: return "UP AdB";
   case FFModulationOpType::UPMul: return "UP Mul";
   case FFModulationOpType::UPStack: return "UP Stk";
   case FFModulationOpType::UPRemap: return "UP Rmp";
-  case FFModulationOpType::BPAdd: return "BP Add";
-  case FFModulationOpType::BPAdd2: return "BP Ad2";
+  case FFModulationOpType::BPAddB: return "BP AdB";
+  case FFModulationOpType::BPAddU: return "BP AdU";
   case FFModulationOpType::BPMul: return "BP Mul";
   case FFModulationOpType::BPStack: return "BP Stk";
   case FFModulationOpType::BPRemap: return "BP Rmp";

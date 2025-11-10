@@ -9,8 +9,8 @@
 
 enum class FFModulationOpType { 
   Off,
-  UPAdd, UPAdd2, UPMul, UPStack, UPRemap,
-  BPAdd, BPAdd2, BPMul, BPStack, BPRemap,
+  UPAddU, UPAddB, UPMul, UPStack, UPRemap,
+  BPAddB, BPAddU, BPMul, BPStack, BPRemap,
   PhaseWrap };
 
 std::string
@@ -21,15 +21,15 @@ FFModulationOpTypeIsBipolar(FFModulationOpType opType)
 {
   switch (opType)
   {
-  case FFModulationOpType::UPAdd:
-  case FFModulationOpType::UPAdd2:
+  case FFModulationOpType::UPAddU:
+  case FFModulationOpType::UPAddB:
   case FFModulationOpType::UPMul:
   case FFModulationOpType::UPStack:
   case FFModulationOpType::UPRemap:
   case FFModulationOpType::PhaseWrap:
     return false;
-  case FFModulationOpType::BPAdd:
-  case FFModulationOpType::BPAdd2:
+  case FFModulationOpType::BPAddB:
+  case FFModulationOpType::BPAddU:
   case FFModulationOpType::BPMul:
   case FFModulationOpType::BPStack:
   case FFModulationOpType::BPRemap:
@@ -56,7 +56,7 @@ FFModulateUPMul(
 }
 
 inline float
-FFModulateUPAdd(
+FFModulateUPAddU(
   float source,
   float amount, float target)
 {
@@ -64,7 +64,7 @@ FFModulateUPAdd(
 }
 
 inline float
-FFModulateUPAdd2(
+FFModulateUPAddB(
   float source,
   float amount, float target)
 {
@@ -90,7 +90,7 @@ FFModulateBPMul(
 }
 
 inline float
-FFModulateBPAdd(
+FFModulateBPAddB(
   float source,
   float amount, float target)
 {
@@ -99,7 +99,7 @@ FFModulateBPAdd(
 }
 
 inline float
-FFModulateBPAdd2(
+FFModulateBPAddU(
   float source,
   float amount, float target)
 {
@@ -147,20 +147,20 @@ FFModulate(
 {
   switch (opType)
   {
-  case FFModulationOpType::UPAdd:
-    return FFModulateUPAdd(source, amount, target);
-  case FFModulationOpType::UPAdd2:
-    return FFModulateUPAdd2(source, amount, target);
+  case FFModulationOpType::UPAddU:
+    return FFModulateUPAddU(source, amount, target);
+  case FFModulationOpType::UPAddB:
+    return FFModulateUPAddB(source, amount, target);
   case FFModulationOpType::UPMul:
     return FFModulateUPMul(source, amount, target);
   case FFModulationOpType::UPStack:
     return FFModulateUPStack(source, amount, target);
   case FFModulationOpType::UPRemap:
     return FFModulateUPRemap(source, amount, target);
-  case FFModulationOpType::BPAdd:
-    return FFModulateBPAdd(source, amount, target);
-  case FFModulationOpType::BPAdd2:
-    return FFModulateBPAdd2(source, amount, target);
+  case FFModulationOpType::BPAddB:
+    return FFModulateBPAddB(source, amount, target);
+  case FFModulationOpType::BPAddU:
+    return FFModulateBPAddU(source, amount, target);
   case FFModulationOpType::BPMul:
     return FFModulateBPMul(source, amount, target);
   case FFModulationOpType::BPStack:
@@ -202,7 +202,7 @@ FFModulateUPMul(
 }
 
 inline FBBatch<float>
-FFModulateUPAdd(
+FFModulateUPAddU(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -210,7 +210,7 @@ FFModulateUPAdd(
 }
 
 inline FBBatch<float>
-FFModulateUPAdd2(
+FFModulateUPAddB(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -236,7 +236,7 @@ FFModulateBPMul(
 }
 
 inline FBBatch<float>
-FFModulateBPAdd(
+FFModulateBPAddB(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -245,7 +245,7 @@ FFModulateBPAdd(
 }
 
 inline FBBatch<float>
-FFModulateBPAdd2(
+FFModulateBPAddU(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -293,20 +293,20 @@ FFModulate(
 {
   switch (opType)
   {
-  case FFModulationOpType::UPAdd:
-    return FFModulateUPAdd(source, amount, target);
-  case FFModulationOpType::UPAdd2:
-    return FFModulateUPAdd2(source, amount, target);
+  case FFModulationOpType::UPAddU:
+    return FFModulateUPAddU(source, amount, target);
+  case FFModulationOpType::UPAddB:
+    return FFModulateUPAddB(source, amount, target);
   case FFModulationOpType::UPMul:
     return FFModulateUPMul(source, amount, target);
   case FFModulationOpType::UPStack:
     return FFModulateUPStack(source, amount, target);
   case FFModulationOpType::UPRemap:
     return FFModulateUPRemap(source, amount, target);
-  case FFModulationOpType::BPAdd:
-    return FFModulateBPAdd(source, amount, target);
-  case FFModulationOpType::BPAdd2:
-    return FFModulateBPAdd2(source, amount, target);
+  case FFModulationOpType::BPAddB:
+    return FFModulateBPAddB(source, amount, target);
+  case FFModulationOpType::BPAddU:
+    return FFModulateBPAddU(source, amount, target);
   case FFModulationOpType::BPMul:
     return FFModulateBPMul(source, amount, target);
   case FFModulationOpType::BPStack:
