@@ -135,7 +135,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
       pitch += masterPitchBendSemis.Load(s);
     basePitchSemis.Store(s, pitch);
-    dspState.outputFine.Store(s, fineNormModulated.Load(s) / 127.0f);
+    dspState.outputFine.Store(s, FBToUnipolar(FBToBipolar(fineNormModulated.Load(s)) / 127.0f));
   }
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
