@@ -23,7 +23,7 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::Master];
 
   params.acc.modWheel[0].Global().CV().CopyTo(dspState.outputMod);
-  params.acc.pitchBend[0].Global().CV().CopyTo(dspState.outputBend);
+  params.acc.pitchBend[0].Global().CV().CopyTo(dspState.outputPBRaw);
   for (int i = 0; i < FFMasterAuxCount; i++)
     params.acc.aux[i].Global().CV().CopyTo(dspState.outputAux[i]);
 
@@ -38,6 +38,7 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   {
     FBBatch<float> bendAmountPlain = topo.NormalizedToLinearFast(FFMasterParam::PitchBend, bendAmountNorm, s);
     dspState.bendAmountInSemis.Store(s, bendAmountPlain * bendRangeSemis);
+    dspState.outputPB.Store(s, FBToUnipolar(FBToBipolar(bendAmountPlain) * bendRangeSemis / 127.0f));
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();

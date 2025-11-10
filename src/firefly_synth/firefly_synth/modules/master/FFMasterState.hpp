@@ -26,8 +26,9 @@ public:
   FFMasterPitchBendTarget bendTarget = {};
   FBSArray<float, FBFixedBlockSamples> bendAmountInSemis = {};
 
+  FBSArray<float, FBFixedBlockSamples> outputPB = {};
   FBSArray<float, FBFixedBlockSamples> outputMod = {};
-  FBSArray<float, FBFixedBlockSamples> outputBend = {};
+  FBSArray<float, FBFixedBlockSamples> outputPBRaw = {};
   FBSArray2<float, FBFixedBlockSamples, FFMasterAuxCount> outputAux = {};
 };
 

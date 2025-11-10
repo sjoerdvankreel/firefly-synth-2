@@ -108,12 +108,18 @@ FFMakeMasterTopo()
   outputMod.slotCount = 1;
   outputMod.id = "{385776EE-4199-4100-8EEB-CDC0F6E9C6FF}";
   outputMod.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputMod; };
-
+  
   auto& outputPitchBend = result->cvOutputs[(int)FFMasterCVOutput::PitchBend];
   outputPitchBend.name = "PB";
   outputPitchBend.slotCount = 1;
-  outputPitchBend.id = "{73FB762F-0C59-4DD3-86D2-D61076C81779}";
-  outputPitchBend.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputBend; };
+  outputPitchBend.id = "{42520DFD-31A1-4D27-AAE4-1C2C013A8AE1}";
+  outputPitchBend.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputPB; };
+
+  auto& outputPitchBendRaw = result->cvOutputs[(int)FFMasterCVOutput::PitchBendRaw];
+  outputPitchBendRaw.name = "PB Raw";
+  outputPitchBendRaw.slotCount = 1;
+  outputPitchBendRaw.id = "{73FB762F-0C59-4DD3-86D2-D61076C81779}";
+  outputPitchBendRaw.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputPBRaw; };
 
   return result;
 }
