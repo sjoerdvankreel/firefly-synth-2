@@ -103,6 +103,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   float basePitchFromKey = (float)state.voice->event.note.key;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
+  auto& dspState = procState->dsp.voice[voice].voiceModule;
   auto const& procParams = procState->param.voice.voiceModule[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
   auto& basePitchSemis = voiceState.voiceModule.basePitchSemis;
@@ -123,6 +124,8 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[4].outputAll, lfo5ToFine.CV(), fineNormModulated);
   procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VoiceCoarse, false, voice, -1, coarseNormModulated);
   procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VoiceFine, false, voice, -1, fineNormModulated);
+  fineNormModulated.CopyTo(dspState.outputFineRaw);
+  coarseNormModulated.CopyTo(dspState.outputCoarse);
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
