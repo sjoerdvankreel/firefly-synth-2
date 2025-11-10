@@ -187,7 +187,7 @@ FFMakeLFOTopo(bool global)
   opType.slotCount = FFLFOBlockCount;
   opType.slotFormatter = FFFormatBlockSlot;
   opType.id = prefix + "{B60CF69F-B21F-4BB6-891A-9E1493D0E40E}";
-  opType.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "UP Add" : "Off"; };
+  opType.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "UP AdU" : "Off"; };
   opType.type = FBParamType::List;
   opType.List().items = {
     { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", FFModulationOpTypeToString(FFModulationOpType::Off) },
