@@ -18,7 +18,7 @@ inline int constexpr FFEffectCount = FFOsciCount; // easy access mod needs env/l
 inline int constexpr FFEnvCount = FFLFOCount + 1; // easy access mod, interleaving & amp env
 inline int constexpr FFAmpEnvSlot = 0;
 inline int constexpr FFEnvSlotOffset = 1;
-inline float constexpr FFModCoarseSemis = 128.0f;
+inline float constexpr FFModCoarseSemis = 127.0f;
 
 inline constexpr char FFVendorName[] = "Sjoerd van Kreel";
 inline constexpr char FFVendorMail[] = "sjoerdvankreel@gmail.com";

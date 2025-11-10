@@ -85,6 +85,7 @@ FFOsciProcessor::BeginVoice(
   auto const& modParams = procState->param.voice.osciMod[0];
   auto const& modTopo = state.topo->static_->modules[(int)FFModuleType::OsciMod];
 
+  float keyTrackNorm = params.block.keyTrack[0].Voice()[voice];
   float uniCountNorm = params.block.uniCount[0].Voice()[voice];
   float modExpoFMNorm = modParams.block.expoFM[0].Voice()[voice];
   float modOversampleNorm = modParams.block.oversample[0].Voice()[voice];
@@ -102,6 +103,7 @@ FFOsciProcessor::BeginVoice(
   bool oversample = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversample, modOversampleNorm);
   _oversampleTimes = (!graph && oversample) ? FFOsciOversampleTimes : 1;
 
+  _keyTrack = topo.NormalizedToBoolFast(FFOsciParam::KeyTrack, keyTrackNorm);
   _uniCount = topo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm);
   _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, _voiceStartSnapshotNorm.uniOffset[0]);
   _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, _voiceStartSnapshotNorm.uniRandom[0]);
@@ -222,8 +224,11 @@ FFOsciProcessor::Process(
   }
   else
   {
-    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-      voiceBasePitch.Store(s, procState->dsp.voice[voice].voiceModule.basePitchSemis.Load(s));
+    if (_keyTrack)
+      for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+        voiceBasePitch.Store(s, procState->dsp.voice[voice].voiceModule.basePitchSemis.Load(s));
+    else
+      voiceBasePitch.Fill(FBBatch<float>(0.0f));
 
     FFApplyModulation(FFModulationOpType::UPMul, voiceState.env[state.moduleSlot + FFEnvSlotOffset].output, envToGain.CV(), gainNormModulated);
     procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscGain, false, voice, -1, gainNormModulated);

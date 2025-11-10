@@ -19,6 +19,7 @@ FFMakeVoiceModuleTopo()
   result->slotCount = 1;
   result->id = "{AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8}";
   result->params.resize((int)FFVoiceModuleParam::Count);
+  result->cvOutputs.resize((int)FFVoiceModuleCVOutput::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.voiceModule; });
   auto selectModule = [](auto& state) { return &state.voice.voiceModule; };
 
@@ -192,6 +193,36 @@ FFMakeVoiceModuleTopo()
   portaSectionAmpRelease.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectPortaSectionAmpRelease);
   portaSectionAmpRelease.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPortaSectionAmpRelease);
   portaSectionAmpRelease.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType, (int)FFVoiceModuleParam::PortaMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFVoiceModulePortaMode::Section; }); 
+
+  auto& coarseRaw = result->cvOutputs[(int)FFVoiceModuleCVOutput::CoarseRaw];
+  coarseRaw.name = "Coarse Raw";
+  coarseRaw.slotCount = 1;
+  coarseRaw.id = "{CEF17782-5A27-411F-8BFB-1AAFA5419B45}";
+  coarseRaw.voiceAddr = [](int, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].voiceModule.outputCoarseRaw; };
+
+  auto& coarsePitch = result->cvOutputs[(int)FFVoiceModuleCVOutput::CoarsePitch];
+  coarsePitch.name = "Coarse Pitch";
+  coarsePitch.slotCount = 1;
+  coarsePitch.id = "{0EDE93A3-39FB-4B8B-9ED6-61868C565432}";
+  coarsePitch.voiceAddr = [](int, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].voiceModule.outputCoarsePitch; };
+
+  auto& fineRaw = result->cvOutputs[(int)FFVoiceModuleCVOutput::FineRaw];
+  fineRaw.name = "Fine Raw";
+  fineRaw.slotCount = 1;
+  fineRaw.id = "{9BA9F787-65ED-4A75-AB92-0DC6EF607CA7}";
+  fineRaw.voiceAddr = [](int, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].voiceModule.outputFineRaw; };
+
+  auto& finePitch = result->cvOutputs[(int)FFVoiceModuleCVOutput::FinePitch];
+  finePitch.name = "Fine Pitch";
+  finePitch.slotCount = 1;
+  finePitch.id = "{2794F322-0473-417D-B15C-CB800BBC1611}";
+  finePitch.voiceAddr = [](int, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].voiceModule.outputFinePitch; };
+
+  auto& portaPitch = result->cvOutputs[(int)FFVoiceModuleCVOutput::PortaPitch];
+  portaPitch.name = "Porta Pitch";
+  portaPitch.slotCount = 1;
+  portaPitch.id = "{02DFE70B-CF11-463A-A5BF-A509E9FF3068}";
+  portaPitch.voiceAddr = [](int, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].voiceModule.outputPortaPitch; };
 
   return result;
 }
