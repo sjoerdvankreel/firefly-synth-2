@@ -136,6 +136,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   opType.List().items = {
     { "{8E7F2BE6-12B7-483E-8308-DD96F63C7743}", FFModulationOpTypeToString(FFModulationOpType::Off) },
     { "{33CE627C-A02D-43C0-A533-257E4D03EA1E}", FFModulationOpTypeToString(FFModulationOpType::UPAdd) },
+    { "{C6C474CB-EB21-4A3F-BAB9-AF24426524F8}", FFModulationOpTypeToString(FFModulationOpType::UPAdd2) },
     { "{F01ABE4C-C22E-47F2-900E-7E913906A740}", FFModulationOpTypeToString(FFModulationOpType::UPMul) },
     { "{91B784D0-E47A-46DC-ACD8-15A502E68A9A}", FFModulationOpTypeToString(FFModulationOpType::UPStack) },
     { "{7E165825-F382-47F7-AEFB-4BF63605F830}", FFModulationOpTypeToString(FFModulationOpType::UPRemap) },

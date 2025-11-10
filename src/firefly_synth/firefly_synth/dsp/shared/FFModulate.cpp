@@ -7,6 +7,7 @@ FFModulationOpTypeToString(FFModulationOpType opType)
   {
   case FFModulationOpType::Off: return "Off";
   case FFModulationOpType::UPAdd: return "UP Add";
+  case FFModulationOpType::UPAdd2: return "UP Ad2";
   case FFModulationOpType::UPMul: return "UP Mul";
   case FFModulationOpType::UPStack: return "UP Stk";
   case FFModulationOpType::UPRemap: return "UP Rmp";

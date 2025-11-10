@@ -1,6 +1,7 @@
 TODOLIST for alpha-23 - tuning and small stuff
 [x] CHECK THIS the gui clips on Mac, f.e. osc mix->out. Make the whole thing wider -> no workie, need change aspect ratio?
 [x] flush audio should kill all voices (panic)
+[ ] upadd2
 [ ] notrack oscis
 [ ] master pb should not be an automatable parameter - not a parameter at all, apply midi pb directly to global
 [ ] stvar nte -> stvar pitch. also combs. recheck whats being taken into account.
