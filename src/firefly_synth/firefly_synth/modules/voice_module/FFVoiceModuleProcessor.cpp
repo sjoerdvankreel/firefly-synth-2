@@ -143,6 +143,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     if (_portaPitchSamplesProcessed++ <= _portaPitchSamplesTotal)
       _portaPitchOffsetCurrent -= _portaPitchDelta;
     basePitchSemis.Set(s, basePitchSemis.Get(s) - _portaPitchOffsetCurrent);
+    dspState.outputPorta.Set(s, FBToUnipolar(-_portaPitchOffsetCurrent / 127.0f));
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
