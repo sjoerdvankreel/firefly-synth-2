@@ -27,11 +27,10 @@ public:
   bool otherVoiceSubSectionTookOver = {}; // need this to apply release multiplier
   FBSArray<float, FBFixedBlockSamples> basePitchSemis = {};
 
+  FBSArray<float, FBFixedBlockSamples> outputFine = {};
+  FBSArray<float, FBFixedBlockSamples> outputPorta = {};
+  FBSArray<float, FBFixedBlockSamples> outputCoarse = {};
   FBSArray<float, FBFixedBlockSamples> outputFineRaw = {};
-  FBSArray<float, FBFixedBlockSamples> outputFinePitch = {};
-  FBSArray<float, FBFixedBlockSamples> outputCoarseRaw = {};
-  FBSArray<float, FBFixedBlockSamples> outputCoarsePitch = {};
-  FBSArray<float, FBFixedBlockSamples> outputPortaPitch = {};
 };
 
 template <class TBlock>

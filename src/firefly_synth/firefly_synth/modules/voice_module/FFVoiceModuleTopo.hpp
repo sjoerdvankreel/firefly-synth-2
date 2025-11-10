@@ -5,7 +5,7 @@
 struct FBStaticModule;
 enum class FFVoiceModulePortaType { Off, On, Auto };
 enum class FFVoiceModulePortaMode { Always, Section };
-enum class FFVoiceModuleCVOutput { CoarseRaw, FineRaw, CoarsePitch, FinePitch, PortaPitch, Count };
+enum class FFVoiceModuleCVOutput { Porta, Coarse, Fine, FineRaw, Count };
 
 enum class FFVoiceModuleParam { 
   Coarse, Env5ToCoarse, Fine, LFO5ToFine, 
