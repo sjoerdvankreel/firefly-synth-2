@@ -472,7 +472,7 @@ FFMakeEffectTopo(bool global)
   combResPlus.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombResPlus);
   combResPlus.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombResPlus);
   combResPlus.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Comb || vs[0] == (int)FFEffectKind::CombPlus; });
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Comb || vs[0] == (int)FFEffectKind::CombPlus || vs[0] == (int)FFEffectKind::CombMin; });
   combResPlus.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::Comb || vs[1] == (int)FFEffectKind::CombPlus); });
 
@@ -496,7 +496,7 @@ FFMakeEffectTopo(bool global)
   combResMin.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombResMin);
   combResMin.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombResMin);
   combResMin.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Comb || vs[0] == (int)FFEffectKind::CombMin; });
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Comb || vs[0] == (int)FFEffectKind::CombMin || vs[0] == (int)FFEffectKind::CombPlus; });
   combResMin.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::Comb || vs[1] == (int)FFEffectKind::CombMin); });
 
