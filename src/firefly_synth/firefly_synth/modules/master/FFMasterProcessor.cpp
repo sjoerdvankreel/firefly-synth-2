@@ -38,7 +38,7 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   {
     FBBatch<float> bendAmountPlain = topo.NormalizedToLinearFast(FFMasterParam::PitchBend, bendAmountNorm, s);
     dspState.bendAmountInSemis.Store(s, bendAmountPlain * bendRangeSemis);
-    dspState.outputPB.Store(s, FBToUnipolar(FBToBipolar(bendAmountPlain) * bendRangeSemis / 127.0f));
+    dspState.outputPB.Store(s, FBToUnipolar(FBToBipolar(bendAmountNorm.CV().Load(s)) * bendRangeSemis / 127.0f));
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
