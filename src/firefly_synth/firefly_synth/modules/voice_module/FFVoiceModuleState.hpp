@@ -26,6 +26,7 @@ public:
   bool thisVoiceIsSubSectionStart = {};
   bool otherVoiceSubSectionTookOver = {};
 
+  FBSArray<float, FBFixedBlockSamples> pitch = {};
   FBSArray<float, FBFixedBlockSamples> outputFine = {};
   FBSArray<float, FBFixedBlockSamples> outputPitch = {};
   FBSArray<float, FBFixedBlockSamples> outputPorta = {};

@@ -261,7 +261,7 @@ FFEffectProcessor::Process(
     else
     {
       for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-        _basePitch.Store(s, procState->dsp.voice[voice].voiceModule.outputPitch.Load(s));
+        _basePitch.Store(s, procState->dsp.voice[voice].voiceModule.pitch.Load(s));
     }
   }
   

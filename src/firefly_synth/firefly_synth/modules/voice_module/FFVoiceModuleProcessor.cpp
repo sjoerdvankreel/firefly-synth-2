@@ -133,7 +133,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     auto pitch = basePitchFromKey + coarsePlain + finePlain;
     if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
       pitch += masterPitchBendSemis.Load(s);
-    dspState.outputPitch.Store(s, pitch);
+    dspState.pitch.Store(s, pitch);
     dspState.outputFine.Store(s, FBToUnipolar(FBToBipolar(fineNormModulated.Load(s)) / 127.0f));
   }
 
@@ -141,9 +141,12 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   {
     if (_portaPitchSamplesProcessed++ <= _portaPitchSamplesTotal)
       _portaPitchOffsetCurrent -= _portaPitchDelta;
-    dspState.outputPitch.Set(s, dspState.outputPitch.Get(s) - _portaPitchOffsetCurrent);
+    dspState.pitch.Set(s, dspState.pitch.Get(s) - _portaPitchOffsetCurrent);
     dspState.outputPorta.Set(s, FBToUnipolar(-_portaPitchOffsetCurrent / 127.0f));
   }
+
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+    dspState.outputPitch.Store(s, dspState.pitch.Load(s) / 127.0f);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
