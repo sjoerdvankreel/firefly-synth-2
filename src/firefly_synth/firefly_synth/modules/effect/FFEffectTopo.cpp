@@ -16,9 +16,9 @@ FFEffectKindToString(FFEffectKind kind)
   case FFEffectKind::Fold: return "Fold";
   case FFEffectKind::Skew: return "Skew";
   case FFEffectKind::Comb: return "Comb";
-  case FFEffectKind::StVar: return "StVar";
-  case FFEffectKind::CombMin: return "Comb-";
-  case FFEffectKind::CombPlus: return "Comb+";
+  case FFEffectKind::StVar: return "SVF";
+  case FFEffectKind::CombMin: return "Cmb-";
+  case FFEffectKind::CombPlus: return "Cmb+";
   default: FB_ASSERT(false); return {};
   }
 }
@@ -58,6 +58,7 @@ FFMakeEffectTopo(bool global)
   oversample.mode = FBParamMode::Block;
   oversample.defaultText = "Off";
   oversample.name = "Oversample";
+  oversample.display = "OS";
   oversample.slotCount = 1;
   oversample.id = prefix + "{D8AA4B9D-EAFD-4E87-9DC9-108B8894A4D0}";
   oversample.type = FBParamType::Boolean;
@@ -73,7 +74,7 @@ FFMakeEffectTopo(bool global)
   trackingKey.mode = FBParamMode::Accurate;
   trackingKey.defaultText = "0";
   trackingKey.name = "Tracking Key";
-  trackingKey.display = "TrkKey";
+  trackingKey.display = "TrkK";
   trackingKey.slotCount = 1;
   trackingKey.unit = "Semitones";
   trackingKey.id = prefix + "{409B79DA-5F59-4C54-AA3D-3E7E84B1A303}";
@@ -91,8 +92,8 @@ FFMakeEffectTopo(bool global)
   auto& lastKeySmoothTime = result->params[(int)FFEffectParam::LastKeySmoothTime];
   lastKeySmoothTime.mode = FBParamMode::Block;
   lastKeySmoothTime.defaultText = "0.1";
-  lastKeySmoothTime.display = "KeySmt";
-  lastKeySmoothTime.name = "Last Key Smth Time";
+  lastKeySmoothTime.display = "Smth";
+  lastKeySmoothTime.name = "KeySmt";
   lastKeySmoothTime.slotCount = 1;
   lastKeySmoothTime.unit = "Sec";
   lastKeySmoothTime.id = prefix + "{453EDEDA-3FB8-4211-A5DD-DCDC4F44119D}";
