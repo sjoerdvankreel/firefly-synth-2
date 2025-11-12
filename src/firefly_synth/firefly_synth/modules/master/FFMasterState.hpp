@@ -29,6 +29,16 @@ public:
   FBSArray<float, FBFixedBlockSamples> outputPB = {};
   FBSArray<float, FBFixedBlockSamples> outputMod = {};
   FBSArray<float, FBFixedBlockSamples> outputPBRaw = {};
+  FBSArray<float, FBFixedBlockSamples> outputLowKeyPitch = {};
+  FBSArray<float, FBFixedBlockSamples> outputHighKeyPitch = {};
+  FBSArray<float, FBFixedBlockSamples> outputLastKeyPitch = {};
+  FBSArray<float, FBFixedBlockSamples> outputLowVeloPitch = {};
+  FBSArray<float, FBFixedBlockSamples> outputHighVeloPitch = {};
+  FBSArray<float, FBFixedBlockSamples> outputLowKeyPitchSmth = {};
+  FBSArray<float, FBFixedBlockSamples> outputHighKeyPitchSmth = {};
+  FBSArray<float, FBFixedBlockSamples> outputLastKeyPitchSmth = {};
+  FBSArray<float, FBFixedBlockSamples> outputLowVeloPitchSmth = {};
+  FBSArray<float, FBFixedBlockSamples> outputHighVeloPitchSmth = {};
   FBSArray2<float, FBFixedBlockSamples, FFMasterAuxCount> outputAux = {};
 };
 

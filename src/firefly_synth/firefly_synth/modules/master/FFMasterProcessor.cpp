@@ -19,6 +19,7 @@ FFMasterProcessor::Process(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   auto& dspState = procState->dsp.global.master;
+  auto& gNoteDspState = procState->dsp.global.gNote;
   auto const& params = procState->param.global.master[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::Master];
 
@@ -39,6 +40,16 @@ FFMasterProcessor::Process(FBModuleProcState& state)
     FBBatch<float> bendAmountPlain = topo.NormalizedToLinearFast(FFMasterParam::PitchBend, bendAmountNorm, s);
     dspState.bendAmountInSemis.Store(s, bendAmountPlain * bendRangeSemis);
     dspState.outputPB.Store(s, FBToUnipolar(FBToBipolar(bendAmountNorm.CV().Load(s)) * bendRangeSemis / 127.0f));
+    dspState.outputLastKeyPitch.Store(s, gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::LastKey].Load(s) + dspState.outputPB.Load(s));
+    dspState.outputLowKeyPitch.Store(s, gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowKeyKey].Load(s) + dspState.outputPB.Load(s));
+    dspState.outputHighKeyPitch.Store(s, gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighKeyKey].Load(s) + dspState.outputPB.Load(s));
+    dspState.outputLowVeloPitch.Store(s, gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowVeloKey].Load(s) + dspState.outputPB.Load(s));
+    dspState.outputHighVeloPitch.Store(s, gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighVeloKey].Load(s) + dspState.outputPB.Load(s));
+    dspState.outputLastKeyPitchSmth.Store(s, gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::LastKey].Load(s) + dspState.outputPB.Load(s));
+    dspState.outputLowKeyPitchSmth.Store(s, gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::LowKeyKey].Load(s) + dspState.outputPB.Load(s));
+    dspState.outputHighKeyPitchSmth.Store(s, gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::HighKeyKey].Load(s) + dspState.outputPB.Load(s));
+    dspState.outputLowVeloPitchSmth.Store(s, gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::LowVeloKey].Load(s) + dspState.outputPB.Load(s));
+    dspState.outputHighVeloPitchSmth.Store(s, gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::HighVeloKey].Load(s) + dspState.outputPB.Load(s));
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();

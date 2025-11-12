@@ -121,5 +121,65 @@ FFMakeMasterTopo()
   outputPitchBendRaw.id = "{73FB762F-0C59-4DD3-86D2-D61076C81779}";
   outputPitchBendRaw.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputPBRaw; };
 
+  auto& outputLastKeyPitch = result->cvOutputs[(int)FFMasterCVOutput::LastKeyPitch];
+  outputLastKeyPitch.name = "Last Key Pitch";
+  outputLastKeyPitch.slotCount = 1;
+  outputLastKeyPitch.id = "{05689631-7F61-4CEB-865A-44D842358483}";
+  outputLastKeyPitch.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputLastKeyPitch; };
+
+  auto& outputLowKeyPitch = result->cvOutputs[(int)FFMasterCVOutput::LowKeyPitch];
+  outputLowKeyPitch.name = "Low Key Pitch";
+  outputLowKeyPitch.slotCount = 1;
+  outputLowKeyPitch.id = "{07315409-9E3B-4A35-AA87-FB0D48BAEB8E}";
+  outputLowKeyPitch.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputLowKeyPitch; };
+
+  auto& outputHighKeyPitch = result->cvOutputs[(int)FFMasterCVOutput::HighKeyPitch];
+  outputHighKeyPitch.name = "High Key Pitch";
+  outputHighKeyPitch.slotCount = 1;
+  outputHighKeyPitch.id = "{FBDFE346-CD6A-4DC1-98A9-D92582D29558}";
+  outputHighKeyPitch.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputHighKeyPitch; };
+
+  auto& outputLowVeloPitch = result->cvOutputs[(int)FFMasterCVOutput::LowVeloPitch];
+  outputLowVeloPitch.name = "Low Velo Pitch";
+  outputLowVeloPitch.slotCount = 1;
+  outputLowVeloPitch.id = "{76E12C5E-7B64-4955-922B-05B02B3851A9}";
+  outputLowVeloPitch.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputLowVeloPitch; };
+
+  auto& outputHighVeloPitch = result->cvOutputs[(int)FFMasterCVOutput::HighVeloPitch];
+  outputHighVeloPitch.name = "High Velo Pitch";
+  outputHighVeloPitch.slotCount = 1;
+  outputHighVeloPitch.id = "{1BAFF9CE-AEFF-49B2-8DAD-F0E7FF88488D}";
+  outputHighVeloPitch.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputHighVeloPitch; };
+
+  auto& outputLastKeyPitchSmth = result->cvOutputs[(int)FFMasterCVOutput::LastKeyPitchSmth];
+  outputLastKeyPitchSmth.name = "Last Key Pitch Smth";
+  outputLastKeyPitchSmth.slotCount = 1;
+  outputLastKeyPitchSmth.id = "{DC73B32E-38CF-49F8-BAF7-CDD991CE3D32}";
+  outputLastKeyPitchSmth.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputLastKeyPitchSmth; };
+
+  auto& outputLowKeyPitchSmth = result->cvOutputs[(int)FFMasterCVOutput::LowKeyPitchSmth];
+  outputLowKeyPitchSmth.name = "Low Key Pitch Smth";
+  outputLowKeyPitchSmth.slotCount = 1;
+  outputLowKeyPitchSmth.id = "{35E7602F-8825-44E4-A2A5-28D6296A4C7D}";
+  outputLowKeyPitchSmth.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputLowKeyPitchSmth; };
+
+  auto& outputHighKeyPitchSmth = result->cvOutputs[(int)FFMasterCVOutput::HighKeyPitchSmth];
+  outputHighKeyPitchSmth.name = "High Key Pitch Smth";
+  outputHighKeyPitchSmth.slotCount = 1;
+  outputHighKeyPitchSmth.id = "{7A136561-D396-48E2-8450-9F8178C51BD2}";
+  outputHighKeyPitchSmth.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputHighKeyPitchSmth; };
+
+  auto& outputLowVeloPitchSmth = result->cvOutputs[(int)FFMasterCVOutput::LowVeloPitchSmth];
+  outputLowVeloPitchSmth.name = "Low Velo Pitch Smth";
+  outputLowVeloPitchSmth.slotCount = 1;
+  outputLowVeloPitchSmth.id = "{D57505D9-4119-4A78-B9D5-CB61C18ACA70}";
+  outputLowVeloPitchSmth.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputLowVeloPitchSmth; };
+
+  auto& outputHighVeloPitchSmth = result->cvOutputs[(int)FFMasterCVOutput::HighVeloPitchSmth];
+  outputHighVeloPitchSmth.name = "High Velo Pitch Smth";
+  outputHighVeloPitchSmth.slotCount = 1;
+  outputHighVeloPitchSmth.id = "{A18E4854-2AAB-40DC-B290-E9EF111D2D09}";
+  outputHighVeloPitchSmth.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputHighVeloPitchSmth; };
+
   return result;
 }
