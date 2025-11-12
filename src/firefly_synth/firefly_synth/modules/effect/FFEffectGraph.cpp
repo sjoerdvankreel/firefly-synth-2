@@ -34,7 +34,10 @@ GetEffectExchangeStateFromDSP(FBGraphRenderState* state, bool global, int slot, 
   int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ (int)moduleType, slot });
   auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
   if (exchange)
-    exchangeFromDSP = &dynamic_cast<FFEffectExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
+    if(global)
+      exchangeFromDSP = &dynamic_cast<FFEffectExchangeState const&>(*moduleExchangeState->Global());
+    else
+      exchangeFromDSP = &dynamic_cast<FFEffectExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
   return exchangeFromDSP;
 }
 
