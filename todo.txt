@@ -3,13 +3,14 @@ TODOLIST for alpha-23 - tuning and small stuff
 [x] flush audio should kill all voices (panic)
 [x] upadd2
 [x] notrack oscis
-[ ] master pb should not be an automatable parameter - not a parameter at all, apply midi pb directly to global
+[ ] notrack pitch-based filters
+[ ] master low/hi/last/lovelo/hivelo pitch + smth versions
 [ ] stvar nte -> stvar pitch. also combs. recheck whats being taken into account.
 [ ] allow ktrak in parts => each contributor to the voice pitch can be a mod source, plus 1 final pitch. for both voice and global.
 [ ] voice final pitch as modulator
 [ ] global final pitch as modulator
 [ ] split the gnote smth etc
-[ ] make new matrix sources "Voice" and "Global"
+[ ] make new matrix sources "Voice" and "Global" -> no, append to master
 [ ] test: non-ktrk osci + all parts equals ktrak osci. non-ktrk osci + final pitch equals ktrk osci. likewise for vfilters and gfilters (with global final pitch)
 
 TODOLIST for alpha-24 - microtuning
