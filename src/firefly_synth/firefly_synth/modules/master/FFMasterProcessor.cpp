@@ -39,17 +39,18 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   {
     FBBatch<float> bendAmountPlain = topo.NormalizedToLinearFast(FFMasterParam::PitchBend, bendAmountNorm, s);
     dspState.bendAmountInSemis.Store(s, bendAmountPlain * bendRangeSemis);
-    dspState.outputPB.Store(s, FBToUnipolar(FBToBipolar(bendAmountNorm.CV().Load(s)) * bendRangeSemis / 127.0f));
-    dspState.outputLastKeyPitch.Store(s, gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::LastKey].Load(s) + dspState.outputPB.Load(s));
-    dspState.outputLowKeyPitch.Store(s, gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowKeyKey].Load(s) + dspState.outputPB.Load(s));
-    dspState.outputHighKeyPitch.Store(s, gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighKeyKey].Load(s) + dspState.outputPB.Load(s));
-    dspState.outputLowVeloPitch.Store(s, gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowVeloKey].Load(s) + dspState.outputPB.Load(s));
-    dspState.outputHighVeloPitch.Store(s, gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighVeloKey].Load(s) + dspState.outputPB.Load(s));
-    dspState.outputLastKeyPitchSmth.Store(s, gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::LastKey].Load(s) + dspState.outputPB.Load(s));
-    dspState.outputLowKeyPitchSmth.Store(s, gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::LowKeyKey].Load(s) + dspState.outputPB.Load(s));
-    dspState.outputHighKeyPitchSmth.Store(s, gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::HighKeyKey].Load(s) + dspState.outputPB.Load(s));
-    dspState.outputLowVeloPitchSmth.Store(s, gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::LowVeloKey].Load(s) + dspState.outputPB.Load(s));
-    dspState.outputHighVeloPitchSmth.Store(s, gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::HighVeloKey].Load(s) + dspState.outputPB.Load(s));
+    FBBatch<float> normBendAmtBP = FBToBipolar(bendAmountNorm.CV().Load(s)) * bendRangeSemis / 127.0f;
+    dspState.outputPB.Store(s, FBToUnipolar(normBendAmtBP));
+    dspState.outputLastKeyPitch.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::LastKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputLowKeyPitch.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowKeyKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputHighKeyPitch.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighKeyKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputLowVeloPitch.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowVeloKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputHighVeloPitch.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighVeloKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputLastKeyPitchSmth.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::LastKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputLowKeyPitchSmth.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::LowKeyKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputHighKeyPitchSmth.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::HighKeyKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputLowVeloPitchSmth.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::LowVeloKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputHighVeloPitchSmth.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::HighVeloKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
