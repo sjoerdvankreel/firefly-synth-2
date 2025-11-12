@@ -106,7 +106,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
     else
     {
       anyNoteWasOnAlready = (*state.input->anyNoteIsOn)[voiceStartSamplesInBlock - 1];
-      previousMidiKey = state.input->noteMatrixRaw->key.entries[(int)FBNoteKeyMatrixEntry::LastKey].Get(voiceStartSamplesInBlock - 1) * 127.0f;
+      previousMidiKey = state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKey].Get(voiceStartSamplesInBlock - 1) * 127.0f;
     }
 
     state.moduleSlot = 0;

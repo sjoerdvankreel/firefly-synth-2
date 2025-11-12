@@ -34,7 +34,7 @@ _hostToPlug(std::make_unique<FBHostToPlugProcessor>()),
 _plugToHost(std::make_unique<FBPlugToHostProcessor>(_voiceManager.get())),
 _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_cast<int>(hostContext->ProcState()->Params().size())))
 {
-  _noteMatrix.key.Set(60.0f / 127.0f);
+  _noteMatrix.SetKey(60.0f / 127.0f);
   _plugOut.procState = _procState;
   _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
@@ -51,48 +51,48 @@ FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
   if (event.on)
   {
     _noteVelo[event.note.key] = event.velo;
-    _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::LastVelo] = event.velo;
-    _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::LastKey] = (float)event.note.key / 127.0f;
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo] = event.velo;
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKey] = (float)event.note.key / 127.0f;
   }
-  _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::LowVeloVelo] = 1.0f;
-  _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::HighVeloVelo] = 0.0f;
-  _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::LowKeyKey] = 1.0f;
-  _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::HighKeyKey] = 0.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = 1.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = 0.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKey] = 1.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKey] = 0.0f;
   for (int i = 0; i < 128; i++)
     if (_noteOn[i])
     {
       _anyNoteIsOn = true;
-      if (i / 127.0f < _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::LowKeyKey])
+      if (i / 127.0f < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKey])
       {
-        _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::LowKeyKey] = i / 127.0f;
-        _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::LowKeyVelo] = _noteVelo[i];
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKey] = i / 127.0f;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVelo] = _noteVelo[i];
       }
-      if (i / 127.0f > _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::HighKeyKey])
+      if (i / 127.0f > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKey])
       {
-        _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::HighKeyKey] = i / 127.0f;
-        _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::HighKeyVelo] = _noteVelo[i];
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKey] = i / 127.0f;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVelo] = _noteVelo[i];
       }
-      if (_noteVelo[i] < _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::LowVeloVelo])
+      if (_noteVelo[i] < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo])
       {
-        _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::LowVeloKey] = i / 127.0f;
-        _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::LowVeloVelo] = _noteVelo[i];
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKey] = i / 127.0f;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = _noteVelo[i];
       }
-      if (_noteVelo[i] > _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::HighVeloVelo])
+      if (_noteVelo[i] > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo])
       {
-        _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::HighVeloKey] = i / 127.0f;
-        _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::HighVeloVelo] = _noteVelo[i];
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKey] = i / 127.0f;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = _noteVelo[i];
       }
     }
   if (!_anyNoteIsOn)
   {
-    _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::LowKeyVelo] = _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::LastVelo];
-    _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::LowKeyKey] = (float)_noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::LastKey];
-    _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::HighKeyVelo] = _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::LastVelo];
-    _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::HighKeyKey] = (float)_noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::LastKey];
-    _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::LowVeloVelo] = _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::LastVelo];
-    _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::LowVeloKey] = (float)_noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::LastKey];
-    _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::HighVeloVelo] = _noteMatrix.velo.entries[(int)FBNoteVeloMatrixEntry::LastVelo];
-    _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::HighVeloKey] = (float)_noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::LastKey];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKey] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKey];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKey] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKey];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKey] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKey];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKey] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKey];
   }
 }
 
@@ -156,10 +156,8 @@ FBHostProcessor::ProcessHost(
           _anyNoteEverReceived = true;
       }
       fixedIn->anyNoteIsOn[s] = _anyNoteIsOn;
-      for (int nme = 0; nme < (int)FBNoteKeyMatrixEntry::Count; nme++)
-        fixedIn->noteMatrixRaw.key.entries[nme].Set(s, _noteMatrix.key.entries[nme]);
-      for (int nme = 0; nme < (int)FBNoteVeloMatrixEntry::Count; nme++)
-        fixedIn->noteMatrixRaw.velo.entries[nme].Set(s, _noteMatrix.velo.entries[nme]);
+      for (int nme = 0; nme < (int)FBNoteMatrixEntry::Count; nme++)
+        fixedIn->noteMatrixRaw.entries[nme].Set(s, _noteMatrix.entries[nme]);
     }
 
     // release old voices
@@ -202,7 +200,7 @@ FBHostProcessor::ProcessHost(
 
     _anyNoteWasOnLastSamplePrevRound = _anyNoteIsOn;
     if(_anyNoteEverReceived)
-      _lastKeyRawLastSamplePrevRound = _noteMatrix.key.entries[(int)FBNoteKeyMatrixEntry::LastKey];
+      _lastKeyRawLastSamplePrevRound = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKey];
   }
   _plugToHost->ProcessToHost(output);
 

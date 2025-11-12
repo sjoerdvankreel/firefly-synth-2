@@ -11,8 +11,6 @@ FFGNoteProcessor::Process(FBModuleProcState& state)
   auto* container = state.input->procState;
   auto* procState = state.ProcAs<FFProcState>();
   state.input->noteMatrixRaw->CopyTo(procState->dsp.global.gNote.outputNoteMatrixRaw);
-  for(int i = 0; i < (int)FBNoteKeyMatrixEntry::Count; i++)
-    container->NoteMatrixSmth().key.entries[i].Global().CV().CopyTo(procState->dsp.global.gNote.outputNoteMatrixSmth.key.entries[i]);
-  for (int i = 0; i < (int)FBNoteVeloMatrixEntry::Count; i++)
-    container->NoteMatrixSmth().velo.entries[i].Global().CV().CopyTo(procState->dsp.global.gNote.outputNoteMatrixSmth.velo.entries[i]);
+  for(int i = 0; i < (int)FBNoteMatrixEntry::Count; i++)
+    container->NoteMatrixSmth().entries[i].Global().CV().CopyTo(procState->dsp.global.gNote.outputNoteMatrixSmth.entries[i]);
 }

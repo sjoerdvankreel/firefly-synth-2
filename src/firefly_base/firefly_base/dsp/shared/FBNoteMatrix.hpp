@@ -3,19 +3,16 @@
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 
-enum class FBNoteVeloMatrixEntry
+enum class FBNoteMatrixEntry
 {
   LastVelo,
   LowKeyVelo,
   HighKeyVelo,
   LowVeloVelo,
   HighVeloVelo,
-  Count
-};
+  VeloCount,
 
-enum class FBNoteKeyMatrixEntry
-{
-  LastKey,
+  LastKey = VeloCount,
   LowKeyKey,
   HighKeyKey,
   LowVeloKey,
@@ -45,94 +42,38 @@ struct FBNoteMatrixTraits<FBSArray<float, FBFixedBlockSamples>>
 };
 
 template <class T>
-struct alignas(alignof(T)) FBNoteVeloMatrix final
-{
-  std::array<T, (int)FBNoteVeloMatrixEntry::Count> entries = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBNoteVeloMatrix);
-
-  void CopyTo(FBNoteVeloMatrix& rhs) const {
-    for (int i = 0; i < (int)FBNoteVeloMatrixEntry::Count; i++)
-      FBNoteMatrixTraits<T>::CopyTo(entries[i], rhs.entries[i]); }
-};
-
-template <class T>
-struct alignas(alignof(T)) FBNoteKeyMatrix final
-{
-  std::array<T, (int)FBNoteKeyMatrixEntry::Count> entries = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBNoteKeyMatrix);
-
-  void Set(float key) {
-    for (int i = 0; i < (int)FBNoteKeyMatrixEntry::Count; i++)
-      FBNoteMatrixTraits<T>::Set(entries[i], key); }
-
-  void CopyTo(FBNoteKeyMatrix& rhs) const {
-    for (int i = 0; i < (int)FBNoteKeyMatrixEntry::Count; i++)
-      FBNoteMatrixTraits<T>::CopyTo(entries[i], rhs.entries[i]); }
-};
-
-template <class T>
 struct alignas(alignof(T)) FBNoteMatrix final
 {
-  FBNoteKeyMatrix<T> key = {};
-  FBNoteVeloMatrix<T> velo = {};
+  std::array<T, (int)FBNoteMatrixEntry::Count> entries = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBNoteMatrix);
 
-  void CopyTo(FBNoteMatrix& rhs) const {
-    key.CopyTo(rhs.key);
-    velo.CopyTo(rhs.velo);
+  void SetKey(float key)
+  {
+    for (int i = (int)FBNoteMatrixEntry::VeloCount; i < (int)FBNoteMatrixEntry::Count; i++)
+      FBNoteMatrixTraits<T>::Set(entries[i], key);
+  }
+
+  void CopyTo(FBNoteMatrix& rhs) const
+  {
+    for (int i = 0; i < (int)FBNoteMatrixEntry::Count; i++)
+      FBNoteMatrixTraits<T>::CopyTo(entries[i], rhs.entries[i]);
   }
 };
-
-inline void
-FBNoteVeloMatrixInitArrayFromScalar(
-  FBNoteVeloMatrix<FBSArray<float, FBFixedBlockSamples>>& array,
-  FBNoteVeloMatrix<float> const& scalar)
-{
-  for (int i = 0; i < (int)FBNoteVeloMatrixEntry::Count; i++)
-    array.entries[i].Fill(scalar.entries[i]);
-}
-
-inline void
-FBNoteVeloMatrixInitScalarFromArrayLast(
-  FBNoteVeloMatrix<float>& scalar,
-  FBNoteVeloMatrix<FBSArray<float, FBFixedBlockSamples>> const& array)
-{
-  for (int i = 0; i < (int)FBNoteVeloMatrixEntry::Count; i++)
-    scalar.entries[i] = array.entries[i].Last();
-}
-
-inline void
-FBNoteKeyMatrixInitArrayFromScalar(
-  FBNoteKeyMatrix<FBSArray<float, FBFixedBlockSamples>>& array,
-  FBNoteKeyMatrix<float> const& scalar)
-{
-  for (int i = 0; i < (int)FBNoteKeyMatrixEntry::Count; i++)
-    array.entries[i].Fill(scalar.entries[i]);
-}
-
-inline void
-FBNoteKeyMatrixInitScalarFromArrayLast(
-  FBNoteKeyMatrix<float>& scalar,
-  FBNoteKeyMatrix<FBSArray<float, FBFixedBlockSamples>> const& array)
-{
-  for (int i = 0; i < (int)FBNoteKeyMatrixEntry::Count; i++)
-    scalar.entries[i] = array.entries[i].Last();
-}
 
 inline void
 FBNoteMatrixInitArrayFromScalar(
   FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>>& array,
   FBNoteMatrix<float> const& scalar)
 {
-  FBNoteKeyMatrixInitArrayFromScalar(array.key, scalar.key);
-  FBNoteVeloMatrixInitArrayFromScalar(array.velo, scalar.velo);
+  for (int i = 0; i < (int)FBNoteMatrixEntry::Count; i++)
+    array.entries[i].Fill(scalar.entries[i]);
 }
 
 inline void
 FBNoteMatrixInitScalarFromArrayLast(
   FBNoteMatrix<float>& scalar,
-  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>> const& array)
+  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>>& array)
 {
-  FBNoteKeyMatrixInitScalarFromArrayLast(scalar.key, array.key);
-  FBNoteVeloMatrixInitScalarFromArrayLast(scalar.velo, array.velo);
+  for (int i = 0; i < (int)FBNoteMatrixEntry::Count; i++)
+    scalar.entries[i] = array.entries[i].Last();
 }
