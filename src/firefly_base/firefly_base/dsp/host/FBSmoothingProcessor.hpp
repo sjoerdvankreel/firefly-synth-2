@@ -27,7 +27,8 @@ class FBSmoothingProcessor final
   FBVoiceManager* const _voiceManager;
   FBSmoothingState _midi;
   FBSmoothingState _global;
-  FBSmoothingState _noteMatrix;
+  FBSmoothingState _noteKeyMatrix;
+  FBSmoothingState _noteVeloMatrix;
   std::array<FBSmoothingState, FBMaxVoices> _voice;
 
   std::vector<FBAccAutoEvent> _accAutoBySampleThenParam = {};

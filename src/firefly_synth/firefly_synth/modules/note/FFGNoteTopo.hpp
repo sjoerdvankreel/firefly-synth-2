@@ -4,5 +4,5 @@
 
 struct FBStaticModule;
 
-enum class FFGNoteCVOutput { NoteMatrixRaw, NoteMatrixSmth, Count };
+enum class FFGNoteCVOutput { NoteKeyMatrixRaw, NoteKeyMatrixSmth, NoteVeloMatrixRaw, NoteVeloMatrixSmth, Count };
 std::unique_ptr<FBStaticModule> FFMakeGNoteTopo();
