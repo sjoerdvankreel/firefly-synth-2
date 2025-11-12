@@ -107,12 +107,12 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
   FB_LOG_ENTRY_EXIT();
 
   auto topo = plugGUI->HostContext()->Topo();
-  std::vector<int> autoSizeColForRow = { -1, -1 };
-  std::vector<int> autoSizeRowForCol = { 1, 1, -1, -1, -1, -1, -1, -1 };
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, autoSizeRowForCol, autoSizeColForRow, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
   auto kind = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, block } });
-  grid->Add(0, 0, 1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, kind));
-  
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, kind));
+  auto filterMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::FilterMode, block } });
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, filterMode));
+
   auto combKeyTrk = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombKeyTrk, block } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combKeyTrk));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combKeyTrk, Slider::SliderStyle::RotaryVerticalDrag));

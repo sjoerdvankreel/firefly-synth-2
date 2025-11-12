@@ -380,7 +380,7 @@ FFMakeEffectTopo(bool global)
   combFreqFreqPlus.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombFreqFreqPlus);
   combFreqFreqPlus.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombFreqFreqPlus);
   combFreqFreqPlus.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind, (int)FFEffectParam::FilterMode },
-    [](auto const& vs) { return (vs[0] == (int)FFEffectKind::Comb || vs[0] == (int)FFEffectKind::CombPlus) && vs[1] == (int)FFEffectFilterMode::Freq; });
+    [](auto const& vs) { return (vs[0] == (int)FFEffectKind::Comb || vs[0] == (int)FFEffectKind::CombPlus || vs[0] == (int)FFEffectKind::CombMin) && vs[1] == (int)FFEffectFilterMode::Freq; });
   combFreqFreqPlus.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::FilterMode },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::Comb || vs[1] == (int)FFEffectKind::CombPlus) && vs[2] == (int)FFEffectFilterMode::Freq; });
 
@@ -403,7 +403,7 @@ FFMakeEffectTopo(bool global)
   combPitchCoarsePlus.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombPitchCoarsePlus);
   combPitchCoarsePlus.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombPitchCoarsePlus);
   combPitchCoarsePlus.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind, (int)FFEffectParam::FilterMode },
-    [](auto const& vs) { return (vs[0] == (int)FFEffectKind::Comb || vs[0] == (int)FFEffectKind::CombPlus) && vs[1] != (int)FFEffectFilterMode::Freq; });
+    [](auto const& vs) { return (vs[0] == (int)FFEffectKind::Comb || vs[0] == (int)FFEffectKind::CombPlus || vs[0] == (int)FFEffectKind::CombMin) && vs[1] != (int)FFEffectFilterMode::Freq; });
   combPitchCoarsePlus.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::FilterMode },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::Comb || vs[1] == (int)FFEffectKind::CombPlus) && vs[2] != (int)FFEffectFilterMode::Freq; });
 
@@ -425,7 +425,7 @@ FFMakeEffectTopo(bool global)
   combFreqFreqMin.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombFreqFreqMin);
   combFreqFreqMin.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombFreqFreqMin);
   combFreqFreqMin.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind, (int)FFEffectParam::FilterMode },
-    [](auto const& vs) { return (vs[0] == (int)FFEffectKind::Comb || vs[0] == (int)FFEffectKind::CombMin) && vs[1] == (int)FFEffectFilterMode::Freq; });
+    [](auto const& vs) { return (vs[0] == (int)FFEffectKind::Comb || vs[0] == (int)FFEffectKind::CombMin || vs[0] == (int)FFEffectKind::CombPlus) && vs[1] == (int)FFEffectFilterMode::Freq; });
   combFreqFreqMin.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::FilterMode },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::Comb || vs[1] == (int)FFEffectKind::CombMin) && vs[2] == (int)FFEffectFilterMode::Freq; });
 
@@ -448,7 +448,7 @@ FFMakeEffectTopo(bool global)
   combPitchCoarseMin.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCombPitchCoarseMin);
   combPitchCoarseMin.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCombPitchCoarseMin);
   combPitchCoarseMin.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind, (int)FFEffectParam::FilterMode },
-    [](auto const& vs) { return (vs[0] == (int)FFEffectKind::Comb || vs[0] == (int)FFEffectKind::CombMin) && vs[1] != (int)FFEffectFilterMode::Freq; });
+    [](auto const& vs) { return (vs[0] == (int)FFEffectKind::Comb || vs[0] == (int)FFEffectKind::CombMin || vs[0] == (int)FFEffectKind::CombPlus) && vs[1] != (int)FFEffectFilterMode::Freq; });
   combPitchCoarseMin.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::FilterMode },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::Comb || vs[1] == (int)FFEffectKind::CombMin) && vs[2] != (int)FFEffectFilterMode::Freq; });
 
