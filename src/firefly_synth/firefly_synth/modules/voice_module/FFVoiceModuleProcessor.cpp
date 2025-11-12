@@ -106,7 +106,6 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   auto& dspState = procState->dsp.voice[voice].voiceModule;
   auto const& procParams = procState->param.voice.voiceModule[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
-  auto& basePitchSemis = voiceState.voiceModule.basePitchSemis;
 
   auto masterPitchBendTarget = procState->dsp.global.master.bendTarget;
   auto const& masterPitchBendSemis = procState->dsp.global.master.bendAmountInSemis;
@@ -134,7 +133,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     auto pitch = basePitchFromKey + coarsePlain + finePlain;
     if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
       pitch += masterPitchBendSemis.Load(s);
-    basePitchSemis.Store(s, pitch);
+    dspState.outputPitch.Store(s, pitch);
     dspState.outputFine.Store(s, FBToUnipolar(FBToBipolar(fineNormModulated.Load(s)) / 127.0f));
   }
 
@@ -142,7 +141,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   {
     if (_portaPitchSamplesProcessed++ <= _portaPitchSamplesTotal)
       _portaPitchOffsetCurrent -= _portaPitchDelta;
-    basePitchSemis.Set(s, basePitchSemis.Get(s) - _portaPitchOffsetCurrent);
+    dspState.outputPitch.Set(s, dspState.outputPitch.Get(s) - _portaPitchOffsetCurrent);
     dspState.outputPorta.Set(s, FBToUnipolar(-_portaPitchOffsetCurrent / 127.0f));
   }
 

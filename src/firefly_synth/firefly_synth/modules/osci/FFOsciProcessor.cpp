@@ -226,7 +226,7 @@ FFOsciProcessor::Process(
   {
     if (_keyTrack)
       for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-        voiceBasePitch.Store(s, procState->dsp.voice[voice].voiceModule.basePitchSemis.Load(s));
+        voiceBasePitch.Store(s, procState->dsp.voice[voice].voiceModule.outputPitch.Load(s));
     else
       voiceBasePitch.Fill(FBBatch<float>(0.0f));
 

@@ -194,6 +194,12 @@ FFMakeVoiceModuleTopo()
   portaSectionAmpRelease.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPortaSectionAmpRelease);
   portaSectionAmpRelease.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType, (int)FFVoiceModuleParam::PortaMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFVoiceModulePortaMode::Section; }); 
 
+  auto& outputPitch = result->cvOutputs[(int)FFVoiceModuleCVOutput::Pitch];
+  outputPitch.name = "Pitch";
+  outputPitch.slotCount = 1;
+  outputPitch.id = "{76A04F6D-AC3E-4C2F-AAE2-E19BDCCCAF97}";
+  outputPitch.voiceAddr = [](int, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].voiceModule.outputPitch; };
+
   auto& outputPorta = result->cvOutputs[(int)FFVoiceModuleCVOutput::Porta];
   outputPorta.name = "Porta";
   outputPorta.slotCount = 1;

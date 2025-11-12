@@ -24,10 +24,10 @@ public:
   float portaSectionAmpAttack = {};
   float portaSectionAmpRelease = {};
   bool thisVoiceIsSubSectionStart = {};
-  bool otherVoiceSubSectionTookOver = {}; // need this to apply release multiplier
-  FBSArray<float, FBFixedBlockSamples> basePitchSemis = {};
+  bool otherVoiceSubSectionTookOver = {};
 
   FBSArray<float, FBFixedBlockSamples> outputFine = {};
+  FBSArray<float, FBFixedBlockSamples> outputPitch = {};
   FBSArray<float, FBFixedBlockSamples> outputPorta = {};
   FBSArray<float, FBFixedBlockSamples> outputCoarse = {};
   FBSArray<float, FBFixedBlockSamples> outputFineRaw = {};
