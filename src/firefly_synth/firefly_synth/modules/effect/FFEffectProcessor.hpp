@@ -28,6 +28,7 @@ class FFEffectProcessor final
   std::array<FFEffectClipMode, FFEffectBlockCount> _clipMode = {};
   std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};
   std::array<FFEffectSkewMode, FFEffectBlockCount> _skewMode = {};
+  std::array<FFEffectFilterMode, FFEffectBlockCount> _filterMode = {};
   std::array<FFStateVariableFilterMode, FFEffectBlockCount> _stVarMode = {};
 
   bool _graph = {};
