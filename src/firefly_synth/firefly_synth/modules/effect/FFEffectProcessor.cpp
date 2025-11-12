@@ -251,14 +251,9 @@ FFEffectProcessor::Process(
   {
     if constexpr (Global)
     {
-      // TODO this becomes global last-pitch-raw
       // raw because we provide our own smoothing filter
-      for (int s = 0; s < FBFixedBlockSamples; s++)
-        _basePitch.Set(s, state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKey].Get(s) * 127.0f);
-      auto masterPitchBendTarget = procState->dsp.global.master.bendTarget;
-      if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
-        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-          _basePitch.Add(s, procState->dsp.global.master.bendAmountInSemis.Load(s));
+      for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+        _basePitch.Store(s, procState->dsp.global.master.outputLastKeyPitch.Load(s) * 127.0f);
     }
     else
     {
@@ -335,7 +330,7 @@ FFEffectProcessor::Process(
         }
         else
         {
-          auto basePitch = NextBasePitchBatch<Global>(s);
+          auto basePitch = _filterMode[i] == FFEffectFilterMode::Track? NextBasePitchBatch<Global>(s): FBBatch<float>(0.0f);
           auto coarsePlain = topo.NormalizedToLinearFast(FFEffectParam::StVarPitchCoarse, stVarPitchCoarseNormModulated[i].Load(s));
           coarsePlain += (basePitch - (trkk + 60.0f)) * ktrk;
           coarsePlain = xsimd::clip(coarsePlain, FBBatch<float>(-FFModCoarseSemis), FBBatch<float>(FFModCoarseSemis));
@@ -421,7 +416,7 @@ FFEffectProcessor::Process(
           }
           else
           {
-            auto basePitch = NextBasePitchBatch<Global>(s);
+            auto basePitch = _filterMode[i] == FFEffectFilterMode::Track ? NextBasePitchBatch<Global>(s) : FBBatch<float>(0.0f);
             auto coarsePlain = topo.NormalizedToLinearFast(FFEffectParam::CombPitchCoarseMin, combPitchCoarseMinNormModulated[i].Load(s));
             coarsePlain += (basePitch - (trkk + 60.0f)) * ktrk;
             coarsePlain = xsimd::clip(coarsePlain, FBBatch<float>(-FFModCoarseSemis), FBBatch<float>(FFModCoarseSemis));
@@ -500,7 +495,7 @@ FFEffectProcessor::Process(
           }
           else
           {
-            auto basePitch = NextBasePitchBatch<Global>(s);
+            auto basePitch = _filterMode[i] == FFEffectFilterMode::Track ? NextBasePitchBatch<Global>(s) : FBBatch<float>(0.0f);
             auto coarsePlain = topo.NormalizedToLinearFast(FFEffectParam::CombPitchCoarsePlus, combPitchCoarsePlusNormModulated[i].Load(s));
             coarsePlain += (basePitch - (trkk + 60.0f)) * ktrk;
             coarsePlain = xsimd::clip(coarsePlain, FBBatch<float>(-FFModCoarseSemis), FBBatch<float>(FFModCoarseSemis));
