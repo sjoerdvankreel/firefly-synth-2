@@ -1,21 +1,3 @@
-TODOLIST for alpha-23 - tuning and small stuff
-[x] CHECK THIS the gui clips on Mac, f.e. osc mix->out. Make the whole thing wider -> no workie, need change aspect ratio?
-[x] flush audio should kill all voices (panic)
-[x] upadd2
-[x] notrack oscis
-[x] notrack pitch-based filters
-[x] master low/hi/last/lovelo/hivelo pitch + smth versions
-[x] stvar nte -> stvar pitch. also combs. recheck whats being taken into account.
-[x] allow ktrak in parts => each contributor to the voice pitch can be a mod source, plus 1 final pitch. for both voice and global.
-[x] voice final pitch as modulator
-[x] global final pitch as modulator
-[x] split the gnote smth etc
-[x] make new matrix sources "Voice" and "Global" -> no, append to master
-[x] test: non-ktrk osci + all parts equals ktrak osci. non-ktrk osci + final pitch equals ktrk osci. likewise for vfilters and gfilters (with global final pitch)
-[x] multitap default off
-[x] rename stvar
-[x] do mac tests on new hosts
-
 TODOLIST for alpha-24 - microtuning
 [ ] make a dedicated tuning section with some options ==> only PB and optionally unison coarse
 [ ] note filtering
