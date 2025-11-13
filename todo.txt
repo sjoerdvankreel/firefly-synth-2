@@ -14,6 +14,7 @@ TODOLIST for alpha-23 - tuning and small stuff
 [x] test: non-ktrk osci + all parts equals ktrak osci. non-ktrk osci + final pitch equals ktrk osci. likewise for vfilters and gfilters (with global final pitch)
 [x] multitap default off
 [x] rename stvar
+[x] do mac tests on new hosts
 
 TODOLIST for alpha-24 - microtuning
 [ ] make a dedicated tuning section with some options ==> only PB and optionally unison coarse
@@ -23,7 +24,6 @@ TODOLIST for alpha-24 - microtuning
 TODOLIST for alpha-25 - rest of the gui stuff
 [ ] logspace the SV plot
 [ ] modrate/modamt dedicated osci in the feedback echo
-[ ] do mac tests on new hosts
 [ ] add Carla/ardour for mac as test targets
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
 [ ] param menu : set to default / set to patch
