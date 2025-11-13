@@ -131,6 +131,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Keyboard tracking center key with -64 to +64 semis, 0 is C4. Global tracks the last MIDI key.
 * For global FX, new smoothing param for incoming last-midi-key. Prevents jumps when keytracking global filters.
 * Easy-access mod controls for env/lfo to filter freq/shaper gain.
+* SVF and comb filters can be frequency-controlled or pitch-controlled with optional pitch-following to voice/master.
 
 ## Envelope
 * 12 stage EG. I guess this classifies as an MSEG, but, no visual editor.
@@ -184,7 +185,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Much like FF1, select add/mul/stack + bipolar add/mul/stack.
 * New Scale parameter which allows the mod amount to be controlled by an additional CV source.
 * Single matrix for audio and cv. Env and LFO are now processed in lock-step, so env can modulate LFO and the other way around.
-* Env/VLFO/GLFO/Master Aux inputs plus MIDI CC, Pitch Bend, Channel Pressure, On-Note-Random and global last/low/high key/velocity.
+* Env/VLFO/GLFO/Master Aux inputs plus MIDI CC, Pitch Bend, Channel Pressure, On-Note-Random and global last/low/high key/velocity. Also pitch components (voice coarse/fine/porta, global pb).
 
 ## Echo
 * Combined multitap delay / feedback delay / reverb.
