@@ -6,7 +6,7 @@ November 13, 2025 - Alpha 23.
 - Carla and Ardour are now part of the test set on Mac.
 - Turned "Flush Audio" into panic button. Now kills all voices in addition to delay lines.
 - Mod matrix: UpAdd renamed to UpAdU (unipolar to unipolar), gained new UpAdB (unipolar to bipolar). Renamed BPAdd to BPAdB, BPAd2 to BPAdU (bipolar source, uni/bi target).
-- Mod matrix: 10 new master sources. LoKeyPich, HiKeyPitch, LoVeloPitch, HiVeloPitch, LastKeyPitch + smoothed versions. These are basically the GNote sources with master pitchbend applied on top.
+- Mod matrix: 10 new master sources. LoKeyPitch, HiKeyPitch, LoVeloPitch, HiVeloPitch, LastKeyPitch + smoothed versions. These are basically the GNote sources with master pitchbend applied on top.
 - Mod matrix: 5 new voice sources. Porta/Fine/Coarse - you can tack these on top of non-tracking oscis/filters and accurately recreate a non-tracking osci/filter by the matrix using individual pitch components (with full control over each one). Fine Raw: normalized output of Voice Fine parameter. Pitch: sum of all per-voice pitch contributors (key, porta, fine, coarse) and master PB.
 - Added non-pitch-tracking versions of oscillators. Default to C0, you can control them by adjusting osci-coarse and by summing pitch components to them in the matrix.
 - Filters (SVF/Comb) now have 3 versions: frequency (regular), pitch (default C0, same as osci) and tracking either voice pitch or global last-key pitch. All of them still have keytracking controls with rootkey and tracking amount (log for frequency, linear for pitch/tracking). Use case: build up (hi reso) filters by pitch-part from the matrix, that will play in tune with the oscis.
