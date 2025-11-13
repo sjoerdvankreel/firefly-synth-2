@@ -85,7 +85,7 @@ FFModMatrixGraph::paint(Graphics& g)
   float targetAmt = 1.0f;
   float sourceLow = 0.0f;
   float sourceHigh = 1.0f;
-  FFModulationOpType opType = FFModulationOpType::UPAdd;
+  FFModulationOpType opType = FFModulationOpType::UPAddU;
 
   if (_trackingParam != nullptr)
   {

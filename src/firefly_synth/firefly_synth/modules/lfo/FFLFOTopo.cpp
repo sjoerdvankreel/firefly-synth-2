@@ -187,16 +187,17 @@ FFMakeLFOTopo(bool global)
   opType.slotCount = FFLFOBlockCount;
   opType.slotFormatter = FFFormatBlockSlot;
   opType.id = prefix + "{B60CF69F-B21F-4BB6-891A-9E1493D0E40E}";
-  opType.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "UP Add" : "Off"; };
+  opType.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "UP AdU" : "Off"; };
   opType.type = FBParamType::List;
   opType.List().items = {
     { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", FFModulationOpTypeToString(FFModulationOpType::Off) },
-    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", FFModulationOpTypeToString(FFModulationOpType::UPAdd) },
+    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", FFModulationOpTypeToString(FFModulationOpType::UPAddU) },
+    { "{63ECE703-3923-470B-BEAA-A0D411CD26B5}", FFModulationOpTypeToString(FFModulationOpType::UPAddB) },
     { "{AD641260-F205-497E-B483-330CFA025378}", FFModulationOpTypeToString(FFModulationOpType::UPMul) },
     { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", FFModulationOpTypeToString(FFModulationOpType::UPStack) },
     { "{01014CF0-B70C-4E60-9A78-FF560CF05ECF}", FFModulationOpTypeToString(FFModulationOpType::UPRemap) },
-    { "{C18F6A70-944C-4A9B-8A01-561E1B6B93D4}", FFModulationOpTypeToString(FFModulationOpType::BPAdd) },
-    { "{4464FDBF-1CDA-4023-85CC-D3A90CC4F47B}", FFModulationOpTypeToString(FFModulationOpType::BPAdd2) },
+    { "{C18F6A70-944C-4A9B-8A01-561E1B6B93D4}", FFModulationOpTypeToString(FFModulationOpType::BPAddU) },
+    { "{4464FDBF-1CDA-4023-85CC-D3A90CC4F47B}", FFModulationOpTypeToString(FFModulationOpType::BPAddB) },
     { "{3130BBE8-D204-450D-A3D2-AC4266FB8E4B}", FFModulationOpTypeToString(FFModulationOpType::BPMul) },
     { "{69D5AD4B-BD0B-42A6-A252-A0A43D425F89}", FFModulationOpTypeToString(FFModulationOpType::BPStack) },
     { "{D96CFB4F-1F3C-434C-A78D-BA624B3DFA10}", FFModulationOpTypeToString(FFModulationOpType::BPRemap) },

@@ -48,6 +48,7 @@ class alignas(alignof(TBlock)) FFEffectBlockParamState final
   std::array<TBlock, FFEffectBlockCount> foldMode = {};
   std::array<TBlock, FFEffectBlockCount> skewMode = {};
   std::array<TBlock, FFEffectBlockCount> stVarMode = {};
+  std::array<TBlock, FFEffectBlockCount> filterMode = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectBlockParamState);
 };

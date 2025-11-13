@@ -148,7 +148,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
     _opType[i] = !blockActive ? 
       FFModulationOpType::Off :
       graph && graphIndex != FFLFOBlockCount ?
-      FFModulationOpType::UPAdd :
+      FFModulationOpType::UPAddU :
       topo.NormalizedToListFast<FFModulationOpType>(
       FFLFOParam::OpType,
       FFSelectDualProcBlockParamNormalized<Global>(opTypeNorm[i], voice));

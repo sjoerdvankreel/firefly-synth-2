@@ -20,11 +20,18 @@ class FFVoiceModuleDSPState final
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFVoiceModuleDSPState);
   FFVoiceModuleDSPState() : processor(std::make_unique<FFVoiceModuleProcessor>()) {}
+
   float portaSectionAmpAttack = {};
   float portaSectionAmpRelease = {};
   bool thisVoiceIsSubSectionStart = {};
-  bool otherVoiceSubSectionTookOver = {}; // need this to apply release multiplier
-  FBSArray<float, FBFixedBlockSamples> basePitchSemis = {};
+  bool otherVoiceSubSectionTookOver = {};
+
+  FBSArray<float, FBFixedBlockSamples> pitch = {};
+  FBSArray<float, FBFixedBlockSamples> outputFine = {};
+  FBSArray<float, FBFixedBlockSamples> outputPitch = {};
+  FBSArray<float, FBFixedBlockSamples> outputPorta = {};
+  FBSArray<float, FBFixedBlockSamples> outputCoarse = {};
+  FBSArray<float, FBFixedBlockSamples> outputFineRaw = {};
 };
 
 template <class TBlock>

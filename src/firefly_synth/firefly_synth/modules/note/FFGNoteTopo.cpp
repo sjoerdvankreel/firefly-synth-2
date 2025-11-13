@@ -17,32 +17,32 @@ FFMakeGNoteTopo()
   auto slotFormatter = [](int os, std::string const& prefix) {
     switch ((FBNoteMatrixEntry)os)
     {
-    case FBNoteMatrixEntry::LastVelo: return " " + prefix + " Last Velo";
-    case FBNoteMatrixEntry::LowKeyVelo: return " " + prefix + " LowKey Velo";
-    case FBNoteMatrixEntry::HighKeyVelo: return " " + prefix + " HighKey Velo";
-    case FBNoteMatrixEntry::LowVeloVelo: return " " + prefix + " LowVelo Velo";
-    case FBNoteMatrixEntry::HighVeloVelo: return " " + prefix + " HighVelo Velo";
-    case FBNoteMatrixEntry::LastKeyUntuned: return " " + prefix + " Last Key";
-    case FBNoteMatrixEntry::LowKeyKeyUntuned: return " " + prefix + " LowKey Key";
-    case FBNoteMatrixEntry::HighKeyKeyUntuned: return " " + prefix + " HighKey Key";
-    case FBNoteMatrixEntry::LowVeloKeyUntuned: return " " + prefix + " LowVelo Key";
-    case FBNoteMatrixEntry::HighVeloKeyUntuned: return " " + prefix + " HighVelo Key";
+    case FBNoteMatrixEntry::LastVelo: return " " + prefix + "Last Velo";
+    case FBNoteMatrixEntry::LowKeyVelo: return " " + prefix + "LowKey Velo";
+    case FBNoteMatrixEntry::HighKeyVelo: return " " + prefix + "HighKey Velo";
+    case FBNoteMatrixEntry::LowVeloVelo: return " " + prefix + "LowVelo Velo";
+    case FBNoteMatrixEntry::HighVeloVelo: return " " + prefix + "HighVelo Velo";
+    case FBNoteMatrixEntry::LastKey: return " " + prefix + "Last Key";
+    case FBNoteMatrixEntry::LowKeyKey: return " " + prefix + "LowKey Key";
+    case FBNoteMatrixEntry::HighKeyKey: return " " + prefix + "HighKey Key";
+    case FBNoteMatrixEntry::LowVeloKey: return " " + prefix + "LowVelo Key";
+    case FBNoteMatrixEntry::HighVeloKey: return " " + prefix + "HighVelo Key";
     default: FB_ASSERT(false); return std::string("");
     }
   };
 
   auto& outputMatrixRaw = result->cvOutputs[(int)FFGNoteCVOutput::NoteMatrixRaw];
-  outputMatrixRaw.name = "GNote Raw";
+  outputMatrixRaw.name = "GNote";
   outputMatrixRaw.slotCount = (int)FBNoteMatrixEntry::Count;
   outputMatrixRaw.id = "{FACE9023-643D-4DE8-B3E9-A9CFCD4B821B}";
-  outputMatrixRaw.slotFormatter = [slotFormatter](FBStaticTopo const&, int, int os) { return slotFormatter(os, "Raw"); };
+  outputMatrixRaw.slotFormatter = [slotFormatter](FBStaticTopo const&, int, int os) { return slotFormatter(os, ""); };
   outputMatrixRaw.globalAddr = [](int, int cs, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gNote.outputNoteMatrixRaw.entries[cs]; };
 
   auto& outputMatrixSmth = result->cvOutputs[(int)FFGNoteCVOutput::NoteMatrixSmth];
   outputMatrixSmth.name = "GNote Smth";
   outputMatrixSmth.slotCount = (int)FBNoteMatrixEntry::Count;
   outputMatrixSmth.id = "{158B2D9A-99DE-425E-B3A5-9043C6A73A21}";
-  outputMatrixSmth.slotFormatter = [slotFormatter](FBStaticTopo const&, int, int os) { return slotFormatter(os, "Smth"); };
+  outputMatrixSmth.slotFormatter = [slotFormatter](FBStaticTopo const&, int, int os) { return slotFormatter(os, "Smth "); };
   outputMatrixSmth.globalAddr = [](int, int cs, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gNote.outputNoteMatrixSmth.entries[cs]; };
 
   return result;

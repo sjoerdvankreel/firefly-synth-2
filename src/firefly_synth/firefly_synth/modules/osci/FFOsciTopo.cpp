@@ -116,6 +116,19 @@ FFMakeOsciTopo()
   phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPhase);
   phase.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[0] != (int)FFOsciType::ExtAudio; });
 
+  auto& keyTrack = result->params[(int)FFOsciParam::KeyTrack];
+  keyTrack.mode = FBParamMode::Block;
+  keyTrack.name = "KTrk";
+  keyTrack.slotCount = 1;
+  keyTrack.defaultText = "On";
+  keyTrack.id = "{6A2E75A1-F84D-401D-98BB-7D78F13073EA}";
+  keyTrack.type = FBParamType::Boolean;
+  auto selectKeyTrack = [](auto& module) { return &module.block.keyTrack; };
+  keyTrack.scalarAddr = FFSelectScalarParamAddr(selectModule, selectKeyTrack);
+  keyTrack.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectKeyTrack);
+  keyTrack.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectKeyTrack);
+  keyTrack.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+
   auto& envToGain = result->params[(int)FFOsciParam::EnvToGain];
   envToGain.mode = FBParamMode::Accurate;
   envToGain.name = "Env\U00002192Gain";

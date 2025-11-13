@@ -56,8 +56,8 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->maxUndoSize = 15;
   result->patchExtension = "ff2preset";
   result->guiWidth = 1280;
-  result->guiAspectRatioWidth = 32;
-  result->guiAspectRatioHeight = 19;
+  result->guiAspectRatioWidth = 16;
+  result->guiAspectRatioHeight = 9;
   result->guiUserScaleModule = (int)FFModuleType::GUISettings;
   result->guiUserScaleParam = (int)FFGUISettingsGUIParam::UserScale;
   result->guiFactory = [](FBHostGUIContext* hostContext) { 

@@ -78,8 +78,8 @@ MakeOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> autoSizeColForRow = { -1, -1 };
-  std::vector<int> autoSizeRowForCol = { 1, 1, 1, 1, 1, 1, 1, 1, 0 };
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, autoSizeRowForCol, autoSizeColForRow, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  std::vector<int> autoSizeRowForCol = { 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 };
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, autoSizeRowForCol, autoSizeColForRow, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
   auto type = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Type, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
   grid->Add(0, 1, 1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
@@ -103,8 +103,11 @@ MakeOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lfoToFine, Slider::SliderStyle::RotaryVerticalDrag));
   auto phase = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Phase, 0 } });
   grid->Add(0, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, phase));
-  grid->Add(1, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phase, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 9 } });
+  grid->Add(0, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phase, Slider::SliderStyle::RotaryVerticalDrag));
+  auto keyTrack = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::KeyTrack, 0 } });
+  grid->Add(1, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, keyTrack));
+  grid->Add(1, 9, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, keyTrack));
+  grid->MarkSection({ { 0, 0 }, { 2, 10 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 

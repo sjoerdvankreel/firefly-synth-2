@@ -46,53 +46,53 @@ void
 FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
 {
   _anyNoteIsOn = false;
-  _noteVelo[event.note.keyUntuned] = 0.0f;
-  _noteOn[event.note.keyUntuned] = event.on;
+  _noteVelo[event.note.key] = 0.0f;
+  _noteOn[event.note.key] = event.on;
   if (event.on)
   {
-    _noteVelo[event.note.keyUntuned] = event.velo;
+    _noteVelo[event.note.key] = event.velo;
     _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo] = event.velo;
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned] = (float)event.note.keyUntuned / 127.0f;
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKey] = (float)event.note.key / 127.0f;
   }
   _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = 1.0f;
   _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = 0.0f;
-  _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = 1.0f;
-  _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned] = 0.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKey] = 1.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKey] = 0.0f;
   for (int i = 0; i < 128; i++)
     if (_noteOn[i])
     {
       _anyNoteIsOn = true;
-      if (i / 127.0f < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned])
+      if (i / 127.0f < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKey])
       {
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = i / 127.0f;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKey] = i / 127.0f;
         _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVelo] = _noteVelo[i];
       }
-      if (i / 127.0f > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned])
+      if (i / 127.0f > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKey])
       {
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned] = i / 127.0f;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKey] = i / 127.0f;
         _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVelo] = _noteVelo[i];
       }
       if (_noteVelo[i] < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo])
       {
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntuned] = i / 127.0f;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKey] = i / 127.0f;
         _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = _noteVelo[i];
       }
       if (_noteVelo[i] > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo])
       {
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntuned] = i / 127.0f;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKey] = i / 127.0f;
         _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = _noteVelo[i];
       }
     }
   if (!_anyNoteIsOn)
   {
     _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKey] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKey];
     _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKey] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKey];
     _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntuned] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKey] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKey];
     _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntuned] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKey] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKey];
   }
 }
 
@@ -165,7 +165,7 @@ FBHostProcessor::ProcessHost(
     std::array<bool, FBMaxVoices> voiceOffPositions = {};
     for (int n2 = 0; n2 < _plugIn.noteEvents->size(); n2++)
       if (!(*_plugIn.noteEvents)[n2].on)
-        for(int v: _plugIn.voiceManager->ActiveVoices())
+        for(int v: _plugIn.voiceManager->ActiveAndReturnedVoices())
           if ((*_plugIn.noteEvents)[n2].note.Matches(_plugIn.voiceManager->Voices()[v].event.note))
           {
             seenVoiceOff[v] = true;
@@ -187,11 +187,11 @@ FBHostProcessor::ProcessHost(
     _plug->ProcessPreVoice(_plugIn);
 
     // process active voices including newly acquired AND newly released
-    for (int v: _plugIn.voiceManager->ActiveVoices())
+    for (int v: _plugIn.voiceManager->ActiveAndReturnedVoices())
       _plug->ProcessVoice(_plugIn, v, seenVoiceOff[v] ? voiceOffPositions[v] : -1);
 
     // Voice offsetInBlock is 0 for the rest of the voice lifetime.
-    for (int v: _voiceManager->ActiveVoices())
+    for (int v: _voiceManager->ActiveAndReturnedVoices())
       _voiceManager->_voices[v].offsetInBlock = 0;
 
     _plug->ProcessPostVoice(_plugIn, _plugOut);
@@ -200,7 +200,7 @@ FBHostProcessor::ProcessHost(
 
     _anyNoteWasOnLastSamplePrevRound = _anyNoteIsOn;
     if(_anyNoteEverReceived)
-      _lastKeyRawLastSamplePrevRound = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
+      _lastKeyRawLastSamplePrevRound = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKey];
   }
   _plugToHost->ProcessToHost(output);
 
@@ -221,7 +221,7 @@ FBHostProcessor::ProcessHost(
         *_exchangeState->Params()[i].Global() =
         _procState->Params()[i].GlobalBlock().Value();
       else
-        for (int v: _voiceManager->ActiveVoices())
+        for (int v: _voiceManager->ActiveAndReturnedVoices())
           _exchangeState->Params()[i].Voice()[v] =
           _procState->Params()[i].VoiceBlock().Voice()[v];
     }

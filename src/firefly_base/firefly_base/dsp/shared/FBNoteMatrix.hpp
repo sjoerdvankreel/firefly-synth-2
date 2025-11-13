@@ -12,11 +12,11 @@ enum class FBNoteMatrixEntry
   HighVeloVelo,
   VeloCount,
 
-  LastKeyUntuned = VeloCount,
-  LowKeyKeyUntuned,
-  HighKeyKeyUntuned,
-  LowVeloKeyUntuned,
-  HighVeloKeyUntuned,
+  LastKey = VeloCount,
+  LowKeyKey,
+  HighKeyKey,
+  LowVeloKey,
+  HighVeloKey,
   Count
 };
 
@@ -47,10 +47,10 @@ struct alignas(alignof(T)) FBNoteMatrix final
   std::array<T, (int)FBNoteMatrixEntry::Count> entries = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBNoteMatrix);
 
-  void SetKey(float keyUntuned)
+  void SetKey(float key)
   {
     for (int i = (int)FBNoteMatrixEntry::VeloCount; i < (int)FBNoteMatrixEntry::Count; i++)
-      FBNoteMatrixTraits<T>::Set(entries[i], keyUntuned);
+      FBNoteMatrixTraits<T>::Set(entries[i], key);
   }
 
   void CopyTo(FBNoteMatrix& rhs) const

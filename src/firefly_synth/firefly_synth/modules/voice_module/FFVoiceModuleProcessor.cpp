@@ -17,7 +17,7 @@
 void
 FFVoiceModuleProcessor::BeginVoice(
   FBModuleProcState& state,
-  float previousMidiKeyUntuned,
+  float previousMidiKey,
   bool anyNoteWasOnAlready)
 {
   int voice = state.voice->slot;
@@ -45,13 +45,13 @@ FFVoiceModuleProcessor::BeginVoice(
   procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease = _voiceStartSnapshotNorm.portaSectionAmpRelease[0];
 
   float portaPitchStart;
-  if (previousMidiKeyUntuned < 0.0f
+  if (previousMidiKey< 0.0f
     || portaType == FFVoiceModulePortaType::Off
     || portaMode == FFVoiceModulePortaMode::Section && !anyNoteWasOnAlready)
-    portaPitchStart = (float)state.voice->event.note.keyUntuned;
+    portaPitchStart = (float)state.voice->event.note.key;
   else
   {
-    portaPitchStart = previousMidiKeyUntuned;
+    portaPitchStart = previousMidiKey;
     if (portaMode == FFVoiceModulePortaMode::Section && anyNoteWasOnAlready)
     {
       procState->dsp.voice[voice].voiceModule.thisVoiceIsSubSectionStart = true;
@@ -62,12 +62,12 @@ FFVoiceModuleProcessor::BeginVoice(
       // Since the takeover mechanism in the envelope is a simple fade out, should be ok.
       int myChannel = state.voice->event.note.channel;
       FBVoiceManager const* vManager = state.input->voiceManager;
-      int tookOverThisKey = (int)std::round(previousMidiKeyUntuned);
-      for (int v: vManager->ActiveVoices())
+      int tookOverThisKey = (int)std::round(previousMidiKey);
+      for (int v: vManager->ActiveAndReturnedVoices())
         if (v != voice)
         {
           auto const& thatEventNote = vManager->Voices()[v].event.note;
-          if (thatEventNote.channel == myChannel && thatEventNote.keyUntuned == tookOverThisKey)
+          if (thatEventNote.channel == myChannel && thatEventNote.key == tookOverThisKey)
             procState->dsp.voice[v].voiceModule.otherVoiceSubSectionTookOver = true;
         }
     }
@@ -80,7 +80,7 @@ FFVoiceModuleProcessor::BeginVoice(
     _portaPitchSamplesTotal = topo.NormalizedToLinearTimeSamplesFast(
       FFVoiceModuleParam::PortaTime, _voiceStartSnapshotNorm.portaTime[0], sampleRate);
 
-  int portaDiffSemis = state.voice->event.note.keyUntuned - (int)std::round(portaPitchStart);
+  int portaDiffSemis = state.voice->event.note.key - (int)std::round(portaPitchStart);
   int slideMultiplier = portaType == FFVoiceModulePortaType::Auto ? 1 : std::abs(portaDiffSemis);
   _portaPitchSamplesTotal *= slideMultiplier;
   _portaPitchSamplesProcessed = 0;
@@ -100,12 +100,12 @@ void
 FFVoiceModuleProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
-  float basePitchFromKey = (float)state.voice->event.note.keyUntuned;
+  float basePitchFromKey = (float)state.voice->event.note.key;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
+  auto& dspState = procState->dsp.voice[voice].voiceModule;
   auto const& procParams = procState->param.voice.voiceModule[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
-  auto& basePitchSemis = voiceState.voiceModule.basePitchSemis;
 
   auto masterPitchBendTarget = procState->dsp.global.master.bendTarget;
   auto const& masterPitchBendSemis = procState->dsp.global.master.bendAmountInSemis;
@@ -123,6 +123,8 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[4].outputAll, lfo5ToFine.CV(), fineNormModulated);
   procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VoiceCoarse, false, voice, -1, coarseNormModulated);
   procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::VoiceFine, false, voice, -1, fineNormModulated);
+  fineNormModulated.CopyTo(dspState.outputFineRaw);
+  coarseNormModulated.CopyTo(dspState.outputCoarse);
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
@@ -131,15 +133,20 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     auto pitch = basePitchFromKey + coarsePlain + finePlain;
     if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
       pitch += masterPitchBendSemis.Load(s);
-    basePitchSemis.Store(s, pitch);
+    dspState.pitch.Store(s, pitch);
+    dspState.outputFine.Store(s, FBToUnipolar(FBToBipolar(fineNormModulated.Load(s)) / 127.0f));
   }
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     if (_portaPitchSamplesProcessed++ <= _portaPitchSamplesTotal)
       _portaPitchOffsetCurrent -= _portaPitchDelta;
-    basePitchSemis.Set(s, basePitchSemis.Get(s) - _portaPitchOffsetCurrent);
+    dspState.pitch.Set(s, dspState.pitch.Get(s) - _portaPitchOffsetCurrent);
+    dspState.outputPorta.Set(s, FBToUnipolar(-_portaPitchOffsetCurrent / 127.0f));
   }
+
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+    dspState.outputPitch.Store(s, dspState.pitch.Load(s) / 127.0f);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)

@@ -17,7 +17,7 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFVNoteDSPState);
   FFVNoteDSPState(): processor(std::make_unique<FFVNoteProcessor>()) {}
   FBSArray<float, FBFixedBlockSamples> outputVelo = {};
-  FBSArray<float, FBFixedBlockSamples> outputKeyUntuned = {};
+  FBSArray<float, FBFixedBlockSamples> outputKey= {};
   FBSArray2<float, FBFixedBlockSamples, FFVNoteOnNoteRandomCount> outputRandomUni = {};
   FBSArray2<float, FBFixedBlockSamples, FFVNoteOnNoteRandomCount> outputRandomNorm = {};
   FBSArray2<float, FBFixedBlockSamples, FFVNoteOnNoteRandomCount> outputGroupRandomUni = {};

@@ -19,11 +19,12 @@ FFMasterProcessor::Process(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   auto& dspState = procState->dsp.global.master;
+  auto& gNoteDspState = procState->dsp.global.gNote;
   auto const& params = procState->param.global.master[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::Master];
 
   params.acc.modWheel[0].Global().CV().CopyTo(dspState.outputMod);
-  params.acc.pitchBend[0].Global().CV().CopyTo(dspState.outputBend);
+  params.acc.pitchBend[0].Global().CV().CopyTo(dspState.outputPBRaw);
   for (int i = 0; i < FFMasterAuxCount; i++)
     params.acc.aux[i].Global().CV().CopyTo(dspState.outputAux[i]);
 
@@ -38,6 +39,18 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   {
     FBBatch<float> bendAmountPlain = topo.NormalizedToLinearFast(FFMasterParam::PitchBend, bendAmountNorm, s);
     dspState.bendAmountInSemis.Store(s, bendAmountPlain * bendRangeSemis);
+    FBBatch<float> normBendAmtBP = FBToBipolar(bendAmountNorm.CV().Load(s)) * bendRangeSemis / 127.0f;
+    dspState.outputPB.Store(s, FBToUnipolar(normBendAmtBP));
+    dspState.outputLastKeyPitch.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::LastKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputLowKeyPitch.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowKeyKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputHighKeyPitch.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighKeyKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputLowVeloPitch.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowVeloKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputHighVeloPitch.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighVeloKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputLastKeyPitchSmth.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::LastKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputLowKeyPitchSmth.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::LowKeyKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputHighKeyPitchSmth.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::HighKeyKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputLowVeloPitchSmth.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::LowVeloKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+    dspState.outputHighVeloPitchSmth.Store(s, xsimd::clip(gNoteDspState.outputNoteMatrixSmth.entries[(int)FBNoteMatrixEntry::HighVeloKey].Load(s) + normBendAmtBP, FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();

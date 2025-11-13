@@ -38,6 +38,7 @@ class alignas(alignof(TBlock)) FFOsciBlockParamState final
   friend class FFOsciProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
   std::array<TBlock, 1> type = {};
+  std::array<TBlock, 1> keyTrack = {};
   std::array<TBlock, 1> uniCount = {};
   std::array<TBlock, 1> waveHSMode = {};
   std::array<TBlock, FFOsciWavePWCount> wavePWMode = {};

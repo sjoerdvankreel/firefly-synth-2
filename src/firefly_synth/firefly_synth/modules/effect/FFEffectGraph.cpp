@@ -34,7 +34,10 @@ GetEffectExchangeStateFromDSP(FBGraphRenderState* state, bool global, int slot, 
   int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ (int)moduleType, slot });
   auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
   if (exchange)
-    exchangeFromDSP = &dynamic_cast<FFEffectExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
+    if(global)
+      exchangeFromDSP = &dynamic_cast<FFEffectExchangeState const&>(*moduleExchangeState->Global());
+    else
+      exchangeFromDSP = &dynamic_cast<FFEffectExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
   return exchangeFromDSP;
 }
 
@@ -101,10 +104,8 @@ EffectGraphRenderData<Global>::DoPostProcess(
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
   FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
   auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
-  if (kind != FFEffectKind::StVarFreq && kind != FFEffectKind::StVarPitch && 
-    kind != FFEffectKind::CombFreq && kind != FFEffectKind::CombPitch &&
-    kind != FFEffectKind::CombPlusFreq && kind != FFEffectKind::CombPlusPitch &&
-    kind != FFEffectKind::CombMinFreq && kind != FFEffectKind::CombMinPitch)
+  if (kind != FFEffectKind::StVar && kind != FFEffectKind::Comb && 
+    kind != FFEffectKind::CombPlus && kind != FFEffectKind::CombMin)
     return;
   if (points.l.size() == 0)
     return;
@@ -131,10 +132,8 @@ EffectGraphRenderData<Global>::DoProcess(
   {
     indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
     auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
-    plotSpecificFilter = kind == FFEffectKind::StVarFreq || kind == FFEffectKind::StVarPitch ||
-      kind == FFEffectKind::CombFreq || kind == FFEffectKind::CombPitch ||
-      kind == FFEffectKind::CombPlusFreq || kind == FFEffectKind::CombPlusPitch ||
-      kind == FFEffectKind::CombMinFreq || kind == FFEffectKind::CombMinPitch;
+    plotSpecificFilter = kind == FFEffectKind::StVar || kind == FFEffectKind::Comb ||
+      kind == FFEffectKind::CombMin || kind == FFEffectKind::CombPlus;
     if (kind == FFEffectKind::Off)
       return 0;
   }

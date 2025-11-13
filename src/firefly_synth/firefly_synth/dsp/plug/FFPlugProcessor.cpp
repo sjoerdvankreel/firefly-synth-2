@@ -84,6 +84,9 @@ void
 FFPlugProcessor::LeaseVoices(
   FBPlugInputBlock const& input)
 {
+  if (_flushThisRound)
+    return;
+
   float receiveNorm = _procState->param.global.settings[0].block.receiveNotes[0].Value();
   auto const& receiveTopo = _topo->static_->modules[(int)FFModuleType::Settings].params[(int)FFSettingsParam::ReceiveNotes];
   if (!receiveTopo.Boolean().NormalizedToPlainFast(receiveNorm))
@@ -156,6 +159,7 @@ FFPlugProcessor::ApplyGlobalModulation(
 void 
 FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
 {
+  _flushThisRound = false;
   auto state = MakeModuleState(input);
   auto& globalDSP = _procState->dsp.global;
   auto const& globalParam = _procState->param.global;
@@ -164,10 +168,13 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   bool flushToggle = globalParam.output[0].block.flushAudioToggle[0].Value() > 0.5f;
   if (flushToggle != _prevFlushAudioToggle)
   {
+    _flushThisRound = true;
     _prevFlushAudioToggle = flushToggle;
-    globalDSP.gEcho.processor->FlushDelayLines();
     for (int v = 0; v < FBMaxVoices; v++)
       _procState->dsp.voice[v].vEcho.processor->FlushDelayLines();
+    for (int v = 0; v < FBMaxVoices; v++)
+      if(input.voiceManager->IsActive(v))
+        input.voiceManager->Return(v);
   }
 
   state.moduleSlot = 0;
@@ -189,7 +196,7 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
 
   // Mark all global mod sources as done at once for each voice, saves some cycles.
   // We can get away with this because FBHostProcessor does LeaseVoices() first.
-  for (int v : input.voiceManager->ActiveVoices())
+  for (int v : input.voiceManager->ActiveAndReturnedVoices())
   {
     state.voice = &state.input->voiceManager->Voices()[v];
     _procState->dsp.voice[v].vMatrix.processor->AllGlobalModSourcesCleared(state);
@@ -220,9 +227,13 @@ FFPlugProcessor::ProcessPostVoice(
   float gEchoTargetNorm = gEcho.block.vTargetOrGTarget[0].Value();
   auto gEchoTarget = gEchoModuleTopo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VTargetOrGTarget, gEchoTargetNorm);
 
+  // Get out pops/clicks from voices we killed halfway.
+  if(_flushThisRound)
+    globalDSP.gEcho.processor->FlushDelayLines();
+
   FBSArray2<float, FBFixedBlockSamples, 2> voiceMixdown = {};
   voiceMixdown.Fill(0.0f);
-  for (int v: input.voiceManager->ActiveVoices())
+  for (int v: input.voiceManager->ActiveAndReturnedVoices())
     voiceMixdown.Add(_procState->dsp.voice[v].output);
 
   FBSArray2<float, FBFixedBlockSamples, 2> extAudio = {};

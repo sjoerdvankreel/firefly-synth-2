@@ -50,6 +50,7 @@ struct FFOsciStringUniVoiceState final
 
 class FFOsciProcessor final
 {
+  bool _keyTrack = {};
   FFOsciType _type = {};
   int _uniCount = {};
   int _oversampleTimes = {};
