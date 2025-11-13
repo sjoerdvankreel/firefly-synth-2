@@ -338,7 +338,7 @@ FFMakeEchoTopo(bool global)
   tapsOn.name = "Taps On";
   tapsOn.display = "Taps";
   tapsOn.slotCount = 1;
-  tapsOn.defaultText = "On";
+  tapsOn.defaultText = "Off";
   tapsOn.id = prefix + "{C5FAD167-9D4B-4640-AD46-0C3B55089197}";
   tapsOn.type = FBParamType::Boolean;
   auto selectTapsOn = [](auto& module) { return &module.block.tapsOn; };

@@ -12,7 +12,8 @@ TODOLIST for alpha-23 - tuning and small stuff
 [x] split the gnote smth etc
 [x] make new matrix sources "Voice" and "Global" -> no, append to master
 [x] test: non-ktrk osci + all parts equals ktrak osci. non-ktrk osci + final pitch equals ktrk osci. likewise for vfilters and gfilters (with global final pitch)
-[ ] multitap default off
+[x] multitap default off
+[x] rename stvar
 
 TODOLIST for alpha-24 - microtuning
 [ ] make a dedicated tuning section with some options ==> only PB and optionally unison coarse
@@ -20,6 +21,7 @@ TODOLIST for alpha-24 - microtuning
 [ ] MTS into master: off / note / continuous 
 
 TODOLIST for alpha-25 - rest of the gui stuff
+[ ] logspace the SV plot
 [ ] modrate/modamt dedicated osci in the feedback echo
 [ ] do mac tests on new hosts
 [ ] add Carla/ardour for mac as test targets
@@ -49,7 +51,6 @@ TODOLIST for alpha-27
 [ ] theme the gui
 
 keep profiling
-rename "untuned"
 recheck known issues
 add qtractor to the list
 do sidechain tests on new hosts

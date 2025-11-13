@@ -199,7 +199,7 @@ FFMakeEffectTopo(bool global)
   auto& stVarMode = result->params[(int)FFEffectParam::StVarMode];
   stVarMode.mode = FBParamMode::Block;
   stVarMode.defaultText = "LPF";
-  stVarMode.name = "StVar Mode";
+  stVarMode.name = "SVF Mode";
   stVarMode.display = "Mode";
   stVarMode.slotCount = FFEffectBlockCount;
   stVarMode.slotFormatter = FFFormatBlockSlot;
@@ -229,7 +229,7 @@ FFMakeEffectTopo(bool global)
   auto& stVarKeyTrk = result->params[(int)FFEffectParam::StVarKeyTrak];
   stVarKeyTrk.mode = FBParamMode::Accurate;
   stVarKeyTrk.defaultText = "0";
-  stVarKeyTrk.name = "StVar KTrk";
+  stVarKeyTrk.name = "SVF KTrk";
   stVarKeyTrk.display = "KTrk";
   stVarKeyTrk.slotCount = FFEffectBlockCount;
   stVarKeyTrk.slotFormatter = FFFormatBlockSlot;
@@ -253,7 +253,7 @@ FFMakeEffectTopo(bool global)
   auto& stVarRes = result->params[(int)FFEffectParam::StVarRes];
   stVarRes.mode = FBParamMode::Accurate;
   stVarRes.defaultText = "0";
-  stVarRes.name = "StVar Res";
+  stVarRes.name = "SVF Res";
   stVarRes.display = "Res";
   stVarRes.slotCount = FFEffectBlockCount;
   stVarRes.slotFormatter = FFFormatBlockSlot;
@@ -274,7 +274,7 @@ FFMakeEffectTopo(bool global)
   auto& stVarFreqFreq = result->params[(int)FFEffectParam::StVarFreqFreq];
   stVarFreqFreq.mode = FBParamMode::Accurate;
   stVarFreqFreq.defaultText = "1000";
-  stVarFreqFreq.name = "StVar Freq";
+  stVarFreqFreq.name = "SVF Freq";
   stVarFreqFreq.display = "Frq";
   stVarFreqFreq.slotCount = FFEffectBlockCount;
   stVarFreqFreq.slotFormatter = FFFormatBlockSlot;
@@ -296,7 +296,7 @@ FFMakeEffectTopo(bool global)
   auto& stVarPitchCoarse = result->params[(int)FFEffectParam::StVarPitchCoarse];
   stVarPitchCoarse.mode = FBParamMode::Accurate;
   stVarPitchCoarse.defaultText = "0";
-  stVarPitchCoarse.name = "StVar Coarse";
+  stVarPitchCoarse.name = "SVF Coarse";
   stVarPitchCoarse.display = "Crse";
   stVarPitchCoarse.slotCount = FFEffectBlockCount;
   stVarPitchCoarse.slotFormatter = FFFormatBlockSlot;
@@ -319,7 +319,7 @@ FFMakeEffectTopo(bool global)
   auto& stVarGain = result->params[(int)FFEffectParam::StVarGain];
   stVarGain.mode = FBParamMode::Accurate;
   stVarGain.defaultText = "0";
-  stVarGain.name = "StVar Gain";
+  stVarGain.name = "SVF Gain";
   stVarGain.display = "Gain";
   stVarGain.slotCount = FFEffectBlockCount;
   stVarGain.slotFormatter = FFFormatBlockSlot;
