@@ -215,12 +215,13 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
   if (init)
     _reverbState.Reset();
 
+  _feedbackModPhase = 0.0f;
   _feedbackOn = topo.NormalizedToBoolFast(FFEchoParam::FeedbackOn, feedbackOnNorm);
   _feedbackLPOn = topo.NormalizedToBoolFast(FFEchoParam::FeedbackLPOn, feedbackLPOnNorm);
   _feedbackHPOn = topo.NormalizedToBoolFast(FFEchoParam::FeedbackHPOn, feedbackHPOnNorm);
   _feedbackOn &= !graph || graphIndex == feedbackOrder || graphIndex == (int)FFEchoModule::Count;
-  _feedbackDelayBarsSamples = topo.NormalizedToBarsFloatSamplesFast(
-    FFEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, sampleRate, bpm);
+  _feedbackDelayBarsSeconds = topo.NormalizedToBarsTimeFast(
+    FFEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, bpm);
   _feedbackDelayState.smoother.SetCoeffs((int)std::ceil(delaySmoothSamples));
 
   if (init)
@@ -414,6 +415,8 @@ FFEchoProcessor<Global>::ProcessFeedback(
   auto const& xOverNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackXOver[0], voice);
   auto const& lpResNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackLPRes[0], voice);
   auto const& hpResNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackHPRes[0], voice);
+  auto const& modAmtNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackModAmt[0], voice);
+  auto const& modRateNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackModRate[0], voice);
 
   auto const& mixNormIn = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackMix[0], voice);
   auto const& lpFreqNormIn = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackLPFreq[0], voice);
@@ -450,22 +453,14 @@ FFEchoProcessor<Global>::ProcessFeedback(
   if (_firstProcess)
   {
     float feedbackDelayTimeNorm = delayTimeNormModulated.First();
-    float feedbackDelayTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
-      FFEchoParam::FeedbackDelayTime, feedbackDelayTimeNorm, sampleRate);
-    float feedbackDelayInitSamples = _sync ? _feedbackDelayBarsSamples : feedbackDelayTimeSamples;
-    _feedbackDelayState.smoother.State(feedbackDelayInitSamples);
+    float feedbackDelayTimeSeconds = topo.NormalizedToLinearFast(
+      FFEchoParam::FeedbackDelayTime, feedbackDelayTimeNorm);
+    float feedbackDelayInitSeconds = _sync ? _feedbackDelayBarsSeconds : feedbackDelayTimeSeconds;
+    _feedbackDelayState.smoother.State(feedbackDelayInitSeconds);
   }
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float lengthTimeSamples;
-    if (_sync)
-      lengthTimeSamples = _feedbackDelayBarsSamples;
-    else
-      lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
-        FFEchoParam::FeedbackDelayTime, delayTimeNormModulated.Get(s), sampleRate);
-    float lengthTimeSamplesSmooth = _feedbackDelayState.smoother.NextScalar(lengthTimeSamples);
-
     float xOverPlain = topo.NormalizedToIdentityFast(
       FFEchoParam::FeedbackXOver, xOverNorm.CV().Get(s));
     float lpResPlain = topo.NormalizedToIdentityFast(
@@ -473,10 +468,27 @@ FFEchoProcessor<Global>::ProcessFeedback(
     float hpResPlain = topo.NormalizedToIdentityFast(
       FFEchoParam::FeedbackHPRes, hpResNorm.CV().Get(s));
 
+    float modAmtPlain = topo.NormalizedToLinearFast(
+      FFEchoParam::FeedbackModAmt, modAmtNorm.CV().Get(s));
+    float modRatePlain = topo.NormalizedToLinearFast(
+      FFEchoParam::FeedbackModRate, modRateNorm.CV().Get(s));
+
     float mixPlain = topo.NormalizedToIdentityFast(
       FFEchoParam::FeedbackMix, mixNormModulated.Get(s));
     float amountPlain = topo.NormalizedToIdentityFast(
       FFEchoParam::FeedbackAmount, amountNormModulated.Get(s));
+
+    float lengthTimeSeconds;
+    if (_sync)
+      lengthTimeSeconds = _feedbackDelayBarsSeconds;
+    else
+      lengthTimeSeconds = topo.NormalizedToLinearFast(
+        FFEchoParam::FeedbackDelayTime, delayTimeNormModulated.Get(s));
+    float lengthTimeSecondsSmooth = _feedbackDelayState.smoother.NextScalar(lengthTimeSeconds);
+
+    lengthTimeSecondsSmooth += std::sin(_feedbackModPhase * 2.0f * FBPi) * modAmtPlain;
+    _feedbackModPhase = FBPhaseWrap(_feedbackModPhase + modRatePlain / sampleRate);
+    float lengthTimeSamplesSmooth = FBTimeToFloatSamples(lengthTimeSecondsSmooth, sampleRate);
 
     // expensive
     float lpFreqPlain = 0.0f;

@@ -1,11 +1,10 @@
 TODOLIST for alpha-24 - microtuning
+[ ] modrate/modamt dedicated lfo in the feedback echo
 [ ] make a dedicated tuning section with some options ==> only PB and optionally unison coarse
 [ ] note filtering
 [ ] MTS into master: off / note / continuous 
 
 TODOLIST for alpha-25 - rest of the gui stuff
-[ ] logspace the SV plot
-[ ] modrate/modamt dedicated osci in the feedback echo
 [ ] add Carla/ardour for mac as test targets
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
 [ ] param menu : set to default / set to patch

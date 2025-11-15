@@ -80,6 +80,8 @@ class alignas(alignof(TAccurate)) FFEchoAccParamState final
   std::array<TAccurate, 1> reverbLPFreq = {};
   std::array<TAccurate, 1> reverbHPFreq = {};
   std::array<TAccurate, 1> feedbackMix = {};
+  std::array<TAccurate, 1> feedbackModRate = {};
+  std::array<TAccurate, 1> feedbackModAmt = {};
   std::array<TAccurate, 1> feedbackAmount = {};
   std::array<TAccurate, 1> feedbackXOver = {};
   std::array<TAccurate, 1> feedbackDelayTime = {};

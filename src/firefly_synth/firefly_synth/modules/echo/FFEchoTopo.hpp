@@ -39,7 +39,7 @@ enum class FFEchoParam {
   ReverbSize, ReverbDamp, ReverbAPF,
   ReverbLPOn, ReverbLPFreq, ReverbLPRes, ReverbHPOn, ReverbHPFreq, ReverbHPRes,
   FeedbackOn, FeedbackMix, FeedbackAmount, FeedbackXOver,
-  FeedbackDelayTime, FeedbackDelayBars,
+  FeedbackDelayTime, FeedbackDelayBars, FeedbackModRate, FeedbackModAmt,
   FeedbackLPOn, FeedbackLPFreq, FeedbackLPRes, FeedbackHPOn, FeedbackHPFreq, FeedbackHPRes,
   TapsOn, TapsMix, TapOn, TapFirst = TapOn, TapBalance, 
   TapLevel, TapXOver, TapDelayTime, TapDelayBars,

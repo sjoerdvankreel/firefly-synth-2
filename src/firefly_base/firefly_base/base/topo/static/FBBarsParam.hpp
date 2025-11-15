@@ -16,6 +16,7 @@ struct FBBarsParam
 {
   std::vector<FBBarsItem> items = {};
   int NormalizedToPlainFast(float normalized) const;
+  float NormalizedToTimeFast(float normalized, float bpm) const;
   float NormalizedToFreqFast(float normalized, float bpm) const;
   int NormalizedToSamplesFast(float normalized, float sampleRate, float bpm) const;
   float NormalizedToFloatSamplesFast(float normalized, float sampleRate, float bpm) const;
@@ -50,6 +51,12 @@ inline float
 FBBarsParam::NormalizedToFreqFast(float normalized, float bpm) const
 {
   return FBBarsToFreq(items[NormalizedToPlainFast(normalized)], bpm);
+}
+
+inline float
+FBBarsParam::NormalizedToTimeFast(float normalized, float bpm) const
+{
+  return FBBarsToTime(items[NormalizedToPlainFast(normalized)], bpm);
 }
 
 inline int 
