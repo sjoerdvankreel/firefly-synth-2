@@ -638,8 +638,8 @@ FFMakeEchoTopo(bool global)
   feedbackDelayTime.unit = "Sec";
   feedbackDelayTime.id = prefix + "{CBD0A273-5E74-460E-A327-5EE9EE1C6F49}";
   feedbackDelayTime.type = FBParamType::Linear;
-  feedbackDelayTime.Linear().min = 0.0f;
   feedbackDelayTime.Linear().max = 10.0f;
+  feedbackDelayTime.Linear().min = 0.002f;
   feedbackDelayTime.Linear().editSkewFactor = 0.5f;
   auto selectFeedbackDelayTime = [](auto& module) { return &module.acc.feedbackDelayTime; };
   feedbackDelayTime.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackDelayTime);
@@ -675,12 +675,11 @@ FFMakeEchoTopo(bool global)
   feedbackModRate.name = "Fdbk Mod Rate";
   feedbackModRate.display = "Mod Rate";
   feedbackModRate.slotCount = 1;
-  feedbackModRate.slotFormatter = FFFormatBlockSlot;
   feedbackModRate.unit = "Hz";
   feedbackModRate.id = prefix + "{640B47FC-7506-4853-93E0-2C628F8BF3D8}";
   feedbackModRate.type = FBParamType::Linear;
   feedbackModRate.Linear().min = 0.05f;
-  feedbackModRate.Linear().max = 20.0f;
+  feedbackModRate.Linear().max = 5.0f;
   feedbackModRate.Linear().editSkewFactor = 0.5f;
   auto selectFeedbackModRate = [](auto& module) { return &module.acc.feedbackModRate; };
   feedbackModRate.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackModRate);
@@ -700,7 +699,7 @@ FFMakeEchoTopo(bool global)
   feedbackModAmt.id = prefix + "{686BE077-623D-4B14-94A2-F708139F8535}";
   feedbackModAmt.type = FBParamType::Linear;
   feedbackModAmt.Linear().min = 0.0f;
-  feedbackModAmt.Linear().max = 0.01f;
+  feedbackModAmt.Linear().max = 0.002f;
   feedbackModAmt.Linear().displayMultiplier = 1000.0f;
   auto selectFeedbackModAmt = [](auto& module) { return &module.acc.feedbackModAmt; };
   feedbackModAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackModAmt);

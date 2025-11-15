@@ -215,7 +215,6 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
   if (init)
     _reverbState.Reset();
 
-  _feedbackModPhase = 0.0f;
   _feedbackOn = topo.NormalizedToBoolFast(FFEchoParam::FeedbackOn, feedbackOnNorm);
   _feedbackLPOn = topo.NormalizedToBoolFast(FFEchoParam::FeedbackLPOn, feedbackLPOnNorm);
   _feedbackHPOn = topo.NormalizedToBoolFast(FFEchoParam::FeedbackHPOn, feedbackHPOnNorm);
@@ -227,6 +226,7 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
   if (init)
   {
     _firstProcess = true;
+    _feedbackModPhase = 0.0f;
     _feedbackDelayState.Reset();
     _feedbackDelayLine[0].Reset(_feedbackDelayLine[0].MaxBufferSize());
     _feedbackDelayLine[1].Reset(_feedbackDelayLine[1].MaxBufferSize());
@@ -487,6 +487,7 @@ FFEchoProcessor<Global>::ProcessFeedback(
     float lengthTimeSecondsSmooth = _feedbackDelayState.smoother.NextScalar(lengthTimeSeconds);
 
     lengthTimeSecondsSmooth += std::sin(_feedbackModPhase * 2.0f * FBPi) * modAmtPlain;
+    lengthTimeSecondsSmooth = std::max(0.0f, lengthTimeSecondsSmooth);
     _feedbackModPhase = FBPhaseWrap(_feedbackModPhase + modRatePlain / sampleRate);
     float lengthTimeSamplesSmooth = FBTimeToFloatSamples(lengthTimeSecondsSmooth, sampleRate);
 
@@ -542,6 +543,8 @@ FFEchoProcessor<Global>::ProcessFeedback(
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackLPRes[0], voice) = lpResNorm.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackHPRes[0], voice) = hpResNorm.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackXOver[0], voice) = xOverNorm.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackModAmt[0], voice) = modAmtNorm.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackModRate[0], voice) = modRateNorm.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackMix[0], voice) = mixNormModulated.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackLPFreq[0], voice) = lpFreqNormModulated.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackHPFreq[0], voice) = hpFreqNormModulated.Last();
