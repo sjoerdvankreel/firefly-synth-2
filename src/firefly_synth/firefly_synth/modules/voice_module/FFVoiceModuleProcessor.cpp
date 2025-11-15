@@ -2,6 +2,7 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/shared/FFStateDetail.hpp>
 #include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
+#include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniProcessor.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleProcessor.hpp>
@@ -12,6 +13,7 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
+#include <libMTSClient.h>
 #include <xsimd/xsimd.hpp>
 
 void
@@ -25,7 +27,14 @@ FFVoiceModuleProcessor::BeginVoice(
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.voiceModule[0];
+  auto const& settingsParams = procState->param.global.settings[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
+  auto const& settingsTopo = state.topo->static_->modules[(int)FFModuleType::Settings];
+
+  _settingsTuning = settingsTopo.NormalizedToBoolFast(FFSettingsParam::Tuning, settingsParams.block.tuning[0].Value());
+  _settingsTuneOnNote = settingsTopo.NormalizedToBoolFast(FFSettingsParam::Tuning, settingsParams.block.tuneOnNote[0].Value());
+  _settingsTuneMasterPB = settingsTopo.NormalizedToBoolFast(FFSettingsParam::Tuning, settingsParams.block.tuneMasterPB[0].Value());
+  _settingsTuneVoiceCoarse = settingsTopo.NormalizedToBoolFast(FFSettingsParam::Tuning, settingsParams.block.tuneVoiceCoarse[0].Value());
 
   float portaTypeNorm = params.block.portaType[0].Voice()[voice];
   float portaModeNorm = params.block.portaMode[0].Voice()[voice];
@@ -126,27 +135,43 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   fineNormModulated.CopyTo(dspState.outputFineRaw);
   coarseNormModulated.CopyTo(dspState.outputCoarse);
 
+  FBSArray<float, FBFixedBlockSamples> pitchModTuned(0.0f);
+  FBSArray<float, FBFixedBlockSamples> pitchModUntuned(0.0f);
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
-    auto coarsePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Coarse, coarseNormModulated.Load(s));
     auto finePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Fine, fineNormModulated.Load(s));
-    auto pitch = basePitchFromKey + coarsePlain + finePlain;
-    if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
-      pitch += masterPitchBendSemis.Load(s);
-    dspState.pitch.Store(s, pitch);
     dspState.outputFine.Store(s, FBToUnipolar(FBToBipolar(fineNormModulated.Load(s)) / 127.0f));
+    pitchModUntuned.Add(s, finePlain);
+
+    auto coarsePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Coarse, coarseNormModulated.Load(s));
+    if (_settingsTuning && _settingsTuneVoiceCoarse)
+      pitchModTuned.Add(s, coarsePlain);
+    else
+      pitchModUntuned.Add(s, coarsePlain);
+
+    if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
+      if (_settingsTuning && _settingsTuneMasterPB)
+        pitchModTuned.Add(s, masterPitchBendSemis.Load(s));
+      else
+        pitchModUntuned.Add(s, masterPitchBendSemis.Load(s));
   }
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     if (_portaPitchSamplesProcessed++ <= _portaPitchSamplesTotal)
       _portaPitchOffsetCurrent -= _portaPitchDelta;
-    dspState.pitch.Set(s, dspState.pitch.Get(s) - _portaPitchOffsetCurrent);
     dspState.outputPorta.Set(s, FBToUnipolar(-_portaPitchOffsetCurrent / 127.0f));
-  }
+    pitchModUntuned.Set(s, pitchModUntuned.Get(s) - _portaPitchOffsetCurrent);
 
-  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-    dspState.outputPitch.Store(s, dspState.pitch.Load(s) / 127.0f);
+    float pitch = basePitchFromKey;
+    pitch += (float)MTS_RetuningInSemitones(
+      procState->dsp.global.master.mtsClient, 
+      std::clamp((char)std::round(pitch + pitchModTuned.Get(s)), (char)0, (char)127),
+      (char)state.voice->event.note.channel);
+    pitch += pitchModUntuned.Get(s);
+    dspState.pitch.Set(s, pitch);
+    dspState.outputPitch.Set(s, pitch / 127.0f);
+  }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)

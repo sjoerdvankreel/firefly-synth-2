@@ -10,6 +10,7 @@ template <class TBlock>
 class alignas(alignof(TBlock)) FFSettingsBlockParamState final
 {
   friend class FFPlugProcessor;
+  friend class FFVoiceModuleProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeSettingsTopo(bool);
   std::array<TBlock, 1> tuning = {};
   std::array<TBlock, 1> tuneOnNote = {};
@@ -25,6 +26,7 @@ template <class TBlock>
 class alignas(alignof(TBlock)) FFSettingsParamState final
 {
   friend class FFPlugProcessor;
+  friend class FFVoiceModuleProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeSettingsTopo(bool);
   FFSettingsBlockParamState<TBlock> block = {};
 public:
