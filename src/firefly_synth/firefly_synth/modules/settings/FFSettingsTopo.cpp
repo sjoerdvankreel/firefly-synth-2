@@ -19,7 +19,7 @@ FFMakeSettingsTopo(bool isFx)
   hostSmoothTime.storeInPatch = false;
   hostSmoothTime.mode = FBParamMode::Block;
   hostSmoothTime.defaultText = "2";
-  hostSmoothTime.name = "MIDI/Automation Smth";
+  hostSmoothTime.name = "MIDI/Auto Smth";
   hostSmoothTime.slotCount = 1;
   hostSmoothTime.unit = "Ms";
   hostSmoothTime.id = "{C0FEF40D-573A-4F3C-A51C-5906EAE28694}";
@@ -36,7 +36,7 @@ FFMakeSettingsTopo(bool isFx)
   auto& receiveNotes = result->params[(int)FFSettingsParam::ReceiveNotes];
   receiveNotes.storeInPatch = false;
   receiveNotes.mode = FBParamMode::Block;
-  receiveNotes.name = "Receive MIDI Notes";
+  receiveNotes.name = "Receive Notes";
   receiveNotes.slotCount = 1;
   receiveNotes.defaultText = isFx ? "Off" : "On";
   receiveNotes.id = "{D996862F-74B0-460F-A50B-61261B400961}";
@@ -63,6 +63,7 @@ FFMakeSettingsTopo(bool isFx)
   tuneOnNote.storeInPatch = false;
   tuneOnNote.mode = FBParamMode::Block;
   tuneOnNote.name = "Tune On Note";
+  tuneOnNote.display = "On Note";
   tuneOnNote.slotCount = 1;
   tuneOnNote.defaultText = "Off";
   tuneOnNote.id = "{12E81BF9-8123-4B7C-B1F6-976D0D7FE20A}";
@@ -77,6 +78,7 @@ FFMakeSettingsTopo(bool isFx)
   tuneMasterPB.storeInPatch = false;
   tuneMasterPB.mode = FBParamMode::Block;
   tuneMasterPB.name = "Tune Master PB";
+  tuneMasterPB.display = "Master PB";
   tuneMasterPB.slotCount = 1;
   tuneMasterPB.defaultText = "Off";
   tuneMasterPB.id = "{EBBE4E94-C14C-4CE1-B70B-BE26E17EA155}";
@@ -91,6 +93,7 @@ FFMakeSettingsTopo(bool isFx)
   tuneVoiceCoarse.storeInPatch = false;
   tuneVoiceCoarse.mode = FBParamMode::Block;
   tuneVoiceCoarse.name = "Tune Voice Coarse";
+  tuneVoiceCoarse.display = "Voice Coarse";
   tuneVoiceCoarse.slotCount = 1;
   tuneVoiceCoarse.defaultText = "Off";
   tuneVoiceCoarse.id = "{DA9B29F1-E23F-4948-8608-9A323A93927F}";
