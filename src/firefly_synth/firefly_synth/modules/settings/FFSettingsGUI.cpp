@@ -59,9 +59,10 @@ static Component*
 MakeSettingsTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0 });
   grid->Add(0, 0, MakeSettingsSectionMain(plugGUI));
   grid->Add(0, 1, MakeSettingsSectionTuning(plugGUI));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBFillerComponent>(5, 1));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
