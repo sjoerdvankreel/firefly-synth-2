@@ -680,7 +680,6 @@ FFMakeEchoTopo(bool global)
   feedbackModRate.type = FBParamType::Linear;
   feedbackModRate.Linear().min = 0.05f;
   feedbackModRate.Linear().max = 5.0f;
-  feedbackModRate.Linear().editSkewFactor = 0.5f;
   auto selectFeedbackModRate = [](auto& module) { return &module.acc.feedbackModRate; };
   feedbackModRate.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackModRate);
   feedbackModRate.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFeedbackModRate);
