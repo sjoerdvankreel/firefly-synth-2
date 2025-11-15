@@ -11,6 +11,10 @@ class alignas(alignof(TBlock)) FFSettingsBlockParamState final
 {
   friend class FFPlugProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeSettingsTopo(bool);
+  std::array<TBlock, 1> tuning = {};
+  std::array<TBlock, 1> tuneOnNote = {};
+  std::array<TBlock, 1> tuneMasterPB = {};
+  std::array<TBlock, 1> tuneVoiceCoarse = {};
   std::array<TBlock, 1> receiveNotes = {};
   std::array<TBlock, 1> hostSmoothTime = {};
 public:

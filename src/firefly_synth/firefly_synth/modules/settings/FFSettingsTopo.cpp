@@ -46,5 +46,60 @@ FFMakeSettingsTopo(bool isFx)
   receiveNotes.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReceiveNotes);
   receiveNotes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReceiveNotes);
 
+  auto& tuning = result->params[(int)FFSettingsParam::Tuning];
+  tuning.storeInPatch = false;
+  tuning.mode = FBParamMode::Block;
+  tuning.name = "Tuning";
+  tuning.slotCount = 1;
+  tuning.defaultText = "Off";
+  tuning.id = "{7192D8E2-235B-46FA-93B6-BBE75F1088FD}";
+  tuning.type = FBParamType::Boolean;
+  auto selectTuning = [](auto& module) { return &module.block.tuning; };
+  tuning.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuning);
+  tuning.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuning);
+  tuning.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuning);
+
+  auto& tuneOnNote = result->params[(int)FFSettingsParam::TuneOnNote];
+  tuneOnNote.storeInPatch = false;
+  tuneOnNote.mode = FBParamMode::Block;
+  tuneOnNote.name = "Tune On Note";
+  tuneOnNote.slotCount = 1;
+  tuneOnNote.defaultText = "Off";
+  tuneOnNote.id = "{12E81BF9-8123-4B7C-B1F6-976D0D7FE20A}";
+  tuneOnNote.type = FBParamType::Boolean;
+  auto selectTuneOnNote = [](auto& module) { return &module.block.tuneOnNote; };
+  tuneOnNote.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuneOnNote);
+  tuneOnNote.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuneOnNote);
+  tuneOnNote.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuneOnNote);
+  tuneOnNote.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::Tuning }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& tuneMasterPB = result->params[(int)FFSettingsParam::TuneMasterPB];
+  tuneMasterPB.storeInPatch = false;
+  tuneMasterPB.mode = FBParamMode::Block;
+  tuneMasterPB.name = "Tune Master PB";
+  tuneMasterPB.slotCount = 1;
+  tuneMasterPB.defaultText = "Off";
+  tuneMasterPB.id = "{EBBE4E94-C14C-4CE1-B70B-BE26E17EA155}";
+  tuneMasterPB.type = FBParamType::Boolean;
+  auto selectTuneMasterPB = [](auto& module) { return &module.block.tuneMasterPB; };
+  tuneMasterPB.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuneMasterPB);
+  tuneMasterPB.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuneMasterPB);
+  tuneMasterPB.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuneMasterPB);
+  tuneMasterPB.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::Tuning }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& tuneVoiceCoarse = result->params[(int)FFSettingsParam::TuneVoiceCoarse];
+  tuneVoiceCoarse.storeInPatch = false;
+  tuneVoiceCoarse.mode = FBParamMode::Block;
+  tuneVoiceCoarse.name = "Tune Voice Coarse";
+  tuneVoiceCoarse.slotCount = 1;
+  tuneVoiceCoarse.defaultText = "Off";
+  tuneVoiceCoarse.id = "{DA9B29F1-E23F-4948-8608-9A323A93927F}";
+  tuneVoiceCoarse.type = FBParamType::Boolean;
+  auto selectTuneVoiceCoarse = [](auto& module) { return &module.block.tuneVoiceCoarse; };
+  tuneVoiceCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuneVoiceCoarse);
+  tuneVoiceCoarse.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuneVoiceCoarse);
+  tuneVoiceCoarse.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuneVoiceCoarse);
+  tuneVoiceCoarse.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::Tuning }, [](auto const& vs) { return vs[0] != 0; });
+
   return result;
 }
