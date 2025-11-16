@@ -73,6 +73,7 @@ struct alignas(FBSIMDAlign) FFGlobalDSPState final
   FFGNoteDSPState gNote = {};
   FFOutputDSPState output = {};
   FFMasterDSPState master = {};
+  FFSettingsDSPState settings = {};
   FFGlobalUniDSPState globalUni = {};
   FFEchoDSPState<true> gEcho = {};
   FFModMatrixDSPState<true> gMatrix = {};

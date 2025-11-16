@@ -27,14 +27,7 @@ FFVoiceModuleProcessor::BeginVoice(
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.voiceModule[0];
-  auto const& settingsParams = procState->param.global.settings[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
-  auto const& settingsTopo = state.topo->static_->modules[(int)FFModuleType::Settings];
-
-  _settingsTuning = settingsTopo.NormalizedToBoolFast(FFSettingsParam::Tuning, settingsParams.block.tuning[0].Value());
-  _settingsTuneOnNote = settingsTopo.NormalizedToBoolFast(FFSettingsParam::Tuning, settingsParams.block.tuneOnNote[0].Value());
-  _settingsTuneMasterPB = settingsTopo.NormalizedToBoolFast(FFSettingsParam::Tuning, settingsParams.block.tuneMasterPB[0].Value());
-  _settingsTuneVoiceCoarse = settingsTopo.NormalizedToBoolFast(FFSettingsParam::Tuning, settingsParams.block.tuneVoiceCoarse[0].Value());
 
   float portaTypeNorm = params.block.portaType[0].Voice()[voice];
   float portaModeNorm = params.block.portaMode[0].Voice()[voice];
@@ -113,6 +106,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
   auto& dspState = procState->dsp.voice[voice].voiceModule;
+  auto const& settingsDspState = procState->dsp.global.settings;
   auto const& procParams = procState->param.voice.voiceModule[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
 
@@ -144,13 +138,13 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     pitchModUntuned.Add(s, finePlain);
 
     auto coarsePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Coarse, coarseNormModulated.Load(s));
-    if (_settingsTuning && _settingsTuneVoiceCoarse)
+    if (settingsDspState.tuning && settingsDspState.tuneVoiceCoarse)
       pitchModTuned.Add(s, coarsePlain);
     else
       pitchModUntuned.Add(s, coarsePlain);
 
     if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
-      if (_settingsTuning && _settingsTuneMasterPB)
+      if (settingsDspState.tuning && settingsDspState.tuneMasterPB)
         pitchModTuned.Add(s, masterPitchBendSemis.Load(s));
       else
         pitchModUntuned.Add(s, masterPitchBendSemis.Load(s));
@@ -164,7 +158,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     pitchModUntuned.Set(s, pitchModUntuned.Get(s) - _portaPitchOffsetCurrent);
 
     float pitch = basePitchFromKey;
-    if (_settingsTuning)
+    if (settingsDspState.tuning)
     {
       float pitchToTune = basePitchFromKey + pitchModTuned.Get(s);
       char pitchToTune0 = (char)std::clamp(std::floor(pitchToTune), 0.0f, 127.0f);

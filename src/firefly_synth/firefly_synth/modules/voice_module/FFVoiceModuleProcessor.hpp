@@ -13,12 +13,6 @@ class FFVoiceModuleProcessor final
   int _portaPitchSamplesProcessed = 0;
   float _portaPitchDelta = 0.0f;
   float _portaPitchOffsetCurrent = 0.0f;
-
-  bool _settingsTuning = false;
-  bool _settingsTuneOnNote = false;
-  bool _settingsTuneMasterPB = false;
-  bool _settingsTuneVoiceCoarse = false;
-
   FFVoiceModuleVoiceStartParamState<float> _voiceStartSnapshotNorm = {};
 
 public:
