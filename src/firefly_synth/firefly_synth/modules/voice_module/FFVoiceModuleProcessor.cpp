@@ -29,6 +29,13 @@ FFVoiceModuleProcessor::BeginVoice(
   auto const& params = procState->param.voice.voiceModule[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
 
+  _thisVoiceKeyMaybeTuned = (float)state.voice->event.note.key;
+  if (procState->dsp.global.settings.tuning && procState->dsp.global.settings.tuneOnNote)
+    _thisVoiceKeyMaybeTuned += (float)MTS_RetuningInSemitones(
+      procState->dsp.global.master.mtsClient,
+      (char)state.voice->event.note.key,
+      (char)state.voice->event.note.channel);
+
   float portaTypeNorm = params.block.portaType[0].Voice()[voice];
   float portaModeNorm = params.block.portaMode[0].Voice()[voice];
   float portaSyncNorm = params.block.portaSync[0].Voice()[voice];
@@ -102,7 +109,6 @@ void
 FFVoiceModuleProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
-  float basePitchFromKey = (float)state.voice->event.note.key;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
   auto& dspState = procState->dsp.voice[voice].voiceModule;
@@ -138,13 +144,13 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     pitchModUntuned.Add(s, finePlain);
 
     auto coarsePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Coarse, coarseNormModulated.Load(s));
-    if (settingsDspState.tuning && settingsDspState.tuneVoiceCoarse)
+    if (settingsDspState.tuning && !settingsDspState.tuneOnNote && settingsDspState.tuneVoiceCoarse)
       pitchModTuned.Add(s, coarsePlain);
     else
       pitchModUntuned.Add(s, coarsePlain);
 
     if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
-      if (settingsDspState.tuning && settingsDspState.tuneMasterPB)
+      if (settingsDspState.tuning && !settingsDspState.tuneOnNote && settingsDspState.tuneMasterPB)
         pitchModTuned.Add(s, masterPitchBendSemis.Load(s));
       else
         pitchModUntuned.Add(s, masterPitchBendSemis.Load(s));
@@ -157,10 +163,10 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     dspState.outputPorta.Set(s, FBToUnipolar(-_portaPitchOffsetCurrent / 127.0f));
     pitchModUntuned.Set(s, pitchModUntuned.Get(s) - _portaPitchOffsetCurrent);
 
-    float pitch = basePitchFromKey;
-    if (settingsDspState.tuning)
+    float pitch = _thisVoiceKeyMaybeTuned;
+    if (settingsDspState.tuning && !settingsDspState.tuneOnNote)
     {
-      float pitchToTune = basePitchFromKey + pitchModTuned.Get(s);
+      float pitchToTune = _thisVoiceKeyMaybeTuned + pitchModTuned.Get(s);
       char pitchToTune0 = (char)std::clamp(std::floor(pitchToTune), 0.0f, 127.0f);
       char pitchToTune1 = (char)std::clamp(pitchToTune0 + 1, 0, 127);
       float pitchTuned0 = pitchToTune + (float)MTS_RetuningInSemitones(
