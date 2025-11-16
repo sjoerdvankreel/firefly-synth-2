@@ -87,7 +87,7 @@ FFMakeSettingsTopo(bool isFx)
   tuneMasterPB.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuneMasterPB);
   tuneMasterPB.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuneMasterPB);
   tuneMasterPB.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuneMasterPB);
-  tuneMasterPB.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::Tuning, (int)FFSettingsParam::TuneOnNote }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
+  tuneMasterPB.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::Tuning }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& tuneVoiceCoarse = result->params[(int)FFSettingsParam::TuneVoiceCoarse];
   tuneVoiceCoarse.storeInPatch = false;
@@ -102,7 +102,7 @@ FFMakeSettingsTopo(bool isFx)
   tuneVoiceCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuneVoiceCoarse);
   tuneVoiceCoarse.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuneVoiceCoarse);
   tuneVoiceCoarse.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuneVoiceCoarse);
-  tuneVoiceCoarse.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::Tuning, (int)FFSettingsParam::TuneOnNote }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
+  tuneVoiceCoarse.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::Tuning }, [](auto const& vs) { return vs[0] != 0; });
 
   return result;
 }
