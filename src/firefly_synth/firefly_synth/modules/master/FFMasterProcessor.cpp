@@ -72,7 +72,7 @@ FFMasterProcessor::Process(FBModuleProcState& state)
       highVeloKeySmth += pb;
       lowVeloKeySmth += pb;
     }
-    if (procState->dsp.global.settings.tuning)
+    if (procState->dsp.global.settings.tuning && procState->dsp.global.settings.tuneMasterMatrix)
     {
       lastKeyRaw = FBTuneReal(procState->dsp.global.master.mtsClient, lastKeyRaw, -1);
       highKeyKeyRaw = FBTuneReal(procState->dsp.global.master.mtsClient, highKeyKeyRaw, -1);
