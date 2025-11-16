@@ -218,6 +218,12 @@ These go out of bounds reasonably fast, so i soft-clip the feedback path at +/- 
 * Automatic mode: spread/skew/randomize to build up the voice "spectrum"
 * All global unison controls are themselves fully modulatable, so valid targets for modmatrix and CLAP modulation
 
+## Settings
+* Everything stored *outside* the patch (so, in the daw session).
+* Receive MIDI notes on/off (primarily for FX version).
+* MIDI/Automation smoothing control.
+* Microtuning switch with a couple of options.
+
 # Build it
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
 
