@@ -1,6 +1,6 @@
 TODOLIST for alpha-24 - microtuning
 [x] modrate/modamt dedicated lfo in the feedback echo
-[ ] make a dedicated tuning section with some options ==> only PB and optionally unison coarse
+[x] make a dedicated tuning section with some options ==> only PB and optionally unison coarse
 [ ] note filtering
 [ ] MTS into master: off / note / continuous 
 [ ] tune the params and key
