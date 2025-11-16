@@ -20,7 +20,9 @@ public:
   bool tuning = {};
   bool tuneOnNote = {};
   bool tuneMasterPB = {};
+  bool tuneMasterMatrix = {};
   bool tuneVoiceCoarse = {};
+  bool tuneVoiceMatrix = {};
 };
 
 template <class TBlock>
@@ -32,7 +34,9 @@ class alignas(alignof(TBlock)) FFSettingsBlockParamState final
   std::array<TBlock, 1> tuning = {};
   std::array<TBlock, 1> tuneOnNote = {};
   std::array<TBlock, 1> tuneMasterPB = {};
+  std::array<TBlock, 1> tuneMasterMatrix = {};
   std::array<TBlock, 1> tuneVoiceCoarse = {};
+  std::array<TBlock, 1> tuneVoiceMatrix = {};
   std::array<TBlock, 1> receiveNotes = {};
   std::array<TBlock, 1> hostSmoothTime = {};
 public:

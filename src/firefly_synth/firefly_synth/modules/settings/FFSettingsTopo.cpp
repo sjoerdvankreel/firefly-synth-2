@@ -89,6 +89,21 @@ FFMakeSettingsTopo(bool isFx)
   tuneMasterPB.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuneMasterPB);
   tuneMasterPB.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::Tuning }, [](auto const& vs) { return vs[0] != 0; });
 
+  auto& tuneMasterMatrix = result->params[(int)FFSettingsParam::TuneMasterMatrix];
+  tuneMasterMatrix.storeInPatch = false;
+  tuneMasterMatrix.mode = FBParamMode::Block;
+  tuneMasterMatrix.name = "Tune Master Matrix";
+  tuneMasterMatrix.display = "Master Matrix";
+  tuneMasterMatrix.slotCount = 1;
+  tuneMasterMatrix.defaultText = "Off";
+  tuneMasterMatrix.id = "{8D196ECE-BF26-4735-804D-28641DEF06CA}";
+  tuneMasterMatrix.type = FBParamType::Boolean;
+  auto selectTuneMasterMatrix = [](auto& module) { return &module.block.tuneMasterMatrix; };
+  tuneMasterMatrix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuneMasterMatrix);
+  tuneMasterMatrix.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuneMasterMatrix);
+  tuneMasterPB.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuneMasterMatrix);
+  tuneMasterMatrix.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::Tuning }, [](auto const& vs) { return vs[0] != 0; });
+
   auto& tuneVoiceCoarse = result->params[(int)FFSettingsParam::TuneVoiceCoarse];
   tuneVoiceCoarse.storeInPatch = false;
   tuneVoiceCoarse.mode = FBParamMode::Block;
@@ -103,6 +118,21 @@ FFMakeSettingsTopo(bool isFx)
   tuneVoiceCoarse.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuneVoiceCoarse);
   tuneVoiceCoarse.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuneVoiceCoarse);
   tuneVoiceCoarse.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::Tuning }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& tuneVoiceMatrix = result->params[(int)FFSettingsParam::TuneVoiceMatrix];
+  tuneVoiceMatrix.storeInPatch = false;
+  tuneVoiceMatrix.mode = FBParamMode::Block;
+  tuneVoiceMatrix.name = "Tune Voice Matrix";
+  tuneVoiceMatrix.display = "Voice Matrix";
+  tuneVoiceMatrix.slotCount = 1;
+  tuneVoiceMatrix.defaultText = "Off";
+  tuneVoiceMatrix.id = "{A65377D6-6D56-459E-A14B-B55C1565BC2D}";
+  tuneVoiceMatrix.type = FBParamType::Boolean;
+  auto selectTuneVoiceMatrix = [](auto& module) { return &module.block.tuneVoiceMatrix; };
+  tuneVoiceMatrix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuneVoiceMatrix);
+  tuneVoiceMatrix.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuneVoiceMatrix);
+  tuneVoiceMatrix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuneVoiceMatrix);
+  tuneVoiceMatrix.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::Tuning }, [](auto const& vs) { return vs[0] != 0; });
 
   return result;
 }

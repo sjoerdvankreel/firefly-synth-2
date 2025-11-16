@@ -38,7 +38,7 @@ MakeSettingsSectionTuning(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   auto tuning = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::Tuning, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuning));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuning));
@@ -51,7 +51,13 @@ MakeSettingsSectionTuning(FBPlugGUI* plugGUI)
   auto tuneVoiceCoarse = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneVoiceCoarse, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneVoiceCoarse));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneVoiceCoarse));
-  grid->MarkSection({ { 0, 0 }, { 2, 4 } });
+  auto tuneMasterMatrix = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneMasterMatrix, 0 } });
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneMasterMatrix));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneMasterMatrix));
+  auto tuneVoiceMatrix = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneVoiceMatrix, 0 } });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneVoiceMatrix));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneVoiceMatrix));
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
