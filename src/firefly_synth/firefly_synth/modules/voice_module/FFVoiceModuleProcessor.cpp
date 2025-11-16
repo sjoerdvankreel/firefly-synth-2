@@ -9,6 +9,7 @@
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
+#include <firefly_base/dsp/shared/FBTune.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
@@ -165,19 +166,10 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
 
     float pitch = _thisVoiceKeyMaybeTuned;
     if (settingsDspState.tuning && !settingsDspState.tuneOnNote)
-    {
-      float pitchToTune = _thisVoiceKeyMaybeTuned + pitchModTuned.Get(s);
-      char pitchToTune0 = (char)std::clamp(std::floor(pitchToTune), 0.0f, 127.0f);
-      char pitchToTune1 = (char)std::clamp(pitchToTune0 + 1, 0, 127);
-      float pitchTuned0 = pitchToTune + (float)MTS_RetuningInSemitones(
-        procState->dsp.global.master.mtsClient, pitchToTune0,
-        (char)state.voice->event.note.channel);
-      float pitchTuned1 = pitchToTune + (float)MTS_RetuningInSemitones(
-        procState->dsp.global.master.mtsClient, pitchToTune1,
-        (char)state.voice->event.note.channel);
-      float lerp = pitchToTune - pitchToTune0;
-      pitch = (1.0f - lerp) * pitchTuned0 + lerp * pitchTuned1;
-    }
+      pitch = FBTuneReal(
+        procState->dsp.global.master.mtsClient,
+        _thisVoiceKeyMaybeTuned + pitchModTuned.Get(s), 
+        state.voice->event.note.channel);
     pitch += pitchModUntuned.Get(s);
     dspState.pitch.Set(s, pitch);
     dspState.outputPitch.Set(s, pitch / 127.0f);

@@ -1,10 +1,10 @@
 TODOLIST for alpha-24 - microtuning
 [x] modrate/modamt dedicated lfo in the feedback echo
 [x] make a dedicated tuning section with some options ==> only PB and optionally unison coarse
-[ ] note filtering
-[ ] MTS into master: off / note / continuous 
-[ ] tune the params and key
-[ ] tune the matrix
+[x] note filtering
+[x] MTS into master: off / note / continuous 
+[x] tune the params and key
+[x] tune the matrix
 
 TODOLIST for alpha-25 - rest of the gui stuff
 [ ] add Carla/ardour for mac as test targets
