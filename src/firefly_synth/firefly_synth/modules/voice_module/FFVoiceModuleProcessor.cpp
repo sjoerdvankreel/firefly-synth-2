@@ -164,10 +164,20 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     pitchModUntuned.Set(s, pitchModUntuned.Get(s) - _portaPitchOffsetCurrent);
 
     float pitch = basePitchFromKey;
-    pitch += (float)MTS_RetuningInSemitones(
-      procState->dsp.global.master.mtsClient, 
-      std::clamp((char)std::round(pitch + pitchModTuned.Get(s)), (char)0, (char)127),
-      (char)state.voice->event.note.channel);
+    if (_settingsTuning)
+    {
+      float pitchToTune = basePitchFromKey + pitchModTuned.Get(s);
+      char pitchToTune0 = (char)std::clamp(std::floor(pitchToTune), 0.0f, 127.0f);
+      char pitchToTune1 = (char)std::clamp(pitchToTune0 + 1, 0, 127);
+      float pitchTuned0 = pitchToTune + (float)MTS_RetuningInSemitones(
+        procState->dsp.global.master.mtsClient, pitchToTune0,
+        (char)state.voice->event.note.channel);
+      float pitchTuned1 = pitchToTune + (float)MTS_RetuningInSemitones(
+        procState->dsp.global.master.mtsClient, pitchToTune1,
+        (char)state.voice->event.note.channel);
+      float lerp = pitchToTune - pitchToTune0;
+      pitch = (1.0f - lerp) * pitchTuned0 + lerp * pitchTuned1;
+    }
     pitch += pitchModUntuned.Get(s);
     dspState.pitch.Set(s, pitch);
     dspState.outputPitch.Set(s, pitch / 127.0f);
