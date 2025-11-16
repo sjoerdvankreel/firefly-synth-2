@@ -110,6 +110,20 @@ FFMasterProcessor::Process(FBModuleProcState& state)
     dspState.outputLowVeloPitchSmth.Set(s, std::clamp(lowVeloKeySmth, 0.0f, 127.0f) / 127.0f);
   }
 
+  // special source for pitchtracking global filters, not visible in the matrix
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    float pb = dspState.bendAmountInSemis.Get(s);
+    float lastKeyRaw = gNoteRaw[(int)FBNoteMatrixEntry::LastKey].Get(s) * 127.0f;
+    if (procState->dsp.global.settings.tuning && procState->dsp.global.settings.tuneMasterPB)
+      lastKeyRaw += pb;
+    if (procState->dsp.global.settings.tuning)
+      lastKeyRaw = FBTuneReal(procState->dsp.global.master.mtsClient, lastKeyRaw, -1);
+    if (!procState->dsp.global.settings.tuning || !procState->dsp.global.settings.tuneMasterPB)
+      lastKeyRaw += pb;
+    dspState.outputLastKeyPitchTunedRaw.Set(s, std::clamp(lastKeyRaw, 0.0f, 127.0f) / 127.0f);
+  }
+
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;

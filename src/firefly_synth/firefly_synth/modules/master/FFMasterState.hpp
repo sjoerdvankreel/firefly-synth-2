@@ -29,6 +29,12 @@ public:
   FBSArray<float, FBFixedBlockSamples> outputPB = {};
   FBSArray<float, FBFixedBlockSamples> outputMod = {};
   FBSArray<float, FBFixedBlockSamples> outputPBRaw = {};
+  FBSArray2<float, FBFixedBlockSamples, FFMasterAuxCount> outputAux = {};
+
+  // These are only microtuned if user selects "tune master matrix".
+  // Just a perf optimization, tuning 10 sources per-sample is expensive.
+  // And i wouldnt expect a microtuning user to always go for global-filters-in-tune-by-means-of-the-mod-matrix.
+  // But, it can be done. Just costs a bit of cycles.
   FBSArray<float, FBFixedBlockSamples> outputLowKeyPitch = {};
   FBSArray<float, FBFixedBlockSamples> outputHighKeyPitch = {};
   FBSArray<float, FBFixedBlockSamples> outputLastKeyPitch = {};
@@ -39,7 +45,10 @@ public:
   FBSArray<float, FBFixedBlockSamples> outputLastKeyPitchSmth = {};
   FBSArray<float, FBFixedBlockSamples> outputLowVeloPitchSmth = {};
   FBSArray<float, FBFixedBlockSamples> outputHighVeloPitchSmth = {};
-  FBSArray2<float, FBFixedBlockSamples, FFMasterAuxCount> outputAux = {};
+
+  // This one is tuned if tuning option is on, regardles of "tune master matrix", 
+  // as we need it for global-filters-pitchtracking-mode (without the matrix).
+  FBSArray<float, FBFixedBlockSamples> outputLastKeyPitchTunedRaw = {};
 };
 
 template <class TBlock>
