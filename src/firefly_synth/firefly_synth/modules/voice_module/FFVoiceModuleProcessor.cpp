@@ -55,7 +55,7 @@ FFVoiceModuleProcessor::BeginVoice(
   procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease = _voiceStartSnapshotNorm.portaSectionAmpRelease[0];
 
   float portaPitchStart;
-  if (previousMidiKey< 0.0f
+  if (previousMidiKey < 0.0f
     || portaType == FFVoiceModulePortaType::Off
     || portaMode == FFVoiceModulePortaMode::Section && !anyNoteWasOnAlready)
     portaPitchStart = (float)state.voice->event.note.key;
@@ -164,15 +164,23 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     dspState.outputPorta.Set(s, FBToUnipolar(-_portaPitchOffsetCurrent / 127.0f));
     pitchModUntuned.Set(s, pitchModUntuned.Get(s) - _portaPitchOffsetCurrent);
 
-    float pitch = _thisVoiceKeyMaybeTuned;
+    float pitchUntuned = (float)state.voice->event.note.key;
+    pitchUntuned += pitchModTuned.Get(s);
+    pitchUntuned += pitchModUntuned.Get(s);
+
+    float pitchTuned = _thisVoiceKeyMaybeTuned;
     if (settingsDspState.tuning && !settingsDspState.tuneOnNote)
-      pitch = FBTuneReal(
+      pitchTuned = FBTuneReal(
         procState->dsp.global.master.mtsClient,
         _thisVoiceKeyMaybeTuned + pitchModTuned.Get(s), 
         state.voice->event.note.channel);
-    pitch += pitchModUntuned.Get(s);
-    dspState.pitch.Set(s, pitch);
-    dspState.outputPitch.Set(s, pitch / 127.0f);
+    pitchTuned += pitchModUntuned.Get(s);
+    dspState.pitch.Set(s, pitchTuned);
+
+    if(settingsDspState.tuning && settingsDspState.tuneVoiceMatrix)
+      dspState.outputPitch.Set(s, std::clamp(pitchTuned / 127.0f, 0.0f, 1.0f));
+    else
+      dspState.outputPitch.Set(s, std::clamp(pitchUntuned / 127.0f, 0.0f, 1.0f));
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();

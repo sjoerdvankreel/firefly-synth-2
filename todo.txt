@@ -5,6 +5,7 @@ TODOLIST for alpha-24 - microtuning
 [x] MTS into master: off / note / continuous 
 [x] tune the params and key
 [x] tune the matrix
+[ ] filter cannot use the matrix
 
 TODOLIST for alpha-25 - rest of the gui stuff
 [ ] add Carla/ardour for mac as test targets

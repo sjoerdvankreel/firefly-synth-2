@@ -125,7 +125,7 @@ FFMakeSettingsTopo(bool isFx)
   tuneVoiceMatrix.name = "Tune Voice Matrix";
   tuneVoiceMatrix.display = "Voice Matrix";
   tuneVoiceMatrix.slotCount = 1;
-  tuneVoiceMatrix.defaultText = "Off";
+  tuneVoiceMatrix.defaultText = "On";
   tuneVoiceMatrix.id = "{A65377D6-6D56-459E-A14B-B55C1565BC2D}";
   tuneVoiceMatrix.type = FBParamType::Boolean;
   auto selectTuneVoiceMatrix = [](auto& module) { return &module.block.tuneVoiceMatrix; };
