@@ -101,7 +101,7 @@ FFMakeSettingsTopo(bool isFx)
   auto selectTuneMasterMatrix = [](auto& module) { return &module.block.tuneMasterMatrix; };
   tuneMasterMatrix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuneMasterMatrix);
   tuneMasterMatrix.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuneMasterMatrix);
-  tuneMasterPB.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuneMasterMatrix);
+  tuneMasterMatrix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuneMasterMatrix);
   tuneMasterMatrix.dependencies.enabled.audio.WhenSimple({ (int)FFSettingsParam::Tuning }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& tuneVoiceCoarse = result->params[(int)FFSettingsParam::TuneVoiceCoarse];
