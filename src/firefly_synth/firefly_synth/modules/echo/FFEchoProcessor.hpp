@@ -67,7 +67,7 @@ class FFEchoProcessor final
   FFEchoOrder _order = {};
   int _voiceFadeSamples = {};
   int _voiceExtendSamples = {};
-  float _feedbackDelayBarsSamples = {};
+  float _feedbackDelayBarsSeconds = {};
   std::array<bool, FFEchoTapCount> _tapOn = {};
   std::array<bool, FFEchoTapCount> _tapLPOn = {};
   std::array<bool, FFEchoTapCount> _tapHPOn = {};
@@ -85,6 +85,7 @@ class FFEchoProcessor final
   int _voiceExtendSamplesProcessed = {};
   FFEchoVoiceExtensionStage _voiceExtensionStage = {};
 
+  float _feedbackModPhase = 0.0f;
   FFEchoReverbState _reverbState = {};
   FFEchoDelayState _feedbackDelayState = {};
   std::array<FFDelayLine<1>, 2> _feedbackDelayLine = {};

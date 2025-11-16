@@ -638,8 +638,8 @@ FFMakeEchoTopo(bool global)
   feedbackDelayTime.unit = "Sec";
   feedbackDelayTime.id = prefix + "{CBD0A273-5E74-460E-A327-5EE9EE1C6F49}";
   feedbackDelayTime.type = FBParamType::Linear;
-  feedbackDelayTime.Linear().min = 0.0f;
   feedbackDelayTime.Linear().max = 10.0f;
+  feedbackDelayTime.Linear().min = 0.002f;
   feedbackDelayTime.Linear().editSkewFactor = 0.5f;
   auto selectFeedbackDelayTime = [](auto& module) { return &module.acc.feedbackDelayTime; };
   feedbackDelayTime.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackDelayTime);
@@ -668,6 +668,45 @@ FFMakeEchoTopo(bool global)
   feedbackDelayBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectFeedbackDelayBars);
   feedbackDelayBars.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   feedbackDelayBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+  
+  auto& feedbackModRate = result->params[(int)FFEchoParam::FeedbackModRate];
+  feedbackModRate.mode = FBParamMode::Accurate;
+  feedbackModRate.defaultText = "1";
+  feedbackModRate.name = "Fdbk Mod Rate";
+  feedbackModRate.display = "Mod Rate";
+  feedbackModRate.slotCount = 1;
+  feedbackModRate.unit = "Hz";
+  feedbackModRate.id = prefix + "{640B47FC-7506-4853-93E0-2C628F8BF3D8}";
+  feedbackModRate.type = FBParamType::Linear;
+  feedbackModRate.Linear().min = 0.05f;
+  feedbackModRate.Linear().max = 5.0f;
+  auto selectFeedbackModRate = [](auto& module) { return &module.acc.feedbackModRate; };
+  feedbackModRate.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackModRate);
+  feedbackModRate.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFeedbackModRate);
+  feedbackModRate.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectFeedbackModRate);
+  feedbackModRate.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectFeedbackModRate);
+  feedbackModRate.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectFeedbackModRate);
+  feedbackModRate.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+  auto& feedbackModAmt = result->params[(int)FFEchoParam::FeedbackModAmt];
+  feedbackModAmt.unit = "Ms";
+  feedbackModAmt.mode = FBParamMode::Accurate;
+  feedbackModAmt.defaultText = "0";
+  feedbackModAmt.name = "Fdbk Mod Amt";
+  feedbackModAmt.display = "Mod Amt";
+  feedbackModAmt.slotCount = 1;
+  feedbackModAmt.id = prefix + "{686BE077-623D-4B14-94A2-F708139F8535}";
+  feedbackModAmt.type = FBParamType::Linear;
+  feedbackModAmt.Linear().min = 0.0f;
+  feedbackModAmt.Linear().max = 0.002f;
+  feedbackModAmt.Linear().displayMultiplier = 1000.0f;
+  auto selectFeedbackModAmt = [](auto& module) { return &module.acc.feedbackModAmt; };
+  feedbackModAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackModAmt);
+  feedbackModAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectFeedbackModAmt);
+  feedbackModAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectFeedbackModAmt);
+  feedbackModAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFeedbackModAmt);
+  feedbackModAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectFeedbackModAmt);
+  feedbackModAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
   
   auto& feedbackLPOn = result->params[(int)FFEchoParam::FeedbackLPOn];
   feedbackLPOn.mode = FBParamMode::Block;

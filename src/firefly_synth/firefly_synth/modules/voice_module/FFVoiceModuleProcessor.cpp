@@ -2,16 +2,19 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/shared/FFStateDetail.hpp>
 #include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
+#include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniProcessor.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleProcessor.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
+#include <firefly_base/dsp/shared/FBTune.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
+#include <libMTSClient.h>
 #include <xsimd/xsimd.hpp>
 
 void
@@ -26,6 +29,13 @@ FFVoiceModuleProcessor::BeginVoice(
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.voiceModule[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
+
+  _thisVoiceKeyMaybeTuned = (float)state.voice->event.note.key;
+  if (procState->dsp.global.settings.tuning && procState->dsp.global.settings.tuneOnNote)
+    _thisVoiceKeyMaybeTuned += (float)MTS_RetuningInSemitones(
+      procState->dsp.global.master.mtsClient,
+      (char)state.voice->event.note.key,
+      (char)state.voice->event.note.channel);
 
   float portaTypeNorm = params.block.portaType[0].Voice()[voice];
   float portaModeNorm = params.block.portaMode[0].Voice()[voice];
@@ -45,7 +55,7 @@ FFVoiceModuleProcessor::BeginVoice(
   procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease = _voiceStartSnapshotNorm.portaSectionAmpRelease[0];
 
   float portaPitchStart;
-  if (previousMidiKey< 0.0f
+  if (previousMidiKey < 0.0f
     || portaType == FFVoiceModulePortaType::Off
     || portaMode == FFVoiceModulePortaMode::Section && !anyNoteWasOnAlready)
     portaPitchStart = (float)state.voice->event.note.key;
@@ -100,10 +110,10 @@ void
 FFVoiceModuleProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
-  float basePitchFromKey = (float)state.voice->event.note.key;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
   auto& dspState = procState->dsp.voice[voice].voiceModule;
+  auto const& settingsDspState = procState->dsp.global.settings;
   auto const& procParams = procState->param.voice.voiceModule[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
 
@@ -126,27 +136,52 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   fineNormModulated.CopyTo(dspState.outputFineRaw);
   coarseNormModulated.CopyTo(dspState.outputCoarse);
 
+  FBSArray<float, FBFixedBlockSamples> pitchModTuned(0.0f);
+  FBSArray<float, FBFixedBlockSamples> pitchModUntuned(0.0f);
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
-    auto coarsePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Coarse, coarseNormModulated.Load(s));
     auto finePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Fine, fineNormModulated.Load(s));
-    auto pitch = basePitchFromKey + coarsePlain + finePlain;
-    if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
-      pitch += masterPitchBendSemis.Load(s);
-    dspState.pitch.Store(s, pitch);
     dspState.outputFine.Store(s, FBToUnipolar(FBToBipolar(fineNormModulated.Load(s)) / 127.0f));
+    pitchModUntuned.Add(s, finePlain);
+
+    auto coarsePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Coarse, coarseNormModulated.Load(s));
+    if (settingsDspState.tuning && !settingsDspState.tuneOnNote && settingsDspState.tuneVoiceCoarse)
+      pitchModTuned.Add(s, coarsePlain);
+    else
+      pitchModUntuned.Add(s, coarsePlain);
+
+    if (masterPitchBendTarget == FFMasterPitchBendTarget::Global)
+      if (settingsDspState.tuning && !settingsDspState.tuneOnNote && settingsDspState.tuneMasterPB)
+        pitchModTuned.Add(s, masterPitchBendSemis.Load(s));
+      else
+        pitchModUntuned.Add(s, masterPitchBendSemis.Load(s));
   }
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     if (_portaPitchSamplesProcessed++ <= _portaPitchSamplesTotal)
       _portaPitchOffsetCurrent -= _portaPitchDelta;
-    dspState.pitch.Set(s, dspState.pitch.Get(s) - _portaPitchOffsetCurrent);
     dspState.outputPorta.Set(s, FBToUnipolar(-_portaPitchOffsetCurrent / 127.0f));
-  }
+    pitchModUntuned.Set(s, pitchModUntuned.Get(s) - _portaPitchOffsetCurrent);
 
-  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-    dspState.outputPitch.Store(s, dspState.pitch.Load(s) / 127.0f);
+    float pitchUntuned = (float)state.voice->event.note.key;
+    pitchUntuned += pitchModTuned.Get(s);
+    pitchUntuned += pitchModUntuned.Get(s);
+
+    float pitchTuned = _thisVoiceKeyMaybeTuned;
+    if (settingsDspState.tuning && !settingsDspState.tuneOnNote)
+      pitchTuned = FBTuneReal(
+        procState->dsp.global.master.mtsClient,
+        _thisVoiceKeyMaybeTuned + pitchModTuned.Get(s), 
+        state.voice->event.note.channel);
+    pitchTuned += pitchModUntuned.Get(s);
+    dspState.pitch.Set(s, pitchTuned);
+
+    if(settingsDspState.tuning && settingsDspState.tuneVoiceMatrix)
+      dspState.outputPitch.Set(s, std::clamp(pitchTuned / 127.0f, 0.0f, 1.0f));
+    else
+      dspState.outputPitch.Set(s, std::clamp(pitchUntuned / 127.0f, 0.0f, 1.0f));
+  }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)

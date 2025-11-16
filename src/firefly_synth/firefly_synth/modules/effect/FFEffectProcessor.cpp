@@ -253,7 +253,7 @@ FFEffectProcessor::Process(
     {
       // raw because we provide our own smoothing filter
       for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-        _basePitch.Store(s, procState->dsp.global.master.outputLastKeyPitch.Load(s) * 127.0f);
+        _basePitch.Store(s, procState->dsp.global.master.outputLastKeyPitchTunedRaw.Load(s) * 127.0f);
     }
     else
     {

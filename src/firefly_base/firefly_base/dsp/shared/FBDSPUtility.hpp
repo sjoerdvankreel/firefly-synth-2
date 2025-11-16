@@ -90,10 +90,16 @@ FBBarsToFreq(FBBarsItem const& bars, float bpm)
   return (bars.denom * bpm) / (bars.num * 240.0f);
 }
 
+inline float
+FBBarsToTime(FBBarsItem const& bars, float bpm)
+{
+  return (bars.num * 240.0f) / (bars.denom * bpm);
+}
+
 inline int
 FBBarsToSamples(FBBarsItem const& bars, float sampleRate, float bpm)
 {
-  return FBTimeToSamples((bars.num * 240.0f) / (bars.denom * bpm), sampleRate);
+  return FBTimeToSamples(FBBarsToTime(bars, bpm), sampleRate);
 }
 
 inline float

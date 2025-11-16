@@ -10,6 +10,7 @@
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
+#include <libMTSClient.h>
 #include <cmath>
 #include <numbers>
 
@@ -75,6 +76,7 @@ void
 FFPlugProcessor::GetCurrentProcessSettings(
   FBProcessSettings& settings) const
 {
+  // This cannot be in the settings processor since it's needed earlier in the pipeline.
   float smoothNorm = _procState->param.global.settings[0].block.hostSmoothTime[0].Value();
   auto const& smoothTopo = _topo->static_->modules[(int)FFModuleType::Settings].params[(int)FFSettingsParam::HostSmoothTime];
   settings.smoothingSamples = smoothTopo.Linear().NormalizedTimeToSamplesFast(smoothNorm, _sampleRate);
@@ -87,14 +89,25 @@ FFPlugProcessor::LeaseVoices(
   if (_flushThisRound)
     return;
 
+  // This cannot be in the settings processor since it's needed earlier in the pipeline.
   float receiveNorm = _procState->param.global.settings[0].block.receiveNotes[0].Value();
   auto const& receiveTopo = _topo->static_->modules[(int)FFModuleType::Settings].params[(int)FFSettingsParam::ReceiveNotes];
   if (!receiveTopo.Boolean().NormalizedToPlainFast(receiveNorm))
     return;
 
+  // This cannot be in the settings processor since it's needed earlier in the pipeline.
+  float tuneNorm = _procState->param.global.settings[0].block.tuning[0].Value();
+  auto const& tuningTopo = _topo->static_->modules[(int)FFModuleType::Settings].params[(int)FFSettingsParam::TuneMasterPB];
+  bool tuning = tuningTopo.Boolean().NormalizedToPlainFast(tuneNorm);
+
   for (int n = 0; n < input.noteEvents->size(); n++)
     if ((*input.noteEvents)[n].on)
     {
+      if (tuning && MTS_ShouldFilterNote(_procState->dsp.global.master.mtsClient,
+        (char)(*input.noteEvents)[n].note.key,
+        (char)(*input.noteEvents)[n].note.channel))
+        continue;
+
       std::array<float, FFVNoteOnNoteRandomCount> onNoteGroupRandomUni;
       std::array<float, FFVNoteOnNoteRandomCount> onNoteGroupRandomNorm;
       for (int r = 0; r < FFVNoteOnNoteRandomCount; r++)
@@ -178,6 +191,7 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   }
 
   state.moduleSlot = 0;
+  globalDSP.settings.processor->Process(state);
   globalDSP.gMatrix.processor->BeginVoiceOrBlock(state);
   globalDSP.gMatrix.processor->BeginModulationBlock();
   globalDSP.midi.processor->Process(state);

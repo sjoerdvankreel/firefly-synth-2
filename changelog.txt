@@ -1,3 +1,8 @@
+November 16, 2025 - Alpha 24.
+
+- Add microtuning support.
+- Add modulation rate and amount controls to feedback delay.
+
 November 13, 2025 - Alpha 23.
 
 - StVar renamed to SVF.
