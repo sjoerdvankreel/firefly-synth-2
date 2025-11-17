@@ -17,9 +17,8 @@ _maxLengthReal(maxLengthReal),
 _gridMinRatioGranularity(gridMinRatioGranularity) {}
 
 void
-FBMSEGEditor::ChangeModel(FBMSEGModel const& model)
+FBMSEGEditor::UpdateModel()
 {
-  _model = model;
   repaint();
 }
 

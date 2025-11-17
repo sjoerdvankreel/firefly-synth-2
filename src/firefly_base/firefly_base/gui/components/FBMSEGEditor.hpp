@@ -58,7 +58,8 @@ public:
     double maxLengthReal,
     int gridMinRatioGranularity);
 
+  void UpdateModel(); // call after mutating Model()
   void paint(juce::Graphics& g) override;
-  void ChangeModel(FBMSEGModel const& model);
-  std::function<void(FBMSEGModel const&)> modelChanged = {};
+  FBMSEGModel& Model() { return _model; }
+  std::function<void(FBMSEGModel const&)> modelChanged = {}; // called in response to GUI
 };

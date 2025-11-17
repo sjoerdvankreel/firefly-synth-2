@@ -20,23 +20,23 @@
 
 using namespace juce;
 
-static FBMSEGModel
-EnvParamsToMSEGModel(FBPlugGUI* plugGUI, int moduleSlot)
+static void
+UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model)
 {
-  FBMSEGModel result = {};
+  model.points.clear();
   auto context = plugGUI->HostContext();
   auto const& staticTopo = *plugGUI->HostContext()->Topo()->static_;
   bool sync = context->GetAudioParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } });
   auto type = context->GetAudioParamList<FFEnvType>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } });
-  result.gridEditRatioGranularity = 128; // todo
-  result.xMode = sync ? FBMSEGXMode::Ratio : FBMSEGXMode::Real;
-  result.yMode = type == FFEnvType::Exp ? FBMSEGYMode::Exponential : FBMSEGYMode::Linear;
-  result.initialY = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::InitLevel, 0 } });
-  result.looping = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }) != 0;
-  result.loopStart = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }) - 1;
-  result.loopLength = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } });
-  result.releasing = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } }) != 0;
-  result.releasePoint = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } }) - 1;
+  model.gridEditRatioGranularity = 128; // todo
+  model.xMode = sync ? FBMSEGXMode::Ratio : FBMSEGXMode::Real;
+  model.yMode = type == FFEnvType::Exp ? FBMSEGYMode::Exponential : FBMSEGYMode::Linear;
+  model.initialY = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::InitLevel, 0 } });
+  model.looping = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }) != 0;
+  model.loopStart = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }) - 1;
+  model.loopLength = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } });
+  model.releasing = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } }) != 0;
+  model.releasePoint = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } }) - 1;
   for (int i = 0; i < FFEnvStageCount; i++)
   {
     FBMSEGPoint point = {};
@@ -47,9 +47,8 @@ EnvParamsToMSEGModel(FBPlugGUI* plugGUI, int moduleSlot)
     auto bars = staticTopo.modules[(int)FFModuleType::Env].params[(int)FFEnvParam::StageBars].BarsNonRealTime().NormalizedToBars(barsNorm);
     point.lengthRatioNum = bars.num;
     point.lengthRatioDen = bars.denom;
-    result.points.push_back(point);
+    model.points.push_back(point);
   }
-  return result;
 }
 
 static Component*
@@ -87,6 +86,8 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->MarkSection({ { 0, 0 }, { 2, 8 } });
 
   auto msegEditor = plugGUI->StoreComponent<FBMSEGEditor>(FFEnvStageCount, FFEnvMaxBarsNum, FFEnvMaxBarsDen, FFEnvMaxTime, FFEnvMinBarsDen);
+  UpdateMSEGModel(plugGUI, moduleSlot, msegEditor->Model());
+  msegEditor->UpdateModel();
   showMSEG->onClick = [plugGUI, msegEditor, topo, moduleSlot]() {
     auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
     std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot) + " MSEG";
