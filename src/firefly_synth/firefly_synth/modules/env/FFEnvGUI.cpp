@@ -49,7 +49,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto initLevel = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::InitLevel, 0 } });
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, initLevel));
   grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, initLevel, Slider::SliderStyle::RotaryVerticalDrag));
-  auto showMSEG = plugGUI->StoreComponent<FBAutoSizeButton>("Show MSEG");
+  auto showMSEG = plugGUI->StoreComponent<FBParamValueLinkedButton>(plugGUI, type, "Show MSEG", [](int v) { return v != 0; });
   grid->Add(1, 6, 1, 2, showMSEG);
   grid->MarkSection({ { 0, 0 }, { 2, 8 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
