@@ -7,6 +7,7 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
+#include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
@@ -23,7 +24,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
   auto type = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
@@ -41,11 +42,16 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopLength));
   auto smoothTime = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothTime, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothTime));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::RotaryVerticalDrag));
   auto smoothBars = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothBars, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
+  auto initLevel = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::InitLevel, 0 } });
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, initLevel));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, initLevel, Slider::SliderStyle::RotaryVerticalDrag));
+  auto showMSEG = plugGUI->StoreComponent<FBAutoSizeButton>("Show MSEG");
+  grid->Add(1, 6, 1, 2, showMSEG);
+  grid->MarkSection({ { 0, 0 }, { 2, 8 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 

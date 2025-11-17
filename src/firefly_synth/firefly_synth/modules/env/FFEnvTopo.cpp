@@ -154,6 +154,20 @@ FFMakeEnvTopo()
   smoothBars.dependencies.visible.audio.WhenSimple({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   smoothBars.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
+  auto& initLevel = result->params[(int)FFEnvParam::InitLevel];
+  initLevel.mode = FBParamMode::Accurate;
+  initLevel.name = "Init Level";
+  initLevel.slotCount = 1;
+  initLevel.unit = "%";
+  initLevel.id = "{AB53D9B4-965E-4AED-A60B-B6AB16738977}";
+  initLevel.defaultText = "0";
+  initLevel.type = FBParamType::Identity;
+  auto selectInitLevel = [](auto& module) { return &module.acc.initLevel; };
+  initLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectInitLevel);
+  initLevel.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectInitLevel);
+  initLevel.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectInitLevel);
+  initLevel.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+
   auto& stageLevel = result->params[(int)FFEnvParam::StageLevel];
   stageLevel.mode = FBParamMode::Accurate;
   stageLevel.name = "Level";

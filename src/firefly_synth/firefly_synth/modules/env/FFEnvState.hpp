@@ -57,6 +57,7 @@ class alignas(alignof(TAccurate)) FFEnvAccParamState final
 {
   friend class FFEnvProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
+  std::array<TAccurate, 1> initLevel = {};
   std::array<TAccurate, FFEnvStageCount> stageSlope = {};
   std::array<TAccurate, FFEnvStageCount> stageLevel = {};
 public:

@@ -13,5 +13,6 @@ enum class FFEnvType { Off, Linear, Exp };
 std::string FFEnvTypeToString(FFEnvType type);
 
 enum class FFEnvParam {
-  Type, Sync, Release, SmoothTime, SmoothBars, LoopStart, LoopLength,
+  Type, Sync, Release, SmoothTime, SmoothBars, 
+  LoopStart, LoopLength, InitLevel,
   StageLevel, StageSlope, StageTime, StageBars, Count };
