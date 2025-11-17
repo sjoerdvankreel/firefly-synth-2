@@ -124,13 +124,16 @@ FFEnvProcessor::BeginVoice(
   }
   _lengthSamples += _smoothSamples;
 
+  float initLvlNorm = params.acc.initLevel[0].Voice()[voice].CV().Get(0);
+  float initLvlPlain = topo.NormalizedToIdentityFast(FFEnvParam::InitLevel, initLvlNorm);
+
   for (int i = 0; i < FFEnvStageCount; i++)
     if (_stageSamples[i] > 0)
     {
       if (i == 0)
       {
-        _lastOverall = 0.0f;
-        _lastBeforeRelease = 0.0f;
+        _lastOverall = initLvlPlain;
+        _lastBeforeRelease = initLvlPlain;
       }
       else
       {
@@ -155,6 +158,7 @@ FFEnvProcessor::Process(
   auto* procState = state.ProcAs<FFProcState>();
   auto const& procParams = procState->param.voice.env[state.moduleSlot];
   auto& output = procState->dsp.voice[voice].env[state.moduleSlot].output;
+  auto const& initLevel = procParams.acc.initLevel;
   auto const& stageLevel = procParams.acc.stageLevel;
   auto const& stageSlopeIn = procParams.acc.stageSlope;
 
@@ -229,8 +233,10 @@ FFEnvProcessor::Process(
       float stageEnd = stageLevel[stage].Voice()[voice].CV().Get(s);
       if (releasePoint != 0 && stage == releasePoint && _released)
         stageStart = _lastBeforeRelease;
+      else if (stage == 0)
+        stageStart = initLevel[0].Voice()[voice].CV().Get(s);
       else
-        stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
+        stageStart = stageLevel[stage - 1].Voice()[voice].CV().Get(s);
 
       if (_type == FFEnvType::Linear)
         _lastOverall = stageStart + (stageEnd - stageStart) * pos;
@@ -333,6 +339,7 @@ FFEnvProcessor::Process(
   exchangeDSP.boolOtherVoiceSubSectionTookOver = _otherVoiceSubSectionTookOver ? 1 : 0;
 
   auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
+  exchangeParams.acc.initLevel[0][voice] = initLevel[0].Voice()[voice].Last();
   for (int i = 0; i < FFEnvStageCount; i++)
   {
     exchangeParams.acc.stageSlope[i][voice] = stageSlopeModulated[i].Last();
