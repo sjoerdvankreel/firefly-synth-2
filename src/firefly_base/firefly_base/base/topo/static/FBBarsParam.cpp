@@ -13,7 +13,7 @@ FBEditType FBBarsParamNonRealTime::AutomationEditType() const { return FBEditTyp
 FBBarsItem 
 FBBarsParamNonRealTime::NormalizedToBars(double normalized) const
 {
-  return items[NormalizedToPlain(normalized)];
+  return items[NormalizedToPlainFast((float)normalized)];
 }
 
 double 

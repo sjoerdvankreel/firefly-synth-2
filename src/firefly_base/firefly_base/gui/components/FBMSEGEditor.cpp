@@ -7,7 +7,7 @@ FBMSEGEditor(
   int maxPoints,
   int maxLengthRatioNum,
   int maxLengthRatioDen,
-  float maxLengthReal,
+  double maxLengthReal,
   int gridMinRatioGranularity):
 Component(),
 _maxPoints(maxPoints),

@@ -17,9 +17,9 @@ enum class FBMSEGYMode
 
 struct FBMSEGPoint
 {
-  float y = {};
-  float slope = {};
-  float lengthReal = {};
+  double y = {};
+  double slope = {};
+  double lengthReal = {};
   int lengthRatioNum = {};
   int lengthRatioDen = {};
 };
@@ -28,7 +28,7 @@ struct FBMSEGModel
 {
   bool looping = {};
   bool releasing = {};
-  float initialY = {};
+  double initialY = {};
   int loopStart = {};
   int loopLength = {};
   int releasePoint = {};
@@ -45,7 +45,7 @@ public juce::Component
   int const _maxPoints;
   int const _maxLengthRatioNum;
   int const _maxLengthRatioDen;
-  float const _maxLengthReal;
+  double const _maxLengthReal;
   int const _gridMinRatioGranularity;
 
   FBMSEGModel _model = {};
@@ -55,7 +55,7 @@ public:
     int maxPoints,
     int maxLengthRatioNum,
     int maxLengthRatioDen,
-    float maxLengthReal,
+    double maxLengthReal,
     int gridMinRatioGranularity);
 
   void paint(juce::Graphics& g) override;
