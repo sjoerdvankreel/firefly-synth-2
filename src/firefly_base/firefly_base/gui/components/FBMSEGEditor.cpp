@@ -45,4 +45,26 @@ FBMSEGEditor::paint(Graphics& g)
     _currentSegmentLengths.push_back(currentSegmentLength);
     totalLength += currentSegmentLength;
   }
+
+  double prevXNorm = 0.0;
+  double prevYNorm = _model.initialY;
+  double w = getBounds().getWidth();
+  double h = getBounds().getHeight();
+
+  for (int i = 0; i < _model.points.size(); i++)
+  {
+    double currentYNorm = _model.points[i].y;
+    double currentXNorm = prevXNorm + _currentSegmentLengths[i] / totalLength;
+
+    float prevX = (float)(prevXNorm * w);
+    float currentX = (float)(currentXNorm * w);
+    float prevY = (float)(prevYNorm * h);
+    float currentY = (float)(currentYNorm * h);
+
+    g.setColour(Colours::yellow);
+    g.drawLine(prevX, prevY, currentX, currentY, 1.0f);
+
+    prevXNorm = currentXNorm;
+    prevYNorm = currentYNorm;
+  }
 }
