@@ -1,3 +1,4 @@
+#include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
@@ -18,6 +19,38 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
+
+static FBMSEGModel
+EnvParamsToMSEGModel(FBPlugGUI* plugGUI, int moduleSlot)
+{
+  FBMSEGModel result = {};
+  auto context = plugGUI->HostContext();
+  auto const& staticTopo = *plugGUI->HostContext()->Topo()->static_;
+  bool sync = context->GetAudioParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } });
+  auto type = context->GetAudioParamList<FFEnvType>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } });
+  result.gridEditRatioGranularity = 128; // todo
+  result.xMode = sync ? FBMSEGXMode::Ratio : FBMSEGXMode::Real;
+  result.yMode = type == FFEnvType::Exp ? FBMSEGYMode::Exponential : FBMSEGYMode::Linear;
+  result.initialY = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::InitLevel, 0 } });
+  result.looping = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }) != 0;
+  result.loopStart = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }) - 1;
+  result.loopLength = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } });
+  result.releasing = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } }) != 0;
+  result.releasePoint = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } }) - 1;
+  for (int i = 0; i < FFEnvStageCount; i++)
+  {
+    FBMSEGPoint point = {};
+    point.y = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageLevel, i } });
+    point.slope = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } });
+    point.lengthReal = context->GetAudioParamLinear({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
+    double barsNorm = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } });
+    auto bars = staticTopo.modules[(int)FFModuleType::Env].params[(int)FFEnvParam::StageBars].BarsNonRealTime().NormalizedToBars(barsNorm);
+    point.lengthRatioNum = bars.num;
+    point.lengthRatioDen = bars.denom;
+    result.points.push_back(point);
+  }
+  return result;
+}
 
 static Component*
 MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
@@ -52,6 +85,16 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto showMSEG = plugGUI->StoreComponent<FBParamValueLinkedButton>(plugGUI, type, "Show MSEG", [](int v) { return v != 0; });
   grid->Add(1, 6, 1, 2, showMSEG);
   grid->MarkSection({ { 0, 0 }, { 2, 8 } });
+
+  auto msegEditor = plugGUI->StoreComponent<FBMSEGEditor>(FFEnvStageCount, FFEnvMaxBarsNum, FFEnvMaxBarsDen, FFEnvMaxTime, FFEnvMinBarsDen);
+  showMSEG->onClick = [plugGUI, msegEditor, topo, moduleSlot]() {
+    auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
+    std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot) + " MSEG";
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, msegEditor, 800, 240, true, []() {
+      // TODO init-stuff
+      });
+    };
+
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 

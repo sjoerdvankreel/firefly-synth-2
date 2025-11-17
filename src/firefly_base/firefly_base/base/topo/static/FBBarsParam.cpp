@@ -10,6 +10,12 @@ int FBBarsParamNonRealTime::ValueCount() const { return static_cast<int>(items.s
 FBEditType FBBarsParamNonRealTime::GUIEditType() const { return FBEditType::Stepped; }
 FBEditType FBBarsParamNonRealTime::AutomationEditType() const { return FBEditType::Stepped;}
 
+FBBarsItem 
+FBBarsParamNonRealTime::NormalizedToBars(double normalized) const
+{
+  return items[NormalizedToPlain(normalized)];
+}
+
 double 
 FBBarsParamNonRealTime::PlainToNormalized(double plain) const 
 {

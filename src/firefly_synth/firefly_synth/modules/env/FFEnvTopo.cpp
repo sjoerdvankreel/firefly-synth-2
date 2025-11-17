@@ -9,7 +9,9 @@
 static std::vector<FBBarsItem>
 MakeEnvBarsItems()
 {
-  return FBMakeBarsItems(true, { 1, 128 }, { 4, 1 });
+  return FBMakeBarsItems(true, 
+    { FFEnvMinBarsNum, FFEnvMinBarsDen }, 
+    { FFEnvMaxBarsNum, FFEnvMaxBarsDen });
 }
 
 std::string 
@@ -206,7 +208,7 @@ FFMakeEnvTopo()
   stageTime.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "0.1" : ps == 1 ? "0.2" : ps == 2 ? "0.4" : "0"; };
   stageTime.type = FBParamType::Linear;
   stageTime.Linear().min = 0.0f;
-  stageTime.Linear().max = 10.0f;
+  stageTime.Linear().max = FFEnvMaxTime;
   stageTime.Linear().editSkewFactor = 0.5f;
   auto selectStageTime = [](auto& module) { return &module.voiceStart.stageTime; };
   stageTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageTime);
