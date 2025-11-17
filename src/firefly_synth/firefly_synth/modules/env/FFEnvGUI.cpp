@@ -52,7 +52,7 @@ UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model)
 }
 
 static Component*
-MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
+MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
@@ -85,13 +85,13 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(1, 6, 1, 2, showMSEG);
   grid->MarkSection({ { 0, 0 }, { 2, 8 } });
 
-  auto msegEditor = plugGUI->StoreComponent<FBMSEGEditor>(FFEnvStageCount, FFEnvMaxBarsNum, FFEnvMaxBarsDen, FFEnvMaxTime, FFEnvMinBarsDen);
-  UpdateMSEGModel(plugGUI, moduleSlot, msegEditor->Model());
-  msegEditor->UpdateModel();
+  *msegEditor = plugGUI->StoreComponent<FBMSEGEditor>(FFEnvStageCount, FFEnvMaxBarsNum, FFEnvMaxBarsDen, FFEnvMaxTime, FFEnvMinBarsDen);
+  UpdateMSEGModel(plugGUI, moduleSlot, (*msegEditor)->Model());
+  (*msegEditor)->UpdateModel();
   showMSEG->onClick = [plugGUI, msegEditor, topo, moduleSlot]() {
     auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
     std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot) + " MSEG";
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, msegEditor, 800, 240, true, []() {
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, *msegEditor, 800, 240, true, []() {
       // TODO init-stuff
       });
     };
@@ -134,26 +134,33 @@ MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-MakeEnvTab(FBPlugGUI* plugGUI, int moduleSlot)
+MakeEnvTab(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
-  grid->Add(0, 0, MakeEnvSectionMain(plugGUI, moduleSlot));
+  grid->Add(0, 0, MakeEnvSectionMain(plugGUI, moduleSlot, msegEditor));
   grid->Add(0, 1, MakeEnvSectionStage(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
 Component*
-FFMakeEnvGUI(FBPlugGUI* plugGUI)
+FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
 {
   FB_LOG_ENTRY_EXIT();
+  msegEditors.clear();
+  FBMSEGEditor* msegEditor = nullptr;
   auto topo = plugGUI->HostContext()->Topo();
   auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::EnvSelectedTab, 0 } });
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
   tabs->SetTabSeparatorText(0, "Env");
-  tabs->AddModuleTab(true, false, { (int)FFModuleType::Env, FFAmpEnvSlot }, MakeEnvTab(plugGUI, FFAmpEnvSlot));
+  tabs->AddModuleTab(true, false, { (int)FFModuleType::Env, FFAmpEnvSlot }, MakeEnvTab(plugGUI, FFAmpEnvSlot, &msegEditor));
+  msegEditors.push_back(msegEditor);
   for (int i = FFEnvSlotOffset; i < FFEnvCount; i++)
-    tabs->AddModuleTab(true, false, { (int)FFModuleType::Env, i }, MakeEnvTab(plugGUI, i));
+  {
+    msegEditor = nullptr;
+    tabs->AddModuleTab(true, false, { (int)FFModuleType::Env, i }, MakeEnvTab(plugGUI, i, &msegEditor));
+    msegEditors.push_back(msegEditor);
+  }
   tabs->ActivateStoredSelectedTab();
 
   PopupMenu insertMenu;
@@ -193,4 +200,29 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
   };
 
   return tabs;
+}
+
+FFEnvParamListener::
+~FFEnvParamListener()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FFEnvParamListener::
+FFEnvParamListener(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*> const& msegEditors) :
+_plugGUI(plugGUI) ,
+_msegEditors(msegEditors)
+{
+  _plugGUI->AddParamListener(this);
+}
+
+void
+FFEnvParamListener::AudioParamChanged(
+  int index, double /*normalized*/, bool /*changedFromUI*/)
+{
+  auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
+  if (indices.module.index != (int)FFModuleType::Env)
+    return;
+  UpdateMSEGModel(_plugGUI, indices.module.slot, _msegEditors[indices.module.slot]->Model());
+  _msegEditors[indices.module.slot]->UpdateModel();
 }

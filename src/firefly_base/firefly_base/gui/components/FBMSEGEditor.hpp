@@ -22,6 +22,10 @@ struct FBMSEGPoint
   double lengthReal = {};
   int lengthRatioNum = {};
   int lengthRatioDen = {};
+  
+  inline double lengthRatioAsReal() const {
+    return (double)lengthRatioNum / (double)lengthRatioDen;
+  }
 };
 
 struct FBMSEGModel
@@ -49,6 +53,7 @@ public juce::Component
   int const _gridMinRatioGranularity;
 
   FBMSEGModel _model = {};
+  std::vector<double> _currentSegmentLengths = {};
 
 public:
   FBMSEGEditor(

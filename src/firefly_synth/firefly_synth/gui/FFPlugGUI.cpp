@@ -220,7 +220,7 @@ FFPlugGUI::SetupGUI()
   _main->Add(3, 0, FFMakeEffectGUI(this));
   _main->Add(4, 0, FFMakeEchoGUI(this));
   _main->Add(5, 0, FFMakeLFOGUI(this));
-  _main->Add(6, 0, FFMakeEnvGUI(this));
+  _main->Add(6, 0, FFMakeEnvGUI(this, _msegEditors));
 
   _tabs = StoreComponent<FBAutoSizeTabComponent>();
   _tabs->addTab("Main", Colours::black, _main, false);
@@ -240,6 +240,7 @@ FFPlugGUI::SetupGUI()
   _modMatrixParamListener = std::make_unique<FFModMatrixParamListener>(this);
   _globalUniParamListener = std::make_unique<FFGlobalUniParamListener>(this);
   _voiceModuleParamListener = std::make_unique<FFVoiceModuleParamListener>(this);
+  _envParamListener = std::make_unique<FFEnvParamListener>(this, _msegEditors);
 
   addAndMakeVisible(_container);
 }
