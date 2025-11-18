@@ -91,10 +91,21 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
   showMSEG->onClick = [plugGUI, msegEditor_ = *msegEditor, topo, moduleSlot]() {
     auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
     std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot) + " MSEG";
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, msegEditor_, 800, 240, true, []() {
-      // TODO init-stuff
-      });
-    };
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, msegEditor_, 800, 240, true, [plugGUI, title, moduleSlot]() {
+      plugGUI->HostContext()->UndoState().Snapshot("Init " + title);
+      plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } });
+      plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::InitLevel, 0 } });
+      plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } });
+      plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } });
+      for (int i = 0; i < FFEnvStageCount; i++)
+      {
+        plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } });
+        plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageLevel, i } });
+        plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } });
+        plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
+      }
+    });
+  };
 
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
