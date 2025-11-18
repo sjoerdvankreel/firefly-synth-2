@@ -88,10 +88,10 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
   *msegEditor = plugGUI->StoreComponent<FBMSEGEditor>(FFEnvStageCount, FFEnvMaxBarsNum, FFEnvMaxBarsDen, FFEnvMaxTime, FFEnvMinBarsDen);
   UpdateMSEGModel(plugGUI, moduleSlot, (*msegEditor)->Model());
   (*msegEditor)->UpdateModel();
-  showMSEG->onClick = [plugGUI, msegEditor, topo, moduleSlot]() {
+  showMSEG->onClick = [plugGUI, msegEditor_ = *msegEditor, topo, moduleSlot]() {
     auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
     std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot) + " MSEG";
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, *msegEditor, 800, 240, true, []() {
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, msegEditor_, 800, 240, true, []() {
       // TODO init-stuff
       });
     };
