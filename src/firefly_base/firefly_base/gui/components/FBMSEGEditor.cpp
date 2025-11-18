@@ -75,6 +75,7 @@ FBMSEGEditor::paint(Graphics& g)
 
     double currentYNorm = _model.points[i].y;
     double currentXNorm = prevXNorm + _currentSegmentLengths[i] / totalLength;
+    double currentSlopeNorm = _model.points[i].slope;
 
     float prevXScreen = (float)(prevXNorm * w + innerPad + outerPad);
     float currentXScreen = (float)(currentXNorm * w + innerPad + outerPad);
@@ -88,7 +89,10 @@ FBMSEGEditor::paint(Graphics& g)
       path.startNewSubPath(_initPointScreenX, zeroPointScreenY);
       path.lineTo(_initPointScreenX, _initPointScreenY);
     }
-    path.lineTo(currentXScreen, currentYScreen);
+    
+    float currentExpoControlXScreen = prevXScreen + (currentXScreen - prevXScreen) * (float)currentSlopeNorm;
+    float currentExpoControlYScreen = prevYScreen + (currentYScreen - prevYScreen) * (1.0f - (float)currentSlopeNorm);
+    path.quadraticTo(currentExpoControlXScreen, currentExpoControlYScreen, currentXScreen, currentYScreen);
 
     _currentPointsScreenX.push_back(currentXScreen);
     _currentPointsScreenY.push_back(currentYScreen);
