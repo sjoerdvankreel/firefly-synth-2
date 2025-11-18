@@ -34,7 +34,7 @@ FBMSEGEditor::paint(Graphics& g)
 {
   int const outerPad = 1;
   int const innerPad = 3;
-  float const pointRadius = 3.0f;
+  float const pointRadius = 4.0f;
   auto const outerBounds = getLocalBounds().reduced(outerPad);
   auto const innerBounds = outerBounds.reduced(innerPad);
 
@@ -90,11 +90,8 @@ FBMSEGEditor::paint(Graphics& g)
     }
     path.lineTo(currentXScreen, currentYScreen);
 
-    g.setColour(Colours::grey);
-    g.drawLine(prevXScreen, prevYScreen, currentXScreen, currentYScreen, 1.0f);
     _currentPointsScreenX.push_back(currentXScreen);
     _currentPointsScreenY.push_back(currentYScreen);
-
     prevXNorm = currentXNorm;
     prevYNorm = currentYNorm;
     _activePointCount++;
@@ -109,11 +106,11 @@ FBMSEGEditor::paint(Graphics& g)
   }
 
   g.setColour(Colours::white);
-  g.drawEllipse(
+  g.fillEllipse(
     _initPointScreenX - pointRadius, _initPointScreenY - pointRadius, 
-    2.0f * pointRadius, 2.0f * pointRadius, 2.0f);
-  for(int i = 0; i < _activePointCount; i++)
-    g.drawEllipse(
-      _currentPointsScreenX[i] - pointRadius, _currentPointsScreenY[i] - pointRadius, 
-      2.0f * pointRadius, 2.0f * pointRadius, 2.0f);
+    2.0f * pointRadius, 2.0f * pointRadius);
+  for (int i = 0; i < _activePointCount; i++)
+    g.fillEllipse(
+      _currentPointsScreenX[i] - pointRadius, _currentPointsScreenY[i] - pointRadius,
+      2.0f * pointRadius, 2.0f * pointRadius);
 }

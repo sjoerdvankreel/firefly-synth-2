@@ -10,6 +10,8 @@ TODOLIST for alpha-25
 [ ] do the drag-drop drama
 [ ] double click insert/delete
 [ ] do hand cursor on over
+[ ] paint loop/release
+[ ] do expo mode
 
 TODOLIST for alpha-26 - rest of the gui stuff
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
