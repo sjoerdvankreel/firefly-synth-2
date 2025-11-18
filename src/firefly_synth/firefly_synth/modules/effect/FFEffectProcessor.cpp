@@ -780,7 +780,7 @@ FFEffectProcessor::ProcessSkew(
       auto inBatch = oversampled[c].Load(s);
       auto shapedBatch = (inBatch + bias) * drive;
       auto signBatch = xsimd::sign(shapedBatch);
-      auto expoBatch = xsimd::log(0.01f + distAmtPlain[block].Load(s) * 0.98f) * FFInvLogHalf;
+      auto expoBatch = xsimd::log(0.01f + distAmtPlain[block].Load(s) * 0.98f) * FBInvLogHalf;
       switch (_skewMode[block])
       {
       case FFEffectSkewMode::Bi:

@@ -6,8 +6,6 @@
 #include <xsimd/xsimd.hpp>
 #include <cmath>
 
-inline float const FFInvLogHalf = 1.0f / std::log(0.5f);
-
 inline float
 FFSoftClip10(float val)
 {
@@ -72,19 +70,19 @@ FFSkewScaleBipolar(FBBatch<float> in, FBBatch<float> amt)
 inline FBBatch<float>
 FFSkewExpUnipolar(FBBatch<float> in, FBBatch<float> amt)
 {
-  return xsimd::pow(in, xsimd::log(0.001f + (amt * 0.999f)) * FFInvLogHalf);
+  return xsimd::pow(in, xsimd::log(0.001f + (amt * 0.999f)) * FBInvLogHalf);
 }
 
 inline float
 FFSkewExpUnipolar(float in, float amt)
 {
-  return std::pow(in, std::log(0.001f + (amt * 0.999f)) * FFInvLogHalf);
+  return std::pow(in, std::log(0.001f + (amt * 0.999f)) * FBInvLogHalf);
 }
 
 inline FBBatch<float>
 FFSkewExpBipolar(FBBatch<float> in, FBBatch<float> amt)
 {
   auto bp = FBToBipolar(in);
-  auto exp = xsimd::log(0.001f + (amt * 0.999f)) * FFInvLogHalf;
+  auto exp = xsimd::log(0.001f + (amt * 0.999f)) * FBInvLogHalf;
   return FBToUnipolar(xsimd::sign(bp) * xsimd::pow(xsimd::abs(bp), exp));
 }

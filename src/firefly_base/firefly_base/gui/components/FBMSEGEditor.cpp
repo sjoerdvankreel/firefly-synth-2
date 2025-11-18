@@ -1,5 +1,6 @@
 #include <firefly_base/gui/components/FBMSEGEditor.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
 using namespace juce;
 
@@ -91,13 +92,15 @@ FBMSEGEditor::paint(Graphics& g)
 
     // Ok so can't use beziers - they divert too much from what audio
     // is actually doing at the extremes. So, pixel by pixel it is.
-    //double currentSlopeNorm = _model.points[i].slope;
+    double currentSlopeNorm = _model.points[i].slope;
     int steps = (int)std::round(currentXScreen - prevXScreen);
-    for (int j = 1; j <= steps; j++)
+    for (int j = 0; j < steps; j++)
     {
+      // Keep in check with the actual envelope generator (ugly, i know).
       float stepOffset = (float)j / (float)steps;
+      float slope = FBEnvMinSlope + (float)currentSlopeNorm * FBEnvSlopeRange;
       float stepXScreen = prevXScreen + (currentXScreen - prevXScreen) * stepOffset;
-      float stepYScreen = prevYScreen + (currentYScreen - prevYScreen) * stepOffset;
+      float stepYScreen = prevYScreen + (currentYScreen - prevYScreen) * std::pow(stepOffset, std::log(slope) * FBInvLogHalf);
       path.lineTo(stepXScreen, stepYScreen);
     }
 
