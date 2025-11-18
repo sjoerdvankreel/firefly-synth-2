@@ -124,7 +124,19 @@ FBMSEGEditor::paint(Graphics& g)
     _initPointScreenX - pointRadius, _initPointScreenY - pointRadius, 
     2.0f * pointRadius, 2.0f * pointRadius);
   for (int i = 0; i < _activePointCount; i++)
+  {
+    float pointX = _currentPointsScreenX[i];
+    float pointY = _currentPointsScreenY[i];
     g.fillEllipse(
-      _currentPointsScreenX[i] - pointRadius, _currentPointsScreenY[i] - pointRadius,
+      pointX - pointRadius, pointY - pointRadius,
       2.0f * pointRadius, 2.0f * pointRadius);
+
+    float prevPointX = i == 0 ? _initPointScreenX : _currentPointsScreenX[i - 1];
+    float prevPointY = i == 0 ? _initPointScreenY : _currentPointsScreenY[i - 1];
+    float slopeX = prevPointX + (pointX - prevPointX) * 0.5f;
+    float slopeY = prevPointY + (pointY - prevPointY) * 0.5f;
+    g.drawEllipse(
+      slopeX - pointRadius, slopeY - pointRadius,
+      2.0f * pointRadius, 2.0f * pointRadius, 1.0f);
+  }
 }
