@@ -90,9 +90,9 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
   (*msegEditor)->UpdateModel();
   showMSEG->onClick = [plugGUI, msegEditor_ = *msegEditor, topo, moduleSlot]() {
     auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
-    std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot) + " MSEG";
+    std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot);
     dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, msegEditor_, 800, 240, true, [plugGUI, title, moduleSlot]() {
-      plugGUI->HostContext()->UndoState().Snapshot("Init " + title);
+      plugGUI->HostContext()->UndoState().Snapshot("Init " + title + " MSEG");
       plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } });
       plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::InitLevel, 0 } });
       plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } });
