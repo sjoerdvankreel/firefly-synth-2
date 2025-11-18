@@ -131,10 +131,11 @@ FBMSEGEditor::paint(Graphics& g)
       pointX - pointRadius, pointY - pointRadius,
       2.0f * pointRadius, 2.0f * pointRadius);
 
+    float slope = FBEnvMinSlope + (float)_model.points[i].slope * FBEnvSlopeRange;
     float prevPointX = i == 0 ? _initPointScreenX : _currentPointsScreenX[i - 1];
     float prevPointY = i == 0 ? _initPointScreenY : _currentPointsScreenY[i - 1];
     float slopeX = prevPointX + (pointX - prevPointX) * 0.5f;
-    float slopeY = prevPointY + (pointY - prevPointY) * 0.5f;
+    float slopeY = prevPointY + (pointY - prevPointY) * std::pow(0.5f, std::log(slope) * FBInvLogHalf);
     g.drawEllipse(
       slopeX - pointRadius, slopeY - pointRadius,
       2.0f * pointRadius, 2.0f * pointRadius, 1.0f);
