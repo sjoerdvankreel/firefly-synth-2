@@ -75,7 +75,6 @@ FBMSEGEditor::paint(Graphics& g)
 
     double currentYNorm = _model.points[i].y;
     double currentXNorm = prevXNorm + _currentSegmentLengths[i] / totalLength;
-    double currentSlopeNorm = _model.points[i].slope;
 
     float prevXScreen = (float)(prevXNorm * w + innerPad + outerPad);
     float currentXScreen = (float)(currentXNorm * w + innerPad + outerPad);
@@ -89,10 +88,11 @@ FBMSEGEditor::paint(Graphics& g)
       path.startNewSubPath(_initPointScreenX, zeroPointScreenY);
       path.lineTo(_initPointScreenX, _initPointScreenY);
     }
-    
-    float currentExpoControlXScreen = prevXScreen + (currentXScreen - prevXScreen) * (1.0f - (float)currentSlopeNorm);
-    float currentExpoControlYScreen = prevYScreen + (currentYScreen - prevYScreen) * (float)currentSlopeNorm;
-    path.quadraticTo(currentExpoControlXScreen, currentExpoControlYScreen, currentXScreen, currentYScreen);
+
+    // Ok so can't use beziers - they divert too much from what audio
+    // is actually doing at the extremes. So, pixel by pixel it is.
+    //double currentSlopeNorm = _model.points[i].slope;
+    path.lineTo(currentXScreen, currentYScreen);
 
     _currentPointsScreenX.push_back(currentXScreen);
     _currentPointsScreenY.push_back(currentYScreen);
