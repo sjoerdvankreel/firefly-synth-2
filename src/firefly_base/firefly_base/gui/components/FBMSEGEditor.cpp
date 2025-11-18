@@ -90,8 +90,8 @@ FBMSEGEditor::paint(Graphics& g)
       path.lineTo(_initPointScreenX, _initPointScreenY);
     }
     
-    float currentExpoControlXScreen = prevXScreen + (currentXScreen - prevXScreen) * (float)currentSlopeNorm;
-    float currentExpoControlYScreen = prevYScreen + (currentYScreen - prevYScreen) * (1.0f - (float)currentSlopeNorm);
+    float currentExpoControlXScreen = prevXScreen + (currentXScreen - prevXScreen) * (1.0f - (float)currentSlopeNorm);
+    float currentExpoControlYScreen = prevYScreen + (currentYScreen - prevYScreen) * (float)currentSlopeNorm;
     path.quadraticTo(currentExpoControlXScreen, currentExpoControlYScreen, currentXScreen, currentYScreen);
 
     _currentPointsScreenX.push_back(currentXScreen);
