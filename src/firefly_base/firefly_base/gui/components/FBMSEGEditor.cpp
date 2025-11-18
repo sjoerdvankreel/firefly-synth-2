@@ -32,7 +32,16 @@ FBMSEGEditor::UpdateModel()
 void 
 FBMSEGEditor::paint(Graphics& g)
 {
+  int const outerPad = 1;
+  int const innerPad = 3;
+  float const pointRadius = 3.0f;
+  auto const outerBounds = getLocalBounds().reduced(outerPad);
+  auto const innerBounds = outerBounds.reduced(innerPad);
+
   g.fillAll(Colours::black);
+  g.setColour(Colour(0xFF181818));
+  g.fillRoundedRectangle(outerBounds.toFloat(), 2.0f * innerPad);
+
   double totalLength = 0.0;
   _currentSegmentLengths.clear();
   for (int i = 0; i < _model.points.size(); i++)
@@ -48,23 +57,50 @@ FBMSEGEditor::paint(Graphics& g)
 
   double prevXNorm = 0.0;
   double prevYNorm = _model.initialY;
-  double w = getBounds().getWidth();
-  double h = getBounds().getHeight();
+  double w = innerBounds.getWidth();
+  double h = innerBounds.getHeight();
 
+  _activePointCount = 0;
+  _currentPointsScreenX.clear();
+  _currentPointsScreenY.clear();
   for (int i = 0; i < _model.points.size(); i++)
   {
+    bool anyPointsAfterThis = false;
+    for (int j = i; j < _model.points.size(); j++)
+      anyPointsAfterThis |= _currentSegmentLengths[j] > 0.0;
+    if (!anyPointsAfterThis)
+      break;
+
     double currentYNorm = _model.points[i].y;
     double currentXNorm = prevXNorm + _currentSegmentLengths[i] / totalLength;
 
-    float prevX = (float)(prevXNorm * w);
-    float currentX = (float)(currentXNorm * w);
-    float prevY = (float)(prevYNorm * h);
-    float currentY = (float)(currentYNorm * h);
+    float prevXScreen = (float)(prevXNorm * w + innerPad + outerPad);
+    float currentXScreen = (float)(currentXNorm * w + innerPad + outerPad);
+    float prevYScreen = (float)((1.0f - prevYNorm) * h + innerPad + outerPad);
+    float currentYScreen = (float)((1.0f - currentYNorm) * h + innerPad + outerPad);
 
-    g.setColour(Colours::yellow);
-    g.drawLine(prevX, prevY, currentX, currentY, 1.0f);
+    if (i == 0)
+    {
+      _initPointScreenX = prevXScreen;
+      _initPointScreenY = prevYScreen;
+    }
+
+    g.setColour(Colours::grey);
+    g.drawLine(prevXScreen, prevYScreen, currentXScreen, currentYScreen, 1.0f);
+    _currentPointsScreenX.push_back(currentXScreen);
+    _currentPointsScreenY.push_back(currentYScreen);
 
     prevXNorm = currentXNorm;
     prevYNorm = currentYNorm;
+    _activePointCount++;
   }
+
+  g.setColour(Colours::white);
+  g.drawEllipse(
+    _initPointScreenX - pointRadius, _initPointScreenY - pointRadius, 
+    2.0f * pointRadius, 2.0f * pointRadius, 2.0f);
+  for(int i = 0; i < _activePointCount; i++)
+    g.drawEllipse(
+      _currentPointsScreenX[i] - pointRadius, _currentPointsScreenY[i] - pointRadius, 
+      2.0f * pointRadius, 2.0f * pointRadius, 2.0f);
 }

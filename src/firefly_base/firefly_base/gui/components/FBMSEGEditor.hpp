@@ -53,6 +53,11 @@ public juce::Component
   int const _gridMinRatioGranularity;
 
   FBMSEGModel _model = {};
+  int _activePointCount = {};
+  float _initPointScreenX = {};
+  float _initPointScreenY = {};
+  std::vector<float> _currentPointsScreenX = {};
+  std::vector<float> _currentPointsScreenY = {};
   std::vector<double> _currentSegmentLengths = {};
 
 public:
