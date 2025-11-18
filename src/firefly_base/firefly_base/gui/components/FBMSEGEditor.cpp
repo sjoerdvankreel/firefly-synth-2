@@ -92,7 +92,14 @@ FBMSEGEditor::paint(Graphics& g)
     // Ok so can't use beziers - they divert too much from what audio
     // is actually doing at the extremes. So, pixel by pixel it is.
     //double currentSlopeNorm = _model.points[i].slope;
-    path.lineTo(currentXScreen, currentYScreen);
+    int steps = (int)std::round(currentXScreen - prevXScreen);
+    for (int j = 1; j <= steps; j++)
+    {
+      float stepOffset = (float)j / (float)steps;
+      float stepXScreen = prevXScreen + (currentXScreen - prevXScreen) * stepOffset;
+      float stepYScreen = prevYScreen + (currentYScreen - prevYScreen) * stepOffset;
+      path.lineTo(stepXScreen, stepYScreen);
+    }
 
     _currentPointsScreenX.push_back(currentXScreen);
     _currentPointsScreenY.push_back(currentYScreen);
