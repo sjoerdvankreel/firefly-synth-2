@@ -60,9 +60,11 @@ FBMSEGEditor::paint(Graphics& g)
   double w = innerBounds.getWidth();
   double h = innerBounds.getHeight();
 
+  Path path = {};
   _activePointCount = 0;
   _currentPointsScreenX.clear();
   _currentPointsScreenY.clear();
+  float zeroPointScreenY = (float)(h + innerPad + outerPad);
   for (int i = 0; i < _model.points.size(); i++)
   {
     bool anyPointsAfterThis = false;
@@ -83,7 +85,10 @@ FBMSEGEditor::paint(Graphics& g)
     {
       _initPointScreenX = prevXScreen;
       _initPointScreenY = prevYScreen;
+      path.startNewSubPath(_initPointScreenX, zeroPointScreenY);
+      path.lineTo(_initPointScreenX, _initPointScreenY);
     }
+    path.lineTo(currentXScreen, currentYScreen);
 
     g.setColour(Colours::grey);
     g.drawLine(prevXScreen, prevYScreen, currentXScreen, currentYScreen, 1.0f);
@@ -93,6 +98,14 @@ FBMSEGEditor::paint(Graphics& g)
     prevXNorm = currentXNorm;
     prevYNorm = currentYNorm;
     _activePointCount++;
+  }
+
+  if (_currentPointsScreenX.size() > 0)
+  {
+    path.lineTo(_currentPointsScreenX[_currentPointsScreenX.size() - 1], zeroPointScreenY);
+    path.closeSubPath();
+    g.setColour(Colours::grey);
+    g.fillPath(path);
   }
 
   g.setColour(Colours::white);
