@@ -274,6 +274,11 @@ FFEnvParamListener::AudioParamChanged(
   auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
   if (indices.module.index != (int)FFModuleType::Env)
     return;
-  UpdateMSEGModel(_plugGUI, indices.module.slot, _msegEditors[indices.module.slot]->Model());
-  _msegEditors[indices.module.slot]->UpdateModel();
+
+  // Dont do it right away, if MSEG is being dragged, 
+  // we're in the same call stack and stuff gets overwritten.
+  MessageManager::callAsync([this, indices]() {
+    UpdateMSEGModel(_plugGUI, indices.module.slot, _msegEditors[indices.module.slot]->Model());
+    _msegEditors[indices.module.slot]->UpdateModel();
+  });
 }
