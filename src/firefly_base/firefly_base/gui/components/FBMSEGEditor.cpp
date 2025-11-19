@@ -95,12 +95,12 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
   }
   if (_dragType == FBMSEGNearestHitType::Point)
   {
-    double yNorm = std::clamp(1.0 - (adjustedPosition.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
-    _model.points[_dragIndex].y = yNorm;
-
     double xCurrent = _currentPointsScreen[_dragIndex].getX();
     double xBefore = _dragIndex == 0 ? _initPointScreen.getX() : _currentPointsScreen[_dragIndex - 1].getX();
     double xPos = std::max((adjustedPosition.x - xBefore) / (xCurrent - xBefore), 0.0);
+    double yNorm = std::clamp(1.0 - (adjustedPosition.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
+
+    _model.points[_dragIndex].y = yNorm;
     _model.points[_dragIndex].lengthReal *= xPos;
     _model.points[_dragIndex].lengthReal = std::clamp(_model.points[_dragIndex].lengthReal, 0.0, _maxLengthReal);
   }
