@@ -73,12 +73,11 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
   auto adjustedPosition = event.position;
   if (adjustedPosition.x < innerBounds.getX())
     adjustedPosition.x = (float)innerBounds.getX();
-  if (adjustedPosition.x > innerBounds.getRight())
-    adjustedPosition.x = (float)innerBounds.getRight();
   if (adjustedPosition.y < innerBounds.getY())
     adjustedPosition.y = (float)innerBounds.getY();
   if (adjustedPosition.y > innerBounds.getBottom())
     adjustedPosition.y = (float)innerBounds.getBottom();
+  // Do NOT check for exceed right bounds - we need it to allow growing the last segment.
 
   double h = innerBounds.getHeight();
   if (_dragType == FBMSEGNearestHitType::Init)
