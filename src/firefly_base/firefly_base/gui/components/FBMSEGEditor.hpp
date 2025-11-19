@@ -58,6 +58,7 @@ class FBMSEGEditor :
 public juce::Component
 {
   FBPlugGUI* const _plugGUI;
+  std::string const _name;
   int const _maxPoints;
   int const _maxLengthRatioNum;
   int const _maxLengthRatioDen;
@@ -84,6 +85,7 @@ public juce::Component
 public:
   FBMSEGEditor(
     FBPlugGUI* plugGUI,
+    std::string const& name,
     int maxPoints,
     int maxLengthRatioNum,
     int maxLengthRatioDen,

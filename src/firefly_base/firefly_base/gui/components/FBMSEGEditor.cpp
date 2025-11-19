@@ -1,5 +1,6 @@
 #include <firefly_base/gui/components/FBMSEGEditor.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
@@ -12,6 +13,7 @@ static int const MSEGInnerPadding = 3;
 FBMSEGEditor::
 FBMSEGEditor(
   FBPlugGUI* plugGUI,
+  std::string const& name,
   int maxPoints,
   int maxLengthRatioNum,
   int maxLengthRatioDen,
@@ -19,6 +21,7 @@ FBMSEGEditor(
   int gridMinRatioGranularity):
 Component(),
 _plugGUI(plugGUI),
+_name(name),
 _maxPoints(maxPoints),
 _maxLengthRatioNum(maxLengthRatioNum),
 _maxLengthRatioDen(maxLengthRatioDen),
@@ -75,6 +78,7 @@ FBMSEGEditor::mouseDown(MouseEvent const& event)
   _dragging = true;
   _dragType = hitType;
   _dragIndex = hitIndex;
+  _plugGUI->HostContext()->UndoState().Snapshot("Change " + _name + " MSEG");
 }
 
 void
@@ -101,8 +105,18 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
     _model.initialY = 0.0f;
   if (hitType == FBMSEGNearestHitType::Slope)
     _model.points[hitIndex].slope = 0.5f;
+  if (hitType == FBMSEGNearestHitType::Point)
+  {
+    for (int i = hitIndex; i < _model.points.size() - 1; i++)
+      _model.points[i] = _model.points[i + 1];
+    _model.points[_model.points.size() - 1] = {};
+  }
+
   if (modelUpdated != nullptr)
+  {
+    _plugGUI->HostContext()->UndoState().Snapshot("Change " + _name + " MSEG");
     modelUpdated(_model);
+  }
 }
 
 void 

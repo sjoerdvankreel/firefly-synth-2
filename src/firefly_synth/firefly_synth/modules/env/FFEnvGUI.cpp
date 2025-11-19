@@ -123,7 +123,9 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
   grid->Add(1, 6, 1, 2, showMSEG);
   grid->MarkSection({ { 0, 0 }, { 2, 8 } });
 
-  *msegEditor = plugGUI->StoreComponent<FBMSEGEditor>(plugGUI, FFEnvStageCount, FFEnvMaxBarsNum, FFEnvMaxBarsDen, FFEnvMaxTime, FFEnvMinBarsDen);
+  auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
+  std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot);
+  *msegEditor = plugGUI->StoreComponent<FBMSEGEditor>(plugGUI, title, FFEnvStageCount, FFEnvMaxBarsNum, FFEnvMaxBarsDen, FFEnvMaxTime, FFEnvMinBarsDen);
   UpdateMSEGModel(plugGUI, moduleSlot, (*msegEditor)->Model());
   (*msegEditor)->UpdateModel();
   (*msegEditor)->modelUpdated = [plugGUI, moduleSlot](FBMSEGModel const& model) { 
@@ -131,9 +133,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
   (*msegEditor)->getTooltipFor = [plugGUI, moduleSlot](FBMSEGNearestHitType hitType, int index) { 
     return GetMSEGTooltip(plugGUI, moduleSlot, hitType, index); };
 
-  showMSEG->onClick = [plugGUI, msegEditor_ = *msegEditor, topo, moduleSlot]() {
-    auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
-    std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot);
+  showMSEG->onClick = [plugGUI, msegEditor_ = *msegEditor, title, moduleSlot]() {
     dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, msegEditor_, 800, 240, true, [plugGUI, title, moduleSlot]() {
       plugGUI->HostContext()->UndoState().Snapshot("Init " + title + " MSEG");
       plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } });
