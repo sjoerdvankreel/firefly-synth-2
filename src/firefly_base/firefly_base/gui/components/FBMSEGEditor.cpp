@@ -102,8 +102,7 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
     double xBefore = _dragIndex == 0 ? _initPointScreen.getX() : _currentPointsScreen[_dragIndex - 1].getX();
     double segLen = xCurrent - xBefore;
     double dragLen = adjustedPosition.x - xBefore;
-    double xPos = dragLen / segLen;
-    _model.points[_dragIndex].lengthReal *= xPos;
+    _model.points[_dragIndex].lengthReal += (dragLen - segLen) * _totalLengthReal / _totalLengthScreen;
     _model.points[_dragIndex].lengthReal = std::clamp(_model.points[_dragIndex].lengthReal, 0.0, _maxLengthReal);
   }
   if (modelUpdated != nullptr)
@@ -197,7 +196,7 @@ FBMSEGEditor::paint(Graphics& g)
   g.setColour(Colour(0xFF181818));
   g.fillRoundedRectangle(outerBounds.toFloat(), 2.0f * MSEGInnerPadding);
 
-  double totalLength = 0.0;
+  _totalLengthReal = 0.0;
   _currentSegmentLengths.clear();
   for (int i = 0; i < _model.points.size(); i++)
   {
@@ -207,7 +206,7 @@ FBMSEGEditor::paint(Graphics& g)
     else
       currentSegmentLength = _model.points[i].lengthRatioAsReal();
     _currentSegmentLengths.push_back(currentSegmentLength);
-    totalLength += currentSegmentLength;
+    _totalLengthReal += (float)currentSegmentLength;
   }
 
   double prevXNorm = 0.0;
@@ -217,6 +216,7 @@ FBMSEGEditor::paint(Graphics& g)
 
   Path path = {};
   _activePointCount = 0;
+  _totalLengthScreen = {};
   _currentPointsScreen.clear();
   _currentSlopesScreen.clear();
   float zeroPointScreenY = (float)(h + MSEGInnerPadding + MSEGOuterPadding);
@@ -229,12 +229,13 @@ FBMSEGEditor::paint(Graphics& g)
       break;
 
     double currentYNorm = _model.points[i].y;
-    double currentXNorm = prevXNorm + _currentSegmentLengths[i] / totalLength;
+    double currentXNorm = prevXNorm + _currentSegmentLengths[i] / _totalLengthReal;
 
     float prevXScreen = (float)(prevXNorm * w + MSEGInnerPadding + MSEGOuterPadding);
     float currentXScreen = (float)(currentXNorm * w + MSEGInnerPadding + MSEGOuterPadding);
     float prevYScreen = (float)((1.0f - prevYNorm) * h + MSEGInnerPadding + MSEGOuterPadding);
     float currentYScreen = (float)((1.0f - currentYNorm) * h + MSEGInnerPadding + MSEGOuterPadding);
+    _totalLengthScreen += currentXScreen - prevXScreen;
 
     if (i == 0)
     {

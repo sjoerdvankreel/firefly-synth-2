@@ -70,6 +70,8 @@ public juce::Component
 
   FBMSEGModel _model = {};
   int _activePointCount = {};
+  float _totalLengthReal = {};
+  float _totalLengthScreen = {}; 
   juce::Point<float> _initPointScreen = {};
   std::vector<double> _currentSegmentLengths = {};
   std::vector<juce::Point<float>> _currentPointsScreen = {};
