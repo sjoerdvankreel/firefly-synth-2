@@ -76,6 +76,8 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
     _model.initialY = yNorm;
   if (_dragType == FBMSEGNearestHitType::Slope)
     _model.points[_dragIndex].slope = yNorm;
+  if (_dragType == FBMSEGNearestHitType::Point)
+    _model.points[_dragIndex].y = yNorm;
   if (modelUpdated != nullptr)
     modelUpdated(_model);
 }
