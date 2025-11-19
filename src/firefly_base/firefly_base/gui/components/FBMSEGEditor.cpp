@@ -99,17 +99,35 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
 {
   int hitIndex = -1;
   auto hitType = GetNearestHit(event.position, &hitIndex);
-  if (hitType == FBMSEGNearestHitType::None)
-    return;
   if (hitType == FBMSEGNearestHitType::Init)
     _model.initialY = 0.0f;
-  if (hitType == FBMSEGNearestHitType::Slope)
+  else if (hitType == FBMSEGNearestHitType::Slope)
     _model.points[hitIndex].slope = 0.5f;
-  if (hitType == FBMSEGNearestHitType::Point)
+  else if (hitType == FBMSEGNearestHitType::Point)
   {
+    // delete a point
     for (int i = hitIndex; i < _model.points.size() - 1; i++)
       _model.points[i] = _model.points[i + 1];
     _model.points[_model.points.size() - 1] = {};
+  }
+  else
+  {
+    // split a segment, if allowed
+    FB_ASSERT(hitType == FBMSEGNearestHitType::None);
+    if (_currentPointsScreen.size() < _model.points.size())
+    {
+      for (int i = 0; i < _currentPointsScreen.size(); i++)
+      {
+        float prevX = i == 0 ? _initPointScreen.getX() : _currentPointsScreen[i - 1].getX();
+        float thisX = _currentPointsScreen[i].getX();
+        if (prevX <= event.position.x && event.position.x <= thisX)
+        {
+          for (int j = _maxPoints - 1; j > i; j--)
+            _model.points[j] = _model.points[j - 1];
+          break;
+        }
+      }
+    }
   }
 
   if (modelUpdated != nullptr)
