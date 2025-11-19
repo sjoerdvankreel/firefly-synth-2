@@ -124,6 +124,9 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
         {
           for (int j = _maxPoints - 1; j > i; j--)
             _model.points[j] = _model.points[j - 1];
+          _model.points[i].lengthReal *= 0.5;
+          if(i < _model.points.size() - 1)
+            _model.points[i + 1].lengthReal = _model.points[i].lengthReal;
           break;
         }
       }
