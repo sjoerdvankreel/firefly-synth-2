@@ -97,13 +97,16 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
     if (hitType == FBMSEGNearestHitType::Slope)
       return "Slope " + std::to_string(index + 1) + ": " +
         plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::StageSlope, index} });
-    // TODO bars
     if (hitType == FBMSEGNearestHitType::Point)
+    {
+      bool sync = plugGUI->HostContext()->GetAudioParamBool({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::Sync, 0} });
+      auto timeOrBarsParam = sync ? FFEnvParam::StageBars : FFEnvParam::StageTime;
       return "Stage " + std::to_string(index + 1) + ": " +
-        plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::StageTime, index} }) + "/" +
+        plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)timeOrBarsParam, index} }) + "/" +
         plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::StageLevel, index} });
+    }
     FB_ASSERT(false);
-    return "";
+    return std::string("");
   };
 
   showMSEG->onClick = [plugGUI, msegEditor_ = *msegEditor, topo, moduleSlot]() {
