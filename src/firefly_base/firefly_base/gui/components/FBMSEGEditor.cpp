@@ -49,7 +49,7 @@ FBMSEGEditor::mouseMove(MouseEvent const& e)
   Component::mouseMove(e);
   int hitIndex = -1;
   auto hitType = GetNearestHit(e.position, &hitIndex);
-  setMouseCursor(hitType == FBMSEGNearestHitType::None ? MouseCursor::NormalCursor : MouseCursor::DraggingHandCursor);
+  setMouseCursor((_model.enabled || hitType == FBMSEGNearestHitType::None) ? MouseCursor::NormalCursor : MouseCursor::DraggingHandCursor);
   if (hitType == FBMSEGNearestHitType::None)
     _plugGUI->HideTooltip();
   else if (getTooltipFor != nullptr)
@@ -72,11 +72,14 @@ FBMSEGEditor::GetNearestHit(juce::Point<float> const& p, int* index)
       minPointDistance = pointDistance;
       minPointDistanceIndex = i;
     }
-    auto slopeDistance = p.getDistanceFrom(_currentSlopesScreen[i]);
-    if (slopeDistance < minSlopeDistance)
+    if (_model.yMode == FBMSEGYMode::Exponential)
     {
-      minSlopeDistance = slopeDistance;
-      minSlopeDistanceIndex = i;
+      auto slopeDistance = p.getDistanceFrom(_currentSlopesScreen[i]);
+      if (slopeDistance < minSlopeDistance)
+      {
+        minSlopeDistance = slopeDistance;
+        minSlopeDistanceIndex = i;
+      }
     }
   }
   
@@ -184,11 +187,11 @@ FBMSEGEditor::paint(Graphics& g)
   {
     path.lineTo(_currentPointsScreen[_currentPointsScreen.size() - 1].getX(), zeroPointScreenY);
     path.closeSubPath();
-    g.setColour(Colours::grey);
+    g.setColour(_model.enabled ? Colours::grey : Colours::darkgrey);
     g.fillPath(path);
   }
 
-  g.setColour(Colours::white);
+  g.setColour(_model.enabled? Colours::white: Colours::grey);
   g.fillEllipse(
     _initPointScreen.getX() - pointRadius, _initPointScreen.getY() - pointRadius,
     2.0f * pointRadius, 2.0f * pointRadius);
@@ -205,9 +208,11 @@ FBMSEGEditor::paint(Graphics& g)
     float prevPointY = i == 0 ? _initPointScreen.getY() : _currentPointsScreen[i - 1].getY();
     float slopeX = prevPointX + (pointX - prevPointX) * 0.5f;
     float slopeY = prevPointY + (pointY - prevPointY) * std::pow(0.5f, std::log(slope) * FBInvLogHalf);
-    g.drawEllipse(
-      slopeX - pointRadius, slopeY - pointRadius,
-      2.0f * pointRadius, 2.0f * pointRadius, 1.0f);
+
+    if(_model.yMode == FBMSEGYMode::Exponential)
+      g.drawEllipse(
+        slopeX - pointRadius, slopeY - pointRadius,
+        2.0f * pointRadius, 2.0f * pointRadius, 1.0f);
     _currentSlopesScreen.push_back({ slopeX, slopeY });
   }
 }

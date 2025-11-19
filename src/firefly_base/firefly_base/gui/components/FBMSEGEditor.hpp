@@ -40,6 +40,7 @@ struct FBMSEGPoint
 
 struct FBMSEGModel
 {
+  bool enabled = {};
   bool looping = {};
   bool releasing = {};
   double initialY = {};
