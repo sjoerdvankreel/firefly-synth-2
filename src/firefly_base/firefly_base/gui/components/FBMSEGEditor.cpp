@@ -70,38 +70,39 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
 
   auto const outerBounds = getLocalBounds().reduced(MSEGOuterPadding);
   auto const innerBounds = outerBounds.reduced(MSEGInnerPadding);
+  auto adjustedPosition = event.position;
+  if (adjustedPosition.x < innerBounds.getX())
+    adjustedPosition.x = (float)innerBounds.getX();
+  if (adjustedPosition.x > innerBounds.getRight())
+    adjustedPosition.x = (float)innerBounds.getRight();
+  if (adjustedPosition.y < innerBounds.getY())
+    adjustedPosition.y = (float)innerBounds.getY();
+  if (adjustedPosition.y > innerBounds.getBottom())
+    adjustedPosition.y = (float)innerBounds.getBottom();
+
   double h = innerBounds.getHeight();
   if (_dragType == FBMSEGNearestHitType::Init)
   {
-    double yNorm = std::clamp(1.0 - (event.position.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
+    double yNorm = std::clamp(1.0 - (adjustedPosition.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
     _model.initialY = yNorm;
   }
   if (_dragType == FBMSEGNearestHitType::Slope)
   {
     double pointToY = _currentPointsScreen[_dragIndex].getY();
     double pointFromY = _dragIndex == 0? _initPointScreen.getY(): _currentPointsScreen[_dragIndex - 1].getY();
-    double yNorm = std::clamp((event.position.y - pointFromY) / (pointToY - pointFromY), 0.0, 1.0);
+    double yNorm = std::clamp((adjustedPosition.y - pointFromY) / (pointToY - pointFromY), 0.0, 1.0);
     _model.points[_dragIndex].slope = yNorm;
   }
   if (_dragType == FBMSEGNearestHitType::Point)
   {
-    if (_dragIndex == _currentPointsScreen.size() - 1)
-    {
-      // TODO
-    }
-    else
-    {
-      double xAfter = _currentPointsScreen[_dragIndex + 1].getX();
-      double xBefore = _dragIndex == 0 ? _initPointScreen.getX() : _currentPointsScreen[_dragIndex - 1].getX();
-      double yNorm = std::clamp(1.0 - (event.position.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
-      double lengthBothReal = _model.points[_dragIndex].lengthReal + _model.points[_dragIndex + 1].lengthReal;
-      double xPos = (event.position.x - xBefore) / (xAfter - xBefore);
-      _model.points[_dragIndex].y = yNorm;
-      _model.points[_dragIndex].lengthReal = xPos * lengthBothReal;
-      _model.points[_dragIndex + 1].lengthReal = (1.0 - xPos) * lengthBothReal;
-      _model.points[_dragIndex].lengthReal = std::clamp(_model.points[_dragIndex].lengthReal, 0.0, _maxLengthReal);
-      _model.points[_dragIndex + 1].lengthReal = std::clamp(_model.points[_dragIndex + 1].lengthReal, 0.0, _maxLengthReal);
-    }
+    double xCurrent = _currentPointsScreen[_dragIndex].getX();
+    double xBefore = _dragIndex == 0 ? _initPointScreen.getX() : _currentPointsScreen[_dragIndex - 1].getX();
+    double xPos = std::max((adjustedPosition.x - xBefore) / (xCurrent - xBefore), 0.0);
+    double yNorm = std::clamp(1.0 - (adjustedPosition.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
+
+    _model.points[_dragIndex].y = yNorm;
+    _model.points[_dragIndex].lengthReal *= xPos;
+    _model.points[_dragIndex].lengthReal = std::clamp(_model.points[_dragIndex].lengthReal, 0.0, _maxLengthReal);
   }
   if (modelUpdated != nullptr)
     modelUpdated(_model);
