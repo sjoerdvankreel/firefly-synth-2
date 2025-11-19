@@ -49,7 +49,7 @@ FBMSEGEditor::mouseMove(MouseEvent const& e)
   Component::mouseMove(e);
   int hitIndex = -1;
   auto hitType = GetNearestHit(e.position, &hitIndex);
-  setMouseCursor((_model.enabled || hitType == FBMSEGNearestHitType::None) ? MouseCursor::NormalCursor : MouseCursor::DraggingHandCursor);
+  setMouseCursor((!_model.enabled || hitType == FBMSEGNearestHitType::None) ? MouseCursor::NormalCursor : MouseCursor::DraggingHandCursor);
   if (hitType == FBMSEGNearestHitType::None)
     _plugGUI->HideTooltip();
   else if (getTooltipFor != nullptr)
@@ -165,7 +165,7 @@ FBMSEGEditor::paint(Graphics& g)
 
     // Ok so can't use beziers - they divert too much from what audio
     // is actually doing at the extremes. So, pixel by pixel it is.
-    double currentSlopeNorm = _model.points[i].slope;
+    double currentSlopeNorm = _model.yMode == FBMSEGYMode::Exponential ? _model.points[i].slope : 0.5f;
     int steps = (int)std::round(currentXScreen - prevXScreen);
     for (int j = 0; j < steps; j++)
     {
@@ -203,7 +203,8 @@ FBMSEGEditor::paint(Graphics& g)
       pointX - pointRadius, pointY - pointRadius,
       2.0f * pointRadius, 2.0f * pointRadius);
 
-    float slope = FBEnvMinSlope + (float)_model.points[i].slope * FBEnvSlopeRange;
+    float pointSlope = _model.yMode == FBMSEGYMode::Exponential ? (float)_model.points[i].slope : 0.5f;
+    float slope = FBEnvMinSlope + pointSlope * FBEnvSlopeRange;
     float prevPointX = i == 0 ? _initPointScreen.getX() : _currentPointsScreen[i - 1].getX();
     float prevPointY = i == 0 ? _initPointScreen.getY() : _currentPointsScreen[i - 1].getY();
     float slopeX = prevPointX + (pointX - prevPointX) * 0.5f;
