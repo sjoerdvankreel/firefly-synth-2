@@ -1,17 +1,14 @@
 TODOLIST for alpha-25
-[ ] need start-y value
+[x] need start-y value
+[x] do tooltips in the popup editor on the points
+[x] do hand cursor on over
+[x] do expo mode
 [ ] need all ratios
-[ ] pop-up editor with the current stuff
-[ ] env stage length edit is annoying
-[ ] switch the env stage controls for MSEG editor
-[ ] both inline and both popup
+[ ] do ratio mode
 [ ] do grid size in the popup editor
-[ ] do tooltips in the popup editor on the points
 [ ] do the drag-drop drama
 [ ] double click insert/delete
-[ ] do hand cursor on over
 [ ] paint loop/release
-[ ] do expo mode
 
 TODOLIST for alpha-26 - rest of the gui stuff
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
