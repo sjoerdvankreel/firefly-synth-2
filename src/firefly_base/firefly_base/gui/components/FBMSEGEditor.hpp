@@ -84,11 +84,13 @@ public:
     double maxLengthReal,
     int gridMinRatioGranularity);
 
+  void UpdateModel(); // call after mutating Model()
+  FBMSEGModel& Model() { return _model; }
+
+  void paint(juce::Graphics& g) override;
   void mouseMove(juce::MouseEvent const& event) override;
   void mouseExit(juce::MouseEvent const& event) override;
 
-  void UpdateModel(); // call after mutating Model()
-  void paint(juce::Graphics& g) override;
-  FBMSEGModel& Model() { return _model; }
-  std::function<void(FBMSEGModel const&)> modelChanged = {}; // called in response to GUI
+  std::function<void(FBMSEGModel const&)> modelChanged = {};
+  std::function<std::string(FBMSEGNearestHitType hitType, int index)> getTooltipFor = {};
 };

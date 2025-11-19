@@ -52,14 +52,8 @@ FBMSEGEditor::mouseMove(MouseEvent const& e)
   setMouseCursor(hitType == FBMSEGNearestHitType::None ? MouseCursor::NormalCursor : MouseCursor::DraggingHandCursor);
   if (hitType == FBMSEGNearestHitType::None)
     _plugGUI->HideTooltip();
-  else if (hitType == FBMSEGNearestHitType::Init)
-    _plugGUI->SetTooltip(e.getScreenPosition(), "Init");
-  else if (hitType == FBMSEGNearestHitType::Point)
-    _plugGUI->SetTooltip(e.getScreenPosition(), std::to_string(hitIndex + 1));
-  else if (hitType == FBMSEGNearestHitType::Slope)
-    _plugGUI->SetTooltip(e.getScreenPosition(), std::to_string(hitIndex + 1));
-  else
-    FB_ASSERT(false);
+  else if (getTooltipFor != nullptr)
+    _plugGUI->SetTooltip(e.getScreenPosition(), getTooltipFor(hitType, hitIndex));
 }
 
 FBMSEGNearestHitType

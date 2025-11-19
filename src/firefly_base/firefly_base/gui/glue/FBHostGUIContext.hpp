@@ -61,6 +61,7 @@ public:
   bool GetGUIParamBool(FBParamTopoIndices const& indices) const;
   int GetGUIParamDiscrete(FBParamTopoIndices const& indices) const;
 
+  std::string GetAudioParamText(FBParamTopoIndices const& indices) const;
   bool GetAudioParamBool(FBParamTopoIndices const& indices) const;
   int GetAudioParamDiscrete(FBParamTopoIndices const& indices) const;
   double GetAudioParamLinear(FBParamTopoIndices const& indices) const;

@@ -113,6 +113,14 @@ FBHostGUIContext::PerformImmediateAudioParamEdit(int index, double normalized)
   EndAudioParamChange(index);
 }
 
+std::string
+FBHostGUIContext::GetAudioParamText(FBParamTopoIndices const& indices) const
+{
+  auto param = Topo()->audio.ParamAtTopo(indices);
+  double normalized = GetAudioParamNormalized(param->runtimeParamIndex);
+  return param->NormalizedToTextWithUnit(false, normalized);
+}
+
 double
 FBHostGUIContext::GetAudioParamNormalized(FBParamTopoIndices const& indices) const
 {
