@@ -102,7 +102,7 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
     double xBefore = _dragIndex == 0 ? _initPointScreen.getX() : _currentPointsScreen[_dragIndex - 1].getX();
     double segLen = xCurrent - xBefore;
     double dragLen = adjustedPosition.x - xBefore;
-    double xPos = std::max(dragLen / segLen, 0.0);
+    double xPos = dragLen / segLen;
     _model.points[_dragIndex].lengthReal *= xPos;
     _model.points[_dragIndex].lengthReal = std::clamp(_model.points[_dragIndex].lengthReal, 0.0, _maxLengthReal);
   }
