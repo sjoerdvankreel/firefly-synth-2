@@ -80,7 +80,7 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
   {
     double pointToY = _currentPointsScreen[_dragIndex].getY();
     double pointFromY = _dragIndex == 0? _initPointScreen.getY(): _currentPointsScreen[_dragIndex - 1].getY();
-    double yNorm = std::clamp(event.position.y / (pointToY - pointFromY), 0.0, 1.0);
+    double yNorm = std::clamp((event.position.y - pointFromY) / (pointToY - pointFromY), 0.0, 1.0);
     _model.points[_dragIndex].slope = yNorm;
   }
   if (_dragType == FBMSEGNearestHitType::Point)
