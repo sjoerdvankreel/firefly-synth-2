@@ -85,8 +85,23 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
   }
   if (_dragType == FBMSEGNearestHitType::Point)
   {
-    double yNorm = std::clamp(1.0 - (event.position.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
-    _model.points[_dragIndex].y = yNorm;
+    if (_dragIndex == _currentPointsScreen.size() - 1)
+    {
+      // TODO
+    }
+    else
+    {
+      double xAfter = _currentPointsScreen[_dragIndex + 1].getX();
+      double xBefore = _dragIndex == 0 ? _initPointScreen.getX() : _currentPointsScreen[_dragIndex - 1].getX();
+      double yNorm = std::clamp(1.0 - (event.position.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
+      double lengthBothReal = _model.points[_dragIndex].lengthReal + _model.points[_dragIndex + 1].lengthReal;
+      double xPos = (event.position.x - xBefore) / (xAfter - xBefore);
+      _model.points[_dragIndex].y = yNorm;
+      _model.points[_dragIndex].lengthReal = xPos * lengthBothReal;
+      _model.points[_dragIndex + 1].lengthReal = (1.0 - xPos) * lengthBothReal;
+      _model.points[_dragIndex].lengthReal = std::clamp(_model.points[_dragIndex].lengthReal, 0.0, _maxLengthReal);
+      _model.points[_dragIndex + 1].lengthReal = std::clamp(_model.points[_dragIndex + 1].lengthReal, 0.0, _maxLengthReal);
+    }
   }
   if (modelUpdated != nullptr)
     modelUpdated(_model);

@@ -83,6 +83,9 @@ MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
   {
     context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageLevel, i } }, model.points[i].y);
     context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } }, model.points[i].slope);
+    auto lengthTopo = context->Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
+    double lengthRealNorm = lengthTopo->static_.LinearNonRealTime().PlainToNormalized(model.points[i].lengthReal);
+    context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } }, lengthRealNorm);
   }
 }
 
