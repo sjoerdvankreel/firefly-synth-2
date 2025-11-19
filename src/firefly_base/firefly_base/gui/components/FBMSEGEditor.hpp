@@ -55,9 +55,7 @@ struct FBMSEGModel
 };
 
 class FBMSEGEditor :
-public juce::Component,
-public juce::DragAndDropContainer,
-public juce::DragAndDropTarget
+public juce::Component
 {
   FBPlugGUI* const _plugGUI;
   int const _maxPoints;

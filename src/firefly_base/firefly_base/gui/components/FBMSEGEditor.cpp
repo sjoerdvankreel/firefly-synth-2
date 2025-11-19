@@ -83,7 +83,7 @@ FBMSEGEditor::mouseDown(MouseEvent const& event)
 {
   Component::mouseDown(event);
   int hitIndex = -1;
-  auto hitType = GetNearestHit(e.position, &hitIndex);
+  auto hitType = GetNearestHit(event.position, &hitIndex);
   if(!_model.enabled || hitType == FBMSEGNearestHitType::None)
   {
     StopDrag();
@@ -92,13 +92,6 @@ FBMSEGEditor::mouseDown(MouseEvent const& event)
   _dragging = true;
   _dragType = hitType;
   _dragIndex = hitIndex;
-  switch (hitType)
-  {
-  case FBMSEGNearestHitType::Init: startDragging(var(), this); break;
-  case FBMSEGNearestHitType::Point: startDragging(var(), this); break;
-  case FBMSEGNearestHitType::Slope: startDragging(var(), this); break;
-  default: break;
-  }
 }
 
 void
@@ -194,7 +187,7 @@ FBMSEGEditor::paint(Graphics& g)
   _activePointCount = 0;
   _currentPointsScreen.clear();
   _currentSlopesScreen.clear();
-  float zeroPointScreenY = (float)(h + MSEGInnerPaddding + MSEGOuterPadding);
+  float zeroPointScreenY = (float)(h + MSEGInnerPadding + MSEGOuterPadding);
   for (int i = 0; i < _model.points.size(); i++)
   {
     bool anyPointsAfterThis = false;
