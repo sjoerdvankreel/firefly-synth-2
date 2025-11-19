@@ -74,8 +74,8 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
   double yNorm = 1.0 - (event.position.y - MSEGInnerPadding - MSEGOuterPadding) / h;
   if (_dragType == FBMSEGNearestHitType::Init)
     _model.initialY = std::clamp(yNorm, 0.0, 1.0);
-  if (modelChanged != nullptr)
-    modelChanged(_model);
+  if (modelUpdated != nullptr)
+    modelUpdated(_model);
 }
 
 void

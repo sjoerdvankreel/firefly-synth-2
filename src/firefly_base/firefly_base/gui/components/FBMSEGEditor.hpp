@@ -100,6 +100,6 @@ public:
   void mouseMove(juce::MouseEvent const& event) override;
   void mouseExit(juce::MouseEvent const& event) override;
 
-  std::function<void(FBMSEGModel const&)> modelChanged = {};
+  std::function<void(FBMSEGModel const&)> modelUpdated = {};
   std::function<std::string(FBMSEGNearestHitType hitType, int index)> getTooltipFor = {};
 };

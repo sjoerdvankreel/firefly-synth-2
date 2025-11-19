@@ -20,6 +20,28 @@
 
 using namespace juce;
 
+static std::string
+GetMSEGTooltip(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGNearestHitType hitType, int index)
+{
+  if (hitType == FBMSEGNearestHitType::None)
+    return std::string("");
+  if (hitType == FBMSEGNearestHitType::Init)
+    return "Init: " + plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::InitLevel, 0} });
+  if (hitType == FBMSEGNearestHitType::Slope)
+    return "Slope " + std::to_string(index + 1) + ": " +
+    plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::StageSlope, index} });
+  if (hitType == FBMSEGNearestHitType::Point)
+  {
+    bool sync = plugGUI->HostContext()->GetAudioParamBool({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::Sync, 0} });
+    auto timeOrBarsParam = sync ? FFEnvParam::StageBars : FFEnvParam::StageTime;
+    return "Stage " + std::to_string(index + 1) + ": " +
+      plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)timeOrBarsParam, index} }) + "/" +
+      plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::StageLevel, index} });
+  }
+  FB_ASSERT(false);
+  return std::string("");
+}
+
 static void
 UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model)
 {
@@ -50,6 +72,11 @@ UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model)
     point.lengthRatioDen = bars.denom;
     model.points.push_back(point);
   }
+}
+
+static void
+MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
+{
 }
 
 static Component*
@@ -89,26 +116,10 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
   *msegEditor = plugGUI->StoreComponent<FBMSEGEditor>(plugGUI, FFEnvStageCount, FFEnvMaxBarsNum, FFEnvMaxBarsDen, FFEnvMaxTime, FFEnvMinBarsDen);
   UpdateMSEGModel(plugGUI, moduleSlot, (*msegEditor)->Model());
   (*msegEditor)->UpdateModel();
-
-  (*msegEditor)->getTooltipFor = [plugGUI, moduleSlot](FBMSEGNearestHitType hitType, int index) {
-    if (hitType == FBMSEGNearestHitType::None)
-      return std::string("");
-    if (hitType == FBMSEGNearestHitType::Init)
-      return "Init: " + plugGUI->HostContext()->GetAudioParamText({{(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::InitLevel, 0}});
-    if (hitType == FBMSEGNearestHitType::Slope)
-      return "Slope " + std::to_string(index + 1) + ": " +
-        plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::StageSlope, index} });
-    if (hitType == FBMSEGNearestHitType::Point)
-    {
-      bool sync = plugGUI->HostContext()->GetAudioParamBool({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::Sync, 0} });
-      auto timeOrBarsParam = sync ? FFEnvParam::StageBars : FFEnvParam::StageTime;
-      return "Stage " + std::to_string(index + 1) + ": " +
-        plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)timeOrBarsParam, index} }) + "/" +
-        plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::StageLevel, index} });
-    }
-    FB_ASSERT(false);
-    return std::string("");
-  };
+  (*msegEditor)->modelUpdated = [plugGUI, moduleSlot](FBMSEGModel const& model) { 
+    MSEGModelUpdated(plugGUI, moduleSlot, model); };
+  (*msegEditor)->getTooltipFor = [plugGUI, moduleSlot](FBMSEGNearestHitType hitType, int index) { 
+    return GetMSEGTooltip(plugGUI, moduleSlot, hitType, index); };
 
   showMSEG->onClick = [plugGUI, msegEditor_ = *msegEditor, topo, moduleSlot]() {
     auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
