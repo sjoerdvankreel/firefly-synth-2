@@ -99,6 +99,7 @@ public:
   void mouseDown(juce::MouseEvent const& event) override;
   void mouseMove(juce::MouseEvent const& event) override;
   void mouseExit(juce::MouseEvent const& event) override;
+  void mouseDoubleClick(juce::MouseEvent const& event) override;
 
   std::function<void(FBMSEGModel const&)> modelUpdated = {};
   std::function<std::string(FBMSEGNearestHitType hitType, int index)> getTooltipFor = {};

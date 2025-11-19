@@ -61,6 +61,50 @@ FBMSEGEditor::mouseExit(MouseEvent const& event)
   StopDrag();
 }
 
+void
+FBMSEGEditor::mouseDown(MouseEvent const& event)
+{
+  Component::mouseDown(event);
+  int hitIndex = -1;
+  auto hitType = GetNearestHit(event.position, &hitIndex);
+  if (!_model.enabled || hitType == FBMSEGNearestHitType::None)
+  {
+    StopDrag();
+    return;
+  }
+  _dragging = true;
+  _dragType = hitType;
+  _dragIndex = hitIndex;
+}
+
+void
+FBMSEGEditor::mouseMove(MouseEvent const& e)
+{
+  Component::mouseMove(e);
+  int hitIndex = -1;
+  auto hitType = GetNearestHit(e.position, &hitIndex);
+  setMouseCursor((!_model.enabled || hitType == FBMSEGNearestHitType::None) ? MouseCursor::NormalCursor : MouseCursor::DraggingHandCursor);
+  if (hitType == FBMSEGNearestHitType::None)
+    _plugGUI->HideTooltip();
+  else if (getTooltipFor != nullptr)
+    _plugGUI->SetTooltip(e.getScreenPosition(), getTooltipFor(hitType, hitIndex));
+}
+
+void
+FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
+{
+  int hitIndex = -1;
+  auto hitType = GetNearestHit(event.position, &hitIndex);
+  if (hitType == FBMSEGNearestHitType::None)
+    return;
+  if (hitType == FBMSEGNearestHitType::Init)
+    _model.initialY = 0.0f;
+  if (hitType == FBMSEGNearestHitType::Slope)
+    _model.points[hitIndex].slope = 0.5f;
+  if (modelUpdated != nullptr)
+    modelUpdated(_model);
+}
+
 void 
 FBMSEGEditor::mouseDrag(MouseEvent const& event)
 {
@@ -106,35 +150,6 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
   }
   if (modelUpdated != nullptr)
     modelUpdated(_model);
-}
-
-void
-FBMSEGEditor::mouseDown(MouseEvent const& event)
-{
-  Component::mouseDown(event);
-  int hitIndex = -1;
-  auto hitType = GetNearestHit(event.position, &hitIndex);
-  if(!_model.enabled || hitType == FBMSEGNearestHitType::None)
-  {
-    StopDrag();
-    return;
-  }
-  _dragging = true;
-  _dragType = hitType;
-  _dragIndex = hitIndex;
-}
-
-void
-FBMSEGEditor::mouseMove(MouseEvent const& e)
-{
-  Component::mouseMove(e);
-  int hitIndex = -1;
-  auto hitType = GetNearestHit(e.position, &hitIndex);
-  setMouseCursor((!_model.enabled || hitType == FBMSEGNearestHitType::None) ? MouseCursor::NormalCursor : MouseCursor::DraggingHandCursor);
-  if (hitType == FBMSEGNearestHitType::None)
-    _plugGUI->HideTooltip();
-  else if (getTooltipFor != nullptr)
-    _plugGUI->SetTooltip(e.getScreenPosition(), getTooltipFor(hitType, hitIndex));
 }
 
 FBMSEGNearestHitType
