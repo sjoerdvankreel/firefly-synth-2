@@ -71,9 +71,11 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
   auto const outerBounds = getLocalBounds().reduced(MSEGOuterPadding);
   auto const innerBounds = outerBounds.reduced(MSEGInnerPadding);
   double h = innerBounds.getHeight();
-  double yNorm = 1.0 - (event.position.y - MSEGInnerPadding - MSEGOuterPadding) / h;
+  double yNorm = std::clamp(1.0 - (event.position.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
   if (_dragType == FBMSEGNearestHitType::Init)
-    _model.initialY = std::clamp(yNorm, 0.0, 1.0);
+    _model.initialY = yNorm;
+  if (_dragType == FBMSEGNearestHitType::Slope)
+    _model.points[_dragIndex].slope = yNorm;
   if (modelUpdated != nullptr)
     modelUpdated(_model);
 }

@@ -79,6 +79,8 @@ MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
 {
   auto context = plugGUI->HostContext();
   context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::InitLevel, 0 } }, model.initialY);
+  for(int i = 0; i < FFEnvStageCount; i++)
+    context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } }, model.points[i].slope);
 }
 
 static Component*
