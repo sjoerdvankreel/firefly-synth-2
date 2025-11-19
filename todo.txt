@@ -3,11 +3,12 @@ TODOLIST for alpha-25
 [x] do tooltips in the popup editor on the points
 [x] do hand cursor on over
 [x] do expo mode
+[x] do the drag-drop drama
+[ ] drag the entire thing for length
 [ ] make stage len editor rotary
 [ ] need all ratios
 [ ] do ratio mode
 [ ] do grid size in the popup editor
-[ ] do the drag-drop drama
 [ ] double click insert/delete
 [ ] paint loop/release
 
