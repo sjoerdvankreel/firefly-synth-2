@@ -39,6 +39,7 @@ void
 FBMSEGEditor::mouseExit(MouseEvent const& event)
 {
   Component::mouseExit(event);
+  _plugGUI->HideTooltip();
   setMouseCursor(MouseCursor::NormalCursor);
 }
 
