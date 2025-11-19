@@ -55,9 +55,9 @@ struct FBMSEGModel
 };
 
 class FBMSEGEditor :
-public juce::Component//,
-//public juce::DragAndDropContainer,
-//public juce::DragAndDropTarget
+public juce::Component,
+public juce::DragAndDropContainer,
+public juce::DragAndDropTarget
 {
   FBPlugGUI* const _plugGUI;
   int const _maxPoints;
@@ -66,6 +66,10 @@ public juce::Component//,
   double const _maxLengthReal;
   int const _gridMinRatioGranularity;
 
+  int _dragIndex = -1;
+  bool _dragging = false;
+  FBMSEGNearestHitType _dragType = {};
+
   FBMSEGModel _model = {};
   int _activePointCount = {};
   juce::Point<float> _initPointScreen = {};
@@ -73,6 +77,7 @@ public juce::Component//,
   std::vector<juce::Point<float>> _currentPointsScreen = {};
   std::vector<juce::Point<float>> _currentSlopesScreen = {};
 
+  void StopDrag();   
   FBMSEGNearestHitType 
   GetNearestHit(juce::Point<float> const& p, int* index);
 
@@ -89,6 +94,9 @@ public:
   FBMSEGModel& Model() { return _model; }
 
   void paint(juce::Graphics& g) override;
+  void mouseUp(juce::MouseEvent const& event) override;
+  void mouseDrag(juce::MouseEvent const& event) override;
+  void mouseDown(juce::MouseEvent const& event) override;
   void mouseMove(juce::MouseEvent const& event) override;
   void mouseExit(juce::MouseEvent const& event) override;
 

@@ -6,6 +6,8 @@
 using namespace juce;
 
 static float const MSEGMouseNear = 5;
+static int const MSEGOuterPadding = 1;
+static int const MSEGInnerPadding = 3;
 
 FBMSEGEditor::
 FBMSEGEditor(
@@ -35,12 +37,68 @@ FBMSEGEditor::UpdateModel()
   repaint();
 }
 
+void
+FBMSEGEditor::StopDrag()
+{
+  _dragType = {};
+  _dragIndex = -1;
+  _dragging = false;
+}
+
+void
+FBMSEGEditor::mouseUp(MouseEvent const& event)
+{
+  Component::mouseUp(event);
+  StopDrag();
+}
+
 void 
 FBMSEGEditor::mouseExit(MouseEvent const& event)
 {
   Component::mouseExit(event);
   _plugGUI->HideTooltip();
   setMouseCursor(MouseCursor::NormalCursor);
+  StopDrag();
+}
+
+void 
+FBMSEGEditor::mouseDrag(MouseEvent const& event)
+{
+  Component::mouseDrag(event);
+  if (!_dragging)
+    return;
+
+  auto const outerBounds = getLocalBounds().reduced(MSEGOuterPadding);
+  auto const innerBounds = outerBounds.reduced(MSEGInnerPadding);
+  double h = innerBounds.getHeight();
+  double yNorm = 1.0 - (event.position.y - MSEGInnerPadding - MSEGOuterPadding) / h;
+  if (_dragType == FBMSEGNearestHitType::Init)
+    _model.initialY = std::clamp(yNorm, 0.0, 1.0);
+  if (modelChanged != nullptr)
+    modelChanged(_model);
+}
+
+void
+FBMSEGEditor::mouseDown(MouseEvent const& event)
+{
+  Component::mouseDown(event);
+  int hitIndex = -1;
+  auto hitType = GetNearestHit(e.position, &hitIndex);
+  if(!_model.enabled || hitType == FBMSEGNearestHitType::None)
+  {
+    StopDrag();
+    return;
+  }
+  _dragging = true;
+  _dragType = hitType;
+  _dragIndex = hitIndex;
+  switch (hitType)
+  {
+  case FBMSEGNearestHitType::Init: startDragging(var(), this); break;
+  case FBMSEGNearestHitType::Point: startDragging(var(), this); break;
+  case FBMSEGNearestHitType::Slope: startDragging(var(), this); break;
+  default: break;
+  }
 }
 
 void
@@ -106,15 +164,13 @@ FBMSEGEditor::GetNearestHit(juce::Point<float> const& p, int* index)
 void 
 FBMSEGEditor::paint(Graphics& g)
 {
-  int const outerPad = 1;
-  int const innerPad = 3;
   float const pointRadius = 4.0f;
-  auto const outerBounds = getLocalBounds().reduced(outerPad);
-  auto const innerBounds = outerBounds.reduced(innerPad);
+  auto const outerBounds = getLocalBounds().reduced(MSEGOuterPadding);
+  auto const innerBounds = outerBounds.reduced(MSEGInnerPadding);
 
   g.fillAll(Colours::black);
   g.setColour(Colour(0xFF181818));
-  g.fillRoundedRectangle(outerBounds.toFloat(), 2.0f * innerPad);
+  g.fillRoundedRectangle(outerBounds.toFloat(), 2.0f * MSEGInnerPadding);
 
   double totalLength = 0.0;
   _currentSegmentLengths.clear();
@@ -138,7 +194,7 @@ FBMSEGEditor::paint(Graphics& g)
   _activePointCount = 0;
   _currentPointsScreen.clear();
   _currentSlopesScreen.clear();
-  float zeroPointScreenY = (float)(h + innerPad + outerPad);
+  float zeroPointScreenY = (float)(h + MSEGInnerPaddding + MSEGOuterPadding);
   for (int i = 0; i < _model.points.size(); i++)
   {
     bool anyPointsAfterThis = false;
@@ -150,10 +206,10 @@ FBMSEGEditor::paint(Graphics& g)
     double currentYNorm = _model.points[i].y;
     double currentXNorm = prevXNorm + _currentSegmentLengths[i] / totalLength;
 
-    float prevXScreen = (float)(prevXNorm * w + innerPad + outerPad);
-    float currentXScreen = (float)(currentXNorm * w + innerPad + outerPad);
-    float prevYScreen = (float)((1.0f - prevYNorm) * h + innerPad + outerPad);
-    float currentYScreen = (float)((1.0f - currentYNorm) * h + innerPad + outerPad);
+    float prevXScreen = (float)(prevXNorm * w + MSEGInnerPadding + MSEGOuterPadding);
+    float currentXScreen = (float)(currentXNorm * w + MSEGInnerPadding + MSEGOuterPadding);
+    float prevYScreen = (float)((1.0f - prevYNorm) * h + MSEGInnerPadding + MSEGOuterPadding);
+    float currentYScreen = (float)((1.0f - currentYNorm) * h + MSEGInnerPadding + MSEGOuterPadding);
 
     if (i == 0)
     {
