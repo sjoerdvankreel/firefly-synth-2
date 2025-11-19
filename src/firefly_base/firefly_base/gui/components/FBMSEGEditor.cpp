@@ -35,12 +35,20 @@ FBMSEGEditor::UpdateModel()
   repaint();
 }
 
+void 
+FBMSEGEditor::mouseExit(MouseEvent const& event)
+{
+  Component::mouseExit(event);
+  setMouseCursor(MouseCursor::NormalCursor);
+}
+
 void
 FBMSEGEditor::mouseMove(MouseEvent const& e)
 {
   Component::mouseMove(e);
   int hitIndex = -1;
   auto hitType = GetNearestHit(e.position, &hitIndex);
+  setMouseCursor(hitType == FBMSEGNearestHitType::None ? MouseCursor::NormalCursor : MouseCursor::DraggingHandCursor);
   if (hitType == FBMSEGNearestHitType::None)
     _plugGUI->HideTooltip();
   else if (hitType == FBMSEGNearestHitType::Init)

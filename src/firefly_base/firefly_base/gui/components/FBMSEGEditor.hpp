@@ -85,6 +85,7 @@ public:
     int gridMinRatioGranularity);
 
   void mouseMove(juce::MouseEvent const& event) override;
+  void mouseExit(juce::MouseEvent const& event) override;
 
   void UpdateModel(); // call after mutating Model()
   void paint(juce::Graphics& g) override;
