@@ -100,18 +100,8 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
 
     double xCurrent = _currentPointsScreen[_dragIndex].getX();
     double xBefore = _dragIndex == 0 ? _initPointScreen.getX() : _currentPointsScreen[_dragIndex - 1].getX();
-
-    // this can come out as infinity when dragging from zero
     double xPos = std::max((adjustedPosition.x - xBefore) / (xCurrent - xBefore), 0.0);
-
-    // so limit the drag amount per drag instant to 10/1000% +/- tiny absolute amount (needed for dragging out of zero)
-    double newLengthReal = _model.points[_dragIndex].lengthReal * xPos;
-    newLengthReal = std::clamp(newLengthReal, 0.0, _maxLengthReal);
-    double maxAbsDrag = 0.001 * _maxLengthReal;
-    _model.points[_dragIndex].lengthReal = std::clamp(
-      newLengthReal,
-      _model.points[_dragIndex].lengthReal * 0.1f - maxAbsDrag, 
-      _model.points[_dragIndex].lengthReal * 10.0f + maxAbsDrag);
+    _model.points[_dragIndex].lengthReal *= xPos;
     _model.points[_dragIndex].lengthReal = std::clamp(_model.points[_dragIndex].lengthReal, 0.0, _maxLengthReal);
   }
   if (modelUpdated != nullptr)
