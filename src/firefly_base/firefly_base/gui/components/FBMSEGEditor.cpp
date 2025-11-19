@@ -1,17 +1,22 @@
 #include <firefly_base/gui/components/FBMSEGEditor.hpp>
+#include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
 using namespace juce;
 
+static float const MSEGMouseNear = 5;
+
 FBMSEGEditor::
 FBMSEGEditor(
+  FBPlugGUI* plugGUI,
   int maxPoints,
   int maxLengthRatioNum,
   int maxLengthRatioDen,
   double maxLengthReal,
   int gridMinRatioGranularity):
 Component(),
+_plugGUI(plugGUI),
 _maxPoints(maxPoints),
 _maxLengthRatioNum(maxLengthRatioNum),
 _maxLengthRatioDen(maxLengthRatioDen),
@@ -28,6 +33,68 @@ FBMSEGEditor::UpdateModel()
   FB_ASSERT(_model.points.size() <= _maxPoints);
   FB_ASSERT(0 <= _model.releasePoint && _model.releasePoint < _maxPoints);
   repaint();
+}
+
+void
+FBMSEGEditor::mouseMove(MouseEvent const& e)
+{
+  Component::mouseMove(e);
+  int hitIndex = -1;
+  auto hitType = GetNearestHit(e.position, &hitIndex);
+  if (hitType == FBMSEGNearestHitType::None)
+    _plugGUI->HideTooltip();
+  else if (hitType == FBMSEGNearestHitType::Init)
+    _plugGUI->SetTooltip(e.getScreenPosition(), "Init");
+  else if (hitType == FBMSEGNearestHitType::Point)
+    _plugGUI->SetTooltip(e.getScreenPosition(), std::to_string(hitIndex + 1));
+  else if (hitType == FBMSEGNearestHitType::Slope)
+    _plugGUI->SetTooltip(e.getScreenPosition(), std::to_string(hitIndex + 1));
+  else
+    FB_ASSERT(false);
+}
+
+FBMSEGNearestHitType
+FBMSEGEditor::GetNearestHit(juce::Point<float> const& p, int* index)
+{
+  int minPointDistanceIndex = -1;
+  int minSlopeDistanceIndex = -1;
+  float initDistance = p.getDistanceFrom(_initPointScreen);
+  float minSlopeDistance = std::numeric_limits<float>::infinity();
+  float minPointDistance = std::numeric_limits<float>::infinity();
+  for (int i = 0; i < _activePointCount; i++)
+  {
+    auto pointDistance = p.getDistanceFrom(_currentPointsScreen[i]);
+    if(pointDistance < minPointDistance)
+    {
+      minPointDistance = pointDistance;
+      minPointDistanceIndex = i;
+    }
+    auto slopeDistance = p.getDistanceFrom(_currentSlopesScreen[i]);
+    if (slopeDistance < minSlopeDistance)
+    {
+      minSlopeDistance = slopeDistance;
+      minSlopeDistanceIndex = i;
+    }
+  }
+  
+  *index = -1;
+  if (initDistance < minSlopeDistance && initDistance < minPointDistance)
+    return initDistance <= MSEGMouseNear ? FBMSEGNearestHitType::Init : FBMSEGNearestHitType::None;
+  if (minSlopeDistance < minPointDistance)
+  {
+    if (minSlopeDistance <= MSEGMouseNear)
+    {
+      *index = minSlopeDistanceIndex;
+      return FBMSEGNearestHitType::Slope;
+    }
+    return FBMSEGNearestHitType::None;
+  }
+  if (minPointDistance <= MSEGMouseNear)
+  {
+    *index = minPointDistanceIndex;
+    return FBMSEGNearestHitType::Point;
+  }
+  return FBMSEGNearestHitType::None;
 }
 
 void 
@@ -63,8 +130,8 @@ FBMSEGEditor::paint(Graphics& g)
 
   Path path = {};
   _activePointCount = 0;
-  _currentPointsScreenX.clear();
-  _currentPointsScreenY.clear();
+  _currentPointsScreen.clear();
+  _currentSlopesScreen.clear();
   float zeroPointScreenY = (float)(h + innerPad + outerPad);
   for (int i = 0; i < _model.points.size(); i++)
   {
@@ -84,10 +151,10 @@ FBMSEGEditor::paint(Graphics& g)
 
     if (i == 0)
     {
-      _initPointScreenX = prevXScreen;
-      _initPointScreenY = prevYScreen;
-      path.startNewSubPath(_initPointScreenX, zeroPointScreenY);
-      path.lineTo(_initPointScreenX, _initPointScreenY);
+      _initPointScreen.setX(prevXScreen);
+      _initPointScreen.setY(prevYScreen);
+      path.startNewSubPath(_initPointScreen.getX(), zeroPointScreenY);
+      path.lineTo(_initPointScreen.getX(), _initPointScreen.getY());
     }
 
     // Ok so can't use beziers - they divert too much from what audio
@@ -104,16 +171,15 @@ FBMSEGEditor::paint(Graphics& g)
       path.lineTo(stepXScreen, stepYScreen);
     }
 
-    _currentPointsScreenX.push_back(currentXScreen);
-    _currentPointsScreenY.push_back(currentYScreen);
+    _currentPointsScreen.push_back({ currentXScreen, currentYScreen });
     prevXNorm = currentXNorm;
     prevYNorm = currentYNorm;
     _activePointCount++;
   }
 
-  if (_currentPointsScreenX.size() > 0)
+  if (_currentPointsScreen.size() > 0)
   {
-    path.lineTo(_currentPointsScreenX[_currentPointsScreenX.size() - 1], zeroPointScreenY);
+    path.lineTo(_currentPointsScreen[_currentPointsScreen.size() - 1].getX(), zeroPointScreenY);
     path.closeSubPath();
     g.setColour(Colours::grey);
     g.fillPath(path);
@@ -121,23 +187,24 @@ FBMSEGEditor::paint(Graphics& g)
 
   g.setColour(Colours::white);
   g.fillEllipse(
-    _initPointScreenX - pointRadius, _initPointScreenY - pointRadius, 
+    _initPointScreen.getX() - pointRadius, _initPointScreen.getY() - pointRadius,
     2.0f * pointRadius, 2.0f * pointRadius);
   for (int i = 0; i < _activePointCount; i++)
   {
-    float pointX = _currentPointsScreenX[i];
-    float pointY = _currentPointsScreenY[i];
+    float pointX = _currentPointsScreen[i].getX();
+    float pointY = _currentPointsScreen[i].getY();
     g.fillEllipse(
       pointX - pointRadius, pointY - pointRadius,
       2.0f * pointRadius, 2.0f * pointRadius);
 
     float slope = FBEnvMinSlope + (float)_model.points[i].slope * FBEnvSlopeRange;
-    float prevPointX = i == 0 ? _initPointScreenX : _currentPointsScreenX[i - 1];
-    float prevPointY = i == 0 ? _initPointScreenY : _currentPointsScreenY[i - 1];
+    float prevPointX = i == 0 ? _initPointScreen.getX() : _currentPointsScreen[i - 1].getX();
+    float prevPointY = i == 0 ? _initPointScreen.getY() : _currentPointsScreen[i - 1].getY();
     float slopeX = prevPointX + (pointX - prevPointX) * 0.5f;
     float slopeY = prevPointY + (pointY - prevPointY) * std::pow(0.5f, std::log(slope) * FBInvLogHalf);
     g.drawEllipse(
       slopeX - pointRadius, slopeY - pointRadius,
       2.0f * pointRadius, 2.0f * pointRadius, 1.0f);
+    _currentSlopesScreen.push_back({ slopeX, slopeY });
   }
 }

@@ -3,6 +3,8 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <functional>
 
+class FBPlugGUI;
+
 enum class FBMSEGXMode
 {
   Real,
@@ -13,6 +15,14 @@ enum class FBMSEGYMode
 {
   Linear,
   Exponential
+};
+
+enum class FBMSEGNearestHitType
+{
+  None,
+  Init,
+  Point,
+  Slope,
 };
 
 struct FBMSEGPoint
@@ -44,8 +54,11 @@ struct FBMSEGModel
 };
 
 class FBMSEGEditor :
-public juce::Component
+public juce::Component//,
+//public juce::DragAndDropContainer,
+//public juce::DragAndDropTarget
 {
+  FBPlugGUI* const _plugGUI;
   int const _maxPoints;
   int const _maxLengthRatioNum;
   int const _maxLengthRatioDen;
@@ -54,19 +67,24 @@ public juce::Component
 
   FBMSEGModel _model = {};
   int _activePointCount = {};
-  float _initPointScreenX = {};
-  float _initPointScreenY = {};
-  std::vector<float> _currentPointsScreenX = {};
-  std::vector<float> _currentPointsScreenY = {};
+  juce::Point<float> _initPointScreen = {};
   std::vector<double> _currentSegmentLengths = {};
+  std::vector<juce::Point<float>> _currentPointsScreen = {};
+  std::vector<juce::Point<float>> _currentSlopesScreen = {};
+
+  FBMSEGNearestHitType 
+  GetNearestHit(juce::Point<float> const& p, int* index);
 
 public:
   FBMSEGEditor(
+    FBPlugGUI* plugGUI,
     int maxPoints,
     int maxLengthRatioNum,
     int maxLengthRatioDen,
     double maxLengthReal,
     int gridMinRatioGranularity);
+
+  void mouseMove(juce::MouseEvent const& event) override;
 
   void UpdateModel(); // call after mutating Model()
   void paint(juce::Graphics& g) override;

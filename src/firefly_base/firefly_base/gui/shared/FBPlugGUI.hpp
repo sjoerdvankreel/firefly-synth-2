@@ -65,6 +65,9 @@ public:
 
   void mouseUp(const juce::MouseEvent& event) override;
 
+  void HideTooltip();
+  void SetTooltip(juce::Point<int> const& screenPos, juce::String const& text);
+
   void UpdateExchangeState();
   void SetScale(double scale);
   void ShowHostMenuForAudioParam(int index);
