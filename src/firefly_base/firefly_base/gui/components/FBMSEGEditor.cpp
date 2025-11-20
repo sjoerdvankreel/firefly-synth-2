@@ -46,6 +46,7 @@ FBMSEGEditor::StopDrag()
   _dragType = {};
   _dragIndex = -1;
   _dragging = false;
+  setMouseCursor(MouseCursor::NormalCursor);
 }
 
 void
@@ -70,7 +71,7 @@ FBMSEGEditor::mouseDown(MouseEvent const& event)
   Component::mouseDown(event);
   int hitIndex = -1;
   auto hitType = GetNearestHit(event.position, &hitIndex);
-  if (!_model.enabled || hitType == FBMSEGNearestHitType::None)
+  if (!_model.enabled || hitType == FBMSEGNearestHitType::None || _currentPointsScreen.size() == 0)
   {
     StopDrag();
     return;
@@ -85,6 +86,12 @@ void
 FBMSEGEditor::mouseMove(MouseEvent const& e)
 {
   Component::mouseMove(e);
+  if (_currentPointsScreen.size() == 0)
+  {
+    _plugGUI->SetTooltip(e.getScreenPosition(), "Double-click to add a point.");
+    return;
+  }
+
   int hitIndex = -1;
   auto hitType = GetNearestHit(e.position, &hitIndex);
   setMouseCursor((!_model.enabled || hitType == FBMSEGNearestHitType::None) ? MouseCursor::NormalCursor : MouseCursor::DraggingHandCursor);
@@ -97,6 +104,17 @@ FBMSEGEditor::mouseMove(MouseEvent const& e)
 void
 FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
 {
+  if (_currentPointsScreen.size() == 0)
+  {
+    _model.points[0].lengthReal = _maxLengthReal * 0.5f;
+    if (modelUpdated != nullptr)
+    {
+      _plugGUI->HostContext()->UndoState().Snapshot("Change " + _name + " MSEG");
+      modelUpdated(_model);
+    }
+    return;
+  }
+
   int hitIndex = -1;
   auto hitType = GetNearestHit(event.position, &hitIndex);
   if (hitType == FBMSEGNearestHitType::Init)
@@ -147,6 +165,12 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
   if (!_dragging)
     return;
 
+  if (_currentPointsScreen.size() == 0)
+  {
+    StopDrag();
+    return;
+  }
+
   auto const outerBounds = getLocalBounds().reduced(MSEGOuterPadding);
   auto const innerBounds = outerBounds.reduced(MSEGInnerPadding);
   auto adjustedPosition = event.position;
@@ -163,14 +187,31 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
   {
     double yNorm = std::clamp(1.0 - (adjustedPosition.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
     _model.initialY = yNorm;
+
+    if (modelUpdated != nullptr)
+      modelUpdated(_model);
+    return;
   }
+
+  if (_dragIndex == -1 || _dragIndex >= (int)_currentPointsScreen.size())
+  {
+    // Can happen because the whole paint-drag-paint-drag cycle
+    // is not in the same callstack. Better luck next round.
+    return;
+  }
+
   if (_dragType == FBMSEGNearestHitType::Slope)
   {
     double pointToY = _currentPointsScreen[_dragIndex].getY();
     double pointFromY = _dragIndex == 0? _initPointScreen.getY(): _currentPointsScreen[_dragIndex - 1].getY();
     double yNorm = std::clamp((adjustedPosition.y - pointFromY) / (pointToY - pointFromY), 0.0, 1.0);
     _model.points[_dragIndex].slope = yNorm;
+    
+    if (modelUpdated != nullptr)
+      modelUpdated(_model);
+    return;
   }
+
   if (_dragType == FBMSEGNearestHitType::Point)
   {
     double yNorm = std::clamp(1.0 - (adjustedPosition.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
@@ -182,14 +223,19 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
     double dragLen = adjustedPosition.x - xBefore;
     _model.points[_dragIndex].lengthReal += (dragLen - segLen) * _totalLengthReal / _totalLengthScreen;
     _model.points[_dragIndex].lengthReal = std::clamp(_model.points[_dragIndex].lengthReal, 0.0, _maxLengthReal);
+
+    if (modelUpdated != nullptr)
+      modelUpdated(_model);
+    return;
   }
-  if (modelUpdated != nullptr)
-    modelUpdated(_model);
 }
 
 FBMSEGNearestHitType
 FBMSEGEditor::GetNearestHit(juce::Point<float> const& p, int* index)
 {
+  if (_currentPointsScreen.size() == 0)
+    return FBMSEGNearestHitType::Init;
+
   int minPointDistanceIndex = -1;
   int minSlopeDistanceIndex = -1;
   float initDistance = p.getDistanceFrom(_initPointScreen);
@@ -314,14 +360,19 @@ FBMSEGEditor::paint(Graphics& g)
     _activePointCount++;
   }
 
-  if (_currentPointsScreen.size() > 0)
+  if (_currentPointsScreen.size() == 0)
   {
-    path.lineTo(_currentPointsScreen[_currentPointsScreen.size() - 1].getX(), zeroPointScreenY);
-    path.closeSubPath();
-    g.setColour(_model.enabled ? Colours::grey : Colours::darkgrey);
-    g.fillPath(path);
+    g.setColour(Colours::grey);
+    g.setFont(FBGUIGetFont().withHeight(20.0f));
+    g.drawText("OFF", innerBounds, Justification::centred, false);
+    return;
   }
 
+  path.lineTo(_currentPointsScreen[_currentPointsScreen.size() - 1].getX(), zeroPointScreenY);
+  path.closeSubPath();
+  g.setColour(_model.enabled ? Colours::grey : Colours::darkgrey);
+  g.fillPath(path);
+  
   g.setColour(_model.enabled? Colours::white: Colours::grey);
   g.fillEllipse(
     _initPointScreen.getX() - pointRadius, _initPointScreen.getY() - pointRadius,
