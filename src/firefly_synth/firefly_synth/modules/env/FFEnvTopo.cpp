@@ -159,6 +159,7 @@ FFMakeEnvTopo()
   auto& initLevel = result->params[(int)FFEnvParam::InitLevel];
   initLevel.mode = FBParamMode::Accurate;
   initLevel.name = "Init Level";
+  initLevel.display = "Init";
   initLevel.slotCount = 1;
   initLevel.unit = "%";
   initLevel.id = "{AB53D9B4-965E-4AED-A60B-B6AB16738977}";
