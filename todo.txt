@@ -1,4 +1,5 @@
 TODOLIST for alpha-25
+[x] 16 segs
 [x] need start-y value
 [x] do tooltips in the popup editor on the points
 [x] do hand cursor on over
