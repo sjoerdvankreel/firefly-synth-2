@@ -20,7 +20,7 @@ enum class FBMSEGYMode
 enum class FBMSEGNearestHitType
 {
   None,
-  Init,
+  Start,
   Point,
   Slope,
 };
@@ -43,7 +43,7 @@ struct FBMSEGModel
   bool enabled = {};
   bool looping = {};
   bool releasing = {};
-  double initialY = {};
+  double startY = {};
   int loopStart = {};
   int loopLength = {};
   int releasePoint = {};
@@ -73,7 +73,7 @@ public juce::Component
   int _activePointCount = {};
   float _totalLengthReal = {};
   float _totalLengthScreen = {}; 
-  juce::Point<float> _initPointScreen = {};
+  juce::Point<float> _startPointScreen = {};
   std::vector<double> _currentSegmentLengths = {};
   std::vector<juce::Point<float>> _currentPointsScreen = {};
   std::vector<juce::Point<float>> _currentSlopesScreen = {};

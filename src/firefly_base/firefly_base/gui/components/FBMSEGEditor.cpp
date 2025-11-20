@@ -32,7 +32,7 @@ void
 FBMSEGEditor::UpdateModel()
 {
   FB_ASSERT(_model.gridEditRatioGranularity > 0);
-  FB_ASSERT(0.0 <= _model.initialY && _model.initialY <= 1.0);
+  FB_ASSERT(0.0 <= _model.startY && _model.startY <= 1.0);
   FB_ASSERT(_model.loopLength <= _maxPoints);
   FB_ASSERT(0 <= _model.loopStart && _model.loopStart < _maxPoints);
   FB_ASSERT(_model.points.size() <= _maxPoints);
@@ -117,8 +117,8 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
 
   int hitIndex = -1;
   auto hitType = GetNearestHit(event.position, &hitIndex);
-  if (hitType == FBMSEGNearestHitType::Init)
-    _model.initialY = 0.0f;
+  if (hitType == FBMSEGNearestHitType::Start)
+    _model.startY = 0.0f;
   else if (hitType == FBMSEGNearestHitType::Slope)
     _model.points[hitIndex].slope = 0.5f;
   else if (hitType == FBMSEGNearestHitType::Point)
@@ -136,7 +136,7 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
     {
       for (int i = 0; i < _currentPointsScreen.size(); i++)
       {
-        float prevX = i == 0 ? _initPointScreen.getX() : _currentPointsScreen[i - 1].getX();
+        float prevX = i == 0 ? _startPointScreen.getX() : _currentPointsScreen[i - 1].getX();
         float thisX = _currentPointsScreen[i].getX();
         if (prevX <= event.position.x && event.position.x <= thisX)
         {
@@ -183,10 +183,10 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
   // Do NOT check for exceed right bounds - we need it to allow growing the last segment.
 
   double h = innerBounds.getHeight();
-  if (_dragType == FBMSEGNearestHitType::Init)
+  if (_dragType == FBMSEGNearestHitType::Start)
   {
     double yNorm = std::clamp(1.0 - (adjustedPosition.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
-    _model.initialY = yNorm;
+    _model.startY = yNorm;
 
     if (modelUpdated != nullptr)
       modelUpdated(_model);
@@ -203,7 +203,7 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
   if (_dragType == FBMSEGNearestHitType::Slope)
   {
     double pointToY = _currentPointsScreen[_dragIndex].getY();
-    double pointFromY = _dragIndex == 0? _initPointScreen.getY(): _currentPointsScreen[_dragIndex - 1].getY();
+    double pointFromY = _dragIndex == 0? _startPointScreen.getY(): _currentPointsScreen[_dragIndex - 1].getY();
     double yNorm = std::clamp((adjustedPosition.y - pointFromY) / (pointToY - pointFromY), 0.0, 1.0);
     _model.points[_dragIndex].slope = yNorm;
     
@@ -218,7 +218,7 @@ FBMSEGEditor::mouseDrag(MouseEvent const& event)
     _model.points[_dragIndex].y = yNorm;
 
     double xCurrent = _currentPointsScreen[_dragIndex].getX();
-    double xBefore = _dragIndex == 0 ? _initPointScreen.getX() : _currentPointsScreen[_dragIndex - 1].getX();
+    double xBefore = _dragIndex == 0 ? _startPointScreen.getX() : _currentPointsScreen[_dragIndex - 1].getX();
     double segLen = xCurrent - xBefore;
     double dragLen = adjustedPosition.x - xBefore;
     _model.points[_dragIndex].lengthReal += (dragLen - segLen) * _totalLengthReal / _totalLengthScreen;
@@ -234,11 +234,11 @@ FBMSEGNearestHitType
 FBMSEGEditor::GetNearestHit(juce::Point<float> const& p, int* index)
 {
   if (_currentPointsScreen.size() == 0)
-    return FBMSEGNearestHitType::Init;
+    return FBMSEGNearestHitType::None;
 
   int minPointDistanceIndex = -1;
   int minSlopeDistanceIndex = -1;
-  float initDistance = p.getDistanceFrom(_initPointScreen);
+  float startDistance = p.getDistanceFrom(_startPointScreen);
   float minSlopeDistance = std::numeric_limits<float>::infinity();
   float minPointDistance = std::numeric_limits<float>::infinity();
   for (int i = 0; i < _activePointCount; i++)
@@ -261,8 +261,8 @@ FBMSEGEditor::GetNearestHit(juce::Point<float> const& p, int* index)
   }
   
   *index = -1;
-  if (initDistance < minSlopeDistance && initDistance < minPointDistance)
-    return initDistance <= MSEGMouseNear ? FBMSEGNearestHitType::Init : FBMSEGNearestHitType::None;
+  if (startDistance < minSlopeDistance && startDistance < minPointDistance)
+    return startDistance <= MSEGMouseNear ? FBMSEGNearestHitType::Start : FBMSEGNearestHitType::None;
   if (minSlopeDistance < minPointDistance)
   {
     if (minSlopeDistance <= MSEGMouseNear)
@@ -305,7 +305,7 @@ FBMSEGEditor::paint(Graphics& g)
   }
 
   double prevXNorm = 0.0;
-  double prevYNorm = _model.initialY;
+  double prevYNorm = _model.startY;
   double w = innerBounds.getWidth();
   double h = innerBounds.getHeight();
 
@@ -334,10 +334,10 @@ FBMSEGEditor::paint(Graphics& g)
 
     if (i == 0)
     {
-      _initPointScreen.setX(prevXScreen);
-      _initPointScreen.setY(prevYScreen);
-      path.startNewSubPath(_initPointScreen.getX(), zeroPointScreenY);
-      path.lineTo(_initPointScreen.getX(), _initPointScreen.getY());
+      _startPointScreen.setX(prevXScreen);
+      _startPointScreen.setY(prevYScreen);
+      path.startNewSubPath(_startPointScreen.getX(), zeroPointScreenY);
+      path.lineTo(_startPointScreen.getX(), _startPointScreen.getY());
     }
 
     // Ok so can't use beziers - they divert too much from what audio
@@ -375,7 +375,7 @@ FBMSEGEditor::paint(Graphics& g)
   
   g.setColour(_model.enabled? Colours::white: Colours::grey);
   g.fillEllipse(
-    _initPointScreen.getX() - pointRadius, _initPointScreen.getY() - pointRadius,
+    _startPointScreen.getX() - pointRadius, _startPointScreen.getY() - pointRadius,
     2.0f * pointRadius, 2.0f * pointRadius);
   for (int i = 0; i < _activePointCount; i++)
   {
@@ -387,8 +387,8 @@ FBMSEGEditor::paint(Graphics& g)
 
     float pointSlope = _model.yMode == FBMSEGYMode::Exponential ? (float)_model.points[i].slope : 0.5f;
     float slope = FBEnvMinSlope + pointSlope * FBEnvSlopeRange;
-    float prevPointX = i == 0 ? _initPointScreen.getX() : _currentPointsScreen[i - 1].getX();
-    float prevPointY = i == 0 ? _initPointScreen.getY() : _currentPointsScreen[i - 1].getY();
+    float prevPointX = i == 0 ? _startPointScreen.getX() : _currentPointsScreen[i - 1].getX();
+    float prevPointY = i == 0 ? _startPointScreen.getY() : _currentPointsScreen[i - 1].getY();
     float slopeX = prevPointX + (pointX - prevPointX) * 0.5f;
     float slopeY = prevPointY + (pointY - prevPointY) * std::pow(0.5f, std::log(slope) * FBInvLogHalf);
 

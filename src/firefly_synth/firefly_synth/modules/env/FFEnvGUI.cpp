@@ -25,8 +25,8 @@ GetMSEGTooltip(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGNearestHitType hitType,
 {
   if (hitType == FBMSEGNearestHitType::None)
     return std::string("");
-  if (hitType == FBMSEGNearestHitType::Init)
-    return "Init: " + plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::InitLevel, 0} });
+  if (hitType == FBMSEGNearestHitType::Start)
+    return "Start: " + plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::StartLevel, 0} });
   if (hitType == FBMSEGNearestHitType::Slope)
     return "Slope " + std::to_string(index + 1) + ": " +
     plugGUI->HostContext()->GetAudioParamText({ {(int)FFModuleType::Env, moduleSlot}, {(int)FFEnvParam::StageSlope, index} });
@@ -54,7 +54,7 @@ UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model)
   model.xMode = sync ? FBMSEGXMode::Ratio : FBMSEGXMode::Real;
   model.yMode = type == FFEnvType::Exp ? FBMSEGYMode::Exponential : FBMSEGYMode::Linear;
   model.enabled = type != FFEnvType::Off;
-  model.initialY = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::InitLevel, 0 } });
+  model.startY = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StartLevel, 0 } });
   model.looping = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }) != 0;
   model.loopStart = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }) - 1;
   model.loopLength = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } });
@@ -78,7 +78,7 @@ static void
 MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
 {
   auto context = plugGUI->HostContext();
-  context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::InitLevel, 0 } }, model.initialY);
+  context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StartLevel, 0 } }, model.startY);
   for (int i = 0; i < FFEnvStageCount; i++)
   {
     context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageLevel, i } }, model.points[i].y);
@@ -104,9 +104,9 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
   auto sync = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
-  auto initLevel = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::InitLevel, 0 } });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, initLevel));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, initLevel, Slider::SliderStyle::RotaryVerticalDrag));
+  auto startLevel = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StartLevel, 0 } });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, startLevel));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, startLevel, Slider::SliderStyle::RotaryVerticalDrag));
   auto loopStart = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, loopStart));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopStart));
@@ -119,7 +119,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
   auto smoothBars = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothBars, 0 } });
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
   grid->Add(0, 7, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
-  auto showMSEG = plugGUI->StoreComponent<FBParamValueLinkedButton>(plugGUI, type, "Show MSEG", [](int v) { return v != 0; });
+  auto showMSEG = plugGUI->StoreComponent<FBParamValueLinkedButton>(plugGUI, type, "MSEG", [](int v) { return v != 0; });
   grid->Add(1, 6, 1, 2, showMSEG);
   grid->MarkSection({ { 0, 0 }, { 2, 8 } });
 
@@ -137,7 +137,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
     dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, msegEditor_, 800, 240, true, [plugGUI, title, moduleSlot]() {
       plugGUI->HostContext()->UndoState().Snapshot("Init " + title + " MSEG");
       plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } });
-      plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::InitLevel, 0 } });
+      plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StartLevel, 0 } });
       plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } });
       plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } });
       for (int i = 0; i < FFEnvStageCount; i++)

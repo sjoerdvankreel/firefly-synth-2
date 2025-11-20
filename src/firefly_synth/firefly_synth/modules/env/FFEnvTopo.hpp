@@ -6,7 +6,7 @@
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
 
-inline int constexpr FFEnvStageCount = 14;
+inline int constexpr FFEnvStageCount = 16;
 
 // Per-stage.
 inline int constexpr FFEnvMinBarsNum = 1;
@@ -21,5 +21,5 @@ std::string FFEnvTypeToString(FFEnvType type);
 
 enum class FFEnvParam {
   Type, Sync, Release, SmoothTime, SmoothBars, 
-  LoopStart, LoopLength, InitLevel,
+  LoopStart, LoopLength, StartLevel,
   StageLevel, StageSlope, StageTime, StageBars, Count };

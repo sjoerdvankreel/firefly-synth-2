@@ -123,7 +123,7 @@ FFMakeEnvTopo()
   auto& smoothTime = result->params[(int)FFEnvParam::SmoothTime];
   smoothTime.mode = FBParamMode::Block;
   smoothTime.defaultText = "0";
-  smoothTime.display = "Smooth";
+  smoothTime.display = "Smth";
   smoothTime.name = "Smooth Time";
   smoothTime.slotCount = 1;
   smoothTime.unit = "Sec";
@@ -142,7 +142,7 @@ FFMakeEnvTopo()
   auto& smoothBars = result->params[(int)FFEnvParam::SmoothBars];
   smoothBars.mode = FBParamMode::Block;
   smoothBars.defaultText = "Off";
-  smoothBars.display = "Smooth";
+  smoothBars.display = "Smth";
   smoothBars.name = "Smooth Bars";
   smoothBars.slotCount = 1;
   smoothBars.unit = "Bars";
@@ -156,20 +156,20 @@ FFMakeEnvTopo()
   smoothBars.dependencies.visible.audio.WhenSimple({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   smoothBars.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
-  auto& initLevel = result->params[(int)FFEnvParam::InitLevel];
-  initLevel.mode = FBParamMode::Accurate;
-  initLevel.name = "Init Level";
-  initLevel.display = "Init";
-  initLevel.slotCount = 1;
-  initLevel.unit = "%";
-  initLevel.id = "{AB53D9B4-965E-4AED-A60B-B6AB16738977}";
-  initLevel.defaultText = "0";
-  initLevel.type = FBParamType::Identity;
-  auto selectInitLevel = [](auto& module) { return &module.acc.initLevel; };
-  initLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectInitLevel);
-  initLevel.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectInitLevel);
-  initLevel.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectInitLevel);
-  initLevel.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  auto& startLevel = result->params[(int)FFEnvParam::StartLevel];
+  startLevel.mode = FBParamMode::Accurate;
+  startLevel.name = "Start Level";
+  startLevel.display = "Start";
+  startLevel.slotCount = 1;
+  startLevel.unit = "%";
+  startLevel.id = "{AB53D9B4-965E-4AED-A60B-B6AB16738977}";
+  startLevel.defaultText = "0";
+  startLevel.type = FBParamType::Identity;
+  auto selectStartLevel = [](auto& module) { return &module.acc.startLevel; };
+  startLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStartLevel);
+  startLevel.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStartLevel);
+  startLevel.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStartLevel);
+  startLevel.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& stageLevel = result->params[(int)FFEnvParam::StageLevel];
   stageLevel.mode = FBParamMode::Accurate;

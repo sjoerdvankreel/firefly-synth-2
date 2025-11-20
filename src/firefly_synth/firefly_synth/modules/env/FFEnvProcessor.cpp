@@ -124,16 +124,16 @@ FFEnvProcessor::BeginVoice(
   }
   _lengthSamples += _smoothSamples;
 
-  float initLvlNorm = params.acc.initLevel[0].Voice()[voice].CV().Get(0);
-  float initLvlPlain = topo.NormalizedToIdentityFast(FFEnvParam::InitLevel, initLvlNorm);
+  float startLvlNorm = params.acc.startLevel[0].Voice()[voice].CV().Get(0);
+  float startLvlPlain = topo.NormalizedToIdentityFast(FFEnvParam::StartLevel, startLvlNorm);
 
   for (int i = 0; i < FFEnvStageCount; i++)
     if (_stageSamples[i] > 0)
     {
       if (i == 0)
       {
-        _lastOverall = initLvlPlain;
-        _lastBeforeRelease = initLvlPlain;
+        _lastOverall = startLvlPlain;
+        _lastBeforeRelease = startLvlPlain;
       }
       else
       {
@@ -158,7 +158,7 @@ FFEnvProcessor::Process(
   auto* procState = state.ProcAs<FFProcState>();
   auto const& procParams = procState->param.voice.env[state.moduleSlot];
   auto& output = procState->dsp.voice[voice].env[state.moduleSlot].output;
-  auto const& initLevel = procParams.acc.initLevel;
+  auto const& startLevel = procParams.acc.startLevel;
   auto const& stageLevel = procParams.acc.stageLevel;
   auto const& stageSlopeIn = procParams.acc.stageSlope;
 
@@ -231,7 +231,7 @@ FFEnvProcessor::Process(
       if (releasePoint != 0 && stage == releasePoint && _released)
         stageStart = _lastBeforeRelease;
       else if (stage == 0)
-        stageStart = initLevel[0].Voice()[voice].CV().Get(s);
+        stageStart = startLevel[0].Voice()[voice].CV().Get(s);
       else
         stageStart = stageLevel[stage - 1].Voice()[voice].CV().Get(s);
 
@@ -336,7 +336,7 @@ FFEnvProcessor::Process(
   exchangeDSP.boolOtherVoiceSubSectionTookOver = _otherVoiceSubSectionTookOver ? 1 : 0;
 
   auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
-  exchangeParams.acc.initLevel[0][voice] = initLevel[0].Voice()[voice].Last();
+  exchangeParams.acc.startLevel[0][voice] = startLevel[0].Voice()[voice].Last();
   for (int i = 0; i < FFEnvStageCount; i++)
   {
     exchangeParams.acc.stageSlope[i][voice] = stageSlopeModulated[i].Last();
