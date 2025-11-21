@@ -123,10 +123,23 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
     _model.points[hitIndex].slope = 0.5f;
   else if (hitType == FBMSEGNearestHitType::Point)
   {
-    // delete a point
+    // delete a point, adjust loop and release
+
     for (int i = hitIndex; i < _model.points.size() - 1; i++)
       _model.points[i] = _model.points[i + 1];
     _model.points[_model.points.size() - 1] = {};
+
+    if (_model.releasing)
+    {
+      int hitIndexRelease = hitIndex;
+      if (hitIndexRelease <= _model.releasePoint)
+      {
+        if (_model.releasePoint > 0)
+          _model.releasePoint--;
+        else
+          _model.releasing = false;
+      }
+    }
 
     if (_model.looping)
     {
@@ -135,6 +148,8 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
       {
         if (_model.loopStart > 0)
           _model.loopStart--;
+        else
+          _model.looping = false;
       }
       else if (hitIndexLoop <= _model.loopStart + _model.loopLength)
       {

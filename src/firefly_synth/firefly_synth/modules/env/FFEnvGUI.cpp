@@ -80,13 +80,28 @@ MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
   auto context = plugGUI->HostContext();
   auto topo = plugGUI->HostContext()->Topo();
   context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StartLevel, 0 } }, model.startY);
+  if (model.releasing)
+  {
+    auto releaseTopo = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } });
+    double releaseNorm = releaseTopo->static_.DiscreteNonRealTime().PlainToNormalized(model.releasePoint + 1);
+    context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } }, releaseNorm);
+  }
+  else
+  {
+    context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } }, 0.0);
+  }
   if (model.looping)
   {
     auto loopStartTopo = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } });
+    auto loopLengthTopo = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } });
     double loopStartNorm = loopStartTopo->static_.DiscreteNonRealTime().PlainToNormalized(model.loopStart + 1);
-    double loopLengthNorm = loopStartTopo->static_.DiscreteNonRealTime().PlainToNormalized(model.loopLength);
+    double loopLengthNorm = loopLengthTopo->static_.DiscreteNonRealTime().PlainToNormalized(model.loopLength);
     context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }, loopStartNorm);
     context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } }, loopLengthNorm);
+  }
+  else
+  {
+    context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }, 0.0);
   }
   for (int i = 0; i < FFEnvStageCount; i++)
   {
