@@ -306,6 +306,7 @@ FBMSEGEditor::paint(Graphics& g)
 
   double prevXNorm = 0.0;
   double prevYNorm = _model.startY;
+  double y = innerBounds.getY();
   double w = innerBounds.getWidth();
   double h = innerBounds.getHeight();
 
@@ -373,6 +374,16 @@ FBMSEGEditor::paint(Graphics& g)
   g.setColour(_model.enabled ? Colours::grey : Colours::darkgrey);
   g.fillPath(path);
   
+  if (_model.looping && _currentPointsScreen.size() > 0)
+  {
+    float dashes[2] = { 4, 2 };
+    g.setColour(_model.enabled ? Colours::white : Colours::grey);
+    int loopStart = std::min(_model.loopStart, (int)_currentPointsScreen.size() - 1);
+    int loopEnd = std::min(_model.loopStart + _model.loopLength, (int)_currentPointsScreen.size() - 1);
+    g.drawDashedLine(Line<float>(_currentPointsScreen[loopStart].getX(), (float)y, _currentPointsScreen[loopStart].getX(), (float)h), dashes, 2);
+    g.drawDashedLine(Line<float>(_currentPointsScreen[loopEnd].getX(), (float)y, _currentPointsScreen[loopEnd].getX(), (float)h), dashes, 2);
+  }
+
   g.setColour(_model.enabled? Colours::white: Colours::grey);
   g.fillEllipse(
     _startPointScreen.getX() - pointRadius, _startPointScreen.getY() - pointRadius,
