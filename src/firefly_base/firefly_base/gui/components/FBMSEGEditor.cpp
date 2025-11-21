@@ -424,9 +424,14 @@ FBMSEGEditor::paint(Graphics& g)
   {
     float pointX = _currentPointsScreen[i].getX();
     float pointY = _currentPointsScreen[i].getY();
-    g.fillEllipse(
-      pointX - pointRadius, pointY - pointRadius,
-      2.0f * pointRadius, 2.0f * pointRadius);
+    if(_model.releasing && _model.releasePoint == i)
+      g.drawEllipse(
+        pointX - (pointRadius - 1.0f), pointY - (pointRadius - 1.0f),
+        2.0f * pointRadius, 2.0f * pointRadius, 2.0f);
+    else
+      g.fillEllipse(
+        pointX - pointRadius, pointY - pointRadius,
+        2.0f * pointRadius, 2.0f * pointRadius);
 
     float pointSlope = _model.yMode == FBMSEGYMode::Exponential ? (float)_model.points[i].slope : 0.5f;
     float slope = FBEnvMinSlope + pointSlope * FBEnvSlopeRange;
