@@ -13,6 +13,8 @@ TODOLIST for alpha-25
 [ ] do ratio mode
 [ ] do grid size in the popup editor
 [ ] paint loop/release
+[ ] show tweaked from patch
+[ ] reload patch
 
 TODOLIST for alpha-26 - rest of the gui stuff
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
