@@ -6,17 +6,17 @@ TODOLIST for alpha-25
 [x] do expo mode
 [x] do the drag-drop drama
 [x] double click insert/delete
+[x] make stage len editor rotary
 [ ] do the snap thing (separate of ratio: snap is edit only)
 [ ] drag the entire thing for length
-[ ] make stage len editor rotary
 [ ] need all ratios => no, round to nearest
 [ ] do ratio mode
 [ ] do grid size in the popup editor
 [ ] paint loop/release
-[ ] show tweaked from patch
-[ ] reload patch
 
 TODOLIST for alpha-26 - rest of the gui stuff
+[ ] show tweaked from patch
+[ ] reload patch
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
 [ ] param menu : set to default / set to patch
 [ ] "reload patch" option
