@@ -380,8 +380,10 @@ FBMSEGEditor::paint(Graphics& g)
     g.setColour(_model.enabled ? Colours::white : Colours::grey);
     int loopStart = std::min(_model.loopStart, (int)_currentPointsScreen.size() - 1);
     int loopEnd = std::min(_model.loopStart + _model.loopLength, (int)_currentPointsScreen.size() - 1);
-    g.drawDashedLine(Line<float>(_currentPointsScreen[loopStart].getX(), (float)y, _currentPointsScreen[loopStart].getX(), (float)h), dashes, 2);
-    g.drawDashedLine(Line<float>(_currentPointsScreen[loopEnd].getX(), (float)y, _currentPointsScreen[loopEnd].getX(), (float)h), dashes, 2);
+    float loopStartXScreen = loopStart == 0 ? _startPointScreen.getX() : _currentPointsScreen[loopStart - 1].getX();
+    float loopEndXScreen = loopEnd == 0 ? _startPointScreen.getX() : _currentPointsScreen[loopEnd - 1].getX();
+    g.drawDashedLine(Line<float>(loopStartXScreen, (float)y, loopStartXScreen, (float)h), dashes, 2);
+    g.drawDashedLine(Line<float>(loopEndXScreen, (float)y, loopEndXScreen, (float)h), dashes, 2);
   }
 
   g.setColour(_model.enabled? Colours::white: Colours::grey);
