@@ -34,9 +34,9 @@ FBMSEGEditor::UpdateModel()
   FB_ASSERT(_model.gridEditRatioGranularity > 0);
   FB_ASSERT(0.0 <= _model.startY && _model.startY <= 1.0);
   FB_ASSERT(_model.loopLength <= _maxPoints);
-  FB_ASSERT(0 <= _model.loopStart && _model.loopStart < _maxPoints);
+  FB_ASSERT(0 <= _model.loopStart && _model.loopStart <= _maxPoints);
   FB_ASSERT(_model.points.size() <= _maxPoints);
-  FB_ASSERT(0 <= _model.releasePoint && _model.releasePoint < _maxPoints);
+  FB_ASSERT(0 <= _model.releasePoint && _model.releasePoint <= _maxPoints);
   repaint();
 }
 
@@ -378,8 +378,8 @@ FBMSEGEditor::paint(Graphics& g)
   {
     float dashes[2] = { 4, 2 };
     g.setColour(_model.enabled ? Colours::white : Colours::grey);
-    int loopStart = std::min(_model.loopStart, (int)_currentPointsScreen.size() - 1);
-    int loopEnd = std::min(_model.loopStart + _model.loopLength, (int)_currentPointsScreen.size() - 1);
+    int loopStart = std::min(_model.loopStart, (int)_currentPointsScreen.size());
+    int loopEnd = std::min(_model.loopStart + _model.loopLength, (int)_currentPointsScreen.size());
     float loopStartXScreen = loopStart == 0 ? _startPointScreen.getX() : _currentPointsScreen[loopStart - 1].getX();
     float loopEndXScreen = loopEnd == 0 ? _startPointScreen.getX() : _currentPointsScreen[loopEnd - 1].getX();
     g.drawDashedLine(Line<float>(loopStartXScreen, (float)y, loopStartXScreen, (float)h), dashes, 2);
