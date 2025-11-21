@@ -127,6 +127,9 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
     for (int i = hitIndex; i < _model.points.size() - 1; i++)
       _model.points[i] = _model.points[i + 1];
     _model.points[_model.points.size() - 1] = {};
+
+    if (_model.looping && _model.loopStart >= hitIndex - 1 && _model.loopStart > 0)
+      _model.loopStart--;
   }
   else
   {
