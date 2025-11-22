@@ -104,6 +104,9 @@ FBMSEGEditor::mouseMove(MouseEvent const& e)
 void
 FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
 {
+  auto const outerBounds = getLocalBounds().reduced(MSEGOuterPadding);
+  auto const innerBounds = outerBounds.reduced(MSEGInnerPadding);
+
   if (_currentPointsScreen.size() == 0)
   {
     _model.points[0].lengthReal = _maxLengthReal * 0.5f;
@@ -170,12 +173,14 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
       {
         float prevX = i == 0 ? _startPointScreen.getX() : _currentPointsScreen[i - 1].getX();
         float thisX = _currentPointsScreen[i].getX();
+        float clickYNorm = std::clamp(1.0f - (event.position.y - innerBounds.getY()) / innerBounds.getHeight(), 0.0f, 1.0f);
         if (prevX <= event.position.x && event.position.x <= thisX)
         {
           float lengthToSplit = (float)_model.points[i].lengthReal;
           float splitPosNorm = std::clamp((event.position.x - prevX) / (thisX - prevX), 0.0f, 1.0f);
           for (int j = _maxPoints - 1; j > i; j--)
             _model.points[j] = _model.points[j - 1];
+          _model.points[i].y = clickYNorm;
           _model.points[i].lengthReal = lengthToSplit * splitPosNorm;
           _model.points[i + 1].lengthReal = lengthToSplit * (1.0f - splitPosNorm);
           break;
