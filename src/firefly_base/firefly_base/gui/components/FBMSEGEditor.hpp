@@ -40,17 +40,14 @@ struct FBMSEGPoint
 
 struct FBMSEGModel
 {
-  bool snapX = {};
-  bool snapY = {};
   bool enabled = {};
   bool looping = {};
   bool releasing = {};
   double startY = {};
-  int snapXCount = 128;
-  int snapYCount = 128;
   int loopStart = {};
   int loopLength = {};
   int releasePoint = {};
+  int gridEditRatioGranularity = {};
 
   FBMSEGXMode xMode = {};
   FBMSEGYMode yMode = {};
@@ -63,7 +60,10 @@ public juce::Component
   FBPlugGUI* const _plugGUI;
   std::string const _name;
   int const _maxPoints;
+  int const _maxLengthRatioNum;
+  int const _maxLengthRatioDen;
   double const _maxLengthReal;
+  int const _gridMinRatioGranularity;
 
   int _dragIndex = -1;
   bool _dragging = false;
@@ -87,7 +87,10 @@ public:
     FBPlugGUI* plugGUI,
     std::string const& name,
     int maxPoints,
-    double maxLengthReal);
+    int maxLengthRatioNum,
+    int maxLengthRatioDen,
+    double maxLengthReal,
+    int gridMinRatioGranularity);
 
   void UpdateModel(); // call after mutating Model()
   FBMSEGModel& Model() { return _model; }
