@@ -7,12 +7,12 @@ TODOLIST for alpha-25
 [x] do the drag-drop drama
 [x] double click insert/delete
 [x] make stage len editor rotary
+[x] paint loop/release
 [ ] do the snap thing (separate of ratio: snap is edit only)
 [ ] drag the entire thing for length
 [ ] need all ratios => no, round to nearest
 [ ] do ratio mode
 [ ] do grid size in the popup editor
-[ ] paint loop/release
 
 TODOLIST for alpha-26 - rest of the gui stuff
 [ ] show tweaked from patch
