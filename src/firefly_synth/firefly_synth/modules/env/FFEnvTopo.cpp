@@ -26,6 +26,26 @@ FFEnvTypeToString(FFEnvType type)
   }
 }
 
+static std::vector<FBListItem>
+MakeMSEGSnapItems()
+{
+  return {
+    { "{9DBA04B6-8AAE-4257-AE45-B1325B03CF2A}", "2" },
+    { "{E0C4102F-93A9-48A9-8FF2-52B8775EFCDF}", "4" },
+    { "{8EE7D810-AA0E-43F9-AC8A-08B92252310C}", "8" },
+    { "{5AEFFF03-71E6-4CBF-8E45-09315DD251D9}", "16" },
+    { "{48D36027-A45C-4193-AE53-9B24D4A6C1C9}", "32" },
+    { "{E9473ECD-0413-47AF-A8BD-CFBF2500A52C}", "64" },
+    { "{A66B2C43-367F-40C7-9A9B-5C27A18B6FA2}", "128" }
+  };
+};
+
+std::vector<int>
+FFEnvMakeMSEGSnapCounts()
+{
+  return { 2, 4, 8, 16, 32, 64, 128 };
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeEnvTopo()
 {
@@ -259,15 +279,8 @@ FFMakeEnvTopo()
   guiMSEGSnapXCount.slotCount = 1;
   guiMSEGSnapXCount.defaultText = "128";
   guiMSEGSnapXCount.id = "{C409B95E-A2E3-4D7A-8916-B6029C54C964}";
-  guiMSEGSnapXCount.type = FBParamType::List;
-  guiMSEGSnapXCount.List().items = {
-    { "{9DBA04B6-8AAE-4257-AE45-B1325B03CF2A}", "2" },
-    { "{E0C4102F-93A9-48A9-8FF2-52B8775EFCDF}", "4" },
-    { "{8EE7D810-AA0E-43F9-AC8A-08B92252310C}", "8" },
-    { "{5AEFFF03-71E6-4CBF-8E45-09315DD251D9}", "16" },
-    { "{48D36027-A45C-4193-AE53-9B24D4A6C1C9}", "32" },
-    { "{E9473ECD-0413-47AF-A8BD-CFBF2500A52C}", "64" },
-    { "{A66B2C43-367F-40C7-9A9B-5C27A18B6FA2}", "128" } };
+  guiMSEGSnapXCount.type = FBParamType::List; 
+  guiMSEGSnapXCount.List().items = MakeMSEGSnapItems();
   auto selectGuiMSEGSnapXCount = [](auto& module) { return &module.MSEGSnapXCount; };
   guiMSEGSnapXCount.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMSEGSnapXCount);
 
@@ -277,14 +290,7 @@ FFMakeEnvTopo()
   guiMSEGSnapYCount.defaultText = "128";
   guiMSEGSnapYCount.id = "{838AB77F-91B5-48CD-AC51-368963DE3CC9}";
   guiMSEGSnapYCount.type = FBParamType::List;
-  guiMSEGSnapYCount.List().items = {
-    { "{C4C430CF-6BEE-49CC-8EB4-30A023738F08}", "2" },
-    { "{ED12354F-D1C6-41AF-8EBF-A7BC7809E2CA}", "4" },
-    { "{07F106B2-26CD-4636-92BB-3D45A7112854}", "8" },
-    { "{8E1476BE-894E-443C-8AC5-47955A5580AD}", "16" },
-    { "{CF2B27EA-9080-43CF-B710-8DB9B9071B54}", "32" },
-    { "{C73DE477-E6EF-4C2E-9E8A-58460FDE8697}", "64" },
-    { "{D5AA7DA6-9C83-4476-8BDE-CD0AEE48C639}", "128" } };
+  guiMSEGSnapYCount.List().items = MakeMSEGSnapItems();
   auto selectGuiMSEGSnapYCount = [](auto& module) { return &module.MSEGSnapYCount; };
   guiMSEGSnapYCount.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMSEGSnapYCount);
 

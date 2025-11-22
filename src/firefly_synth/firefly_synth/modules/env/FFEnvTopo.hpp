@@ -1,10 +1,12 @@
 #pragma once
 
+#include <vector>
 #include <string>
 #include <memory>
 
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
+std::vector<int> FFEnvMakeMSEGSnapCounts();
 
 inline int constexpr FFEnvStageCount = 15;
 
