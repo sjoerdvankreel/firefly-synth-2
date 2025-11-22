@@ -8,6 +8,7 @@ TODOLIST for alpha-25
 [x] double click insert/delete
 [x] make stage len editor rotary
 [x] paint loop/release
+[ ] detach the undo from the visual editor
 [ ] do the snap thing (separate of ratio: snap is edit only)
 [ ] drag the entire thing for length
 [ ] need all ratios => no, round to nearest

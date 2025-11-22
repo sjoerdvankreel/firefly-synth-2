@@ -183,6 +183,14 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
           _model.points[i].y = clickYNorm;
           _model.points[i].lengthReal = lengthToSplit * splitPosNorm;
           _model.points[i + 1].lengthReal = lengthToSplit * (1.0f - splitPosNorm);
+
+          if (_model.releasing)
+          {
+            if (i <= _model.releasePoint)
+              if (_model.releasePoint < _currentPointsScreen.size())
+                _model.releasePoint++;
+          }
+
           break;
         }
       }
@@ -432,7 +440,7 @@ FBMSEGEditor::paint(Graphics& g)
   {
     float pointX = _currentPointsScreen[i].getX();
     float pointY = _currentPointsScreen[i].getY();
-    if(_model.releasing && _model.releasePoint == i)
+    if(_model.releasing && (_model.releasePoint == i || _activePointCount - 1 == i && _model.releasePoint >= _activePointCount))
       g.drawEllipse(
         pointX - (pointRadius - 1.0f), pointY - (pointRadius - 1.0f),
         2.0f * pointRadius, 2.0f * pointRadius, 2.0f);
