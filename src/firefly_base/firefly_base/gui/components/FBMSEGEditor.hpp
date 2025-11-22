@@ -40,6 +40,8 @@ struct FBMSEGPoint
 
 struct FBMSEGModel
 {
+  bool snapX = {};
+  bool snapY = {};
   bool enabled = {};
   bool looping = {};
   bool releasing = {};
@@ -47,7 +49,8 @@ struct FBMSEGModel
   int loopStart = {};
   int loopLength = {};
   int releasePoint = {};
-  int gridEditRatioGranularity = {};
+  int snapXCount = 128;
+  int snapYCount = 128;
 
   FBMSEGXMode xMode = {};
   FBMSEGYMode yMode = {};
@@ -63,7 +66,6 @@ public juce::Component
   int const _maxLengthRatioNum;
   int const _maxLengthRatioDen;
   double const _maxLengthReal;
-  int const _gridMinRatioGranularity;
 
   int _dragIndex = -1;
   bool _dragging = false;
@@ -89,8 +91,7 @@ public:
     int maxPoints,
     int maxLengthRatioNum,
     int maxLengthRatioDen,
-    double maxLengthReal,
-    int gridMinRatioGranularity);
+    double maxLengthReal);
 
   void UpdateModel(); // call after mutating Model()
   FBMSEGModel& Model() { return _model; }
