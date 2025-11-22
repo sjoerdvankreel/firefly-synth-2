@@ -161,6 +161,8 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
   else
   {
     // split a segment, if allowed
+    // adjust loop and release
+
     FB_ASSERT(hitType == FBMSEGNearestHitType::None);
     if (_currentPointsScreen.size() < _model.points.size())
     {
@@ -170,11 +172,12 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
         float thisX = _currentPointsScreen[i].getX();
         if (prevX <= event.position.x && event.position.x <= thisX)
         {
+          float lengthToSplit = (float)_model.points[i].lengthReal;
+          float splitPosNorm = std::clamp((event.position.x - prevX) / (thisX - prevX), 0.0f, 1.0f);
           for (int j = _maxPoints - 1; j > i; j--)
             _model.points[j] = _model.points[j - 1];
-          _model.points[i].lengthReal *= 0.5;
-          if(i < _model.points.size() - 1)
-            _model.points[i + 1].lengthReal = _model.points[i].lengthReal;
+          _model.points[i].lengthReal = lengthToSplit * splitPosNorm;
+          _model.points[i + 1].lengthReal = lengthToSplit * (1.0f - splitPosNorm);
           break;
         }
       }
