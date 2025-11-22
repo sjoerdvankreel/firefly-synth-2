@@ -191,6 +191,13 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
                 _model.releasePoint++;
           }
 
+          if (_model.looping)
+          {
+            if (i <= _model.loopStart - 1)
+              if (_model.loopStart < _currentPointsScreen.size())
+                _model.loopStart++;
+          }
+
           break;
         }
       }

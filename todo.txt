@@ -17,6 +17,7 @@ TODOLIST for alpha-25
 
 TODOLIST for alpha-26 - rest of the gui stuff
 [ ] show tweaked from patch
+[ ] close popup editors if not on main
 [ ] reload patch
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
 [ ] param menu : set to default / set to patch
