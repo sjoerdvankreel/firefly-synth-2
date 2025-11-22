@@ -13,6 +13,19 @@
 struct FBStaticModule;
 struct FBModuleGraphComponentData;
 
+class FFEnvGUIState final
+{
+  friend struct FFGUIState;
+  friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
+
+  std::array<double, 1> MSEGSnapX = {};
+  std::array<double, 1> MSEGSnapY = {};
+  std::array<double, 1> MSEGSnapXCount = {};
+  std::array<double, 1> MSEGSnapYCount = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvGUIState);
+};
+
 struct alignas(FBSIMDAlign) FFEnvExchangeState final:
 public FBModuleProcSingleExchangeState
 {

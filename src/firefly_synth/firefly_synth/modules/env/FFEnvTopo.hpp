@@ -19,6 +19,11 @@ enum class FFEnvCVOutput { Output, Count };
 enum class FFEnvType { Off, Linear, Exp };
 std::string FFEnvTypeToString(FFEnvType type);
 
+enum class FFEnvGUIParam { 
+  MSEGSnapX, MSEGSnapXCount, 
+  MSEGSnapY, MSEGSnapYCount,
+  Count };
+
 enum class FFEnvParam {
   Type, Sync, Release, SmoothTime, SmoothBars, 
   LoopStart, LoopLength, StartLevel,
