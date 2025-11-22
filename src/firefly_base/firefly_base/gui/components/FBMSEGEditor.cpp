@@ -194,8 +194,15 @@ FBMSEGEditor::mouseDoubleClick(MouseEvent const& event)
           if (_model.looping)
           {
             if (i <= _model.loopStart - 1)
+            {
               if (_model.loopStart < _currentPointsScreen.size())
                 _model.loopStart++;
+            }
+            else if (i <= _model.loopStart - 1 + _model.loopLength)
+            {
+              if (_model.loopLength < _maxPoints - 1)
+                _model.loopLength++;
+            }
           }
 
           break;
