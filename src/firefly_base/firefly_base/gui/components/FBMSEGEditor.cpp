@@ -15,23 +15,18 @@ FBMSEGEditor(
   FBPlugGUI* plugGUI,
   std::string const& name,
   int maxPoints,
-  int maxLengthRatioNum,
-  int maxLengthRatioDen,
-  double maxLengthReal,
-  int gridMinRatioGranularity):
+  double maxLengthReal):
 Component(),
 _plugGUI(plugGUI),
 _name(name),
 _maxPoints(maxPoints),
-_maxLengthRatioNum(maxLengthRatioNum),
-_maxLengthRatioDen(maxLengthRatioDen),
-_maxLengthReal(maxLengthReal),
-_gridMinRatioGranularity(gridMinRatioGranularity) {}
+_maxLengthReal(maxLengthReal) {}
 
 void
 FBMSEGEditor::UpdateModel()
 {
-  FB_ASSERT(_model.gridEditRatioGranularity > 0);
+  FB_ASSERT(_model.snapXCount > 0);
+  FB_ASSERT(_model.snapYCount > 0);
   FB_ASSERT(0.0 <= _model.startY && _model.startY <= 1.0);
   FB_ASSERT(_model.loopLength <= _maxPoints);
   FB_ASSERT(0 <= _model.loopStart && _model.loopStart <= _maxPoints);
