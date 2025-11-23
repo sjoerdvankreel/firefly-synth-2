@@ -326,12 +326,35 @@ FBMSEGCanvas::mouseDrag(MouseEvent const& event)
     double yNorm = std::clamp(1.0 - (snappedPosition.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
     _model.points[_dragIndex].y = yNorm;
 
-    double xCurrent = _currentPointsScreen[_dragIndex].getX();
-    double xBefore = _dragIndex == 0 ? _startPointScreen.getX() : _currentPointsScreen[_dragIndex - 1].getX();
-    double segLen = xCurrent - xBefore;
-    double dragLen = adjustedPosition.x - xBefore;
-    _model.points[_dragIndex].lengthReal += (dragLen - segLen) * _totalLengthReal / _totalLengthScreen;
-    _model.points[_dragIndex].lengthReal = std::clamp(_model.points[_dragIndex].lengthReal, 0.0, _maxLengthReal);
+    if (_model.snapX)
+    {
+      double xBefore = _dragIndex == 0 ? _startPointScreen.getX() : _currentPointsScreen[_dragIndex - 1].getX();
+      double xAfter = _dragIndex >= (int)_currentPointsScreen.size() - 1 ? 
+        _currentPointsScreen[(int)_currentPointsScreen.size() - 1].getX() :
+        _currentPointsScreen[_dragIndex + 1].getX();
+      double segsLenScreen = xAfter - xBefore;
+      double dragLenScreen = adjustedPosition.x - xBefore;
+      double segsLenReal = _model.points[_dragIndex].lengthReal;
+      if(_dragIndex < (int)_model.points.size() - 1)
+        segsLenReal += _model.points[_dragIndex + 1].lengthReal;
+      double dragPosNorm = std::clamp(dragLenScreen / segsLenScreen, 0.0, 1.0);
+      _model.points[_dragIndex].lengthReal = dragPosNorm * segsLenReal;
+      _model.points[_dragIndex].lengthReal = std::clamp(_model.points[_dragIndex].lengthReal, 0.0, _maxLengthReal);
+      if (_dragIndex < (int)_model.points.size() - 1)
+      {
+        _model.points[_dragIndex + 1].lengthReal = (1.0 - dragPosNorm) * segsLenReal;
+        _model.points[_dragIndex + 1].lengthReal = std::clamp(_model.points[_dragIndex + 1].lengthReal, 0.0, _maxLengthReal);
+      }
+    }
+    else
+    {
+      double xCurrent = _currentPointsScreen[_dragIndex].getX();
+      double xBefore = _dragIndex == 0 ? _startPointScreen.getX() : _currentPointsScreen[_dragIndex - 1].getX();
+      double segLen = xCurrent - xBefore;
+      double dragLen = adjustedPosition.x - xBefore;
+      _model.points[_dragIndex].lengthReal += (dragLen - segLen) * _totalLengthReal / _totalLengthScreen;
+      _model.points[_dragIndex].lengthReal = std::clamp(_model.points[_dragIndex].lengthReal, 0.0, _maxLengthReal);
+    }
 
     if (modelUpdated != nullptr)
       modelUpdated(_model);
