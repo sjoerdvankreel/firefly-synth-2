@@ -26,13 +26,15 @@ public juce::Component
   float _totalLengthReal = {};
   float _totalLengthScreen = {}; 
   juce::Point<float> _startPointScreen = {};
+  std::vector<float> _currentSnapXScreen = {};
+  std::vector<float> _currentSnapYScreen = {};
   std::vector<double> _currentSegmentLengths = {};
   std::vector<juce::Point<float>> _currentPointsScreen = {};
   std::vector<juce::Point<float>> _currentSlopesScreen = {};
 
   void StopDrag();   
-  FBMSEGNearestHitType 
-  GetNearestHit(juce::Point<float> const& p, int* index);
+  juce::Point<float> SnapToXY(juce::Point<float> p) const;
+  FBMSEGNearestHitType GetNearestHit(juce::Point<float> const& p, int* index) const;
 
 public:
   FBMSEGCanvas(

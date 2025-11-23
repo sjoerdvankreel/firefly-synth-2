@@ -47,6 +47,44 @@ FBMSEGCanvas::StopDrag()
   setMouseCursor(MouseCursor::NormalCursor);
 }
 
+Point<float>
+FBMSEGCanvas::SnapToXY(Point<float> p) const
+{
+  if (_model.snapX)
+  {
+    int ix = 0;
+    float snapXDist = std::numeric_limits<float>::infinity();
+    for (int i = 0; i < _currentSnapXScreen.size(); i++)
+    {
+      float xDist = std::abs(_currentSnapXScreen[i] - p.getX());
+      if (xDist < snapXDist)
+      {
+        ix = i;
+        snapXDist = xDist;
+      }
+    }
+    p.setX(_currentSnapXScreen[ix]);
+  }
+
+  if (_model.snapY)
+  {
+    int iy = 0;
+    float snapYDist = std::numeric_limits<float>::infinity();
+    for (int i = 0; i < _currentSnapYScreen.size(); i++)
+    {
+      float yDist = std::abs(_currentSnapYScreen[i] - p.getY());
+      if (yDist < snapYDist)
+      {
+        iy = i;
+        snapYDist = yDist;
+      }
+    }
+    p.setY(_currentSnapYScreen[iy]);
+  }
+
+  return p;
+}
+
 void
 FBMSEGCanvas::mouseUp(MouseEvent const& event)
 {
@@ -243,7 +281,8 @@ FBMSEGCanvas::mouseDrag(MouseEvent const& event)
   double h = innerBounds.getHeight();
   if (_dragType == FBMSEGNearestHitType::Start)
   {
-    double yNorm = std::clamp(1.0 - (adjustedPosition.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
+    auto snappedPosition = SnapToXY(adjustedPosition);
+    double yNorm = std::clamp(1.0 - (snappedPosition.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
     _model.startY = yNorm;
 
     if (modelUpdated != nullptr)
@@ -289,7 +328,7 @@ FBMSEGCanvas::mouseDrag(MouseEvent const& event)
 }
 
 FBMSEGNearestHitType
-FBMSEGCanvas::GetNearestHit(juce::Point<float> const& p, int* index)
+FBMSEGCanvas::GetNearestHit(juce::Point<float> const& p, int* index) const
 {
   if (_currentPointsScreen.size() == 0)
     return FBMSEGNearestHitType::None;
@@ -370,6 +409,7 @@ FBMSEGCanvas::paint(Graphics& g)
   double h = innerBounds.getHeight();
 
   g.setColour(Colours::darkgrey);
+  _currentSnapXScreen.clear();
   if (_model.snapX)
   {
     for (int i = 0; i <= _model.snapXCount; i++)
@@ -377,8 +417,10 @@ FBMSEGCanvas::paint(Graphics& g)
       float xPosNorm = i / (float)_model.snapXCount;
       float xPosScreen = xPosNorm * (float)w + MSEGInnerPadding + MSEGOuterPadding;
       g.drawLine(xPosScreen, (float)y, xPosScreen, (float)(y + h), 1.0f);
+      _currentSnapXScreen.push_back(xPosScreen);
     }
   }
+  _currentSnapYScreen.clear();
   if (_model.snapY)
   {
     for (int i = 0; i <= _model.snapYCount; i++)
@@ -386,6 +428,7 @@ FBMSEGCanvas::paint(Graphics& g)
       float yPosNorm = i / (float)_model.snapYCount;
       float yPosScreen = yPosNorm * (float)h + MSEGInnerPadding + MSEGOuterPadding;
       g.drawLine((float)x, yPosScreen, (float)(x + w), yPosScreen, 1.0f);
+      _currentSnapYScreen.push_back(yPosScreen);
     }
   }
 
