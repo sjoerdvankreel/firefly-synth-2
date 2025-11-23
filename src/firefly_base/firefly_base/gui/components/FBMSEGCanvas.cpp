@@ -342,7 +342,8 @@ FBMSEGCanvas::mouseDrag(MouseEvent const& event)
         _currentPointsScreen[(int)_currentPointsScreen.size() - 1].getX() :
         _currentPointsScreen[_dragIndex + 1].getX();
       double segsLenScreen = xAfter - xBefore;
-      double dragLenScreen = adjustedPosition.x - xBefore;
+      double dragPosX = _model.xEditMode == FBMSEGXEditMode::Snap ? snappedPosition.x : adjustedPosition.x;
+      double dragLenScreen = dragPosX - xBefore;
       double segsLenReal = _model.points[_dragIndex].lengthReal;
       if (_dragIndex < (int)_model.points.size() - 1)
         segsLenReal += _model.points[_dragIndex + 1].lengthReal;
