@@ -32,6 +32,8 @@ public juce::Component
   std::unique_ptr<FBAutoSizeToggleButton> _snapXToggle = {};
   std::unique_ptr<FBAutoSizeToggleButton> _snapYToggle = {};
 
+  void ModelUpdated();
+
 public:
   FBMSEGEditor(
     FBPlugGUI* plugGUI,

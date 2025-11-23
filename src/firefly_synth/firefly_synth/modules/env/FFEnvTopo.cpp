@@ -46,6 +46,16 @@ FFEnvMakeMSEGSnapCounts()
   return { 2, 4, 8, 16, 32, 64, 128 };
 }
 
+int 
+FFEnvIndexOfMSEGSnapCount(int count)
+{
+  auto counts = FFEnvMakeMSEGSnapCounts();
+  for (int i = 0; i < counts.size(); i++)
+    if (counts[i] == count)
+      return i;
+  return -1;
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeEnvTopo()
 {

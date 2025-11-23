@@ -47,12 +47,19 @@ UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model)
 {
   model.points.clear();
   auto context = plugGUI->HostContext();
+  auto snapCounts = FFEnvMakeMSEGSnapCounts();
   auto const& staticTopo = *plugGUI->HostContext()->Topo()->static_;
   bool sync = context->GetAudioParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } });
   auto type = context->GetAudioParamList<FFEnvType>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } });
+  int snapXIndex = context->GetGUIParamList<int>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapX, 0 } });
+  int snapYIndex = context->GetGUIParamList<int>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapX, 0 } });
   model.xMode = sync ? FBMSEGXMode::Ratio : FBMSEGXMode::Real;
   model.yMode = type == FFEnvType::Exp ? FBMSEGYMode::Exponential : FBMSEGYMode::Linear;
   model.enabled = type != FFEnvType::Off;
+  model.snapX = context->GetGUIParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapX, 0 } });
+  model.snapY = context->GetGUIParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapY, 0 } });
+  model.snapXCount = snapCounts[std::clamp(snapXIndex, 0, (int)snapCounts.size() - 1)];
+  model.snapYCount = snapCounts[std::clamp(snapYIndex, 0, (int)snapCounts.size() - 1)];
   model.startY = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StartLevel, 0 } });
   model.looping = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }) != 0;
   model.loopStart = std::max(0, context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }) - 1);
@@ -78,6 +85,14 @@ MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
 {
   auto context = plugGUI->HostContext();
   auto topo = plugGUI->HostContext()->Topo();
+  int snapXIndex = FFEnvIndexOfMSEGSnapCount(model.snapXCount);
+  int snapYIndex = FFEnvIndexOfMSEGSnapCount(model.snapYCount);
+  context->SetGUIParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapX, 0 } }, model.snapX);
+  context->SetGUIParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapY, 0 } }, model.snapY);
+  if (snapXIndex != -1)
+    context->SetGUIParamList({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapXCount, 0 } }, snapXIndex);
+  if (snapYIndex != -1)
+    context->SetGUIParamList({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapYCount, 0 } }, snapYIndex);
   context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StartLevel, 0 } }, model.startY);
   if (model.releasing)
   {

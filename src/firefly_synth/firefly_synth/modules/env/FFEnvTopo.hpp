@@ -6,6 +6,8 @@
 
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
+
+int FFEnvIndexOfMSEGSnapCount(int count); 
 std::vector<int> FFEnvMakeMSEGSnapCounts();
 
 inline int constexpr FFEnvStageCount = 15;

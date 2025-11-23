@@ -23,9 +23,8 @@ _snapYCounts(snapYCounts)
       return getTooltipFor(hitType, index);
     return std::string("");
   };
-  _canvas->modelUpdated = [this](auto const& model) {
-    if (modelUpdated != nullptr)
-      modelUpdated(model);
+  _canvas->modelUpdated = [this](auto const&) {
+    ModelUpdated();
   };
 
   PopupMenu snapXMenu;
@@ -37,10 +36,14 @@ _snapYCounts(snapYCounts)
 
   _snapXLabel = std::make_unique<FBAutoSizeLabel>("Snap X");
   _snapXToggle = std::make_unique<FBAutoSizeToggleButton>();
+  _snapXToggle->onClick = [this] { ModelUpdated(); };
   _snapXCombo = std::make_unique<FBAutoSizeComboBox>(snapXMenu);
+  _snapXCombo->onChange = [this] { ModelUpdated(); };
   _snapYLabel = std::make_unique<FBAutoSizeLabel>("Snap Y");
   _snapYToggle = std::make_unique<FBAutoSizeToggleButton>();
+  _snapYToggle->onClick = [this] { ModelUpdated(); };
   _snapYCombo = std::make_unique<FBAutoSizeComboBox>(snapYMenu);
+  _snapYCombo->onChange = [this] { ModelUpdated(); };
   _controlFiller = std::make_unique<FBFillerComponent>(1, 1);
   _controlGrid = std::make_unique<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0, 0, 0, 0, 1 });
   _controlGrid->Add(0, 0, _snapXLabel.get());
@@ -59,15 +62,38 @@ _snapYCounts(snapYCounts)
 }
 
 void
-FBMSEGEditor::UpdateModel()
-{
-  _canvas->UpdateModel();
-  repaint();
-}
-
-void
 FBMSEGEditor::resized()
 {
   _grid->setBounds(getLocalBounds());
   _grid->resized();
+}
+
+void
+FBMSEGEditor::ModelUpdated()
+{
+  int xIndex = std::clamp(_snapXCombo->getSelectedItemIndex(), 0, (int)_snapXCounts.size() - 1);
+  int yIndex = std::clamp(_snapYCombo->getSelectedItemIndex(), 0, (int)_snapYCounts.size() - 1);
+  Model().snapX = _snapXToggle->getToggleState();
+  Model().snapY = _snapYToggle->getToggleState();
+  Model().snapXCount = _snapXCounts[xIndex];
+  Model().snapYCount = _snapYCounts[yIndex];
+  if (modelUpdated != nullptr)
+    modelUpdated(Model());
+}
+
+void
+FBMSEGEditor::UpdateModel()
+{
+  _canvas->UpdateModel();
+  _snapXCombo->setEnabled(Model().snapX);
+  _snapYCombo->setEnabled(Model().snapY);
+  _snapXToggle->setToggleState(Model().snapX, dontSendNotification);
+  _snapYToggle->setToggleState(Model().snapY, dontSendNotification);
+  auto xIter = std::find(_snapXCounts.begin(), _snapXCounts.end(), Model().snapXCount);
+  auto yIter = std::find(_snapYCounts.begin(), _snapYCounts.end(), Model().snapYCount);
+  if (xIter != _snapXCounts.end())
+    _snapXCombo->setSelectedItemIndex(*xIter, dontSendNotification);
+  if (yIter != _snapYCounts.end())
+    _snapYCombo->setSelectedItemIndex(*yIter, dontSendNotification);
+  repaint();
 }
