@@ -26,25 +26,17 @@ FBMSEGCanvas(
   _maxLengthBars(maxLengthBars),
   _allowedBars(allowedBars) {}
 
-FBBarsItem 
-FBMSEGCanvas::LengthTimeToClosestBars(double lengthTime) const
+void 
+FBMSEGCanvas::ModelUpdated(bool snapshotForUndo)
 {
-  int bestIndex = 0;
-  double lengthTimeNorm = lengthTime / _maxLengthTime;
-  double minDiff = std::numeric_limits<double>::infinity();
-  double barsMax = _maxLengthBars.num / (double)_maxLengthBars.denom;
-  for (int i = 0; i < _allowedBars.size(); i++)
+  for (int i = 0; i < _model.points.size(); i++)
+    _model.points[i].lengthBars = LengthTimeToClosestBars(_model.points[i].lengthTime);
+  if (modelUpdated != nullptr)
   {
-    double barsAllowed = _allowedBars[i].num / (double)_allowedBars[i].denom;
-    double lengthBarsNorm = barsAllowed / barsMax;
-    double diff = std::abs(lengthBarsNorm - lengthTimeNorm);
-    if (diff < minDiff)
-    {
-      minDiff = diff;
-      bestIndex = i;
-    }
+    if(snapshotForUndo)
+      _plugGUI->HostContext()->UndoState().Snapshot("Change " + _name + " MSEG");
+    modelUpdated(_model);
   }
-  return _allowedBars[bestIndex];
 }
 
 void
@@ -115,6 +107,27 @@ FBMSEGCanvas::SnapToXY(Point<float> p) const
   return p;
 }
 
+FBBarsItem
+FBMSEGCanvas::LengthTimeToClosestBars(double lengthTime) const
+{
+  int bestIndex = 0;
+  double lengthTimeNorm = lengthTime / _maxLengthTime;
+  double minDiff = std::numeric_limits<double>::infinity();
+  double barsMax = _maxLengthBars.num / (double)_maxLengthBars.denom;
+  for (int i = 0; i < _allowedBars.size(); i++)
+  {
+    double barsAllowed = _allowedBars[i].num / (double)_allowedBars[i].denom;
+    double lengthBarsNorm = barsAllowed / barsMax;
+    double diff = std::abs(lengthBarsNorm - lengthTimeNorm);
+    if (diff < minDiff)
+    {
+      minDiff = diff;
+      bestIndex = i;
+    }
+  }
+  return _allowedBars[bestIndex];
+}
+
 void
 FBMSEGCanvas::mouseUp(MouseEvent const& event)
 {
@@ -176,11 +189,7 @@ FBMSEGCanvas::mouseDoubleClick(MouseEvent const& event)
   if (_currentPointsScreen.size() == 0)
   {
     _model.points[0].lengthTime = _maxLengthTime * 0.5f;
-    if (modelUpdated != nullptr)
-    {
-      _plugGUI->HostContext()->UndoState().Snapshot("Change " + _name + " MSEG");
-      modelUpdated(_model);
-    }
+    ModelUpdated(true);
     return;
   }
 
@@ -277,11 +286,7 @@ FBMSEGCanvas::mouseDoubleClick(MouseEvent const& event)
     }
   }
 
-  if (modelUpdated != nullptr)
-  {
-    _plugGUI->HostContext()->UndoState().Snapshot("Change " + _name + " MSEG");
-    modelUpdated(_model);
-  }
+  ModelUpdated(true); 
 }
 
 void
@@ -315,8 +320,7 @@ FBMSEGCanvas::mouseDrag(MouseEvent const& event)
     double yNorm = std::clamp(1.0 - (snappedPosition.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
     _model.startY = yNorm;
 
-    if (modelUpdated != nullptr)
-      modelUpdated(_model);
+    ModelUpdated(false);
     return;
   }
 
@@ -335,8 +339,7 @@ FBMSEGCanvas::mouseDrag(MouseEvent const& event)
     double yNorm = std::clamp((snappedPosition.y - pointFromY) / (pointToY - pointFromY), 0.0, 1.0);
     _model.points[_dragIndex].slope = yNorm;
 
-    if (modelUpdated != nullptr)
-      modelUpdated(_model);
+    ModelUpdated(false);
     return;
   }
 
@@ -377,8 +380,7 @@ FBMSEGCanvas::mouseDrag(MouseEvent const& event)
       }
     }
 
-    if (modelUpdated != nullptr)
-      modelUpdated(_model);
+    ModelUpdated(false);
     return;
   }
 }

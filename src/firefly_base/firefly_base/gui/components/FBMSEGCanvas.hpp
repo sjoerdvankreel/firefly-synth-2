@@ -36,6 +36,7 @@ public juce::Component
   void StopDrag();   
   float SnapToX(float x) const;
   float SnapToY(float y) const;
+  void ModelUpdated(bool snapshotForUndo);
   FBBarsItem LengthTimeToClosestBars(double lengthTime) const;
   juce::Point<float> SnapToXY(juce::Point<float> p) const;
   FBMSEGNearestHitType GetNearestHit(juce::Point<float> const& p, int* index) const;
