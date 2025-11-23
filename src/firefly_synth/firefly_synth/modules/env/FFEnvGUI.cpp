@@ -47,7 +47,8 @@ UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model)
 {
   model.points.clear();
   auto context = plugGUI->HostContext();
-  auto snapCounts = FFEnvMakeMSEGSnapCounts();
+  auto snapXCounts = FFEnvMakeMSEGSnapXCounts();
+  auto snapYCounts = FFEnvMakeMSEGSnapYCounts();
   auto const& staticTopo = *plugGUI->HostContext()->Topo()->static_;
   bool sync = context->GetAudioParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } });
   auto type = context->GetAudioParamList<FFEnvType>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } });
@@ -58,8 +59,8 @@ UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model)
   model.enabled = type != FFEnvType::Off;
   model.snapX = context->GetGUIParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapX, 0 } });
   model.snapY = context->GetGUIParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapY, 0 } });
-  model.snapXCount = snapCounts[std::clamp(snapXIndex, 0, (int)snapCounts.size() - 1)];
-  model.snapYCount = snapCounts[std::clamp(snapYIndex, 0, (int)snapCounts.size() - 1)];
+  model.snapXCount = snapXCounts[std::clamp(snapXIndex, 0, (int)snapXCounts.size() - 1)];
+  model.snapYCount = snapYCounts[std::clamp(snapYIndex, 0, (int)snapYCounts.size() - 1)];
   model.startY = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StartLevel, 0 } });
   model.looping = context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }) != 0;
   model.loopStart = std::max(0, context->GetAudioParamDiscrete({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }) - 1);
@@ -85,8 +86,8 @@ MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
 {
   auto context = plugGUI->HostContext();
   auto topo = plugGUI->HostContext()->Topo();
-  int snapXIndex = FFEnvIndexOfMSEGSnapCount(model.snapXCount);
-  int snapYIndex = FFEnvIndexOfMSEGSnapCount(model.snapYCount);
+  int snapXIndex = FFEnvIndexOfMSEGSnapXCount(model.snapXCount);
+  int snapYIndex = FFEnvIndexOfMSEGSnapYCount(model.snapYCount);
   context->SetGUIParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapX, 0 } }, model.snapX);
   context->SetGUIParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapY, 0 } }, model.snapY);
   if (snapXIndex != -1)
@@ -165,7 +166,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
   std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot);
   *msegEditor = plugGUI->StoreComponent<FBMSEGEditor>(
     plugGUI, title, FFEnvStageCount, FFEnvMaxBarsNum, FFEnvMaxBarsDen, FFEnvMaxTime, 
-    FFEnvMakeMSEGSnapCounts(), FFEnvMakeMSEGSnapCounts());
+    FFEnvMakeMSEGSnapXCounts(), FFEnvMakeMSEGSnapYCounts());
   UpdateMSEGModel(plugGUI, moduleSlot, (*msegEditor)->Model());
   (*msegEditor)->UpdateModel();
   (*msegEditor)->modelUpdated = [plugGUI, moduleSlot](FBMSEGModel const& model) { 

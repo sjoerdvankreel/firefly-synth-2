@@ -318,7 +318,7 @@ FFMakeEnvTopo()
   guiMSEGSnapXCount.defaultText = "128";
   guiMSEGSnapXCount.id = "{C409B95E-A2E3-4D7A-8916-B6029C54C964}";
   guiMSEGSnapXCount.type = FBParamType::List; 
-  guiMSEGSnapXCount.List().items = MakeMSEGSnapItems();
+  guiMSEGSnapXCount.List().items = MakeMSEGSnapXItems();
   auto selectGuiMSEGSnapXCount = [](auto& module) { return &module.MSEGSnapXCount; };
   guiMSEGSnapXCount.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMSEGSnapXCount);
 
@@ -328,7 +328,7 @@ FFMakeEnvTopo()
   guiMSEGSnapYCount.defaultText = "128";
   guiMSEGSnapYCount.id = "{838AB77F-91B5-48CD-AC51-368963DE3CC9}";
   guiMSEGSnapYCount.type = FBParamType::List;
-  guiMSEGSnapYCount.List().items = MakeMSEGSnapItems();
+  guiMSEGSnapYCount.List().items = MakeMSEGSnapYItems();
   auto selectGuiMSEGSnapYCount = [](auto& module) { return &module.MSEGSnapYCount; };
   guiMSEGSnapYCount.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMSEGSnapYCount);
 
