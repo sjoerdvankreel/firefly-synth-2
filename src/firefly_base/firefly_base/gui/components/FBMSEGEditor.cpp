@@ -79,12 +79,13 @@ FBMSEGEditor::resized()
 void
 FBMSEGEditor::ModelUpdated()
 {
+  auto& model = Model();
   int xIndex = std::clamp(_snapXCountCombo->getSelectedItemIndex(), 0, (int)_snapXCounts.size() - 1);
   int yIndex = std::clamp(_snapXCountCombo->getSelectedItemIndex(), 0, (int)_snapYCounts.size() - 1);
-  Model().snapXCount = _snapXCounts[xIndex];
-  Model().snapYCount = _snapYCounts[yIndex];
-  Model().xEditMode = (FBMSEGXEditMode)std::clamp(_xEditModeCombo->getSelectedItemIndex(), 0, (int)FBMSEGXEditMode::Count - 1);
-  Model().yEditMode = (FBMSEGYEditMode)std::clamp(_yEditModeCombo->getSelectedItemIndex(), 0, (int)FBMSEGYEditMode::Count - 1);
+  model.snapXCount = _snapXCounts[xIndex];
+  model.snapYCount = _snapYCounts[yIndex];
+  model.xEditMode = (FBMSEGXEditMode)std::clamp(_xEditModeCombo->getSelectedItemIndex(), 0, (int)FBMSEGXEditMode::Count - 1);
+  model.yEditMode = (FBMSEGYEditMode)std::clamp(_yEditModeCombo->getSelectedItemIndex(), 0, (int)FBMSEGYEditMode::Count - 1);
   if (modelUpdated != nullptr)
     modelUpdated(Model());
 }
@@ -92,14 +93,15 @@ FBMSEGEditor::ModelUpdated()
 void
 FBMSEGEditor::UpdateModel()
 {
-  FB_ASSERT(Model().snapXCount > 0);
-  FB_ASSERT(Model().snapYCount > 0);
-  _snapXCountCombo->setEnabled(Model().xEditMode == FBMSEGXEditMode::Snap);
-  _snapYCountCombo->setEnabled(Model().yEditMode == FBMSEGYEditMode::Snap);
-  _xEditModeCombo->setSelectedItemIndex((int)Model().xMode, dontSendNotification);
-  _yEditModeCombo->setSelectedItemIndex((int)Model().yMode, dontSendNotification);
-  auto xIter = std::find(_snapXCounts.begin(), _snapXCounts.end(), Model().snapXCount);
-  auto yIter = std::find(_snapYCounts.begin(), _snapYCounts.end(), Model().snapYCount);
+  auto const& model = Model();
+  FB_ASSERT(model.snapXCount > 0);
+  FB_ASSERT(model.snapYCount > 0);
+  _snapXCountCombo->setEnabled(model.xEditMode == FBMSEGXEditMode::Snap);
+  _snapYCountCombo->setEnabled(model.yEditMode == FBMSEGYEditMode::Snap);
+  _xEditModeCombo->setSelectedItemIndex((int)model.xEditMode, dontSendNotification);
+  _yEditModeCombo->setSelectedItemIndex((int)model.yEditMode, dontSendNotification);
+  auto xIter = std::find(_snapXCounts.begin(), _snapXCounts.end(), model.snapXCount);
+  auto yIter = std::find(_snapYCounts.begin(), _snapYCounts.end(), model.snapYCount);
   if (xIter != _snapXCounts.end())
     _snapXCountCombo->setSelectedItemIndex((int)(xIter - _snapXCounts.begin()), dontSendNotification);
   if (yIter != _snapYCounts.end())
