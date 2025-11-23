@@ -13,9 +13,8 @@ public juce::Component
   FBPlugGUI* const _plugGUI;
   std::string const _name;
   int const _maxPoints;
-  int const _maxLengthRatioNum;
-  int const _maxLengthRatioDen;
-  double const _maxLengthReal;
+  double const _maxLengthTime;
+  FBBarsItem const _maxLengthBars;
 
   int _dragIndex = -1;
   bool _dragging = false;
@@ -23,7 +22,7 @@ public juce::Component
 
   FBMSEGModel _model = {};
   int _activePointCount = {};
-  float _totalLengthReal = {};
+  float _totalLengthTime = {};
   float _totalLengthScreen = {}; 
   juce::Point<float> _startPointScreen = {};
   std::vector<float> _currentSnapXScreen = {};
@@ -43,9 +42,8 @@ public:
     FBPlugGUI* plugGUI,
     std::string const& name,
     int maxPoints,
-    int maxLengthRatioNum,
-    int maxLengthRatioDen,
-    double maxLengthReal);
+    double maxLengthTime,
+    FBBarsItem maxLengthBars);
 
   void UpdateModel(); // call after mutating Model()
   FBMSEGModel& Model() { return _model; }

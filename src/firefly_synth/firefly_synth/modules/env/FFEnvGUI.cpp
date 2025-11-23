@@ -54,7 +54,7 @@ UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model)
   auto type = context->GetAudioParamList<FFEnvType>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } });
   int snapXIndex = context->GetGUIParamList<int>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapXCount, 0 } });
   int snapYIndex = context->GetGUIParamList<int>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapYCount, 0 } });
-  model.xMode = sync ? FBMSEGXMode::Ratio : FBMSEGXMode::Real;
+  model.xMode = sync ? FBMSEGXMode::Bars : FBMSEGXMode::Time;
   model.yMode = type == FFEnvType::Exp ? FBMSEGYMode::Exponential : FBMSEGYMode::Linear;
   model.enabled = type != FFEnvType::Off;
   model.xEditMode = context->GetGUIParamList<FBMSEGXEditMode>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGXEditMode, 0 } });
@@ -72,11 +72,10 @@ UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model)
     FBMSEGPoint point = {};
     point.y = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageLevel, i } });
     point.slope = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } });
-    point.lengthReal = context->GetAudioParamLinear({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
+    point.lengthTime = context->GetAudioParamLinear({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
     double barsNorm = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } });
     auto bars = staticTopo.modules[(int)FFModuleType::Env].params[(int)FFEnvParam::StageBars].BarsNonRealTime().NormalizedToBars(barsNorm);
-    point.lengthRatioNum = bars.num;
-    point.lengthRatioDen = bars.denom;
+    point.lengthBars = bars;
     model.points.push_back(point);
   }
 }
@@ -122,9 +121,13 @@ MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
   {
     context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageLevel, i } }, model.points[i].y);
     context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } }, model.points[i].slope);
-    auto lengthTopo = context->Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
-    double lengthRealNorm = lengthTopo->static_.LinearNonRealTime().PlainToNormalized(model.points[i].lengthReal);
-    context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } }, lengthRealNorm);
+    auto lengthTimeTopo = context->Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
+    double lengthTimeNorm = lengthTimeTopo->static_.LinearNonRealTime().PlainToNormalized(model.points[i].lengthTime);
+    context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } }, lengthTimeNorm);
+    auto lengthBarsTopo = context->Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } });
+    double lengthBarsPlain = lengthBarsTopo->static_.BarsNonRealTime().BarsToPlain(model.points[i].lengthBars);
+    double lengthBarsNorm = lengthBarsTopo->static_.BarsNonRealTime().PlainToNormalized(lengthBarsPlain);
+    context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } }, lengthBarsNorm);
   }
 }
 
@@ -165,7 +168,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
   auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
   std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot);
   *msegEditor = plugGUI->StoreComponent<FBMSEGEditor>(
-    plugGUI, title, FFEnvStageCount, FFEnvMaxBarsNum, FFEnvMaxBarsDen, FFEnvMaxTime, 
+    plugGUI, title, FFEnvStageCount, FFEnvMaxTime, FBBarsItem { FFEnvMaxBarsNum, FFEnvMaxBarsDen },
     FFEnvMakeMSEGSnapXCounts(), FFEnvMakeMSEGSnapYCounts());
   UpdateMSEGModel(plugGUI, moduleSlot, (*msegEditor)->Model());
   (*msegEditor)->UpdateModel();

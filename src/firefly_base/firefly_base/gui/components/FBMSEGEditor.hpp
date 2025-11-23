@@ -39,9 +39,8 @@ public:
     FBPlugGUI* plugGUI,
     std::string const& name,
     int maxPoints,
-    int maxLengthRatioNum,
-    int maxLengthRatioDen,
-    double maxLengthReal,
+    double maxLengthTime,
+    FBBarsItem const& maxLengthBars,
     std::vector<int> const& snapXCounts,
     std::vector<int> const& snapYCounts);
 

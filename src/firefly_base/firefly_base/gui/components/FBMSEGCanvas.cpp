@@ -15,17 +15,14 @@ FBMSEGCanvas(
   FBPlugGUI* plugGUI,
   std::string const& name,
   int maxPoints,
-  int maxLengthRatioNum,
-  int maxLengthRatioDen,
-  double maxLengthReal) :
+  double maxLengthTime,
+  FBBarsItem maxLengthBars) :
   Component(),
   _plugGUI(plugGUI),
   _name(name),
   _maxPoints(maxPoints),
-  _maxLengthRatioNum(maxLengthRatioNum),
-  _maxLengthRatioDen(maxLengthRatioDen),
-  _maxLengthReal(maxLengthReal) {
-}
+  _maxLengthTime(maxLengthTime),
+  _maxLengthBars(maxLengthBars) {}
 
 void
 FBMSEGCanvas::UpdateModel()
@@ -155,7 +152,7 @@ FBMSEGCanvas::mouseDoubleClick(MouseEvent const& event)
 
   if (_currentPointsScreen.size() == 0)
   {
-    _model.points[0].lengthReal = _maxLengthReal * 0.5f;
+    _model.points[0].lengthTime = _maxLengthTime * 0.5f;
     if (modelUpdated != nullptr)
     {
       _plugGUI->HostContext()->UndoState().Snapshot("Change " + _name + " MSEG");
@@ -222,13 +219,13 @@ FBMSEGCanvas::mouseDoubleClick(MouseEvent const& event)
         float clickYNorm = std::clamp(1.0f - (event.position.y - innerBounds.getY()) / innerBounds.getHeight(), 0.0f, 1.0f);
         if (prevX <= event.position.x && event.position.x <= thisX)
         {
-          float lengthToSplit = (float)_model.points[i].lengthReal;
+          float lengthToSplit = (float)_model.points[i].lengthTime;
           float splitPosNorm = std::clamp((event.position.x - prevX) / (thisX - prevX), 0.0f, 1.0f);
           for (int j = _maxPoints - 1; j > i; j--)
             _model.points[j] = _model.points[j - 1];
           _model.points[i].y = clickYNorm;
-          _model.points[i].lengthReal = lengthToSplit * splitPosNorm;
-          _model.points[i + 1].lengthReal = lengthToSplit * (1.0f - splitPosNorm);
+          _model.points[i].lengthTime = lengthToSplit * splitPosNorm;
+          _model.points[i + 1].lengthTime = lengthToSplit * (1.0f - splitPosNorm);
 
           if (_model.releasing)
           {
@@ -332,8 +329,8 @@ FBMSEGCanvas::mouseDrag(MouseEvent const& event)
       double xBefore = _dragIndex == 0 ? _startPointScreen.getX() : _currentPointsScreen[_dragIndex - 1].getX();
       double segLen = xCurrent - xBefore;
       double dragLen = adjustedPosition.x - xBefore;
-      _model.points[_dragIndex].lengthReal += (dragLen - segLen) * _totalLengthReal / _totalLengthScreen;
-      _model.points[_dragIndex].lengthReal = std::clamp(_model.points[_dragIndex].lengthReal, 0.0, _maxLengthReal);
+      _model.points[_dragIndex].lengthTime += (dragLen - segLen) * _totalLengthTime / _totalLengthScreen;
+      _model.points[_dragIndex].lengthTime = std::clamp(_model.points[_dragIndex].lengthTime, 0.0, _maxLengthTime);
     }
     else
     {
@@ -344,16 +341,16 @@ FBMSEGCanvas::mouseDrag(MouseEvent const& event)
       double segsLenScreen = xAfter - xBefore;
       double dragPosX = _model.xEditMode == FBMSEGXEditMode::Snap ? snappedPosition.x : adjustedPosition.x;
       double dragLenScreen = dragPosX - xBefore;
-      double segsLenReal = _model.points[_dragIndex].lengthReal;
+      double segsLenReal = _model.points[_dragIndex].lengthTime;
       if (_dragIndex < (int)_model.points.size() - 1)
-        segsLenReal += _model.points[_dragIndex + 1].lengthReal;
+        segsLenReal += _model.points[_dragIndex + 1].lengthTime;
       double dragPosNorm = std::clamp(dragLenScreen / segsLenScreen, 0.0, 1.0);
-      _model.points[_dragIndex].lengthReal = dragPosNorm * segsLenReal;
-      _model.points[_dragIndex].lengthReal = std::clamp(_model.points[_dragIndex].lengthReal, 0.0, _maxLengthReal);
+      _model.points[_dragIndex].lengthTime = dragPosNorm * segsLenReal;
+      _model.points[_dragIndex].lengthTime = std::clamp(_model.points[_dragIndex].lengthTime, 0.0, _maxLengthTime);
       if (_dragIndex < (int)_model.points.size() - 1)
       {
-        _model.points[_dragIndex + 1].lengthReal = (1.0 - dragPosNorm) * segsLenReal;
-        _model.points[_dragIndex + 1].lengthReal = std::clamp(_model.points[_dragIndex + 1].lengthReal, 0.0, _maxLengthReal);
+        _model.points[_dragIndex + 1].lengthTime = (1.0 - dragPosNorm) * segsLenReal;
+        _model.points[_dragIndex + 1].lengthTime = std::clamp(_model.points[_dragIndex + 1].lengthTime, 0.0, _maxLengthTime);
       }
     }
 
@@ -424,17 +421,17 @@ FBMSEGCanvas::paint(Graphics& g)
   g.setColour(Colour(0xFF181818));
   g.fillRoundedRectangle(outerBounds.toFloat(), 2.0f * MSEGInnerPadding);
 
-  _totalLengthReal = 0.0;
+  _totalLengthTime = 0.0;
   _currentSegmentLengths.clear();
   for (int i = 0; i < _model.points.size(); i++)
   {
     double currentSegmentLength;
-    if (_model.xMode == FBMSEGXMode::Real)
-      currentSegmentLength = _model.points[i].lengthReal;
+    if (_model.xMode == FBMSEGXMode::Time)
+      currentSegmentLength = _model.points[i].lengthTime;
     else
-      currentSegmentLength = _model.points[i].lengthRatioAsReal();
+      currentSegmentLength = _model.points[i].lengthBarsAsReal();
     _currentSegmentLengths.push_back(currentSegmentLength);
-    _totalLengthReal += (float)currentSegmentLength;
+    _totalLengthTime += (float)currentSegmentLength;
   }
 
   double prevXNorm = 0.0;
@@ -483,7 +480,7 @@ FBMSEGCanvas::paint(Graphics& g)
       break;
 
     double currentYNorm = _model.points[i].y;
-    double currentXNorm = prevXNorm + _currentSegmentLengths[i] / _totalLengthReal;
+    double currentXNorm = prevXNorm + _currentSegmentLengths[i] / _totalLengthTime;
 
     float prevXScreen = (float)(prevXNorm * w + MSEGInnerPadding + MSEGOuterPadding);
     float currentXScreen = (float)(currentXNorm * w + MSEGInnerPadding + MSEGOuterPadding);

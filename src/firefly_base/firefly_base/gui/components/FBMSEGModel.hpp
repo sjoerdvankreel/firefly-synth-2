@@ -1,11 +1,12 @@
 #pragma once
 
+#include <firefly_base/base/topo/static/FBBarsItem.hpp>
 #include <vector>
 
 enum class FBMSEGXMode
 {
-  Real,
-  Ratio
+  Time,
+  Bars
 };
 
 enum class FBMSEGYMode
@@ -41,12 +42,11 @@ struct FBMSEGPoint
 {
   double y = {};
   double slope = {};
-  double lengthReal = {};
-  int lengthRatioNum = {};
-  int lengthRatioDen = {};
+  double lengthTime = {};
+  FBBarsItem lengthBars = {};
   
-  inline double lengthRatioAsReal() const {
-    return (double)lengthRatioNum / (double)lengthRatioDen;
+  inline double lengthBarsAsReal() const {
+    return (double)lengthBars.num / (double)lengthBars.denom;
   }
 };
 
