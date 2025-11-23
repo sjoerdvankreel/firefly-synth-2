@@ -32,8 +32,8 @@ _snapYCounts(snapYCounts)
   xEditMenu.addItem(2, "Snap");
   xEditMenu.addItem(3, "Stretch");
   PopupMenu yEditMenu;
-  xEditMenu.addItem(1, "Free");
-  xEditMenu.addItem(2, "Snap");
+  yEditMenu.addItem(1, "Free");
+  yEditMenu.addItem(2, "Snap");
 
   PopupMenu snapXCountMenu;
   for (int i = 0; i < _snapXCounts.size(); i++)
