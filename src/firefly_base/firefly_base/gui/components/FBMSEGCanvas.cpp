@@ -364,18 +364,28 @@ FBMSEGCanvas::paint(Graphics& g)
 
   double prevXNorm = 0.0;
   double prevYNorm = _model.startY;
+  double x = innerBounds.getY();
   double y = innerBounds.getY();
   double w = innerBounds.getWidth();
   double h = innerBounds.getHeight();
 
+  g.setColour(Colours::darkgrey);
   if (_model.snapX)
   {
-    g.setColour(Colours::darkgrey);
     for (int i = 0; i <= _model.snapXCount; i++)
     {
       float xPosNorm = i / (float)_model.snapXCount;
       float xPosScreen = xPosNorm * (float)w + MSEGInnerPadding + MSEGOuterPadding;
       g.drawLine(xPosScreen, (float)y, xPosScreen, (float)(y + h), 1.0f);
+    }
+  }
+  if (_model.snapY)
+  {
+    for (int i = 0; i <= _model.snapYCount; i++)
+    {
+      float yPosNorm = i / (float)_model.snapYCount;
+      float yPosScreen = yPosNorm * (float)h + MSEGInnerPadding + MSEGOuterPadding;
+      g.drawLine((float)x, yPosScreen, (float)(x + w), yPosScreen, 1.0f);
     }
   }
 
