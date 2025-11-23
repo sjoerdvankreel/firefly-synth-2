@@ -41,18 +41,20 @@ _snapYCounts(snapYCounts)
   _snapYLabel = std::make_unique<FBAutoSizeLabel>("Snap Y");
   _snapYToggle = std::make_unique<FBAutoSizeToggleButton>();
   _snapYCombo = std::make_unique<FBAutoSizeComboBox>(snapYMenu);
-  _topGrid = std::make_unique<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0, 0, 0, 0, 1 });
-  _topGrid->Add(0, 0, _snapXLabel.get());
-  _topGrid->Add(0, 1, _snapXToggle.get());
-  _topGrid->Add(0, 2, _snapXCombo.get());
-  _topGrid->Add(0, 3, _snapYLabel.get());
-  _topGrid->Add(0, 4, _snapYToggle.get());
-  _topGrid->Add(0, 5, _snapYCombo.get());
-  _topGrid->MarkSection({ { 0, 0 }, { 1, 7 } });
+  _controlFiller = std::make_unique<FBFillerComponent>(1, 1);
+  _controlGrid = std::make_unique<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0, 0, 0, 0, 1 });
+  _controlGrid->Add(0, 0, _snapXLabel.get());
+  _controlGrid->Add(0, 1, _snapXToggle.get());
+  _controlGrid->Add(0, 2, _snapXCombo.get());
+  _controlGrid->Add(0, 3, _snapYLabel.get());
+  _controlGrid->Add(0, 4, _snapYToggle.get());
+  _controlGrid->Add(0, 5, _snapYCombo.get());
+  _controlGrid->Add(0, 6, _controlFiller.get());
+  _controlGrid->MarkSection({ { 0, 0 }, { 1, 7 } });
   
-  _grid = std::make_unique<FBGridComponent>(true, -1, -1, std::vector<int> { 0, 1 }, std::vector<int> { 0 });
-  _grid->Add(0, 0, _topGrid.get());
-  _grid->Add(1, 0, _canvas.get());
+  _grid = std::make_unique<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 0 }, std::vector<int> { 1 });
+  _grid->Add(0, 0, _canvas.get());
+  _grid->Add(1, 0, _controlGrid.get());
   addAndMakeVisible(_grid.get());
 }
 
