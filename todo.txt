@@ -11,8 +11,8 @@ TODOLIST for alpha-25
 [x] detach the undo from the visual editor -> nocando, need drag start
 [x] do the snap thing (separate of ratio: snap is edit only)
 [x] do grid size in the popup editor
-[ ] need all ratios => no, round to nearest
-[ ] do ratio mode
+[x] need all ratios => no, round to nearest
+[x] do ratio mode
 
 TODOLIST for alpha-26 - rest of the gui stuff
 [ ] show tweaked from patch
