@@ -9,11 +9,10 @@ TODOLIST for alpha-25
 [x] make stage len editor rotary
 [x] paint loop/release
 [x] detach the undo from the visual editor -> nocando, need drag start
-[ ] do the snap thing (separate of ratio: snap is edit only)
-[ ] drag the entire thing for length => no, do it by text editor
+[x] do the snap thing (separate of ratio: snap is edit only)
+[x] do grid size in the popup editor
 [ ] need all ratios => no, round to nearest
 [ ] do ratio mode
-[ ] do grid size in the popup editor
 
 TODOLIST for alpha-26 - rest of the gui stuff
 [ ] show tweaked from patch
