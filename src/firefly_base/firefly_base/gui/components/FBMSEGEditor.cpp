@@ -17,7 +17,7 @@ _canvas(std::make_unique<FBMSEGCanvas>(plugGUI, name, maxPoints, maxLengthRatioN
   _canvas->getTooltipFor = [this](auto hitType, auto index) {
     if (getTooltipFor != nullptr)
       return getTooltipFor(hitType, index);
-    return "";
+    return std::string("");
   };
   _canvas->modelUpdated = [this](auto const& model) {
     if (modelUpdated != nullptr)
