@@ -26,6 +26,27 @@ FBMSEGCanvas(
   _maxLengthBars(maxLengthBars),
   _allowedBars(allowedBars) {}
 
+FBBarsItem 
+FBMSEGCanvas::LengthTimeToClosestBars(double lengthTime) const
+{
+  int bestIndex = 0;
+  double lengthTimeNorm = lengthTime / _maxLengthTime;
+  double minDiff = std::numeric_limits<double>::infinity();
+  double barsMax = _maxLengthBars.num / (double)_maxLengthBars.denom;
+  for (int i = 0; i < _allowedBars.size(); i++)
+  {
+    double barsAllowed = _allowedBars[i].num / (double)_allowedBars[i].denom;
+    double lengthBarsNorm = barsAllowed / barsMax;
+    double diff = std::abs(lengthBarsNorm - lengthTimeNorm);
+    if (diff < minDiff)
+    {
+      minDiff = diff;
+      bestIndex = i;
+    }
+  }
+  return _allowedBars[bestIndex];
+}
+
 void
 FBMSEGCanvas::UpdateModel()
 {
