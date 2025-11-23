@@ -1,6 +1,13 @@
 #pragma once
 
+#include <firefly_base/gui/controls/FBLabel.hpp>
+#include <firefly_base/gui/controls/FBComboBox.hpp>
+#include <firefly_base/gui/controls/FBToggleButton.hpp>
+#include <firefly_base/gui/components/FBGridComponent.hpp>
+
 #include <juce_gui_basics/juce_gui_basics.h>
+
+#include <memory>
 #include <functional>
 
 class FBPlugGUI;
@@ -49,8 +56,8 @@ struct FBMSEGModel
   int loopStart = {};
   int loopLength = {};
   int releasePoint = {};
-  int snapXCount = 128;
-  int snapYCount = 128;
+  int snapXCount = 16;
+  int snapYCount = 16;
 
   FBMSEGXMode xMode = {};
   FBMSEGYMode yMode = {};
@@ -66,6 +73,8 @@ public juce::Component
   int const _maxLengthRatioNum;
   int const _maxLengthRatioDen;
   double const _maxLengthReal;
+  std::vector<int> const _snapXCounts;
+  std::vector<int> const _snapYCounts;
 
   int _dragIndex = -1;
   bool _dragging = false;
@@ -80,6 +89,15 @@ public juce::Component
   std::vector<juce::Point<float>> _currentPointsScreen = {};
   std::vector<juce::Point<float>> _currentSlopesScreen = {};
 
+  std::unique_ptr<FBGridComponent> _grid = {};
+  std::unique_ptr<FBGridComponent> _topGrid = {};
+  std::unique_ptr<FBAutoSizeLabel> _snapXLabel = {};
+  std::unique_ptr<FBAutoSizeLabel> _snapYLabel = {};
+  std::unique_ptr<FBAutoSizeComboBox> _snapXCombo = {};
+  std::unique_ptr<FBAutoSizeComboBox> _snapYCombo = {};
+  std::unique_ptr<FBAutoSizeToggleButton> _snapXToggle = {};
+  std::unique_ptr<FBAutoSizeToggleButton> _snapYToggle = {};
+
   void StopDrag();   
   FBMSEGNearestHitType 
   GetNearestHit(juce::Point<float> const& p, int* index);
@@ -91,11 +109,14 @@ public:
     int maxPoints,
     int maxLengthRatioNum,
     int maxLengthRatioDen,
-    double maxLengthReal);
+    double maxLengthReal,
+    std::vector<int> const& snapXCounts,
+    std::vector<int> const& snapYCounts);
 
   void UpdateModel(); // call after mutating Model()
   FBMSEGModel& Model() { return _model; }
 
+  void resized() override;
   void paint(juce::Graphics& g) override;
   void mouseUp(juce::MouseEvent const& event) override;
   void mouseDrag(juce::MouseEvent const& event) override;
