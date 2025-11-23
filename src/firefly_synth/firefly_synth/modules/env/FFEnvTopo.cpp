@@ -27,7 +27,7 @@ FFEnvTypeToString(FFEnvType type)
 }
 
 static std::vector<FBListItem>
-MakeMSEGSnapItems()
+MakeMSEGSnapXItems()
 {
   return {
     { "{9DBA04B6-8AAE-4257-AE45-B1325B03CF2A}", "2" },
@@ -40,16 +40,44 @@ MakeMSEGSnapItems()
   };
 };
 
+static std::vector<FBListItem>
+MakeMSEGSnapYItems()
+{
+  return {
+    { "{173471E7-19BB-44C7-BE53-918CF83AA36E}", "2" },
+    { "{95AB4754-DE89-49D3-98DB-F4467A267389}", "4" },
+    { "{1D99BA28-81A8-4E14-B1D3-F19B917DA959}", "8" },
+    { "{2788F6C6-8585-4151-B945-EA67F5443FEF}", "16" },
+    { "{8D517D3E-7C82-4642-A17E-D2105AF10912}", "32" }
+  };
+};
+
 std::vector<int>
-FFEnvMakeMSEGSnapCounts()
+FFEnvMakeMSEGSnapXCounts()
 {
   return { 2, 4, 8, 16, 32, 64, 128 };
 }
 
-int 
-FFEnvIndexOfMSEGSnapCount(int count)
+std::vector<int>
+FFEnvMakeMSEGSnapYCounts()
 {
-  auto counts = FFEnvMakeMSEGSnapCounts();
+  return { 2, 4, 8, 16, 32 };
+}
+
+int 
+FFEnvIndexOfMSEGSnapXCount(int count)
+{
+  auto counts = FFEnvMakeMSEGSnapXCounts();
+  for (int i = 0; i < counts.size(); i++)
+    if (counts[i] == count)
+      return i;
+  return -1;
+}
+
+int
+FFEnvIndexOfMSEGSnapYCount(int count)
+{
+  auto counts = FFEnvMakeMSEGSnapYCounts();
   for (int i = 0; i < counts.size(); i++)
     if (counts[i] == count)
       return i;
