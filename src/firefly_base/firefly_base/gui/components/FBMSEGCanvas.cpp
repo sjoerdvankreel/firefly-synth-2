@@ -30,8 +30,6 @@ FBMSEGCanvas(
 void
 FBMSEGCanvas::UpdateModel()
 {
-  FB_ASSERT(_model.snapXCount > 0);
-  FB_ASSERT(_model.snapYCount > 0);
   FB_ASSERT(0.0 <= _model.startY && _model.startY <= 1.0);
   FB_ASSERT(_model.loopLength <= _maxPoints);
   FB_ASSERT(0 <= _model.loopStart && _model.loopStart <= _maxPoints);
@@ -369,6 +367,17 @@ FBMSEGCanvas::paint(Graphics& g)
   double y = innerBounds.getY();
   double w = innerBounds.getWidth();
   double h = innerBounds.getHeight();
+
+  if (_model.snapX)
+  {
+    g.setColour(Colours::darkgrey);
+    for (int i = 0; i < _model.snapXCount - 1; i++)
+    {
+      float xPosNorm = (i + 1) / (float)_model.snapXCount;
+      float xPosScreen = xPosNorm * (float)w + MSEGInnerPadding + MSEGOuterPadding;
+      g.drawLine(xPosScreen, (float)y, xPosScreen, (float)(y + h), 1.0f);
+    }
+  }
 
   Path path = {};
   _activePointCount = 0;

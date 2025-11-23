@@ -84,7 +84,8 @@ FBMSEGEditor::ModelUpdated()
 void
 FBMSEGEditor::UpdateModel()
 {
-  _canvas->UpdateModel();
+  FB_ASSERT(Model().snapXCount > 0);
+  FB_ASSERT(Model().snapYCount > 0);
   _snapXCombo->setEnabled(Model().snapX);
   _snapYCombo->setEnabled(Model().snapY);
   _snapXToggle->setToggleState(Model().snapX, dontSendNotification);
@@ -95,5 +96,6 @@ FBMSEGEditor::UpdateModel()
     _snapXCombo->setSelectedItemIndex((int)(xIter - _snapXCounts.begin()), dontSendNotification);
   if (yIter != _snapYCounts.end())
     _snapYCombo->setSelectedItemIndex((int)(yIter - _snapYCounts.begin()), dontSendNotification);
+  _canvas->UpdateModel();
   repaint();
 }
