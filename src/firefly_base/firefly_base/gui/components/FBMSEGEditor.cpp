@@ -81,7 +81,7 @@ FBMSEGEditor::ModelUpdated()
 {
   auto& model = Model();
   int xIndex = std::clamp(_snapXCountCombo->getSelectedItemIndex(), 0, (int)_snapXCounts.size() - 1);
-  int yIndex = std::clamp(_snapXCountCombo->getSelectedItemIndex(), 0, (int)_snapYCounts.size() - 1);
+  int yIndex = std::clamp(_snapYCountCombo->getSelectedItemIndex(), 0, (int)_snapYCounts.size() - 1);
   model.snapXCount = _snapXCounts[xIndex];
   model.snapYCount = _snapYCounts[yIndex];
   model.xEditMode = (FBMSEGXEditMode)std::clamp(_xEditModeCombo->getSelectedItemIndex(), 0, (int)FBMSEGXEditMode::Count - 1);
