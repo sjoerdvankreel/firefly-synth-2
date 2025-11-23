@@ -27,31 +27,39 @@ _snapYCounts(snapYCounts)
     ModelUpdated();
   };
 
-  PopupMenu snapXMenu;
-  for (int i = 0; i < _snapXCounts.size(); i++)
-    snapXMenu.addItem(i + 1, std::to_string(_snapXCounts[i]));
-  PopupMenu snapYMenu;
-  for (int i = 0; i < _snapYCounts.size(); i++)
-    snapYMenu.addItem(i + 1, std::to_string(_snapYCounts[i]));
+  PopupMenu xEditMenu;
+  xEditMenu.addItem(1, "Free");
+  xEditMenu.addItem(2, "Snap");
+  xEditMenu.addItem(3, "Stretch");
+  PopupMenu yEditMenu;
+  xEditMenu.addItem(1, "Free");
+  xEditMenu.addItem(2, "Snap");
 
-  _snapXLabel = std::make_unique<FBAutoSizeLabel>("Snap X");
-  _snapXToggle = std::make_unique<FBAutoSizeToggleButton>();
-  _snapXToggle->onClick = [this] { ModelUpdated(); };
-  _snapXCombo = std::make_unique<FBAutoSizeComboBox>(snapXMenu);
-  _snapXCombo->onChange = [this] { ModelUpdated(); };
-  _snapYLabel = std::make_unique<FBAutoSizeLabel>("Snap Y");
-  _snapYToggle = std::make_unique<FBAutoSizeToggleButton>();
-  _snapYToggle->onClick = [this] { ModelUpdated(); };
-  _snapYCombo = std::make_unique<FBAutoSizeComboBox>(snapYMenu);
-  _snapYCombo->onChange = [this] { ModelUpdated(); };
+  PopupMenu snapXCountMenu;
+  for (int i = 0; i < _snapXCounts.size(); i++)
+    snapXCountMenu.addItem(i + 1, std::to_string(_snapXCounts[i]));
+  PopupMenu snapYCountMenu;
+  for (int i = 0; i < _snapYCounts.size(); i++)
+    snapYCountMenu.addItem(i + 1, std::to_string(_snapYCounts[i]));
+
+  _editXLabel = std::make_unique<FBAutoSizeLabel>("X Mode");
+  _xEditModeCombo = std::make_unique<FBAutoSizeComboBox>(xEditMenu);
+  _xEditModeCombo->onChange = [this] { ModelUpdated(); };
+  _snapXCountCombo = std::make_unique<FBAutoSizeComboBox>(snapXCountMenu);
+  _snapXCountCombo->onChange = [this] { ModelUpdated(); };
+  _editYLabel = std::make_unique<FBAutoSizeLabel>("Y Mode");
+  _yEditModeCombo = std::make_unique<FBAutoSizeComboBox>(yEditMenu);
+  _yEditModeCombo->onChange = [this] { ModelUpdated(); };
+  _snapYCountCombo = std::make_unique<FBAutoSizeComboBox>(snapYCountMenu);
+  _snapYCountCombo->onChange = [this] { ModelUpdated(); };
   _controlFiller = std::make_unique<FBFillerComponent>(1, 1);
   _controlGrid = std::make_unique<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0, 0, 0, 0, 1 });
-  _controlGrid->Add(0, 0, _snapXLabel.get());
-  _controlGrid->Add(0, 1, _snapXToggle.get());
-  _controlGrid->Add(0, 2, _snapXCombo.get());
-  _controlGrid->Add(0, 3, _snapYLabel.get());
-  _controlGrid->Add(0, 4, _snapYToggle.get());
-  _controlGrid->Add(0, 5, _snapYCombo.get());
+  _controlGrid->Add(0, 0, _editXLabel.get());
+  _controlGrid->Add(0, 1, _xEditModeCombo.get());
+  _controlGrid->Add(0, 2, _snapXCountCombo.get());
+  _controlGrid->Add(0, 3, _editYLabel.get());
+  _controlGrid->Add(0, 4, _yEditModeCombo.get());
+  _controlGrid->Add(0, 5, _snapYCountCombo.get());
   _controlGrid->Add(0, 6, _controlFiller.get());
   _controlGrid->MarkSection({ { 0, 0 }, { 1, 7 } });
   
@@ -71,12 +79,12 @@ FBMSEGEditor::resized()
 void
 FBMSEGEditor::ModelUpdated()
 {
-  int xIndex = std::clamp(_snapXCombo->getSelectedItemIndex(), 0, (int)_snapXCounts.size() - 1);
-  int yIndex = std::clamp(_snapYCombo->getSelectedItemIndex(), 0, (int)_snapYCounts.size() - 1);
-  Model().snapX = _snapXToggle->getToggleState();
-  Model().snapY = _snapYToggle->getToggleState();
+  int xIndex = std::clamp(_snapXCountCombo->getSelectedItemIndex(), 0, (int)_snapXCounts.size() - 1);
+  int yIndex = std::clamp(_snapXCountCombo->getSelectedItemIndex(), 0, (int)_snapYCounts.size() - 1);
   Model().snapXCount = _snapXCounts[xIndex];
   Model().snapYCount = _snapYCounts[yIndex];
+  Model().xEditMode = (FBMSEGXEditMode)std::clamp(_xEditModeCombo->getSelectedItemIndex(), 0, (int)FBMSEGXEditMode::Count - 1);
+  Model().yEditMode = (FBMSEGYEditMode)std::clamp(_yEditModeCombo->getSelectedItemIndex(), 0, (int)FBMSEGYEditMode::Count - 1);
   if (modelUpdated != nullptr)
     modelUpdated(Model());
 }
@@ -86,16 +94,16 @@ FBMSEGEditor::UpdateModel()
 {
   FB_ASSERT(Model().snapXCount > 0);
   FB_ASSERT(Model().snapYCount > 0);
-  _snapXCombo->setEnabled(Model().snapX);
-  _snapYCombo->setEnabled(Model().snapY);
-  _snapXToggle->setToggleState(Model().snapX, dontSendNotification);
-  _snapYToggle->setToggleState(Model().snapY, dontSendNotification);
+  _snapXCountCombo->setEnabled(Model().xEditMode == FBMSEGXEditMode::Snap);
+  _snapYCountCombo->setEnabled(Model().yEditMode == FBMSEGYEditMode::Snap);
+  _xEditModeCombo->setSelectedItemIndex((int)Model().xMode, dontSendNotification);
+  _yEditModeCombo->setSelectedItemIndex((int)Model().yMode, dontSendNotification);
   auto xIter = std::find(_snapXCounts.begin(), _snapXCounts.end(), Model().snapXCount);
   auto yIter = std::find(_snapYCounts.begin(), _snapYCounts.end(), Model().snapYCount);
   if (xIter != _snapXCounts.end())
-    _snapXCombo->setSelectedItemIndex((int)(xIter - _snapXCounts.begin()), dontSendNotification);
+    _snapXCountCombo->setSelectedItemIndex((int)(xIter - _snapXCounts.begin()), dontSendNotification);
   if (yIter != _snapYCounts.end())
-    _snapYCombo->setSelectedItemIndex((int)(yIter - _snapYCounts.begin()), dontSendNotification);
+    _snapYCountCombo->setSelectedItemIndex((int)(yIter - _snapYCounts.begin()), dontSendNotification);
   _canvas->UpdateModel();
   repaint();
 }

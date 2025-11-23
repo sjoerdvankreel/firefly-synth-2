@@ -14,6 +14,21 @@ enum class FBMSEGYMode
   Exponential
 };
 
+enum class FBMSEGXEditMode
+{
+  Free,
+  Snap,
+  Stretch,
+  Count
+};
+
+enum class FBMSEGYEditMode
+{
+  Free,
+  Snap,
+  Count
+};
+
 enum class FBMSEGNearestHitType
 {
   None,
@@ -37,8 +52,6 @@ struct FBMSEGPoint
 
 struct FBMSEGModel
 {
-  bool snapX = {};
-  bool snapY = {};
   bool enabled = {};
   bool looping = {};
   bool releasing = {};
@@ -51,5 +64,7 @@ struct FBMSEGModel
 
   FBMSEGXMode xMode = {};
   FBMSEGYMode yMode = {};
+  FBMSEGXEditMode xEditMode = {};
+  FBMSEGYEditMode yEditMode = {};
   std::vector<FBMSEGPoint> points = {};
 };

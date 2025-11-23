@@ -25,12 +25,12 @@ public juce::Component
   std::unique_ptr<FBGridComponent> _controlGrid = {};
   std::unique_ptr<FBFillerComponent> _controlFiller = {};
 
-  std::unique_ptr<FBAutoSizeLabel> _snapXLabel = {};
-  std::unique_ptr<FBAutoSizeLabel> _snapYLabel = {};
-  std::unique_ptr<FBAutoSizeComboBox> _snapXCombo = {};
-  std::unique_ptr<FBAutoSizeComboBox> _snapYCombo = {};
-  std::unique_ptr<FBAutoSizeToggleButton> _snapXToggle = {};
-  std::unique_ptr<FBAutoSizeToggleButton> _snapYToggle = {};
+  std::unique_ptr<FBAutoSizeLabel> _editXLabel = {};
+  std::unique_ptr<FBAutoSizeLabel> _editYLabel = {};
+  std::unique_ptr<FBAutoSizeComboBox> _xEditModeCombo = {};
+  std::unique_ptr<FBAutoSizeComboBox> _yEditModeCombo = {};
+  std::unique_ptr<FBAutoSizeComboBox> _snapXCountCombo = {};
+  std::unique_ptr<FBAutoSizeComboBox> _snapYCountCombo = {};
 
   void ModelUpdated();
 
