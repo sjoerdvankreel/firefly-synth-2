@@ -42,6 +42,7 @@ TODOLIST for alpha-27
 keep profiling
 recheck known issues
 add qtractor to the list
+dedicated distortion module
 do sidechain tests on new hosts
 PatchFromScratch video
 write the manual + note about disable everything unused for performance including unused matrix slots

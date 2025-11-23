@@ -51,8 +51,8 @@ UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model)
   auto const& staticTopo = *plugGUI->HostContext()->Topo()->static_;
   bool sync = context->GetAudioParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } });
   auto type = context->GetAudioParamList<FFEnvType>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } });
-  int snapXIndex = context->GetGUIParamList<int>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapX, 0 } });
-  int snapYIndex = context->GetGUIParamList<int>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapX, 0 } });
+  int snapXIndex = context->GetGUIParamList<int>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapXCount, 0 } });
+  int snapYIndex = context->GetGUIParamList<int>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapYCount, 0 } });
   model.xMode = sync ? FBMSEGXMode::Ratio : FBMSEGXMode::Real;
   model.yMode = type == FFEnvType::Exp ? FBMSEGYMode::Exponential : FBMSEGYMode::Linear;
   model.enabled = type != FFEnvType::Off;

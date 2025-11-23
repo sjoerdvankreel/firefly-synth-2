@@ -92,8 +92,8 @@ FBMSEGEditor::UpdateModel()
   auto xIter = std::find(_snapXCounts.begin(), _snapXCounts.end(), Model().snapXCount);
   auto yIter = std::find(_snapYCounts.begin(), _snapYCounts.end(), Model().snapYCount);
   if (xIter != _snapXCounts.end())
-    _snapXCombo->setSelectedItemIndex(*xIter, dontSendNotification);
+    _snapXCombo->setSelectedItemIndex((int)(xIter - _snapXCounts.begin()), dontSendNotification);
   if (yIter != _snapYCounts.end())
-    _snapYCombo->setSelectedItemIndex(*yIter, dontSendNotification);
+    _snapYCombo->setSelectedItemIndex((int)(yIter - _snapYCounts.begin()), dontSendNotification);
   repaint();
 }
