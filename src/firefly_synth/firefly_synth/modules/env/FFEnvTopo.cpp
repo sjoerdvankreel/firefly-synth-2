@@ -315,7 +315,7 @@ FFMakeEnvTopo()
   auto& guiMSEGSnapXCount = result->guiParams[(int)FFEnvGUIParam::MSEGSnapXCount];
   guiMSEGSnapXCount.name = "MSEG Snap X Count";
   guiMSEGSnapXCount.slotCount = 1;
-  guiMSEGSnapXCount.defaultText = "128";
+  guiMSEGSnapXCount.defaultText = "64";
   guiMSEGSnapXCount.id = "{C409B95E-A2E3-4D7A-8916-B6029C54C964}";
   guiMSEGSnapXCount.type = FBParamType::List; 
   guiMSEGSnapXCount.List().items = MakeMSEGSnapXItems();
@@ -325,7 +325,7 @@ FFMakeEnvTopo()
   auto& guiMSEGSnapYCount = result->guiParams[(int)FFEnvGUIParam::MSEGSnapYCount];
   guiMSEGSnapYCount.name = "MSEG Snap Y Count";
   guiMSEGSnapYCount.slotCount = 1;
-  guiMSEGSnapYCount.defaultText = "128";
+  guiMSEGSnapYCount.defaultText = "16";
   guiMSEGSnapYCount.id = "{838AB77F-91B5-48CD-AC51-368963DE3CC9}";
   guiMSEGSnapYCount.type = FBParamType::List;
   guiMSEGSnapYCount.List().items = MakeMSEGSnapYItems();
