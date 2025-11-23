@@ -29,6 +29,11 @@ FBMSEGCanvas(
 void 
 FBMSEGCanvas::ModelUpdated(bool snapshotForUndo)
 {
+  for (int i = 0; i < Model().points.size(); i++)
+  {
+    FB_ASSERT(0.0 <= Model().points[i].slope && Model().points[i].slope <= 1.0);
+    FB_ASSERT(0.0 <= Model().points[i].lengthTime && Model().points[i].lengthTime <= _maxLengthTime);
+  }
   for (int i = 0; i < _model.points.size(); i++)
     _model.points[i].lengthBars = LengthTimeToClosestBars(_model.points[i].lengthTime);
   if (modelUpdated != nullptr)
@@ -336,9 +341,13 @@ FBMSEGCanvas::mouseDrag(MouseEvent const& event)
     auto snappedPosition = SnapToXY(adjustedPosition);
     double pointToY = _currentPointsScreen[_dragIndex].getY();
     double pointFromY = _dragIndex == 0 ? _startPointScreen.getY() : _currentPointsScreen[_dragIndex - 1].getY();
-    double yNorm = std::clamp((snappedPosition.y - pointFromY) / (pointToY - pointFromY), 0.0, 1.0);
+    double yNorm;
+    if (std::abs(pointToY - pointFromY) < 1e-5)
+      yNorm = 0.0f;
+    else
+      yNorm = std::clamp((snappedPosition.y - pointFromY) / (pointToY - pointFromY), 0.0, 1.0);
     _model.points[_dragIndex].slope = yNorm;
-
+    FB_ASSERT(0.0 <= _model.points[_dragIndex].slope && _model.points[_dragIndex].slope <= 1.0);
     ModelUpdated(false);
     return;
   }
