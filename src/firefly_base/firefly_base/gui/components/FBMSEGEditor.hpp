@@ -1,7 +1,11 @@
 #pragma once
 
+#include <firefly_base/gui/controls/FBLabel.hpp>
+#include <firefly_base/gui/controls/FBComboBox.hpp>
+#include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBMSEGModel.hpp>
 #include <firefly_base/gui/components/FBMSEGCanvas.hpp>
+#include <firefly_base/gui/components/FBGridComponent.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <functional>
@@ -12,7 +16,18 @@ class FBMSEGEditor :
 public juce::Component
 {
   FBPlugGUI* const _plugGUI;
+  std::vector<int> const _snapXCounts;
+  std::vector<int> const _snapYCounts;
+  
   std::unique_ptr<FBMSEGCanvas> _canvas = {};
+  std::unique_ptr<FBGridComponent> _grid = {};
+  std::unique_ptr<FBGridComponent> _topGrid = {};
+  std::unique_ptr<FBAutoSizeLabel> _snapXLabel = {};
+  std::unique_ptr<FBAutoSizeLabel> _snapYLabel = {};
+  std::unique_ptr<FBAutoSizeComboBox> _snapXCombo = {};
+  std::unique_ptr<FBAutoSizeComboBox> _snapYCombo = {};
+  std::unique_ptr<FBAutoSizeToggleButton> _snapXToggle = {};
+  std::unique_ptr<FBAutoSizeToggleButton> _snapYToggle = {};
 
 public:
   FBMSEGEditor(
@@ -21,7 +36,9 @@ public:
     int maxPoints,
     int maxLengthRatioNum,
     int maxLengthRatioDen,
-    double maxLengthReal);
+    double maxLengthReal,
+    std::vector<int> const& snapXCounts,
+    std::vector<int> const& snapYCounts);
 
   void resized() override;
   void UpdateModel(); // call after mutating Model()

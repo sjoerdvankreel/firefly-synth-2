@@ -46,8 +46,8 @@ struct FBMSEGModel
   int loopStart = {};
   int loopLength = {};
   int releasePoint = {};
-  int snapXCount = 128;
-  int snapYCount = 128;
+  int snapXCount = 16;
+  int snapYCount = 16;
 
   FBMSEGXMode xMode = {};
   FBMSEGYMode yMode = {};

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <firefly_base/gui/components/FBMSEGModel.hpp>
+
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <functional>
 

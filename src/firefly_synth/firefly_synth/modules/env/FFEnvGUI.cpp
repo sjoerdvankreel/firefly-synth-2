@@ -148,7 +148,9 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
 
   auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
   std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot);
-  *msegEditor = plugGUI->StoreComponent<FBMSEGEditor>(plugGUI, title, FFEnvStageCount, FFEnvMaxBarsNum, FFEnvMaxBarsDen, FFEnvMaxTime);
+  *msegEditor = plugGUI->StoreComponent<FBMSEGEditor>(
+    plugGUI, title, FFEnvStageCount, FFEnvMaxBarsNum, FFEnvMaxBarsDen, FFEnvMaxTime, 
+    FFEnvMakeMSEGSnapCounts(), FFEnvMakeMSEGSnapCounts());
   UpdateMSEGModel(plugGUI, moduleSlot, (*msegEditor)->Model());
   (*msegEditor)->UpdateModel();
   (*msegEditor)->modelUpdated = [plugGUI, moduleSlot](FBMSEGModel const& model) { 
