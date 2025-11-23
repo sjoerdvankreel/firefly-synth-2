@@ -371,9 +371,9 @@ FBMSEGCanvas::paint(Graphics& g)
   if (_model.snapX)
   {
     g.setColour(Colours::darkgrey);
-    for (int i = 0; i < _model.snapXCount - 1; i++)
+    for (int i = 0; i <= _model.snapXCount; i++)
     {
-      float xPosNorm = (i + 1) / (float)_model.snapXCount;
+      float xPosNorm = i / (float)_model.snapXCount;
       float xPosScreen = xPosNorm * (float)w + MSEGInnerPadding + MSEGOuterPadding;
       g.drawLine(xPosScreen, (float)y, xPosScreen, (float)(y + h), 1.0f);
     }
