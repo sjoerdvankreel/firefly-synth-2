@@ -18,8 +18,8 @@ class FFEnvGUIState final
   friend struct FFGUIState;
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
 
-  std::array<double, 1> MSEGSnapX = {};
-  std::array<double, 1> MSEGSnapY = {};
+  std::array<double, 1> MSEGXEditMode = {};
+  std::array<double, 1> MSEGYEditMode = {};
   std::array<double, 1> MSEGSnapXCount = {};
   std::array<double, 1> MSEGSnapYCount = {};
 public:

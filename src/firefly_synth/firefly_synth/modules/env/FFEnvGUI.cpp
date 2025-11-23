@@ -57,8 +57,8 @@ UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model)
   model.xMode = sync ? FBMSEGXMode::Ratio : FBMSEGXMode::Real;
   model.yMode = type == FFEnvType::Exp ? FBMSEGYMode::Exponential : FBMSEGYMode::Linear;
   model.enabled = type != FFEnvType::Off;
-  model.snapX = context->GetGUIParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapX, 0 } });
-  model.snapY = context->GetGUIParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapY, 0 } });
+  model.xEditMode = context->GetGUIParamList<FBMSEGXEditMode>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGXEditMode, 0 } });
+  model.yEditMode = context->GetGUIParamList<FBMSEGYEditMode>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGYEditMode, 0 } });
   model.snapXCount = snapXCounts[std::clamp(snapXIndex, 0, (int)snapXCounts.size() - 1)];
   model.snapYCount = snapYCounts[std::clamp(snapYIndex, 0, (int)snapYCounts.size() - 1)];
   model.startY = context->GetAudioParamNormalized({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StartLevel, 0 } });
@@ -88,8 +88,8 @@ MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
   auto topo = plugGUI->HostContext()->Topo();
   int snapXIndex = FFEnvIndexOfMSEGSnapXCount(model.snapXCount);
   int snapYIndex = FFEnvIndexOfMSEGSnapYCount(model.snapYCount);
-  context->SetGUIParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapX, 0 } }, model.snapX);
-  context->SetGUIParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapY, 0 } }, model.snapY);
+  context->SetGUIParamList({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGXEditMode, 0 } }, (int)model.xEditMode);
+  context->SetGUIParamList({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGYEditMode, 0 } }, (int)model.yEditMode);
   if (snapXIndex != -1)
     context->SetGUIParamList({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapXCount, 0 } }, snapXIndex);
   if (snapYIndex != -1)

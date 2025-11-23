@@ -26,8 +26,8 @@ enum class FFEnvType { Off, Linear, Exp };
 std::string FFEnvTypeToString(FFEnvType type);
 
 enum class FFEnvGUIParam { 
-  MSEGSnapX, MSEGSnapXCount, 
-  MSEGSnapY, MSEGSnapYCount,
+  MSEGXEditMode, MSEGSnapXCount, 
+  MSEGYEditMode, MSEGSnapYCount,
   Count };
 
 enum class FFEnvParam {

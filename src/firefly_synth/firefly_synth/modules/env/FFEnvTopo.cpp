@@ -294,23 +294,30 @@ FFMakeEnvTopo()
   stageBars.dependencies.visible.audio.WhenSimple({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   stageBars.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
-  auto& guiMSEGSnapX = result->guiParams[(int)FFEnvGUIParam::MSEGSnapX];
-  guiMSEGSnapX.name = "MSEG Snap X";
-  guiMSEGSnapX.slotCount = 1;
-  guiMSEGSnapX.defaultText = "Off";
-  guiMSEGSnapX.id = "{576F4AC3-55F6-4B83-A113-128EFF880D5B}";
-  guiMSEGSnapX.type = FBParamType::Boolean;
-  auto selectGuiMSEGSnapX = [](auto& module) { return &module.MSEGSnapX; };
-  guiMSEGSnapX.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMSEGSnapX);
+  auto& guiMSEGXEditMode = result->guiParams[(int)FFEnvGUIParam::MSEGXEditMode];
+  guiMSEGXEditMode.name = "MSEG X Edit Mode";
+  guiMSEGXEditMode.slotCount = 1;
+  guiMSEGXEditMode.defaultText = "Free";
+  guiMSEGXEditMode.id = "{576F4AC3-55F6-4B83-A113-128EFF880D5B}";
+  guiMSEGXEditMode.type = FBParamType::List;
+  guiMSEGXEditMode.List().items = {
+    { "{0299B125-071F-4281-B32C-3933D1CF0159}", "Free" },
+    { "{4A5D75D8-553F-4ADE-9E46-DA705DE5195B}", "Snap" },
+    { "{8C5D0496-222C-408C-8ADA-4B71C2A50C81}", "Stretch" } };
+  auto selectGuiMSEGXEditMode = [](auto& module) { return &module.MSEGXEditMode; };
+  guiMSEGXEditMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMSEGXEditMode);
 
-  auto& guiMSEGSnapY = result->guiParams[(int)FFEnvGUIParam::MSEGSnapY];
-  guiMSEGSnapY.name = "MSEG Snap Y";
-  guiMSEGSnapY.slotCount = 1;
-  guiMSEGSnapY.defaultText = "Off";
-  guiMSEGSnapY.id = "{6C80FD36-B0C8-42B1-BBA4-72FB55BCC0B7}";
-  guiMSEGSnapY.type = FBParamType::Boolean;
-  auto selectGuiMSEGSnapY = [](auto& module) { return &module.MSEGSnapY; };
-  guiMSEGSnapY.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMSEGSnapY);
+  auto& guiMSEGYEditMode = result->guiParams[(int)FFEnvGUIParam::MSEGYEditMode];
+  guiMSEGYEditMode.name = "MSEG Y Edit Mode";
+  guiMSEGYEditMode.slotCount = 1;
+  guiMSEGYEditMode.defaultText = "Free";
+  guiMSEGYEditMode.id = "{F801AF0D-0224-4FC8-832E-ECC7A0DDC021}";
+  guiMSEGYEditMode.type = FBParamType::List;
+  guiMSEGYEditMode.List().items = {
+    { "{14707807-9CA5-4126-8ABA-4BAD39CBF17E}", "Free" },
+    { "{635385C1-11AE-4F0E-9517-02D5FB2B1C41}", "Snap" } };
+  auto selectGuiMSEGYEditMode = [](auto& module) { return &module.MSEGYEditMode; };
+  guiMSEGYEditMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMSEGYEditMode);
 
   auto& guiMSEGSnapXCount = result->guiParams[(int)FFEnvGUIParam::MSEGSnapXCount];
   guiMSEGSnapXCount.name = "MSEG Snap X Count";
