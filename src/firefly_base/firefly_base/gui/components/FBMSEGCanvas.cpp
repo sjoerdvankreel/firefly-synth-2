@@ -299,9 +299,10 @@ FBMSEGCanvas::mouseDrag(MouseEvent const& event)
 
   if (_dragType == FBMSEGNearestHitType::Slope)
   {
+    auto snappedPosition = SnapToXY(adjustedPosition);
     double pointToY = _currentPointsScreen[_dragIndex].getY();
     double pointFromY = _dragIndex == 0 ? _startPointScreen.getY() : _currentPointsScreen[_dragIndex - 1].getY();
-    double yNorm = std::clamp((adjustedPosition.y - pointFromY) / (pointToY - pointFromY), 0.0, 1.0);
+    double yNorm = std::clamp((snappedPosition.y - pointFromY) / (pointToY - pointFromY), 0.0, 1.0);
     _model.points[_dragIndex].slope = yNorm;
 
     if (modelUpdated != nullptr)
