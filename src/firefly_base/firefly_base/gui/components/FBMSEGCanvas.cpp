@@ -451,6 +451,8 @@ FBMSEGCanvas::paint(Graphics& g)
   path.lineTo(_currentPointsScreen[_currentPointsScreen.size() - 1].getX(), zeroPointScreenY);
   path.closeSubPath();
   g.setColour(_model.enabled ? Colours::grey : Colours::darkgrey);
+  g.strokePath(path, PathStrokeType(1.0f));
+  g.setColour((_model.enabled ? Colours::grey : Colours::darkgrey).withAlpha(0.67f));
   g.fillPath(path);
 
   if (_model.looping && _currentPointsScreen.size() > 0)
