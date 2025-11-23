@@ -14,6 +14,7 @@ Component(),
 _plugGUI(plugGUI),
 _canvas(std::make_unique<FBMSEGCanvas>(plugGUI, name, maxPoints, maxLengthRatioNum, maxLengthRatioDen, maxLengthReal))
 {
+  addAndMakeVisible(_canvas.get());
   _canvas->getTooltipFor = [this](auto hitType, auto index) {
     if (getTooltipFor != nullptr)
       return getTooltipFor(hitType, index);
