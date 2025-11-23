@@ -1,8 +1,9 @@
 #pragma once
 
 #include <firefly_base/gui/components/FBMSEGModel.hpp>
-
 #include <juce_gui_basics/juce_gui_basics.h>
+
+#include <vector>
 #include <functional>
 
 class FBPlugGUI;
@@ -15,6 +16,7 @@ public juce::Component
   int const _maxPoints;
   double const _maxLengthTime;
   FBBarsItem const _maxLengthBars;
+  std::vector<FBBarsItem> const _allowedBars;
 
   int _dragIndex = -1;
   bool _dragging = false;
@@ -43,7 +45,8 @@ public:
     std::string const& name,
     int maxPoints,
     double maxLengthTime,
-    FBBarsItem maxLengthBars);
+    FBBarsItem maxLengthBars,
+    std::vector<FBBarsItem> const& allowedBars);
 
   void UpdateModel(); // call after mutating Model()
   FBMSEGModel& Model() { return _model; }

@@ -16,13 +16,15 @@ FBMSEGCanvas(
   std::string const& name,
   int maxPoints,
   double maxLengthTime,
-  FBBarsItem maxLengthBars) :
+  FBBarsItem maxLengthBars,
+  std::vector<FBBarsItem> const& allowedBars) :
   Component(),
   _plugGUI(plugGUI),
   _name(name),
   _maxPoints(maxPoints),
   _maxLengthTime(maxLengthTime),
-  _maxLengthBars(maxLengthBars) {}
+  _maxLengthBars(maxLengthBars),
+  _allowedBars(allowedBars) {}
 
 void
 FBMSEGCanvas::UpdateModel()

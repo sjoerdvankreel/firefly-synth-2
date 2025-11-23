@@ -41,6 +41,7 @@ public:
     int maxPoints,
     double maxLengthTime,
     FBBarsItem const& maxLengthBars,
+    std::vector<FBBarsItem> const& allowedBars,
     std::vector<int> const& snapXCounts,
     std::vector<int> const& snapYCounts);
 

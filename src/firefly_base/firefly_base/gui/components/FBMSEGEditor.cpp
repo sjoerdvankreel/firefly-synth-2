@@ -9,6 +9,7 @@ FBMSEGEditor(
   int maxPoints,
   double maxLengthTime,
   FBBarsItem const& maxLengthBars,
+  std::vector<FBBarsItem> const& allowedBars,
   std::vector<int> const& snapXCounts,
   std::vector<int> const& snapYCounts) :
 Component(),
@@ -16,7 +17,7 @@ _plugGUI(plugGUI),
 _snapXCounts(snapXCounts),
 _snapYCounts(snapYCounts)
 {
-  _canvas = std::make_unique<FBMSEGCanvas>(plugGUI, name, maxPoints, maxLengthTime, maxLengthBars);
+  _canvas = std::make_unique<FBMSEGCanvas>(plugGUI, name, maxPoints, maxLengthTime, maxLengthBars, allowedBars);
   _canvas->getTooltipFor = [this](auto hitType, auto index) {
     if (getTooltipFor != nullptr)
       return getTooltipFor(hitType, index);

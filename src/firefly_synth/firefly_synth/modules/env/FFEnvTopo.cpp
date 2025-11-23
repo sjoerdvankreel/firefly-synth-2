@@ -6,8 +6,8 @@
 
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
-static std::vector<FBBarsItem>
-MakeEnvBarsItems()
+std::vector<FBBarsItem>
+FFEnvMakeBarsItems()
 {
   return FBMakeBarsItems(true, 
     { FFEnvMinBarsNum, FFEnvMinBarsDen }, 
@@ -208,7 +208,7 @@ FFMakeEnvTopo()
   smoothBars.unit = "Bars";
   smoothBars.id = "{EA0FC641-ED92-417A-ABCF-305A854F59C8}";
   smoothBars.type = FBParamType::Bars;
-  smoothBars.Bars().items = MakeEnvBarsItems();
+  smoothBars.Bars().items = FFEnvMakeBarsItems();
   auto selectSmoothBars = [](auto& module) { return &module.block.smoothBars; };
   smoothBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSmoothBars);
   smoothBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectSmoothBars);
@@ -286,7 +286,7 @@ FFMakeEnvTopo()
   stageBars.id = "{43780C3A-3C23-4A94-8BDF-152FDF408A5F}";
   stageBars.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "1/16" : ps == 1 ? "1/8" : ps == 2 ? "1/4" : "Off"; };
   stageBars.type = FBParamType::Bars;
-  stageBars.Bars().items = MakeEnvBarsItems();
+  stageBars.Bars().items = FFEnvMakeBarsItems();
   auto selectStageBars = [](auto& module) { return &module.block.stageBars; };
   stageBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageBars);
   stageBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStageBars);

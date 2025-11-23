@@ -1,5 +1,7 @@
 #pragma once
 
+#include <firefly_base/base/topo/static/FBBarsItem.hpp>
+
 #include <vector>
 #include <string>
 #include <memory>
@@ -11,6 +13,7 @@ int FFEnvIndexOfMSEGSnapXCount(int count);
 int FFEnvIndexOfMSEGSnapYCount(int count);
 std::vector<int> FFEnvMakeMSEGSnapXCounts();
 std::vector<int> FFEnvMakeMSEGSnapYCounts();
+std::vector<FBBarsItem> FFEnvMakeBarsItems();
 
 inline int constexpr FFEnvStageCount = 15;
 
