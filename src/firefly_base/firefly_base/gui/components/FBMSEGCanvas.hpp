@@ -33,6 +33,8 @@ public juce::Component
   std::vector<juce::Point<float>> _currentSlopesScreen = {};
 
   void StopDrag();   
+  float SnapToX(float x) const;
+  float SnapToY(float y) const;
   juce::Point<float> SnapToXY(juce::Point<float> p) const;
   FBMSEGNearestHitType GetNearestHit(juce::Point<float> const& p, int* index) const;
 

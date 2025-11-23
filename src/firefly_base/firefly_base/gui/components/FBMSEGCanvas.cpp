@@ -47,41 +47,51 @@ FBMSEGCanvas::StopDrag()
   setMouseCursor(MouseCursor::NormalCursor);
 }
 
+float 
+FBMSEGCanvas::SnapToX(float x) const
+{
+  if (!_model.snapX)
+    return x;
+
+  int ix = 0;
+  float snapXDist = std::numeric_limits<float>::infinity();
+  for (int i = 0; i < _currentSnapXScreen.size(); i++)
+  {
+    float xDist = std::abs(_currentSnapXScreen[i] - x);
+    if (xDist < snapXDist)
+    {
+      ix = i;
+      snapXDist = xDist;
+    }
+  }
+  return _currentSnapXScreen[ix];
+}
+
+float 
+FBMSEGCanvas::SnapToY(float y) const
+{
+  if (!_model.snapY)
+    return y;
+
+  int iy = 0;
+  float snapYDist = std::numeric_limits<float>::infinity();
+  for (int i = 0; i < _currentSnapYScreen.size(); i++)
+  {
+    float yDist = std::abs(_currentSnapYScreen[i] - y);
+    if (yDist < snapYDist)
+    {
+      iy = i;
+      snapYDist = yDist;
+    }
+  }
+  return _currentSnapYScreen[iy];
+}
+
 Point<float>
 FBMSEGCanvas::SnapToXY(Point<float> p) const
 {
-  if (_model.snapX)
-  {
-    int ix = 0;
-    float snapXDist = std::numeric_limits<float>::infinity();
-    for (int i = 0; i < _currentSnapXScreen.size(); i++)
-    {
-      float xDist = std::abs(_currentSnapXScreen[i] - p.getX());
-      if (xDist < snapXDist)
-      {
-        ix = i;
-        snapXDist = xDist;
-      }
-    }
-    p.setX(_currentSnapXScreen[ix]);
-  }
-
-  if (_model.snapY)
-  {
-    int iy = 0;
-    float snapYDist = std::numeric_limits<float>::infinity();
-    for (int i = 0; i < _currentSnapYScreen.size(); i++)
-    {
-      float yDist = std::abs(_currentSnapYScreen[i] - p.getY());
-      if (yDist < snapYDist)
-      {
-        iy = i;
-        snapYDist = yDist;
-      }
-    }
-    p.setY(_currentSnapYScreen[iy]);
-  }
-
+  p.setX(SnapToX(p.getX()));
+  p.setY(SnapToY(p.getY()));
   return p;
 }
 
@@ -312,7 +322,8 @@ FBMSEGCanvas::mouseDrag(MouseEvent const& event)
 
   if (_dragType == FBMSEGNearestHitType::Point)
   {
-    double yNorm = std::clamp(1.0 - (adjustedPosition.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
+    auto snappedPosition = SnapToXY(adjustedPosition);
+    double yNorm = std::clamp(1.0 - (snappedPosition.y - MSEGInnerPadding - MSEGOuterPadding) / h, 0.0, 1.0);
     _model.points[_dragIndex].y = yNorm;
 
     double xCurrent = _currentPointsScreen[_dragIndex].getX();
