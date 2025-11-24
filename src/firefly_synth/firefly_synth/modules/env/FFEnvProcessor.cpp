@@ -124,13 +124,16 @@ FFEnvProcessor::BeginVoice(
   }
   _lengthSamples += _smoothSamples;
 
+  float startLvlNorm = params.acc.startLevel[0].Voice()[voice].CV().Get(0);
+  float startLvlPlain = topo.NormalizedToIdentityFast(FFEnvParam::StartLevel, startLvlNorm);
+
   for (int i = 0; i < FFEnvStageCount; i++)
     if (_stageSamples[i] > 0)
     {
       if (i == 0)
       {
-        _lastOverall = 0.0f;
-        _lastBeforeRelease = 0.0f;
+        _lastOverall = startLvlPlain;
+        _lastBeforeRelease = startLvlPlain;
       }
       else
       {
@@ -155,6 +158,7 @@ FFEnvProcessor::Process(
   auto* procState = state.ProcAs<FFProcState>();
   auto const& procParams = procState->param.voice.env[state.moduleSlot];
   auto& output = procState->dsp.voice[voice].env[state.moduleSlot].output;
+  auto const& startLevel = procParams.acc.startLevel;
   auto const& stageLevel = procParams.acc.stageLevel;
   auto const& stageSlopeIn = procParams.acc.stageSlope;
 
@@ -195,9 +199,6 @@ FFEnvProcessor::Process(
   }
 
   int s = 0;
-  float const minSlope = 0.001f;
-  float const slopeRange = 1.0f - 2.0f * minSlope;
-
   int loopEnd = _loopStart == 0 ? -1 : _loopStart - 1 + _loopLength;
   loopEnd = std::min(loopEnd, FFEnvStageCount);
   bool graphing = state.renderType != FBRenderType::Audio;
@@ -229,15 +230,17 @@ FFEnvProcessor::Process(
       float stageEnd = stageLevel[stage].Voice()[voice].CV().Get(s);
       if (releasePoint != 0 && stage == releasePoint && _released)
         stageStart = _lastBeforeRelease;
+      else if (stage == 0)
+        stageStart = startLevel[0].Voice()[voice].CV().Get(s);
       else
-        stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
+        stageStart = stageLevel[stage - 1].Voice()[voice].CV().Get(s);
 
       if (_type == FFEnvType::Linear)
         _lastOverall = stageStart + (stageEnd - stageStart) * pos;
       else
       {
-        float slope = minSlope + stageSlopeModulated[stage].Get(s) * slopeRange;
-        _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * FFInvLogHalf);
+        float slope = FBEnvMinSlope + stageSlopeModulated[stage].Get(s) * FBEnvSlopeRange;
+        _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * FBInvLogHalf);
       }
 
       // Dealing with portamento subsection release.
@@ -253,7 +256,7 @@ FFEnvProcessor::Process(
         int totalSamplesAfterRelease = _lengthSamples - _lengthSamplesUpToRelease;
         int currentSamplesAfterRelease = _positionSamples - _lengthSamplesUpToRelease;
         float positionPortaAmpRelease = std::clamp(currentSamplesAfterRelease / (float)totalSamplesAfterRelease, 0.0f, 1.0f);
-        float portaAmpReleaseMultiplier = std::pow(1.0f - positionPortaAmpRelease, std::log(0.00001f + (_portaSectionAmpReleaseNorm * 0.99999f)) * FFInvLogHalf);
+        float portaAmpReleaseMultiplier = std::pow(1.0f - positionPortaAmpRelease, std::log(0.00001f + (_portaSectionAmpReleaseNorm * 0.99999f)) * FBInvLogHalf);
         _lastOverall *= portaAmpReleaseMultiplier;
       }
 
@@ -333,6 +336,7 @@ FFEnvProcessor::Process(
   exchangeDSP.boolOtherVoiceSubSectionTookOver = _otherVoiceSubSectionTookOver ? 1 : 0;
 
   auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
+  exchangeParams.acc.startLevel[0][voice] = startLevel[0].Voice()[voice].Last();
   for (int i = 0; i < FFEnvStageCount; i++)
   {
     exchangeParams.acc.stageSlope[i][voice] = stageSlopeModulated[i].Last();

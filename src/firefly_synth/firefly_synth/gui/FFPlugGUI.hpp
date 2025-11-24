@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/mix/FFVMixGUI.hpp>
 #include <firefly_synth/modules/mix/FFGMixGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
@@ -15,6 +16,7 @@
 #include <memory>
 #include <vector>
 
+class FBMSEGEditor;
 class FBHostGUIContext;
 class FBGraphRenderState;
 class FBModuleGraphComponent;
@@ -36,7 +38,9 @@ public FBPlugGUI
   FBGridComponent* _guiSettingsAndTweak = {};
 
   FBModuleGraphComponent* _mainGraph = {};
-  std::vector<FBModuleGraphComponent*> _fixedGraphs = {};  
+  std::vector<FBMSEGEditor*> _msegEditors = {};
+  std::vector<FBModuleGraphComponent*> _fixedGraphs = {};
+  std::unique_ptr<FFEnvParamListener> _envParamListener = {};
   std::unique_ptr<FFOsciParamListener> _osciParamListener = {};
   std::unique_ptr<FFVMixParamListener> _vMixParamListener = {};
   std::unique_ptr<FFGMixParamListener> _gMixParamListener = {};

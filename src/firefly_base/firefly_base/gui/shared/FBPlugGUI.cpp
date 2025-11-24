@@ -43,6 +43,18 @@ FBPlugGUI::SetScale(double scale)
 }
 
 void
+FBPlugGUI::HideTooltip()
+{
+  _tooltipWindow->hideTip();
+}
+
+void 
+FBPlugGUI::SetTooltip(Point<int> const& screenPos, String const& text)
+{
+  _tooltipWindow->displayTip(screenPos, text);
+}
+
+void
 FBPlugGUI::InitAllDependencies()
 {
   FB_LOG_ENTRY_EXIT();

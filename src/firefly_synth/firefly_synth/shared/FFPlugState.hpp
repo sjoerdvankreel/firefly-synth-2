@@ -35,6 +35,7 @@ class MTSClient;
 
 struct FFGUIState final
 {
+  std::array<FFEnvGUIState, FFEnvCount> env = {};
   std::array<FFGUISettingsGUIState, 1> guiSettings = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGUIState);
 };

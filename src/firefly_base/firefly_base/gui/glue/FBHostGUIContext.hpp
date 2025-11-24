@@ -60,7 +60,13 @@ public:
 
   bool GetGUIParamBool(FBParamTopoIndices const& indices) const;
   int GetGUIParamDiscrete(FBParamTopoIndices const& indices) const;
+  template <class T> T GetGUIParamList(FBParamTopoIndices const& indices) const;
 
+  void SetGUIParamList(FBParamTopoIndices const& indices, int val);
+  void SetGUIParamBool(FBParamTopoIndices const& indices, bool val);
+  void SetGUIParamDiscrete(FBParamTopoIndices const& indices, int val);
+
+  std::string GetAudioParamText(FBParamTopoIndices const& indices) const;
   bool GetAudioParamBool(FBParamTopoIndices const& indices) const;
   int GetAudioParamDiscrete(FBParamTopoIndices const& indices) const;
   double GetAudioParamLinear(FBParamTopoIndices const& indices) const;
@@ -86,6 +92,14 @@ public:
   FBGUIStateContainer* GUIState() { return _guiState.get(); }
   FBExchangeStateContainer const* ExchangeFromDSPState() const { return _exchangeFromDSPState.get(); }
 };
+
+template <class T>
+T FBHostGUIContext::GetGUIParamList(FBParamTopoIndices const& indices) const
+{
+  auto param = Topo()->gui.ParamAtTopo(indices);
+  double normalized = GetGUIParamNormalized(param->runtimeParamIndex);
+  return static_cast<T>(param->static_.List().NormalizedToPlainFast(static_cast<float>(normalized)));
+}
 
 template <class T>
 T FBHostGUIContext::GetAudioParamList(FBParamTopoIndices const& indices) const

@@ -13,6 +13,19 @@
 struct FBStaticModule;
 struct FBModuleGraphComponentData;
 
+class FFEnvGUIState final
+{
+  friend struct FFGUIState;
+  friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
+
+  std::array<double, 1> MSEGXEditMode = {};
+  std::array<double, 1> MSEGYEditMode = {};
+  std::array<double, 1> MSEGSnapXCount = {};
+  std::array<double, 1> MSEGSnapYCount = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvGUIState);
+};
+
 struct alignas(FBSIMDAlign) FFEnvExchangeState final:
 public FBModuleProcSingleExchangeState
 {
@@ -57,6 +70,7 @@ class alignas(alignof(TAccurate)) FFEnvAccParamState final
 {
   friend class FFEnvProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
+  std::array<TAccurate, 1> startLevel = {};
   std::array<TAccurate, FFEnvStageCount> stageSlope = {};
   std::array<TAccurate, FFEnvStageCount> stageLevel = {};
 public:

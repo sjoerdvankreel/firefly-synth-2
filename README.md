@@ -10,8 +10,8 @@
 </table>
 
 # This is not a finished product
-* But it is a functioning clap and vst3 plugin.
-* But nearly finished on the audio engine side! Only microtuning still missing.
+* But it is a fully functional clap and vst3 plugin.
+* Everything on the audio engine side ready for first release.
 * Builds and runs on win/lin (ubuntu 22+)/mac (both Intel and ARM).
 * Tested on reaper, renoise, fruity, bitwig, carla, ardour.
 * Stock JUCE GUI, no presets, theming still to-do.
@@ -134,7 +134,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * SVF and comb filters can be frequency-controlled or pitch-controlled with optional pitch-following to voice/master.
 
 ## Envelope
-* 12 stage EG. I guess this classifies as an MSEG, but, no visual editor.
+* 15 stage MSEG with visual editor.
 * Per stage amp and slope, per-sample automate/modulate.
 * Stage length per-voice-start automate/modulate when not tempo-synced.
 * Linear/expo mode, 2 loop points for the sustain stage, any point can be release point, optional tempo sync, optional signal smoothing.
@@ -231,3 +231,5 @@ Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|
 <img alt="Screenshot Main" src="static/screenshot_main.png"/>
 <img alt="Screenshot Matrix" src="static/screenshot_matrix.png"/>
 <img alt="Screenshot Unison" src="static/screenshot_unison.png"/>
+<img alt="Screenshot Multitap" src="static/screenshot_multitap.png"/>
+<img alt="Screenshot MSEG" src="static/screenshot_mseg.png"/>

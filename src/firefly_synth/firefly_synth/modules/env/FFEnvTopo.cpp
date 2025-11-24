@@ -6,10 +6,12 @@
 
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
-static std::vector<FBBarsItem>
-MakeEnvBarsItems()
+std::vector<FBBarsItem>
+FFEnvMakeBarsItems()
 {
-  return FBMakeBarsItems(true, { 1, 128 }, { 4, 1 });
+  return FBMakeBarsItems(true, 
+    { FFEnvMinBarsNum, FFEnvMinBarsDen }, 
+    { FFEnvMaxBarsNum, FFEnvMaxBarsDen });
 }
 
 std::string 
@@ -24,6 +26,64 @@ FFEnvTypeToString(FFEnvType type)
   }
 }
 
+static std::vector<FBListItem>
+MakeMSEGSnapXItems()
+{
+  return {
+    { "{9DBA04B6-8AAE-4257-AE45-B1325B03CF2A}", "2" },
+    { "{E0C4102F-93A9-48A9-8FF2-52B8775EFCDF}", "4" },
+    { "{8EE7D810-AA0E-43F9-AC8A-08B92252310C}", "8" },
+    { "{5AEFFF03-71E6-4CBF-8E45-09315DD251D9}", "16" },
+    { "{48D36027-A45C-4193-AE53-9B24D4A6C1C9}", "32" },
+    { "{E9473ECD-0413-47AF-A8BD-CFBF2500A52C}", "64" },
+    { "{A66B2C43-367F-40C7-9A9B-5C27A18B6FA2}", "128" }
+  };
+};
+
+static std::vector<FBListItem>
+MakeMSEGSnapYItems()
+{
+  return {
+    { "{173471E7-19BB-44C7-BE53-918CF83AA36E}", "2" },
+    { "{95AB4754-DE89-49D3-98DB-F4467A267389}", "4" },
+    { "{1D99BA28-81A8-4E14-B1D3-F19B917DA959}", "8" },
+    { "{2788F6C6-8585-4151-B945-EA67F5443FEF}", "16" },
+    { "{8D517D3E-7C82-4642-A17E-D2105AF10912}", "32" }
+  };
+};
+
+std::vector<int>
+FFEnvMakeMSEGSnapXCounts()
+{
+  return { 2, 4, 8, 16, 32, 64, 128 };
+}
+
+std::vector<int>
+FFEnvMakeMSEGSnapYCounts()
+{
+  return { 2, 4, 8, 16, 32 };
+}
+
+int 
+FFEnvIndexOfMSEGSnapXCount(int count)
+{
+  auto counts = FFEnvMakeMSEGSnapXCounts();
+  for (int i = 0; i < counts.size(); i++)
+    if (counts[i] == count)
+      return i;
+  return -1;
+}
+
+int
+FFEnvIndexOfMSEGSnapYCount(int count)
+{
+  auto counts = FFEnvMakeMSEGSnapYCounts();
+  for (int i = 0; i < counts.size(); i++)
+    if (counts[i] == count)
+      return i;
+  return -1;
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeEnvTopo()
 {
@@ -36,10 +96,12 @@ FFMakeEnvTopo()
   result->graphRenderer = FFEnvRenderGraph;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
+  result->guiParams.resize((int)FFEnvGUIParam::Count);
   result->cvOutputs.resize((int)FFEnvCVOutput::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.env; });
   result->tabSlotFormatter = [](FBStaticTopo const&, int s) { return s == FFAmpEnvSlot ? "Amp" : std::to_string(s); };
   result->slotFormatter = [](FBStaticTopo const&, int s) { return s == FFAmpEnvSlot ? "Amp Env" : "Env " + std::to_string(s); };
+  auto selectGuiModule = [](auto& state) { return &state.env; };
   auto selectModule = [](auto& state) { return &state.voice.env; };
 
   auto& type = result->params[(int)FFEnvParam::Type];
@@ -121,7 +183,7 @@ FFMakeEnvTopo()
   auto& smoothTime = result->params[(int)FFEnvParam::SmoothTime];
   smoothTime.mode = FBParamMode::Block;
   smoothTime.defaultText = "0";
-  smoothTime.display = "Smooth";
+  smoothTime.display = "Smth";
   smoothTime.name = "Smooth Time";
   smoothTime.slotCount = 1;
   smoothTime.unit = "Sec";
@@ -140,19 +202,34 @@ FFMakeEnvTopo()
   auto& smoothBars = result->params[(int)FFEnvParam::SmoothBars];
   smoothBars.mode = FBParamMode::Block;
   smoothBars.defaultText = "Off";
-  smoothBars.display = "Smooth";
+  smoothBars.display = "Smth";
   smoothBars.name = "Smooth Bars";
   smoothBars.slotCount = 1;
   smoothBars.unit = "Bars";
   smoothBars.id = "{EA0FC641-ED92-417A-ABCF-305A854F59C8}";
   smoothBars.type = FBParamType::Bars;
-  smoothBars.Bars().items = MakeEnvBarsItems();
+  smoothBars.Bars().items = FFEnvMakeBarsItems();
   auto selectSmoothBars = [](auto& module) { return &module.block.smoothBars; };
   smoothBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSmoothBars);
   smoothBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectSmoothBars);
   smoothBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSmoothBars);
   smoothBars.dependencies.visible.audio.WhenSimple({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   smoothBars.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+  auto& startLevel = result->params[(int)FFEnvParam::StartLevel];
+  startLevel.mode = FBParamMode::Accurate;
+  startLevel.name = "Start Level";
+  startLevel.display = "Start";
+  startLevel.slotCount = 1;
+  startLevel.unit = "%";
+  startLevel.id = "{AB53D9B4-965E-4AED-A60B-B6AB16738977}";
+  startLevel.defaultText = "0";
+  startLevel.type = FBParamType::Identity;
+  auto selectStartLevel = [](auto& module) { return &module.acc.startLevel; };
+  startLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStartLevel);
+  startLevel.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStartLevel);
+  startLevel.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStartLevel);
+  startLevel.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& stageLevel = result->params[(int)FFEnvParam::StageLevel];
   stageLevel.mode = FBParamMode::Accurate;
@@ -192,7 +269,7 @@ FFMakeEnvTopo()
   stageTime.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "0.1" : ps == 1 ? "0.2" : ps == 2 ? "0.4" : "0"; };
   stageTime.type = FBParamType::Linear;
   stageTime.Linear().min = 0.0f;
-  stageTime.Linear().max = 10.0f;
+  stageTime.Linear().max = FFEnvMaxTime;
   stageTime.Linear().editSkewFactor = 0.5f;
   auto selectStageTime = [](auto& module) { return &module.voiceStart.stageTime; };
   stageTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageTime);
@@ -209,13 +286,58 @@ FFMakeEnvTopo()
   stageBars.id = "{43780C3A-3C23-4A94-8BDF-152FDF408A5F}";
   stageBars.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "1/16" : ps == 1 ? "1/8" : ps == 2 ? "1/4" : "Off"; };
   stageBars.type = FBParamType::Bars;
-  stageBars.Bars().items = MakeEnvBarsItems();
+  stageBars.Bars().items = FFEnvMakeBarsItems();
   auto selectStageBars = [](auto& module) { return &module.block.stageBars; };
   stageBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageBars);
   stageBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStageBars);
   stageBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStageBars);
   stageBars.dependencies.visible.audio.WhenSimple({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   stageBars.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+  auto& guiMSEGXEditMode = result->guiParams[(int)FFEnvGUIParam::MSEGXEditMode];
+  guiMSEGXEditMode.name = "MSEG X Edit Mode";
+  guiMSEGXEditMode.slotCount = 1;
+  guiMSEGXEditMode.defaultText = "Free";
+  guiMSEGXEditMode.id = "{576F4AC3-55F6-4B83-A113-128EFF880D5B}";
+  guiMSEGXEditMode.type = FBParamType::List;
+  guiMSEGXEditMode.List().items = {
+    { "{0299B125-071F-4281-B32C-3933D1CF0159}", "Free" },
+    { "{4A5D75D8-553F-4ADE-9E46-DA705DE5195B}", "Snap" },
+    { "{8C5D0496-222C-408C-8ADA-4B71C2A50C81}", "Stretch" } };
+  auto selectGuiMSEGXEditMode = [](auto& module) { return &module.MSEGXEditMode; };
+  guiMSEGXEditMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMSEGXEditMode);
+
+  auto& guiMSEGYEditMode = result->guiParams[(int)FFEnvGUIParam::MSEGYEditMode];
+  guiMSEGYEditMode.name = "MSEG Y Edit Mode";
+  guiMSEGYEditMode.slotCount = 1;
+  guiMSEGYEditMode.defaultText = "Free";
+  guiMSEGYEditMode.id = "{F801AF0D-0224-4FC8-832E-ECC7A0DDC021}";
+  guiMSEGYEditMode.type = FBParamType::List;
+  guiMSEGYEditMode.List().items = {
+    { "{14707807-9CA5-4126-8ABA-4BAD39CBF17E}", "Free" },
+    { "{635385C1-11AE-4F0E-9517-02D5FB2B1C41}", "Snap" } };
+  auto selectGuiMSEGYEditMode = [](auto& module) { return &module.MSEGYEditMode; };
+  guiMSEGYEditMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMSEGYEditMode);
+
+  auto& guiMSEGSnapXCount = result->guiParams[(int)FFEnvGUIParam::MSEGSnapXCount];
+  guiMSEGSnapXCount.name = "MSEG Snap X Count";
+  guiMSEGSnapXCount.slotCount = 1;
+  guiMSEGSnapXCount.defaultText = "64";
+  guiMSEGSnapXCount.id = "{C409B95E-A2E3-4D7A-8916-B6029C54C964}";
+  guiMSEGSnapXCount.type = FBParamType::List; 
+  guiMSEGSnapXCount.List().items = MakeMSEGSnapXItems();
+  auto selectGuiMSEGSnapXCount = [](auto& module) { return &module.MSEGSnapXCount; };
+  guiMSEGSnapXCount.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMSEGSnapXCount);
+
+  auto& guiMSEGSnapYCount = result->guiParams[(int)FFEnvGUIParam::MSEGSnapYCount];
+  guiMSEGSnapYCount.name = "MSEG Snap Y Count";
+  guiMSEGSnapYCount.slotCount = 1;
+  guiMSEGSnapYCount.defaultText = "16";
+  guiMSEGSnapYCount.id = "{838AB77F-91B5-48CD-AC51-368963DE3CC9}";
+  guiMSEGSnapYCount.type = FBParamType::List;
+  guiMSEGSnapYCount.List().items = MakeMSEGSnapYItems();
+  auto selectGuiMSEGSnapYCount = [](auto& module) { return &module.MSEGSnapYCount; };
+  guiMSEGSnapYCount.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMSEGSnapYCount);
 
   auto& output = result->cvOutputs[(int)FFEnvCVOutput::Output];
   output.slotCount = 1;

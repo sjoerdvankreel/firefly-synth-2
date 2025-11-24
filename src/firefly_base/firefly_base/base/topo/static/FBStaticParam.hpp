@@ -111,6 +111,22 @@ public:
   FBLinearParam const& Linear() const { FB_ASSERT(type == FBParamType::Linear); return linear; }
   FBDiscreteParam const& Discrete() const { FB_ASSERT(type == FBParamType::Discrete); return discrete; }
   FBIdentityParam const& Identity() const { FB_ASSERT(type == FBParamType::Identity); return identity; }
+
+  FBListParamNonRealTime& ListNonRealTime() { FB_ASSERT(type == FBParamType::List); return list; }
+  FBBarsParamNonRealTime& BarsNonRealTime() { FB_ASSERT(type == FBParamType::Bars); return bars; }
+  FBLog2ParamNonRealTime& Log2NonRealTime() { FB_ASSERT(type == FBParamType::Log2); return log2; }
+  FBBoolParamNonRealTime& BooleanNonRealTime() { FB_ASSERT(type == FBParamType::Boolean); return boolean; }
+  FBLinearParamNonRealTime& LinearNonRealTime() { FB_ASSERT(type == FBParamType::Linear); return linear; }
+  FBDiscreteParamNonRealTime& DiscreteNonRealTime() { FB_ASSERT(type == FBParamType::Discrete); return discrete; }
+  FBIdentityParamNonRealTime& IdentityNonRealTime() { FB_ASSERT(type == FBParamType::Identity); return identity; }
+
+  FBListParamNonRealTime const& ListNonRealTime() const { FB_ASSERT(type == FBParamType::List); return list; }
+  FBBarsParamNonRealTime const& BarsNonRealTime() const { FB_ASSERT(type == FBParamType::Bars); return bars; }
+  FBLog2ParamNonRealTime const& Log2NonRealTime() const { FB_ASSERT(type == FBParamType::Log2); return log2; }
+  FBBoolParamNonRealTime const& BooleanNonRealTime() const { FB_ASSERT(type == FBParamType::Boolean); return boolean; }
+  FBLinearParamNonRealTime const& LinearNonRealTime() const { FB_ASSERT(type == FBParamType::Linear); return linear; }
+  FBDiscreteParamNonRealTime const& DiscreteNonRealTime() const { FB_ASSERT(type == FBParamType::Discrete); return discrete; }
+  FBIdentityParamNonRealTime const& IdentityNonRealTime() const { FB_ASSERT(type == FBParamType::Identity); return identity; }
 };
 
 struct FBStaticGUIParam final :

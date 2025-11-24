@@ -9,6 +9,11 @@
 #include <numbers>
 #include <algorithm>
 
+// Needed for the mseg editor and the actual envelope generator both.
+inline constexpr float const FBEnvMinSlope = 0.001f;
+inline constexpr float const FBEnvSlopeRange = 1.0f - 2.0f * FBEnvMinSlope;
+
+inline float const FBInvLogHalf = 1.0f / std::log(0.5f);
 inline constexpr float FBPi = std::numbers::pi_v<float>;
 inline constexpr float FBTwoPi = 2.0f * FBPi;
 inline constexpr float FBMaxPitch = 140.0f; // Safety net at 26.5 kHz.

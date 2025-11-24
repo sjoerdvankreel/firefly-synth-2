@@ -34,6 +34,8 @@ public FBItemsParamNonRealTime
   FBEditType AutomationEditType() const override;
   juce::PopupMenu MakePopupMenu(int moduleIndex) const override;
 
+  FBBarsItem NormalizedToBars(double normalized) const;
+  double BarsToPlain(FBBarsItem const& bars ) const;
   double PlainToNormalized(double plain) const override;
   double NormalizedToPlain(double normalized) const override;
   std::string PlainToText(bool io, int moduleIndex, double plain) const override;
