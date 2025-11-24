@@ -10,8 +10,8 @@
 </table>
 
 # This is not a finished product
-* But it is a functioning clap and vst3 plugin.
-* But nearly finished on the audio engine side! Only microtuning still missing.
+* But it is a fully functional clap and vst3 plugin.
+* Everything on the audio engine side ready for first release.
 * Builds and runs on win/lin (ubuntu 22+)/mac (both Intel and ARM).
 * Tested on reaper, renoise, fruity, bitwig, carla, ardour.
 * Stock JUCE GUI, no presets, theming still to-do.
