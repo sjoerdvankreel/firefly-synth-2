@@ -1,5 +1,5 @@
 TODOLIST for alpha-25
-[x] 16 segs
+[x] 15 segs
 [x] need start-y value
 [x] do tooltips in the popup editor on the points
 [x] do hand cursor on over
@@ -37,6 +37,10 @@ TODOLIST for alpha-26 - rest of the gui stuff
 
 TODOLIST for alpha-27
 [ ] theme the gui
+
+TODOLIST for beta
+[ ] make some presets
+[ ] write the manual
 
 keep profiling
 recheck known issues

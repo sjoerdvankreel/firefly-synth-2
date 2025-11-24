@@ -13,7 +13,6 @@ FBMSEGEditor(
   std::vector<int> const& snapXCounts,
   std::vector<int> const& snapYCounts) :
 Component(),
-_plugGUI(plugGUI),
 _snapXCounts(snapXCounts),
 _snapYCounts(snapYCounts)
 {

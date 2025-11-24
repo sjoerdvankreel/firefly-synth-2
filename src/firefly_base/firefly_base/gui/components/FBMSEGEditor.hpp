@@ -16,7 +16,6 @@ class FBPlugGUI;
 class FBMSEGEditor :
 public juce::Component
 {
-  FBPlugGUI* const _plugGUI;
   std::vector<int> const _snapXCounts;
   std::vector<int> const _snapYCounts;
   
