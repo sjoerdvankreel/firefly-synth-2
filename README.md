@@ -231,3 +231,5 @@ Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|
 <img alt="Screenshot Main" src="static/screenshot_main.png"/>
 <img alt="Screenshot Matrix" src="static/screenshot_matrix.png"/>
 <img alt="Screenshot Unison" src="static/screenshot_unison.png"/>
+<img alt="Screenshot Unison" src="static/screenshot_multitap.png"/>
+<img alt="Screenshot Unison" src="static/screenshot_mseg.png"/>
