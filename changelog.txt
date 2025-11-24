@@ -1,3 +1,9 @@
+November 24, 2025 - Alpha 25.
+
+- Add visual MSEG editor for the envelopes.
+- Up envelope point count to 15.
+- Add separate parameter for envelope start amplitude (initial Y parameter).
+
 November 16, 2025 - Alpha 24.
 
 - Add microtuning support.
