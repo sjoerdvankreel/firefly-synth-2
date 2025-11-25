@@ -46,6 +46,8 @@ public:
     std::function<void(int)> callback);
 
   void InitPatch();
+  void ReloadPatch();
+  void ReloadSession();
   void SavePatchToFile();
   void LoadPatchFromFile();
 

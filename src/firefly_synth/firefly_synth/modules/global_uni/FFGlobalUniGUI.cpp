@@ -67,7 +67,7 @@ GlobalUniInit(FBPlugGUI* plugGUI)
 {
   FBTopoIndices moduleIndices = { (int)FFModuleType::GlobalUni, 0 };
   std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
-  plugGUI->HostContext()->UndoState().Snapshot("Init " + name);
+  plugGUI->HostContext()->UndoState().Snapshot(false, "Init " + name);
   for (int s = 0; s < (int)FFGlobalUniTarget::Count; s++)
   {
     plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { (int)FFGlobalUniParam::Mode, s} });

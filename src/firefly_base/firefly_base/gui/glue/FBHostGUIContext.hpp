@@ -3,6 +3,7 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBUndoStateContainer.hpp>
+#include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <memory>
@@ -34,13 +35,16 @@ FBMakeHostContextMenu(
 
 class FBHostGUIContext
 {
-  FBUndoStateContainer _undoState;
-
 protected:
   std::unique_ptr<FBRuntimeTopo> _topo;
   std::unique_ptr<FBGUIStateContainer> _guiState;
   std::unique_ptr<FBExchangeStateContainer> _exchangeFromDSPState;
 
+private:
+  FBUndoStateContainer _undoState;
+  FBScalarStateContainer _sessionState;
+
+protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostGUIContext);
   FBHostGUIContext(std::unique_ptr<FBStaticTopo>&& topo);
 
@@ -52,6 +56,10 @@ public:
   virtual double GetAudioParamNormalized(int index) const = 0;
   virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;
   virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;
+
+  void MarkAsSessionState();
+  void RevertToSessionState();
+  void RevertToLastPatchLoad();
 
   double GetUserScaleMin() const;
   double GetUserScaleMax() const;

@@ -96,7 +96,7 @@ void
 FBParamToggleButton::mouseUp(const MouseEvent& e)
 {
   // need to catch real user input for the undo state, not all kinds of async callbacks
-  _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
+  _plugGUI->HostContext()->UndoState().Snapshot(false, "Change " + _param->longName);
   ToggleButton::mouseUp(e);
 }
 

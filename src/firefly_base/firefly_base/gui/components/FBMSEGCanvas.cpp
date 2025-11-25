@@ -39,7 +39,7 @@ FBMSEGCanvas::ModelUpdated(bool snapshotForUndo)
   if (modelUpdated != nullptr)
   {
     if(snapshotForUndo)
-      _plugGUI->HostContext()->UndoState().Snapshot("Change " + _name + " MSEG");
+      _plugGUI->HostContext()->UndoState().Snapshot(false, "Change " + _name + " MSEG");
     modelUpdated(_model);
   }
 }
@@ -163,7 +163,7 @@ FBMSEGCanvas::mouseDown(MouseEvent const& event)
   _dragging = true;
   _dragType = hitType;
   _dragIndex = hitIndex;
-  _plugGUI->HostContext()->UndoState().Snapshot("Change " + _name + " MSEG");
+  _plugGUI->HostContext()->UndoState().Snapshot(false, "Change " + _name + " MSEG");
 }
 
 void

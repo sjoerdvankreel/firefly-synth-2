@@ -7,6 +7,20 @@ FBUndoStateContainer::
 FBUndoStateContainer(FBHostGUIContext* hostContext):
 _hostContext(hostContext) {}
 
+bool 
+FBUndoStateContainer::RevertToLastPatchLoad()
+{
+  // -2: Revert to patch takes a snapshot itself.
+  for(int i = (int)_items.size() - 2; i >= 0; i--)
+    if (_items[i].isBeforePatchChange)
+    {
+      if (i != (int)_items.size() - 1)
+        _items[i + 1].state.CopyTo(_hostContext);
+      return true;
+    }
+  return false;
+}
+
 void 
 FBUndoStateContainer::Undo()
 {
@@ -30,11 +44,12 @@ FBUndoStateContainer::Redo()
 }
 
 void 
-FBUndoStateContainer::Snapshot(std::string const& action)
+FBUndoStateContainer::Snapshot(bool isBeforePatchChange, std::string const& action)
 {
   _items.erase(_items.begin() + _position, _items.end());
   FBUndoItem item(*_hostContext->Topo());
   item.action = action;
+  item.isBeforePatchChange = isBeforePatchChange;
   item.state.CopyFrom(_hostContext);
   _items.push_back(std::move(item));
   while (_items.size() > _hostContext->Topo()->static_->maxUndoSize)

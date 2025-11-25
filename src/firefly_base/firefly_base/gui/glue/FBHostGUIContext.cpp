@@ -19,11 +19,31 @@ struct MenuBuilder
 
 FBHostGUIContext::
 FBHostGUIContext(std::unique_ptr<FBStaticTopo>&& topo):
-_undoState(this),
 _topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
 _guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
-_exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo))
+_exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo)),
+_undoState(this),
+_sessionState(*_topo.get())
 {
+}
+
+void 
+FBHostGUIContext::MarkAsSessionState()
+{
+  _sessionState.CopyFrom(this);
+}
+
+void 
+FBHostGUIContext::RevertToSessionState()
+{
+  _sessionState.CopyTo(this);
+}
+
+void 
+FBHostGUIContext::RevertToLastPatchLoad()
+{
+  if (!_undoState.RevertToLastPatchLoad())
+    RevertToSessionState();
 }
 
 double 

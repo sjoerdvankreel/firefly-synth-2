@@ -137,7 +137,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
     int maxSlotCount = global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount;
     FBTopoIndices modIndices = { moduleType, 0 };
     std::string name = hostContext->Topo()->ModuleAtTopo(modIndices)->name;
-    hostContext->UndoState().Snapshot("Clean " + name);
+    hostContext->UndoState().Snapshot(false, "Clean " + name);
     for (int i = 0; i < maxSlotCount; i++)
     {
       bool opTypeOn = hostContext->GetAudioParamList<int>({ modIndices, { (int)FFModMatrixParam::OpType, i } }) != 0;
@@ -182,7 +182,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
     int moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
     FBTopoIndices moduleIndices = { moduleType, 0 };
     std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
-    plugGUI->HostContext()->UndoState().Snapshot("Init " + name);
+    plugGUI->HostContext()->UndoState().Snapshot(false, "Init " + name);
     plugGUI->HostContext()->ClearModuleAudioParams(moduleIndices);
   };
 
@@ -249,7 +249,7 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
 
   auto addButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "+");
   addButton->onClick = [plugGUI, slot, moduleType, maxSlotCount]() {
-    plugGUI->HostContext()->UndoState().Snapshot("Add Matrix Row");
+    plugGUI->HostContext()->UndoState().Snapshot(false, "Add Matrix Row");
     for(int i = maxSlotCount; i > slot; i--)
       for(int p = 0; p < (int)FFModMatrixParam::Count; p++)
         if (plugGUI->HostContext()->Topo()->static_->modules[(int)moduleType].params[p].slotCount == maxSlotCount)
@@ -262,7 +262,7 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
 
   auto removeButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "-");
   removeButton->onClick = [plugGUI, slot, moduleType, maxSlotCount]() {
-    plugGUI->HostContext()->UndoState().Snapshot("Remove Matrix Row");
+    plugGUI->HostContext()->UndoState().Snapshot(false, "Remove Matrix Row");
     for (int i = slot; i < maxSlotCount; i++)
       for (int p = 0; p < (int)FFModMatrixParam::Count; p++)
         if (plugGUI->HostContext()->Topo()->static_->modules[(int)moduleType].params[p].slotCount == maxSlotCount)
@@ -279,7 +279,7 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
 
   auto upButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "\U00002191");
   upButton->onClick = [plugGUI, slot, moduleType, maxSlotCount]() {
-    plugGUI->HostContext()->UndoState().Snapshot("Move Matrix Row Up");
+    plugGUI->HostContext()->UndoState().Snapshot(false, "Move Matrix Row Up");
     for (int p = 0; p < (int)FFModMatrixParam::Count; p++)
       if (plugGUI->HostContext()->Topo()->static_->modules[(int)moduleType].params[p].slotCount == maxSlotCount)
       {
@@ -297,7 +297,7 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
 
   auto downButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "\U00002193");
   downButton->onClick = [plugGUI, slot, moduleType, maxSlotCount]() {
-    plugGUI->HostContext()->UndoState().Snapshot("Move Matrix Row Down");
+    plugGUI->HostContext()->UndoState().Snapshot(false, "Move Matrix Row Down");
     for (int p = 0; p < (int)FFModMatrixParam::Count; p++)
       if (plugGUI->HostContext()->Topo()->static_->modules[(int)moduleType].params[p].slotCount == maxSlotCount)
       {
