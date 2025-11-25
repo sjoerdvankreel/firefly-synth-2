@@ -1,10 +1,10 @@
 TODOLIST for alpha-26 - rest of the gui stuff
-[ ] show tweaked from patch ... session? need shadow stack ==> NO! just need Boolean markers on the undo stack is all
+[x] show tweaked from patch ... session? need shadow stack ==> NO! just need Boolean markers on the undo stack is all
+[x] reload patch
+[x] "reload patch" option
 [ ] close popup editors if not on main
-[ ] reload patch
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
 [ ] param menu : set to default / set to patch
-[ ] "reload patch" option
 [ ] something with instance and patch naming
 [ ] re-save everything
 [ ] preset infra
