@@ -11,34 +11,33 @@ void
 FBUndoStateContainer::Undo()
 {
   FB_ASSERT(CanUndo());
-  FBUndoItem item(*_hostContext->Topo());
-  item.action = _undoDeque.front().action;
-  item.state.CopyFrom(_hostContext);
-  _redoStack.push(std::move(item));
-  _undoDeque.front().state.CopyTo(_hostContext);
-  _undoDeque.pop_front();
+  FBScalarStateContainer temp(*_hostContext->Topo());
+  temp.CopyFrom(_hostContext);
+  _items[_position - 1].state.CopyTo(_hostContext);
+  _items[_position - 1].state.CopyFrom(temp);
+  _position--;
 }
 
 void 
 FBUndoStateContainer::Redo()
 {
   FB_ASSERT(CanRedo());
-  FBUndoItem item(*_hostContext->Topo());
-  item.action = _redoStack.top().action;
-  item.state.CopyFrom(_hostContext);
-  _undoDeque.push_front(std::move(item));
-  _redoStack.top().state.CopyTo(_hostContext);
-  _redoStack.pop();
+  FBScalarStateContainer temp(*_hostContext->Topo());
+  temp.CopyFrom(_hostContext);
+  _items[_position].state.CopyTo(_hostContext);
+  _items[_position].state.CopyFrom(temp);
+  _position++;
 }
 
 void 
 FBUndoStateContainer::Snapshot(std::string const& action)
 {
-  _redoStack = {};
+  _items.erase(_items.begin() + _position, _items.end());
   FBUndoItem item(*_hostContext->Topo());
   item.action = action;
   item.state.CopyFrom(_hostContext);
-  _undoDeque.push_front(std::move(item));
-  while (_undoDeque.size() > _hostContext->Topo()->static_->maxUndoSize)
-    _undoDeque.pop_back();
+  _items.push_back(std::move(item));
+  while (_items.size() > _hostContext->Topo()->static_->maxUndoSize)
+    _items.erase(_items.begin());
+  _position = (int)_items.size();
 }
