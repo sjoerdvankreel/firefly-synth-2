@@ -10,7 +10,6 @@ class FBHostGUIContext;
 struct FBUndoItem final
 {
   std::string action = {};
-  bool isBeforePatchChange = {};
   FBScalarStateContainer state;
 
   FB_NOCOPY_MOVE_NODEFCTOR(FBUndoItem);
@@ -26,8 +25,7 @@ class FBUndoStateContainer final
 public:
   void Undo();
   void Redo();
-  bool RevertToLastPatchLoad();
-  void Snapshot(bool isBeforePatchChange, std::string const& action);
+  void Snapshot(std::string const& action);
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBUndoStateContainer);
   FBUndoStateContainer(FBHostGUIContext* hostContext);

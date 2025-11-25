@@ -170,12 +170,12 @@ FBModuleTabComponent::TabRightClicked(int tabIndex)
     std::string name = _plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
     if (id == 1)
     {
-      _plugGUI->HostContext()->UndoState().Snapshot(false, "Clear " + name);
+      _plugGUI->HostContext()->UndoState().Snapshot("Clear " + name);
       _plugGUI->HostContext()->ClearModuleAudioParams(moduleIndices);
     }
     else if (2 <= id && id < slotCount + 2)
     {
-      _plugGUI->HostContext()->UndoState().Snapshot(false, "Copy " + name);
+      _plugGUI->HostContext()->UndoState().Snapshot("Copy " + name);
       _plugGUI->HostContext()->CopyModuleAudioParams(moduleIndices, id - 2);
     }
     else if (extendedMenuHandler)

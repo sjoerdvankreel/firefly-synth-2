@@ -349,8 +349,9 @@ void
 FBPlugGUI::ReloadPatch()
 {
   FB_LOG_ENTRY_EXIT();
-  HostContext()->UndoState().Snapshot(true, "Reload Patch");
-  HostContext()->RevertToLastPatchLoad();
+  HostContext()->UndoState().Snapshot("Reload Patch");
+  HostContext()->RevertToPatchState();
+  HostContext()->MarkAsPatchState();
   OnPatchChanged();
 }
 
@@ -358,7 +359,7 @@ void
 FBPlugGUI::ReloadSession()
 {
   FB_LOG_ENTRY_EXIT();
-  HostContext()->UndoState().Snapshot(true, "Reload Session");
+  HostContext()->UndoState().Snapshot("Reload Session");
   HostContext()->RevertToSessionState();
   OnPatchChanged();
 }
@@ -367,10 +368,11 @@ void
 FBPlugGUI::InitPatch()
 {
   FB_LOG_ENTRY_EXIT();
-  HostContext()->UndoState().Snapshot(true, "Init Patch");
+  HostContext()->UndoState().Snapshot("Init Patch");
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
     HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
+  HostContext()->MarkAsPatchState();
   OnPatchChanged();
 }
 
@@ -407,8 +409,9 @@ FBPlugGUI::LoadPatchFromFile()
     FBScalarStateContainer editState(*HostContext()->Topo());
     if (HostContext()->Topo()->LoadEditStateFromString(text, editState, true))
     {
-      HostContext()->UndoState().Snapshot(true, "Load Patch");
+      HostContext()->UndoState().Snapshot("Load Patch");
       editState.CopyTo(HostContext());
+      HostContext()->MarkAsPatchState();
       OnPatchChanged();
     }
     else

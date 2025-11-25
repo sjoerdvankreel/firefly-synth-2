@@ -23,27 +23,33 @@ _topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
 _guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
 _exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo)),
 _undoState(this),
+_patchState(*_topo.get()),
 _sessionState(*_topo.get())
 {
 }
 
 void 
+FBHostGUIContext::MarkAsPatchState()
+{
+  _patchState.CopyFrom(this);
+}
+
+void 
+FBHostGUIContext::RevertToPatchState()
+{
+  _patchState.CopyTo(this);
+}
+
+void
 FBHostGUIContext::MarkAsSessionState()
 {
   _sessionState.CopyFrom(this);
 }
 
-void 
+void
 FBHostGUIContext::RevertToSessionState()
 {
   _sessionState.CopyTo(this);
-}
-
-void 
-FBHostGUIContext::RevertToLastPatchLoad()
-{
-  if (!_undoState.RevertToLastPatchLoad())
-    RevertToSessionState();
 }
 
 double 

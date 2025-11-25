@@ -42,6 +42,11 @@ protected:
 
 private:
   FBUndoStateContainer _undoState;
+
+  // updated on init/load/reload patch etc
+  FBScalarStateContainer _patchState;
+
+  // updated on daw load
   FBScalarStateContainer _sessionState;
 
 protected:
@@ -57,9 +62,10 @@ public:
   virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;
   virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;
 
+  void MarkAsPatchState();
+  void RevertToPatchState();
   void MarkAsSessionState();
   void RevertToSessionState();
-  void RevertToLastPatchLoad();
 
   double GetUserScaleMin() const;
   double GetUserScaleMax() const;

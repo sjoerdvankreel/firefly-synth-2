@@ -171,7 +171,7 @@ MakeEchoSectionTaps(
       auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
       FBTopoIndices moduleIndices = { (int)moduleType, 0 };
       std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
-      plugGUI->HostContext()->UndoState().Snapshot(false, "Init " + name + " Taps");
+      plugGUI->HostContext()->UndoState().Snapshot("Init " + name + " Taps");
       for (int p = (int)FFEchoParam::TapFirst; p <= (int)FFEchoParam::TapLast; p++)
         for(int s = 0; s < FFEchoTapCount; s++)
           plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });

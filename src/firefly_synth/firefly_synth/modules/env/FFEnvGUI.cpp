@@ -181,7 +181,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
 
   showMSEG->onClick = [plugGUI, msegEditor_ = *msegEditor, title, moduleSlot]() {
     dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, msegEditor_, 800, 240, true, [plugGUI, title, moduleSlot]() {
-      plugGUI->HostContext()->UndoState().Snapshot(false, "Init " + title + " MSEG");
+      plugGUI->HostContext()->UndoState().Snapshot("Init " + title + " MSEG");
       plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } });
       plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StartLevel, 0 } });
       plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } });
@@ -279,7 +279,7 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
     if (1000 <= id && id < 1000 + FFEnvStageCount)
     {
       int stage = id - 1000;
-      plugGUI->HostContext()->UndoState().Snapshot(false, "Insert Stage Before " + std::to_string(stage + 1));
+      plugGUI->HostContext()->UndoState().Snapshot("Insert Stage Before " + std::to_string(stage + 1));
       for (int i = FFEnvStageCount - 1; i > stage; i--)
         for (int j = 0; j < stageParams.size(); j++)
           plugGUI->HostContext()->CopyAudioParam(
@@ -289,7 +289,7 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
     else if (2000 <= id && id < 2000 + FFEnvStageCount)
     {
       int stage = id - 2000;
-      plugGUI->HostContext()->UndoState().Snapshot(false, "Remove Stage At " + std::to_string(stage + 1));
+      plugGUI->HostContext()->UndoState().Snapshot("Remove Stage At " + std::to_string(stage + 1));
       for (int i = stage; i < FFEnvStageCount - 1; i++)
         for (int j = 0; j < stageParams.size(); j++)
           plugGUI->HostContext()->CopyAudioParam(

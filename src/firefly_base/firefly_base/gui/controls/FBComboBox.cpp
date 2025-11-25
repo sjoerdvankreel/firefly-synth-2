@@ -133,7 +133,7 @@ FBParamComboBox::showPopup()
 {
   // need to catch real user input for the undo state, not all kinds of async callbacks
   // this will cause some spurious undo items if user opens popup but not changes it
-  _plugGUI->HostContext()->UndoState().Snapshot(false, "Change " + _param->longName);
+  _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
 
   // enable/disable items based on the generic selector, if any
   PopupMenu::MenuItemIterator iter(*getRootMenu(), true);
