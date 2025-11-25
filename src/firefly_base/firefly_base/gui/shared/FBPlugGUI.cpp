@@ -247,13 +247,24 @@ FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
     if (tag <= 0)
       return;
     else if (tag == 1)
+    {
+      HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Patch");
       HostContext()->PerformImmediateAudioParamEdit(index, *HostContext()->PatchState().Params()[index]);
+    }
     else if (tag == 2)
+    {
+      HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Session");
       HostContext()->PerformImmediateAudioParamEdit(index, *HostContext()->SessionState().Params()[index]);
+    }
     else if (tag == 3)
+    {
+      HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Default");
       HostContext()->PerformImmediateAudioParamEdit(index, HostContext()->Topo()->audio.params[index].DefaultNormalizedByText());
+    }
     else
+    {
       HostContext()->AudioParamContextMenuClicked(index, tag - 1000);
+    }
   };
   ShowPopupMenuFor(this, menu, clicked);
 }

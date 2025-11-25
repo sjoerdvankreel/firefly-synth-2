@@ -113,7 +113,7 @@ FBParamComboBox::getTooltip()
 void
 FBParamComboBox::mouseUp(MouseEvent const& event)
 {
-  if (event.mods.isRightButtonDown())
+  if (isEnabled() && event.mods.isRightButtonDown())
     _plugGUI->ShowMenuForAudioParam(_param->runtimeParamIndex, false);
 }
 

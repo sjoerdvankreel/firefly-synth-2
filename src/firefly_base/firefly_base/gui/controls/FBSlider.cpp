@@ -116,7 +116,7 @@ FBParamSlider::getTooltip()
 void
 FBParamSlider::mouseUp(MouseEvent const& event)
 {
-  if (event.mods.isRightButtonDown())
+  if (isEnabled() && event.mods.isRightButtonDown())
     _plugGUI->ShowMenuForAudioParam(_param->runtimeParamIndex, true);
 }
 
