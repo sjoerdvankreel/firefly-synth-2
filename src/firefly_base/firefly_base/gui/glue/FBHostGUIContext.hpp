@@ -58,10 +58,6 @@ protected:
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
 
 public:
-  virtual double GetAudioParamNormalized(int index) const = 0;
-  virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;
-  virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;
-
   void MarkAsPatchState();
   void RevertToPatchState();
   void MarkAsSessionState();
@@ -105,6 +101,13 @@ public:
   FBRuntimeTopo const* Topo() const { return _topo.get(); }
   FBGUIStateContainer* GUIState() { return _guiState.get(); }
   FBExchangeStateContainer const* ExchangeFromDSPState() const { return _exchangeFromDSPState.get(); }
+
+  FBScalarStateContainer const& PatchState() const { return _patchState; }
+  FBScalarStateContainer const& SessionState() const { return _sessionState; }
+
+  virtual double GetAudioParamNormalized(int index) const = 0;
+  virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;
+  virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;
 };
 
 template <class T>

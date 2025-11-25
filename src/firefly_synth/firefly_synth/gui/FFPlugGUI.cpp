@@ -100,7 +100,7 @@ FFPlugGUI::GUIParamNormalizedChanged(int index, double normalized)
   _mainGraph->RequestRerender(moduleIndex);
   RequestFixedGraphsRerender(moduleIndex);
 
-  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0}, {(int)FFGUISettingsGUIParam::HilightTweak, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0}, {(int)FFGUISettingsGUIParam::HilightTweakMode, 0 } };
   if (index == HostContext()->Topo()->gui.ParamAtTopo(indices)->runtimeParamIndex)
     repaint();
   indices = { { (int)FFModuleType::GUISettings, 0}, {(int)FFGUISettingsGUIParam::HilightMod, 0 } };
@@ -157,11 +157,11 @@ FFPlugGUI::HighlightModulationBounds() const
   return HostContext()->GetGUIParamBool(indices);
 }
 
-bool 
-FFPlugGUI::HighlightTweaked() const
+FBHighlightTweakMode
+FFPlugGUI::HighlightTweakedMode() const
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightTweak, 0 } };
-  return HostContext()->GetGUIParamBool(indices);
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightTweakMode, 0 } };
+  return HostContext()->GetGUIParamList<FBHighlightTweakMode>(indices);
 }
 
 FBGUIRenderType 

@@ -50,8 +50,8 @@ public FBPlugGUI
   std::unique_ptr<FFVoiceModuleParamListener> _voiceModuleParamListener = {};
 
   void SetupGUI();
-  bool HighlightTweaked() const override;
   bool HighlightModulationBounds() const override;
+  FBHighlightTweakMode HighlightTweakedMode() const override;
   FBGUIRenderType GetRenderType(bool graphOrKnob) const override;
   bool GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const override;
 

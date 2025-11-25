@@ -83,8 +83,8 @@ public:
   virtual void AudioParamNormalizedChangedFromUI(int index, double normalized);
   virtual void AudioParamNormalizedChangedFromHost(int index, double normalized);
 
-  virtual bool HighlightTweaked() const = 0;
   virtual bool HighlightModulationBounds() const = 0;
+  virtual FBHighlightTweakMode HighlightTweakedMode() const = 0;
   virtual FBGUIRenderType GetRenderType(bool graphOrKnob) const = 0;
   virtual bool GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const = 0;  
 

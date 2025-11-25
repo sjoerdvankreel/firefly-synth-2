@@ -7,7 +7,9 @@
 
 inline int constexpr FBGUIFPS = 30;
 inline int constexpr FBGUIFontSize = 13;
+
 enum class FBGUIRenderType { Basic, Full };
+enum class FBHighlightTweakMode { Off, Patch, Session, Default };
 
 void FBGUIInit();
 void FBGUITerminate();
