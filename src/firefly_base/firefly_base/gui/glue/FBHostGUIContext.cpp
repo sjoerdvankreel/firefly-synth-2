@@ -272,14 +272,12 @@ FBMakeHostContextMenu(int offset, std::vector<FBHostContextMenuItem> const& item
     {
       builders.emplace();
       builders.top().name = items[i].name;
-      builders.top().checked = items[i].checked;
-      builders.top().enabled = items[i].enabled;
       builders.top().menu = std::make_unique<PopupMenu>();
     } else if (items[i].subMenuEnd)
     {
       auto builder = std::move(builders.top());
       builders.pop();
-      builders.top().menu->addSubMenu(builder.name, *builder.menu, builder.enabled, nullptr, builder.checked);
+      builders.top().menu->addSubMenu(builder.name, *builder.menu);
     } else if (items[i].separator)
       builders.top().menu->addSeparator();
     else
