@@ -2,6 +2,7 @@ TODOLIST for alpha-26 - rest of the gui stuff
 [x] show tweaked from patch ... session? need shadow stack ==> NO! just need Boolean markers on the undo stack is all
 [x] reload patch
 [x] "reload patch" option
+[ ] clap host menu is borked
 [ ] close popup editors if not on main
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
 [ ] param menu : set to default / set to patch

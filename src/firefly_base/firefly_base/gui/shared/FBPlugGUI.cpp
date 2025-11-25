@@ -227,17 +227,35 @@ FBPlugGUI::UpdateExchangeState()
 }
 
 void
-FBPlugGUI::ShowHostMenuForAudioParam(int index)
+FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
 {
   FB_LOG_ENTRY_EXIT();
-  auto menuItems = HostContext()->MakeAudioParamContextMenu(index);
-  if (menuItems.empty())
-    return;
-  auto hostMenu = FBMakeHostContextMenu(menuItems);
+  PopupMenu menu;
+  menu.addItem(1, "Set To Patch");
+  menu.addItem(2, "Set To Session");
+  menu.addItem(3, "Set To Default");
+  if (showHostMenu)
+  {
+    auto hostMenuItems = HostContext()->MakeAudioParamContextMenu(index);
+    if (!hostMenuItems.empty())
+    {
+      auto hostMenu = FBMakeHostContextMenu(1000, hostMenuItems);
+      menu.addSubMenu("Host", *hostMenu);
+    }
+  }
   auto clicked = [this, index](int tag) {
-    if (tag > 0)
-      HostContext()->AudioParamContextMenuClicked(index, tag); };
-  ShowPopupMenuFor(this, *hostMenu, clicked);
+    if (tag <= 0)
+      return;
+    else if (tag == 1)
+      HostContext()->PerformImmediateAudioParamEdit(index, *HostContext()->PatchState().Params()[index]);
+    else if (tag == 2)
+      HostContext()->PerformImmediateAudioParamEdit(index, *HostContext()->SessionState().Params()[index]);
+    else if (tag == 3)
+      HostContext()->PerformImmediateAudioParamEdit(index, HostContext()->Topo()->audio.params[index].DefaultNormalizedByText());
+    else
+      HostContext()->AudioParamContextMenuClicked(index, tag - 1000);
+  };
+  ShowPopupMenuFor(this, menu, clicked);
 }
 
 Component*

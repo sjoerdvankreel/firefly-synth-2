@@ -52,6 +52,7 @@ public:
   juce::String getTooltip() override;
   void parentHierarchyChanged() override;
   void valueChanged(juce::Value& value) override;
+  void mouseUp(juce::MouseEvent const& event) override;
 
   void OnPopupMenuClosing(int itemResultId) override;
   void SetValueNormalizedFromHost(double normalized) override;

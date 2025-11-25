@@ -111,6 +111,13 @@ FBParamComboBox::getTooltip()
 }
 
 void
+FBParamComboBox::mouseUp(MouseEvent const& event)
+{
+  if (event.mods.isRightButtonDown())
+    _plugGUI->ShowMenuForAudioParam(_param->runtimeParamIndex, false);
+}
+
+void
 FBParamComboBox::SetValueNormalizedFromHost(double normalized)
 {
   double plain = _param->static_.NonRealTime().NormalizedToPlain(normalized);

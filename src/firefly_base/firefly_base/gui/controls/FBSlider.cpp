@@ -117,7 +117,7 @@ void
 FBParamSlider::mouseUp(MouseEvent const& event)
 {
   if (event.mods.isRightButtonDown())
-    _plugGUI->ShowHostMenuForAudioParam(_param->runtimeParamIndex);
+    _plugGUI->ShowMenuForAudioParam(_param->runtimeParamIndex, true);
 }
 
 String

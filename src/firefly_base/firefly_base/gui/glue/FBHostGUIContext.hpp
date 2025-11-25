@@ -31,6 +31,7 @@ struct FBHostContextMenuItem
 
 std::unique_ptr<juce::PopupMenu>
 FBMakeHostContextMenu(
+  int offset,
   std::vector<FBHostContextMenuItem> const& items);
 
 class FBHostGUIContext

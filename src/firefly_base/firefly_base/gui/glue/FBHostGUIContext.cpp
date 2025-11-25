@@ -262,7 +262,7 @@ FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int 
 }
 
 std::unique_ptr<PopupMenu>
-FBMakeHostContextMenu(std::vector<FBHostContextMenuItem> const& items)
+FBMakeHostContextMenu(int offset, std::vector<FBHostContextMenuItem> const& items)
 {
   std::stack<MenuBuilder> builders = {};
   builders.emplace();
@@ -283,7 +283,7 @@ FBMakeHostContextMenu(std::vector<FBHostContextMenuItem> const& items)
     } else if (items[i].separator)
       builders.top().menu->addSeparator();
     else
-      builders.top().menu->addItem(i + 1, items[i].name, items[i].enabled, items[i].checked);
+      builders.top().menu->addItem(i + 1 + offset, items[i].name, items[i].enabled, items[i].checked);
   FB_ASSERT(builders.size() == 1);
   return std::move(builders.top().menu);
 }

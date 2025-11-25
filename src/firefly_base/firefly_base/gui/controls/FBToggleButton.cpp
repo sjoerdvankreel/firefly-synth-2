@@ -98,6 +98,8 @@ FBParamToggleButton::mouseUp(const MouseEvent& e)
   // need to catch real user input for the undo state, not all kinds of async callbacks
   _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
   ToggleButton::mouseUp(e);
+  if (e.mods.isRightButtonDown())
+    _plugGUI->ShowMenuForAudioParam(_param->runtimeParamIndex, false);
 }
 
 void
