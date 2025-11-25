@@ -342,6 +342,10 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   if (dynamic_cast<FBParamControl*>(event.eventComponent))
     return;
 
+  // for combos
+  if (event.eventComponent && event.eventComponent->findParentComponentOfClass<FBParamControl>())
+    return;
+
   // pops up module context menu
   if (dynamic_cast<FBTabBarButton*>(event.eventComponent))
     return;
