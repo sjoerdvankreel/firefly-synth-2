@@ -30,6 +30,16 @@
 
 using namespace juce;
 
+FFMainTabChangedListener::
+FFMainTabChangedListener(FFPlugGUI* plugGUI):
+_plugGUI(plugGUI) {}
+
+void 
+FFMainTabChangedListener::changeListenerCallback(ChangeBroadcaster*)
+{
+  _plugGUI->HideOverlayComponent();
+}
+
 FFPlugGUI::
 ~FFPlugGUI() { }
 
@@ -226,6 +236,8 @@ FFPlugGUI::SetupGUI()
   _tabs->addTab("Main", Colours::black, _main, false);
   _tabs->addTab("Matrix", Colours::black, _matrix, false);
   _tabs->addTab("Unison", Colours::black, _globalUni, false);
+  _mainTabChangedListener = std::make_unique<FFMainTabChangedListener>(this);
+  _tabs->getTabbedButtonBar().addChangeListener(_mainTabChangedListener.get());
 
   _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 6, 6, 9, 92 } }, std::vector<int> { { 1 } });
   _container->Add(0, 0, _outputAndPatch);

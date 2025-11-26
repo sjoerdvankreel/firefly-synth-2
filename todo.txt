@@ -2,10 +2,10 @@ TODOLIST for alpha-26 - rest of the gui stuff
 [x] show tweaked from patch ... session? need shadow stack ==> NO! just need Boolean markers on the undo stack is all
 [x] reload patch
 [x] "reload patch" option
-[ ] clap host menu is borked
-[ ] close popup editors if not on main
+[x] clap host menu is borked
+[x] param menu : set to default / set to patch
+[x] close popup editors if not on main
 [ ] param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
-[ ] param menu : set to default / set to patch
 [ ] something with instance and patch naming
 [ ] re-save everything
 [ ] preset infra
@@ -14,7 +14,6 @@ TODOLIST for alpha-26 - rest of the gui stuff
 [ ] split large matrix dropdowns
 [ ] do display disabled/impossible items different in the mod matrix
 [ ] do tooltips on labels ("tap dly" => tap delay)
-[ ] guni voice not pick up guni voice-start automation right away (reaper)
 ==> display: LRX, name: Fdbk LRX, tooltip: Feedback Delay Stereo Crossover, Help: "controls the amount by which left input is fed back into the right delay line and vice versa"
 ==> also module superlong/tooltipname
 ==> "oscillator unison voice phase offset randomization", etc etc
@@ -52,3 +51,4 @@ todo document the thing a bit
 vst3 note expr + midi mpe
 explain processing order and modulation order including auto/external/internal
 take a look at the string samplerate bug again
+guni voice not pick up guni voice-start automation right away (reaper)

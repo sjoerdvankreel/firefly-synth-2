@@ -16,11 +16,22 @@
 #include <memory>
 #include <vector>
 
+class FFPlugGUI;
 class FBMSEGEditor;
 class FBHostGUIContext;
 class FBGraphRenderState;
 class FBModuleGraphComponent;
 class FBAutoSizeTabComponent;
+
+class FFMainTabChangedListener :
+public juce::ChangeListener
+{
+  FFPlugGUI* const _plugGUI;
+
+public:
+  FFMainTabChangedListener(FFPlugGUI* plugGUI);
+  void changeListenerCallback(juce::ChangeBroadcaster* source) override;
+};
 
 class FFPlugGUI final:
 public FBPlugGUI
@@ -48,6 +59,7 @@ public FBPlugGUI
   std::unique_ptr<FFModMatrixParamListener> _modMatrixParamListener = {};
   std::unique_ptr<FFGlobalUniParamListener> _globalUniParamListener = {};
   std::unique_ptr<FFVoiceModuleParamListener> _voiceModuleParamListener = {};
+  std::unique_ptr<FFMainTabChangedListener> _mainTabChangedListener = {};
 
   void SetupGUI();
   bool HighlightModulationBounds() const override;
