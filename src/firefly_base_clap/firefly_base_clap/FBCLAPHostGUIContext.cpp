@@ -39,6 +39,12 @@ ContextMenuBuilderAddItem(
     item.enabled = check->is_enabled;
     item.checked = check->is_checked;
   }
+  else if (kind == CLAP_CONTEXT_MENU_ITEM_BEGIN_SUBMENU)
+  {
+    auto begin = static_cast<clap_context_menu_submenu const*>(data);
+    item.name = begin->label;
+    item.enabled = begin->is_enabled;
+  }
   static_cast<std::vector<FBHostContextMenuItem>*>(builder->ctx)->push_back(item);
   return true;
 }
