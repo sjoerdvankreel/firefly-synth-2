@@ -275,12 +275,15 @@ FBAddHostContextMenu(
     {
       builders.emplace();
       builders.top().name = items[i].name;
+      builders.top().checked = items[i].checked;
+      builders.top().enabled = items[i].enabled;
       builders.top().menu = std::make_shared<PopupMenu>();
     } else if (items[i].subMenuEnd)
     {
       auto builder = std::move(builders.top());
       builders.pop();
-      builders.top().menu->addSubMenu(builder.name, *builder.menu);
+      std::string name = builder.name.size() ? builder.name : items[i].name;
+      builders.top().menu->addSubMenu(name, *builder.menu, builder.enabled, nullptr, builder.checked);
     } else if (items[i].separator)
       builders.top().menu->addSeparator();
     else
