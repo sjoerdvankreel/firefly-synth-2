@@ -90,9 +90,9 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->modules[(int)FFModuleType::OsciMod] = std::move(*FFMakeOsciModTopo());
   result->modules[(int)FFModuleType::VNote] = std::move(*FFMakeVNoteTopo());
   result->modules[(int)FFModuleType::VEffect] = std::move(*FFMakeEffectTopo(false));
-  result->modules[(int)FFModuleType::VEcho] = std::move(*FFMakeEchoTopo(false));
+  result->modules[(int)FFModuleType::VEcho] = std::move(*FFMakeEchoTopo(false, isFX));
   result->modules[(int)FFModuleType::GEffect] = std::move(*FFMakeEffectTopo(true));
-  result->modules[(int)FFModuleType::GEcho] = std::move(*FFMakeEchoTopo(true));
+  result->modules[(int)FFModuleType::GEcho] = std::move(*FFMakeEchoTopo(true, isFX));
   result->modules[(int)FFModuleType::VLFO] = std::move(*FFMakeLFOTopo(false));
   result->modules[(int)FFModuleType::GLFO] = std::move(*FFMakeLFOTopo(true));
   result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
