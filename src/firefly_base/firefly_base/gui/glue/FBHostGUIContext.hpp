@@ -29,8 +29,9 @@ struct FBHostContextMenuItem
   bool subMenuStart = false;
 };
 
-std::unique_ptr<juce::PopupMenu>
-FBMakeHostContextMenu(
+void
+FBAddHostContextMenu(
+  std::shared_ptr<juce::PopupMenu> menu,
   int offset,
   std::vector<FBHostContextMenuItem> const& items);
 

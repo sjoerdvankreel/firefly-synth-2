@@ -14,7 +14,7 @@ struct MenuBuilder
   bool checked = false;
   bool enabled = false;
   std::string name = {};
-  std::unique_ptr<PopupMenu> menu = {};
+  std::shared_ptr<PopupMenu> menu = {};
 };
 
 FBHostGUIContext::
@@ -261,18 +261,21 @@ FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int 
       CopyAudioParam({ moduleIndices, { p, s } }, { { moduleIndices.index, toSlot }, { p, s } });
 }
 
-std::unique_ptr<PopupMenu>
-FBMakeHostContextMenu(int offset, std::vector<FBHostContextMenuItem> const& items)
+void
+FBAddHostContextMenu(
+  std::shared_ptr<juce::PopupMenu> menu, 
+  int offset, 
+  std::vector<FBHostContextMenuItem> const& items)
 {
   std::stack<MenuBuilder> builders = {};
   builders.emplace();
-  builders.top().menu = std::make_unique<PopupMenu>();
+  builders.top().menu = menu;
   for (int i = 0; i < items.size(); i++)
     if (items[i].subMenuStart)
     {
       builders.emplace();
       builders.top().name = items[i].name;
-      builders.top().menu = std::make_unique<PopupMenu>();
+      builders.top().menu = std::make_shared<PopupMenu>();
     } else if (items[i].subMenuEnd)
     {
       auto builder = std::move(builders.top());
@@ -283,5 +286,4 @@ FBMakeHostContextMenu(int offset, std::vector<FBHostContextMenuItem> const& item
     else
       builders.top().menu->addItem(i + 1 + offset, items[i].name, items[i].enabled, items[i].checked);
   FB_ASSERT(builders.size() == 1);
-  return std::move(builders.top().menu);
 }

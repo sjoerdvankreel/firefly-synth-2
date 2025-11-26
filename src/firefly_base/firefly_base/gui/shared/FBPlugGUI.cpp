@@ -230,17 +230,17 @@ void
 FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
 {
   FB_LOG_ENTRY_EXIT();
-  PopupMenu menu;
-  menu.addItem(1, "Set To Patch");
-  menu.addItem(2, "Set To Session");
-  menu.addItem(3, "Set To Default");
+  std::shared_ptr<PopupMenu> menu;
+  menu->addItem(1, "Set To Patch");
+  menu->addItem(2, "Set To Session");
+  menu->addItem(3, "Set To Default");
   if (showHostMenu)
   {
     auto hostMenuItems = HostContext()->MakeAudioParamContextMenu(index);
     if (!hostMenuItems.empty())
     {
-      auto hostMenu = FBMakeHostContextMenu(1000, hostMenuItems);
-      menu.addSubMenu("Host", *hostMenu);
+      menu->addSeparator();
+      FBAddHostContextMenu(menu, 1000, hostMenuItems);
     }
   }
   auto clicked = [this, index](int tag) {
@@ -266,7 +266,7 @@ FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
       HostContext()->AudioParamContextMenuClicked(index, tag - 1000);
     }
   };
-  ShowPopupMenuFor(this, menu, clicked);
+  ShowPopupMenuFor(this, *menu, clicked);
 }
 
 Component*
