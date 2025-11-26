@@ -23,13 +23,17 @@
 using namespace juce;
 
 FBPlugGUI::
-~FBPlugGUI() {}
+~FBPlugGUI()
+{
+  _hostContext->RemoveListener(this);
+}
 
 FBPlugGUI::
 FBPlugGUI(FBHostGUIContext* hostContext) :
 _hostContext(hostContext)
 {
   _tooltipWindow = StoreComponent<TooltipWindow>();
+  _hostContext->AddListener(this);
   addAndMakeVisible(_tooltipWindow);
   addMouseListener(this, true);
   SetupOverlayGUI();

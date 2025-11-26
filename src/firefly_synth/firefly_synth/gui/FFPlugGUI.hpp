@@ -72,6 +72,9 @@ protected:
   void UpdateExchangeStateTick() override;
 
 public:
+  std::function<void()> onPatchLoaded = {};
+  std::function<void(std::string const&)> onPatchNameChanged = {};
+
   ~FFPlugGUI();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
   FFPlugGUI(FBHostGUIContext* hostContext);
@@ -81,6 +84,9 @@ public:
   void SwitchMainGraphToModule(int index, int slot);
 
   void resized() override;
+  void OnPatchLoaded() override;
+  void OnPatchNameChanged(std::string const& name) override;
+
   void ModuleSlotClicked(int index, int slot) override;
   void ActiveModuleSlotChanged(int index, int slot) override;
   void GUIParamNormalizedChanged(int index, double normalized) override;

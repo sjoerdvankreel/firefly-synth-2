@@ -1,4 +1,5 @@
 #include <firefly_synth/gui/FFPatchGUI.hpp>
+#include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
@@ -11,7 +12,7 @@
 using namespace juce;
 
 Component*
-FFMakePatchGUI(FBPlugGUI* plugGUI)
+FFMakePatchGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto context = plugGUI->HostContext();
@@ -33,8 +34,8 @@ FFMakePatchGUI(FBPlugGUI* plugGUI)
   reload->setEnabled(false);
   grid->Add(0, 3, reload);
 
-  context->patchLoaded = [reload]() { reload->setEnabled(true); };
-  context->patchNameChanged = [reload, name](auto const& newName) { 
+  plugGUI->onPatchLoaded = [reload]() { reload->setEnabled(true); };
+  plugGUI->onPatchNameChanged = [reload, name](auto const& newName) {
     name->setText(newName, dontSendNotification); 
     reload->setTooltip("Reload " + newName);
   };

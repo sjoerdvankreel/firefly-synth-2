@@ -52,18 +52,41 @@ FBHostGUIContext::PatchName() const
   return _guiState->PatchName(); 
 }
 
-void 
-FBHostGUIContext::PatchNameChanged()
+void
+FBHostGUIContext::OnPatchLoaded()
 {
-  if (patchNameChanged)
-    patchNameChanged(PatchName());
+  for (int i = 0; i < _listeners.size(); i++)
+    _listeners[i]->OnPatchLoaded();
+}
+
+void
+FBHostGUIContext::OnPatchNameChanged()
+{
+  for (int i = 0; i < _listeners.size(); i++)
+    _listeners[i]->OnPatchNameChanged(PatchName());
 }
 
 void 
 FBHostGUIContext::SetPatchName(std::string const& name)
 {
   _guiState->SetPatchName(name);
-  PatchNameChanged();
+  OnPatchNameChanged();
+}
+
+void 
+FBHostGUIContext::AddListener(IFBHostGUIContextListener* listener)
+{
+  auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
+  if (iter != _listeners.end())
+    _listeners.push_back(listener);
+}
+
+void 
+FBHostGUIContext::RemoveListener(IFBHostGUIContextListener* listener)
+{
+  auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
+  if (iter != _listeners.end())
+    _listeners.erase(iter);
 }
 
 void
@@ -71,8 +94,7 @@ FBHostGUIContext::MarkAsPatchState(std::string const& name)
 {
   _patchState.CopyFrom(this);
   _isPatchLoaded = true;
-  if (patchLoaded)
-    patchLoaded();
+  OnPatchLoaded();
   SetPatchName(name);
 }
 

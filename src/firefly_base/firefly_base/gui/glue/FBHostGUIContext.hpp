@@ -35,8 +35,18 @@ FBAddHostContextMenu(
   int offset,
   std::vector<FBHostContextMenuItem> const& items);
 
+class IFBHostGUIContextListener
+{
+public:
+  virtual ~IFBHostGUIContextListener() {}
+  virtual void OnPatchLoaded() = 0;
+  virtual void OnPatchNameChanged(std::string const& name) = 0;
+};
+
 class FBHostGUIContext
 {
+  std::vector<IFBHostGUIContextListener*> _listeners = {};
+
 protected:
   std::unique_ptr<FBRuntimeTopo> _topo;
   std::unique_ptr<FBGUIStateContainer> _guiState;
@@ -57,28 +67,28 @@ protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostGUIContext);
   FBHostGUIContext(std::unique_ptr<FBStaticTopo>&& topo);
 
-  void PatchNameChanged();
+  void OnPatchLoaded();
+  void OnPatchNameChanged();
   virtual void DoEndAudioParamChange(int index) = 0;
   virtual void DoBeginAudioParamChange(int index) = 0;
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
 
 public:
-  std::function<void()> patchLoaded = {};
-  std::function<void(std::string const&)> patchNameChanged = {};
-
-  std::string const& PatchName() const;
-  void SetPatchName(std::string const& name);
-  bool IsPatchLoaded() const { return _isPatchLoaded; }
-
-  void MarkAsPatchState(std::string const& name);
   void RevertToPatchState();
   void MarkAsSessionState();
   void RevertToSessionState();
+  void MarkAsPatchState(std::string const& name);
 
   double GetUserScaleMin() const;
   double GetUserScaleMax() const;
   double GetUserScalePlain() const;
   void SetUserScalePlain(double scale);
+
+  std::string const& PatchName() const;
+  void SetPatchName(std::string const& name);
+  bool IsPatchLoaded() const { return _isPatchLoaded; }
+  void AddListener(IFBHostGUIContextListener* listener);
+  void RemoveListener(IFBHostGUIContextListener* listener);
 
   bool GetGUIParamBool(FBParamTopoIndices const& indices) const;
   int GetGUIParamDiscrete(FBParamTopoIndices const& indices) const;

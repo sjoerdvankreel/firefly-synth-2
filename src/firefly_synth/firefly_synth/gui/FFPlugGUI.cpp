@@ -65,6 +65,22 @@ FFPlugGUI::OnPatchChanged()
 }
 
 void 
+FFPlugGUI::OnPatchLoaded()
+{
+  FBPlugGUI::OnPatchLoaded();
+  if (onPatchLoaded)
+    onPatchLoaded();
+}
+
+void 
+FFPlugGUI::OnPatchNameChanged(std::string const& name)
+{
+  FBPlugGUI::OnPatchNameChanged(name);
+  if (onPatchNameChanged)
+    onPatchNameChanged(name);
+}
+
+void 
 FFPlugGUI::RequestFixedGraphsRerender(int moduleIndex)
 {
   for (int i = 0; i < _fixedGraphs.size(); i++)

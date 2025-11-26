@@ -2,6 +2,8 @@
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <chrono>
@@ -24,7 +26,8 @@ public:
 };
 
 class FBPlugGUI:
-public juce::Component
+public juce::Component,
+public IFBHostGUIContextListener
 {
   double _scale = 1.0;
   juce::Label* _overlayCaption = {};
@@ -70,6 +73,8 @@ public:
   std::string GetTooltipForAudioParam(int index) const;
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
+  void OnPatchLoaded() override {}
+  void OnPatchNameChanged(std::string const& /*name*/) override {}
   void mouseUp(const juce::MouseEvent& event) override;
 
   void HideTooltip();
