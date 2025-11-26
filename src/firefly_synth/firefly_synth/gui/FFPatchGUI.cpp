@@ -23,7 +23,7 @@ FFMakePatchGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 1, name);
 
   auto load = plugGUI->StoreComponent<FBAutoSizeButton>("Load");
-  load->setTooltip("Load from file");
+  load->setTooltip("Load From File");
   load->onClick = [plugGUI]() { plugGUI->LoadPatchFromFile(); };
   grid->Add(0, 2, load);
 
@@ -40,22 +40,22 @@ FFMakePatchGUI(FBPlugGUI* plugGUI)
   };
 
   auto session = plugGUI->StoreComponent<FBAutoSizeButton>("Session");
-  session->setTooltip("Reload from session");
+  session->setTooltip("Reload From Session");
   session->onClick = [plugGUI]() { plugGUI->ReloadSession(); };
   grid->Add(0, 4, session);
 
   auto save = plugGUI->StoreComponent<FBAutoSizeButton>("Save");
-  save->setTooltip("Save to file");
+  save->setTooltip("Save To File");
   save->onClick = [plugGUI]() { plugGUI->SavePatchToFile(); };
   grid->Add(0, 5, save);
 
   auto init = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
-  init->setTooltip("Init defaults");
+  init->setTooltip("Init Defaults");
   init->onClick = [plugGUI]() { plugGUI->InitPatch(); };
   grid->Add(0, 6, init);
 
   auto preset = plugGUI->StoreComponent<FBAutoSizeButton>("Preset");
-  preset->setTooltip("Load preset");
+  preset->setTooltip("Load Preset");
   preset->setEnabled(false);
   grid->Add(0, 7, preset);
 

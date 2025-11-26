@@ -46,10 +46,16 @@ FBHostGUIContext::RevertToSessionState()
   _sessionState.CopyTo(this);
 }
 
+std::string const& 
+FBHostGUIContext::PatchName() const 
+{ 
+  return _guiState->PatchName(); 
+}
+
 void 
 FBHostGUIContext::SetPatchName(std::string const& name)
 {
-  _patchName = name;
+  _guiState->SetPatchName(name);
   if (patchNameChanged)
     patchNameChanged(name);
 }

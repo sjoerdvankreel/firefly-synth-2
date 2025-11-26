@@ -57,7 +57,11 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
 void
 FFPlugGUI::OnPatchChanged()
 {
+  // Get old stuff out of the delay lines.
   FlushAudio();
+
+  // Update show tweaked from session/patch/default.
+  repaint();
 }
 
 void 

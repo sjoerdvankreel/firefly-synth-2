@@ -44,7 +44,6 @@ protected:
 
 private:
   bool _isPatchLoaded = {};
-  std::string _patchName = "Init Patch";
 
   FBUndoStateContainer _undoState;
 
@@ -66,9 +65,9 @@ public:
   std::function<void()> patchLoaded = {};
   std::function<void(std::string const&)> patchNameChanged = {};
 
+  std::string const& PatchName() const;
   void SetPatchName(std::string const& name);
   bool IsPatchLoaded() const { return _isPatchLoaded; }
-  std::string const& PatchName() const { return _patchName; }
 
   void MarkAsPatchState(std::string const& name);
   void RevertToPatchState();
