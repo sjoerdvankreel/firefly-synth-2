@@ -230,7 +230,7 @@ void
 FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
 {
   FB_LOG_ENTRY_EXIT();
-  std::shared_ptr<PopupMenu> menu;
+  auto menu = std::make_shared<PopupMenu>();
   menu->addItem(1, "Set To Patch");
   menu->addItem(2, "Set To Session");
   menu->addItem(3, "Set To Default");
