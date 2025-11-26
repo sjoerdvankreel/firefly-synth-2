@@ -57,7 +57,7 @@ FBGUIParamComboBox(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
 FBAutoSizeComboBox(param->static_.ItemsNonRealTime().MakePopupMenu(param->topoIndices.module.index)),
 FBGUIParamControl(plugGUI, param)
 {
-  SetValueNormalizedFromPlug(plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex));
+  SetValueNormalized(plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex));
 }
 
 void
@@ -73,7 +73,7 @@ FBGUIParamComboBox::getTooltip()
 }
 
 void
-FBGUIParamComboBox::SetValueNormalizedFromPlug(double normalized)
+FBGUIParamComboBox::SetValueNormalized(double normalized)
 {
   double plain = _param->static_.NonRealTime().NormalizedToPlain(normalized);
   plain -= _param->static_.NonRealTime().ValueOffset();

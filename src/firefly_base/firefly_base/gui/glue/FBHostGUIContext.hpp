@@ -57,6 +57,7 @@ protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostGUIContext);
   FBHostGUIContext(std::unique_ptr<FBStaticTopo>&& topo);
 
+  void PatchNameChanged();
   virtual void DoEndAudioParamChange(int index) = 0;
   virtual void DoBeginAudioParamChange(int index) = 0;
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;

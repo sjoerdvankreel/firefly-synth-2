@@ -53,11 +53,17 @@ FBHostGUIContext::PatchName() const
 }
 
 void 
+FBHostGUIContext::PatchNameChanged()
+{
+  if (patchNameChanged)
+    patchNameChanged(PatchName());
+}
+
+void 
 FBHostGUIContext::SetPatchName(std::string const& name)
 {
   _guiState->SetPatchName(name);
-  if (patchNameChanged)
-    patchNameChanged(name);
+  PatchNameChanged();
 }
 
 void

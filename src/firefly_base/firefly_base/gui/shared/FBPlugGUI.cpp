@@ -130,7 +130,7 @@ FBPlugGUI::GUIParamNormalizedChanged(int index, double value)
 {
   auto iter = _guiParamIndexToComponent.find(index);
   if (iter != _guiParamIndexToComponent.end())
-    GetControlForGUIParamIndex(index)->SetValueNormalizedFromPlug(value);
+    GetControlForGUIParamIndex(index)->SetValueNormalized(value);
   GUIParamNormalizedChanged(index);
 }
 

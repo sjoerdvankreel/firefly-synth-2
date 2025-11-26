@@ -192,6 +192,10 @@ FBVST3EditController::setState(IBStream* state)
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
     _topo->LoadGUIStateFromStringWithDryRun(json, *_guiState);
+    PatchNameChanged();
+    if(_guiEditor != nullptr)
+      for (int i = 0; i < _guiState->Params().size(); i++)
+        _guiEditor->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));      
     return kResultTrue;
   });
 }

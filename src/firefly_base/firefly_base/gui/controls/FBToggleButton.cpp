@@ -24,7 +24,7 @@ FBGUIParamControl(plugGUI, param)
 {
   auto* context = plugGUI->HostContext();
   double normalized = context->GetGUIParamNormalized(param->runtimeParamIndex);
-  SetValueNormalizedFromPlug(normalized);
+  SetValueNormalized(normalized);
   _isOn = getToggleState();
 }
 
@@ -41,7 +41,7 @@ FBGUIParamToggleButton::getTooltip()
 }
 
 void
-FBGUIParamToggleButton::SetValueNormalizedFromPlug(double normalized)
+FBGUIParamToggleButton::SetValueNormalized(double normalized)
 {
   bool plain = _param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(normalized));
   setToggleState(plain, dontSendNotification);

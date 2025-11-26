@@ -38,6 +38,12 @@ FBVST3GUIEditor::UpdateExchangeState()
 }
 
 void
+FBVST3GUIEditor::SetGUIParamNormalizedFromHost(int index, double normalized)
+{
+  _gui->SetGUIParamNormalizedFromHost(index, normalized);
+}
+
+void
 FBVST3GUIEditor::SetAudioParamNormalizedFromHost(int index, double normalized)
 {
   _gui->SetAudioParamNormalizedFromHost(index, normalized);

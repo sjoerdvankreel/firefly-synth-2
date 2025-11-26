@@ -36,7 +36,7 @@ FBGUIParamControl(plugGUI, param)
   if (param->static_.type == FBParamType::Linear)
     setSkewFactor(param->static_.Linear().editSkewFactor);
   setDoubleClickReturnValue(true, param->DefaultNormalizedByText());
-  SetValueNormalizedFromPlug(plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex));
+  SetValueNormalized(plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex));
 }
 
 void
@@ -46,7 +46,7 @@ FBGUIParamSlider::parentHierarchyChanged()
 }
 
 void
-FBGUIParamSlider::SetValueNormalizedFromPlug(double normalized)
+FBGUIParamSlider::SetValueNormalized(double normalized)
 {
   setValue(normalized, dontSendNotification); 
 }

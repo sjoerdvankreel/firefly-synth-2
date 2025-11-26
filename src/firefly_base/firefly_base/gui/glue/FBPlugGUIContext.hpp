@@ -30,5 +30,6 @@ public:
   virtual void UpdateExchangeState() = 0;
   virtual void SetVisible(bool visible) = 0;
   virtual void AddToDesktop(void* parent) = 0;
+  virtual void SetGUIParamNormalizedFromHost(int index, double normalized) = 0;
   virtual void SetAudioParamNormalizedFromHost(int index, double normalized) = 0;
 };
