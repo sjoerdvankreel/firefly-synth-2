@@ -3,6 +3,7 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
@@ -13,41 +14,53 @@ Component*
 FFMakePatchGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Patch"));
+  auto context = plugGUI->HostContext();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Patch:"));
   
+  auto name = plugGUI->StoreComponent<FBAutoSizeLabel2>(80);
+  name->setText(context->PatchName(), dontSendNotification);
+  grid->Add(0, 1, name);
+
   auto load = plugGUI->StoreComponent<FBAutoSizeButton>("Load");
   load->setTooltip("Load from file");
   load->onClick = [plugGUI]() { plugGUI->LoadPatchFromFile(); };
-  grid->Add(0, 1, load);
+  grid->Add(0, 2, load);
 
   auto reload = plugGUI->StoreComponent<FBAutoSizeButton>("Reload");
-  reload->setTooltip("Reload from last");
+  reload->setTooltip("Reload " + context->PatchName());
   reload->onClick = [plugGUI]() { plugGUI->ReloadPatch(); };
-  grid->Add(0, 2, reload);
+  reload->setEnabled(false);
+  grid->Add(0, 3, reload);
+
+  context->patchLoaded = [reload]() { reload->setEnabled(true); };
+  context->patchNameChanged = [reload, name](auto const& newName) { 
+    name->setText(newName, dontSendNotification); 
+    reload->setTooltip("Reload " + newName);
+  };
 
   auto session = plugGUI->StoreComponent<FBAutoSizeButton>("Session");
   session->setTooltip("Reload from session");
   session->onClick = [plugGUI]() { plugGUI->ReloadSession(); };
-  grid->Add(0, 3, session);
+  grid->Add(0, 4, session);
 
   auto save = plugGUI->StoreComponent<FBAutoSizeButton>("Save");
   save->setTooltip("Save to file");
   save->onClick = [plugGUI]() { plugGUI->SavePatchToFile(); };
-  grid->Add(0, 4, save);
+  grid->Add(0, 5, save);
 
   auto init = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
   init->setTooltip("Init defaults");
   init->onClick = [plugGUI]() { plugGUI->InitPatch(); };
-  grid->Add(0, 5, init);
+  grid->Add(0, 6, init);
 
   auto preset = plugGUI->StoreComponent<FBAutoSizeButton>("Preset");
   preset->setTooltip("Load preset");
   preset->setEnabled(false);
-  grid->Add(0, 6, preset);
+  grid->Add(0, 7, preset);
 
-  grid->Add(0, 7, plugGUI->StoreComponent<FBFillerComponent>(13, 1));
-  grid->MarkSection({ { 0, 0 }, { 1, 8 } });
+  grid->Add(0, 8, plugGUI->StoreComponent<FBFillerComponent>(13, 1));
+  grid->MarkSection({ { 0, 0 }, { 1, 9 } });
 
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);

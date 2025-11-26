@@ -43,6 +43,9 @@ protected:
   std::unique_ptr<FBExchangeStateContainer> _exchangeFromDSPState;
 
 private:
+  bool _isPatchLoaded = {};
+  std::string _patchName = "Init Patch";
+
   FBUndoStateContainer _undoState;
 
   // updated on init/load/reload patch etc
@@ -60,7 +63,14 @@ protected:
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
 
 public:
-  void MarkAsPatchState();
+  std::function<void()> patchLoaded = {};
+  std::function<void(std::string const&)> patchNameChanged = {};
+
+  void SetPatchName(std::string const& name);
+  bool IsPatchLoaded() const { return _isPatchLoaded; }
+  std::string const& PatchName() const { return _patchName; }
+
+  void MarkAsPatchState(std::string const& name);
   void RevertToPatchState();
   void MarkAsSessionState();
   void RevertToSessionState();

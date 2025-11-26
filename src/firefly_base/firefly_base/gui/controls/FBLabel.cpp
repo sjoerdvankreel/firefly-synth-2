@@ -28,6 +28,24 @@ FBAutoSizeLabel::FixedWidth(int /*height*/) const
   return getBorderSize().getLeftAndRight() + _textWidth;
 }
 
+FBAutoSizeLabel2::
+FBAutoSizeLabel2(int fixedWidth) :
+Label(),
+IFBHorizontalAutoSize(),
+_fixedWidth(fixedWidth) { }
+
+int
+FBAutoSizeLabel2::FixedHeight() const
+{
+  return 20;
+}
+
+int
+FBAutoSizeLabel2::FixedWidth(int /*height*/) const
+{
+  return getBorderSize().getLeftAndRight() + _fixedWidth;
+}
+
 FBGUIParamLabel::
 FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param) :
 FBAutoSizeLabel(param->displayName),

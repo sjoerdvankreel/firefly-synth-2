@@ -29,12 +29,6 @@ _sessionState(*_topo.get())
 }
 
 void 
-FBHostGUIContext::MarkAsPatchState()
-{
-  _patchState.CopyFrom(this);
-}
-
-void 
 FBHostGUIContext::RevertToPatchState()
 {
   _patchState.CopyTo(this);
@@ -50,6 +44,24 @@ void
 FBHostGUIContext::RevertToSessionState()
 {
   _sessionState.CopyTo(this);
+}
+
+void 
+FBHostGUIContext::SetPatchName(std::string const& name)
+{
+  _patchName = name;
+  if (patchNameChanged)
+    patchNameChanged(name);
+}
+
+void
+FBHostGUIContext::MarkAsPatchState(std::string const& name)
+{
+  _patchState.CopyFrom(this);
+  _isPatchLoaded = true;
+  if (patchLoaded)
+    patchLoaded();
+  SetPatchName(name);
 }
 
 double 

@@ -10,6 +10,7 @@ class FBHostGUIContext;
 struct FBUndoItem final
 {
   std::string action = {};
+  std::string patchName = {};
   FBScalarStateContainer state;
 
   FB_NOCOPY_MOVE_NODEFCTOR(FBUndoItem);

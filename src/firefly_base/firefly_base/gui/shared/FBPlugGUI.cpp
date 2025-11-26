@@ -382,9 +382,10 @@ void
 FBPlugGUI::ReloadPatch()
 {
   FB_LOG_ENTRY_EXIT();
+  std::string oldName = HostContext()->PatchName();
   HostContext()->UndoState().Snapshot("Reload Patch");
   HostContext()->RevertToPatchState();
-  HostContext()->MarkAsPatchState();
+  HostContext()->MarkAsPatchState(oldName);
   OnPatchChanged();
 }
 
@@ -405,7 +406,7 @@ FBPlugGUI::InitPatch()
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
     HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
-  HostContext()->MarkAsPatchState();
+  HostContext()->MarkAsPatchState("Init Patch");
   OnPatchChanged();
 }
 
@@ -444,7 +445,7 @@ FBPlugGUI::LoadPatchFromFile()
     {
       HostContext()->UndoState().Snapshot("Load Patch");
       editState.CopyTo(HostContext());
-      HostContext()->MarkAsPatchState();
+      HostContext()->MarkAsPatchState(file.getFileNameWithoutExtension().toStdString());
       OnPatchChanged();
     }
     else
