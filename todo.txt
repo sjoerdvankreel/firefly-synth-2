@@ -6,9 +6,7 @@ TODOLIST for alpha-26 - rest of the gui stuff
 [x] param menu : set to default / set to patch
 [x] close popup editors if not on main
 [x] something with instance and patch naming
-[ ] copy/paste patch across sessions
-[ ] split large matrix dropdowns
-[ ] do display disabled/impossible items different in the mod matrix
+[x] copy/paste patch across sessions
 [ ] preset infra
 [ ] do tooltips on labels ("tap dly" => tap delay)
 ==> display: LRX, name: Fdbk LRX, tooltip: Feedback Delay Stereo Crossover, Help: "controls the amount by which left input is fed back into the right delay line and vice versa"
@@ -37,11 +35,7 @@ make a tune before release
 pck support
 per-module presets
 separate midi, bpm, automation smoothing, auto should be global + per-param override
-drop+recreate all the demos before going rc (not allow breaking changes anymore)
-drop all the conversion before going beta/rc
 autosoftclip
-another round of cpu and memory profiling
-factory presets
 string timbre should not react to samplerate/oversample
 fix todos
 todo document the thing a bit
@@ -50,3 +44,5 @@ explain processing order and modulation order including auto/external/internal
 take a look at the string samplerate bug again
 guni voice not pick up guni voice-start automation right away (reaper)
 param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
+split large matrix dropdowns
+do display disabled/impossible items different in the mod matrix

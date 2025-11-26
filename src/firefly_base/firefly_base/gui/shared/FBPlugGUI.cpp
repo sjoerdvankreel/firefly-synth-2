@@ -362,20 +362,33 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
     return;
 
   auto& undoState = HostContext()->UndoState();
-  if (!undoState.CanUndo() && !undoState.CanRedo())
-    return;
-
   PopupMenu menu;
   if (undoState.CanUndo())
     menu.addItem(1, "Undo " + undoState.UndoAction());
   if (undoState.CanRedo())
     menu.addItem(2, "Redo " + undoState.RedoAction());
+  menu.addItem(3, "Copy Patch");
+  menu.addItem(4, "Paste Patch");
+
   PopupMenu::Options options;
   options = options.withParentComponent(this);
   options = options.withMousePosition();
   menu.showMenuAsync(options, [this](int id) {
     if (id == 1) HostContext()->UndoState().Undo();
-    if(id == 2) HostContext()->UndoState().Redo(); });
+    if (id == 2) HostContext()->UndoState().Redo(); 
+    if (id == 3) {
+      FBScalarStateContainer editState(*HostContext()->Topo());
+      editState.CopyFrom(HostContext());
+      SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveEditStateToString(editState, true));
+    }
+    if (id == 4) {
+      if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
+        AlertWindow::showMessageBoxAsync(
+          MessageBoxIconType::InfoIcon,
+          "Warning",
+          "No valid patch data found on clipboard.");
+    }
+  });
 }
 
 void
@@ -428,6 +441,23 @@ FBPlugGUI::SavePatchToFile()
   });
 }
 
+bool
+FBPlugGUI::LoadPatchFromText(
+  std::string const& undoAction,
+  std::string const& patchName,
+  std::string const& text)
+{
+  FB_LOG_ENTRY_EXIT();
+  FBScalarStateContainer editState(*HostContext()->Topo());
+  if (!HostContext()->Topo()->LoadEditStateFromString(text, editState, true))
+    return false;
+  HostContext()->UndoState().Snapshot(undoAction);
+  editState.CopyTo(HostContext());
+  HostContext()->MarkAsPatchState(patchName);
+  OnPatchChanged();
+  return true;
+}
+
 void 
 FBPlugGUI::LoadPatchFromFile()
 {
@@ -437,18 +467,10 @@ FBPlugGUI::LoadPatchFromFile()
   FileChooser* chooser = new FileChooser("Load Patch", File(), String("*.") + extension, true, false, this);
   chooser->launchAsync(loadFlags, [this](FileChooser const& chooser) {
     auto file = chooser.getResult();
-    delete &chooser;
+    delete& chooser;
     if (file.getFullPathName().length() == 0) return;
     auto text = file.loadFileAsString().toStdString();
-    FBScalarStateContainer editState(*HostContext()->Topo());
-    if (HostContext()->Topo()->LoadEditStateFromString(text, editState, true))
-    {
-      HostContext()->UndoState().Snapshot("Load Patch");
-      editState.CopyTo(HostContext());
-      HostContext()->MarkAsPatchState(file.getFileNameWithoutExtension().toStdString());
-      OnPatchChanged();
-    }
-    else
+    if(!LoadPatchFromText("Load Patch", file.getFileNameWithoutExtension().toStdString(), text))
       AlertWindow::showMessageBoxAsync(
         MessageBoxIconType::WarningIcon,
         "Error",

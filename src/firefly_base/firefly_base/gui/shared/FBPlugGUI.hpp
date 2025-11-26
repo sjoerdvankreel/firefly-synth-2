@@ -34,6 +34,11 @@ public juce::Component
   FBContentComponent* _overlayContent = {};
   std::vector<IFBParamListener*> _paramListeners = {};
 
+  bool LoadPatchFromText(
+    std::string const& undoAction, 
+    std::string const& patchName,
+    std::string const& text);
+
 public:
   virtual ~FBPlugGUI();
 
