@@ -77,7 +77,7 @@ void
 FBHostGUIContext::AddListener(IFBHostGUIContextListener* listener)
 {
   auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
-  if (iter != _listeners.end())
+  if (iter == _listeners.end())
     _listeners.push_back(listener);
 }
 
