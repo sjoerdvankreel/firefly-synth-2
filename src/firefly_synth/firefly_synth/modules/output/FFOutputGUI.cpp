@@ -34,7 +34,7 @@ FFMakeOutputGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mtsEspOn));
   grid->Add(0, 7, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, mtsEspOn));
   auto panicButton = plugGUI->StoreComponent<FBAutoSizeButton>("Panic");
-  panicButton->setTooltip("Reset voices and delay lines");
+  panicButton->setTooltip("Reset Voices And Delay Lines");
   panicButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushAudio(); };
   grid->Add(0, 8, panicButton);
   grid->MarkSection({ { 0, 0 }, { 1, 9 } });
