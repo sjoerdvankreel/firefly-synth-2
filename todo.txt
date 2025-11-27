@@ -1,16 +1,3 @@
-TODOLIST for alpha-26 - rest of the gui stuff
-[x] show tweaked from patch ... session? need shadow stack ==> NO! just need Boolean markers on the undo stack is all
-[x] reload patch
-[x] "reload patch" option
-[x] clap host menu is borked
-[x] param menu : set to default / set to patch
-[x] close popup editors if not on main
-[x] something with instance and patch naming
-[x] copy/paste patch across sessions
-[x] bitwig not store gui settings
-[x] fx default to gecho on external
-[x] preset infra
-
 TODOLIST for beta-1
 [ ] do tooltip for save in patch/session/gui
 [ ] up the vno just because
