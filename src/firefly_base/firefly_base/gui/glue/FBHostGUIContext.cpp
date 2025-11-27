@@ -313,17 +313,17 @@ FBHostGUIContext::LoadPresetList(std::filesystem::path const& p) const
 {
   auto result = std::make_shared<FBPresetFolder>();
   result->name = p.string();
-  for (auto i = p.begin(); i != p.end(); i++)
+  for (auto const& i: std::filesystem::directory_iterator(p))
   {
-    if (std::filesystem::is_regular_file(*i))
+    if (std::filesystem::is_regular_file(i.path()))
     {
       FBPresetFile file = {};
-      file.path = i->string();
-      file.name = i->stem().string();
+      file.path = i.path().string();
+      file.name = i.path().stem().string();
       result->files.push_back(file);
     }
-    if (std::filesystem::is_directory(*i))
-      result->folders.push_back(LoadPresetList(*i));
+    if (std::filesystem::is_directory(i.path()))
+      result->folders.push_back(LoadPresetList(i.path()));
   }
   return result;
 }
