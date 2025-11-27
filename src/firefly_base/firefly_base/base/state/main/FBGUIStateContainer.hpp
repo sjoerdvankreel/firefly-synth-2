@@ -11,6 +11,7 @@ class FBGUIStateContainer final
 {
   friend class FBPlugGUIContext;
 
+  std::string _patchName = "Init Patch";
   std::vector<double*> _params;
   void* _rawState;
   void (*_freeRawState)(void*);
@@ -22,6 +23,8 @@ public:
 
   void CopyFrom(FBGUIStateContainer const& gui);
   std::vector<double*> const& Params() const { return _params; }
+  std::string const& PatchName() const { return _patchName; }
+  void SetPatchName(std::string const& name) { _patchName = name; }
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }

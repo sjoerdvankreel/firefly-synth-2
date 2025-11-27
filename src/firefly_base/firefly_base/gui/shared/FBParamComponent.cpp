@@ -25,9 +25,17 @@ bool
 FBParamControl::IsHighlightTweaked() const
 {
   double const epsilon = 1.0e-4;
-  if (!_plugGUI->HighlightTweaked())
+  auto mode = _plugGUI->HighlightTweakedMode();
+  if (mode == FBHighlightTweakMode::Off)
     return false;
-  double default_ = _param->DefaultNormalizedByText();
+  double compare = 0.0;
   double norm = _plugGUI->HostContext()->GetAudioParamNormalized(_param->runtimeParamIndex);
-  return std::abs(default_ - norm) >= epsilon;
+  switch (mode)
+  {
+  case FBHighlightTweakMode::Default: compare = _param->DefaultNormalizedByText(); break;
+  case FBHighlightTweakMode::Patch: compare = *_plugGUI->HostContext()->PatchState().Params()[_param->runtimeParamIndex]; break;
+  case FBHighlightTweakMode::Session: compare = *_plugGUI->HostContext()->SessionState().Params()[_param->runtimeParamIndex]; break;
+  default: FB_ASSERT(false); break;
+  }
+  return std::abs(compare - norm) >= epsilon;
 }

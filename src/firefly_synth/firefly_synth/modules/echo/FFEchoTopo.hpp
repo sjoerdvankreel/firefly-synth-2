@@ -6,7 +6,7 @@
 struct FBStaticModule;
 inline int constexpr FFEchoTapCount = 8;
 inline int constexpr FFEchoMaxSeconds = 10;
-std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
+std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global, bool isFx);
 
 enum class FFGEchoTarget {
   Off, MixIn, MixOut, VoiceMix, ExtAudio,

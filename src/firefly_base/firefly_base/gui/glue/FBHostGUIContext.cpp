@@ -6,6 +6,7 @@
 
 #include <stack>
 #include <memory>
+#include <filesystem>
 
 using namespace juce;
 
@@ -14,16 +15,88 @@ struct MenuBuilder
   bool checked = false;
   bool enabled = false;
   std::string name = {};
-  std::unique_ptr<PopupMenu> menu = {};
+  std::shared_ptr<PopupMenu> menu = {};
 };
 
 FBHostGUIContext::
 FBHostGUIContext(std::unique_ptr<FBStaticTopo>&& topo):
-_undoState(this),
 _topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
 _guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
-_exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo))
+_exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo)),
+_undoState(this),
+_patchState(*_topo.get()),
+_sessionState(*_topo.get())
 {
+}
+
+void 
+FBHostGUIContext::RevertToPatchState()
+{
+  _patchState.CopyTo(this);
+}
+
+void
+FBHostGUIContext::MarkAsSessionState()
+{
+  _sessionState.CopyFrom(this);
+}
+
+void
+FBHostGUIContext::RevertToSessionState()
+{
+  _sessionState.CopyTo(this);
+}
+
+std::string const& 
+FBHostGUIContext::PatchName() const 
+{ 
+  return _guiState->PatchName(); 
+}
+
+void
+FBHostGUIContext::OnPatchLoaded()
+{
+  for (int i = 0; i < _listeners.size(); i++)
+    _listeners[i]->OnPatchLoaded();
+}
+
+void
+FBHostGUIContext::OnPatchNameChanged()
+{
+  for (int i = 0; i < _listeners.size(); i++)
+    _listeners[i]->OnPatchNameChanged(PatchName());
+}
+
+void 
+FBHostGUIContext::SetPatchName(std::string const& name)
+{
+  _guiState->SetPatchName(name);
+  OnPatchNameChanged();
+}
+
+void 
+FBHostGUIContext::AddListener(IFBHostGUIContextListener* listener)
+{
+  auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
+  if (iter == _listeners.end())
+    _listeners.push_back(listener);
+}
+
+void 
+FBHostGUIContext::RemoveListener(IFBHostGUIContextListener* listener)
+{
+  auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
+  if (iter != _listeners.end())
+    _listeners.erase(iter);
+}
+
+void
+FBHostGUIContext::MarkAsPatchState(std::string const& name)
+{
+  _patchState.CopyFrom(this);
+  _isPatchLoaded = true;
+  OnPatchLoaded();
+  SetPatchName(name);
 }
 
 double 
@@ -235,12 +308,45 @@ FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int 
       CopyAudioParam({ moduleIndices, { p, s } }, { { moduleIndices.index, toSlot }, { p, s } });
 }
 
-std::unique_ptr<PopupMenu>
-FBMakeHostContextMenu(std::vector<FBHostContextMenuItem> const& items)
+std::shared_ptr<FBPresetFolder>
+FBHostGUIContext::LoadPresetList(std::filesystem::path const& p) const
+{
+  auto result = std::make_shared<FBPresetFolder>();
+  result->name = p.filename().string();
+  for (auto const& i: std::filesystem::directory_iterator(p))
+  {
+    if (std::filesystem::is_regular_file(i.path()))
+    {
+      FBPresetFile file = {};
+      file.path = i.path().string();
+      file.name = i.path().stem().string();
+      result->files.push_back(file);
+    }
+    if (std::filesystem::is_directory(i.path()))
+      result->folders.push_back(LoadPresetList(i.path()));
+  }
+  return result;
+}
+
+std::shared_ptr<FBPresetFolder>
+FBHostGUIContext::LoadPresetList() const
+{
+  std::string subPath = Topo()->static_->meta.isFx ? "fx" : "instrument";
+  std::filesystem::path presetRoot(FBGetResourcesFolderPath() / "presets" / subPath);
+  if (std::filesystem::exists(presetRoot))
+    return LoadPresetList(presetRoot);
+  return {};
+}
+
+void
+FBAddHostContextMenu(
+  std::shared_ptr<juce::PopupMenu> menu, 
+  int offset, 
+  std::vector<FBHostContextMenuItem> const& items)
 {
   std::stack<MenuBuilder> builders = {};
   builders.emplace();
-  builders.top().menu = std::make_unique<PopupMenu>();
+  builders.top().menu = menu;
   for (int i = 0; i < items.size(); i++)
     if (items[i].subMenuStart)
     {
@@ -248,16 +354,16 @@ FBMakeHostContextMenu(std::vector<FBHostContextMenuItem> const& items)
       builders.top().name = items[i].name;
       builders.top().checked = items[i].checked;
       builders.top().enabled = items[i].enabled;
-      builders.top().menu = std::make_unique<PopupMenu>();
+      builders.top().menu = std::make_shared<PopupMenu>();
     } else if (items[i].subMenuEnd)
     {
       auto builder = std::move(builders.top());
       builders.pop();
-      builders.top().menu->addSubMenu(builder.name, *builder.menu, builder.enabled, nullptr, builder.checked);
+      std::string name = builder.name.size() ? builder.name : items[i].name;
+      builders.top().menu->addSubMenu(name, *builder.menu, builder.enabled, nullptr, builder.checked);
     } else if (items[i].separator)
       builders.top().menu->addSeparator();
     else
-      builders.top().menu->addItem(i + 1, items[i].name, items[i].enabled, items[i].checked);
+      builders.top().menu->addItem(i + 1 + offset, items[i].name, items[i].enabled, items[i].checked);
   FB_ASSERT(builders.size() == 1);
-  return std::move(builders.top().menu);
 }

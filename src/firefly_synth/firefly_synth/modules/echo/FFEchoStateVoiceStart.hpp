@@ -13,7 +13,7 @@ class alignas(alignof(TAccurate)) FFEchoVoiceStartParamState final
   friend class FFVoiceProcessor;
   friend class FFEchoProcessor<true>;
   friend class FFEchoProcessor<false>;
-  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global, bool isFx);
   std::array<TAccurate, 1> voiceFadeTime = {};
   std::array<TAccurate, 1> voiceExtendTime = {};
 public:

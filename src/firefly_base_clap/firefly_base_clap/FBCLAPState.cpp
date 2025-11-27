@@ -3,6 +3,7 @@
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
+#include <firefly_base/base/state/main/FBGUIStateContainer.hpp>
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
 
@@ -49,6 +50,10 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
         json.append(buffer, read);
 
     _topo->LoadEditAndGUIStateFromStringWithDryRun(json, *_editState, *_guiState, false);
+    OnPatchNameChanged();
+    if(_gui)
+      for(int i = 0; i < _guiState->Params().size(); i++)
+        _gui->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));
     for (int i = 0; i < _editState->Params().size(); i++)
     {
       double normalized = *_editState->Params()[i];
@@ -56,6 +61,8 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
       if (_gui)
         _gui->SetAudioParamNormalizedFromHost(i, normalized);
     }
+
+    MarkAsSessionState();
     return true;
   });
 }

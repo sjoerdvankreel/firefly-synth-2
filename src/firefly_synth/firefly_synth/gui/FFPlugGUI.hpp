@@ -16,11 +16,22 @@
 #include <memory>
 #include <vector>
 
+class FFPlugGUI;
 class FBMSEGEditor;
 class FBHostGUIContext;
 class FBGraphRenderState;
 class FBModuleGraphComponent;
 class FBAutoSizeTabComponent;
+
+class FFMainTabChangedListener :
+public juce::ChangeListener
+{
+  FFPlugGUI* const _plugGUI;
+
+public:
+  FFMainTabChangedListener(FFPlugGUI* plugGUI);
+  void changeListenerCallback(juce::ChangeBroadcaster* source) override;
+};
 
 class FFPlugGUI final:
 public FBPlugGUI
@@ -48,10 +59,11 @@ public FBPlugGUI
   std::unique_ptr<FFModMatrixParamListener> _modMatrixParamListener = {};
   std::unique_ptr<FFGlobalUniParamListener> _globalUniParamListener = {};
   std::unique_ptr<FFVoiceModuleParamListener> _voiceModuleParamListener = {};
+  std::unique_ptr<FFMainTabChangedListener> _mainTabChangedListener = {};
 
   void SetupGUI();
-  bool HighlightTweaked() const override;
   bool HighlightModulationBounds() const override;
+  FBHighlightTweakMode HighlightTweakedMode() const override;
   FBGUIRenderType GetRenderType(bool graphOrKnob) const override;
   bool GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const override;
 
@@ -60,6 +72,9 @@ protected:
   void UpdateExchangeStateTick() override;
 
 public:
+  std::function<void()> onPatchLoaded = {};
+  std::function<void(std::string const&)> onPatchNameChanged = {};
+
   ~FFPlugGUI();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
   FFPlugGUI(FBHostGUIContext* hostContext);
@@ -69,6 +84,9 @@ public:
   void SwitchMainGraphToModule(int index, int slot);
 
   void resized() override;
+  void OnPatchLoaded() override;
+  void OnPatchNameChanged(std::string const& name) override;
+
   void ModuleSlotClicked(int index, int slot) override;
   void ActiveModuleSlotChanged(int index, int slot) override;
   void GUIParamNormalizedChanged(int index, double normalized) override;

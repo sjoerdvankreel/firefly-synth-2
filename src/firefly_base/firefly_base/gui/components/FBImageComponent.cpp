@@ -11,7 +11,7 @@ FBImageComponent(
 _width(width)
 {
   _image = std::make_unique<ImageComponent>();
-  String path((FBGUIGetResourcesFolderPath() / resourceName).string());
+  String path((FBGetResourcesFolderPath() / "ui" / resourceName).string());
   _image->setImage(ImageCache::getFromFile(path), placement);
   addAndMakeVisible(_image.get());
 }

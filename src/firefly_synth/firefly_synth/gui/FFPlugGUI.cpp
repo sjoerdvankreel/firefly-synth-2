@@ -30,6 +30,16 @@
 
 using namespace juce;
 
+FFMainTabChangedListener::
+FFMainTabChangedListener(FFPlugGUI* plugGUI):
+_plugGUI(plugGUI) {}
+
+void 
+FFMainTabChangedListener::changeListenerCallback(ChangeBroadcaster*)
+{
+  _plugGUI->HideOverlayComponent();
+}
+
 FFPlugGUI::
 ~FFPlugGUI() { }
 
@@ -47,7 +57,27 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
 void
 FFPlugGUI::OnPatchChanged()
 {
+  // Get old stuff out of the delay lines.
   FlushAudio();
+
+  // Update show tweaked from session/patch/default.
+  repaint();
+}
+
+void 
+FFPlugGUI::OnPatchLoaded()
+{
+  FBPlugGUI::OnPatchLoaded();
+  if (onPatchLoaded)
+    onPatchLoaded();
+}
+
+void 
+FFPlugGUI::OnPatchNameChanged(std::string const& name)
+{
+  FBPlugGUI::OnPatchNameChanged(name);
+  if (onPatchNameChanged)
+    onPatchNameChanged(name);
 }
 
 void 
@@ -100,7 +130,7 @@ FFPlugGUI::GUIParamNormalizedChanged(int index, double normalized)
   _mainGraph->RequestRerender(moduleIndex);
   RequestFixedGraphsRerender(moduleIndex);
 
-  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0}, {(int)FFGUISettingsGUIParam::HilightTweak, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0}, {(int)FFGUISettingsGUIParam::HilightTweakMode, 0 } };
   if (index == HostContext()->Topo()->gui.ParamAtTopo(indices)->runtimeParamIndex)
     repaint();
   indices = { { (int)FFModuleType::GUISettings, 0}, {(int)FFGUISettingsGUIParam::HilightMod, 0 } };
@@ -157,11 +187,11 @@ FFPlugGUI::HighlightModulationBounds() const
   return HostContext()->GetGUIParamBool(indices);
 }
 
-bool 
-FFPlugGUI::HighlightTweaked() const
+FBHighlightTweakMode
+FFPlugGUI::HighlightTweakedMode() const
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightTweak, 0 } };
-  return HostContext()->GetGUIParamBool(indices);
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightTweakMode, 0 } };
+  return HostContext()->GetGUIParamList<FBHighlightTweakMode>(indices);
 }
 
 FBGUIRenderType 
@@ -226,6 +256,8 @@ FFPlugGUI::SetupGUI()
   _tabs->addTab("Main", Colours::black, _main, false);
   _tabs->addTab("Matrix", Colours::black, _matrix, false);
   _tabs->addTab("Unison", Colours::black, _globalUni, false);
+  _mainTabChangedListener = std::make_unique<FFMainTabChangedListener>(this);
+  _tabs->getTabbedButtonBar().addChangeListener(_mainTabChangedListener.get());
 
   _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 6, 6, 9, 92 } }, std::vector<int> { { 1 } });
   _container->Add(0, 0, _outputAndPatch);

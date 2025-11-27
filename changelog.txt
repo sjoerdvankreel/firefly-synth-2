@@ -1,3 +1,19 @@
+November 27, 2025 - Alpha 26.
+
+- FX version now defaults to global echo ON.
+- Allow to copy/paste patch across plug instances (context menu).
+- Close popup editor (mseg/multitap) when switching from main to matrix/unison.
+- Added the infrastructure for factory preset loading, so the "preset" button is now enabled. There's no real presets yet, just a couple of init-saw like stuff.
+- Bugfix: CLAP parameter host menu was broken.
+- Bugfix: Bitwig showed the wrong GUI settings (show mod bounds, show tweaked, knob/mod visuals from engine and some others).
+
+- Allow to show tweaked parameters from default/session/patch.
+- Allow to reinit patch parameters to default/session/patch instead of default only.
+- Last loaded patch now shows in the UI.
+- Add reload last-patch/from-session buttons.
+- "Patch" here means the last time you clicked init/load/preset. Not saved across sessions. If not available, reverts to default values.
+- "Session" here means whatever was loaded with the DAW session. Depends on your host if this is updated when DAW session is saved.
+
 November 24, 2025 - Alpha 25.
 
 - Add visual MSEG editor for the envelopes.

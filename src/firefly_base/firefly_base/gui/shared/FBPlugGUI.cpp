@@ -23,13 +23,17 @@
 using namespace juce;
 
 FBPlugGUI::
-~FBPlugGUI() {}
+~FBPlugGUI()
+{
+  _hostContext->RemoveListener(this);
+}
 
 FBPlugGUI::
 FBPlugGUI(FBHostGUIContext* hostContext) :
 _hostContext(hostContext)
 {
   _tooltipWindow = StoreComponent<TooltipWindow>();
+  _hostContext->AddListener(this);
   addAndMakeVisible(_tooltipWindow);
   addMouseListener(this, true);
   SetupOverlayGUI();
@@ -130,7 +134,7 @@ FBPlugGUI::GUIParamNormalizedChanged(int index, double value)
 {
   auto iter = _guiParamIndexToComponent.find(index);
   if (iter != _guiParamIndexToComponent.end())
-    GetControlForGUIParamIndex(index)->SetValueNormalizedFromPlug(value);
+    GetControlForGUIParamIndex(index)->SetValueNormalized(value);
   GUIParamNormalizedChanged(index);
 }
 
@@ -227,17 +231,46 @@ FBPlugGUI::UpdateExchangeState()
 }
 
 void
-FBPlugGUI::ShowHostMenuForAudioParam(int index)
+FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
 {
   FB_LOG_ENTRY_EXIT();
-  auto menuItems = HostContext()->MakeAudioParamContextMenu(index);
-  if (menuItems.empty())
-    return;
-  auto hostMenu = FBMakeHostContextMenu(menuItems);
+  auto menu = std::make_shared<PopupMenu>();
+  menu->addItem(1, "Set To Patch");
+  menu->addItem(2, "Set To Session");
+  menu->addItem(3, "Set To Default");
+  if (showHostMenu)
+  {
+    auto hostMenuItems = HostContext()->MakeAudioParamContextMenu(index);
+    if (!hostMenuItems.empty())
+    {
+      menu->addSeparator();
+      FBAddHostContextMenu(menu, 1000, hostMenuItems);
+    }
+  }
   auto clicked = [this, index](int tag) {
-    if (tag > 0)
-      HostContext()->AudioParamContextMenuClicked(index, tag); };
-  ShowPopupMenuFor(this, *hostMenu, clicked);
+    if (tag <= 0)
+      return;
+    else if (tag == 1)
+    {
+      HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Patch");
+      HostContext()->PerformImmediateAudioParamEdit(index, *HostContext()->PatchState().Params()[index]);
+    }
+    else if (tag == 2)
+    {
+      HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Session");
+      HostContext()->PerformImmediateAudioParamEdit(index, *HostContext()->SessionState().Params()[index]);
+    }
+    else if (tag == 3)
+    {
+      HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Default");
+      HostContext()->PerformImmediateAudioParamEdit(index, HostContext()->Topo()->audio.params[index].DefaultNormalizedByText());
+    }
+    else
+    {
+      HostContext()->AudioParamContextMenuClicked(index, tag - 1000);
+    }
+  };
+  ShowPopupMenuFor(this, *menu, clicked);
 }
 
 Component*
@@ -324,25 +357,62 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   if (dynamic_cast<FBParamControl*>(event.eventComponent))
     return;
 
+  // for combos
+  if (event.eventComponent && event.eventComponent->findParentComponentOfClass<FBParamControl>())
+    return;
+
   // pops up module context menu
   if (dynamic_cast<FBTabBarButton*>(event.eventComponent))
     return;
 
   auto& undoState = HostContext()->UndoState();
-  if (!undoState.CanUndo() && !undoState.CanRedo())
-    return;
-
   PopupMenu menu;
   if (undoState.CanUndo())
     menu.addItem(1, "Undo " + undoState.UndoAction());
   if (undoState.CanRedo())
     menu.addItem(2, "Redo " + undoState.RedoAction());
+  menu.addItem(3, "Copy Patch");
+  menu.addItem(4, "Paste Patch");
+
   PopupMenu::Options options;
   options = options.withParentComponent(this);
   options = options.withMousePosition();
   menu.showMenuAsync(options, [this](int id) {
     if (id == 1) HostContext()->UndoState().Undo();
-    if(id == 2) HostContext()->UndoState().Redo(); });
+    if (id == 2) HostContext()->UndoState().Redo(); 
+    if (id == 3) {
+      FBScalarStateContainer editState(*HostContext()->Topo());
+      editState.CopyFrom(HostContext());
+      SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveEditStateToString(editState, true));
+    }
+    if (id == 4) {
+      if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
+        AlertWindow::showMessageBoxAsync(
+          MessageBoxIconType::InfoIcon,
+          "Warning",
+          "No valid patch data found on clipboard.");
+    }
+  });
+}
+
+void
+FBPlugGUI::ReloadPatch()
+{
+  FB_LOG_ENTRY_EXIT();
+  std::string oldName = HostContext()->PatchName();
+  HostContext()->UndoState().Snapshot("Reload Patch");
+  HostContext()->RevertToPatchState();
+  HostContext()->MarkAsPatchState(oldName);
+  OnPatchChanged();
+}
+
+void
+FBPlugGUI::ReloadSession()
+{
+  FB_LOG_ENTRY_EXIT();
+  HostContext()->UndoState().Snapshot("Reload Session");
+  HostContext()->RevertToSessionState();
+  OnPatchChanged();
 }
 
 void 
@@ -353,6 +423,7 @@ FBPlugGUI::InitPatch()
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
     HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
+  HostContext()->MarkAsPatchState("Init Patch");
   OnPatchChanged();
 }
 
@@ -374,6 +445,23 @@ FBPlugGUI::SavePatchToFile()
   });
 }
 
+bool
+FBPlugGUI::LoadPatchFromText(
+  std::string const& undoAction,
+  std::string const& patchName,
+  std::string const& text)
+{
+  FB_LOG_ENTRY_EXIT();
+  FBScalarStateContainer editState(*HostContext()->Topo());
+  if (!HostContext()->Topo()->LoadEditStateFromString(text, editState, true))
+    return false;
+  HostContext()->UndoState().Snapshot(undoAction);
+  editState.CopyTo(HostContext());
+  HostContext()->MarkAsPatchState(patchName);
+  OnPatchChanged();
+  return true;
+}
+
 void 
 FBPlugGUI::LoadPatchFromFile()
 {
@@ -383,22 +471,52 @@ FBPlugGUI::LoadPatchFromFile()
   FileChooser* chooser = new FileChooser("Load Patch", File(), String("*.") + extension, true, false, this);
   chooser->launchAsync(loadFlags, [this](FileChooser const& chooser) {
     auto file = chooser.getResult();
-    delete &chooser;
+    delete& chooser;
     if (file.getFullPathName().length() == 0) return;
     auto text = file.loadFileAsString().toStdString();
-    FBScalarStateContainer editState(*HostContext()->Topo());
-    if (HostContext()->Topo()->LoadEditStateFromString(text, editState, true))
-    {
-      HostContext()->UndoState().Snapshot("Load Patch");
-      editState.CopyTo(HostContext());
-      OnPatchChanged();
-    }
-    else
+    if(!LoadPatchFromText("Load Patch", file.getFileNameWithoutExtension().toStdString(), text))
       AlertWindow::showMessageBoxAsync(
         MessageBoxIconType::WarningIcon,
         "Error",
         "Failed to load patch. See log for details: " + FBGetLogPath(HostContext()->Topo()->static_->meta).string() + ".");
   });
+}
+
+void
+FBPlugGUI::LoadPreset(Component* clickedFrom)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto presetList = HostContext()->LoadPresetList();
+  if (!presetList->files.size() && !presetList->folders.size())
+    return;
+  auto presetMenu = MakePresetMenu(presetList);
+  PopupMenu::Options options = {};
+  options = options.withParentComponent(this);
+  options = options.withTargetComponent(clickedFrom);
+  presetMenu.showMenuAsync(options);
+}
+
+PopupMenu 
+FBPlugGUI::MakePresetMenu(
+  std::shared_ptr<FBPresetFolder> folder)
+{
+  PopupMenu result = {};
+  for (int i = 0; i < folder->files.size(); i++)
+    result.addItem(folder->files[i].name, [this, path = folder->files[i].path](){
+      auto juceFile = File(path);
+      if (juceFile.exists())
+      {
+        auto text = juceFile.loadFileAsString().toStdString();
+        if (!LoadPatchFromText("Load Preset", juceFile.getFileNameWithoutExtension().toStdString(), text))
+          AlertWindow::showMessageBoxAsync(
+            MessageBoxIconType::WarningIcon,
+            "Error",
+            "Failed to load preset. See log for details: " + FBGetLogPath(HostContext()->Topo()->static_->meta).string() + ".");
+      }
+    });
+  for (int i = 0; i < folder->folders.size(); i++)
+    result.addSubMenu(folder->folders[i]->name, MakePresetMenu(folder->folders[i]));
+  return result;
 }
 
 void

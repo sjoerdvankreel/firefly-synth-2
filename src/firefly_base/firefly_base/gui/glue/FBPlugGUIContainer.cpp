@@ -68,6 +68,12 @@ FBPlugGUIContainer::AddToDesktop(void* parent)
 }
 
 void
+FBPlugGUIContainer::SetGUIParamNormalizedFromHost(int index, double normalized)
+{
+  _gui->GUIParamNormalizedChanged(index, normalized);
+}
+
+void
 FBPlugGUIContainer::SetAudioParamNormalizedFromHost(int index, double normalized)
 {
   _gui->AudioParamNormalizedChangedFromHost(index, normalized);

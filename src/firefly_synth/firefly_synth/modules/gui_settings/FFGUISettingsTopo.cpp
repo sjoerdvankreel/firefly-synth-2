@@ -36,14 +36,19 @@ FFMakeGUISettingsTopo()
   auto selectGuiHilightMod = [](auto& module) { return &module.hilightMod; };
   guiHilightMod.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightMod);
 
-  auto& guiHilightTweak = result->guiParams[(int)FFGUISettingsGUIParam::HilightTweak];
-  guiHilightTweak.name = "Show Tweaked From Default";
-  guiHilightTweak.slotCount = 1;
-  guiHilightTweak.defaultText = "On";
-  guiHilightTweak.id = "{486DAE85-F8CC-4825-ACEA-D13D3D8A6933}";
-  guiHilightTweak.type = FBParamType::Boolean;
-  auto selectGuiHilightTweak = [](auto& module) { return &module.hilightTweak; };
-  guiHilightTweak.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightTweak);
+  auto& guiHilightTweakMode = result->guiParams[(int)FFGUISettingsGUIParam::HilightTweakMode];
+  guiHilightTweakMode.name = "Show Tweaked From";
+  guiHilightTweakMode.slotCount = 1;
+  guiHilightTweakMode.defaultText = "Default";
+  guiHilightTweakMode.id = "{486DAE85-F8CC-4825-ACEA-D13D3D8A6933}";
+  guiHilightTweakMode.type = FBParamType::List;
+  guiHilightTweakMode.List().items = {
+   { "{C89F3D84-0C5E-4130-9663-FE372973FBCE}", "Off" },
+   { "{40441318-0851-4652-BE7E-1227ACD20B84}", "Patch" },
+   { "{5A4E565C-BFD9-4227-A926-3B690A23B7C0}", "Session" },
+   { "{FF071331-4BBC-4925-A8A6-64E368A3FA00}", "Default" } };
+  auto selectGuiHilightTweakMode = [](auto& module) { return &module.hilightTweakMode; };
+  guiHilightTweakMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightTweakMode);
 
   auto& guiKnobVisualsMode = result->guiParams[(int)FFGUISettingsGUIParam::KnobVisualsMode];
   guiKnobVisualsMode.defaultText = "If Focus";

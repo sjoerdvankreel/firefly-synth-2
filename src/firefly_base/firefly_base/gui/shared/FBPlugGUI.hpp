@@ -2,6 +2,8 @@
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <chrono>
@@ -24,7 +26,8 @@ public:
 };
 
 class FBPlugGUI:
-public juce::Component
+public juce::Component,
+public IFBHostGUIContextListener
 {
   double _scale = 1.0;
   juce::Label* _overlayCaption = {};
@@ -33,6 +36,14 @@ public juce::Component
   juce::Component* _overlayContainer = {};
   FBContentComponent* _overlayContent = {};
   std::vector<IFBParamListener*> _paramListeners = {};
+
+  bool LoadPatchFromText(
+    std::string const& undoAction, 
+    std::string const& patchName,
+    std::string const& text);
+
+  juce::PopupMenu MakePresetMenu(
+    std::shared_ptr<FBPresetFolder> folder);
 
 public:
   virtual ~FBPlugGUI();
@@ -46,8 +57,11 @@ public:
     std::function<void(int)> callback);
 
   void InitPatch();
+  void ReloadPatch();
+  void ReloadSession();
   void SavePatchToFile();
   void LoadPatchFromFile();
+  void LoadPreset(juce::Component* clickedFrom);
 
   void HideOverlayComponent();
   void ShowOverlayComponent(
@@ -63,6 +77,8 @@ public:
   std::string GetTooltipForAudioParam(int index) const;
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
+  void OnPatchLoaded() override {}
+  void OnPatchNameChanged(std::string const& /*name*/) override {}
   void mouseUp(const juce::MouseEvent& event) override;
 
   void HideTooltip();
@@ -70,7 +86,7 @@ public:
 
   void UpdateExchangeState();
   void SetScale(double scale);
-  void ShowHostMenuForAudioParam(int index);
+  void ShowMenuForAudioParam(int index, bool showHostMenu);
   int GetControlCountForAudioParamIndex(int paramIndex) const;
   FBParamControl* GetControlForAudioParamIndex(int paramIndex, int controlIndex) const;
   void RepaintSlidersForAudioParam(FBParamTopoIndices const& indices);
@@ -81,8 +97,8 @@ public:
   virtual void AudioParamNormalizedChangedFromUI(int index, double normalized);
   virtual void AudioParamNormalizedChangedFromHost(int index, double normalized);
 
-  virtual bool HighlightTweaked() const = 0;
   virtual bool HighlightModulationBounds() const = 0;
+  virtual FBHighlightTweakMode HighlightTweakedMode() const = 0;
   virtual FBGUIRenderType GetRenderType(bool graphOrKnob) const = 0;
   virtual bool GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const = 0;  
 

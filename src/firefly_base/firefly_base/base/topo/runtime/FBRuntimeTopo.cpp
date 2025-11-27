@@ -119,7 +119,10 @@ var
 FBRuntimeTopo::SaveGUIStateToVar(
   FBGUIStateContainer const& guiState) const
 {
-  return SaveParamStateToVar(guiState, this->gui.params, false);
+  DynamicObject* result = new DynamicObject;
+  result->setProperty("params", SaveParamStateToVar(guiState, this->gui.params, false));
+  result->setProperty("patchName", String(guiState.PatchName()));
+  return var(result);
 }
 
 bool
@@ -133,6 +136,15 @@ bool
 FBRuntimeTopo::LoadGUIStateFromVar(
   var const& json, FBGUIStateContainer& guiState) const
 {
+  // 2.0.6 alpha 26, "gui" element split into "params" and "patchName"
+  if (json.hasProperty("params"))
+  {
+    if(!LoadParamStateFromVar(true, json["params"], guiState, this->gui, false))
+      return false;
+    if(json.hasProperty("patchName"))
+      guiState.SetPatchName(json["patchName"].toString().toStdString());
+    return true;
+  }
   return LoadParamStateFromVar(true, json, guiState, this->gui, false);
 }
 
@@ -231,7 +243,10 @@ FBRuntimeTopo::LoadGUIStateFromStringWithDryRun(
 {
   FBGUIStateContainer dryGUIState(*this);
   if (LoadGUIStateFromString(text, dryGUIState))
+  {
     guiState.CopyFrom(dryGUIState);
+    guiState.SetPatchName(dryGUIState.PatchName());
+  }
 }
 
 void 
@@ -261,6 +276,7 @@ FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
   if (!LoadEditAndGUIStateFromString(text, dryEditState, dryGUIState, patchOnly))
     return;
   guiState.CopyFrom(dryGUIState);
+  guiState.SetPatchName(dryGUIState.PatchName());
   editState.CopyFrom(dryEditState);
 }
 

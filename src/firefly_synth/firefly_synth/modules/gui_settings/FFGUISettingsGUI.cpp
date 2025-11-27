@@ -26,9 +26,9 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   auto hilightMod = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightMod, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightMod));
   grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, hilightMod));
-  auto hilightTweak = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightTweak, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightTweak));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, hilightTweak));
+  auto hilightTweakMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightTweakMode, 0 } });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightTweakMode));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, hilightTweakMode));
   auto knobVisualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::KnobVisualsMode, 0 } });
   grid->Add(0, 4, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, knobVisualsMode));
   grid->Add(0, 5, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, knobVisualsMode));

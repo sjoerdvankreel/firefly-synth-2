@@ -48,5 +48,5 @@ public FBGUIParamComponent
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBGUIParamControl);
   FBGUIParamControl(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param);
-  virtual void SetValueNormalizedFromPlug(double normalized) = 0;
+  virtual void SetValueNormalized(double normalized) = 0;
 };

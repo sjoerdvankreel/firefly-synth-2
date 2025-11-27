@@ -22,6 +22,18 @@ public:
   FBAutoSizeLabel(std::string const& text, bool centred = false);
 };
 
+class FBAutoSizeLabel2:
+public juce::Label,
+public IFBVerticalAutoSize,
+public IFBHorizontalAutoSize
+{
+  int const _fixedWidth;
+public:
+  int FixedHeight() const override;
+  int FixedWidth(int height) const override;
+  FBAutoSizeLabel2(int fixedWidth);
+};
+
 class FBGUIParamLabel final:
 public FBAutoSizeLabel,
 public FBGUIParamComponent

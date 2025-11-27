@@ -68,7 +68,7 @@ FFVEchoTargetToString(FFVEchoTarget target)
 }
 
 std::unique_ptr<FBStaticModule>
-FFMakeEchoTopo(bool global)
+FFMakeEchoTopo(bool global, bool isFx)
 {
   std::string prefix = global ? "G" : "V";
   auto result = std::make_unique<FBStaticModule>();
@@ -89,7 +89,7 @@ FFMakeEchoTopo(bool global)
   vTargetOrGTarget.slotCount = 1;
   vTargetOrGTarget.id = prefix + "{60F7D173-C5F9-46AD-A108-D17D40FE4C1D}";
   vTargetOrGTarget.name = "Target";
-  vTargetOrGTarget.defaultText = "Off";
+  vTargetOrGTarget.defaultText = global && isFx? FFGEchoTargetToString(FFGEchoTarget::ExtAudio): "Off";
   vTargetOrGTarget.type = FBParamType::List;
   auto selectVTargetOrGTarget = [](auto& module) { return &module.block.vTargetOrGTarget; };
   vTargetOrGTarget.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectVTargetOrGTarget);

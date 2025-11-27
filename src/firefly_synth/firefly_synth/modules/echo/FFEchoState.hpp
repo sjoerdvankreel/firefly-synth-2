@@ -38,7 +38,7 @@ class alignas(alignof(TBlock)) FFEchoBlockParamState final
   friend class FFVoiceProcessor;
   friend class FFEchoProcessor<true>;
   friend class FFEchoProcessor<false>;
-  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global, bool isFx);
   std::array<TBlock, 1> sync = {};
   std::array<TBlock, 1> order = {};
   std::array<TBlock, 1> tapsOn = {};
@@ -67,7 +67,7 @@ class alignas(alignof(TAccurate)) FFEchoAccParamState final
 {
   friend class FFEchoProcessor<true>;
   friend class FFEchoProcessor<false>;
-  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global, bool isFx);
   std::array<TAccurate, 1> gain = {};
   std::array<TAccurate, 1> tapsMix = {};
   std::array<TAccurate, 1> reverbMix = {};
@@ -108,7 +108,7 @@ class alignas(alignof(TAccurate)) FFEchoParamState final
   friend class FFVoiceProcessor;
   friend class FFEchoProcessor<true>;
   friend class FFEchoProcessor<false>;
-  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global, bool isFx);
   FFEchoAccParamState<TAccurate> acc = {};
   FFEchoBlockParamState<TBlock> block = {};
   FFEchoVoiceStartParamState<TAccurate> voiceStart = {};
