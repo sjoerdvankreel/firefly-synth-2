@@ -312,7 +312,7 @@ std::shared_ptr<FBPresetFolder>
 FBHostGUIContext::LoadPresetList(std::filesystem::path const& p) const
 {
   auto result = std::make_shared<FBPresetFolder>();
-  result->name = p.string();
+  result->name = p.filename().string();
   for (auto const& i: std::filesystem::directory_iterator(p))
   {
     if (std::filesystem::is_regular_file(i.path()))
