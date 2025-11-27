@@ -19,7 +19,7 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Patch:"));
   
-  auto name = plugGUI->StoreComponent<FBAutoSizeLabel2>(200);
+  auto name = plugGUI->StoreComponent<FBAutoSizeLabel2>(150);
   name->setText(context->PatchName(), dontSendNotification);
   grid->Add(0, 1, name);
 
