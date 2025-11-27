@@ -42,6 +42,9 @@ public IFBHostGUIContextListener
     std::string const& patchName,
     std::string const& text);
 
+  juce::PopupMenu MakePresetMenu(
+    std::shared_ptr<FBPresetFolder> folder) const;
+
 public:
   virtual ~FBPlugGUI();
 
@@ -58,6 +61,7 @@ public:
   void ReloadSession();
   void SavePatchToFile();
   void LoadPatchFromFile();
+  void LoadPreset(juce::Component* clickedFrom);
 
   void HideOverlayComponent();
   void ShowOverlayComponent(

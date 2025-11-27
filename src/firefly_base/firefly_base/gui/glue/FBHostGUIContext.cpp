@@ -6,6 +6,7 @@
 
 #include <stack>
 #include <memory>
+#include <filesystem>
 
 using namespace juce;
 
@@ -305,6 +306,36 @@ FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int 
   for (int p = 0; p < staticModule.params.size(); p++)
     for (int s = 0; s < staticModule.params[p].slotCount; s++)
       CopyAudioParam({ moduleIndices, { p, s } }, { { moduleIndices.index, toSlot }, { p, s } });
+}
+
+std::shared_ptr<FBPresetFolder>
+FBHostGUIContext::LoadPresetList(std::filesystem::path const& p) const
+{
+  auto result = std::make_shared<FBPresetFolder>();
+  result->name = p.string();
+  for (auto i = p.begin(); i != p.end(); i++)
+  {
+    if (std::filesystem::is_regular_file(*i))
+    {
+      FBPresetFile file = {};
+      file.path = i->string();
+      file.name = i->stem().string();
+      result->files.push_back(file);
+    }
+    if (std::filesystem::is_directory(*i))
+      result->folders.push_back(LoadPresetList(*i));
+  }
+  return result;
+}
+
+std::shared_ptr<FBPresetFolder>
+FBHostGUIContext::LoadPresetList() const
+{
+  std::string subPath = Topo()->static_->meta.isFx ? "fx" : "instrument";
+  std::filesystem::path presetRoot(FBGetResourcesFolderPath() / "presets" / subPath);
+  if (std::filesystem::exists(presetRoot))
+    return LoadPresetList(presetRoot);
+  return {};
 }
 
 void

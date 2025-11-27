@@ -19,6 +19,5 @@ float FBGUIGetFontHeightFloat();
 juce::Font const& FBGUIGetFont();
 juce::LookAndFeel* FBGetLookAndFeel();
 
-std::filesystem::path FBGUIGetResourcesFolderPath();
 int FBGUIGetStringWidthCached(std::string const& text);
 juce::Point<int> FBGUIGetStringSizeCached(std::string const& text);

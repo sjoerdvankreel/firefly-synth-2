@@ -20,14 +20,6 @@ float FBGUIGetFontHeightFloat() { return FBGUIGetFont().getHeight(); }
 int FBGUIGetFontHeightInt() { return static_cast<int>(std::ceil(FBGUIGetFontHeightFloat())); }
 int FBGUIGetStringWidthCached(std::string const& text) { return FBGUIGetStringSizeCached(text).x; }
 
-std::filesystem::path 
-FBGUIGetResourcesFolderPath()
-{
-  File selfJuce(File::getSpecialLocation(File::currentExecutableFile));
-  std::filesystem::path selfPath(selfJuce.getFullPathName().toStdString());
-  return selfPath.parent_path().parent_path() / "Resources" / "ui";
-}
-
 void
 FBGUITerminate()
 {
@@ -49,7 +41,7 @@ FBGUIInit()
   FB_LOG_INFO("Initializing JUCE GUI.");
   initialiseJuce_GUI();
   FB_LOG_INFO("Initialized JUCE GUI.");
-  auto fontPath = FBGUIGetResourcesFolderPath() / "JetBrainsMono-Medium.ttf";
+  auto fontPath = FBGetResourcesFolderPath() / "ui" / "JetBrainsMono-Medium.ttf";
   auto fontBytes = FBReadFile(fontPath);
   _typeface = Typeface::createSystemTypefaceFor(fontBytes.data(), fontBytes.size());
   _font = Font(FontOptions(_typeface)).withHeight(FBGUIFontSize);

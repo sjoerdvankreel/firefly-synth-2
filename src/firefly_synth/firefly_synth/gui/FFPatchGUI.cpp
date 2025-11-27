@@ -57,7 +57,7 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
 
   auto preset = plugGUI->StoreComponent<FBAutoSizeButton>("Preset");
   preset->setTooltip("Load Preset");
-  preset->setEnabled(false);
+  preset->onClick = [plugGUI, preset]() { plugGUI->LoadPreset(preset); };
   grid->Add(0, 7, preset);
 
   grid->Add(0, 8, plugGUI->StoreComponent<FBFillerComponent>(13, 1));

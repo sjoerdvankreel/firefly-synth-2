@@ -483,6 +483,32 @@ FBPlugGUI::LoadPatchFromFile()
 }
 
 void
+FBPlugGUI::LoadPreset(Component* clickedFrom)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto presetList = HostContext()->LoadPresetList();
+  if (!presetList->files.size() && !presetList->folders.size())
+    return;
+  auto presetMenu = MakePresetMenu(presetList);
+  PopupMenu::Options options = {};
+  options = options.withParentComponent(this);
+  options = options.withTargetComponent(clickedFrom);
+  presetMenu.showMenuAsync(options);
+}
+
+PopupMenu 
+FBPlugGUI::MakePresetMenu(
+  std::shared_ptr<FBPresetFolder> folder) const
+{
+  PopupMenu result = {};
+  for (int i = 0; i < folder->files.size(); i++)
+    result.addItem(folder->files[i].name, [](){});
+  for (int i = 0; i < folder->folders.size(); i++)
+    result.addSubMenu(folder->folders[i]->name, MakePresetMenu(folder->folders[i]));
+  return result;
+}
+
+void
 FBPlugGUI::SetupOverlayGUI()
 {
   auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 0, 0 } });

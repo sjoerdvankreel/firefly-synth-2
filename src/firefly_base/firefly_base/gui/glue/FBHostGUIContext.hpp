@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 struct FBStaticTopo;
 struct FBTopoIndices;
@@ -27,6 +28,19 @@ struct FBHostContextMenuItem
   bool separator = false;
   bool subMenuEnd = false;
   bool subMenuStart = false;
+};
+
+struct FBPresetFile
+{
+  std::string name = {};
+  std::string path = {};
+};
+
+struct FBPresetFolder
+{
+  std::string name = {};
+  std::vector<FBPresetFile> files = {};
+  std::vector<std::shared_ptr<FBPresetFolder>> folders = {};
 };
 
 void
@@ -54,14 +68,14 @@ protected:
 
 private:
   bool _isPatchLoaded = {};
-
   FBUndoStateContainer _undoState;
-
   // updated on init/load/reload patch etc
   FBScalarStateContainer _patchState;
-
   // updated on daw load
   FBScalarStateContainer _sessionState;
+
+  std::shared_ptr<FBPresetFolder>
+  LoadPresetList(std::filesystem::path const& p) const;
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostGUIContext);
@@ -87,6 +101,8 @@ public:
   std::string const& PatchName() const;
   void SetPatchName(std::string const& name);
   bool IsPatchLoaded() const { return _isPatchLoaded; }
+  std::shared_ptr<FBPresetFolder> LoadPresetList() const;
+
   void AddListener(IFBHostGUIContextListener* listener);
   void RemoveListener(IFBHostGUIContextListener* listener);
 
