@@ -43,7 +43,7 @@ public IFBHostGUIContextListener
     std::string const& text);
 
   juce::PopupMenu MakePresetMenu(
-    std::shared_ptr<FBPresetFolder> folder) const;
+    std::shared_ptr<FBPresetFolder> folder);
 
 public:
   virtual ~FBPlugGUI();

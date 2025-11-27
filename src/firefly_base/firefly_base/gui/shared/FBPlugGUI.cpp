@@ -498,11 +498,22 @@ FBPlugGUI::LoadPreset(Component* clickedFrom)
 
 PopupMenu 
 FBPlugGUI::MakePresetMenu(
-  std::shared_ptr<FBPresetFolder> folder) const
+  std::shared_ptr<FBPresetFolder> folder)
 {
   PopupMenu result = {};
   for (int i = 0; i < folder->files.size(); i++)
-    result.addItem(folder->files[i].name, [](){});
+    result.addItem(folder->files[i].name, [this, path = folder->files[i].path](){
+      auto juceFile = File(path);
+      if (juceFile.exists())
+      {
+        auto text = juceFile.loadFileAsString().toStdString();
+        if (!LoadPatchFromText("Load Preset", juceFile.getFileNameWithoutExtension().toStdString(), text))
+          AlertWindow::showMessageBoxAsync(
+            MessageBoxIconType::WarningIcon,
+            "Error",
+            "Failed to load preset. See log for details: " + FBGetLogPath(HostContext()->Topo()->static_->meta).string() + ".");
+      }
+    });
   for (int i = 0; i < folder->folders.size(); i++)
     result.addSubMenu(folder->folders[i]->name, MakePresetMenu(folder->folders[i]));
   return result;
