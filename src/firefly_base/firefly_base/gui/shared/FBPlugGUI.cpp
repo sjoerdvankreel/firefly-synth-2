@@ -306,6 +306,7 @@ FBPlugGUI::GetTooltipForGUIParam(int index) const
   auto const& param = HostContext()->Topo()->gui.params[index];
   double normalized = HostContext()->GetGUIParamNormalized(index);
   std::string result = param.shortName + ": " + param.NormalizedToTextWithUnit(false, normalized);
+  result += "\r\nStored In: Session Only";
   result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
   return result;
 }
@@ -321,6 +322,7 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
 
   std::string result = param.shortName + ": ";
   result += param.NormalizedToTextWithUnit(false, normalized);
+  result += "\r\nStored In: " + (param.static_.storeInPatch ? std::string("Session And Patch") : std::string("Session Only"));
   result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
   if (param.static_.mode == FBParamMode::Accurate || param.static_.mode == FBParamMode::VoiceStart)
     result += "\r\nAutomate: " + FBEditTypeToString(param.static_.NonRealTime().AutomationEditType());

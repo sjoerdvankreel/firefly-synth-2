@@ -1,5 +1,5 @@
 TODOLIST for beta-1
-[ ] do tooltip for save in patch/session/gui
+[x] do tooltip for save in patch/session/gui
 [ ] up the vno just because
 [ ] right-click a toggle for context menu should not toggle it
 [ ] load patch overwrites stuff that is not part of the patch
