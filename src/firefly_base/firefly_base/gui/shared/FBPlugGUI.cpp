@@ -384,7 +384,7 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
     if (id == 2) HostContext()->UndoState().Redo(); 
     if (id == 3) {
       FBScalarStateContainer editState(*HostContext()->Topo());
-      editState.CopyFrom(HostContext());
+      editState.CopyFrom(HostContext(), true);
       SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveEditStateToString(editState, true));
     }
     if (id == 4) {
@@ -403,8 +403,8 @@ FBPlugGUI::ReloadPatch()
   FB_LOG_ENTRY_EXIT();
   std::string oldName = HostContext()->PatchName();
   HostContext()->UndoState().Snapshot("Reload Patch");
-  HostContext()->RevertToPatchState();
-  HostContext()->MarkAsPatchState(oldName);
+  HostContext()->RevertPatchToPatchState();
+  HostContext()->MarkPatchAsPatchState(oldName);
   OnPatchChanged();
 }
 
@@ -413,7 +413,7 @@ FBPlugGUI::ReloadSession()
 {
   FB_LOG_ENTRY_EXIT();
   HostContext()->UndoState().Snapshot("Reload Session");
-  HostContext()->RevertToSessionState();
+  HostContext()->RevertPatchToSessionState();
   OnPatchChanged();
 }
 
@@ -424,8 +424,9 @@ FBPlugGUI::InitPatch()
   HostContext()->UndoState().Snapshot("Init Patch");
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
-    HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
-  HostContext()->MarkAsPatchState("Init Patch");
+    if(HostContext()->Topo()->audio.params[i].static_.storeInPatch)
+      HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
+  HostContext()->MarkPatchAsPatchState("Init Patch");
   OnPatchChanged();
 }
 
@@ -442,7 +443,7 @@ FBPlugGUI::SavePatchToFile()
     delete &chooser;
     if (file.getFullPathName().length() == 0) return;
     FBScalarStateContainer editState(*HostContext()->Topo());
-    editState.CopyFrom(HostContext());
+    editState.CopyFrom(HostContext(), true);
     file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState, true));
   });
 }
@@ -458,8 +459,8 @@ FBPlugGUI::LoadPatchFromText(
   if (!HostContext()->Topo()->LoadEditStateFromString(text, editState, true))
     return false;
   HostContext()->UndoState().Snapshot(undoAction);
-  editState.CopyTo(HostContext());
-  HostContext()->MarkAsPatchState(patchName);
+  editState.CopyTo(HostContext(), true);
+  HostContext()->MarkPatchAsPatchState(patchName);
   OnPatchChanged();
   return true;
 }

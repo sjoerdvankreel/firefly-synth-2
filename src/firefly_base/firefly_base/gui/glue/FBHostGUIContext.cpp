@@ -30,21 +30,21 @@ _sessionState(*_topo.get())
 }
 
 void 
-FBHostGUIContext::RevertToPatchState()
+FBHostGUIContext::RevertPatchToPatchState()
 {
-  _patchState.CopyTo(this);
+  _patchState.CopyTo(this, true);
 }
 
 void
-FBHostGUIContext::MarkAsSessionState()
+FBHostGUIContext::MarkPatchAsSessionState()
 {
-  _sessionState.CopyFrom(this);
+  _sessionState.CopyFrom(this, true);
 }
 
 void
-FBHostGUIContext::RevertToSessionState()
+FBHostGUIContext::RevertPatchToSessionState()
 {
-  _sessionState.CopyTo(this);
+  _sessionState.CopyTo(this, true);
 }
 
 std::string const& 
@@ -91,9 +91,9 @@ FBHostGUIContext::RemoveListener(IFBHostGUIContextListener* listener)
 }
 
 void
-FBHostGUIContext::MarkAsPatchState(std::string const& name)
+FBHostGUIContext::MarkPatchAsPatchState(std::string const& name)
 {
-  _patchState.CopyFrom(this);
+  _patchState.CopyFrom(this, true);
   _isPatchLoaded = true;
   OnPatchLoaded();
   SetPatchName(name);

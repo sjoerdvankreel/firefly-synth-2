@@ -88,10 +88,10 @@ protected:
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
 
 public:
-  void RevertToPatchState();
-  void MarkAsSessionState();
-  void RevertToSessionState();
-  void MarkAsPatchState(std::string const& name);
+  void RevertPatchToPatchState();
+  void MarkPatchAsSessionState();
+  void RevertPatchToSessionState();
+  void MarkPatchAsPatchState(std::string const& name);
 
   double GetUserScaleMin() const;
   double GetUserScaleMax() const;

@@ -21,10 +21,10 @@ public:
   FBScalarStateContainer(FBScalarStateContainer const&) = delete;
   FBScalarStateContainer& operator=(FBScalarStateContainer const&) = delete;
 
-  void CopyTo(FBHostGUIContext* context) const;
-  void CopyFrom(FBHostGUIContext const* context);
-  void CopyFrom(FBProcStateContainer const& proc);
-  void CopyFrom(FBScalarStateContainer const& scalar);
+  void CopyTo(FBHostGUIContext* context, bool patchOnly) const;
+  void CopyFrom(FBHostGUIContext const* context, bool patchOnly);
+  void CopyFrom(FBRuntimeTopo const* topo, FBProcStateContainer const& proc, bool patchOnly);
+  void CopyFrom(FBRuntimeTopo const* topo, FBScalarStateContainer const& scalar, bool patchOnly);
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }

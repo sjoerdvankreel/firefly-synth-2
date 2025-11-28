@@ -1,7 +1,7 @@
 TODOLIST for beta-1
 [x] do tooltip for save in patch/session/gui
 [x] right-click a toggle for context menu should not toggle it
-[ ] load patch overwrites stuff that is not part of the patch
+[x] load patch overwrites stuff that is not part of the patch
 [ ] prettify last tweaked / last patch
 [ ] up the vno just because
 [ ] do tooltips on labels ("tap dly" => tap delay)
