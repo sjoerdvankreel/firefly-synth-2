@@ -497,11 +497,11 @@ FBLookAndFeel::getTooltipBounds(
   for (int i = 0; i < lines.size(); i++)
   {
     th += textHeight;
-    tw = std::max(tw, (float)std::ceil(FBGUIGetStringWidthCached(lines[i])));
+    tw = std::max(tw, (float)std::ceil(FBGUIGetStringWidthCached(i == 0? FBAsciiToUpper(lines[i]): lines[i])));
   }
 
   int pad = 3;
-  int itw = (int)std::ceil(tw * 1.05f) + 2 * pad + 2;
+  int itw = (int)std::ceil(tw * 1.05f) + 2 * pad + 32;
   int ith = (int)std::ceil(th) + 2 * pad + 2;
   return Rectangle<int>(screenPos.x > parentArea.getCentreX() ? screenPos.x - (itw + 12) : screenPos.x + 24,
     screenPos.y > parentArea.getCentreY() ? screenPos.y - (ith + 6) : screenPos.y + 6,

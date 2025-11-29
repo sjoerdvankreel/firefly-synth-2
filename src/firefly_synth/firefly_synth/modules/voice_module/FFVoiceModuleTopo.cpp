@@ -46,6 +46,7 @@ FFMakeVoiceModuleTopo()
   env5ToCoarse.slotCount = 1;
   env5ToCoarse.unit = "%";
   env5ToCoarse.id = "{7A005131-8806-4815-AEAB-A4B4861B707F}";
+  env5ToCoarse.description = "Modulate Coarse Pitch By Env 5";
   env5ToCoarse.type = FBParamType::Identity;
   auto selectEnv5ToCoarse = [](auto& module) { return &module.acc.env5ToCoarse; };
   env5ToCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectEnv5ToCoarse);
@@ -59,6 +60,7 @@ FFMakeVoiceModuleTopo()
   fine.slotCount = 1;
   fine.unit = "Cent";
   fine.id = "{52BEBA97-1C64-472A-A424-A03FD8DB5B94}";
+  fine.description = "Fine Pitch";
   fine.type = FBParamType::Linear;
   fine.Linear().min = -1.0f;
   fine.Linear().max = 1.0f;
@@ -75,6 +77,7 @@ FFMakeVoiceModuleTopo()
   lfo5ToFine.slotCount = 1;
   lfo5ToFine.unit = "%";
   lfo5ToFine.id = "{DAF25F23-63B2-4120-98B7-EE28D054CA43}";
+  lfo5ToFine.description = "Modulate Fine Pitch By Voice LFO 5";
   lfo5ToFine.type = FBParamType::Identity;
   auto selectLFO5ToFine = [](auto& module) { return &module.acc.lfo5ToFine; };
   lfo5ToFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO5ToFine);
