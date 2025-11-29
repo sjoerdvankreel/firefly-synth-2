@@ -321,16 +321,26 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
   double engineMax = paramActive.active ? paramActive.maxValue : normalized;
 
   std::string result = FBAsciiToUpper(param.static_.description);
-  result += "\r\n" + param.shortName + ": ";
-  result += param.NormalizedToTextWithUnit(false, normalized);
 #ifndef NDEBUG
   result += "\r\nParam index: " + std::to_string(index);
   result += "\r\nParam tag: " + std::to_string(param.tag);
 #endif
+
+  result += "\r\n";
+  result += "\r\n" + param.shortName + ": ";
+  result += param.NormalizedToTextWithUnit(false, normalized);
   if (param.static_.IsOutput())
     return result;
 
-  result += "\r\nStored In: " + (param.static_.storeInPatch ? std::string("Session And Patch") : std::string("Session Only"));
+  if (!param.static_.IsVoice())
+    result += "\r\nEngine: " + param.NormalizedToTextWithUnit(false, engineMin);
+  else
+  {
+    result += "\r\nEngine min: " + param.NormalizedToTextWithUnit(false, engineMin);
+    result += "\r\nEngine max: " + param.NormalizedToTextWithUnit(false, engineMax);
+  }
+
+  result += "\r\n";
   result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
   if (param.static_.mode == FBParamMode::Accurate || param.static_.mode == FBParamMode::VoiceStart)
     result += "\r\nAutomate: " + FBEditTypeToString(param.static_.NonRealTime().AutomationEditType());
@@ -340,13 +350,7 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
     result += "\r\nAutomation: Per-Sample";
   if (param.static_.mode == FBParamMode::VoiceStart)
     result += "\r\nAutomation: At Voice Start";
-  if (!param.static_.IsVoice())
-    result += "\r\nEngine: " + param.NormalizedToTextWithUnit(false, engineMin);
-  else
-  {
-    result += "\r\nEngine min: " + param.NormalizedToTextWithUnit(false, engineMin);
-    result += "\r\nEngine max: " + param.NormalizedToTextWithUnit(false, engineMax);
-  }
+  result += "\r\nStored In: " + (param.static_.storeInPatch ? std::string("Session And Patch") : std::string("Session Only"));
   return result;
 }
 

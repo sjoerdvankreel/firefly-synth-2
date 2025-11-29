@@ -483,6 +483,32 @@ FBLookAndFeel::drawRotarySlider(
     DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
 }
 
+juce::Rectangle<int> 
+FBLookAndFeel::getTooltipBounds(
+  const juce::String& tipText,
+  juce::Point<int> screenPos,
+  juce::Rectangle<int> parentArea)
+{
+  float tw = 0.0f;
+  float th = 0.0f;
+
+  float textHeight = FBGUIGetFontHeightFloat() + 2.0f;
+  auto lines = FBStringSplit(tipText.toStdString(), "\r\n");
+  for (int i = 0; i < lines.size(); i++)
+  {
+    th += textHeight;
+    tw = std::max(tw, (float)std::ceil(FBGUIGetStringWidthCached(lines[i])));
+  }
+
+  int pad = 3;
+  int itw = (int)std::ceil(tw) + 2 * pad + 2;
+  int ith = (int)std::ceil(th) + 2 * pad + 2;
+  return Rectangle<int>(screenPos.x > parentArea.getCentreX() ? screenPos.x - (itw + 12) : screenPos.x + 24,
+    screenPos.y > parentArea.getCentreY() ? screenPos.y - (ith + 6) : screenPos.y + 6,
+    itw, ith)
+    .constrainedWithin(parentArea);
+}
+
 void 
 FBLookAndFeel::drawTooltip(
   Graphics& g, const String& text,
@@ -504,13 +530,15 @@ FBLookAndFeel::drawTooltip(
   g.setFont(Font(FontOptions(fontSize, Font::bold).withMetricsKind(getDefaultMetricsKind())));
   if (lines.size() > 0)
   {
-    g.drawText(lines[0], textBounds, Justification::centred, false);
+    if(lines[0].size() > 0)
+      g.drawText(lines[0], textBounds, Justification::centred, false);
     lines.erase(lines.begin());
   }
   while (lines.size() > 0)
   {
     textBounds.translate(0.0f, textHeight);
-    g.drawText(lines[0], textBounds, Justification::left, false);
+    if (lines[0].size() > 0)
+      g.drawText(lines[0], textBounds, Justification::left, false);
     lines.erase(lines.begin());
   }
   g.setColour(Colours::white);
