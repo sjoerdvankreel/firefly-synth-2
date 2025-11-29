@@ -45,7 +45,7 @@ public FBPlugGUI
   FBGridComponent* _topModules = {};
   FBAutoSizeTabComponent* _tabs = {};
   FBGridComponent* _headerAndGraph = {};
-  FBGridComponent* _outputPatchAndPanic = {};
+  FBGridComponent* _outputPanicAndPatch = {};
   FBGridComponent* _guiSettingsAndTweak = {};
 
   FBModuleGraphComponent* _mainGraph = {};
