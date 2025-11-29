@@ -308,6 +308,20 @@ FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int 
       CopyAudioParam({ moduleIndices, { p, s } }, { { moduleIndices.index, toSlot }, { p, s } });
 }
 
+void 
+FBHostGUIContext::ShowManualForAudioParam(int index) const
+{
+  int rtModuleIndex = Topo()->audio.params[index].runtimeModuleIndex;
+  int staticModuleIndex = Topo()->modules[rtModuleIndex].topoIndices.index;
+  auto moduleId = Topo()->static_->modules[staticModuleIndex].id;
+  auto path = FBGetResourcesFolderPath() / "manual" / "Manual.html";
+  juce::File file(path.string());
+
+  // JUCE URL WithAnchor not working.
+  if (file.exists())
+    juce::Process::openDocument(path.string(), "");
+}
+
 std::shared_ptr<FBPresetFolder>
 FBHostGUIContext::LoadPresetList(std::filesystem::path const& p) const
 {

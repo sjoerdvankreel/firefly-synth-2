@@ -235,9 +235,10 @@ FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
 {
   FB_LOG_ENTRY_EXIT();
   auto menu = std::make_shared<PopupMenu>();
-  menu->addItem(1, "Set To Patch");
-  menu->addItem(2, "Set To Session");
-  menu->addItem(3, "Set To Default");
+  menu->addItem(1, "Show Manual");
+  menu->addItem(2, "Set To Patch");
+  menu->addItem(3, "Set To Session");
+  menu->addItem(4, "Set To Default");
   if (showHostMenu)
   {
     auto hostMenuItems = HostContext()->MakeAudioParamContextMenu(index);
@@ -250,17 +251,21 @@ FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
   auto clicked = [this, index](int tag) {
     if (tag <= 0)
       return;
-    else if (tag == 1)
+    if (tag == 1)
+    {
+      HostContext()->ShowManualForAudioParam(index);
+    }
+    else if (tag == 2)
     {
       HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Patch");
       HostContext()->PerformImmediateAudioParamEdit(index, *HostContext()->PatchState().Params()[index]);
     }
-    else if (tag == 2)
+    else if (tag == 3)
     {
       HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Session");
       HostContext()->PerformImmediateAudioParamEdit(index, *HostContext()->SessionState().Params()[index]);
     }
-    else if (tag == 3)
+    else if (tag == 4)
     {
       HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Default");
       HostContext()->PerformImmediateAudioParamEdit(index, HostContext()->Topo()->audio.params[index].DefaultNormalizedByText());
