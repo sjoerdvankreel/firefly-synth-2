@@ -489,14 +489,17 @@ FBLookAndFeel::getTooltipBounds(
   juce::Point<int> screenPos,
   juce::Rectangle<int> parentArea)
 {
+  // Otherwise LookAndFeel_V4::getTooltipBounds hangs.
+  auto trimmed = tipText.trim();
+
   float th = 0.0f;
   float textHeight = FBGUIGetFontHeightFloat() + 2.0f;
-  auto lines = FBStringSplit(tipText.toStdString(), "\r\n");
+  auto lines = FBStringSplit(trimmed.toStdString(), "\r\n");
   for (int i = 0; i < lines.size(); i++)
     th += textHeight;
 
   int pad = 3;
-  auto baseBounds = LookAndFeel_V4::getTooltipBounds(tipText, screenPos, parentArea);
+  auto baseBounds = LookAndFeel_V4::getTooltipBounds(trimmed, screenPos, parentArea);
   int itw = baseBounds.getWidth() + 2 * pad;
   int ith = (int)std::ceil(th) + 2 * pad + 2;
   return Rectangle<int>(screenPos.x > parentArea.getCentreX() ? screenPos.x - (itw + 12) : screenPos.x + 24,
@@ -519,8 +522,9 @@ FBLookAndFeel::drawTooltip(
 
   float pad = 3.0f;
   float fontSize = 13.0f;
+  auto trimmed = text.trim();
   float textHeight = FBGUIGetFontHeightFloat() + 2.0f;
-  auto lines = FBStringSplit(text.toStdString(), "\r\n");
+  auto lines = FBStringSplit(trimmed.toStdString(), "\r\n");
   auto textBounds = Rectangle<float>(pad, pad, width - 2.0f * pad, textHeight);
   g.setColour(findColour(TooltipWindow::textColourId));
   g.setFont(Font(FontOptions(fontSize, Font::bold).withMetricsKind(getDefaultMetricsKind())));
