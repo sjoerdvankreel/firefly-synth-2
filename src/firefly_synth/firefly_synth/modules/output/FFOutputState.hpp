@@ -27,7 +27,6 @@ class alignas(alignof(TBlock)) FFOutputBlockParamState final
   std::array<TBlock, 1> gain = {};
   std::array<TBlock, 1> voices = {};
   std::array<TBlock, 1> mtsEspOn = {};
-  std::array<TBlock, 1> flushAudioToggle = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOutputBlockParamState);
 };

@@ -69,18 +69,5 @@ FFMakeOutputTopo()
   mtsEspOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectMtsEspOn);
   mtsEspOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectMtsEspOn);
 
-  // dummy which we check on the audio if it changed
-  auto& flushAudioToggle = result->params[(int)FFOutputParam::FlushAudioToggle];
-  flushAudioToggle.mode = FBParamMode::Fake;
-  flushAudioToggle.name = "Flush Audio";
-  flushAudioToggle.slotCount = 1;
-  flushAudioToggle.defaultText = "Off";
-  flushAudioToggle.id = "{2A072D35-45DA-4C6D-BB64-9EB4FB2AC06F}";
-  flushAudioToggle.type = FBParamType::Boolean;
-  auto selectFlushAudioToggle = [](auto& module) { return &module.block.flushAudioToggle; };
-  flushAudioToggle.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFlushAudioToggle);
-  flushAudioToggle.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFlushAudioToggle);
-  flushAudioToggle.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFlushAudioToggle);
-
   return result;
 }

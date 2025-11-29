@@ -8,6 +8,8 @@
 #include <firefly_synth/modules/mix/FFMixGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
 #include <firefly_synth/modules/echo/FFEchoGUI.hpp>
+#include <firefly_synth/modules/panic/FFPanicGUI.hpp>
+#include <firefly_synth/modules/panic/FFPanicTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
@@ -212,7 +214,7 @@ FFPlugGUI::GetRenderType(bool graphOrKnob) const
 void
 FFPlugGUI::FlushAudio()
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::FlushAudioToggle, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::Panic, 0 }, { (int)FFPanicParam::FlushAudioToggle, 0 } };
   double flushNorm = HostContext()->GetAudioParamNormalized(indices);
   double newFlushNorm = flushNorm > 0.5 ? 0.0 : 1.0;
   HostContext()->PerformImmediateAudioParamEdit(indices, newFlushNorm);
@@ -228,9 +230,10 @@ FFPlugGUI::SetupGUI()
   _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
   _headerAndGraph->Add(0, 1, _mainGraph);
 
-  _outputAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0 } });
-  _outputAndPatch->Add(0, 0, FFMakeOutputGUI(this));
-  _outputAndPatch->Add(0, 1, FFMakePatchGUI(this));
+  _outputPatchAndPanic = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
+  _outputPatchAndPanic->Add(0, 0, FFMakeOutputGUI(this));
+  _outputPatchAndPanic->Add(0, 1, FFMakePatchGUI(this));
+  _outputPatchAndPanic->Add(0, 2, FFMakePanicGUI(this));
 
   _guiSettingsAndTweak = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
   _guiSettingsAndTweak->Add(0, 0, FFMakeGUISettingsGUI(this));
@@ -260,7 +263,7 @@ FFPlugGUI::SetupGUI()
   _tabs->getTabbedButtonBar().addChangeListener(_mainTabChangedListener.get());
 
   _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 6, 6, 9, 92 } }, std::vector<int> { { 1 } });
-  _container->Add(0, 0, _outputAndPatch);
+  _container->Add(0, 0, _outputPatchAndPanic);
   _container->Add(1, 0, _guiSettingsAndTweak);
   _container->Add(2, 0, _headerAndGraph);
   _container->Add(3, 0, _tabs);

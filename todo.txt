@@ -4,7 +4,7 @@ TODOLIST for beta-1
 [x] load patch overwrites stuff that is not part of the patch
 [x] no do edit/auto tooltip for output
 [x] prettify last tweaked / last patch
-[ ] panic to own module
+[x] panic to own module
 [ ] try vcenter textbox again
 [ ] up the vno just because
 [ ] do tooltips on labels ("tap dly" => tap delay)

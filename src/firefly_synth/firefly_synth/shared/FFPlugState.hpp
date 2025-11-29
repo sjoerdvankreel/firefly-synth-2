@@ -10,6 +10,7 @@
 #include <firefly_synth/modules/echo/FFEchoState.hpp>
 #include <firefly_synth/modules/note/FFGNoteState.hpp>
 #include <firefly_synth/modules/note/FFVNoteState.hpp>
+#include <firefly_synth/modules/panic/FFPanicState.hpp>
 #include <firefly_synth/modules/effect/FFEffectState.hpp>
 #include <firefly_synth/modules/master/FFMasterState.hpp>
 #include <firefly_synth/modules/output/FFOutputState.hpp>
@@ -46,6 +47,7 @@ struct alignas(FBSIMDAlign) FFGlobalExchangeState final
   std::array<FFGlobalUniExchangeState, 1> globalUni = {};
   std::array<FBModuleProcSingleExchangeState, 1> gMix = {};
   std::array<FBModuleProcSingleExchangeState, 1> gEcho = {};
+  std::array<FBModuleProcSingleExchangeState, 1> panic = {};
   std::array<FBModuleProcSingleExchangeState, 1> master = {};
   std::array<FBModuleProcSingleExchangeState, 1> output = {};
   std::array<FBModuleProcSingleExchangeState, 1> gMatrix = {};
@@ -110,6 +112,7 @@ template <class TBlock, class TAccurate>
 struct alignas(alignof(TAccurate)) FFGlobalParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalParamState);
+  std::array<FFPanicParamState<TBlock>, 1> panic = {};
   std::array<FFGMixParamState<TAccurate>, 1> gMix = {};
   std::array<FFSettingsParamState<TBlock>, 1> settings = {};
   std::array<FFEchoParamState<TBlock, TAccurate>, 1> gEcho = {};
