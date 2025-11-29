@@ -106,6 +106,7 @@ public:
   void ShowOnlineManualForGUIParam(int index) const;
   void ShowOnlineManualForAudioParam(int index) const;
   std::shared_ptr<FBPresetFolder> LoadPresetList() const;
+  virtual std::string OnlineManualLocation() const = 0;
 
   void AddListener(IFBHostGUIContextListener* listener);
   void RemoveListener(IFBHostGUIContextListener* listener);

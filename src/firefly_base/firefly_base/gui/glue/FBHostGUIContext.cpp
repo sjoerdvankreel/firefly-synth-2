@@ -324,9 +324,12 @@ FBHostGUIContext::ShowOnlineManualForGUIParam(int) const
 }
 
 void
-FBHostGUIContext::ShowOnlineManualForAudioParam(int) const
+FBHostGUIContext::ShowOnlineManualForAudioParam(int index) const
 {
-  // TODO
+  int rtModuleIndex = Topo()->audio.params[index].runtimeModuleIndex;
+  int staticModuleIndex = Topo()->modules[rtModuleIndex].topoIndices.index;
+  auto moduleId = Topo()->static_->modules[staticModuleIndex].id;
+  juce::URL(OnlineManualLocation()).withAnchor(moduleId).launchInDefaultBrowser();
 }
 
 std::shared_ptr<FBPresetFolder>
