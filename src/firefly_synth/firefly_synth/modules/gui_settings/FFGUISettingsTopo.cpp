@@ -32,6 +32,7 @@ FFMakeGUISettingsTopo()
   guiHilightMod.slotCount = 1;
   guiHilightMod.defaultText = "On";
   guiHilightMod.id = "{193F0F95-D4D2-46A5-A978-C8740E0C08B3}";
+  guiHilightMod.description = "Highlight Matrix And Direct Mod Bounds";
   guiHilightMod.type = FBParamType::Boolean;
   auto selectGuiHilightMod = [](auto& module) { return &module.hilightMod; };
   guiHilightMod.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightMod);

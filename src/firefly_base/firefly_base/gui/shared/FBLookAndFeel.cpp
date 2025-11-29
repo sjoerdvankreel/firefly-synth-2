@@ -489,19 +489,21 @@ FBLookAndFeel::getTooltipBounds(
   juce::Point<int> screenPos,
   juce::Rectangle<int> parentArea)
 {
-  float tw = 0.0f;
   float th = 0.0f;
-
+  std::string newText = {};
   float textHeight = FBGUIGetFontHeightFloat() + 2.0f;
   auto lines = FBStringSplit(tipText.toStdString(), "\r\n");
   for (int i = 0; i < lines.size(); i++)
   {
     th += textHeight;
-    tw = std::max(tw, (float)std::ceil(FBGUIGetStringWidthCached(i == 0? FBAsciiToUpper(lines[i]): lines[i])));
+    newText += i == 0 ? FBAsciiToUpper(lines[i]) : lines[i];
+    if (i < lines.size() - 1)
+      newText += "\r\n";
   }
 
   int pad = 3;
-  int itw = (int)std::ceil(tw * 1.05f) + 2 * pad + 32;
+  auto baseBounds = LookAndFeel_V4::getTooltipBounds(newText, screenPos, parentArea);
+  int itw = baseBounds.getWidth() + 2 * pad;
   int ith = (int)std::ceil(th) + 2 * pad + 2;
   return Rectangle<int>(screenPos.x > parentArea.getCentreX() ? screenPos.x - (itw + 12) : screenPos.x + 24,
     screenPos.y > parentArea.getCentreY() ? screenPos.y - (ith + 6) : screenPos.y + 6,
