@@ -1,7 +1,9 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
+#include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
@@ -199,6 +201,13 @@ void
 FBLookAndFeel::drawLabel(
   Graphics& g, Label& label)
 {
+  if (dynamic_cast<FBAutoSizeLabel2*>(&label) ||
+      dynamic_cast<FBLastTweakedLabel*>(&label))
+  {
+    g.setColour(Colour(0xFF333333));
+    g.fillRoundedRectangle(label.getLocalBounds().toFloat(), 2.0f);
+  }
+
   g.fillAll(label.findColour(Label::backgroundColourId));
   auto alpha = label.isEnabled() ? 1.0f : 0.5f;
   const Font font(getLabelFont(label));

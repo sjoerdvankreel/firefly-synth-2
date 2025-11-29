@@ -28,7 +28,6 @@ FBLastTweakedLabel(FBPlugGUI* plugGUI) :
 _plugGUI(plugGUI)
 {
   setText("Tweak", dontSendNotification);
-  setJustificationType(Justification::centred);
   plugGUI->AddParamListener(this);
 
   auto const* topo = plugGUI->HostContext()->Topo();
