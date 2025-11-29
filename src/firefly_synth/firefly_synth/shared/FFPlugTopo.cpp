@@ -11,7 +11,7 @@
 #include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 #include <firefly_synth/modules/note/FFGNoteTopo.hpp>
 #include <firefly_synth/modules/note/FFVNoteTopo.hpp>
-#include <firefly_synth/modules/panic/FFPanicTopo.hpp>
+#include <firefly_synth/modules/other/FFOtherTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/master/FFMasterTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
@@ -85,7 +85,7 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->modules[(int)FFModuleType::GlobalUni] = std::move(*FFMakeGlobalUniTopo());
   result->modules[(int)FFModuleType::VoiceModule] = std::move(*FFMakeVoiceModuleTopo());
   result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
-  result->modules[(int)FFModuleType::Panic] = std::move(*FFMakePanicTopo());
+  result->modules[(int)FFModuleType::Other] = std::move(*FFMakeOtherTopo());
   result->modules[(int)FFModuleType::GUISettings] = std::move(*FFMakeGUISettingsTopo());
   result->modules[(int)FFModuleType::Settings] = std::move(*FFMakeSettingsTopo(isFX));
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
@@ -142,7 +142,7 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GMix, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GEcho, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::Output, 0 });
-  result->moduleProcessOrder.push_back({ (int)FFModuleType::Panic, 0 });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::Other, 0 });
 
   return result;
 }

@@ -8,8 +8,8 @@
 #include <firefly_synth/modules/mix/FFMixGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
 #include <firefly_synth/modules/echo/FFEchoGUI.hpp>
-#include <firefly_synth/modules/panic/FFPanicGUI.hpp>
-#include <firefly_synth/modules/panic/FFPanicTopo.hpp>
+#include <firefly_synth/modules/other/FFOtherGUI.hpp>
+#include <firefly_synth/modules/other/FFOtherTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
@@ -214,7 +214,7 @@ FFPlugGUI::GetRenderType(bool graphOrKnob) const
 void
 FFPlugGUI::FlushAudio()
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::Panic, 0 }, { (int)FFPanicParam::FlushAudioToggle, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::Other, 0 }, { (int)FFOtherParam::FlushAudioToggle, 0 } };
   double flushNorm = HostContext()->GetAudioParamNormalized(indices);
   double newFlushNorm = flushNorm > 0.5 ? 0.0 : 1.0;
   HostContext()->PerformImmediateAudioParamEdit(indices, newFlushNorm);
@@ -230,10 +230,10 @@ FFPlugGUI::SetupGUI()
   _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
   _headerAndGraph->Add(0, 1, _mainGraph);
 
-  _outputPanicAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
-  _outputPanicAndPatch->Add(0, 0, FFMakeOutputGUI(this));
-  _outputPanicAndPatch->Add(0, 1, FFMakePanicGUI(this));
-  _outputPanicAndPatch->Add(0, 2, FFMakePatchGUI(this));
+  _outputPatchAndOther = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
+  _outputPatchAndOther->Add(0, 0, FFMakeOutputGUI(this));
+  _outputPatchAndOther->Add(0, 1, FFMakePatchGUI(this));
+  _outputPatchAndOther->Add(0, 2, FFMakeOtherGUI(this));
 
   _guiSettingsAndTweak = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
   _guiSettingsAndTweak->Add(0, 0, FFMakeGUISettingsGUI(this));
@@ -263,7 +263,7 @@ FFPlugGUI::SetupGUI()
   _tabs->getTabbedButtonBar().addChangeListener(_mainTabChangedListener.get());
 
   _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 6, 6, 9, 92 } }, std::vector<int> { { 1 } });
-  _container->Add(0, 0, _outputPanicAndPatch);
+  _container->Add(0, 0, _outputPatchAndOther);
   _container->Add(1, 0, _guiSettingsAndTweak);
   _container->Add(2, 0, _headerAndGraph);
   _container->Add(3, 0, _tabs);

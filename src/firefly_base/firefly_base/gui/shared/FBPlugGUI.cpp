@@ -253,7 +253,7 @@ FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
       return;
     if (tag == 1)
     {
-      HostContext()->ShowManualForAudioParam(index);
+      HostContext()->ShowOnlineManualForAudioParam(index);
     }
     else if (tag == 2)
     {

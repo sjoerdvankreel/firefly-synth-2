@@ -178,7 +178,7 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   auto const& globalParam = _procState->param.global;
 
   // manual flush
-  bool flushToggle = globalParam.panic[0].block.flushAudioToggle[0].Value() > 0.5f;
+  bool flushToggle = globalParam.other[0].block.flushAudioToggle[0].Value() > 0.5f;
   if (flushToggle != _prevFlushAudioToggle)
   {
     _flushThisRound = true;

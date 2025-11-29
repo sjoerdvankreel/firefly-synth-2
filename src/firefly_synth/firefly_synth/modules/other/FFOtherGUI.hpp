@@ -5,4 +5,4 @@
 class FBPlugGUI;
 
 juce::Component*
-FFMakePanicGUI(FBPlugGUI* plugGUI);
+FFMakeOtherGUI(FBPlugGUI* plugGUI);

@@ -102,7 +102,9 @@ public:
   void SetPatchName(std::string const& name);
   bool IsPatchLoaded() const { return _isPatchLoaded; }
   
-  void ShowManualForAudioParam(int index) const;
+  void ShowLocalManual() const;
+  void ShowOnlineManualForGUIParam(int index) const;
+  void ShowOnlineManualForAudioParam(int index) const;
   std::shared_ptr<FBPresetFolder> LoadPresetList() const;
 
   void AddListener(IFBHostGUIContextListener* listener);
