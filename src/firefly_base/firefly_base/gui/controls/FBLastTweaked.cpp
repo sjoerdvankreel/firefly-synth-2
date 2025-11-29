@@ -91,6 +91,7 @@ _fixedWidth(fixedWidth), _plugGUI(plugGUI)
   plugGUI->AddParamListener(this);
   addListener(this);
   setFont(FBGUIGetFont());
+  setIndents(4, 6);
 }
 
 int
