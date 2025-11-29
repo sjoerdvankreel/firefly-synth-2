@@ -76,6 +76,7 @@ public:
   std::string name = {};
   std::string unit = {};
   std::string display = {};
+  std::string description = {};
   std::string defaultText = {};
   bool slotFormatDisplay = {};
   bool slotFormatterOverrides = {};

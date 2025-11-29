@@ -29,6 +29,7 @@ FFMakeVoiceModuleTopo()
   coarse.name = "Coarse";
   coarse.slotCount = 1;
   coarse.unit = "Semitones";
+  coarse.description = "Coarse Pitch";
   coarse.id = "{64019FB1-6EE2-4FF5-8D28-F6B692B25EFB}";
   coarse.type = FBParamType::Linear;
   coarse.Linear().min = -FFModCoarseSemis;
