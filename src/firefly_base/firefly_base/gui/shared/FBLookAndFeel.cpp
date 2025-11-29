@@ -501,7 +501,7 @@ FBLookAndFeel::getTooltipBounds(
   }
 
   int pad = 3;
-  int itw = (int)std::ceil(tw) + 2 * pad + 2;
+  int itw = (int)std::ceil(tw * 1.05f) + 2 * pad + 2;
   int ith = (int)std::ceil(th) + 2 * pad + 2;
   return Rectangle<int>(screenPos.x > parentArea.getCentreX() ? screenPos.x - (itw + 12) : screenPos.x + 24,
     screenPos.y > parentArea.getCentreY() ? screenPos.y - (ith + 6) : screenPos.y + 6,
