@@ -322,6 +322,13 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
 
   std::string result = param.shortName + ": ";
   result += param.NormalizedToTextWithUnit(false, normalized);
+#ifndef NDEBUG
+  result += "\r\nParam index: " + std::to_string(index);
+  result += "\r\nParam tag: " + std::to_string(param.tag);
+#endif
+  if (param.static_.IsOutput())
+    return result;
+
   result += "\r\nStored In: " + (param.static_.storeInPatch ? std::string("Session And Patch") : std::string("Session Only"));
   result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
   if (param.static_.mode == FBParamMode::Accurate || param.static_.mode == FBParamMode::VoiceStart)
@@ -339,10 +346,6 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
     result += "\r\nEngine min: " + param.NormalizedToTextWithUnit(false, engineMin);
     result += "\r\nEngine max: " + param.NormalizedToTextWithUnit(false, engineMax);
   }
-#ifndef NDEBUG
-  result += "\r\nParam index: " + std::to_string(index);
-  result += "\r\nParam tag: " + std::to_string(param.tag);
-#endif
   return result;
 }
 
