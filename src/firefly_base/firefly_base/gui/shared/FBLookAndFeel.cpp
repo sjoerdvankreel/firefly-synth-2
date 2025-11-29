@@ -490,7 +490,29 @@ FBLookAndFeel::drawTooltip(
 {
   auto cornerSize = 5.0f;
   Rectangle<int> bounds(width, height);
-  LookAndFeel_V4::drawTooltip(g, text, width, height);
+  g.setColour(findColour(TooltipWindow::backgroundColourId));
+  g.fillRoundedRectangle(bounds.toFloat(), cornerSize);
+  g.setColour(findColour(TooltipWindow::outlineColourId));
+  g.drawRoundedRectangle(bounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+
+  float pad = 3.0f;
+  float fontSize = 13.0f;
+  float textHeight = FBGUIGetFontHeightFloat() + 2.0f;
+  auto lines = FBStringSplit(text.toStdString(), "\r\n");
+  auto textBounds = Rectangle<float>(pad, pad, width - 2.0f * pad, textHeight);
+  g.setColour(findColour(TooltipWindow::textColourId));
+  g.setFont(Font(FontOptions(fontSize, Font::bold).withMetricsKind(getDefaultMetricsKind())));
+  if (lines.size() > 0)
+  {
+    g.drawText(lines[0], textBounds, Justification::centred, false);
+    lines.erase(lines.begin());
+  }
+  while (lines.size() > 0)
+  {
+    textBounds.translate(0.0f, textHeight);
+    g.drawText(lines[0], textBounds, Justification::left, false);
+    lines.erase(lines.begin());
+  }
   g.setColour(Colours::white);
   g.drawRoundedRectangle(bounds.toFloat(), cornerSize, 2.0f);
 }
