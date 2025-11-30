@@ -174,5 +174,5 @@ Routes voice mixdown to master output.
 * External audio to out:<br/>
 Routes external audio to master output.
 
-The amplitude parameter is essentially master gain with an optional LFO applied to it.<br/>
+The amplitude parameter is just master gain with an optional LFO applied to it.<br/>
 Likewise the balance control is global stereo balance with an optional LFO applied to it.
