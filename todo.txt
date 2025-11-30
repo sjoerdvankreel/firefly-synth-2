@@ -7,7 +7,8 @@ TODOLIST for beta-1
 [x] panic to own module
 [x] try vcenter textbox again
 [x] up the vno just because
-[ ] document the OTHER section
+[x] document the OTHER section
+[ ] debug check every description is there
 [ ] SET THE ONLINE LOCATION TO MAIN BRANCH
 [ ] open html from the context menu with the right target
 [ ] write the manual
