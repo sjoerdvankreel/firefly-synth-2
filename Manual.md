@@ -124,3 +124,9 @@ You can set it to 0% and have the voice play at full scale regardless of the voi
 This is useful if you want to assign different envelopes to individual oscis.<br/>
 In any case the voice amp envelope still controls voice lifetime - when it's done, the voice is killed,<br/>
 regardless of any other potentially still active envelopes.
+
+Voice amplitude envelope target: this controls at which stage the voice amp envelope is applied.<br/>
+The most natural setting for this is "VMix Out", but it can be set to individual oscillators, osci mix, or individual FX as well.<br/>
+The primary use case for this is to cooperate with per-voice echo. Per-voice echo can be applied to the voice as a whole,<br/>
+but also to individual oscis and FX. In which case, it is necessary to change the target accordingly, to prevent the voice echo<br/>
+from being cut short by the voice amplitude envelope. See the VEcho section for more details.
