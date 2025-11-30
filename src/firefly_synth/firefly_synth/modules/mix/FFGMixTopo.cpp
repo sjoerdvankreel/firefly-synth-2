@@ -37,6 +37,7 @@ FFMakeGMixTopo(bool isFx)
   amp.slotCount = 1;
   amp.unit = "%";
   amp.id = "{7A7248F3-570F-4AB4-B4FE-CA7D1B8531CF}";
+  amp.description = "Global Amplitude";
   amp.type = FBParamType::Linear;
   amp.Linear().min = 0.0f;
   amp.Linear().max = 2.0f;
@@ -53,6 +54,7 @@ FFMakeGMixTopo(bool isFx)
   lfo5ToAmp.slotCount = 1;
   lfo5ToAmp.unit = "%";
   lfo5ToAmp.id = "{EF9C4C3E-C0F8-4050-BE77-DAFFFEC31756}";
+  lfo5ToAmp.description = "Modulate Global Amplitude By GLFO 5";
   lfo5ToAmp.type = FBParamType::Identity;
   auto selectLFO5ToAmp = [](auto& module) { return &module.acc.lfo5ToAmp; };
   lfo5ToAmp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO5ToAmp);
@@ -66,6 +68,7 @@ FFMakeGMixTopo(bool isFx)
   bal.slotCount = 1;
   bal.unit = "%";
   bal.id = "{C85CEDAD-917D-444A-967C-6D9FCEA1828E}";
+  bal.description = "Global Stereo Balance";
   bal.type = FBParamType::Linear;
   bal.Linear().displayMultiplier = 100;
   bal.Linear().min = -1.0f;
@@ -82,6 +85,7 @@ FFMakeGMixTopo(bool isFx)
   lfo6ToBal.slotCount = 1;
   lfo6ToBal.unit = "%";
   lfo6ToBal.id = "{B4A71A47-EA18-416C-89CC-38C66A2A17E5}";
+  lfo6ToBal.description = "Modulate Global Stereo Balance By GLFO 6";
   lfo6ToBal.type = FBParamType::Identity;
   auto selectLFO6ToBal = [](auto& module) { return &module.acc.lfo6ToBal; };
   lfo6ToBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO6ToBal);
@@ -95,6 +99,7 @@ FFMakeGMixTopo(bool isFx)
   voiceToGFX.slotCount = FFEffectCount;
   voiceToGFX.unit = "%";
   voiceToGFX.id = "{43E24F38-ADA0-41A0-88BD-B17333ABFA9C}";
+  voiceToGFX.description = "Route Voice Mixdown To Global FX";
   voiceToGFX.slotFormatter = FormatVoiceMixToGFXSlot;
   voiceToGFX.slotFormatterOverrides = true;
   voiceToGFX.type = FBParamType::Identity;
@@ -110,6 +115,7 @@ FFMakeGMixTopo(bool isFx)
   extAudioToGFX.slotCount = FFEffectCount;
   extAudioToGFX.unit = "%";
   extAudioToGFX.id = "{20FB04D5-30A4-4AE8-9D8B-7CF039DC5A12}";
+  extAudioToGFX.description = "Route External Audio To Global FX";
   extAudioToGFX.slotFormatter = FormatExtAudioToGFXSlot;
   extAudioToGFX.slotFormatterOverrides = true;
   extAudioToGFX.type = FBParamType::Identity;
@@ -125,6 +131,7 @@ FFMakeGMixTopo(bool isFx)
   gfxToGFX.slotCount = FFMixFXToFXCount;
   gfxToGFX.unit = "%";
   gfxToGFX.id = "{4F4C11F4-94B9-4685-B44F-70BCC96B1F3C}";
+  gfxToGFX.description = "Route Global FX To Global FX";
   gfxToGFX.slotFormatter = [](auto const& topo, int moduleSlot, int mixSlot) { return FFMixFormatFXToFXSlot(topo, true, moduleSlot, mixSlot); };
   gfxToGFX.slotFormatterOverrides = true;
   gfxToGFX.type = FBParamType::Identity;
@@ -140,6 +147,7 @@ FFMakeGMixTopo(bool isFx)
   voiceToOut.slotCount = 1;
   voiceToOut.unit = "%";
   voiceToOut.id = "{72FCC170-A112-401E-BF11-C91A59C26457}";
+  voiceToOut.description = "Route Voice Mixdown To Master Output";
   voiceToOut.type = FBParamType::Identity;
   auto selectVoiceToOut = [](auto& module) { return &module.acc.voiceToOut; };
   voiceToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVoiceToOut);
@@ -153,6 +161,7 @@ FFMakeGMixTopo(bool isFx)
   extAudioToOut.slotCount = 1;
   extAudioToOut.unit = "%";
   extAudioToOut.id = "{5037D6CD-CB68-42E5-AD48-2B3BA8FAB213}";
+  extAudioToOut.description = "Route External Audio To Master Output";
   extAudioToOut.type = FBParamType::Identity;
   auto selectExtAudioToOut = [](auto& module) { return &module.acc.extAudioToOut; };
   extAudioToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioToOut);
@@ -166,6 +175,7 @@ FFMakeGMixTopo(bool isFx)
   gfxToOut.slotCount = FFEffectCount;
   gfxToOut.unit = "%";
   gfxToOut.id = "{009211F4-37C6-4FE6-B563-F2636A7C3587}";
+  gfxToOut.description = "Route Global FX To Master Output";
   gfxToOut.slotFormatter = [](auto const& topo, int moduleSlot, int mixSlot) { return FFMixFormatFXToOutSlot(topo, true, moduleSlot, mixSlot); };
   gfxToOut.slotFormatterOverrides = true;
   gfxToOut.type = FBParamType::Identity;
