@@ -310,7 +310,7 @@ FBPlugGUI::GetTooltipForGUIParam(int index) const
 {
   auto const& param = HostContext()->Topo()->gui.params[index];
   double normalized = HostContext()->GetGUIParamNormalized(index);
-  std::string result = FBAsciiToUpper(param.static_.description);
+  std::string result = param.static_.description;
   result += "\r\n";
   result += "\r\n" + param.shortName + ": " + param.NormalizedToTextWithUnit(false, normalized);
   result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
@@ -327,7 +327,7 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
   double engineMin = paramActive.active ? paramActive.minValue : normalized;
   double engineMax = paramActive.active ? paramActive.maxValue : normalized;
 
-  std::string result = FBAsciiToUpper(param.static_.description);
+  std::string result = param.static_.description;
 #ifndef NDEBUG
   result += "\r\nParam index: " + std::to_string(index);
   result += "\r\nParam tag: " + std::to_string(param.tag);
@@ -374,8 +374,14 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   if (dynamic_cast<FBParamControl*>(event.eventComponent))
     return;
 
+  // just don't want a context menu on it
+  if (dynamic_cast<FBGUIParamControl*>(event.eventComponent))
+    return;
+
   // for combos
   if (event.eventComponent && event.eventComponent->findParentComponentOfClass<FBParamControl>())
+    return;
+  if (event.eventComponent && event.eventComponent->findParentComponentOfClass<FBGUIParamControl>())
     return;
 
   // pops up module context menu
