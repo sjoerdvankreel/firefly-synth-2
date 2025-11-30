@@ -32,7 +32,7 @@ FFMakeGUISettingsTopo()
   guiHilightMod.slotCount = 1;
   guiHilightMod.defaultText = "On";
   guiHilightMod.id = "{193F0F95-D4D2-46A5-A978-C8740E0C08B3}";
-  guiHilightMod.description = "Highlight Matrix And Direct Mod Bounds";
+  guiHilightMod.description = "Highlight Parameter Modulation Bounds";
   guiHilightMod.type = FBParamType::Boolean;
   auto selectGuiHilightMod = [](auto& module) { return &module.hilightMod; };
   guiHilightMod.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightMod);
@@ -42,6 +42,7 @@ FFMakeGUISettingsTopo()
   guiHilightTweakMode.slotCount = 1;
   guiHilightTweakMode.defaultText = "Default";
   guiHilightTweakMode.id = "{486DAE85-F8CC-4825-ACEA-D13D3D8A6933}";
+  guiHilightTweakMode.description = "Highlight Tweaked Parameters";
   guiHilightTweakMode.type = FBParamType::List;
   guiHilightTweakMode.List().items = {
    { "{C89F3D84-0C5E-4130-9663-FE372973FBCE}", "Off" },
@@ -56,6 +57,7 @@ FFMakeGUISettingsTopo()
   guiKnobVisualsMode.name = "Knob Visuals From Engine";
   guiKnobVisualsMode.slotCount = 1;
   guiKnobVisualsMode.id = "{75702E18-0499-45ED-935E-A1BC1D0348C3}";
+  guiKnobVisualsMode.description = "Highlight Engine Parameter State";
   guiKnobVisualsMode.type = FBParamType::List;
   guiKnobVisualsMode.List().items = {
     { "{74535D7D-90EC-407D-A439-946A9C09351D}", "Off" },
@@ -69,6 +71,7 @@ FFMakeGUISettingsTopo()
   guiGraphVisualsMode.name = "Plot Visuals From Engine";
   guiGraphVisualsMode.slotCount = 1;
   guiGraphVisualsMode.id = "{6C5F2DC2-C796-444C-8D43-077708580609}";
+  guiGraphVisualsMode.description = "Show Engine State In Graph Plots";
   guiGraphVisualsMode.type = FBParamType::List;
   guiGraphVisualsMode.List().items = {
     { "{D5C9FC77-0DE8-4077-9D07-073B44F5076F}", "Off" },
