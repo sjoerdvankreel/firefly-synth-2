@@ -8,6 +8,7 @@ TODOLIST for beta-1
 [x] try vcenter textbox again
 [x] up the vno just because
 [x] document the OTHER section
+[ ] move manual to static
 [ ] debug check every description is there
 [ ] SET THE ONLINE LOCATION TO MAIN BRANCH
 [ ] open html from the context menu with the right target

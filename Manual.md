@@ -7,7 +7,8 @@ Contains everything that is not directly related to generating audio.
 
 <a id="4472F4E6-1315-4FDC-A52E-CAF6D7136DD2"></a>
 ### Output panel
-Shows CPU usage relative to single core, voice usage and output gain with a maximum of 0dB.
+Shows CPU usage relative to single core, voice usage and output gain with a maximum of 0dB.<br/>
+The MTS-ESP indicator shows whether an MTS-ESP host is connected.
 
 <a id="68289DDE-CD5E-400C-B022-3893A3989441"></a>
 ### Panic button
