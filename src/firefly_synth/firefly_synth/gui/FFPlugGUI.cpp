@@ -230,10 +230,10 @@ FFPlugGUI::SetupGUI()
   _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
   _headerAndGraph->Add(0, 1, _mainGraph);
 
-  _outputPatchAndOther = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
-  _outputPatchAndOther->Add(0, 0, FFMakeOutputGUI(this));
-  _outputPatchAndOther->Add(0, 1, FFMakePatchGUI(this));
-  _outputPatchAndOther->Add(0, 2, FFMakeOtherGUI(this));
+  _outputOtherAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
+  _outputOtherAndPatch->Add(0, 0, FFMakeOutputGUI(this));
+  _outputOtherAndPatch->Add(0, 1, FFMakeOtherGUI(this));
+  _outputOtherAndPatch->Add(0, 2, FFMakePatchGUI(this));
 
   _guiSettingsAndTweak = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
   _guiSettingsAndTweak->Add(0, 0, FFMakeGUISettingsGUI(this));
@@ -263,7 +263,7 @@ FFPlugGUI::SetupGUI()
   _tabs->getTabbedButtonBar().addChangeListener(_mainTabChangedListener.get());
 
   _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 6, 6, 9, 92 } }, std::vector<int> { { 1 } });
-  _container->Add(0, 0, _outputPatchAndOther);
+  _container->Add(0, 0, _outputOtherAndPatch);
   _container->Add(1, 0, _guiSettingsAndTweak);
   _container->Add(2, 0, _headerAndGraph);
   _container->Add(3, 0, _tabs);

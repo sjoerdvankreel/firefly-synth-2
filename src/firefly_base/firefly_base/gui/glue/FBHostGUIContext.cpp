@@ -318,17 +318,11 @@ FBHostGUIContext::ShowLocalManual() const
 }
 
 void
-FBHostGUIContext::ShowOnlineManualForGUIParam(int) const
-{
-  // TODO
-}
-
-void
 FBHostGUIContext::ShowOnlineManualForAudioParam(int index) const
 {
   int rtModuleIndex = Topo()->audio.params[index].runtimeModuleIndex;
   int staticModuleIndex = Topo()->modules[rtModuleIndex].topoIndices.index;
-  auto moduleId = Topo()->static_->modules[staticModuleIndex].id;
+  auto const& moduleId = Topo()->static_->modules[staticModuleIndex].id;
   juce::URL(OnlineManualLocation()).withAnchor(moduleId).launchInDefaultBrowser();
 }
 

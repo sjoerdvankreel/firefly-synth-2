@@ -18,7 +18,7 @@ class FBVST3GUIEditor;
 class FBGUIStateContainer;
 class FBExchangeStateContainer;
 
-class FBVST3EditController final:
+class FBVST3EditController:
 public EditControllerEx1,
 public IMidiMapping,
 public IDataExchangeReceiver,
@@ -28,6 +28,8 @@ public FBHostGUIContext
   DataExchangeReceiverHandler _exchangeHandler;
 
 protected:
+  FBVST3EditController(std::unique_ptr<FBStaticTopo>&& topo);
+
   void DoEndAudioParamChange(int index) override;
   void DoBeginAudioParamChange(int index) override;
   void DoPerformAudioParamEdit(int index, double normalized) override;
@@ -40,7 +42,6 @@ public:
   DELEGATE_REFCOUNT(EditController)
 
   ~FBVST3EditController();
-  FBVST3EditController(std::unique_ptr<FBStaticTopo>&& topo);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3EditController);
 
   void ResetView();
