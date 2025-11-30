@@ -108,7 +108,7 @@ See the matrix section for more details.
 Controls the signal path of the per-voice audio engine.
 
 * Oscillator to voice FX routes the output of individual oscillators to the per-voice effect (VFX) section.
-* Voice FX to voice FX routes the output of per-voice effect modules to other per-voice effect modules. 
+* Voice FX to voice FX routes the output of per-voice effect modules to other per-voice effect modules.
 FX modules are processed in order, so you can only route VFX 1 to 2/3/4, 2 to 3/4 etc.
 * Oscillator mix: this is an internal intermediate stage that combines the output of all oscillators.
 You can control how much each osci contributes to oscillator mix, and then route the combined mix to each of the VFX modules.
@@ -137,3 +137,12 @@ Osc mix to out: controls how much the internal osci mixer stage contributes to t
 <a id="09ED2CCE-3AC5-455E-935C-A684BEBC154D"></a>
 ### Global Mixer
 Controls the signal path of the global audio engine.
+
+* Voice Mix to GFX routes the voice mixdown to the global effect (GFX) section.
+* External Audio to GFX routes external audio to the global effect (GFX) section.
+For the FX build, external audio is the plugin's primary input.<br/>
+For the instrument build, external audio is the plugin's sidechain input.
+* Global FX to global FX routes the output of global effect modules to other global effect modules.
+* GFX to out routes individual global FX to master output.
+* VMix to out routes voice mixdown to master output.
+* External audio to out routes external audio to master output.
