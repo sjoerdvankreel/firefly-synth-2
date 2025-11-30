@@ -66,7 +66,9 @@ This feature works strictly by tracking note-on/off events. Section "shortening"
 Contains controls affecting the plugin as a whole.<br/>
 These parameters control all voices together as well as affect global filters and effects.
 
-
+Pitchbend together with bend range sets the base pitch for the entire plugin.<br/>
+By default it is set to control everything, but it can also target specific oscillators.<br/>
+By default, MIDI pitchbend is set to modulate master pitchbend at full scale, but this can be changed in the mod matrix.
 
 </div>
 </body>
