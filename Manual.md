@@ -97,7 +97,7 @@ When off, microtuning is applied continuously.
 When on, the "tune master pitchbend" switch has no effect for voice-level tuning, but it does still affect the master pitch sources in the global mod matrix.
 * Master pitch bend: includes master PB in either the tuned or untuned part of pitch calculations.
 When off, setting master PB to +12 semis results in 1 octave up (so, double the frequency).
-When on, and master PB is set to +12 semis, results in the exact same pitch as playing C5 with microtuning enabled.
+When on, and master PB is set to +12 semis, playing C4 results in the exact same pitch as playing C5 with microtuning enabled (and master PB set to 0).
 * Voice coarse: includes voice coarse pitch parameter in either the tuned or untuned part of pitch calculations.
 This is primarily intended to cooperate with global unison, which can alter the coarse pitch of individual voices.
 * Tune master matrix/tune voice matrix: these affect whether voice-level pitch and global last/low/high-key pitch sources in the matrix are retuned.
