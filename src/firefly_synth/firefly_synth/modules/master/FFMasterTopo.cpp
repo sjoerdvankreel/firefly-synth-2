@@ -24,6 +24,7 @@ FFMakeMasterTopo()
   aux.slotCount = FFMasterAuxCount;
   aux.unit = "%";
   aux.id = "{BF8F4931-48E3-4277-98ED-950CD76595A9}";
+  aux.description = "Auxiliary Control";
   aux.type = FBParamType::Identity;
   auto selectAux = [](auto& module) { return &module.acc.aux; };
   aux.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAux);
@@ -37,6 +38,7 @@ FFMakeMasterTopo()
   modWheel.slotCount = 1;
   modWheel.unit = "%";
   modWheel.id = "{74F8A030-AD5A-4CF9-96D7-82123D2DCF24}";
+  modWheel.description = "Modulation Wheel";
   modWheel.type = FBParamType::Identity;
   auto selectModWheel = [](auto& module) { return &module.acc.modWheel; };
   modWheel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectModWheel);
@@ -50,6 +52,7 @@ FFMakeMasterTopo()
   pitchBend.slotCount = 1;
   pitchBend.unit = "%";
   pitchBend.id = "{381145EE-9595-460F-937F-9078F40DBD65}";
+  pitchBend.description = "Pitch Bend Amount";
   pitchBend.type = FBParamType::Linear;
   pitchBend.Linear().min = -1.0f;
   pitchBend.Linear().max = 1.0f;
@@ -65,6 +68,7 @@ FFMakeMasterTopo()
   bendRange.display = "PB Range";
   bendRange.slotCount = 1;
   bendRange.id = "{71DCB9FB-D46F-413C-9AD5-28F0DD5DA7A5}";
+  bendRange.description = "Pitch Bend Range";
   bendRange.unit = "Semitones";
   bendRange.defaultText = "+/-12";
   bendRange.type = FBParamType::Discrete;
@@ -83,6 +87,7 @@ FFMakeMasterTopo()
   bendTarget.display = "PB Target";
   bendTarget.slotCount = 1;
   bendTarget.id = "{CA922D71-6FDF-42F7-893D-2286EDAA91F1}";
+  bendTarget.description = "Pitch Bend Target";
   bendTarget.defaultText = "Global";
   bendTarget.type = FBParamType::List;
   bendTarget.List().items = {
