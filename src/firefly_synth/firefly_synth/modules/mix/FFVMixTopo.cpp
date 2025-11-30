@@ -63,6 +63,7 @@ FFMakeVMixTopo()
   amp.slotCount = 1;
   amp.unit = "%";
   amp.id = "{02B3BE49-9ECC-4289-9488-CAB4252B6E9D}";
+  amp.description = "Voice Amplitude";
   amp.type = FBParamType::Linear;
   amp.Linear().min = 0.0f;
   amp.Linear().max = 2.0f;
@@ -79,6 +80,7 @@ FFMakeVMixTopo()
   ampEnvToAmp.slotCount = 1;
   ampEnvToAmp.unit = "%";
   ampEnvToAmp.id = "{6C0E8516-778A-47FB-BDC5-0A6F132C13B8}";
+  ampEnvToAmp.description = "Modulate Voice Amplitude By Voice Amp Env";
   ampEnvToAmp.type = FBParamType::Identity;
   auto selectAmpEnvToAmp = [](auto& module) { return &module.acc.ampEnvToAmp; };
   ampEnvToAmp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAmpEnvToAmp);
@@ -92,6 +94,7 @@ FFMakeVMixTopo()
   ampEnvTarget.display = "Target";
   ampEnvTarget.defaultText = "VMix Out";
   ampEnvTarget.id = "{B1D76321-C513-4836-9AB6-741E2204D128}";
+  ampEnvTarget.description = "Voice Amp Env Target Stage";
   ampEnvTarget.type = FBParamType::List;
   ampEnvTarget.List().items = {
     { "{350E31BF-0F89-4C30-B719-9E436F2074C2}", "Off" },
@@ -115,6 +118,7 @@ FFMakeVMixTopo()
   bal.slotCount = 1;
   bal.unit = "%";
   bal.id = "{51623C27-E29C-4877-B76D-D123B0D13F45}";
+  bal.description = "Voice Stereo Balance";
   bal.type = FBParamType::Linear;
   bal.Linear().displayMultiplier = 100;
   bal.Linear().min = -1.0f;
@@ -131,6 +135,7 @@ FFMakeVMixTopo()
   lfo6ToBal.slotCount = 1;
   lfo6ToBal.unit = "%";
   lfo6ToBal.id = "{1B17DA72-4E2E-4D47-91C4-B9858ED85640}";
+  lfo6ToBal.description = "Modulate Voice Stereo Balance By Voice LFO 6";
   lfo6ToBal.type = FBParamType::Identity;
   auto selectLFO6ToBal = [](auto& module) { return &module.acc.lfo6ToBal; };
   lfo6ToBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO6ToBal);
@@ -144,6 +149,7 @@ FFMakeVMixTopo()
   osciToOsciMix.slotCount = FFOsciCount;
   osciToOsciMix.unit = "%";
   osciToOsciMix.id = "{3EF9D095-1F5E-45BD-8B9E-55EEC321AA43}";
+  osciToOsciMix.description = "Route Osc To Mix Stage";
   osciToOsciMix.slotFormatter = FormatOsciToOsciMixSlot;
   osciToOsciMix.slotFormatterOverrides = true;
   osciToOsciMix.type = FBParamType::Identity;
@@ -159,6 +165,7 @@ FFMakeVMixTopo()
   osciMixToVFX.slotCount = FFEffectCount;
   osciMixToVFX.unit = "%";
   osciMixToVFX.id = "{54582A91-57BD-4F24-BA01-390AF0339EB2}";
+  osciMixToVFX.description = "Route Mix Stage To Voice FX";
   osciMixToVFX.slotFormatter = FormatOsciMixToVFXSlot;
   osciMixToVFX.slotFormatterOverrides = true;
   osciMixToVFX.type = FBParamType::Identity;
@@ -174,6 +181,7 @@ FFMakeVMixTopo()
   osciToVFX.slotCount = FFVMixOsciToVFXCount;
   osciToVFX.unit = "%";
   osciToVFX.id = "{1BC03120-9E8C-412B-81D4-17CC662BA72B}";
+  osciToVFX.description = "Route Osc To Voice FX";
   osciToVFX.slotFormatter = FormatOsciToVFXSlot;
   osciToVFX.slotFormatterOverrides = true;
   osciToVFX.type = FBParamType::Identity;
@@ -189,6 +197,7 @@ FFMakeVMixTopo()
   vfxToVFX.slotCount = FFMixFXToFXCount;
   vfxToVFX.unit = "%";
   vfxToVFX.id = "{21EF058C-86B5-4E7B-B4A1-5CFE92F20065}";
+  vfxToVFX.description = "Route Voice FX To Voice FX";
   vfxToVFX.slotFormatter = [](auto const& topo, int moduleSlot, int mixSlot) { return FFMixFormatFXToFXSlot(topo, false, moduleSlot, mixSlot); };
   vfxToVFX.slotFormatterOverrides = true;
   vfxToVFX.type = FBParamType::Identity;
@@ -204,6 +213,7 @@ FFMakeVMixTopo()
   osciToOut.slotCount = FFOsciCount;
   osciToOut.unit = "%";
   osciToOut.id = "{FFBE0515-CF42-4E5F-B453-0CEA58A623D8}";
+  osciToOut.description = "Route Osc To Voice Output";
   osciToOut.slotFormatter = FormatOsciToOutSlot;
   osciToOut.slotFormatterOverrides = true;
   osciToOut.type = FBParamType::Identity;
@@ -219,6 +229,7 @@ FFMakeVMixTopo()
   vfxToOut.slotCount = FFEffectCount;
   vfxToOut.unit = "%";
   vfxToOut.id = "{D159D4DD-BF49-4208-BEAE-D5BE550AB9FA}";
+  vfxToOut.description = "Route Voice FX To Voice Output";
   vfxToOut.slotFormatter = [](auto const& topo, int moduleSlot, int mixSlot) { return FFMixFormatFXToOutSlot(topo, false, moduleSlot, mixSlot); };
   vfxToOut.slotFormatterOverrides = true;
   vfxToOut.type = FBParamType::Identity;
@@ -234,6 +245,7 @@ FFMakeVMixTopo()
   osciMixToOut.slotCount = 1;
   osciMixToOut.unit = "%";
   osciMixToOut.id = "{44FCA1C1-297B-4EE9-B928-81F2CF31EB2A}";
+  osciMixToOut.description = "Route Mix Stage To Voice Output";
   osciMixToOut.slotFormatter = FormatOsciMixToOut;
   osciMixToOut.slotFormatterOverrides = true;
   osciMixToOut.type = FBParamType::Identity;
