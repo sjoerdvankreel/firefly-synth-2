@@ -55,6 +55,7 @@ FFMakeSettingsTopo(bool isFx)
   tuning.slotCount = 1;
   tuning.defaultText = "Off";
   tuning.id = "{7192D8E2-235B-46FA-93B6-BBE75F1088FD}";
+  tuning.description = "Enable Microtuning";
   tuning.type = FBParamType::Boolean;
   auto selectTuning = [](auto& module) { return &module.block.tuning; };
   tuning.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuning);
@@ -69,6 +70,7 @@ FFMakeSettingsTopo(bool isFx)
   tuneOnNote.slotCount = 1;
   tuneOnNote.defaultText = "Off";
   tuneOnNote.id = "{12E81BF9-8123-4B7C-B1F6-976D0D7FE20A}";
+  tuneOnNote.description = "Tune On Note Only";
   tuneOnNote.type = FBParamType::Boolean;
   auto selectTuneOnNote = [](auto& module) { return &module.block.tuneOnNote; };
   tuneOnNote.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuneOnNote);
@@ -84,6 +86,7 @@ FFMakeSettingsTopo(bool isFx)
   tuneMasterPB.slotCount = 1;
   tuneMasterPB.defaultText = "Off";
   tuneMasterPB.id = "{EBBE4E94-C14C-4CE1-B70B-BE26E17EA155}";
+  tuneMasterPB.description = "Tune Master Pitch Bend Parameter";
   tuneMasterPB.type = FBParamType::Boolean;
   auto selectTuneMasterPB = [](auto& module) { return &module.block.tuneMasterPB; };
   tuneMasterPB.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuneMasterPB);
@@ -99,6 +102,7 @@ FFMakeSettingsTopo(bool isFx)
   tuneMasterMatrix.slotCount = 1;
   tuneMasterMatrix.defaultText = "Off";
   tuneMasterMatrix.id = "{8D196ECE-BF26-4735-804D-28641DEF06CA}";
+  tuneMasterMatrix.description = "Tune Global Matrix Master Pitch";
   tuneMasterMatrix.type = FBParamType::Boolean;
   auto selectTuneMasterMatrix = [](auto& module) { return &module.block.tuneMasterMatrix; };
   tuneMasterMatrix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuneMasterMatrix);
@@ -114,6 +118,7 @@ FFMakeSettingsTopo(bool isFx)
   tuneVoiceCoarse.slotCount = 1;
   tuneVoiceCoarse.defaultText = "Off";
   tuneVoiceCoarse.id = "{DA9B29F1-E23F-4948-8608-9A323A93927F}";
+  tuneVoiceCoarse.description = "Tune Voice Coarse Pitch Parameter";
   tuneVoiceCoarse.type = FBParamType::Boolean;
   auto selectTuneVoiceCoarse = [](auto& module) { return &module.block.tuneVoiceCoarse; };
   tuneVoiceCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuneVoiceCoarse);
@@ -129,6 +134,7 @@ FFMakeSettingsTopo(bool isFx)
   tuneVoiceMatrix.slotCount = 1;
   tuneVoiceMatrix.defaultText = "On";
   tuneVoiceMatrix.id = "{A65377D6-6D56-459E-A14B-B55C1565BC2D}";
+  tuneVoiceMatrix.description = "Tune Voice Matrix Voice Pitch";
   tuneVoiceMatrix.type = FBParamType::Boolean;
   auto selectTuneVoiceMatrix = [](auto& module) { return &module.block.tuneVoiceMatrix; };
   tuneVoiceMatrix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuneVoiceMatrix);
