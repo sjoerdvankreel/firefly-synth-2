@@ -100,16 +100,22 @@ Microtuning controls:<br/>
 These allow some control over what settings that make up the pitch are applied in the tuned or untuned parts of pitch calculation.<br/>
 Incoming MIDI notes are always part of the retuned pitch.
 
-* Tuning: when on, enables microtuning. Requires an MTS-ESP master to be connected.
-* Tune On Note: when on, microtuning is applied at incoming MIDI.
-When off, microtuning is applied continuously. 
+* Tuning:<br/>
+When on, enables microtuning.<br/>
+Requires an MTS-ESP master to be connected.
+* Tune On Note:<br/>
+When on, microtuning is applied at incoming MIDI.<br/>
+When off, microtuning is applied continuously.<br/>
 When on, the "tune master pitchbend" switch has no effect for voice-level tuning, but it does still affect the master pitch sources in the global mod matrix.
-* Master pitch bend: includes master PB in either the tuned or untuned part of pitch calculations.
-When off, setting master PB to +12 semis results in 1 octave up (so, double the frequency).
+* Master pitch bend:<br/>
+Includes master PB in either the tuned or untuned part of pitch calculations.<br/>
+When off, setting master PB to +12 semis results in 1 octave up (so, double the frequency).<br/>
 When on, and master PB is set to +12 semis, playing C4 results in the exact same pitch as playing C5 with microtuning enabled (and master PB set to 0).
-* Voice coarse: includes voice coarse pitch parameter in either the tuned or untuned part of pitch calculations.
+* Voice coarse:<br/>
+Includes voice coarse pitch parameter in either the tuned or untuned part of pitch calculations.<br/>
 This is primarily intended to cooperate with global unison, which can alter the coarse pitch of individual voices.
-* Tune master matrix/tune voice matrix: these affect whether voice-level pitch and global last/low/high-key pitch sources in the matrix are retuned.
+* Tune master matrix/tune voice matrix:<br/>
+These affect whether voice-level pitch and global last/low/high-key pitch sources in the matrix are retuned.<br/>
 See the matrix section for more details.
 
 <a id="5C91D5A0-3EC1-4142-935A-3FE83B60C04E"></a>
