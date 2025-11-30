@@ -133,3 +133,7 @@ from being cut short by the voice amplitude envelope. See the Voice Echo section
 
 Balance control: this is just a straightforward stereo balancer with an optional LFO applied to it.<br/>
 Osc mix to out: controls how much the internal osci mixer stage contributes to the final voice output.
+
+<a id="09ED2CCE-3AC5-455E-935C-A684BEBC154D"></a>
+### Global Mixer
+Controls the signal path of the global audio engine.
