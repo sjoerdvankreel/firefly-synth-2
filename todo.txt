@@ -15,6 +15,7 @@ TODOLIST for beta-1
 [ ] write the manual
 [ ] explain clap/vst3 diff
 [ ] explain inner workings
+[ ] explain inst/fx
 [ ] routing diagram + explain target params + order diagram
 [ ] check the ff1 manual also (undo, context menus, mts, etc etc etc, host menus, mseg, blabla anything)
 [ ] do tooltips on labels ("tap dly" => tap delay)

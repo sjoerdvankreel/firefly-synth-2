@@ -23,6 +23,7 @@ FFMakeSettingsTopo(bool isFx)
   hostSmoothTime.slotCount = 1;
   hostSmoothTime.unit = "Ms";
   hostSmoothTime.id = "{C0FEF40D-573A-4F3C-A51C-5906EAE28694}";
+  hostSmoothTime.description = "MIDI And Automation Smoothing Time";
   hostSmoothTime.type = FBParamType::Linear;
   hostSmoothTime.Linear().min = 0.0f;
   hostSmoothTime.Linear().max = 0.2f;
@@ -40,6 +41,7 @@ FFMakeSettingsTopo(bool isFx)
   receiveNotes.slotCount = 1;
   receiveNotes.defaultText = isFx ? "Off" : "On";
   receiveNotes.id = "{D996862F-74B0-460F-A50B-61261B400961}";
+  receiveNotes.description = "Receive MIDI Notes";
   receiveNotes.type = FBParamType::Boolean;
   auto selectReceiveNotes = [](auto& module) { return &module.block.receiveNotes; };
   receiveNotes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReceiveNotes);

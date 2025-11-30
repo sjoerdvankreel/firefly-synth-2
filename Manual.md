@@ -77,6 +77,13 @@ There are 4 auxiliary parameters which also don't target anything by default.<br
 Use the mod matrix to assign modulation targets to them.<br/>
 This is useful for controlling the mod amount of other sources or controlling multiple parameters at once.
 
-</div>
-</body>
-</html>
+<a id="3689411E-F31C-4F8C-BE3D-6F87938A1A1B"></a>
+### Settings
+Receive MIDI notes controls whether the plugin kicks off a new voice on incoming midi note on messages.<br/>
+This is enabled by default for the instrument version of the plug and disabled by default for the fx version.<br/>
+Some hosts allow to send midi notes to an fx plugin, others do not.<br/>
+If possible, you can do nice things like keyboard tracking global filters in the fx build.
+
+The MIDI and automation smoothing control parameter can be used to smooth sudden changes in incoming MIDI and automation events.<br/>
+This parameter affects CLAP modulation events as well.
+

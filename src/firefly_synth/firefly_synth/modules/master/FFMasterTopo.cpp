@@ -38,7 +38,7 @@ FFMakeMasterTopo()
   modWheel.slotCount = 1;
   modWheel.unit = "%";
   modWheel.id = "{74F8A030-AD5A-4CF9-96D7-82123D2DCF24}";
-  modWheel.description = "Modulation Wheel";
+  modWheel.description = "Mod Wheel Amount";
   modWheel.type = FBParamType::Identity;
   auto selectModWheel = [](auto& module) { return &module.acc.modWheel; };
   modWheel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectModWheel);
