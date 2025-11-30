@@ -165,7 +165,8 @@ Routes external audio to the global effect (GFX) section.<br/>
 For the FX build, external audio is the plugin's primary input.<br/>
 For the instrument build, external audio is the plugin's sidechain input.
 * Global FX to global FX:<br/>
-Routes the output of global effect modules to other global effect modules.
+Routes the output of global effect modules to other global effect modules.<br/>
+FX modules are processed in order, so you can only route GFX 1 to 2/3/4, 2 to 3/4 etc.
 * GFX to out:<br/>
 Routes individual global FX to master output.
 * VMix to out:<br/>
