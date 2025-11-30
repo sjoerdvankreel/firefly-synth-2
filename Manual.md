@@ -139,7 +139,7 @@ Osc mix to out: controls how much the internal osci mixer stage contributes to t
 Controls the signal path of the global audio engine.
 
 * Voice Mix to GFX routes the voice mixdown to the global effect (GFX) section.
-* External Audio to GFX routes external audio to the global effect (GFX) section.
+* External Audio to GFX routes external audio to the global effect (GFX) section.<br/>
 For the FX build, external audio is the plugin's primary input.<br/>
 For the instrument build, external audio is the plugin's sidechain input.
 * Global FX to global FX routes the output of global effect modules to other global effect modules.
