@@ -70,6 +70,13 @@ Pitchbend together with bend range sets the base pitch for the entire plugin.<br
 By default it is set to control everything, but it can also target specific oscillators.<br/>
 By default, MIDI pitchbend is set to modulate master pitchbend at full scale, but this can be changed in the mod matrix.
 
+Likewise, modwheel is by default modulated by MIDI modwheel at full scale by the matrix.<br/>
+Modwheel doesn't control anything unless you set up the matrix to do so.
+
+There are 4 auxiliary parameters which also don't target anything by default.<br/>
+Use the mod matrix to assign modulation targets to them.<br/>
+This is useful for controlling the mod amount of other sources or controlling multiple parameters at once.
+
 </div>
 </body>
 </html>
