@@ -90,6 +90,7 @@ FFMakeVoiceModuleTopo()
   portaType.display = "Porta";
   portaType.slotCount = 1;
   portaType.id = "{7F787457-02DE-4D98-ABB1-9E776A2DCBCD}";
+  portaType.description = "Portamento Time/Pitch Mode";
   portaType.defaultText = "Off";
   portaType.type = FBParamType::List;
   portaType.List().items = {
@@ -107,6 +108,7 @@ FFMakeVoiceModuleTopo()
   portaMode.display = "Mode";
   portaMode.slotCount = 1;
   portaMode.id = "{1A0A6BC7-58A8-4017-B169-C48E25CEF74C}";
+  portaMode.description = "Portamento Section Mode";
   portaMode.defaultText = "Always";
   portaMode.type = FBParamType::List;
   portaMode.List().items = {
@@ -124,6 +126,7 @@ FFMakeVoiceModuleTopo()
   portaSync.display = "Sync";
   portaSync.slotCount = 1;
   portaSync.id = "{779E0303-8799-40C6-B654-85FC75FD8DEC}";
+  portaSync.description = "Portamento Tempo Sync";
   portaSync.defaultText = "Off";
   portaSync.type = FBParamType::Boolean;
   auto selectPortaSync = [](auto& module) { return &module.block.portaSync; };
@@ -140,6 +143,7 @@ FFMakeVoiceModuleTopo()
   portaTime.slotCount = 1;
   portaTime.unit = "Sec";
   portaTime.id = "{C3EF7F24-84C9-4F92-8D18-F4332E0BB874}";
+  portaTime.description = "Portamento Duration Time";
   portaTime.type = FBParamType::Linear;
   portaTime.Linear().min = 0.0f;
   portaTime.Linear().max = 10.0f;
@@ -159,6 +163,7 @@ FFMakeVoiceModuleTopo()
   portaBars.slotCount = 1;
   portaBars.unit = "Bars";
   portaBars.id = "{983E1FAD-94A6-413C-A24B-0178D38A84B0}";
+  portaBars.description = "Portamento Duration Bars";
   portaBars.type = FBParamType::Bars;
   portaBars.Bars().items = MakePortaBarsItems();
   auto selectPortaBars = [](auto& module) { return &module.block.portaBars; };
@@ -176,6 +181,7 @@ FFMakeVoiceModuleTopo()
   portaSectionAmpAttack.slotCount = 1;
   portaSectionAmpAttack.unit = "%";
   portaSectionAmpAttack.id = "{C035EBA5-D5E6-4B3B-A40A-2BD5B500ACCA}";
+  portaSectionAmpAttack.description = "Portamento Section Amp Env Attack Length";
   portaSectionAmpAttack.type = FBParamType::Identity;
   auto selectPortaSectionAmpAttack = [](auto& module) { return &module.voiceStart.portaSectionAmpAttack; };
   portaSectionAmpAttack.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPortaSectionAmpAttack);
@@ -191,6 +197,7 @@ FFMakeVoiceModuleTopo()
   portaSectionAmpRelease.slotCount = 1;
   portaSectionAmpRelease.unit = "%";
   portaSectionAmpRelease.id = "{227ACA77-CD6E-488B-86BB-9802FDF2D2F2}";
+  portaSectionAmpRelease.description = "Portamento Section Amp Env Release Length";
   portaSectionAmpRelease.type = FBParamType::Identity;
   auto selectPortaSectionAmpRelease = [](auto& module) { return &module.voiceStart.portaSectionAmpRelease; };
   portaSectionAmpRelease.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPortaSectionAmpRelease);
