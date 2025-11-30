@@ -1,10 +1,8 @@
-# Firefly Synth 2
-
 <a id="04CB533D-5968-47AF-BD54-A64363DBD583"></a>
-## GUI
+# GUI
 
 <a id="BC6A28F5-C34B-40B2-BE02-E600DBB5EBF3"></a>
-### Top section
+## Top section
 Contains everything that is not directly related to generating audio.
 
 <a id="4472F4E6-1315-4FDC-A52E-CAF6D7136DD2"></a>
@@ -41,12 +39,12 @@ Shows a plot of the last tweaked module.<br/>
 For example this can be an oscilloscope, filter frequency response, waveshaper response or others, depending on the module being shown.
 
 <a id="C60E14F0-ACB5-417C-8B10-94702B99FF23"></a>
-### Main section
+## Main section
 This is the primary screen for patch design.<br/>
 It contains all parameters for oscillators, filters, effects, envelopes and LFOs as well as all audio routing controls and high-level parameters like microtuning and portamento controls.
 
 <a id="AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8"></a>
-#### Voice
+### Voice
 Contains controls affecting an entire voice (all per-voice oscillators and filters).<br/>
 Pitch section: coarse pitch with envelope modulation amount and fine pitch with LFO modulation amount.<br/>
 
