@@ -309,12 +309,9 @@ FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int 
 }
 
 void 
-FBHostGUIContext::ShowLocalManual() const
+FBHostGUIContext::ShowOnlineManual() const
 {
-  auto path = FBGetResourcesFolderPath() / "manual" / "Manual.md";
-  juce::File file(path.string());
-  if (file.exists())
-    file.startAsProcess();
+  juce::URL(OnlineManualLocation()).launchInDefaultBrowser();
 }
 
 void
@@ -323,6 +320,11 @@ FBHostGUIContext::ShowOnlineManualForAudioParam(int index) const
   int rtModuleIndex = Topo()->audio.params[index].runtimeModuleIndex;
   int staticModuleIndex = Topo()->modules[rtModuleIndex].topoIndices.index;
   auto const& moduleId = Topo()->static_->modules[staticModuleIndex].id;
+  auto cleanModuleId = moduleId;
+  if (cleanModuleId.starts_with('{'))
+    cleanModuleId.erase(0, 1);
+  if (cleanModuleId.ends_with('}'))
+    cleanModuleId.erase(cleanModuleId.size() - 1, 1);
   juce::URL(OnlineManualLocation()).withAnchor(moduleId).launchInDefaultBrowser();
 }
 

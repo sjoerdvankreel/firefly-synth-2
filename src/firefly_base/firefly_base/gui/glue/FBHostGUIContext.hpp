@@ -102,7 +102,7 @@ public:
   void SetPatchName(std::string const& name);
   bool IsPatchLoaded() const { return _isPatchLoaded; }
   
-  void ShowLocalManual() const;
+  void ShowOnlineManual() const;
   void ShowOnlineManualForAudioParam(int index) const;
   std::shared_ptr<FBPresetFolder> LoadPresetList() const;
   virtual std::string OnlineManualLocation() const = 0;
