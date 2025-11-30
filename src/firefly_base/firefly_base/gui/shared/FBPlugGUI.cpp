@@ -384,25 +384,27 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
 
   auto& undoState = HostContext()->UndoState();
   PopupMenu menu;
+  menu.addItem(1, "Show Manual");
+  menu.addItem(2, "Copy Patch");
+  menu.addItem(3, "Paste Patch");
   if (undoState.CanUndo())
-    menu.addItem(1, "Undo " + undoState.UndoAction());
+    menu.addItem(4, "Undo " + undoState.UndoAction());
   if (undoState.CanRedo())
-    menu.addItem(2, "Redo " + undoState.RedoAction());
-  menu.addItem(3, "Copy Patch");
-  menu.addItem(4, "Paste Patch");
+    menu.addItem(5, "Redo " + undoState.RedoAction());
 
   PopupMenu::Options options;
   options = options.withParentComponent(this);
   options = options.withMousePosition();
   menu.showMenuAsync(options, [this](int id) {
-    if (id == 1) HostContext()->UndoState().Undo();
-    if (id == 2) HostContext()->UndoState().Redo(); 
-    if (id == 3) {
+    if (id == 1) HostContext()->ShowLocalManual();
+    if (id == 4) HostContext()->UndoState().Undo();
+    if (id == 5) HostContext()->UndoState().Redo(); 
+    if (id == 2) {
       FBScalarStateContainer editState(*HostContext()->Topo());
       editState.CopyFrom(HostContext(), true);
       SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveEditStateToString(editState, true));
     }
-    if (id == 4) {
+    if (id == 3) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
         AlertWindow::showMessageBoxAsync(
           MessageBoxIconType::InfoIcon,

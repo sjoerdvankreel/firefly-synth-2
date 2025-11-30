@@ -311,7 +311,7 @@ FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int 
 void 
 FBHostGUIContext::ShowLocalManual() const
 {
-  auto path = FBGetResourcesFolderPath() / "manual" / "Manual.html";
+  auto path = FBGetResourcesFolderPath() / "manual" / "Manual.md";
   juce::File file(path.string());
   if (file.exists())
     file.startAsProcess();
