@@ -325,7 +325,7 @@ FBHostGUIContext::ShowOnlineManualForAudioParam(int index) const
     cleanModuleId.erase(0, 1);
   if (cleanModuleId.ends_with('}'))
     cleanModuleId.erase(cleanModuleId.size() - 1, 1);
-  juce::URL(OnlineManualLocation()).withAnchor(moduleId).launchInDefaultBrowser();
+  juce::URL(OnlineManualLocation()).withAnchor(cleanModuleId).launchInDefaultBrowser();
 }
 
 std::shared_ptr<FBPresetFolder>

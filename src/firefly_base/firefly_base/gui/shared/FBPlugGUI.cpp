@@ -396,7 +396,7 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   options = options.withParentComponent(this);
   options = options.withMousePosition();
   menu.showMenuAsync(options, [this](int id) {
-    if (id == 1) HostContext()->ShowLocalManual();
+    if (id == 1) HostContext()->ShowOnlineManual();
     if (id == 4) HostContext()->UndoState().Undo();
     if (id == 5) HostContext()->UndoState().Redo(); 
     if (id == 2) {
