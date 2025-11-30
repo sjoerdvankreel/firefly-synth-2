@@ -102,3 +102,7 @@ When on, and master PB is set to +12 semis, playing C4 results in the exact same
 This is primarily intended to cooperate with global unison, which can alter the coarse pitch of individual voices.
 * Tune master matrix/tune voice matrix: these affect whether voice-level pitch and global last/low/high-key pitch sources in the matrix are retuned.
 See the matrix section for more details.
+
+<a id="5C91D5A0-3EC1-4142-935A-3FE83B60C04E"></a>
+### Voice Mixer
+Controls the signal path of the per-voice audio engine.
