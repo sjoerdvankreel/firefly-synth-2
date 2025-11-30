@@ -117,3 +117,10 @@ If you use this in combination with osci to oscillator mix, an osci output will 
 * VFX to out: directly routes individual voice-level FX to voice output.
 If you use this in combination with oscillator mix to VFX, an effect output will be added to the voice signal twice.
 
+The amplitude parameter controls the voice level as a whole.<br/>
+Amp env to amp controls how much the per-voice amplitude envelope affects this parameter.<br/>
+By default this is set to 100% so the entire voice just follows the voice amp envelope.<br/>
+You can set it to 0% and have the voice play at full scale regardless of the voice amp envelope.<br/>
+This is useful if you want to assign different envelopes to individual oscis.<br/>
+In any case the voice amp envelope still controls voice lifetime - when it's done, the voice is killed,<br/>
+regardless of any other potentially still active envelopes.
