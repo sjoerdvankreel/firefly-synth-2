@@ -8,7 +8,7 @@ Contains everything that is not directly related to generating audio.
 <a id="4472F4E6-1315-4FDC-A52E-CAF6D7136DD2"></a>
 ### Output panel
 Shows CPU usage relative to single core, voice usage and output gain with a maximum of 0dB.<br/>
-The MTS-ESP indicator shows whether an MTS-ESP host is connected.
+The MTS-ESP indicator shows whether an MTS-ESP master is connected.
 
 <a id="68289DDE-CD5E-400C-B022-3893A3989441"></a>
 ### Panic button
@@ -87,3 +87,18 @@ If possible, you can do nice things like keyboard tracking global filters in the
 The MIDI and automation smoothing control parameter can be used to smooth sudden changes in incoming MIDI and automation events.<br/>
 This parameter affects CLAP modulation events as well.
 
+Microtuning controls:<br/>
+These allow some control over what settings that make up the pitch are applied in the tuned or untuned parts of pitch calculation.<br/>
+Incoming MIDI notes are always part of the retuned pitch.
+
+* Tuning: when on, enables microtuning. Requires an MTS-ESP master to be connected.
+* Tune On Note: when on, microtuning is applied at incoming MIDI.
+When off, microtuning is applied continuously. 
+When on, the "tune master pitchbend" switch has no effect for voice-level tuning, but it does still affect the master pitch sources in the global mod matrix.
+* Master pitch bend: includes master PB in either the tuned or untuned part of pitch calculations.
+When off, setting master PB to +12 semis results in 1 octave up (so, double the frequency).
+When on, and master PB is set to +12 semis, results in the exact same pitch as playing C5 with microtuning enabled.
+* Voice coarse: includes voice coarse pitch parameter in either the tuned or untuned part of pitch calculations.
+This is primarily intended to cooperate with global unison, which can alter the coarse pitch of individual voices.
+* Tune master matrix/tune voice matrix: these affect whether voice-level pitch and global last/low/high-key pitch sources in the matrix are retuned.
+See the matrix section for more details.
