@@ -25,10 +25,17 @@ Comes with regular load-from/save-to-file, init patch to defaults, and load fact
 
 <a id="ED3DACBE-8FF2-47D2-9EA6-7EF67367B541"></a>
 ### GUI settings
-* Show modulation bounds:<br/>Highlights the minimum and maximum values currently applied to a parameter by the mod matrix and direct modulators.
-* Show tweaked from:<br/>Highlights the parameters that differ from either default values, last loaded DAW session state, or last loaded patch state.
-* Knob visuals from engine:<br/>Highlights a parameters current audio engine state. For per-voice parameters, takes into account the minimum and maximum values across all voices.
-* Plot visuals from engine:<br/>Draws the current state of the audio engine into the graph plots, taking all modulation into account. For per-voice modules, this is an additional line per voice. When off, graph plots reflect only the current state of the parameters as shown in the GUI.
+* Show modulation bounds:<br/>
+Highlights the minimum and maximum values currently applied to a parameter by the mod matrix and direct modulators.
+* Show tweaked from:<br/>
+Highlights the parameters that differ from either default values, last loaded DAW session state, or last loaded patch state.
+* Knob visuals from engine:<br/>
+Highlights a parameters current audio engine state.<br/>
+For per-voice parameters, takes into account the minimum and maximum values across all voices.
+* Plot visuals from engine:<br/>
+Draws the current state of the audio engine into the graph plots, taking all modulation into account.<br/>
+For per-voice modules, this is an additional line per voice.<br/>
+When off, graph plots reflect only the current state of the parameters as shown in the GUI.
 
 <a id="8440B096-7851-48DE-A1AA-27665935FC33"></a>
 ### Last tweaked
