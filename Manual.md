@@ -61,6 +61,13 @@ Best illustrated with an example:
 * Release times of A, B, D, and E are shortened.
 This feature works strictly by tracking note-on/off events. Section "shortening" will kick in only for overlapping notes, or notes that are both triggered and released at the exact same time.
 
+<a id="83AA98D4-9D12-4D61-81A4-4FAA935EDF5D"></a>
+### Master
+Contains controls affecting the plugin as a whole.<br/>
+These parameters control all voices together as well as affect global filters and effects.
+
+
+
 </div>
 </body>
 </html>
