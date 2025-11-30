@@ -130,3 +130,6 @@ The most natural setting for this is "VMix Out", but it can be set to individual
 The primary use case for this is to cooperate with per-voice echo. Per-voice echo can be applied to the voice as a whole,<br/>
 but also to individual oscis and FX. In which case, it is necessary to change the target accordingly, to prevent the voice echo<br/>
 from being cut short by the voice amplitude envelope. See the Voice Echo section for more details.
+
+Balance control: this is just a straightforward stereo balancer with an optional LFO applied to it.<br/>
+Osc mix to out: controls how much the internal osci mixer stage contributes to the final voice output.
