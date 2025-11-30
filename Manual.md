@@ -56,7 +56,7 @@ It contains all parameters for oscillators, filters, effects, envelopes and LFOs
 Contains controls affecting an entire voice (all per-voice oscillators and filters).<br/>
 Pitch section: coarse pitch with envelope modulation amount and fine pitch with LFO modulation amount.<br/>
 
-Portamento section: allows selection of regular (on) mode (constant pitch, variable time) or automatic mode (constant time, variable pitch) and optional tempo-syncing.
+Portamento section: allows selection of regular (on) mode (constant pitch, variable time) or automatic mode (constant time, variable pitch) and optional tempo-syncing.<br/>
 Because FF2 does not provide monophonic mode, the portamento controls also come with the option to shorten the per-voice amplitude envelope attack and release sections.
 Best illustrated with an example:
 * Set portamento mode to "Section"
