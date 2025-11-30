@@ -122,14 +122,19 @@ See the matrix section for more details.
 ### Voice Mixer
 Controls the signal path of the per-voice audio engine.
 
-* Oscillator to voice FX routes the output of individual oscillators to the per-voice effect (VFX) section.
-* Voice FX to voice FX routes the output of per-voice effect modules to other per-voice effect modules.
+* Oscillator to voice FX:<br/>
+Routes the output of individual oscillators to the per-voice effect (VFX) section.
+* Voice FX to voice FX:<br/>
+Routes the output of per-voice effect modules to other per-voice effect modules.<br/>
 FX modules are processed in order, so you can only route VFX 1 to 2/3/4, 2 to 3/4 etc.
-* Oscillator mix: this is an internal intermediate stage that combines the output of all oscillators.
+* Oscillator mix:<br/>
+This is an internal intermediate stage that combines the output of all oscillators.<br/>
 You can control how much each osci contributes to oscillator mix, and then route the combined mix to each of the VFX modules.
-* Oscillator to out: directly routes individual oscis to voice output.
+* Oscillator to out:<br/>
+Directly routes individual oscis to voice output.<br/>
 If you use this in combination with osci to oscillator mix, an osci output will be added to the voice signal twice.
-* VFX to out: directly routes individual voice-level FX to voice output.
+* VFX to out:<br/>
+Directly routes individual voice-level FX to voice output.<br/>
 If you use this in combination with oscillator mix to VFX, an effect output will be added to the voice signal twice.
 
 The amplitude parameter controls the voice level as a whole.<br/>
