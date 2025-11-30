@@ -9,6 +9,8 @@ TODOLIST for beta-1
 [x] up the vno just because
 [x] document the OTHER section
 [ ] move manual to static
+[ ] clap mod docs
+[ ] on demand alloc is not realtime safe
 [ ] debug check every description is there
 [ ] SET THE ONLINE LOCATION TO MAIN BRANCH
 [ ] open html from the context menu with the right target
