@@ -71,6 +71,7 @@ FFMakeOsciTopo()
   type.name = "Type";
   type.slotCount = 1;
   type.id = "{9018865F-7B05-4835-B541-95014C0C63E6}";
+  type.description = "Oscillator Algorithm";
   type.defaultTextSelector = [](int /*mi*/, int ms, int /*ps*/) { return ms == 0 ? "Wave" : "Off"; };
   type.type = FBParamType::List;
   type.List().items = {
@@ -91,6 +92,7 @@ FFMakeOsciTopo()
   gain.slotCount = 1;
   gain.unit = "%";
   gain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
+  gain.description = "Oscillator Gain";
   gain.type = FBParamType::Linear;
   gain.Linear().min = 0.0f;
   gain.Linear().max = 2.0f;
@@ -109,6 +111,7 @@ FFMakeOsciTopo()
   phase.slotCount = 1;
   phase.unit = "%";
   phase.id = "{4BB87878-BB20-4253-85AD-E1B608A4B3D9}";
+  phase.description = "Phase Offset";
   phase.type = FBParamType::Identity;
   auto selectPhase = [](auto& module) { return &module.voiceStart.phase; };
   phase.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPhase);
@@ -122,6 +125,7 @@ FFMakeOsciTopo()
   keyTrack.slotCount = 1;
   keyTrack.defaultText = "On";
   keyTrack.id = "{6A2E75A1-F84D-401D-98BB-7D78F13073EA}";
+  keyTrack.description = "Keyboard Tracking";
   keyTrack.type = FBParamType::Boolean;
   auto selectKeyTrack = [](auto& module) { return &module.block.keyTrack; };
   keyTrack.scalarAddr = FFSelectScalarParamAddr(selectModule, selectKeyTrack);
@@ -138,6 +142,7 @@ FFMakeOsciTopo()
   envToGain.slotFormatterOverrides = true;
   envToGain.unit = "%";
   envToGain.id = "{3AAA882F-A89F-4523-A47F-857B508D849F}";
+  envToGain.description = "Modulate Gain By Envelope";
   envToGain.type = FBParamType::Identity;
   auto selectEnvToGain = [](auto& module) { return &module.acc.envToGain; };
   envToGain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectEnvToGain);
@@ -152,6 +157,7 @@ FFMakeOsciTopo()
   pan.slotCount = 1;
   pan.unit = "%";
   pan.id = "{DDB77A46-7D26-442C-8A37-2BD231C8F8D8}";
+  pan.description = "Stereo Panning";
   pan.type = FBParamType::Identity;
   auto selectPan = [](auto& module) { return &module.acc.pan; };
   pan.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPan);
@@ -166,6 +172,7 @@ FFMakeOsciTopo()
   coarse.slotCount = 1;
   coarse.unit = "Semitones";
   coarse.id = "{E122CA2C-C1B1-47E5-A1BB-DEAC6A4030E0}";
+  coarse.description = "Coarse Pitch Offset";
   coarse.type = FBParamType::Linear;
   coarse.Linear().min = -FFModCoarseSemis;
   coarse.Linear().max = FFModCoarseSemis;
@@ -182,6 +189,7 @@ FFMakeOsciTopo()
   fine.slotCount = 1;
   fine.unit = "Cent";
   fine.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
+  fine.description = "Fine Pitch Offset";
   fine.type = FBParamType::Linear;
   fine.Linear().min = -1.0f;
   fine.Linear().max = 1.0f;
@@ -201,6 +209,7 @@ FFMakeOsciTopo()
   lfoToFine.slotFormatterOverrides = true;
   lfoToFine.unit = "%";
   lfoToFine.id = "{9AB82C08-CBCB-4817-9746-6B5AD3F212F4}";
+  lfoToFine.description = "Modulate Fine Pitch Offset By Voice LFO";
   lfoToFine.type = FBParamType::Identity;
   auto selectLFOToFine = [](auto& module) { return &module.acc.lfoToFine; };
   lfoToFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFOToFine);

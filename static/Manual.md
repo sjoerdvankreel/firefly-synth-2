@@ -209,5 +209,16 @@ This source combines everything that affects voice-level pitch and then applies 
 Rationale: i don't know how to individually microtune PB, voice coarse offset, portamento etc and still have the result come out "correct",
 i.e., equal to the result of tuning them all together at once. Don't even know if it's possible or not.
 
+#### Unison section
+Controls osci-level unison.
 
+These controls apply to all oscillator types:
+* Voice count: how often to calculate the osci with the different settings applied, and add it to the output signal.<br/>
+* Blend: this gradually decays the unison voice level as it moves away from center position.<br/>
+If you don't have a center position (so, even voice count) setting this to zero produces silence.
+* Stereo spread: spreads out the unison voices from hard-left to hard-right.
+
+For External Audio, the blend and spread controls don't really do much.<br/>
+You can hear the effect of the blend parameter as a change in amplitude only.<br/>
+The spread parameter "does something" but you basically cannot hear it as each each subvoice is exactly the same, so, it doesn't matter where it is positioned in the stereo spectrum.
 
