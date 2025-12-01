@@ -233,7 +233,7 @@ Use the phase offset randomization control to produce a more natural sound.
 #### Wave section
 
 6 sub-slots per oscillator slot. Take your pick of:<br/>
-* 2x basic waveform ith nothing but a gain control:<br/>
+* 2x basic waveform with nothing but a gain control:<br/>
 Includes all the common ones like sin, cos, saw, sqr, tri as well as a bunch of more esoteric waveforms.
 * 2x pulse-width-modulatable waveform with gain control and PWM control:<br/>
 Classic square-to-pulse, triangle-to-saw and a couple others.
