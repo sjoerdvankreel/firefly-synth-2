@@ -386,7 +386,7 @@ FFMakeOsciTopo()
   wavePWMode.slotCount = FFOsciWavePWCount;
   wavePWMode.slotFormatter = FFFormatBlockSlot;
   wavePWMode.id = "{E4159ACA-C4A9-4430-8E4A-44EB5DB8557A}";
-  wavePWMode.description = "PWM Wave Oscillator Mode";
+  wavePWMode.description = "PWM Wave Oscillator Algorithm";
   wavePWMode.type = FBParamType::List;
   wavePWMode.List().items = {
     { "{BAAB3335-9DF4-4D97-957A-6FBF47D5089E}", "Off" },
@@ -450,7 +450,7 @@ FFMakeOsciTopo()
   waveHSMode.slotFormatDisplay = true;
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";
-  waveHSMode.description = "Hard Sync Wave Oscillator Mode";
+  waveHSMode.description = "Hard Sync Wave Oscillator Algorithm";
   waveHSMode.type = FBParamType::List;
   waveHSMode.List().items = {
     { "{F68B6202-6C23-4049-B0DD-2565694B1C45}", "Off" },
