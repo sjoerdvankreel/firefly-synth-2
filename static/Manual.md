@@ -180,3 +180,7 @@ Likewise the balance control is global stereo balance with an optional LFO appli
 <a id="73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6"></a>
 ### Oscillator
 bla
+nanana
+
+
+huuuu
