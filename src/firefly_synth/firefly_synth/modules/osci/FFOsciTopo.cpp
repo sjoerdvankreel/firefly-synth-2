@@ -224,6 +224,7 @@ FFMakeOsciTopo()
   uniCount.name = "Uni Count";
   uniCount.slotCount = 1;
   uniCount.id = "{60313673-95FE-4B6D-99A6-B628ACDE6D56}";
+  uniCount.description = "Osc Unison Voice Count";
   uniCount.type = FBParamType::Discrete;
   uniCount.Discrete().valueCount = FFOsciUniMaxCount;
   uniCount.Discrete().valueOffset = 1;
@@ -241,6 +242,7 @@ FFMakeOsciTopo()
   uniOffset.slotCount = 1;
   uniOffset.unit = "%";
   uniOffset.id = "{6F5754E1-BDF4-4685-98FC-8C613128EE8D}";
+  uniOffset.description = "Osc Unison Voice Phase Offset";
   uniOffset.type = FBParamType::Identity;
   auto selectUniOffset = [](auto& module) { return &module.voiceStart.uniOffset; };
   uniOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniOffset);
@@ -256,6 +258,7 @@ FFMakeOsciTopo()
   uniRandom.slotCount = 1;
   uniRandom.unit = "%";
   uniRandom.id = "{6F7F6D55-5740-44AB-8442-267A5730E2DA}";
+  uniRandom.description = "Osc Unison Voice Phase Offset Randomization";
   uniRandom.type = FBParamType::Identity;
   auto selectUniRandom = [](auto& module) { return &module.voiceStart.uniRandom; };
   uniRandom.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniRandom);
@@ -271,6 +274,7 @@ FFMakeOsciTopo()
   uniDetune.slotCount = 1;
   uniDetune.unit = "%";
   uniDetune.id = "{C73A2DFD-0C6D-47FF-A524-CA14A75DF418}";
+  uniDetune.description = "Osc Unison Voice Detune";
   uniDetune.type = FBParamType::Identity;
   auto selectUniDetune = [](auto& module) { return &module.acc.uniDetune; };
   uniDetune.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniDetune);
@@ -286,6 +290,7 @@ FFMakeOsciTopo()
   uniSpread.slotCount = 1;
   uniSpread.unit = "%";
   uniSpread.id = "{9F71BAA5-00A2-408B-8CFC-B70D84A7654E}";
+  uniSpread.description = "Osc Unison Voice Stereo Spread";
   uniSpread.type = FBParamType::Identity;
   auto selectUniSpread = [](auto& module) { return &module.acc.uniSpread; };
   uniSpread.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniSpread);
@@ -301,6 +306,7 @@ FFMakeOsciTopo()
   uniBlend.slotCount = 1;
   uniBlend.unit = "%";
   uniBlend.id = "{68974AC4-57ED-41E4-9B0F-6DB29E0B6BBB}";
+  uniBlend.description = "Osc Unison Voice Blend";
   uniBlend.type = FBParamType::Identity;
   auto selectUniBlend = [](auto& module) { return &module.acc.uniBlend; };
   uniBlend.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniBlend);
