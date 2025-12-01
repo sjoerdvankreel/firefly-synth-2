@@ -183,8 +183,8 @@ Likewise the balance control is global stereo balance with an optional LFO appli
 #### Main section
 Contains controls common to all oscillator types.
 
-* Type:<br/>
-Wave: sine, saw, sqr etc, couple of PWM-capable algorithms, some hard-sync capable algoritms and a DSF generator.<br/>
-FM: 3-op FM generator with 3x3 matrix, unit delay on the feedback path.<br/>
-String: combined string/noise osci.<br/>
-External Audio: use audio in as an oscillator to allow it as an FM/AM/RM source in the inter-osci modulation section.
+Oscillator type:
+* Wave: sine, saw, sqr etc, couple of PWM-capable algorithms, some hard-sync capable algoritms and a DSF generator.
+* FM: 3-op FM generator with 3x3 matrix, unit delay on the feedback path.
+* String: combined string/noise osci.
+* External Audio: use audio in as an oscillator to allow it as an FM/AM/RM source in the inter-osci modulation section.
