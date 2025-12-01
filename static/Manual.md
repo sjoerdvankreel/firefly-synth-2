@@ -251,5 +251,5 @@ This is a dedicated FM-generator with 3 operators and a 3x3 matrix with unit del
 The mode control switches between regular (linear) FM and exponential FM.<br/>
 In the linear case the modulator affects the phase of the carrier (so yeah it's PM really, like everyone else does it).<br/>
 In the exponential case the modulator affects the pitch of the carrier.<br/>
-Exponential FM can produce some deep sounds but it also "shifts" the pitch, so you need to get it back in tune somehow.
+Exponential FM can produce some really deep sounds but it also "shifts" the pitch, so you need to get it back in tune somehow.
 
