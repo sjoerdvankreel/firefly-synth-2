@@ -626,6 +626,7 @@ FFMakeOsciTopo()
   fmMode.display = "Mode";
   fmMode.slotCount = 1;
   fmMode.id = "{BE60503A-3CE3-422D-8795-C2FCB1C4A3B6}";
+  fmMode.description = "FM Oscillator Algorithm";
   fmMode.type = FBParamType::List;
   fmMode.List().items = {
     { "{8DF1F983-F892-4B5A-B784-C4222563E5BC}", "Linear" },
@@ -643,6 +644,7 @@ FFMakeOsciTopo()
   fmRatioMode.display = "Ratio";
   fmRatioMode.slotCount = 1;
   fmRatioMode.id = "{40838341-6882-4BF8-813F-BA5B89B3042F}";
+  fmRatioMode.description = "FM Oscillator C:M Ratio Mode";
   fmRatioMode.type = FBParamType::List;
   fmRatioMode.List().items = {
     { "{A6E83AA7-9DA3-4ECA-90DE-BCA123B48203}", "Ratio" },
@@ -660,6 +662,7 @@ FFMakeOsciTopo()
   fmRatioFree.display = "Free";
   fmRatioFree.slotCount = FFOsciFMOperatorCount - 1;
   fmRatioFree.id = "{0188A986-8FA9-4BA2-BF84-A1A463712A40}";
+  fmRatioFree.description = "FM Oscillator C:M Continuous Ratio";
   fmRatioFree.type = FBParamType::Log2;
   fmRatioFree.Log2().Init(0.0f, 1.0f / FFOsciFMRatioCount, FFOsciFMRatioCount);
   fmRatioFree.slotFormatter = FFOsciFMFormatRatioSlot;
@@ -676,6 +679,7 @@ FFMakeOsciTopo()
   fmRatioRatio.display = "Ratio";
   fmRatioRatio.slotCount = FFOsciFMOperatorCount - 1;
   fmRatioRatio.id = "{9F79D937-E295-41FC-ACFE-F085E12DFF90}";
+  fmRatioRatio.description = "FM Oscillator C:M Rational Select";
   fmRatioRatio.type = FBParamType::Discrete;
   fmRatioRatio.slotFormatter = FFOsciFMFormatRatioSlot;
   fmRatioRatio.Discrete().subMenuItemCount = FFOsciFMRatioCount;
@@ -694,6 +698,7 @@ FFMakeOsciTopo()
   fmIndex.name = "FM Index";
   fmIndex.slotCount = FFOsciFMMatrixSize;
   fmIndex.id = "{5CEFAD50-CB71-4E79-B3D6-50B004AD7F03}";
+  fmIndex.description = "FM Oscillator Modulation Index";
   fmIndex.type = FBParamType::Log2;
   fmIndex.Log2().Init(-0.01, 0.01f, 16.01f);
   fmIndex.slotFormatter = FFOsciFMFormatIndexSlot;
