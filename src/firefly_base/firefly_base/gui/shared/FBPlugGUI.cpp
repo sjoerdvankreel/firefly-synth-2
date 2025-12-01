@@ -236,6 +236,7 @@ FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
   FB_LOG_ENTRY_EXIT();
   auto menu = std::make_shared<PopupMenu>();
   menu->addItem(1, "Show Manual");
+  menu->addSeparator();
   menu->addItem(2, "Set To Patch");
   menu->addItem(3, "Set To Session");
   menu->addItem(4, "Set To Default");
@@ -386,8 +387,10 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   auto& undoState = HostContext()->UndoState();
   PopupMenu menu;
   menu.addItem(1, "Show Manual");
+  menu.addSeparator();
   menu.addItem(2, "Copy Patch");
   menu.addItem(3, "Paste Patch");
+  menu.addSeparator();
   if (undoState.CanUndo())
     menu.addItem(4, "Undo " + undoState.UndoAction());
   if (undoState.CanRedo())
