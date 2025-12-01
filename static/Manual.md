@@ -253,3 +253,9 @@ In the linear case the modulator affects the phase of the carrier (so yeah it's 
 In the exponential case the modulator affects the pitch of the carrier.<br/>
 Exponential FM can produce some really deep sounds but it also "shifts" the pitch, so you need to get it back in tune somehow.
 
+Ratio mode: allows to specify the carrier/modulator ratio as either free-form/continuous or rational (1:2, 2:3, 3:4 etc).<br/>
+Operator 1 is implicitly defined as "1", and you can select op2:op1 and op3:op2 on top of that.<br/>
+So, set both to 2:1, then op3:op1 will be 4:1.
+
+
+
