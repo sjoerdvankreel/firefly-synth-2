@@ -286,4 +286,6 @@ In particular the voice amplitude envelope.
 * X/Y: freeze (sample and hold) the signal in either the time or amplitude dimension.<br/>
 With color to full-on white noise and damping to zero this pretty much replicates the noise osci from infernal synth.
 
-
+Filter controls:<br/>
+The plugin is set up such that the filter controls affect all of the initial excitation, the damping factor, the feedback factor and the re-excite amount.<br/>
+Contains both an LP and HP filter with frequency and resonance controls and keyboard tracking amount relative to the root key.
