@@ -284,6 +284,6 @@ In particular the voice amplitude envelope.
 * Color: continuous color control from brown to pink to white noise.
 * Color quality: selects the stage count of the color filter.
 * X/Y: freeze (sample and hold) the signal in either the time or amplitude dimension.<br/>
-With color to full-on white, filters disabled, and damping to zero this pretty much replicates the noise osci from infernal synth.
+With color to full-on white noise and damping to zero this pretty much replicates the noise osci from infernal synth.
 
 
