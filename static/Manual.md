@@ -279,5 +279,7 @@ At 0%, decays into Karplus-Strong and the damping and feedback controls solely c
 At 100%, the oscillator turns into a noise generator.<br/>
 In between, you can get bowed strings, but this requires some cooperation with other controls as well.<br/>
 In particular the voice amplitude envelope.
+* Seed: random seed for the backing random generator.
+* Tracking key: root key (relative to C4) for keyboard tracking the damping, feedback, and filter controls.
 
 
