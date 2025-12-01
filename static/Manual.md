@@ -230,3 +230,20 @@ With zero phase offset, the unison output will have a harsh attack to it as all 
 With 100% phase offset, the unison output produces more of a string-like sound but still with a very distinctive phasing effect.<br/>
 Use the phase offset randomization control to produce a more natural sound.
 
+#### Wave section
+
+6 sub-slots per oscillator slot. Take your pick of:<br/>
+* 2x basic waveform ith nothing but a gain control:<br/>
+Includes all the common ones like sin, cos, saw, sqr, tri as well as a bunch of more esoteric waveforms.
+* 2x pulse-width-modulatable waveform with gain control and PWM control:<br/>
+Classic square-to-pulse, triangle-to-saw and a couple others.
+* 1x hard-sync capable waveform:<br/>
+Choice of saw/sqr/tri. Pitch controls the offset of slave pitch relative to the osci's internal pitch.
+* 1x DSF generator (additive oscillator with just a couple control parameters):<br/>
+Distance and decay control the frequency and amplitude of consecutive sines.<br/>
+Overtones mode allows to explicitly specify the number of sines generated.<br/>
+Bandwidth mode allows to specify a range between base frequency only (0%) or all the way up to Nyquist/half-sample-rate (100%).
+
+
+
+*
