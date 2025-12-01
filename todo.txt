@@ -10,7 +10,7 @@ TODOLIST for beta-1
 [x] document the OTHER section
 [x] "show manual" need separator menu
 [x] open html from the context menu with the right target
-[ ] move manual to static
+[x] move manual to static
 [ ] clap mod docs
 [ ] on demand alloc is not realtime safe
 [ ] debug check every description is there
