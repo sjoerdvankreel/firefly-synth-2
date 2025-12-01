@@ -271,3 +271,13 @@ In its default configuration it generates a plucked string by some variation of 
 Turn up the excite parameter just a little bit (and tweak a lot of other controls) to get a bowed string.<br/>
 Turn up the excite parameter all the way to generate full-on noise.
 
+* Mode: selects uniform or gaussian distribution for the backing random generator.<br/>
+Gaussian sounds more natural as the corresponding distribution is a bell curve instead of rectangular.<br/>
+Uniform generates more frequency content, so sounds brighter.
+* Excite: controls the level of new noise to generate and feed back into the delay line at each sample.<br/>
+At 0%, decays into Karplus-Strong and the damping and feedback controls solely control the sound lifetime.<br/>
+At 100%, the oscillator turns into a noise generator.<br/>
+In between, you can get bowed strings, but this requires some cooperation with other controls as well.<br/>
+In particular the voice amplitude envelope.
+
+
