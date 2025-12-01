@@ -322,6 +322,7 @@ FFMakeOsciTopo()
   waveBasicMode.slotCount = FFOsciWaveBasicCount;
   waveBasicMode.slotFormatter = FFFormatBlockSlot;
   waveBasicMode.id = "{296806B7-DEC4-47F5-AEE0-C35B119CF871}";
+  waveBasicMode.description = "Basic Wave Oscillator Algorithm";
   waveBasicMode.type = FBParamType::List;
   waveBasicMode.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "Saw" : "Off"; };
   waveBasicMode.List().items = {
@@ -365,6 +366,7 @@ FFMakeOsciTopo()
   waveBasicGain.slotFormatter = FFFormatBlockSlot;
   waveBasicGain.unit = "%";
   waveBasicGain.id = "{9B04E634-D046-4117-A542-7E050F3B5FB5}";
+  waveBasicGain.description = "Basic Wave Oscillator Gain";
   waveBasicGain.type = FBParamType::Linear;
   waveBasicGain.Linear().min = -1.0f;
   waveBasicGain.Linear().max = 1.0f;
@@ -384,6 +386,7 @@ FFMakeOsciTopo()
   wavePWMode.slotCount = FFOsciWavePWCount;
   wavePWMode.slotFormatter = FFFormatBlockSlot;
   wavePWMode.id = "{E4159ACA-C4A9-4430-8E4A-44EB5DB8557A}";
+  wavePWMode.description = "PWM Wave Oscillator Mode";
   wavePWMode.type = FBParamType::List;
   wavePWMode.List().items = {
     { "{BAAB3335-9DF4-4D97-957A-6FBF47D5089E}", "Off" },
@@ -409,6 +412,7 @@ FFMakeOsciTopo()
   wavePWGain.slotFormatter = FFFormatBlockSlot;
   wavePWGain.unit = "%";
   wavePWGain.id = "{CB7B0BA4-2182-4EA8-9895-1763A29DD9F0}";
+  wavePWGain.description = "PWM Wave Oscillator Gain";
   wavePWGain.type = FBParamType::Linear;
   wavePWGain.Linear().min = -1.0f;
   wavePWGain.Linear().max = 1.0f;
@@ -429,6 +433,7 @@ FFMakeOsciTopo()
   wavePWPW.slotFormatter = FFFormatBlockSlot;
   wavePWPW.unit = "%";
   wavePWPW.id = "{17BF0368-AC81-45B5-87F3-95958A0C02B6}";
+  wavePWPW.description = "PWM Wave Oscillator Pulse Width";
   wavePWPW.type = FBParamType::Identity;
   auto selectWavePWPW = [](auto& module) { return &module.acc.wavePWPW; };
   wavePWPW.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWavePWPW);
@@ -445,6 +450,7 @@ FFMakeOsciTopo()
   waveHSMode.slotFormatDisplay = true;
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";
+  waveHSMode.description = "Hard Sync Wave Oscillator Mode";
   waveHSMode.type = FBParamType::List;
   waveHSMode.List().items = {
     { "{F68B6202-6C23-4049-B0DD-2565694B1C45}", "Off" },
@@ -466,6 +472,7 @@ FFMakeOsciTopo()
   waveHSGain.slotCount = 1;
   waveHSGain.unit = "%";
   waveHSGain.id = "{7AFF257F-165E-427B-A4BF-9DC4BFE48528}";
+  waveHSGain.description = "Hard Sync Wave Oscillator Gain";
   waveHSGain.type = FBParamType::Linear;
   waveHSGain.Linear().min = -1.0f;
   waveHSGain.Linear().max = 1.0f;
@@ -485,6 +492,7 @@ FFMakeOsciTopo()
   waveHSPitch.slotCount = 1;
   waveHSPitch.unit = "Semitones";
   waveHSPitch.id = "{8551E49B-1D61-482D-8C2D-B766084C31D7}";
+  waveHSPitch.description = "Hard Sync Wave Oscillator Slave Pitch";
   waveHSPitch.type = FBParamType::Linear;
   waveHSPitch.Linear().min = 0.0f;
   waveHSPitch.Linear().max = 48.0f;
@@ -503,6 +511,7 @@ FFMakeOsciTopo()
   waveDSFMode.slotFormatDisplay = true;
   waveDSFMode.slotCount = 1;
   waveDSFMode.id = "{D66E2800-CFBD-4B4E-B22E-D5D7572FEF6E}";
+  waveDSFMode.description = "DSF Wave Oscillator Mode";
   waveDSFMode.type = FBParamType::List;
   waveDSFMode.List().items = {
     { "{1CB6EE7D-3DAA-446F-82BF-4FADFD244EBE}", "Off" },
@@ -522,6 +531,7 @@ FFMakeOsciTopo()
   waveDSFGain.slotCount = 1;
   waveDSFGain.unit = "%";
   waveDSFGain.id = "{8B92892C-4B53-4628-8266-CCED37867F99}";
+  waveDSFGain.description = "DSF Wave Oscillator Gain";
   waveDSFGain.type = FBParamType::Linear;
   waveDSFGain.Linear().min = -1.0f;
   waveDSFGain.Linear().max = 1.0f;
@@ -540,6 +550,7 @@ FFMakeOsciTopo()
   waveDSFOver.display = "Tones";
   waveDSFOver.slotCount = 1;
   waveDSFOver.id = "{9A42FADE-5E48-49B8-804B-0C61E17AC3BB}";
+  waveDSFOver.description = "DSF Wave Oscillator Overtone Count";
   waveDSFOver.type = FBParamType::Discrete;
   waveDSFOver.Discrete().valueCount = 32;
   waveDSFOver.Discrete().valueOffset = 1;
@@ -560,6 +571,7 @@ FFMakeOsciTopo()
   waveDSFBW.slotCount = 1;
   waveDSFBW.unit = "%";
   waveDSFBW.id = "{D3D24159-2A4F-46FB-8E61-749DB07FCC40}";
+  waveDSFBW.description = "DSF Wave Oscillator Bandwidth Amount";
   waveDSFBW.type = FBParamType::Log2;
   waveDSFBW.Log2().displayMultiplier = 100.0f;
   waveDSFBW.Log2().Init(-0.01f, 0.01f, 1.01f);
@@ -579,6 +591,7 @@ FFMakeOsciTopo()
   waveDSFDistance.display = "Dist";
   waveDSFDistance.slotCount = 1;
   waveDSFDistance.id = "{0D1D4920-A17F-4716-A42E-238DD1E99952}";
+  waveDSFDistance.description = "DSF Wave Oscillator Frequency Distance";
   waveDSFDistance.type = FBParamType::Discrete;
   waveDSFDistance.Discrete().valueCount = 20;
   waveDSFDistance.Discrete().valueOffset = 1;
@@ -597,6 +610,7 @@ FFMakeOsciTopo()
   waveDSFDecay.slotCount = 1;
   waveDSFDecay.unit = "%";
   waveDSFDecay.id = "{21CE915D-0983-4545-9F6E-8743CAC5EAB7}";
+  waveDSFDecay.description = "DSF Wave Oscillator Frequency Decay";
   waveDSFDecay.type = FBParamType::Identity;
   auto selectWaveDSFDecay = [](auto& module) { return &module.acc.waveDSFDecay; };
   waveDSFDecay.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWaveDSFDecay);
