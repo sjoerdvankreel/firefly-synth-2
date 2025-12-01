@@ -176,3 +176,7 @@ Routes external audio to master output.
 
 The amplitude parameter is just master gain with an optional LFO applied to it.<br/>
 Likewise the balance control is global stereo balance with an optional LFO applied to it.
+
+<a id="73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6"></a>
+### Oscillator
+bla
