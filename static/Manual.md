@@ -238,7 +238,7 @@ Includes all the common ones like sin, cos, saw, sqr, tri as well as a bunch of 
 * 2x pulse-width-modulatable waveform with gain control and PWM control:<br/>
 Classic square-to-pulse, triangle-to-saw and a couple others.
 * 1x hard-sync capable waveform:<br/>
-Choice of saw/sqr/tri. Pitch controls the offset of slave pitch relative to the osci's internal pitch.
+Choice of saw/sqr/tri. Pitch controls the offset of slave pitch relative to the osci's internal/master pitch.
 * 1x DSF generator (additive oscillator with just a couple control parameters):<br/>
 Distance and decay control the frequency and amplitude of consecutive sines.<br/>
 Overtones mode allows to explicitly specify the number of sines generated.<br/>
