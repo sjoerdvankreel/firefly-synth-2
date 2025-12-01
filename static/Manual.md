@@ -267,6 +267,7 @@ FM Index: this controls how much of the modulator signal to add to the phase (li
 This is a combined noise/string generator.<br/>
 It can be used to generate plucked strings, bowed strings, and colored noise.<br/>
 In its default configuration it generates a plucked string by some variation of the extended Karplus-Strong algorithm.<br/>
+(Or at least i think so. It's actually backed by a fractional delay line instead of a ringbuffer to allow continuous pitch shifting).<br/>
 Turn up the excite parameter just a little bit (and tweak a lot of other controls) to get a bowed string.<br/>
 Turn up the excite parameter all the way to generate full-on noise.
 
