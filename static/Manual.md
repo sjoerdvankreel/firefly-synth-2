@@ -290,3 +290,7 @@ Filter controls:<br/>
 The plugin is set up such that the filter controls affect all of the initial excitation, <br/>
 the damping factor, and on the feedback path, the feedback factor and the re-excite amount.<br/>
 Contains both an LP and HP filter with frequency and resonance controls and keyboard tracking amount relative to the root key.
+
+Damping is primarily used to shorten low notes.<br/>
+Feedback is primarily used to lengthen high notes.<br/>
+Both of them can be keyboard-tracked relative to the root key.
