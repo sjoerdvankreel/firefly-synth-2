@@ -283,6 +283,7 @@ In particular the voice amplitude envelope.
 * Tracking key: root key (relative to C4) for keyboard tracking the damping, feedback, and filter controls.
 * Color: continuous color control from brown to pink to white noise.
 * Color quality: selects the stage count of the color filter.
-*
+* X/Y: freeze (sample and hold) the signal in either the time or amplitude dimension.<br/>
+With color to full-on white, filters disabled, and damping to zero this pretty much replicates the noise osci from infernal synth.
 
 
