@@ -244,6 +244,3 @@ Distance and decay control the frequency and amplitude of consecutive sines.<br/
 Overtones mode allows to explicitly specify the number of sines generated.<br/>
 Bandwidth mode allows to specify a range between base frequency only (0%) or all the way up to Nyquist/half-sample-rate (100%).
 
-
-
-*
