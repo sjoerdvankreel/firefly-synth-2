@@ -184,9 +184,9 @@ Likewise the balance control is global stereo balance with an optional LFO appli
 Contains controls common to all oscillator types.
 
 Oscillator type:
-* Wave: sine, saw, sqr etc, couple of PWM-capable algorithms, some hard-sync capable algoritms and a DSF generator.
-* FM: 3-op FM generator with 3x3 matrix and unit delay on the feedback path.
 * String: combined string/noise osci.
+* FM: 3-op FM generator with 3x3 matrix.
+* Wave: sine, saw, sqr etc, couple of PWM-capable algorithms, some hard-sync capable algoritms and a DSF generator.
 * External Audio: use audio in as an oscillator to allow it as an FM/AM/RM source in the inter-osci modulation section.
 
 Comes with gain control plus optional envelope, fine pitch control plus optional LFO (vibrato), phase offset and coarse pitch controls.
@@ -244,3 +244,6 @@ Distance (specified in times the osci frequency) and decay control the frequency
 Overtones mode allows to explicitly specify the number of sines generated.<br/>
 Bandwidth mode allows to specify a range between base frequency only (0%) or all the way up to Nyquist/half-sample-rate (100%).
 
+#### FM section
+
+This is a dedicated FM-generator with 3 operators and a 3x3 matrix with unit delay on the feedback path.
