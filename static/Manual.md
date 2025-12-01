@@ -249,8 +249,8 @@ Bandwidth mode allows to specify a range between base frequency only (0%) or all
 This is a dedicated FM-generator with 3 operators and a 3x3 matrix with unit delay on the feedback path.<br/>
 Since FM produces a "wide" signal (frequency wise) it's quite easy to cause aliasing with it.<br/>
 Should this happen, you'll need to turn on oversampling in the inter-osci modulation section.<br/>
-Even though that's called "osci mod", turning on oversampling there will oversample each oscillator whether it is modulated by another osci or not.<br/>
-Even with oversampling on, there's no guarantee you won't go "out of bounds", but it helps.
+Even though that's called "osci mod", turning on oversampling there will oversample each oscillator<br/>
+whether it is modulated by another osci or not. Even with oversampling on, there's no guarantee you won't go "out of bounds", but it helps.
 
 The mode control switches between regular (linear) FM and exponential FM.<br/>
 In the linear case the modulator affects the phase of the carrier (so yeah it's PM really, like everyone else does it).<br/>
