@@ -195,8 +195,12 @@ Pan control may be used to pan hard-left/hard-right or anything in between.<br/>
 
 Keyboard tracking: by default an oscillator's base pitch (so not counting coarse/fine offset and unison detune) follows the voice's base pitch.<br/>
 The voice base pitch is basically the incoming MIDI note with pitch bend, voice-level coarse/fine offset, portamento and microtuning applied.<br/>
-If you turn off keyboard tracking the oscillator base pitch becomes C0. You can then use the the osci-level coarse and fine pitch controls to affect the osci pitch.<br/>
+If you turn off keyboard tracking the oscillator base pitch becomes C0.<br/>
+You can then use the the osci-level coarse and fine pitch controls to affect the osci pitch.<br/>
+
 By itself this gives you a constant pitch, so not really useful.<br/>
 Instead, this feature is meant to allow building up the osci pitch by the matrix.<br/>
 You can stack individual components like voice key, pitch bend, portamento offset, voice coarse/fine offset to the osci's coarse pitch to build up the corresponding voice pitch by hand.<br/>
+This opens up some neat possibilities like leaving out specific pitch components (like PB) for a single osci only, or f.e. to invert the effect of the portamento.<br/>
+
 
