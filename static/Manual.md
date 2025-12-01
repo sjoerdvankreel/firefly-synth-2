@@ -185,6 +185,9 @@ Contains controls common to all oscillator types.
 
 Oscillator type:
 * Wave: sine, saw, sqr etc, couple of PWM-capable algorithms, some hard-sync capable algoritms and a DSF generator.
-* FM: 3-op FM generator with 3x3 matrix, unit delay on the feedback path.
+* FM: 3-op FM generator with 3x3 matrix and unit delay on the feedback path.
 * String: combined string/noise osci.
 * External Audio: use audio in as an oscillator to allow it as an FM/AM/RM source in the inter-osci modulation section.
+
+Comes with gain control plus optional envelope, fine pitch control plus optional LFO (vibrato), phase offset and coarse pitch controls.<br/>
+Panning: an osci is inherently monophonic unless you the osci-level unison feature. Pan control may be used to pan hard-left/hard-right or anything in between.<br/>
