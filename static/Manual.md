@@ -203,4 +203,11 @@ Instead, this feature is meant to allow building up the osci pitch by the matrix
 You can stack individual components like voice key, pitch bend, portamento offset, voice coarse/fine offset to the osci's coarse pitch to build up the corresponding voice pitch by hand.
 This opens up some neat possibilities like leaving out specific pitch components (like PB) for a single osci only, or f.e. to invert the effect of the portamento.<br/>
 
+There is one caveat: if you use microtuning you cannot accurately build up the voice pitch from individual components.
+If you want to have a non-tracking oscillator and play it microtuning-aware, you have to use the unified "Voice Pitch" matrix source.
+This source combines everything that affects voice-level pitch and then applies microtuning to the final result.
+Rationale: i don't know how to individually microtune PB, voice coarse offset, portamento etc and still have the result come out "correct",
+i.e., equal to the result of tuning them all together at once. Don't even know if it's possible or not.
+
+
 
