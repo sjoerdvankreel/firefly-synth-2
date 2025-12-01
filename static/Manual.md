@@ -281,5 +281,8 @@ In between, you can get bowed strings, but this requires some cooperation with o
 In particular the voice amplitude envelope.
 * Seed: random seed for the backing random generator.
 * Tracking key: root key (relative to C4) for keyboard tracking the damping, feedback, and filter controls.
+* Color: continuous color control from brown to pink to white noise.
+* Color quality: selects the stage count of the color filter.
+* 
 
 
