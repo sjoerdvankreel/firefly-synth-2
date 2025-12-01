@@ -259,9 +259,5 @@ Exponential FM can produce some really deep sounds but it also "shifts" the pitc
 
 Ratio mode: allows to specify the carrier/modulator ratio as either free-form/continuous or rational (1:2, 2:3, 3:4 etc).<br/>
 Operator 1 is implicitly defined as "1", and you can select op2:op1 and op3:op2 on top of that.<br/>
-So, set both to 2:1, then op3:op1 will be 4:1. Either 4 times the pitch or 4 times the frequency, depending on the mode.
-
-
-
-
-
+So, set both to 2:1, then op3:op1 will be 4:1. Either 4 times the pitch or 4 times the frequency, depending on the mode.<br/>
+FM Index: this controls how much of the modulator signal to add to the phase (linear) or pitch (exponential) of the carrier. 
