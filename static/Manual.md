@@ -220,5 +220,5 @@ If you don't have a center position (so, even voice count) setting this to zero 
 
 For External Audio, the blend and spread controls don't really do much.<br/>
 You can hear the effect of the blend parameter as a change in amplitude only.<br/>
-The spread parameter "does something" but you basically cannot hear it as each each subvoice is exactly the same, so, it doesn't matter where it is positioned in the stereo spectrum.
+The spread parameter "does something" but you basically cannot hear it as each subvoice is exactly the same, so, it doesn't matter where it is positioned in the stereo spectrum.
 
