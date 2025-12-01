@@ -192,3 +192,11 @@ Oscillator type:
 Comes with gain control plus optional envelope, fine pitch control plus optional LFO (vibrato), phase offset and coarse pitch controls.<br/>
 Panning: an osci is inherently monophonic unless you turn on the osci-level unison feature.<br/>
 Pan control may be used to pan hard-left/hard-right or anything in between.<br/>
+
+Keyboard tracking: by default an oscillator's base pitch (so not counting coarse/fine offset and unison detune) follows the voice's base pitch.<br/>
+The voice base pitch is basically the incoming MIDI note with pitch bend, voice-level coarse/fine offset, portamento and microtuning applied.<br/>
+If you turn off keyboard tracking the oscillator base pitch becomes C0. You can then use the the osci-level coarse and fine pitch controls to affect the osci pitch.<br/>
+By itself this gives you a constant pitch, so not really useful.<br/>
+Instead, this feature is meant to allow building up the osci pitch by the matrix.<br/>
+You can stack individual components like voice key, pitch bend, portamento offset, voice coarse/fine offset to the osci's coarse pitch to build up the corresponding voice pitch by hand.<br/>
+
