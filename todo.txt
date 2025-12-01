@@ -8,6 +8,7 @@ TODOLIST for beta-1
 [x] try vcenter textbox again
 [x] up the vno just because
 [x] document the OTHER section
+[ ] "show manual" need separator menu
 [ ] move manual to static
 [ ] clap mod docs
 [ ] on demand alloc is not realtime safe
