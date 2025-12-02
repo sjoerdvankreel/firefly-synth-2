@@ -308,6 +308,5 @@ FF2 does not support true stereo oscillators before the unison stage.
 
 <a id="G154051CE-66D9-41C8-B479-C52D1111C962"></a>
 <a id="V154051CE-66D9-41C8-B479-C52D1111C962"></a>
-### Voice FX and global FX
+### Voice FX and Global FX
 
-booyah
