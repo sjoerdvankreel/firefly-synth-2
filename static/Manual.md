@@ -351,3 +351,7 @@ Comes in 9 flavors:
 * Bell (with peak gain control)
 * Low shelving (with shelve gain control)
 * High shelving (with shelve gain control)
+
+#### Comb filter
+Choice of feedback, feed-forward or both.<br/>
+Comb filters are now specified in Hz (or pitch) instead of milliseconds like FF1.
