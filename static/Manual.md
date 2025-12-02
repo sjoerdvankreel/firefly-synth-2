@@ -337,4 +337,8 @@ For SV filters these affect the frequency and pitch controls.<br/>
 For comb filters these affect both the feedback and feedforward frequency and pitch controls.<br/>
 For all shaper types, affect the Drive parameter.
 
+#### State variable filter
+This is FF2's implementation of the excellent filters found over here: 
+[https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf](https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf).
+
 
