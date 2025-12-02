@@ -12,6 +12,7 @@ TODOLIST for beta-1
 [x] open html from the context menu with the right target
 [x] move manual to static
 [x] not osci ktrk for extaud
+[ ] notracking filters track against c0, should be c4
 [ ] clap mod docs
 [ ] screenshots in the docs?
 [ ] a note about "everything is modulatable"
