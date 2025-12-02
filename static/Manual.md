@@ -341,7 +341,7 @@ For all shaper types, affect the Drive parameter.
 This is FF2's implementation of the excellent filters found over here:<br/>
 [https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf](https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf).
 
-Comes in these flavors:
+Comes in 9 flavors:
 * Lowpass
 * Highpass
 * Bandpass
