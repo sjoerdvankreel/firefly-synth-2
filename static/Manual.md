@@ -328,7 +328,7 @@ Keyboard tracking is also done against the difference between base pitch and roo
 With 100% keytracking, the filter frequency doubles as the coarse parameter itself goes one octave up from the tracking root.<br/>
 Raw pitch mode can be used to build up the filter frequency from the matrix, just like for non-tracking oscillators.
 
-Both pitch modes can be used have high-resonance filters play in tune with the oscillators.<br/>
+Both pitch modes can be used to have high-resonance filters play in tune with the oscillators.<br/>
 Just like with oscillators, if you want non-pitch-tracking filters to be properly microtuned,<br/>
 you have to use the dedicated/unified pitch tracking matrix sources ("Voice Pitch" and "Master Last/Low/High Pitch").
 
