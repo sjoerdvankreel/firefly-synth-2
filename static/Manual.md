@@ -309,4 +309,10 @@ FF2 does not support true stereo oscillators before the unison stage.
 <a id="G154051CE-66D9-41C8-B479-C52D1111C962"></a>
 <a id="V154051CE-66D9-41C8-B479-C52D1111C962"></a>
 ### Voice FX and Global FX
+Effect module with 4 subslots, each slot can be a state variable filter, comb filter, or waveshaper.<br/>
+Oversampling applies to the module as a whole, so all 4 subslots together.<br/>
+Tracking key sets the root key (offset from C4) against which all filters are keyboard-tracked.<br/>
+Keytracking happens against the voice-triggered note for voice level FX, and last triggered note for global FX.<br/>
+For global FX only, the key smoothing control allows to smooth out changes in the last received MIDI key.
 
+#### booyah
