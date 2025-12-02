@@ -294,3 +294,7 @@ Contains both an LP and HP filter with frequency and resonance controls and keyb
 Damping is primarily used to shorten low notes.<br/>
 Feedback is primarily used to lengthen high notes.<br/>
 Both of them can be keyboard-tracked relative to the root key.
+
+#### External Audio
+
+Allows to o
