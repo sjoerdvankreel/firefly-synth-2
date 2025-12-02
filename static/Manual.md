@@ -338,7 +338,7 @@ For comb filters these affect both the feedback and feedforward frequency and pi
 For all shaper types, affect the Drive parameter.
 
 #### State variable filter
-This is FF2's implementation of the excellent filters found over here:<br/>
+This is FF2's implementation of the filters found over here:<br/>
 [https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf](https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf).
 
 Comes in 9 flavors:
@@ -355,3 +355,13 @@ Comes in 9 flavors:
 #### Comb filter
 Choice of feedback, feed-forward or both.<br/>
 Comb filters are now specified in Hz (or pitch) instead of milliseconds like FF1.
+
+#### Waveshaper
+All waveshapers have these common parameters:
+* Bias: offsets the input signal amplitude.
+* Drive: multiplies the input signal after bias.
+* Dry/wet mix: controls the input/output signal ratio.
+
+Clip: forces the input signal into -100..100%. Input below -100% comes out as -100% and input above 100% comes out as 100%.<br/>
+All clippers except for hard clip are implemented from<br/>
+[https://dafx.de/paper-archive/2012/papers/dafx12_submission_45.pdf](https://dafx.de/paper-archive/2012/papers/dafx12_submission_45.pdf).
