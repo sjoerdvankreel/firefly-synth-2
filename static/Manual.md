@@ -332,3 +332,9 @@ Both pitch modes can be used to have high-resonance filters play in tune with th
 Just like with oscillators, if you want non-pitch-tracking filters to be properly microtuned,<br/>
 you have to use the dedicated/unified pitch tracking matrix sources ("Voice Pitch" and "Master Last/Low/High Pitch").
 
+#### Envelope and LFO modulators
+For SV filters these affect the frequency and pitch controls.<br/>
+For comb filters these affect both the feedback and feedforward frequency and pitch controls.<br/>
+For all shaper types, affect the Drive parameter.
+
+
