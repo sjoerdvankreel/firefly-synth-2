@@ -338,7 +338,16 @@ For comb filters these affect both the feedback and feedforward frequency and pi
 For all shaper types, affect the Drive parameter.
 
 #### State variable filter
-This is FF2's implementation of the excellent filters found over here: 
+This is FF2's implementation of the excellent filters found over here:<br/>
 [https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf](https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf).
 
-
+Comes in these flavors:
+* Lowpass
+* Highpass
+* Bandpass
+* Bandstop (notch)
+* Allpass
+* Peaking EQ
+* Bell (with peak gain control)
+* Low shelving (with shelve gain control)
+* High shelving (with shelve gain control)
