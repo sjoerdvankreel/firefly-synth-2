@@ -119,6 +119,7 @@ FFMakeEffectTopo(bool global)
   kind.slotCount = FFEffectBlockCount;
   kind.slotFormatter = FFFormatBlockSlot;
   kind.id = prefix + "{1585A19D-639E-4202-B60B-BD8560BC8B70}";
+  kind.description = "Effect Kind";
   kind.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return FFEffectKindToString(ps == 0 ? FFEffectKind::StVar: FFEffectKind::Off); };
   kind.type = FBParamType::List;
   kind.List().items = {
@@ -150,6 +151,7 @@ FFMakeEffectTopo(bool global)
   envAmt.slotCount = FFEffectBlockCount;
   envAmt.unit = "%";
   envAmt.id = prefix + "{1064F27D-F3A6-469F-93AA-ABA548179947}";
+  envAmt.description = "Modulate Control Parameter By Envelope";
   envAmt.type = FBParamType::Identity;
   auto selectEnvAmt = [](auto& module) { return &module.acc.envAmt; };
   envAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectEnvAmt);
@@ -169,6 +171,7 @@ FFMakeEffectTopo(bool global)
   lfoAmt.slotCount = FFEffectBlockCount;
   lfoAmt.unit = "%";
   lfoAmt.id = prefix + "{3139FC96-AB7F-4402-8508-2EFCC558AD1C}";
+  lfoAmt.description = "Modulate Control Parameter By LFO";
   lfoAmt.type = FBParamType::Identity;
   auto selectLFOAmt = [](auto& module) { return &module.acc.lfoAmt; };
   lfoAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectLFOAmt);
@@ -186,6 +189,7 @@ FFMakeEffectTopo(bool global)
   filterMode.slotCount = FFEffectBlockCount;
   filterMode.slotFormatter = FFFormatBlockSlot;
   filterMode.id = prefix + "{CB9966E2-8C24-4ADA-A908-22E991F5D862}";
+  filterMode.description = "Filter Frequency Mode";
   filterMode.type = FBParamType::List;
   filterMode.List().items = {
     { "{64270F43-2D0C-4A1B-BFE7-0DC8FFE2C9DC}", "Freq" },
@@ -208,6 +212,7 @@ FFMakeEffectTopo(bool global)
   stVarMode.slotCount = FFEffectBlockCount;
   stVarMode.slotFormatter = FFFormatBlockSlot;
   stVarMode.id = prefix + "{275B2C8D-6D21-4741-AB69-D21FA95CD7F5}";
+  stVarMode.description = "SV Filter Algorithm";
   stVarMode.type = FBParamType::List;
   stVarMode.List().items = {
     { "{EAAE7102-9F6C-4EC2-8C39-B13BBDFF7AD1}", "LPF" },
@@ -239,6 +244,7 @@ FFMakeEffectTopo(bool global)
   stVarKeyTrk.slotFormatter = FFFormatBlockSlot;
   stVarKeyTrk.unit = "%";
   stVarKeyTrk.id = prefix + "{CC91F0B0-9D53-4140-B698-0561D04F500C}";
+  stVarKeyTrk.description = "SV Filter Keyboard Tracking Amount";
   stVarKeyTrk.type = FBParamType::Linear;
   stVarKeyTrk.Linear().min = -2.0f;
   stVarKeyTrk.Linear().max = 2.0f;
@@ -263,6 +269,7 @@ FFMakeEffectTopo(bool global)
   stVarRes.slotFormatter = FFFormatBlockSlot;
   stVarRes.unit = "%";
   stVarRes.id = prefix + "{0B7CCB1C-FF95-46CD-9C93-1BAF5CE350E3}";
+  stVarRes.description = "SV Filter Resonance";
   stVarRes.type = FBParamType::Identity;
   auto selectStVarRes = [](auto& module) { return &module.acc.stVarRes; };
   stVarRes.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectStVarRes);
@@ -284,6 +291,7 @@ FFMakeEffectTopo(bool global)
   stVarFreqFreq.slotFormatter = FFFormatBlockSlot;
   stVarFreqFreq.unit = "Hz";
   stVarFreqFreq.id = prefix + "{4ACF9D3E-D1F0-4B3B-8F6F-6FEE6BCDE449}";
+  stVarFreqFreq.description = "SV Filter Frequency";
   stVarFreqFreq.type = FBParamType::Log2;
   stVarFreqFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectStVarFreqFreq = [](auto& module) { return &module.acc.stVarFreqFreq; };
@@ -306,6 +314,7 @@ FFMakeEffectTopo(bool global)
   stVarPitchCoarse.slotFormatter = FFFormatBlockSlot;
   stVarPitchCoarse.unit = "Semitones";
   stVarPitchCoarse.id = prefix + "{C04596FE-F65F-459B-B68D-D278D3866E5D}";
+  stVarPitchCoarse.description = "SV Filter Pitch";
   stVarPitchCoarse.type = FBParamType::Linear;
   stVarPitchCoarse.Linear().min = -FFModCoarseSemis;
   stVarPitchCoarse.Linear().max = FFModCoarseSemis;
@@ -329,6 +338,7 @@ FFMakeEffectTopo(bool global)
   stVarGain.slotFormatter = FFFormatBlockSlot;
   stVarGain.unit = "dB";
   stVarGain.id = prefix + "{CA06747B-F867-4E03-AF36-327662021440}";
+  stVarGain.description = "SV Filter Shelf/Bell Gain";
   stVarGain.type = FBParamType::Linear;
   stVarGain.Linear().min = -24.0f;
   stVarGain.Linear().max = 24.0f;
@@ -352,6 +362,7 @@ FFMakeEffectTopo(bool global)
   combKeyTrk.slotFormatter = FFFormatBlockSlot;
   combKeyTrk.unit = "%";
   combKeyTrk.id = prefix + "{77B1716F-4511-492B-A32E-F04CF668238B}";
+  combKeyTrk.description = "Comb Filter Keyboard Tracking Amount";
   combKeyTrk.type = FBParamType::Linear;
   combKeyTrk.Linear().min = -2.0f;
   combKeyTrk.Linear().max = 2.0f;
@@ -376,6 +387,7 @@ FFMakeEffectTopo(bool global)
   combFreqFreqPlus.slotFormatter = FFFormatBlockSlot;
   combFreqFreqPlus.unit = "Hz";
   combFreqFreqPlus.id = prefix + "{19B8B573-C49D-4D34-8078-02B2A30F40E8}";
+  combFreqFreqPlus.description = "Comb Filter Feedforward Frequency";
   combFreqFreqPlus.type = FBParamType::Log2;
   combFreqFreqPlus.Log2().Init(0.0f, FFMinCombFilterFreq, FFMaxCombFilterFreq);
   auto selectCombFreqFreqPlus = [](auto& module) { return &module.acc.combFreqFreqPlus; };
@@ -398,6 +410,7 @@ FFMakeEffectTopo(bool global)
   combPitchCoarsePlus.slotFormatter = FFFormatBlockSlot;
   combPitchCoarsePlus.unit = "Semitones";
   combPitchCoarsePlus.id = prefix + "{CCB595F7-3270-4BBD-8CE5-FE18EFA27E94}";
+  combPitchCoarsePlus.description = "Comb Filter Feedforward Pitch";
   combPitchCoarsePlus.type = FBParamType::Linear;
   combPitchCoarsePlus.Linear().min = -FFModCoarseSemis;
   combPitchCoarsePlus.Linear().max = FFModCoarseSemis;
@@ -421,6 +434,7 @@ FFMakeEffectTopo(bool global)
   combFreqFreqMin.slotFormatter = FFFormatBlockSlot;
   combFreqFreqMin.unit = "Hz";
   combFreqFreqMin.id = prefix + "{B2C0AEB8-F2C1-4553-961C-7B61021C8B70}";
+  combFreqFreqMin.description = "Comb Filter Feedback Frequency";
   combFreqFreqMin.type = FBParamType::Log2;
   combFreqFreqMin.Log2().Init(0.0f, FFMinCombFilterFreq, FFMaxCombFilterFreq);
   auto selectCombFreqFreqMin = [](auto& module) { return &module.acc.combFreqFreqMin; };
@@ -443,6 +457,7 @@ FFMakeEffectTopo(bool global)
   combPitchCoarseMin.slotFormatter = FFFormatBlockSlot;
   combPitchCoarseMin.unit = "Semitones";
   combPitchCoarseMin.id = prefix + "{0EEFA4DF-9A80-4E60-8A42-E802DDA2384F}";
+  combPitchCoarseMin.description = "Comb Filter Feedback Pitch";
   combPitchCoarseMin.type = FBParamType::Linear;
   combPitchCoarseMin.Linear().min = -FFModCoarseSemis;
   combPitchCoarseMin.Linear().max = FFModCoarseSemis;
@@ -466,6 +481,7 @@ FFMakeEffectTopo(bool global)
   combResPlus.slotFormatter = FFFormatBlockSlot;
   combResPlus.unit = "%";
   combResPlus.id = prefix + "{7DF779CB-794D-4419-9E7F-E68F3F3BCB57}";
+  combResPlus.description = "Comb Filter Feedforward Resonance";
   combResPlus.type = FBParamType::Linear;
   combResPlus.Linear().min = -1.0f;
   combResPlus.Linear().max = 1.0f;
@@ -490,6 +506,7 @@ FFMakeEffectTopo(bool global)
   combResMin.slotFormatter = FFFormatBlockSlot;
   combResMin.unit = "%";
   combResMin.id = prefix + "{09588739-10E7-413E-9577-5A9BE8996A5D}";
+  combResMin.description = "Comb Filter Feedback Resonance";
   combResMin.type = FBParamType::Linear;
   combResMin.Linear().min = -1.0f;
   combResMin.Linear().max = 1.0f;
