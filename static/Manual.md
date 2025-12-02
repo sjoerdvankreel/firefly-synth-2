@@ -119,7 +119,7 @@ These affect whether voice-level pitch and global last/low/high-key pitch source
 See the matrix section for more details.
 
 <a id="5C91D5A0-3EC1-4142-935A-3FE83B60C04E"></a>
-### Voice Mixer
+### Voice mixer
 Controls the signal path of the per-voice audio engine.
 
 * Oscillator to voice FX:<br/>
@@ -155,7 +155,7 @@ Balance control: this is just a straightforward stereo balancer with an optional
 Osc mix to out: controls how much the internal osci mixer stage contributes to the final voice output.
 
 <a id="09ED2CCE-3AC5-455E-935C-A684BEBC154D"></a>
-### Global Mixer
+### Global mixer
 Controls the signal path of the global audio engine.
 
 * Voice Mix to GFX:<br/>
@@ -316,4 +316,19 @@ Keytracking happens against the voice-triggered note for voice level FX, and las
 (unless in no-pitch-tracking mode, see below).<br/>
 For global FX only, the key smoothing control allows to smooth out changes in the last received MIDI key.
 
-#### booyah
+#### Filter modes
+Both SV filters and comb filters can be used in frequency mode, pitch mode or pitch-tracking mode.
+* For frequency mode (regular) you can specify the filter cutoff in Hz.<br/>
+Keyboard tracking is done against the difference between base pitch and root key.<br/>
+With 100% keytracking, the filter frequency doubles as base pitch goes up one octave from the tracking root.
+* For tracking pitch mode, the base pitch tracks the voice pitch and you set an additional coarse pitch as an offset from that.<br/>
+For example, play C4-C5, the filter frequency will be 261-523 Hz.<br/>
+Keyboard tracking is also done against the difference between base pitch and root key.<br/>
+* For raw pitch mode, the base pitch is C0 and you can specify the filter cutoff in semitones (so coarse:60 is 261 Hz).<br/>
+With 100% keytracking, the filter frequency doubles as the coarse parameter itself goes one octave up from the tracking root.<br/>
+Raw pitch mode can be used to build up the filter frequency from the matrix, just like for non-tracking oscillators.
+
+Both pitch modes can be used have high-resonance filters play in tune with the oscillators.<br/>
+Just like with oscillators, if you want non-pitch-tracking filters to be properly microtuned,<br/>
+you have to use the dedicated/unified pitch tracking matrix sources ("Voice Pitch" and "Master Last/Low/High Pitch").
+
