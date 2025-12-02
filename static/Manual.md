@@ -297,4 +297,11 @@ Both of them can be keyboard-tracked relative to the root key.
 
 #### External Audio
 
-Allows to o
+Allows to use external audio input as an oscillator.<br/>
+Primary use case is to allow an external signal as an FM/RM/PM source.<br/>
+If you just want to throw some effects to external input, use Global Mixer ("External Audio To GFX") and the global echo module instead.
+
+* Input gain for when the external signal is too loud/too quiet.
+* Balance control to turn the external stereo signal into mono.<br/>
+FF2 does not support true stereo oscillators before the unison stage.
+* Built-in low/highpass filters for additional control.
