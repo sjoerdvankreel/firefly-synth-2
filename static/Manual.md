@@ -295,7 +295,7 @@ Damping is primarily used to shorten low notes.<br/>
 Feedback is primarily used to lengthen high notes.<br/>
 Both of them can be keyboard-tracked relative to the root key.
 
-#### External Audio
+#### External Audio Section
 
 Allows to use external audio input as an oscillator.<br/>
 Primary use case is to allow an external signal as an FM/RM/PM source.<br/>
