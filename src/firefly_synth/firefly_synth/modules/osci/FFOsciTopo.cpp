@@ -1054,6 +1054,7 @@ FFMakeOsciTopo()
   extAudioLPOn.slotCount = 1;
   extAudioLPOn.defaultText = "Off";
   extAudioLPOn.id = "{63DBFD5D-68B2-40A7-A217-05355D09C54D}";
+  extAudioLPOn.description = "External Audio Oscillator LP Filter";
   extAudioLPOn.type = FBParamType::Boolean;
   auto selectExtAudioLPOn = [](auto& module) { return &module.block.extAudioLPOn; };
   extAudioLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioLPOn);
@@ -1069,6 +1070,7 @@ FFMakeOsciTopo()
   extAudioLPFreq.slotCount = 1;
   extAudioLPFreq.unit = "Hz";
   extAudioLPFreq.id = "{E2C27D74-394C-4CB3-98C2-9EBBCDE23B6D}";
+  extAudioLPFreq.description = "External Audio Oscillator LP Frequency";
   extAudioLPFreq.type = FBParamType::Log2;
   extAudioLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectExtAudioLPFreq = [](auto& module) { return &module.acc.extAudioLPFreq; };
@@ -1085,6 +1087,7 @@ FFMakeOsciTopo()
   extAudioLPRes.slotCount = 1;
   extAudioLPRes.unit = "%";
   extAudioLPRes.id = "{CFDA83CE-8D58-43E9-ADA8-DD67E2074B1E}";
+  extAudioLPRes.description = "External Audio Oscillator LP Resonance";
   extAudioLPRes.type = FBParamType::Identity;
   auto selectExtAudioLPRes = [](auto& module) { return &module.acc.extAudioLPRes; };
   extAudioLPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioLPRes);
@@ -1099,6 +1102,7 @@ FFMakeOsciTopo()
   extAudioHPOn.slotCount = 1;
   extAudioHPOn.defaultText = "Off";
   extAudioHPOn.id = "{BE88EA0A-BD2F-49F1-9762-881D7FEFA7C1}";
+  extAudioHPOn.description = "External Audio Oscillator HP Filter";
   extAudioHPOn.type = FBParamType::Boolean;
   auto selectExtAudioHPOn = [](auto& module) { return &module.block.extAudioHPOn; };
   extAudioHPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioHPOn);
@@ -1114,6 +1118,7 @@ FFMakeOsciTopo()
   extAudioHPFreq.slotCount = 1;
   extAudioHPFreq.unit = "Hz";
   extAudioHPFreq.id = "{FE65BB51-F63B-464F-91B2-7E8732ADF9CC}";
+  extAudioHPFreq.description = "External Audio Oscillator HP Frequency";
   extAudioHPFreq.type = FBParamType::Log2;
   extAudioHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectExtAudioHPFreq = [](auto& module) { return &module.acc.extAudioHPFreq; };
@@ -1130,6 +1135,7 @@ FFMakeOsciTopo()
   extAudioHPRes.slotCount = 1;
   extAudioHPRes.unit = "%";
   extAudioHPRes.id = "{F9F7A9FE-5D3D-45A9-A15D-19D80634DF10}";
+  extAudioHPRes.description = "External Audio Oscillator HP Resonance";
   extAudioHPRes.type = FBParamType::Identity;
   auto selectExtAudioHPRes = [](auto& module) { return &module.acc.extAudioHPRes; };
   extAudioHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioHPRes);
@@ -1145,6 +1151,7 @@ FFMakeOsciTopo()
   extAudioInputBal.slotCount = 1;
   extAudioInputBal.unit = "%";
   extAudioInputBal.id = "{4B587031-0785-46F2-9C62-414DDD5E588A}";
+  extAudioInputBal.description = "External Audio Oscillator Input Stereo Balance";
   extAudioInputBal.type = FBParamType::Linear;
   extAudioInputBal.Linear().displayMultiplier = 100;
   extAudioInputBal.Linear().min = -1.0f;
@@ -1163,6 +1170,7 @@ FFMakeOsciTopo()
   extAudioInputGain.slotCount = 1;
   extAudioInputGain.unit = "%";
   extAudioInputGain.id = "{3AAC96D0-3F29-49F1-BAD3-1F0EDB075409}";
+  extAudioInputGain.description = "External Audio Oscillator Input Gain";
   extAudioInputGain.type = FBParamType::Linear;
   extAudioInputGain.Linear().min = 0.0f;
   extAudioInputGain.Linear().max = 32.0f;
