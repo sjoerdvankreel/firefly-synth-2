@@ -131,7 +131,7 @@ FFMakeOsciTopo()
   keyTrack.scalarAddr = FFSelectScalarParamAddr(selectModule, selectKeyTrack);
   keyTrack.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectKeyTrack);
   keyTrack.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectKeyTrack);
-  keyTrack.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  keyTrack.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::ExtAudio; });
 
   auto& envToGain = result->params[(int)FFOsciParam::EnvToGain];
   envToGain.mode = FBParamMode::Accurate;
