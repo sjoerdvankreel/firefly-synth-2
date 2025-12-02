@@ -321,10 +321,8 @@ FBHostGUIContext::ShowOnlineManualForAudioParam(int index) const
   int staticModuleIndex = Topo()->modules[rtModuleIndex].topoIndices.index;
   auto const& moduleId = Topo()->static_->modules[staticModuleIndex].id;
   auto cleanModuleId = moduleId;
-  if (cleanModuleId.starts_with('{'))
-    cleanModuleId.erase(0, 1);
-  if (cleanModuleId.ends_with('}'))
-    cleanModuleId.erase(cleanModuleId.size() - 1, 1);
+  std::erase(cleanModuleId, '{');
+  std::erase(cleanModuleId, '}');
   juce::URL(OnlineManualLocation()).withAnchor(cleanModuleId).launchInDefaultBrowser();
 }
 

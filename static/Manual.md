@@ -305,3 +305,9 @@ If you just want to throw some effects to external input, use Global Mixer ("Ext
 * Balance control to turn the external stereo signal into mono.<br/>
 FF2 does not support true stereo oscillators before the unison stage.
 * Built-in low/highpass filters for additional control.
+
+<a id="G154051CE-66D9-41C8-B479-C52D1111C962"></a>
+<a id="V154051CE-66D9-41C8-B479-C52D1111C962"></a>
+### Voice FX and global FX
+
+booyah
