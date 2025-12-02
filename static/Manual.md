@@ -180,6 +180,8 @@ Likewise the balance control is global stereo balance with an optional LFO appli
 <a id="73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6"></a>
 ### Oscillator
 
+The graph plot for oscillators is an oscilloscope.
+
 #### Main section
 Contains controls common to all oscillator types.
 
@@ -316,6 +318,10 @@ Keytracking happens against the voice-triggered note for voice level FX, and las
 (unless in no-pitch-tracking mode, see below).<br/>
 For global FX only, the key smoothing control allows to smooth out changes in the last received MIDI key.
 
+The graph plot for waveshapers is a shaper plot.<br/>
+The graph plot for filters is a frequency response.<br/>
+The graph plot for everything combined is an impulse response (or actually, what everything combined does to a sawtooth. Is that a saw response?)
+
 #### Filter modes
 Both SV filters and comb filters can be used in frequency mode, pitch mode or pitch-tracking mode.
 * For frequency mode (regular) you can specify the filter cutoff in Hz.<br/>
@@ -365,3 +371,8 @@ All waveshapers have these common parameters:
 Clip: forces the input signal into -100..100%. Input below -100% comes out as -100% and input above 100% comes out as 100%.<br/>
 All clippers except for hard clip are implemented from<br/>
 [https://dafx.de/paper-archive/2012/papers/dafx12_submission_45.pdf](https://dafx.de/paper-archive/2012/papers/dafx12_submission_45.pdf).
+The exponential clipper has an additional amount control.
+
+Fold: like clip, forces the input signal into -100..100%, but instead of limiting the signal, will fold back into range.
+
+Skew: applies a vertical (y/amplitude) skewing factor to the input signal.

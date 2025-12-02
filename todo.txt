@@ -14,6 +14,7 @@ TODOLIST for beta-1
 [x] not osci ktrk for extaud
 [x] notracking filters track against c0, should be coarse pitch
 [ ] clap mod docs
+[ ] do all credits in the docs
 [ ] explain clap/matrix/easy-access/GUNI interaction
 [ ] screenshots in the docs?
 [ ] a note about "everything is modulatable"
