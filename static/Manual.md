@@ -371,9 +371,11 @@ All waveshapers have these common parameters:
 
 Clip: forces the input signal into -100..100%. Input below -100% comes out as -100% and input above 100% comes out as 100%.<br/>
 All clippers except for hard clip are implemented from<br/>
-[https://dafx.de/paper-archive/2012/papers/dafx12_submission_45.pdf](https://dafx.de/paper-archive/2012/papers/dafx12_submission_45.pdf).
+[https://dafx.de/paper-archive/2012/papers/dafx12_submission_45.pdf](https://dafx.de/paper-archive/2012/papers/dafx12_submission_45.pdf).<br/>
 The exponential clipper has an additional amount control.
 
-Fold: like clip, forces the input signal into -100..100%, but instead of limiting the signal, will fold back into range.
+Fold: like clip, forces the input signal into -100..100%, but instead of limiting the signal, will fold back into range.<br/>
+Choice of a plain (triangular) folder and a bunch of (stacked) trigonometric functions like sine(in), cosine(in), sine(in + sine(in)), sine(in + cosine(in)) etc.
 
-Skew: applies a vertical (y/amplitude) skewing factor to the input signal.
+Skew: applies a vertical (y/amplitude) skewing factor to the input signal.<br/>
+Choice of unipolar and bipolar modes.
