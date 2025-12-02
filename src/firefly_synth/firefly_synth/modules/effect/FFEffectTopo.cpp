@@ -46,6 +46,7 @@ FFMakeEffectTopo(bool global)
   on.slotCount = 1;
   on.defaultText = "Off";
   on.id = prefix + "{85CEFF97-A98D-4470-BA15-825608A0E954}";
+  on.description = "FX Enabled";
   on.type = FBParamType::Boolean;
   auto selectOn = [](auto& module) { return &module.block.on; };
   on.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOn);
@@ -61,6 +62,7 @@ FFMakeEffectTopo(bool global)
   oversample.display = "OS";
   oversample.slotCount = 1;
   oversample.id = prefix + "{D8AA4B9D-EAFD-4E87-9DC9-108B8894A4D0}";
+  oversample.description = "4X Oversampling";
   oversample.type = FBParamType::Boolean;
   auto selectOversample = [](auto& module) { return &module.block.oversample; };
   oversample.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOversample);
@@ -78,6 +80,7 @@ FFMakeEffectTopo(bool global)
   trackingKey.slotCount = 1;
   trackingKey.unit = "Semitones";
   trackingKey.id = prefix + "{409B79DA-5F59-4C54-AA3D-3E7E84B1A303}";
+  trackingKey.description = "Filter Keyboard Tracking Root Key";
   trackingKey.type = FBParamType::Linear;
   trackingKey.Linear().min = -64.0f;
   trackingKey.Linear().max = 64.0f;
@@ -97,6 +100,7 @@ FFMakeEffectTopo(bool global)
   lastKeySmoothTime.slotCount = 1;
   lastKeySmoothTime.unit = "Sec";
   lastKeySmoothTime.id = prefix + "{453EDEDA-3FB8-4211-A5DD-DCDC4F44119D}";
+  lastKeySmoothTime.description = "Last MIDI Key Smoothing Filter";
   lastKeySmoothTime.type = FBParamType::Linear;
   lastKeySmoothTime.Linear().min = 0.0f;
   lastKeySmoothTime.Linear().max = 10.0f;
