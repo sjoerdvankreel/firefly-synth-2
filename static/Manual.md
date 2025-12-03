@@ -387,6 +387,14 @@ All subslots have these common controls:
 Each echo type has a control labelled LRX for left/right crossover.<br/>
 This controls the amount by which one channel's input affects the other channel's output.<br/>
 
+
+#### Main section
+* Gain: make-up gain to compensate dry/wet mixes.
+* Processing order: allows to route multi-tap, feedback delay and reverb in any order.
+* Sync: switches between time-based and tempo-based (bars) for feedback and multi-tap.
+* Smooth: delay time smoothing filter for feedback and multi-tap.
+
+
 #### Multi tap delay
 * 8-tap delay line with full control over each taps individual parameters.
 * Per-tap delay time (or bars), level, stereo balance and stereo crossover.
