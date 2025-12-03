@@ -348,7 +348,7 @@ For all shaper types, affect the Drive parameter.
 
 #### State variable filter
 This is FF2's implementation of the filters found over here:<br/>
-[https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf](https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf).
+[https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf](https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf).<br/>
 Comes in 9 flavors: lowpass, highpass, bandpass, bandstop, allpass, peaking, bell (with gain control) and low/high shelf with shelving gain.
 
 #### Comb filter
