@@ -42,6 +42,7 @@ TODOLIST for beta-2
 TODOLIST for beta-next
 [ ] make some presets
 [ ] compare to ff1
+[ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
 
 arpeggiator
 keep profiling
