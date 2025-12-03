@@ -449,3 +449,13 @@ Implementation based on [https://github.com/sinshu/freeverb](https://github.com/
 LFO module with 3 subslots.<br/>
 The LFO output is that of the 3 slots combined.<br/>
 The individual slot outputs are also available as sources in the mod matrix.
+
+#### Main section
+* Voice LFO Type<br/>
+Free: "normal" mode, generates a continuous signal.<br/>
+One Shot: single cycle mode. Completed as soon as slot A finishes the first cycle.
+* Global LFO Type<br/>
+Free: "normal" mode, generates a continuous signal.<br/>
+Snap: snaps the phase to DAW project time, if available (i.e. not freewheeling).<br/>
+In free mode, clicking around in the DAW transport has no effect.<br/>
+In snap mode, setting transport to X.Y bars resets the LFO phase to "where it would have been", counting back from project time zero.
