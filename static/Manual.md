@@ -387,7 +387,7 @@ All subslots have these common controls:
 Each echo type has a control labelled LRX for left/right crossover.<br/>
 This controls the amount by which one channel's input affects the other channel's output.<br/>
 
-Multi tap section
+#### Multi tap delay
 * 8-tap delay line with full control over each taps individual parameter.
 * Per-tap delay time (or bars), level, stereo balance and stereo crossover.
 * Per-tap low and highpass filters
