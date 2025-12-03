@@ -111,6 +111,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Same (modified) Freeverb: https://github.com/sinshu/freeverb.
 * Stole the color-morphing noise algo from here: https://sampo.kapsi.fi/PinkNoise/.
 * Stole the new osci algos from here: https://www.taletn.com/reaper/mono_synth/. You have to download the zip to get at the PolyBLEP source for all waveforms.
+* Smooth noise: https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html
 
 # Dependencies
 - CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
