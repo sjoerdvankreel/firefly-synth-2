@@ -453,7 +453,7 @@ The individual slot outputs are also available as sources in the mod matrix.
 
 The graph plot for LFO subslots are 1 cycle of each.<br/>
 The graph plot for LFO final output are all subslots combined and smoothed, but with length determined by slot A.<br/>
-In free-running random mode, the audio engine visualization decays to a single line (per voice for VLFO).<br/>
+In free-running random mode, the audio engine visualization decays to a flat line (per voice for VLFO).<br/>
 I found it too complicated to "calculate back" the LFO state from origin in that case.<br/>
 For periodic modes, the audio engine visualization is just a dot moving along the plot line.
 
