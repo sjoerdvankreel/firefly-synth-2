@@ -29,6 +29,9 @@ public:
   juce::BorderSize<int> getLabelBorderSize(
     juce::Label&) override;
 
+  juce::Label* createComboBoxTextBox(
+    juce::ComboBox&) override;
+
   void positionComboBoxText(
     juce::ComboBox&, juce::Label&) override;
 

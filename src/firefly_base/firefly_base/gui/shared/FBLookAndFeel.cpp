@@ -14,6 +14,30 @@ using namespace juce;
 static const int TabSizeSmall = 40;
 static const int TabSizeLarge = 60;
 
+// Juce delegates combo tooltip to label tooltip, but we never set that one.
+// We just generate tooltips on the fly. So instead, have the label ask the combo for the tip.
+class FBComboBoxLabel :
+public juce::Label
+{
+  ComboBox* _box;
+
+public:
+  String getTooltip() override;
+  FBComboBoxLabel(ComboBox* box) : _box(box) {}
+};
+
+String
+FBComboBoxLabel::getTooltip()
+{
+  FBParamComboBox* paramBox = nullptr;
+  if ((paramBox = dynamic_cast<FBParamComboBox*>(_box)) != nullptr)
+    return paramBox->FBParamComboBox::getTooltip();
+  FBGUIParamComboBox* guiParamBox = nullptr;
+  if ((guiParamBox = dynamic_cast<FBGUIParamComboBox*>(_box)) != nullptr)
+    return guiParamBox->FBGUIParamComboBox::getTooltip();
+  return Label::getTooltip();
+}
+
 static double
 ConvertValueFromSkewed(FBStaticParamBase const& param, double normalized)
 {
@@ -186,6 +210,13 @@ FBLookAndFeel::getTabButtonBestWidth(
   if (hasSeparatorText)
     result += TabSizeLarge;
   return result;
+}
+
+Label* 
+FBLookAndFeel::createComboBoxTextBox(
+  ComboBox& box)
+{
+  return new FBComboBoxLabel(&box);
 }
 
 void 
