@@ -453,10 +453,12 @@ The individual slot outputs are also available as sources in the mod matrix.
 #### Main section
 * Sync: switches between time-based and tempo-based (bars).
 * Seed: random seed for the backing random generators of noise-based LFOs.
-* Smooth: this is a smoothing filter applied to the final output only. Does not affect the individual subslots.
+* Smooth: this is a smoothing filter applied to the final output only.<br/>
+Does not affect the individual subslots.
 * Voice LFO Type:<br/>
 Free: "normal" mode, generates a continuous signal.<br/>
-One Shot: single cycle mode. Completed as soon as slot A finishes the first cycle.
+One Shot: single cycle mode.<br/>
+Completed as soon as slot A finishes the first cycle.
 * Global LFO Type:<br/>
 Free: "normal" mode, generates a continuous signal.<br/>
 Snap: snaps the phase to DAW project time, if available (i.e. not freewheeling).<br/>
