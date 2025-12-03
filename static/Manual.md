@@ -450,6 +450,14 @@ LFO module with 3 subslots and optional tempo-syncing.<br/>
 The LFO output is that of the 3 slots combined.<br/>
 The individual slot outputs are also available as sources in the mod matrix.
 
+The 3 subslots are stacked one after another.<br/>
+You can control the manner in which this happens by changing the operator parameter.<br/>
+See Modulation System for details about the operator types.<br/>
+For example, add slot B to slot A, multiply slot A by slot B, etc.<br/>
+LFOs are intrinsically unipolar and have an implicit "base" stage of zero/silence.<br/>
+So, if you set slot A to multiply, the entire LFO becomes silence.<br/>
+All 3 subslots are basically the same except for some skewing parameters on slot A.
+
 #### Main section
 * Sync: switches between time-based and tempo-based (bars).
 * Seed: random seed for the backing random generators of noise-based LFOs.
