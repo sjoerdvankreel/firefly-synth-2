@@ -409,7 +409,7 @@ The engine is set up such that at each stage, the voice envelope is applied firs
 followed by the echo (provided they target the same stage).<br/>
 See the routing overview for more details.
 
-#### Some notes about per voice echo
+#### Per-voice echo specific
 It's crazy expensive both cpu and memory wise.
 
 On the memory side, it needs (multiple) delay lines per voice.<br/>
