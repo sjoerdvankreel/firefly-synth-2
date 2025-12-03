@@ -1,21 +1,16 @@
-<a id="04CB533D-5968-47AF-BD54-A64363DBD583"></a>
-# GUI
+# Modules
 
-<a id="BC6A28F5-C34B-40B2-BE02-E600DBB5EBF3"></a>
 ## Top section
 Contains everything that is not directly related to generating audio.
 
-<a id="4472F4E6-1315-4FDC-A52E-CAF6D7136DD2"></a>
 ### Output panel
 Shows CPU usage relative to single core, voice usage and output gain with a maximum of 0dB.<br/>
 The MTS-ESP indicator shows whether an MTS-ESP master is connected.
 
-<a id="68289DDE-CD5E-400C-B022-3893A3989441"></a>
 ### Panic button
 Kills all active voices and flushes delay lines.<br/>
 Comes in handy for stuck notes or when you managed to fill the delay lines with garbage.
 
-<a id="547D2FBC-6E68-4379-AD04-2262C07FA286"></a>
 ### Patch panel
 Shows the name of the last loaded patch.<br/>
 Comes with regular load-from/save-to-file, init patch to defaults, and load factory preset options, as well as:
@@ -23,7 +18,7 @@ Comes with regular load-from/save-to-file, init patch to defaults, and load fact
 * Session: revert the patch state to the time the DAW session was loaded.
 * Reload: revert the patch state to the last time a patch was loaded from file, preset, or default values (init patch).
 
-<a id="ED3DACBE-8FF2-47D2-9EA6-7EF67367B541"></a>
+<a id="E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B"></a>
 ### GUI settings
 * Show modulation bounds:<br/>
 Highlights the minimum and maximum values currently applied to a parameter by the mod matrix and direct modulators.
@@ -37,16 +32,13 @@ Draws the current state of the audio engine into the graph plots, taking all mod
 For per-voice modules, this is an additional line per voice.<br/>
 When off, graph plots reflect only the current state of the parameters as shown in the GUI.
 
-<a id="8440B096-7851-48DE-A1AA-27665935FC33"></a>
 ### Last tweaked
 Shows the name of the last tweaked parameter as well as a textbox that allows for precise-editing that parameters value.
 
-<a id="548A9565-5657-4217-AF82-B53B509139FE"></a>
 ### Graph plots
 Shows a plot of the last tweaked module.<br/>
 For example this can be an oscilloscope, filter frequency response, waveshaper response or others, depending on the module being shown.
 
-<a id="C60E14F0-ACB5-417C-8B10-94702B99FF23"></a>
 ## Main section
 This is the primary screen for patch design.<br/>
 It contains all parameters for oscillators, filters, effects, envelopes and LFOs as well as all audio routing controls and high-level parameters like microtuning and portamento controls.
@@ -450,3 +442,9 @@ you'll have to position (Target) the echo module to somewhere before an FX modul
 Implementation based on [https://github.com/sinshu/freeverb](https://github.com/sinshu/freeverb).
 * Room size, damping factor and allpass filter controls.
 * Optional low and highpass filters on the output.
+
+<a id="G6E9EC930-5391-41BB-9EDA-C9B79F3BE745"></a>
+<a id="V6E9EC930-5391-41BB-9EDA-C9B79F3BE745"></a>
+### Voice LFO and Global LFO
+
+meep meep

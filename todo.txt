@@ -16,6 +16,7 @@ TODOLIST for beta-1
 [x] wrong tooltip for per-voice block params (combos)
 [x] do all credits in the docs
 [ ] clap mod docs
+[ ] gui params manual context menu
 [ ] modulation system
 [ ] call it not gui, call it modules
 [ ] PDC
