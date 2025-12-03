@@ -451,17 +451,14 @@ The LFO output is that of the 3 slots combined.<br/>
 The individual slot outputs are also available as sources in the mod matrix.
 
 #### Main section
-* Voice LFO Type<br/>
+* Voice LFO Type:<br/>
 Free: "normal" mode, generates a continuous signal.<br/>
 One Shot: single cycle mode. Completed as soon as slot A finishes the first cycle.
-* Global LFO Type<br/>
+* Global LFO Type:<br/>
 Free: "normal" mode, generates a continuous signal.<br/>
 Snap: snaps the phase to DAW project time, if available (i.e. not freewheeling).<br/>
 In free mode, clicking around in the DAW transport has no effect.<br/>
 In snap mode, setting transport to X.Y bars resets the LFO phase to "where it would have been", counting back from project time zero.
-* Seed:<br/>
-Random seed for the backing random generators of noise-based LFOs.
-* Sync:<br/>
-Switches between time-based and tempo-based (bars).
-* Smooth:<br/>
-This is a smoothing filter applied to the final output only. Does not affect the individual subslots.
+* Seed: random seed for the backing random generators of noise-based LFOs.
+* Sync: switches between time-based and tempo-based (bars).
+* Smooth: this is a smoothing filter applied to the final output only. Does not affect the individual subslots.
