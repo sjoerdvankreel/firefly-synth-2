@@ -372,3 +372,9 @@ Choice of a plain (triangular) folder and a bunch of (stacked) trigonometric fun
 
 Skew: applies a vertical (y/amplitude) skewing factor to the signal.<br/>
 Choice of unipolar and bipolar modes with continuous amount control.
+
+<a id="GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
+<a id="VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
+### Voice Echo and Global Echo
+
+jupjup
