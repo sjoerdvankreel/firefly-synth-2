@@ -14,7 +14,7 @@ TODOLIST for beta-1
 [x] not osci ktrk for extaud
 [x] notracking filters track against c0, should be coarse pitch
 [x] wrong tooltip for per-voice block params (combos)
-[ ] do all credits in the docs
+[x] do all credits in the docs
 [ ] clap mod docs
 [ ] modulation system
 [ ] explain clap/matrix/easy-access/GUNI interaction
@@ -25,6 +25,7 @@ TODOLIST for beta-1
 [ ] patchfromscratch with TEMP in the manual
 [ ] SET THE ONLINE LOCATION TO MAIN BRANCH
 [ ] write the manual
+[ ] list mod sources per module
 [ ] explain clap/vst3 diff
 [ ] explain inner workings
 [ ] explain inst/fx
