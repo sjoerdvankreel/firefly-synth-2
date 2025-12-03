@@ -406,7 +406,9 @@ If you get this wrong, the voice echo will "hide" behind that envelope and the e
 Rule of thumb: set VEcho target to the same processing stage, or later, as VMix Envelope Target.<br/>
 So both to osci premix/postmix, fx in/out etc.<br/>
 The engine is set up such that at each stage, the voice envelope is applied first, followed by the echo (provided they target the same stage).
+See the routing overview for more details.
 
+#### Some notes about per voice echo
 
 #### Multi tap delay
 * 8-tap delay line with full control over each taps individual parameters.
