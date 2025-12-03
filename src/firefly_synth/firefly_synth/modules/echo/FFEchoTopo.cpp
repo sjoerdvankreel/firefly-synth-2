@@ -583,6 +583,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackOn.slotCount = 1;
   feedbackOn.defaultText = "On";
   feedbackOn.id = prefix + "{E28CD2D5-59B4-4C77-830F-BC961239299C}";
+  feedbackOn.description = "Feedback Delay Enabled";
   feedbackOn.type = FBParamType::Boolean;
   auto selectFeedbackOn = [](auto& module) { return &module.block.feedbackOn; };
   feedbackOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackOn);
@@ -600,6 +601,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackMix.display = "Mix";
   feedbackMix.slotCount = 1;
   feedbackMix.id = prefix + "{47D9FE5B-D161-4198-9AC2-44089966575E}";
+  feedbackMix.description = "Feedback Delay Dry/Wet Mix";
   feedbackMix.type = FBParamType::Identity;
   auto selectFeedbackMix = [](auto& module) { return &module.acc.feedbackMix; };
   feedbackMix.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackMix);
@@ -617,6 +619,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackXOver.display = "LRX";
   feedbackXOver.slotCount = 1;
   feedbackXOver.id = prefix + "{C4D67CA6-41FE-4B54-8C2B-9C87F0DA6F0C}";
+  feedbackXOver.description = "Feedback Delay Stereo Crossover";
   feedbackXOver.type = FBParamType::Identity;
   auto selectFeedbackXOver = [](auto& module) { return &module.acc.feedbackXOver; };
   feedbackXOver.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackXOver);
@@ -634,6 +637,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackAmount.display = "Amt";
   feedbackAmount.slotCount = 1;
   feedbackAmount.id = prefix + "{56017DC9-4B7D-44A5-AB7C-B6158BA584C3}";
+  feedbackAmount.description = "Feedback Delay Feedback Amount";
   feedbackAmount.type = FBParamType::Identity;
   auto selectFeedbackAmount = [](auto& module) { return &module.acc.feedbackAmount; };
   feedbackAmount.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackAmount);
@@ -651,6 +655,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackDelayTime.slotCount = 1;
   feedbackDelayTime.unit = "Sec";
   feedbackDelayTime.id = prefix + "{CBD0A273-5E74-460E-A327-5EE9EE1C6F49}";
+  feedbackDelayTime.description = "Feedback Delay Length Time";
   feedbackDelayTime.type = FBParamType::Linear;
   feedbackDelayTime.Linear().max = 10.0f;
   feedbackDelayTime.Linear().min = 0.002f;
@@ -672,6 +677,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackDelayBars.slotCount = 1;
   feedbackDelayBars.unit = "Bars";
   feedbackDelayBars.id = prefix + "{BAC85A14-5F60-4692-9D45-81AB29477F61}";
+  feedbackDelayBars.description = "Feedback Delay Length Bars";
   feedbackDelayBars.type = FBParamType::Bars;
   feedbackDelayBars.Bars().items = MakeEchoBarsItems();
   auto selectFeedbackDelayBars = [](auto& module) { return &module.block.feedbackDelayBars; };
@@ -691,6 +697,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackModRate.slotCount = 1;
   feedbackModRate.unit = "Hz";
   feedbackModRate.id = prefix + "{640B47FC-7506-4853-93E0-2C628F8BF3D8}";
+  feedbackModRate.description = "Feedback Delay Length Modulation Rate";
   feedbackModRate.type = FBParamType::Linear;
   feedbackModRate.Linear().min = 0.05f;
   feedbackModRate.Linear().max = 5.0f;
@@ -710,6 +717,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackModAmt.display = "Mod Amt";
   feedbackModAmt.slotCount = 1;
   feedbackModAmt.id = prefix + "{686BE077-623D-4B14-94A2-F708139F8535}";
+  feedbackModAmt.description = "Feedback Delay Length Modulation Amount";
   feedbackModAmt.type = FBParamType::Linear;
   feedbackModAmt.Linear().min = 0.0f;
   feedbackModAmt.Linear().max = 0.002f;
@@ -729,6 +737,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackLPOn.slotCount = 1;
   feedbackLPOn.defaultText = "Off";
   feedbackLPOn.id = prefix + "{CE69D29E-65D9-4B4B-AF76-16AAD3DC912F}";
+  feedbackLPOn.description = "Feedback Delay LP On";
   feedbackLPOn.type = FBParamType::Boolean;
   auto selectFeedbackLPOn = [](auto& module) { return &module.block.feedbackLPOn; };
   feedbackLPOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackLPOn);
@@ -746,6 +755,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackLPFreq.slotCount = 1;
   feedbackLPFreq.unit = "Hz";
   feedbackLPFreq.id = prefix + "{E4D8EB30-BF2A-4935-AE14-053F6CF9C446}";
+  feedbackLPFreq.description = "Feedback Delay LP Frequency";
   feedbackLPFreq.type = FBParamType::Log2;
   feedbackLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectFeedbackLPFreq = [](auto& module) { return &module.acc.feedbackLPFreq; };
@@ -764,6 +774,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackLPRes.slotCount = 1;
   feedbackLPRes.unit = "%";
   feedbackLPRes.id = prefix + "{178C853C-F11C-45C6-A8D3-D62FFA202D9E}";
+  feedbackLPRes.description = "Feedback Delay LP Resonance";
   feedbackLPRes.type = FBParamType::Identity;
   auto selectFeedbackLPRes = [](auto& module) { return &module.acc.feedbackLPRes; };
   feedbackLPRes.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackLPRes);
@@ -780,6 +791,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackHPOn.slotCount = 1;
   feedbackHPOn.defaultText = "Off";
   feedbackHPOn.id = prefix + "{3A9398F7-38C2-4C3A-9F8A-33C1FBFE75D7}";
+  feedbackHPOn.description = "Feedback Delay HP On";
   feedbackHPOn.type = FBParamType::Boolean;
   auto selectFeedbackHPOn = [](auto& module) { return &module.block.feedbackHPOn; };
   feedbackHPOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackHPOn);
@@ -797,6 +809,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackHPFreq.slotCount = 1;
   feedbackHPFreq.unit = "Hz";
   feedbackHPFreq.id = prefix + "{FE81A57D-1D98-4D3D-B563-8A63B099DB99}";
+  feedbackHPFreq.description = "Feedback Delay HP Frequency";
   feedbackHPFreq.type = FBParamType::Log2;
   feedbackHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectFeedbackHPFreq = [](auto& module) { return &module.acc.feedbackHPFreq; };
@@ -815,6 +828,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackHPRes.slotCount = 1;
   feedbackHPRes.unit = "%";
   feedbackHPRes.id = prefix + "{FD6F1412-EE09-4A50-835E-A8051AC39411}";
+  feedbackHPRes.description = "Feedback Delay HP Resonance";
   feedbackHPRes.type = FBParamType::Identity;
   auto selectFeedbackHPRes = [](auto& module) { return &module.acc.feedbackHPRes; };
   feedbackHPRes.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackHPRes);
