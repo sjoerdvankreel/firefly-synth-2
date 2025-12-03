@@ -245,7 +245,9 @@ Choice of saw/sqr/tri. Pitch controls the offset of slave pitch relative to the 
 Distance (specified in times the osci frequency) and decay control the frequency and amplitude of consecutive sines.<br/>
 Overtones mode allows to explicitly specify the number of sines generated.<br/>
 Bandwidth mode allows to specify a range between base frequency only (0%) or all the way up to Nyquist/half-sample-rate (100%).<br/>
-The DSF generator is based on [https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html](https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html).
+
+The DSF generator is based on [https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html](https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html).<br/>
+All others can be found over here [https://www.taletn.com/reaper/mono_synth](https://www.taletn.com/reaper/mono_synth).
 
 #### FM section
 
