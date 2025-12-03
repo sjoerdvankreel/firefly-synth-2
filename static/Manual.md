@@ -410,7 +410,7 @@ followed by the echo (provided they target the same stage).<br/>
 See the routing overview for more details.
 
 #### Per-voice echo specific
-It's crazy expensive both cpu and memory wise.<br/>
+It's expensive both cpu and memory wise.<br/>
 The echo actually "lives within the voice itself".
 
 On the memory side, it needs (multiple) delay lines per voice.<br/>
