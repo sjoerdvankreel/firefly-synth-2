@@ -482,8 +482,9 @@ In free mode, clicking around in the DAW transport has no effect.<br/>
 In snap mode, setting transport to X.Y bars resets the LFO phase to "where it would have been", counting back from project time zero.
 
 #### Shared parameters for all subslots
-* Operator: add, multiply, stack, etc.<br/>
-See Modulation System.
+* Rate: controls the LFO rate in time or bars.
+* Operator: add, multiply, stack, etc. See Modulation System.
+* Min/max: controls min/max output value, can also be used to invert the signal.
 * Mode: selects the waveform.<br/>
 Various (combined) trigonometric functions, saw/tri/sqr, and uniform and gaussian distributed random generators.<br/>
 "Random" generates static noise while "Smooth" generates smooth noise based on<br/>
