@@ -446,5 +446,6 @@ Implementation based on [https://github.com/sinshu/freeverb](https://github.com/
 <a id="G6E9EC930-5391-41BB-9EDA-C9B79F3BE745"></a>
 <a id="V6E9EC930-5391-41BB-9EDA-C9B79F3BE745"></a>
 ### Voice LFO and Global LFO
-
-meep meep
+LFO module with 3 subslots.<br/>
+The LFO output is that of the 3 slots combined.<br/>
+The individual slot outputs are also available as sources in the mod matrix.
