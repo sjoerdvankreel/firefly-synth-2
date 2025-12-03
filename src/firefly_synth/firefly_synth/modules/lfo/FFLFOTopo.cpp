@@ -81,6 +81,7 @@ FFMakeLFOTopo(bool global)
   type.name = "Type";
   type.slotCount = 1;
   type.id = prefix + "{D75D506B-3976-44C3-A609-3982D26B4F2D}";
+  type.description = "LFO Type";
   type.type = FBParamType::List;
   type.List().items = {
     { "{EBD31B78-C404-4B86-A8BA-48788922F34B}" },
@@ -115,6 +116,7 @@ FFMakeLFOTopo(bool global)
   sync.slotCount = 1;
   sync.defaultText = "Off";
   sync.id = prefix + "{879655C7-41EC-4089-84E0-A5E244E47F56}";
+  sync.description = "LFO Tempo Sync";
   sync.type = FBParamType::Boolean;
   auto selectSync = [](auto& module) { return &module.block.sync; };
   sync.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSync);
@@ -130,6 +132,7 @@ FFMakeLFOTopo(bool global)
   seed.name = "Seed";
   seed.slotCount = 1;
   seed.id = prefix + "{3283748D-70B7-41FC-986B-1B76D4E35F48}";
+  seed.description = "LFO Random Seed";
   seed.type = FBParamType::Discrete;
   seed.Discrete().valueCount = FFLFOMaxSeed + 1;
   auto selectSeed = [](auto& module) { return &module.block.seed; };
@@ -148,6 +151,7 @@ FFMakeLFOTopo(bool global)
   smoothTime.slotCount = 1;
   smoothTime.unit = "Sec";
   smoothTime.id = prefix + "{6064C303-9588-433E-84FE-79B61FDD2ABE}";
+  smoothTime.description = "LFO Smooth Time";
   smoothTime.type = FBParamType::Linear;
   smoothTime.Linear().min = 0.0f;
   smoothTime.Linear().max = 10.0f;
@@ -169,6 +173,7 @@ FFMakeLFOTopo(bool global)
   smoothBars.slotCount = 1;
   smoothBars.unit = "Bars";
   smoothBars.id = prefix + "{B1FEDD9E-47D0-4D3D-981C-E7C8D8A65BC7}";
+  smoothBars.description = "LFO Smooth Bars";
   smoothBars.type = FBParamType::Bars;
   smoothBars.Bars().items = MakeLFOBarsItems(true);
   auto selectSmoothBars = [](auto& module) { return &module.block.smoothBars; };
