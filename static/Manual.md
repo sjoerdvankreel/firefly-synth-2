@@ -405,7 +405,8 @@ The voice echo target needs tight cooperation with the Voice Mixer (VMix) envelo
 If you get this wrong, the voice echo will "hide" behind that envelope and the echo is cut short.<br/>
 Rule of thumb: set VEcho target to the same processing stage, or later, as VMix Envelope Target.<br/>
 So both to osci premix/postmix, fx in/out etc.<br/>
-The engine is set up such that at each stage, the voice envelope is applied first, followed by the echo (provided they target the same stage).
+The engine is set up such that at each stage, the voice envelope is applied first,<br/>
+followed by the echo (provided they target the same stage).<br/>
 See the routing overview for more details.
 
 #### Some notes about per voice echo
