@@ -530,6 +530,7 @@ FFMakeEffectTopo(bool global)
   clipMode.slotCount = FFEffectBlockCount;
   clipMode.slotFormatter = FFFormatBlockSlot;
   clipMode.id = prefix + "{D1F80BB8-4076-4296-A678-94E8442C51A5}";
+  clipMode.description = "Wave Clipper Mode";
   clipMode.type = FBParamType::List;
   clipMode.List().items = {
     { "{32F53B15-54AC-44AE-8812-97D598B9928B}", "Hard" },
@@ -558,6 +559,7 @@ FFMakeEffectTopo(bool global)
   foldMode.slotCount = FFEffectBlockCount;
   foldMode.slotFormatter = FFFormatBlockSlot;
   foldMode.id = prefix + "{317BA4AC-8E9A-47B9-A289-294047E29C78}";
+  foldMode.description = "Wave Folder Mode";
   foldMode.type = FBParamType::List;
   foldMode.List().items = {
     { "{129369F6-C303-4BBA-8573-06FC33972FD9}", "Sin" },
@@ -598,6 +600,7 @@ FFMakeEffectTopo(bool global)
   skewMode.slotCount = FFEffectBlockCount;
   skewMode.slotFormatter = FFFormatBlockSlot;
   skewMode.id = prefix + "{DCA38D64-3791-4542-A6C7-FCA66DA45FEE}";
+  skewMode.description = "Wave Skewer Mode";
   skewMode.type = FBParamType::List;
   skewMode.List().items = {
     { prefix + "{247BC86E-078E-409F-99B7-870F1B011C3B}", "UP" },
@@ -622,6 +625,7 @@ FFMakeEffectTopo(bool global)
   distDrive.slotFormatter = FFFormatBlockSlot;
   distDrive.unit = "%";
   distDrive.id = prefix + "{971B9F5B-0348-4F56-A6A0-DC40FC4B32BD}";
+  distDrive.description = "Wave Shaper Drive";
   distDrive.type = FBParamType::Linear;
   distDrive.Linear().min = 0.0f;
   distDrive.Linear().max = 32.0f;
@@ -645,6 +649,7 @@ FFMakeEffectTopo(bool global)
   distMix.display = "Mix";
   distMix.slotCount = FFEffectBlockCount;
   distMix.slotFormatter = FFFormatBlockSlot;
+  distMix.description = "Wave Shaper Dry/Wet Mix";
   distMix.id = prefix + "{CD542E15-A8DD-4A72-9B75-E8D8301D8F05}";
   distMix.type = FBParamType::Identity;
   auto selectDistMix = [](auto& module) { return &module.acc.distMix; };
@@ -667,6 +672,7 @@ FFMakeEffectTopo(bool global)
   distBias.slotCount = FFEffectBlockCount;
   distBias.slotFormatter = FFFormatBlockSlot;
   distBias.id = prefix + "{E3512478-1203-47D3-B5A3-F8BFBAAE264C}";
+  distBias.description = "Wave Shaper Bias";
   distBias.type = FBParamType::Linear;
   distBias.Linear().min = -1.0f;
   distBias.Linear().max = 1.0f;
@@ -691,6 +697,7 @@ FFMakeEffectTopo(bool global)
   distAmt.slotCount = FFEffectBlockCount;
   distAmt.slotFormatter = FFFormatBlockSlot;
   distAmt.id = prefix + "{C78B596F-8059-44F0-B73D-A699AB647F54}";
+  distAmt.description = "Wave Shaper Amount";
   distAmt.type = FBParamType::Identity;
   auto selectDistAmt = [](auto& module) { return &module.acc.distAmt; };
   distAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectDistAmt);

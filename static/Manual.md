@@ -378,4 +378,4 @@ Fold: like clip, forces the input signal into -100..100%, but instead of limitin
 Choice of a plain (triangular) folder and a bunch of (stacked) trigonometric functions like sine(in), cosine(in), sine(in + sine(in)), sine(in + cosine(in)) etc.
 
 Skew: applies a vertical (y/amplitude) skewing factor to the input signal.<br/>
-Choice of unipolar and bipolar modes.
+Choice of unipolar and bipolar modes with continuous amount control.
