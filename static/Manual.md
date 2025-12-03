@@ -149,7 +149,7 @@ Voice amplitude envelope target: this controls at which stage the voice amp enve
 The most natural setting for this is "VMix Out", but it can be set to individual oscillators, osci mix, or individual FX as well.<br/>
 The primary use case for this is to cooperate with per-voice echo. Per-voice echo can be applied to the voice as a whole,<br/>
 but also to individual oscis and FX. In which case, it is necessary to change the target accordingly, to prevent the voice echo<br/>
-from being cut short by the voice amplitude envelope. See the Voice Echo section for more details.
+from being cut short by the voice amplitude envelope. See the Voice Echo section and the routing overview for more details.
 
 Balance control: this is just a straightforward stereo balancer with an optional LFO applied to it.<br/>
 Osc mix to out: controls how much the internal osci mixer stage contributes to the final voice output.
@@ -387,12 +387,21 @@ All subslots have these common controls:
 Each echo type has a control labelled LRX for left/right crossover.<br/>
 This controls the amount by which one channel's input affects the other channel's output.<br/>
 
-
 #### Main section
 * Gain: make-up gain to compensate dry/wet mixes.
 * Processing order: allows to route multi-tap, feedback delay and reverb in any order.
 * Sync: switches between time-based and tempo-based (bars) for feedback and multi-tap.
 * Smooth: delay time smoothing filter for feedback and multi-tap.
+
+Target: this affects where in the processing pipeline the echo is applied.<br/>
+The most natural setting for this is VMix Out (voice) or GMix Out (global).<br/>
+For global, may also be used to target the voice mixdown before all FX, the external audio input before all fx, or the input/output of individual GFX sections.<br/>
+For voice, may also be used to target individual oscillators or the input/output of individual VFX sections.<br/>
+The voice echo target needs tight cooperation with the Voice Mixer (VMix) envelope target.<br/>
+If you get this "wrong", the voice echo will "hide" behind that envelope and the echo is cut short.<br/>
+Rule of thumb: set VEcho target to the same processing stage as VMix Envelope Target.<br/>
+So both to osci premix/postmix, fx in/out etc.<br/>
+The engine is set up such that at each stage, the voice envelope is applied first, followed by the echo (provided they target the same stage).
 
 
 #### Multi tap delay
