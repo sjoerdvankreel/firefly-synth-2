@@ -462,6 +462,7 @@ You can control the manner in which this happens by changing the operator parame
 See Modulation System for details about the operator types.<br/>
 For example, add slot B to slot A, multiply slot A by slot B, etc.<br/>
 LFOs are intrinsically unipolar and have an implicit "base" stage of zero/silence.<br/>
+Note that the mod matrix allows any signal to be treated as unipolar or bipolar regardless.<br/>
 So, if you set slot A to multiply, the entire LFO becomes silence.<br/>
 All 3 subslots are basically the same except for some skewing parameters on slot A.
 
