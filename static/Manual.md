@@ -492,7 +492,8 @@ Various (combined) trigonometric functions, saw/tri/sqr, and uniform and gaussia
 "Random" generates static noise while "Smooth" generates smooth noise based on<br/>
 [https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html](https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html).<br/>
 Both static and smooth noise generators come in periodic and free-running modes (RndNrmF(ree), etc).<br/>
-Free-running mode is not a periodic signal so the phase offset parameter just controls the starting point.
+Free-running mode is not a periodic signal so the phase offset parameter just controls the starting point.<br/>
+Note: random generators really need a step count of greater than 1.
 
 #### Skewing parameters for slot A
 Comes in unipolar and bipolar modes.
