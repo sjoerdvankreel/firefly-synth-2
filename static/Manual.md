@@ -379,3 +379,15 @@ Choice of unipolar and bipolar modes with continuous amount control.
 Echo module with multitap delay, feedback delay and reverb subslots.<br/>
 There is at most one of each, but the processing order is customizable.<br/>
 The graph plot for echo is a ramp response with a slight delay in the right channel.
+
+All subslots have these common controls:
+* On/off switch
+* Dry/wet control
+* Stereo crossover:<br/>
+Each echo type has a control labelled LRX for left/right crossover.<br/>
+This controls the amount by which one channel's input affects the other channel's output.<br/>
+
+Multi tap section
+* 8-tap delay line with full control over each taps individual parameter.
+* Per-tap delay time (or bars), level, stereo balance and stereo crossover.
+* Per-tap low and highpass filters
