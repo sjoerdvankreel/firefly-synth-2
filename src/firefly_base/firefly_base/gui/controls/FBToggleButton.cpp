@@ -49,6 +49,13 @@ FBGUIParamToggleButton::SetValueNormalized(double normalized)
 }
 
 void
+FBGUIParamToggleButton::mouseUp(const MouseEvent& event)
+{
+  if (isEnabled() && event.mods.isRightButtonDown())
+    _plugGUI->ShowMenuForGUIParam(_param->runtimeParamIndex);
+}
+
+void
 FBGUIParamToggleButton::buttonStateChanged()
 {
   double normalized = _param->static_.NonRealTime().PlainToNormalized(getToggleState()? 1.0: 0.0);

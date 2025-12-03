@@ -315,10 +315,23 @@ FBHostGUIContext::ShowOnlineManual() const
 }
 
 void
+FBHostGUIContext::ShowOnlineManualForGUIParam(int index) const
+{
+  int rtModuleIndex = Topo()->gui.params[index].runtimeModuleIndex;
+  ShowOnlineManualForModule(rtModuleIndex);
+}
+
+void
 FBHostGUIContext::ShowOnlineManualForAudioParam(int index) const
 {
   int rtModuleIndex = Topo()->audio.params[index].runtimeModuleIndex;
-  int staticModuleIndex = Topo()->modules[rtModuleIndex].topoIndices.index;
+  ShowOnlineManualForModule(rtModuleIndex);
+}
+
+void
+FBHostGUIContext::ShowOnlineManualForModule(int index) const
+{
+  int staticModuleIndex = Topo()->modules[index].topoIndices.index;
   auto const& moduleId = Topo()->static_->modules[staticModuleIndex].id;
   auto cleanModuleId = moduleId;
   std::erase(cleanModuleId, '{');

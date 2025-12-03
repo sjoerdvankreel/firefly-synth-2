@@ -73,6 +73,13 @@ FBGUIParamComboBox::getTooltip()
 }
 
 void
+FBGUIParamComboBox::mouseUp(MouseEvent const& event)
+{
+  if (isEnabled() && event.mods.isRightButtonDown())
+    _plugGUI->ShowMenuForGUIParam(_param->runtimeParamIndex);
+}
+
+void
 FBGUIParamComboBox::SetValueNormalized(double normalized)
 {
   double plain = _param->static_.NonRealTime().NormalizedToPlain(normalized);

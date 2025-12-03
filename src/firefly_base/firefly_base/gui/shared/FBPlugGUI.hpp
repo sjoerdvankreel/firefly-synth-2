@@ -86,6 +86,7 @@ public:
 
   void UpdateExchangeState();
   void SetScale(double scale);
+  void ShowMenuForGUIParam(int index);
   void ShowMenuForAudioParam(int index, bool showHostMenu);
   int GetControlCountForAudioParamIndex(int paramIndex) const;
   FBParamControl* GetControlForAudioParamIndex(int paramIndex, int controlIndex) const;

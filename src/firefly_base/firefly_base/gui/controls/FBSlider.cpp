@@ -64,6 +64,13 @@ FBGUIParamSlider::valueChanged()
   _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, getValue());
 }
 
+void
+FBGUIParamSlider::mouseUp(MouseEvent const& event)
+{
+  if (isEnabled() && event.mods.isRightButtonDown())
+    _plugGUI->ShowMenuForGUIParam(_param->runtimeParamIndex);
+}
+
 String
 FBGUIParamSlider::getTextFromValue(double value)
 {

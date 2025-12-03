@@ -231,6 +231,31 @@ FBPlugGUI::UpdateExchangeState()
 }
 
 void
+FBPlugGUI::ShowMenuForGUIParam(int index)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto menu = std::make_shared<PopupMenu>();
+  menu->addItem(1, "Show Manual");
+  menu->addSeparator();
+  menu->addItem(2, "Set To Default");
+  auto clicked = [this, index](int tag) {
+    if (tag <= 0)
+      return;
+    if (tag == 1)
+    {
+      HostContext()->ShowOnlineManualForGUIParam(index);
+    }
+    else if (tag == 2)
+    {
+      double normalized = HostContext()->Topo()->gui.params[index].DefaultNormalizedByText();
+      HostContext()->SetGUIParamNormalized(index, normalized);
+      GUIParamNormalizedChanged(index, normalized);
+    }
+  };
+  ShowPopupMenuFor(this, *menu, clicked);
+}
+
+void
 FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
 {
   FB_LOG_ENTRY_EXIT();
@@ -375,7 +400,7 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   if (dynamic_cast<FBParamControl*>(event.eventComponent))
     return;
 
-  // just don't want a context menu on it
+  // pops up gui param context menu
   if (dynamic_cast<FBGUIParamControl*>(event.eventComponent))
     return;
 
