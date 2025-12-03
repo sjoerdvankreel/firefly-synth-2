@@ -418,7 +418,7 @@ These are only allocated when you turn on the feature.<br/>
 This is not realtime safe unless the daw session was already loaded with VEcho enabled, in which case things are pre-allocated.
 
 On the CPU side, it extends the voice lifetime to allow the echo to play out.<br/>
-This will add (user controllable, up to) 10 seconds to the voice lifetime.<br/>
+This will add (user controllable, up to) 10 seconds (or way more when tempo-synced) to the voice lifetime.<br/>
 So your 500 millisecond voice (by voice amp envelope) gets extended by that much, and voice count will drastically go up.
 
 * Voice Extend Time lengthens the life of the voice at full scale by up to 5 seconds.

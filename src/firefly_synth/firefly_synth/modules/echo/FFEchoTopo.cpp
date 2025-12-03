@@ -88,6 +88,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   vTargetOrGTarget.mode = FBParamMode::Block;
   vTargetOrGTarget.slotCount = 1;
   vTargetOrGTarget.id = prefix + "{60F7D173-C5F9-46AD-A108-D17D40FE4C1D}";
+  vTargetOrGTarget.description = "Echo Target Stage";
   vTargetOrGTarget.name = "Target";
   vTargetOrGTarget.defaultText = global && isFx? FFGEchoTargetToString(FFGEchoTarget::ExtAudio): "Off";
   vTargetOrGTarget.type = FBParamType::List;
@@ -141,6 +142,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   order.name = "Order";
   order.defaultText = "T\U00002192F\U00002192R";
   order.id = prefix + "{D84A623A-7F5C-40C6-A892-A441497783CD}";
+  order.description = "Echo Processing Order";
   order.type = FBParamType::List;
   order.List().items = {
     { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "T\U00002192F\U00002192R" },
@@ -164,6 +166,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   gain.slotCount = 1;
   gain.unit = "%";
   gain.id = prefix + "{557D9FBC-0EA3-4DDD-914F-7C9E647E25E0}";
+  gain.description = "Echo Make-up Gain";
   gain.type = FBParamType::Linear;
   gain.Linear().min = 0.0f;
   gain.Linear().max = 4.0f;
@@ -182,6 +185,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   sync.display = "Sync";
   sync.slotCount = 1;
   sync.id = prefix + "{6CBE8845-0C59-4A95-B9F7-24C7AA061DFA}";
+  sync.description = "Echo Tempo Sync";
   sync.defaultText = "Off";
   sync.type = FBParamType::Boolean;
   auto selectSync = [](auto& module) { return &module.block.sync; };
@@ -200,6 +204,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   delaySmoothTime.slotCount = 1;
   delaySmoothTime.unit = "Ms";
   delaySmoothTime.id = prefix + "{8694FBC8-003F-47B3-BB0E-8FB610CD4BD1}";
+  delaySmoothTime.description = "Echo Delay Smoothing Time";
   delaySmoothTime.type = FBParamType::Linear;
   delaySmoothTime.Linear().min = 0.02f;
   delaySmoothTime.Linear().max = 5.0f;
@@ -221,6 +226,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   delaySmoothBars.slotCount = 1;
   delaySmoothBars.unit = "Bars";
   delaySmoothBars.id = prefix + "{5554CC4B-29E6-4F3C-8FFE-95947033676C}";
+  delaySmoothBars.description = "Echo Delay Smoothing Bars";
   delaySmoothBars.defaultText = "1/4";
   delaySmoothBars.type = FBParamType::Bars;
   delaySmoothBars.Bars().items = MakeEchoSmoothBarsItems();
@@ -242,6 +248,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   voiceExtendTime.slotCount = 1;
   voiceExtendTime.unit = "Ms";
   voiceExtendTime.id = prefix + "{1FD9788A-41D1-4705-AF68-29956B1337E1}";
+  voiceExtendTime.description = "Echo Voice Lifetime Extend Full Scale Time";
   voiceExtendTime.type = FBParamType::Linear;
   voiceExtendTime.Linear().min = 0.0f;
   voiceExtendTime.Linear().max = 5.0f;
@@ -263,6 +270,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   voiceExtendBars.slotCount = 1;
   voiceExtendBars.unit = "Bars";
   voiceExtendBars.id = prefix + "{4BFA9D36-87B5-403F-A05F-CB9D1A9D874E}";
+  voiceExtendBars.description = "Echo Voice Lifetime Extend Full Scale Bars";
   voiceExtendBars.defaultText = "1/2";
   voiceExtendBars.type = FBParamType::Bars;
   voiceExtendBars.Bars().items = MakeEchoBarsItems();
@@ -283,6 +291,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   voiceFadeTime.slotCount = 1;
   voiceFadeTime.unit = "Ms";
   voiceFadeTime.id = prefix + "{13DB349F-81B4-415D-B79D-F742632E0036}";
+  voiceFadeTime.description = "Echo Voice Lifetime Extend Linear Fade Time";
   voiceFadeTime.type = FBParamType::Linear;
   voiceFadeTime.Linear().min = 0.0f;
   voiceFadeTime.Linear().max = 5.0f;
@@ -304,6 +313,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   voiceFadeBars.slotCount = 1;
   voiceFadeBars.unit = "Bars";
   voiceFadeBars.id = prefix + "{FB75B598-21C8-4D33-B296-F471F1AFD95A}";
+  voiceFadeBars.description = "Echo Voice Lifetime Extend Linear Fade Bars";
   voiceFadeBars.defaultText = "1/2";
   voiceFadeBars.type = FBParamType::Bars;
   voiceFadeBars.Bars().items = MakeEchoBarsItems();
