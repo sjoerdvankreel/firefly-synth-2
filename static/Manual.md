@@ -172,7 +172,8 @@ Likewise the balance control is global stereo balance with an optional LFO appli
 <a id="73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6"></a>
 ### Oscillator
 
-The graph plot for oscillators is an oscilloscope.
+The graph plot for oscillators is an oscilloscope.<br/>
+For engine visualization, plots higher notes (relative to C4) as shorter and lower notes as longer.
 
 #### Main section
 Contains controls common to all oscillator types.
@@ -450,6 +451,12 @@ LFO module with 3 subslots and optional tempo-syncing.<br/>
 The LFO output is that of the 3 slots combined.<br/>
 The individual slot outputs are also available as sources in the mod matrix.
 
+The graph plot for LFO subslots are 1 cycle of each.<br/>
+The graph plot for LFO final output are all subslots combined and smoothed, but with length determined by slot A.<br/>
+In free-running random mode, the audio engine visualization decays to a single line (per voice for VLFO).<br/>
+I found it too complicated to "calculate back" the LFO state from origin in that case.<br/>
+For periodic modes, the audio engine visualization is just a dot moving along the plot line.
+
 The 3 subslots are stacked one after another.<br/>
 You can control the manner in which this happens by changing the operator parameter.<br/>
 See Modulation System for details about the operator types.<br/>
@@ -479,5 +486,8 @@ See Modulation System.
 * Mode: selects the waveform.<br/>
 Various (combined) trigonometric functions, saw/tri/sqr, and uniform and gaussian distributed random generators.<br/>
 "Random" generates static noise while "Smooth" generates smooth noise based on<br/>
-[https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html](https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html).
+[https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html](https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html).<br/>
+Both static and smooth noise generators come in periodic and free-running modes (RndNrmF(ree), etc).<br/>
+Free-running mode is not a periodic signal so the phase offset parameter just controls the starting point.
+
 
