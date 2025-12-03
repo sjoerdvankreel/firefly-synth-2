@@ -472,3 +472,12 @@ Free: "normal" mode, generates a continuous signal.<br/>
 Snap: snaps the phase to DAW project time, if available (i.e. not freewheeling).<br/>
 In free mode, clicking around in the DAW transport has no effect.<br/>
 In snap mode, setting transport to X.Y bars resets the LFO phase to "where it would have been", counting back from project time zero.
+
+#### Shared parameters for all subslots
+* Operator: add, multiply, stack, etc.<br/>
+See Modulation System.
+* Mode: selects the waveform.<br/>
+Various (combined) trigonometric functions, saw/tri/sqr, and uniform and gaussian distributed random generators.<br/>
+"Random" generates static noise while "Smooth" generates smooth noise based on<br/>
+[https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html](* Smooth noise: https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html).
+
