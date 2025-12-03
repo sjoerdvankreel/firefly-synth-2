@@ -324,6 +324,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapsMix.display = "Mix";
   tapsMix.slotCount = 1;
   tapsMix.id = prefix + "{56DF16E6-A079-4E97-92D9-DA65826DB20F}";
+  tapsMix.description = "Multi-Tap Delay Dry/Wet Mix";
   tapsMix.type = FBParamType::Identity;
   auto selectTapsMix = [](auto& module) { return &module.acc.tapsMix; };
   tapsMix.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapsMix);
@@ -340,6 +341,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapsOn.slotCount = 1;
   tapsOn.defaultText = "Off";
   tapsOn.id = prefix + "{C5FAD167-9D4B-4640-AD46-0C3B55089197}";
+  tapsOn.description = "Multi-Tap Delay Enabled";
   tapsOn.type = FBParamType::Boolean;
   auto selectTapsOn = [](auto& module) { return &module.block.tapsOn; };
   tapsOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapsOn);
@@ -356,6 +358,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapOn.slotCount = FFEchoTapCount;
   tapOn.defaultTextSelector = [](int, int, int ps) { return ps < 4 ? "On" : "Off"; };
   tapOn.id = prefix + "{0EA26FE5-F45F-431E-9421-0FDD9E508CB8}";
+  tapOn.description = "Multi-Tap Delay Tap Enabled";
   tapOn.type = FBParamType::Boolean;
   tapOn.slotFormatDisplay = true;
   auto selectTapOn = [](auto& module) { return &module.block.tapOn; };
@@ -373,6 +376,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapLevel.display = "Lvl";
   tapLevel.slotCount = FFEchoTapCount;
   tapLevel.id = prefix + "{E3633411-F79D-4D2A-A748-82E03A35434E}";
+  tapLevel.description = "Multi-Tap Delay Tap Level";
   tapLevel.defaultTextSelector = [](int, int, int ps) { return ps == 0? "100": ps == 1? "80": ps == 2? "60": ps == 3? "40": "0"; };
   tapLevel.type = FBParamType::Identity;
   auto selectTapLevel = [](auto& module) { return &module.acc.tapLevel; };
@@ -390,6 +394,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapDelayTime.slotCount = FFEchoTapCount;
   tapDelayTime.unit = "Sec";
   tapDelayTime.id = prefix + "{7ADA9075-213B-4809-B32E-39B2794B010F}";
+  tapDelayTime.description = "Multi-Tap Delay Tap Length Time";
   tapDelayTime.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "0.5" : ps == 1 ? "1" : ps == 2 ? "1.5" : ps == 3 ? "2" : "0"; };
   tapDelayTime.type = FBParamType::Linear;
   tapDelayTime.Linear().min = 0.0f;
@@ -411,6 +416,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapDelayBars.slotCount = FFEchoTapCount;
   tapDelayBars.unit = "Bars";
   tapDelayBars.id = prefix + "{BEDF76D3-211D-4A1F-AF42-85E9C4E5374F}";
+  tapDelayBars.description = "Multi-Tap Delay Tap Length Bars";
   tapDelayBars.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "1/4" : ps == 1 ? "1/2" : ps == 2 ? "3/4" : ps == 3 ? "1/1" : "Off"; };
   tapDelayBars.type = FBParamType::Bars;
   tapDelayBars.Bars().items = MakeEchoBarsItems();
@@ -430,6 +436,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapBal.slotCount = FFEchoTapCount;
   tapBal.unit = "%";
   tapBal.id = prefix + "{2DCCEE86-4381-4E7F-98B6-FA94059F253B}";
+  tapBal.description = "Multi-Tap Delay Tap Stereo Balance";
   tapBal.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "-33" : ps == 1 ? "33" : ps == 2 ? "-67" : ps == 3 ? "67" : "0"; };
   tapBal.type = FBParamType::Linear;
   tapBal.Linear().displayMultiplier = 100;
@@ -451,6 +458,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapXOver.display = "LRX";
   tapXOver.slotCount = FFEchoTapCount;
   tapXOver.id = prefix + "{C26420EA-2838-44E8-AA57-A4CA8E1A4759}";
+  tapXOver.description = "Multi-Tap Delay Tap Stereo Crossover";
   tapXOver.type = FBParamType::Identity;
   auto selectTapXOver = [](auto& module) { return &module.acc.tapXOver; };
   tapXOver.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapXOver);
@@ -467,6 +475,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapLPOn.slotCount = FFEchoTapCount;
   tapLPOn.defaultText = "Off";
   tapLPOn.id = prefix + "{483FDB57-3842-49B8-8B66-4A642A926D16}";
+  tapLPOn.description = "Multi-Tap Delay Tap LP On";
   tapLPOn.type = FBParamType::Boolean;
   auto selectTapLPOn = [](auto& module) { return &module.block.tapLPOn; };
   tapLPOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapLPOn);
@@ -484,6 +493,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapLPFreq.slotCount = FFEchoTapCount;
   tapLPFreq.unit = "Hz";
   tapLPFreq.id = prefix + "{D8CA3B61-6335-4457-9A4F-71F5A912C0D7}";
+  tapLPFreq.description = "Multi-Tap Delay Tap LP Frequency";
   tapLPFreq.type = FBParamType::Log2;
   tapLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectTapLPFreq = [](auto& module) { return &module.acc.tapLPFreq; };
@@ -502,6 +512,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapLPRes.slotCount = FFEchoTapCount;
   tapLPRes.unit = "%";
   tapLPRes.id = prefix + "{38991C7F-01FB-459B-9086-1F19E876D3CA}";
+  tapLPRes.description = "Multi-Tap Delay Tap LP Resonance";
   tapLPRes.type = FBParamType::Identity;
   auto selectTapLPRes = [](auto& module) { return &module.acc.tapLPRes; };
   tapLPRes.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapLPRes);
@@ -518,6 +529,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapHPOn.slotCount = FFEchoTapCount;
   tapHPOn.defaultText = "Off";
   tapHPOn.id = prefix + "{B60F324E-6A6A-4E02-AA9E-2C6345E26F6A}";
+  tapHPOn.description = "Multi-Tap Delay Tap HP On";
   tapHPOn.type = FBParamType::Boolean;
   auto selectTapHPOn = [](auto& module) { return &module.block.tapHPOn; };
   tapHPOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapHPOn);
@@ -535,6 +547,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapHPFreq.slotCount = FFEchoTapCount;
   tapHPFreq.unit = "Hz";
   tapHPFreq.id = prefix + "{3B3F90D7-CAF0-45ED-8316-D21BE4508E05}";
+  tapHPFreq.description = "Multi-Tap Delay Tap HP Frequency";
   tapHPFreq.type = FBParamType::Log2;
   tapHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectTapHPFreq = [](auto& module) { return &module.acc.tapHPFreq; };
@@ -553,6 +566,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapHPRes.slotCount = FFEchoTapCount;
   tapHPRes.unit = "%";
   tapHPRes.id = prefix + "{E8174982-FF15-4375-84BA-1C8AFBE8CF28}";
+  tapHPRes.description = "Multi-Tap Delay Tap HP Resonance";
   tapHPRes.type = FBParamType::Identity;
   auto selectTapHPRes = [](auto& module) { return &module.acc.tapHPRes; };
   tapHPRes.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapHPRes);
