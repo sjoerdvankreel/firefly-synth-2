@@ -395,7 +395,8 @@ This controls the amount by which one channel's input affects the other channel'
 
 Target: this affects where in the processing pipeline the echo is applied.<br/>
 The most natural setting for this is VMix Out (voice) or GMix Out (global).<br/>
-For global, may also be used to target the voice mixdown before all FX, the external audio input before all fx, or the input/output of individual GFX sections.<br/>
+For global, may also be used to target the voice mixdown before all FX,<br/>
+the external audio input before all fx, or the input/output of individual GFX sections.<br/>
 For voice, may also be used to target individual oscillators or the input/output of individual VFX sections.<br/>
 The voice echo target needs tight cooperation with the Voice Mixer (VMix) envelope target.<br/>
 If you get this "wrong", the voice echo will "hide" behind that envelope and the echo is cut short.<br/>
