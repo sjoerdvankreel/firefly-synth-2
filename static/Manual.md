@@ -405,3 +405,6 @@ This allows for some interesting effects but it's also a great way to blow up th
 Which again is a great usecase for the panic button.<br/>
 If you need filters applied to the output of the feedback delay instead,
 <br/>you'll have to position (Target) the echo module to somewhere before an FX module.
+
+#### Reverb
+Implementation based on [https://github.com/sinshu/freeverb](https://github.com/sinshu/freeverb).
