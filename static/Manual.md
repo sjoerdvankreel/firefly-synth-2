@@ -494,4 +494,13 @@ Various (combined) trigonometric functions, saw/tri/sqr, and uniform and gaussia
 Both static and smooth noise generators come in periodic and free-running modes (RndNrmF(ree), etc).<br/>
 Free-running mode is not a periodic signal so the phase offset parameter just controls the starting point.
 
+#### Skewing parameters for slot A
+Comes in unipolar and bipolar modes.
 
+* Skew X: this skews the phase.<br/>
+Scale causes the LFO to have an incomplete cycle before repeat.<br/>
+Exponential causes a drift in the LFO horizontal distribution.<br/>
+Bipolar preserves the horizontal center point, unipolar does not.
+* Skew Y: this skews the amplitude/output (exponential only).<br>
+Forces the output towards/away from vertical center.<br/>
+Bipolar preserves the vertical center point, unipolar does not.
