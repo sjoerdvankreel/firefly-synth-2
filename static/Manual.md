@@ -479,5 +479,5 @@ See Modulation System.
 * Mode: selects the waveform.<br/>
 Various (combined) trigonometric functions, saw/tri/sqr, and uniform and gaussian distributed random generators.<br/>
 "Random" generates static noise while "Smooth" generates smooth noise based on<br/>
-[https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html](* Smooth noise: https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html).
+[https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html](https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html).
 
