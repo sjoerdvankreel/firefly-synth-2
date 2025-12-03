@@ -402,6 +402,6 @@ You can optionally enable both a low and a highpass filter.<br/>
 Unlike for the multitap and reverb slots, these filters are not applied to the output signal.<br/>
 Instead for the feedback delay, filters are placed on the feedback path.<br/>
 This allows for some interesting effects but it's also a great way to blow up the delay line with high-resonant filters.<br/>
-Which again is a great use for the panic button.<br/>
+Which again is a great usecase for the panic button.<br/>
 If you need filters applied to the output of the feedback delay instead,
 <br/>you'll have to position (Target) the echo module to somewhere before an FX module.
