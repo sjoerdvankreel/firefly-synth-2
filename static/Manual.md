@@ -421,8 +421,8 @@ On the CPU side, it extends the voice lifetime to allow the echo to play out.<br
 This will add (user controllable, up to) 10 seconds to the voice lifetime.<br/>
 So your 500ms voice (by voice amp envelope) gets extended by that much, and voice count will drastically go up.
 
-* Voice Extend Time lengthens the life of the voice at full scale by up to 5 seconds
-* Voice Fade Time lengths the life of the voice, on top of extend time, by linear fade-out up to an additional 5 seconds
+* Voice Extend Time lengthens the life of the voice at full scale by up to 5 seconds.
+* Voice Fade Time lengthens the life of the voice, on top of extend time, by linear fade-out up to an additional 5 seconds.
 
 "Full scale" and "linear fadeout" here mean after the voice amplitude envelope is already applied.<br/>
 So, when your oscis hit silence (by voice envelope), allows another 5 seconds of full scale echo followed by 5 seconds of fade-out echo.
