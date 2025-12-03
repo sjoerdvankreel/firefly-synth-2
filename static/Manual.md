@@ -390,7 +390,7 @@ This controls the amount by which one channel's input affects the other channel'
 #### Multi tap delay
 * 8-tap delay line with full control over each taps individual parameters.
 * Per-tap delay time (or bars), level, stereo balance and stereo crossover.
-* Per-tap low and highpass filters.
+* Optional per-tap low and highpass filters on the output.
 
 #### Feedback delay
 Feedback delay line with time/bars control and feedback amount.<br/>
@@ -408,3 +408,5 @@ If you need filters applied to the output of the feedback delay instead,
 
 #### Reverb
 Implementation based on [https://github.com/sinshu/freeverb](https://github.com/sinshu/freeverb).
+* Room size, damping factor and allpass filter controls.
+* Optional low and highpass filters on the output.
