@@ -13,6 +13,7 @@ TODOLIST for beta-1
 [x] move manual to static
 [x] not osci ktrk for extaud
 [x] notracking filters track against c0, should be coarse pitch
+[ ] wrong tooltip for per-voice block params
 [ ] clap mod docs
 [ ] do all credits in the docs
 [ ] explain clap/matrix/easy-access/GUNI interaction
