@@ -247,7 +247,7 @@ Overtones mode allows to explicitly specify the number of sines generated.<br/>
 Bandwidth mode allows to specify a range between base frequency only (0%) or all the way up to Nyquist/half-sample-rate (100%).<br/>
 
 The DSF generator is based on [https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html](https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html).<br/>
-All others can be found over here [https://www.taletn.com/reaper/mono_synth](https://www.taletn.com/reaper/mono_synth).
+All others can be found in the polyblep section over here [https://www.taletn.com/reaper/mono_synth](https://www.taletn.com/reaper/mono_synth).
 
 #### FM section
 
