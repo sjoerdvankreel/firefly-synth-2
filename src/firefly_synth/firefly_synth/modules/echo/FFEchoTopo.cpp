@@ -845,6 +845,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbOn.slotCount = 1;
   reverbOn.defaultText = "Off";
   reverbOn.id = prefix + "{935D11F3-1131-40DE-81E5-FC3DCDCBAE73}";
+  reverbOn.description = "Reverb Enabled";
   reverbOn.type = FBParamType::Boolean;
   auto selectReverbOn = [](auto& module) { return &module.block.reverbOn; };
   reverbOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbOn);
@@ -862,6 +863,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbMix.display = "Mix";
   reverbMix.slotCount = 1;
   reverbMix.id = prefix + "{D40CAAA2-186D-4296-BE87-7DFCCA33C4AF}";
+  reverbMix.description = "Reverb Dry/Wet Mix";
   reverbMix.type = FBParamType::Identity;
   auto selectReverbMix = [](auto& module) { return &module.acc.reverbMix; };
   reverbMix.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbMix);
@@ -879,6 +881,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbXOver.display = "LRX";
   reverbXOver.slotCount = 1;
   reverbXOver.id = prefix + "{F31A5809-1558-4B9C-A953-EAC108530E3E}";
+  reverbXOver.description = "Reverb Stereo Crossover";
   reverbXOver.type = FBParamType::Identity;
   auto selectReverbXOver = [](auto& module) { return &module.acc.reverbXOver; };
   reverbXOver.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbXOver);
@@ -896,6 +899,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbAPF.display = "APF";
   reverbAPF.slotCount = 1;
   reverbAPF.id = prefix + "{3D12C8EF-6891-4980-8BAD-33E74AD79298}";
+  reverbAPF.description = "Reverb Allpass Filter";
   reverbAPF.type = FBParamType::Identity;
   auto selectReverbAPF = [](auto& module) { return &module.acc.reverbAPF; };
   reverbAPF.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbAPF);
@@ -913,6 +917,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbDamp.display = "Damp";
   reverbDamp.slotCount = 1;
   reverbDamp.id = prefix + "{5E33AA4C-F65E-432A-9DCB-E67F4AF46770}";
+  reverbDamp.description = "Reverb Damping Factor";
   reverbDamp.type = FBParamType::Identity;
   auto selectReverbDamp = [](auto& module) { return &module.acc.reverbDamp; };
   reverbDamp.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbDamp);
@@ -930,6 +935,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbSize.display = "Size";
   reverbSize.slotCount = 1;
   reverbSize.id = prefix + "{2B4B1255-6875-49B3-B52D-CC9711C6D7A4}";
+  reverbSize.description = "Reverb Room Size";
   reverbSize.type = FBParamType::Identity;
   auto selectReverbSize = [](auto& module) { return &module.acc.reverbSize; };
   reverbSize.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbSize);
@@ -946,6 +952,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbLPOn.slotCount = 1;
   reverbLPOn.defaultText = "Off";
   reverbLPOn.id = prefix + "{BDB27A94-D5D0-44F6-8DBE-D98C70CFBD0D}";
+  reverbLPOn.description = "Reverb LP On";
   reverbLPOn.type = FBParamType::Boolean;
   auto selectReverbLPOn = [](auto& module) { return &module.block.reverbLPOn; };
   reverbLPOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbLPOn);
@@ -963,6 +970,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbLPFreq.slotCount = 1;
   reverbLPFreq.unit = "Hz";
   reverbLPFreq.id = prefix + "{9B215206-8C8A-4F37-9F54-60EF7AAA67E1}";
+  reverbLPFreq.description = "Reverb LP Frequency";
   reverbLPFreq.type = FBParamType::Log2;
   reverbLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectReverbLPFreq = [](auto& module) { return &module.acc.reverbLPFreq; };
@@ -981,6 +989,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbLPRes.slotCount = 1;
   reverbLPRes.unit = "%";
   reverbLPRes.id = prefix + "{94A61E63-8CEA-48B0-A2C1-AE170F8812D7}";
+  reverbLPRes.description = "Reverb LP Resonance";
   reverbLPRes.type = FBParamType::Identity;
   auto selectReverbLPRes = [](auto& module) { return &module.acc.reverbLPRes; };
   reverbLPRes.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbLPRes);
@@ -997,6 +1006,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbHPOn.slotCount = 1;
   reverbHPOn.defaultText = "Off";
   reverbHPOn.id = prefix + "{D4C2AF4D-98C2-4A3B-9534-6C61FE2E5CA8}";
+  reverbHPOn.description = "Reverb HP On";
   reverbHPOn.type = FBParamType::Boolean;
   auto selectReverbHPOn = [](auto& module) { return &module.block.reverbHPOn; };
   reverbHPOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbHPOn);
@@ -1014,6 +1024,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbHPFreq.slotCount = 1;
   reverbHPFreq.unit = "Hz";
   reverbHPFreq.id = prefix + "{1CB4ACC6-1EA4-4693-B4D5-D93A73E1E01B}";
+  reverbHPFreq.description = "Reverb HP Frequency";
   reverbHPFreq.type = FBParamType::Log2;
   reverbHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectReverbHPFreq = [](auto& module) { return &module.acc.reverbHPFreq; };
@@ -1032,6 +1043,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbHPRes.slotCount = 1;
   reverbHPRes.unit = "%";
   reverbHPRes.id = prefix + "{AE3A50D6-187E-4C20-84DF-C9311103950C}";
+  reverbHPRes.description = "Reverb HP Resonance";
   reverbHPRes.type = FBParamType::Identity;
   auto selectReverbHPRes = [](auto& module) { return &module.acc.reverbHPRes; };
   reverbHPRes.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbHPRes);
