@@ -446,7 +446,7 @@ Implementation based on [https://github.com/sinshu/freeverb](https://github.com/
 <a id="G6E9EC930-5391-41BB-9EDA-C9B79F3BE745"></a>
 <a id="V6E9EC930-5391-41BB-9EDA-C9B79F3BE745"></a>
 ### Voice LFO and Global LFO
-LFO module with 3 subslots.<br/>
+LFO module with 3 subslots and optional tempo-syncing.<br/>
 The LFO output is that of the 3 slots combined.<br/>
 The individual slot outputs are also available as sources in the mod matrix.
 
@@ -459,3 +459,6 @@ Free: "normal" mode, generates a continuous signal.<br/>
 Snap: snaps the phase to DAW project time, if available (i.e. not freewheeling).<br/>
 In free mode, clicking around in the DAW transport has no effect.<br/>
 In snap mode, setting transport to X.Y bars resets the LFO phase to "where it would have been", counting back from project time zero.
+* Seed: random seed for the backing random generators of noise-based LFOs.
+* Sync: switches between time-based and tempo-based (bars).
+* Smooth: this is a smoothing filter applied to the final output only. Does not affect the individual subslots.
