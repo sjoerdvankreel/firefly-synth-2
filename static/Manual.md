@@ -324,8 +324,7 @@ For global FX only, the key smoothing control allows to smooth out changes in th
 
 The graph plot for waveshapers is a shaper plot.<br/>
 The graph plot for filters is a frequency response.<br/>
-The graph plot for everything combined is an impulse response.<br/>
-Or actually, what everything combined does to a ramp. Is that a ramp response?
+The graph plot for everything combined is a ramp response.<br/>
 
 #### Filter modes
 Both SV filters and comb filters can be used in frequency mode, pitch mode or pitch-tracking mode.
