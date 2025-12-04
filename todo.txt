@@ -19,6 +19,7 @@ TODOLIST for beta-1
 [x] do no-mode x-mseg for bars
 [x] gui params manual context menu
 [x] call it not gui, call it modules
+[ ] oscimod
 [ ] screenshots in the docs?
 [ ] list mod sources per module
 [ ] clap mod docs

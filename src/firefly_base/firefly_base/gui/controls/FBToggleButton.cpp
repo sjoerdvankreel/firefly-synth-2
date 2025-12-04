@@ -53,6 +53,8 @@ FBGUIParamToggleButton::mouseUp(const MouseEvent& event)
 {
   if (isEnabled() && event.mods.isRightButtonDown())
     _plugGUI->ShowMenuForGUIParam(_param->runtimeParamIndex);
+  else
+    ToggleButton::mouseUp(event);
 }
 
 void
