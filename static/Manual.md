@@ -320,6 +320,11 @@ If you just want to throw some effects to external input, use Global Mixer ("Ext
 FF2 does not support true stereo oscillators before the unison stage.
 * Built-in low/highpass filters for additional control.
 
+<a id="546F9D74-670A-463D-80B0-B4BBD061DA88"></a>
+### Oscillator Cross-modulation
+
+![image](screenshot_manual_osci_mod.png)
+
 <a id="G154051CE-66D9-41C8-B479-C52D1111C962"></a>
 <a id="V154051CE-66D9-41C8-B479-C52D1111C962"></a>
 ### Voice FX and Global FX
