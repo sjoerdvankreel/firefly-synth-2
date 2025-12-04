@@ -561,5 +561,5 @@ Off: turns off horizontal editing alltogether. Useful in combination with tempo-
 For horizontal editing tempo-synced envelopes, the editor will snap to nearest available bars (so you end up with stuff like 11/128 etc).
 
 Snapping is an edit-only feature.<br/>
-Envelope points can become "unsnapped" from the grid by automation or modulation.<br/>
+Envelope points can become "unsnapped" from the grid by automation or modulation, or dragging the stage controls.<br/>
 During MSEG editing the time and tempo-synced (bars) stage length are kept in sync, with the bars version being rounded to nearest.<br/>
