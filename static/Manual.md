@@ -519,7 +519,10 @@ All other envelopes are cut short if they are not finished yet by the time the v
 
 With both loop and release turned off, the engine just follows the envelope with no regard for note-off events.<br/>
 With only release turned on, immediately jumps to the release point on note off, but taking the current amplitude into account.<br/>
+
 With only loop turned on, the envelope becomes repeating (infinite length).<br/>
-To prevent infinite length voices, the audio engine specifically ignores looping-only envelopes for the Voice Amp envelope, and jumps straight to the end on note-off.<br/>
-With both loop and release turned on, the engine jumps from the current loop stage to the release point ONLY if the release point is after the current loop stage.<br/>
-This also takes into account the current amplitude.<br/>
+To prevent infinite length voices, the audio engine specifically ignores looping-only<br/>
+envelopes for the Voice Amp envelope, and jumps straight to the end on note-off.<br/>
+
+With both loop and release turned on, the engine jumps from the current loop stage to the release point<br/>
+ONLY if the release point is after the current loop stage. This also takes into account the current amplitude.
