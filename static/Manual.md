@@ -472,7 +472,7 @@ Implementation based on [https://github.com/sinshu/freeverb](https://github.com/
 ### Voice LFO and Global LFO
 LFO module with 3 subslots and optional tempo-syncing.
 
-![image](screenshot_manual_echo_lfo.png)
+![image](screenshot_manual_lfo.png)
 
 The LFO output is that of the 3 slots combined.<br/>
 The individual slot outputs are also available as sources in the mod matrix.
