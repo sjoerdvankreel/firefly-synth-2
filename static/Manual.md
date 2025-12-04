@@ -556,8 +556,10 @@ Construct the envelope by dragging and clicking around.
 Vertical edit mode (Y Mode): allows to vertically snap points to a user-defined grid size.<br/>
 Horizontal edit mode (X Mode):<br/>
 Snap mode allows to horizontall snap points to a user-defined grid size.<br/>
-Stretch mode allows to shorten/lengthen a stage without affecting the stage after it.
+Stretch mode allows to shorten/lengthen a stage without affecting the stage after it.<br/>
+Off: turns off horizontal editing alltogether. Useful in combination with tempo-synced envelopes, when you just want to manually select the stage bars.<br/>
+For horizontal editing tempo-synced envelopes, the editor will snap to nearest available bars (so you end up with stuff like 11/128 etc).
 
 Snapping is an edit-only feature.<br/>
 Envelope points can become "unsnapped" from the grid by automation or modulation.<br/>
-When dragging stage points around, this 
+During MSEG editing the time and tempo-synced (bars) stage length are kept in sync, with the bars version being rounded to nearest.<br/>

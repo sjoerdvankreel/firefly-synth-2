@@ -309,6 +309,7 @@ FFMakeEnvTopo()
   guiMSEGXEditMode.id = "{576F4AC3-55F6-4B83-A113-128EFF880D5B}";
   guiMSEGXEditMode.type = FBParamType::List;
   guiMSEGXEditMode.List().items = {
+    { "{D24CA66E-48FA-41B3-AF51-90CC0A8E697A}", "Off" },
     { "{0299B125-071F-4281-B32C-3933D1CF0159}", "Free" },
     { "{4A5D75D8-553F-4ADE-9E46-DA705DE5195B}", "Snap" },
     { "{8C5D0496-222C-408C-8ADA-4B71C2A50C81}", "Stretch" } };

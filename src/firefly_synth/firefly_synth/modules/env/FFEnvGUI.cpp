@@ -87,7 +87,6 @@ MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
   auto topo = plugGUI->HostContext()->Topo();
   int snapXIndex = FFEnvIndexOfMSEGSnapXCount(model.snapXCount);
   int snapYIndex = FFEnvIndexOfMSEGSnapYCount(model.snapYCount);
-  bool sync = context->GetAudioParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } });
   context->SetGUIParamList({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGXEditMode, 0 } }, (int)model.xEditMode);
   context->SetGUIParamList({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGYEditMode, 0 } }, (int)model.yEditMode);
   if (snapXIndex != -1)
@@ -122,21 +121,15 @@ MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
   {
     context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageLevel, i } }, model.points[i].y);
     context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } }, model.points[i].slope);
-    if (sync)
-    {
-      auto lengthBarsTopo = context->Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } });
-      double lengthBarsPlain = lengthBarsTopo->static_.BarsNonRealTime().BarsToPlain(model.points[i].lengthBars);
-      double lengthBarsNorm = lengthBarsTopo->static_.BarsNonRealTime().PlainToNormalized(lengthBarsPlain);
-      context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } }, lengthBarsNorm);
-    }
-    else 
-    {
-      auto lengthTimeTopo = context->Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
-      double lengthTimeNorm = lengthTimeTopo->static_.LinearNonRealTime().PlainToNormalized(model.points[i].lengthTime);
-      context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } }, lengthTimeNorm);
-    }
+    auto lengthTimeTopo = context->Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
+    double lengthTimeNorm = lengthTimeTopo->static_.LinearNonRealTime().PlainToNormalized(model.points[i].lengthTime);
+    context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } }, lengthTimeNorm);
+    auto lengthBarsTopo = context->Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } });
+    double lengthBarsPlain = lengthBarsTopo->static_.BarsNonRealTime().BarsToPlain(model.points[i].lengthBars);
+    double lengthBarsNorm = lengthBarsTopo->static_.BarsNonRealTime().PlainToNormalized(lengthBarsPlain);
+    context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } }, lengthBarsNorm);
   }
-  
+
   dynamic_cast<FFPlugGUI&>(*plugGUI).SwitchMainGraphToModule((int)FFModuleType::Env, moduleSlot);
 }
 
@@ -178,13 +171,13 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
   auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
   std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot);
   *msegEditor = plugGUI->StoreComponent<FBMSEGEditor>(
-    plugGUI, title, FFEnvStageCount, FFEnvMaxTime, FBBarsItem { FFEnvMaxBarsNum, FFEnvMaxBarsDen },
+    plugGUI, title, FFEnvStageCount, FFEnvMaxTime, FBBarsItem{ FFEnvMaxBarsNum, FFEnvMaxBarsDen },
     FFEnvMakeBarsItems(), FFEnvMakeMSEGSnapXCounts(), FFEnvMakeMSEGSnapYCounts());
   UpdateMSEGModel(plugGUI, moduleSlot, (*msegEditor)->Model());
   (*msegEditor)->UpdateModel();
-  (*msegEditor)->modelUpdated = [plugGUI, moduleSlot](FBMSEGModel const& model) { 
+  (*msegEditor)->modelUpdated = [plugGUI, moduleSlot](FBMSEGModel const& model) {
     MSEGModelUpdated(plugGUI, moduleSlot, model); };
-  (*msegEditor)->getTooltipFor = [plugGUI, moduleSlot](FBMSEGNearestHitType hitType, int index) { 
+  (*msegEditor)->getTooltipFor = [plugGUI, moduleSlot](FBMSEGNearestHitType hitType, int index) {
     return GetMSEGTooltip(plugGUI, moduleSlot, hitType, index); };
 
   showMSEG->onClick = [plugGUI, msegEditor_ = *msegEditor, title, moduleSlot]() {
@@ -201,8 +194,8 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
         plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } });
         plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
       }
-    });
-  };
+      });
+    };
 
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
@@ -280,8 +273,8 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
   tabs->extendedMenu.addSubMenu("Insert Stage Before", insertMenu);
   tabs->extendedMenuHandler = [](FBPlugGUI* plugGUI, FBTopoIndices const& indices, int id) {
 
-    std::vector<FFEnvParam> stageParams = { 
-      FFEnvParam::StageTime, FFEnvParam::StageBars, 
+    std::vector<FFEnvParam> stageParams = {
+      FFEnvParam::StageTime, FFEnvParam::StageBars,
       FFEnvParam::StageLevel, FFEnvParam::StageSlope };
 
     if (1000 <= id && id < 1000 + FFEnvStageCount)
@@ -303,7 +296,7 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
           plugGUI->HostContext()->CopyAudioParam(
             { indices, { (int)stageParams[j], i + 1 } }, { indices, { (int)stageParams[j], i } });
     }
-  };
+    };
 
   return tabs;
 }
@@ -316,8 +309,8 @@ FFEnvParamListener::
 
 FFEnvParamListener::
 FFEnvParamListener(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*> const& msegEditors) :
-_plugGUI(plugGUI) ,
-_msegEditors(msegEditors)
+  _plugGUI(plugGUI),
+  _msegEditors(msegEditors)
 {
   _plugGUI->AddParamListener(this);
 }
@@ -335,5 +328,5 @@ FFEnvParamListener::AudioParamChanged(
   MessageManager::callAsync([this, indices]() {
     UpdateMSEGModel(_plugGUI, indices.module.slot, _msegEditors[indices.module.slot]->Model());
     _msegEditors[indices.module.slot]->UpdateModel();
-  });
+    });
 }

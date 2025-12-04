@@ -17,6 +17,7 @@ enum class FBMSEGYMode
 
 enum class FBMSEGXEditMode
 {
+  Off,
   Free,
   Snap,
   Stretch,
