@@ -329,7 +329,7 @@ Each oscillator can modulate all those after it.<br/>
 So, 1 can modulate 2/3/4, 2 can modulate 2/3 and 3 can modulate 4.
 
 * Oversampling:<br/>
-Enables 4x oversampling for all oscis.
+Enables 4x oversampling for all oscis.<br/>
 FF2 does not allow oversampling oscillators on an individual basis (precisely because of the cross-modulation feature).<br/>
 * Exponential FM:<br/>
 Linear FM (off) is the default, modulator controls the carrier's phase.<br/>
