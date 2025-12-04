@@ -528,11 +528,11 @@ With both loop and release turned on, the engine jumps from the current loop sta
 ONLY if the release point is after the current loop stage. This also takes into account the current amplitude.
 
 #### Main section
+* Start: controls the envelope start amplitude
 * Type: choose between linear and exponential envelopes
 * Loop start/length: these define the (optional) sustain stage
 * Release point: the envelope jumps to here on note-off<br>
 (Except if before the current loop stage, in which case looping is just finished and the envelope plays out normally.)
 * Sync: switches between time-based and tempo-based (bars)
-* Start: controls the envelope start amplitude
 * Smooth: applies a smoothing filter to the envelope output.<br/>
 Useful for looping envelopes where the start and end point have unequal amplitude.
