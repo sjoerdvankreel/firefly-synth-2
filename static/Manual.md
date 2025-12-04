@@ -536,3 +536,5 @@ ONLY if the release point is after the current loop stage. This also takes into 
 Useful for looping envelopes where the start and end point have unequal amplitude.
 * Release point: the envelope jumps to here on note-off<br>
 (Except if before the current loop stage, in which case looping is just finished and the envelope plays out normally.)
+
+#### Stage section
