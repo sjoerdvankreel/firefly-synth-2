@@ -560,3 +560,4 @@ Stretch mode allows to shorten/lengthen a stage without affecting the stage afte
 
 Snapping is an edit-only feature.<br/>
 Envelope points can become "unsnapped" from the grid by automation or modulation.<br/>
+When dragging stage points around, this 

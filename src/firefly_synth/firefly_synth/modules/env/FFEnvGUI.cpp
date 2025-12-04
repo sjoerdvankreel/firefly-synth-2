@@ -87,6 +87,7 @@ MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
   auto topo = plugGUI->HostContext()->Topo();
   int snapXIndex = FFEnvIndexOfMSEGSnapXCount(model.snapXCount);
   int snapYIndex = FFEnvIndexOfMSEGSnapYCount(model.snapYCount);
+  bool sync = context->GetAudioParamBool({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } });
   context->SetGUIParamList({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGXEditMode, 0 } }, (int)model.xEditMode);
   context->SetGUIParamList({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGYEditMode, 0 } }, (int)model.yEditMode);
   if (snapXIndex != -1)
@@ -121,13 +122,19 @@ MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
   {
     context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageLevel, i } }, model.points[i].y);
     context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } }, model.points[i].slope);
-    auto lengthTimeTopo = context->Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
-    double lengthTimeNorm = lengthTimeTopo->static_.LinearNonRealTime().PlainToNormalized(model.points[i].lengthTime);
-    context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } }, lengthTimeNorm);
-    auto lengthBarsTopo = context->Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } });
-    double lengthBarsPlain = lengthBarsTopo->static_.BarsNonRealTime().BarsToPlain(model.points[i].lengthBars);
-    double lengthBarsNorm = lengthBarsTopo->static_.BarsNonRealTime().PlainToNormalized(lengthBarsPlain);
-    context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } }, lengthBarsNorm);
+    if (sync)
+    {
+      auto lengthBarsTopo = context->Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } });
+      double lengthBarsPlain = lengthBarsTopo->static_.BarsNonRealTime().BarsToPlain(model.points[i].lengthBars);
+      double lengthBarsNorm = lengthBarsTopo->static_.BarsNonRealTime().PlainToNormalized(lengthBarsPlain);
+      context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } }, lengthBarsNorm);
+    }
+    else 
+    {
+      auto lengthTimeTopo = context->Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
+      double lengthTimeNorm = lengthTimeTopo->static_.LinearNonRealTime().PlainToNormalized(model.points[i].lengthTime);
+      context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } }, lengthTimeNorm);
+    }
   }
   
   dynamic_cast<FFPlugGUI&>(*plugGUI).SwitchMainGraphToModule((int)FFModuleType::Env, moduleSlot);
