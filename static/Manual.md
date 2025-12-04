@@ -442,6 +442,8 @@ So your 500 millisecond voice (by voice amp envelope) gets extended by that much
 So, when your oscis hit silence (by voice envelope), allows another 5 seconds of full scale echo followed by 5 seconds of fade-out echo.
 
 #### Multi tap delay
+![image](screenshot_manual_echo_multitap.png)
+
 * 8-tap delay line with full control over each taps individual parameters.
 * Per-tap delay time (or bars), level, stereo balance and stereo crossover.
 * Optional per-tap low and highpass filters on the output.
