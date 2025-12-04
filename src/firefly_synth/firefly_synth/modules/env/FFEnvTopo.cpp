@@ -245,6 +245,7 @@ FFMakeEnvTopo()
   stageLevel.slotCount = FFEnvStageCount;
   stageLevel.unit = "%";
   stageLevel.id = "{0E6A1B2B-AC57-473B-9B31-F67631C6B152}";
+  stageLevel.description = "Envelope Stage Level";
   stageLevel.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : ps == 1 ? "25" : "0"; };
   stageLevel.type = FBParamType::Identity;
   auto selectStageLevel = [](auto& module) { return &module.acc.stageLevel; };
@@ -260,6 +261,7 @@ FFMakeEnvTopo()
   stageSlope.slotCount = FFEnvStageCount;
   stageSlope.unit = "%";
   stageSlope.id = "{A860A5DD-A18D-4B00-A394-53E4328642D2}";
+  stageSlope.description = "Envelope Stage Slope";
   stageSlope.type = FBParamType::Identity;
   stageSlope.Identity().displayAsBipolar = true;
   auto selectStageSlope = [](auto& module) { return &module.acc.stageSlope; };
@@ -274,6 +276,7 @@ FFMakeEnvTopo()
   stageTime.slotCount = FFEnvStageCount;
   stageTime.unit = "Sec";
   stageTime.id = "{3023BA36-07C3-422F-A894-5F6372603EEF}";
+  stageTime.description = "Envelope Stage Length Time";
   stageTime.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "0.1" : ps == 1 ? "0.2" : ps == 2 ? "0.4" : "0"; };
   stageTime.type = FBParamType::Linear;
   stageTime.Linear().min = 0.0f;
@@ -292,6 +295,7 @@ FFMakeEnvTopo()
   stageBars.slotCount = FFEnvStageCount;
   stageBars.unit = "Bars";
   stageBars.id = "{43780C3A-3C23-4A94-8BDF-152FDF408A5F}";
+  stageBars.description = "Envelope Stage Length Bars";
   stageBars.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "1/16" : ps == 1 ? "1/8" : ps == 2 ? "1/4" : "Off"; };
   stageBars.type = FBParamType::Bars;
   stageBars.Bars().items = FFEnvMakeBarsItems();
