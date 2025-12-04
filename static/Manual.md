@@ -123,6 +123,8 @@ See the matrix section for more details.
 ### Voice mixer
 Controls the signal path of the per-voice audio engine.
 
+![image](screenshot_manual_vmix.png)
+
 * Oscillator to voice FX:<br/>
 Routes the output of individual oscillators to the per-voice effect (VFX) section.
 * Voice FX to voice FX:<br/>
@@ -158,6 +160,8 @@ Osc mix to out: controls how much the internal osci mixer stage contributes to t
 <a id="09ED2CCE-3AC5-455E-935C-A684BEBC154D"></a>
 ### Global mixer
 Controls the signal path of the global audio engine.
+
+![image](screenshot_manual_gmix.png)
 
 * Voice Mix to GFX:<br/>
 Routes the voice mixdown to the global effect (GFX) section.
