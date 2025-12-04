@@ -538,3 +538,8 @@ Useful for looping envelopes where the start and end point have unequal amplitud
 (Except if before the current loop stage, in which case looping is just finished and the envelope plays out normally.)
 
 #### Stage section
+Controls individual stage length (time or bars), stage level and slope for exponential mode.<br/>
+Every control in here can also be edited using the MSEG editor but it's nice to have them anyway.<br/>
+The stage controls react to automation and modulation both, the MSEG editor reacts only to automation.<br/>
+Also unlike the editor, stage controls have a regular context menu attached to them so can show the host context menu.
+
