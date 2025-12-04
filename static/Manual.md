@@ -2,6 +2,7 @@
 
 ## Top section
 Contains everything that is not directly related to generating audio.
+
 ![image](screenshot_manual_top.png)
 
 ### Output panel
