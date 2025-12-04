@@ -25,6 +25,7 @@ TODOLIST for beta-1
 [ ] list mod sources per module
 [ ] clap mod docs
 [ ] modulation system
+[ ] easy access
 [ ] PDC
 [ ] explain clap/matrix/easy-access/GUNI interaction
 [ ] a note about "everything is modulatable"
