@@ -164,6 +164,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
   auto showMSEG = plugGUI->StoreComponent<FBParamValueLinkedButton>(plugGUI, type, "Show MSEG", [](int v) { return v != 0; });
+  showMSEG->setTooltip("Show MSEG Editor");
   grid->Add(1, 6, 1, 2, showMSEG);
   grid->MarkSection({ { 0, 0 }, { 2, 8 } });
 

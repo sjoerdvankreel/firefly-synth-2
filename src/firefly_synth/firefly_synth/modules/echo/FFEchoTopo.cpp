@@ -200,7 +200,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   delaySmoothTime.mode = FBParamMode::Block;
   delaySmoothTime.defaultText = "500";
   delaySmoothTime.display = "Smth";
-  delaySmoothTime.name = "Delay Smooth Time";
+  delaySmoothTime.name = "Delay Smooth Length Time";
   delaySmoothTime.slotCount = 1;
   delaySmoothTime.unit = "Ms";
   delaySmoothTime.id = prefix + "{8694FBC8-003F-47B3-BB0E-8FB610CD4BD1}";
@@ -222,7 +222,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   auto& delaySmoothBars = result->params[(int)FFEchoParam::DelaySmoothBars];
   delaySmoothBars.mode = FBParamMode::Block;
   delaySmoothBars.display = "Smth";
-  delaySmoothBars.name = "Delay Smooth Bars";
+  delaySmoothBars.name = "Delay Smooth Length Bars";
   delaySmoothBars.slotCount = 1;
   delaySmoothBars.unit = "Bars";
   delaySmoothBars.id = prefix + "{5554CC4B-29E6-4F3C-8FFE-95947033676C}";

@@ -109,6 +109,7 @@ FFMakeEnvTopo()
   type.name = "Type";
   type.slotCount = 1;
   type.id = "{40F1DCF0-03B1-4ABE-B6B5-A29BF2C8C229}";
+  type.description = "Envelope Type";
   type.type = FBParamType::List;
   type.List().items = {
     { "{6F0DA153-9544-4EFB-BC6D-88F761583F39}", "Off" },
@@ -126,6 +127,7 @@ FFMakeEnvTopo()
   sync.display = "Sync";
   sync.slotCount = 1;
   sync.id = "{B1128167-2EB6-4AFA-81B7-C4B7606502BB}";
+  sync.description = "Envelope Tempo Sync";
   sync.defaultText = "Off";
   sync.type = FBParamType::Boolean;
   auto selectSync = [](auto& module) { return &module.block.sync; };
@@ -140,6 +142,7 @@ FFMakeEnvTopo()
   release.name = "Release";
   release.slotCount = 1;
   release.id = "{38670133-4372-461F-ACB8-0E1E156BD3DF}";
+  release.description = "Envelope Release Point";
   release.type = FBParamType::Discrete;
   release.Discrete().valueCount = FFEnvStageCount + 1;
   release.Discrete().valueFormatter = [](int v) { return v == 0 ? "Off" : std::to_string(v); };
@@ -156,6 +159,7 @@ FFMakeEnvTopo()
   loopStart.display = "Loop";
   loopStart.slotCount = 1;
   loopStart.id = "{97402218-4546-447E-A925-AB3DFD21A9F8}";
+  loopStart.description = "Envelope Loop Start Point";
   loopStart.type = FBParamType::Discrete;
   loopStart.Discrete().valueCount = FFEnvStageCount + 2;
   loopStart.Discrete().valueFormatter = [](int v) { return v == 0 ? "Off" : std::to_string(v - 1); };
@@ -172,6 +176,7 @@ FFMakeEnvTopo()
   loopLength.display = "Length";
   loopLength.slotCount = 1;
   loopLength.id = "{078E33B3-02EB-4637-84E0-949E2830A0DB}";
+  loopLength.description = "Envelope Loop Length";
   loopLength.type = FBParamType::Discrete;
   loopLength.Discrete().valueCount = FFEnvStageCount + 1;
   auto selectLoopLength = [](auto& module) { return &module.block.loopLength; };
@@ -188,6 +193,7 @@ FFMakeEnvTopo()
   smoothTime.slotCount = 1;
   smoothTime.unit = "Sec";
   smoothTime.id = "{1F5A4312-4483-4F30-9E63-D0D81CF4CD0B}";
+  smoothTime.description = "Envelope Smooth Length Time";
   smoothTime.type = FBParamType::Linear;
   smoothTime.Linear().min = 0.0f;
   smoothTime.Linear().max = 10.0f;
@@ -207,6 +213,7 @@ FFMakeEnvTopo()
   smoothBars.slotCount = 1;
   smoothBars.unit = "Bars";
   smoothBars.id = "{EA0FC641-ED92-417A-ABCF-305A854F59C8}";
+  smoothBars.description = "Envelope Smooth Length Bars";
   smoothBars.type = FBParamType::Bars;
   smoothBars.Bars().items = FFEnvMakeBarsItems();
   auto selectSmoothBars = [](auto& module) { return &module.block.smoothBars; };
@@ -223,6 +230,7 @@ FFMakeEnvTopo()
   startLevel.slotCount = 1;
   startLevel.unit = "%";
   startLevel.id = "{AB53D9B4-965E-4AED-A60B-B6AB16738977}";
+  startLevel.description = "Envelope Start Level";
   startLevel.defaultText = "0";
   startLevel.type = FBParamType::Identity;
   auto selectStartLevel = [](auto& module) { return &module.acc.startLevel; };
