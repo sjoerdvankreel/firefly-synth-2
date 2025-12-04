@@ -553,3 +553,10 @@ Construct the envelope by dragging and clicking around.
 * Double-click a stage point to delete the preceding stage.
 * Double-click anywhere else in the envelope to insert a stage.
 
+Vertical edit mode (Y Mode): allows to vertically snap points to a user-defined grid size.<br/>
+Horizontal edit mode (X Mode):<br/>
+Snap mode allows to horizontall snap points to a user-defined grid size.<br/>
+Stretch mode allows to shorten/lengthen a stage without affecting the stage after it.
+
+Snapping is an edit-only feature.<br/>
+Envelope points can become "unsnapped" from the grid by automation or modulation.<br/>
