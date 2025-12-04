@@ -20,6 +20,7 @@ TODOLIST for beta-1
 [x] gui params manual context menu
 [x] call it not gui, call it modules
 [ ] oscimod
+[ ] not right-click-change horizontal sliders
 [ ] screenshots in the docs?
 [ ] list mod sources per module
 [ ] clap mod docs

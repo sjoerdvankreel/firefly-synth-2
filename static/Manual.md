@@ -321,9 +321,20 @@ FF2 does not support true stereo oscillators before the unison stage.
 * Built-in low/highpass filters for additional control.
 
 <a id="546F9D74-670A-463D-80B0-B4BBD061DA88"></a>
-### Oscillator Cross-modulation
+### Oscillator Oversampling and Cross-modulation
 
 ![image](screenshot_manual_osci_mod.png)
+
+Each oscillator can modulate all those after it.<br/>
+So, 1 can modulate 2/3/4, 2 can modulate 2/3 and 3 can modulate 4.
+
+* Oversampling: enables 4x oversampling for all oscis.
+FF2 does not allow oversampling oscillators on an individual basis (precisely because of the cross-modulation feature).<br/>
+* Exponential FM:<br/>
+Linear FM (off) is the default, modulator controls the carrier's phase.<br/>
+Exponential (on): modulator controls the carriers pitch. Causes pitch-drift.
+* AM/RM: controls amplitude or ring modulation with continuous amount.
+* FM: controls frequency modulation (either PM or exponential) with continuous FM index.
 
 <a id="G154051CE-66D9-41C8-B479-C52D1111C962"></a>
 <a id="V154051CE-66D9-41C8-B479-C52D1111C962"></a>
