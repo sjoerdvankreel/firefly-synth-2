@@ -47,7 +47,8 @@ It contains all parameters for oscillators, filters, effects, envelopes and LFOs
 
 <a id="AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8"></a>
 ### Voice
-Contains controls affecting an entire voice (all per-voice oscillators and filters).<br/>
+Contains controls affecting an entire voice (all per-voice oscillators and filters).
+
 ![image](screenshot_manual_voice.png)
 
 Pitch section: coarse pitch with envelope modulation amount and fine pitch with LFO modulation amount.<br/>
@@ -71,6 +72,8 @@ Section "shortening" will kick in only for overlapping notes, or notes that are 
 Contains controls affecting the plugin as a whole.<br/>
 These parameters control all voices together as well as affect global filters and effects.
 
+![image](screenshot_manual_master.png)
+
 Pitchbend together with bend range sets the base pitch for the entire plugin.<br/>
 By default it is set to control everything, but it can also target specific oscillators.<br/>
 By default, MIDI pitchbend is set to modulate master pitchbend at full scale, but this can be changed in the mod matrix.
@@ -84,6 +87,8 @@ This is useful for controlling the mod amount of other sources or controlling mu
 
 <a id="3689411E-F31C-4F8C-BE3D-6F87938A1A1B"></a>
 ### Settings
+![image](screenshot_manual_settings.png)
+
 Receive MIDI notes controls whether the plugin kicks off a new voice on incoming midi note on messages.<br/>
 This is enabled by default for the instrument version of the plug and disabled by default for the fx version.<br/>
 Some hosts allow to send midi notes to an fx plugin, others do not.<br/>
