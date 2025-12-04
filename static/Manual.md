@@ -543,3 +543,13 @@ Every control in here can also be edited using the MSEG editor but it's nice to 
 The stage controls react to automation and modulation both, the MSEG editor reacts only to automation.<br/>
 Also unlike the editor, stage controls have a regular context menu attached to them so can show the host context menu.
 
+#### MSEG editor
+Construct the envelope by dragging and clicking around.
+
+* Drag the start point up/down to control the initial amplitude
+* Drag a slope point around (exponential mode) to control the stage slope.
+* Drag a stage point around to control the length of the stages before and after it as well as the point amplitude.
+* Double-click the start point or a slope point to set to default value.
+* Double-click a stage point to delete the preceding stage.
+* Double-click anywhere else in the envelope to insert a stage.
+
