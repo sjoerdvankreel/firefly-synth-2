@@ -505,3 +505,20 @@ Bipolar preserves the horizontal center point, unipolar does not.
 * Skew Y: this skews the amplitude/output (exponential only).<br>
 Forces the output towards/away from vertical center.<br/>
 Bipolar preserves the vertical center point, unipolar does not.
+
+<a id="FC1DC75A-200C-4465-8CBE-0100E2C8FAF2"></a>
+### Envelope
+15-stage per-voice envelope generator with customizable loop and release points.<br/>
+Either linear or exponential, comes with visual MSEG editor.<br/>
+Envelopes can be looping, releaseing, or both (or neither).<br/>
+To recreate a regular ADSR, set loop start and release to the same segment, and set loop length to 0.<br/>
+In terms of ADSR, the loop stage acts as the sustain stage and everything after release point acts as the release stage.<br/>
+The Voice Amp env controls voice lifetime.<br/>
+All other envelopes are cut short if they are not finished yet by the time the voice is done.
+
+With both loop and release turned off, the engine just follows the envelope with no regard for note-off events.<br/>
+With only release turned on, immediately jumps to the release point on note off, but taking the current amplitude into account.<br/>
+With only loop turned on, the envelope becomes repeating (infinite length).<br/>
+To prevent infinite length voices, the audio engine specifically ignores looping-only envelopes for the Voice Amp envelope, and jumps straight to the end on note-off.<br/>
+With both loop and release turned on, the engine jumps from the current loop stage to the release point ONLY if the release point if after the current loop stage.<br/>
+This also takes into account the current amplitude.<br/>
