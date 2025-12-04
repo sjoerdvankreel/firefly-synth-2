@@ -3,6 +3,8 @@
 ## Top section
 Contains everything that is not directly related to generating audio.
 
+![image](screenshot_manual_top.png)
+
 ### Output panel
 Shows CPU usage relative to single core, voice usage and output gain with a maximum of 0dB.<br/>
 The MTS-ESP indicator shows whether an MTS-ESP master is connected.

@@ -17,20 +17,20 @@ TODOLIST for beta-1
 [x] do all credits in the docs
 [x] need gui param context menu
 [x] do no-mode x-mseg for bars
+[x] gui params manual context menu
+[x] call it not gui, call it modules
+[ ] screenshots in the docs?
+[ ] list mod sources per module
 [ ] clap mod docs
-[ ] gui params manual context menu
 [ ] modulation system
-[ ] call it not gui, call it modules
 [ ] PDC
 [ ] explain clap/matrix/easy-access/GUNI interaction
-[ ] screenshots in the docs?
 [ ] a note about "everything is modulatable"
 [ ] on demand alloc is not realtime safe
 [ ] debug check every description is there
 [ ] patchfromscratch with TEMP in the manual
 [ ] SET THE ONLINE LOCATION TO MAIN BRANCH
 [ ] write the manual
-[ ] list mod sources per module
 [ ] explain clap/vst3 diff
 [ ] explain inner workings
 [ ] explain inst/fx
