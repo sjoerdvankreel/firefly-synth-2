@@ -534,7 +534,9 @@ Bipolar preserves the vertical center point, unipolar does not.
 
 <a id="FC1DC75A-200C-4465-8CBE-0100E2C8FAF2"></a>
 ### Envelope
-15-stage per-voice envelope generator with customizable loop and release points.<br/>
+15-stage per-voice envelope generator with customizable loop and release points.
+
+![image](screenshot_manual_env.png)
 
 Envelopes can be looping, releaseing, or both (or neither).<br/>
 Either linear or exponential, comes with visual MSEG editor.<br/>
@@ -571,6 +573,8 @@ Also unlike the editor, stage controls have a regular context menu attached to t
 
 #### MSEG editor
 Construct the envelope by dragging and clicking around.
+
+![image](screenshot_manual_env_mseg.png)
 
 * Drag the start point up/down to control the initial amplitude
 * Drag a slope point around (exponential mode) to control the stage slope.
