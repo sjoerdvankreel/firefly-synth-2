@@ -54,7 +54,7 @@ Contains controls affecting an entire voice (all per-voice oscillators and filte
 Pitch section: coarse pitch with envelope modulation amount and fine pitch with LFO modulation amount.<br/>
 Portamento section: allows selection of regular (on) mode (constant pitch, variable time) or automatic mode (constant time, variable pitch) and optional tempo-syncing.<br/>
 
-Because FF2 does not provide monophonic mode, the portamento controls also come with the option to shorten the per-voice amplitude envelope attack and release sections.
+Because FF2 does not provide monophonic mode, the portamento controls also come with the option to shorten the per-voice amp envelope attack and release sections.
 Best illustrated with an example:
 * Set portamento mode to "Section"
 * Set both Amp Attack and Amp Release to 25%
@@ -369,7 +369,7 @@ Comb filters are now specified in Hz (or pitch) instead of milliseconds like FF1
 
 #### Waveshaper
 All waveshapers have these common parameters:
-* Bias: offsets the input signal amplitude.
+* Bias: offsets the input signal level.
 * Drive: multiplies the input signal after bias.
 * Dry/wet mix: controls the input/output signal ratio.
 
@@ -381,7 +381,7 @@ The exponential clipper has an additional amount control.
 Fold: like clip, forces the signal into -100..100%, but instead of limiting the signal, will fold back into range.<br/>
 Choice of a plain (triangular) folder and a bunch of (stacked) trigonometric functions like sine(in), cosine(in), sine(in + sine(in)), sine(in + cosine(in)) etc.
 
-Skew: applies a vertical (y/amplitude) skewing factor to the signal.<br/>
+Skew: applies a vertical (y/level) skewing factor to the signal.<br/>
 Choice of unipolar and bipolar modes with continuous amount control.
 
 <a id="GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
@@ -528,7 +528,7 @@ Comes in unipolar and bipolar modes.
 Scale causes the LFO to have an incomplete cycle before repeat.<br/>
 Exponential causes a drift in the LFO horizontal distribution.<br/>
 Bipolar preserves the horizontal center point, unipolar does not.
-* Skew Y: this skews the amplitude/output (exponential only).<br>
+* Skew Y: this skews the output level (exponential only).<br>
 Forces the output towards/away from vertical center.<br/>
 Bipolar preserves the vertical center point, unipolar does not.
 
@@ -546,22 +546,22 @@ The Voice Amp env controls voice lifetime.
 All other envelopes are cut short if they are not finished yet by the time the voice is done.
 
 With both loop and release turned off, the engine just follows the envelope with no regard for note-off events.<br/>
-With only release turned on, immediately jumps to the release point on note off, but taking the current amplitude into account.<br/>
+With only release turned on, immediately jumps to the release point on note off, but taking the current level into account.<br/>
 
 With only loop turned on, the envelope becomes repeating (infinite length).<br/>
 To prevent infinite length voices, the audio engine specifically ignores looping-only<br/>
 envelopes for the Voice Amp envelope, and jumps straight to the end on note-off.<br/>
 
 With both loop and release turned on, the engine jumps from the current loop stage to the release point<br/>
-ONLY if the release point is after the current loop stage. This also takes into account the current amplitude.
+ONLY if the release point is after the current loop stage. This also takes into account the current level.
 
 #### Main section
-* Start: controls the envelope start amplitude
+* Start: controls the envelope start level
 * Type: choose between linear and exponential envelopes
 * Sync: switches between time-based and tempo-based (bars)
 * Loop start/length: these define the (optional) sustain stage
 * Smooth: applies a smoothing filter to the envelope output.<br/>
-Useful for looping envelopes where the start and end point have unequal amplitude.
+Useful for looping envelopes where the start and end point have unequal level.
 * Release point: the envelope jumps to here on note-off<br>
 (Except if before the current loop stage, in which case looping is just finished and the envelope plays out normally.)
 
@@ -576,9 +576,9 @@ Construct the envelope by dragging and clicking around.
 
 ![image](screenshot_manual_env_mseg.png)
 
-* Drag the start point up/down to control the initial amplitude
+* Drag the start point up/down to control the initial level
 * Drag a slope point around (exponential mode) to control the stage slope.
-* Drag a stage point around to control the length of the stages before and after it as well as the point amplitude.
+* Drag a stage point around to control the length of the stages before and after it as well as the point level.
 * Double-click the start point or a slope point to set to default value.
 * Double-click a stage point to delete the preceding stage.
 * Double-click anywhere else in the envelope to insert a stage.
