@@ -185,6 +185,8 @@ Likewise the balance control is global stereo balance with an optional LFO appli
 <a id="73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6"></a>
 ### Oscillator
 
+![image](screenshot_manual_osci.png)
+
 The graph plot for oscillators is an oscilloscope.<br/>
 For engine visualization, plots higher notes (relative to C4) as shorter and lower notes as longer.
 
@@ -321,7 +323,10 @@ FF2 does not support true stereo oscillators before the unison stage.
 <a id="G154051CE-66D9-41C8-B479-C52D1111C962"></a>
 <a id="V154051CE-66D9-41C8-B479-C52D1111C962"></a>
 ### Voice FX and Global FX
-Effect module with 4 subslots, each slot can be a state variable filter, comb filter, or waveshaper.<br/>
+Effect module with 4 subslots, each slot can be a state variable filter, comb filter, or waveshaper.
+
+![image](screenshot_manual_fx.png)
+
 Oversampling applies to the module as a whole, so all 4 subslots together.<br/>
 Tracking key sets the root key (offset from C4) against which all filters are keyboard-tracked.<br/>
 Keytracking happens against the voice-triggered note for voice level FX, and last triggered note for global FX<br/>
@@ -382,6 +387,9 @@ Choice of unipolar and bipolar modes with continuous amount control.
 <a id="GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
 <a id="VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
 ### Voice Echo and Global Echo
+
+![image](screenshot_manual_echo.png)
+
 Echo module with multitap delay, feedback delay and reverb subslots.<br/>
 There is at most one of each, but the processing order is customizable.<br/>
 The graph plot for echo is a ramp response with a slight delay in the right channel.
