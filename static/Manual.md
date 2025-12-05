@@ -610,3 +610,6 @@ For horizontal editing tempo-synced envelopes, the editor will snap to nearest a
 Snapping is an edit-only feature.<br/>
 Envelope points can become "unsnapped" from the grid by automation or modulation, or dragging the stage controls.<br/>
 During MSEG editing the time and tempo-synced (bars) stage length are kept in sync, with the bars version being rounded to nearest.<br/>
+
+#### CV Outputs
+* Envelope output only.
