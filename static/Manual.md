@@ -683,7 +683,4 @@ Calculating the "real stuff" would require to run the entire synth to provide so
 In case multiple sources target a single parameter, things are applied in order.<br/>
 So, add source A to target T, then multiply target T by source B, comes out different vs multiply by B first, then add A.<br/>
 There are dedicated operator types for "stacking" (stack A,B,C in order to T), which take current headroom into account, so don't clip.<br/>
-See also Modulation System.
-
-
-Order controls: these allow to swap around
+The matrix plots take stacking multiple sources to a single target into account. See also Modulation System.

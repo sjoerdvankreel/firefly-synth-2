@@ -22,7 +22,8 @@ TODOLIST for beta-1
 [x] oscimod
 [x] describe no-gui modules
 [x] list mod sources per module
-[ ] do stacking in the matrix plot
+[x] do stacking in the matrix plot
+[ ] run a debug build
 [ ] microtuning
 [ ] screenshots in the docs?
 [ ] clap mod docs
