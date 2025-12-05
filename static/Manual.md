@@ -549,6 +549,10 @@ Bipolar preserves the horizontal center point, unipolar does not.
 Forces the output towards/away from vertical center.<br/>
 Bipolar preserves the vertical center point, unipolar does not.
 
+#### CV Outputs
+* Combined LFO output including smoothing.
+* Non-smoothed output of individual subslots.
+
 <a id="FC1DC75A-200C-4465-8CBE-0100E2C8FAF2"></a>
 ### Envelope
 15-stage per-voice envelope generator with customizable loop and release points.
