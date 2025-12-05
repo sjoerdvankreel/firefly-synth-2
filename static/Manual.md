@@ -665,3 +665,8 @@ During MSEG editing the time and tempo-synced (bars) stage length are kept in sy
 
 #### CV Outputs
 * Envelope output only.
+
+<a id="VFC1DC75A-200C-4465-8CBE-0100E2C8FAF2"></a>
+<a id="GFC1DC75A-200C-4465-8CBE-0100E2C8FAF2"></a>
+# Mod Matrix
+bluh
