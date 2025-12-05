@@ -67,6 +67,15 @@ Best illustrated with an example:
 This feature works strictly by tracking note-on/off events.<br/>
 Section "shortening" will kick in only for overlapping notes, or notes that are both triggered and released at the exact same time.
 
+#### CV Outputs
+* Fine Pitch Raw (control signal value 0..1)
+
+Pitchtracking sources (see Modulation System):
+* Fine Pitch (does not track microtuning)
+* Coarse Pitch (does not track microtuning)
+* Portamento Offset (does not track microtuning)
+* Voice Pitch (tracks voice key, fine/coarse pitch, portamento, master PB and microtuning)
+
 <a id="83AA98D4-9D12-4D61-81A4-4FAA935EDF5D"></a>
 ### Master
 Contains controls affecting the plugin as a whole.<br/>
@@ -90,9 +99,10 @@ This is useful for controlling the mod amount of other sources or controlling mu
 * 4x Auxiliary control
 * Pitch Bend Raw (control signal value 0..1)
 
-Pitchtracking sources (apply to any coarse parameter):
-* Pitch Bend (adjusted for Bend Range)
-* Last/Low/High Key Pitch and Low/High Velocity Pitch + smoothed versions (react to Settings MIDI/Automation smoothing)
+Pitchtracking sources (see Modulation System):
+* Pitch Bend (adjusted for Bend Range, does NOT track microtuning)
+* Last/Low/High Key Pitch and Low/High Velocity Pitch + smoothed versions (react to Settings MIDI/Automation smoothing):<br/>
+These DO track microtuning and include the PB component as well. 
 
 <a id="3689411E-F31C-4F8C-BE3D-6F87938A1A1B"></a>
 ### Settings
