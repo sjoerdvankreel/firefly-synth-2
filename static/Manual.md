@@ -671,6 +671,7 @@ During MSEG editing the time and tempo-synced (bars) stage length are kept in sy
 # Mod Matrix
 25 per-voice slots and 12 global slots.<br/>
 For per-voice, provides on-note (ON Master, ON GLFO etc) versions of global sources (this is just sample-and-hold).<br/>
+See per-module CV outputs for a description of available matrix sources.
 
 Unlike FF1 there is no distiction between CV-to-Audio and CV-to-CV anymore.<br/>
 Anything goes, provided the source module comes before (in processing order) the target module (see Routing Overview).<br/>
