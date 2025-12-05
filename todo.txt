@@ -20,10 +20,10 @@ TODOLIST for beta-1
 [x] gui params manual context menu
 [x] call it not gui, call it modules
 [x] oscimod
-[ ] describe no-gui modules
+[x] describe no-gui modules
+[x] list mod sources per module
 [ ] microtuning
 [ ] screenshots in the docs?
-[ ] list mod sources per module
 [ ] clap mod docs
 [ ] modulation system
 [ ] easy access
