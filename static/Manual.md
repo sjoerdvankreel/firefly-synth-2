@@ -58,7 +58,7 @@ Provides a set of fixed values at the start of the voice (so, fixed for voice li
 #### CV Outputs
 * Velo: MIDI key velocity
 * Key: MIDI key note (excluding microtuning)
-* RndUni/RndNorm: 3x random generators fixed at voice start, both normal and gaussian.
+* RndUni/RndNorm: 3x random generators fixed at voice start, both uniform and gaussian.
 * GrpRndUni/GrpRndNorm: likewise, but these are the same across all voices in a global unison group.
 
 ### Global Note
