@@ -21,6 +21,7 @@ TODOLIST for beta-1
 [x] call it not gui, call it modules
 [x] oscimod
 [ ] describe no-gui modules
+[ ] microtuning
 [ ] screenshots in the docs?
 [ ] list mod sources per module
 [ ] clap mod docs
