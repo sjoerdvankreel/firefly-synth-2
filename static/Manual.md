@@ -673,9 +673,16 @@ During MSEG editing the time and tempo-synced (bars) stage length are kept in sy
 For per-voice, provides on-note (ON Master, ON GLFO etc) versions of global sources (this is just sample-and-hold).<br/>
 
 Unlike FF1 there is no distiction between CV-to-Audio and CV-to-CV anymore.<br/>
-Anything goes, provided the source module comes before (in processing order) the target module.<br/>
-See also Modulation System and Routing Overview.<br/>
+Anything goes, provided the source module comes before (in processing order) the target module (see Routing Overview).<br/>
 
 The matrix provides it's own set of graph plots.<br/>
-These are not based on real input, but shows what a sine modulator would do to a saw signal for current parameter values.<br/>
+These are not based on real input, but shows what a sine modulator would do to a ramp signal for current parameter values.<br/>
 Calculating the "real stuff" would require to run the entire synth to provide some plots (and also doesn't count in MIDI and clap modulation).
+
+In case multiple sources target a single parameter, things are applied in order.<br/>
+So, add source A to target T, then multiply target T by source B, comes out different vs multiply by B first, then add A.<br/>
+There are dedicated operator types for "stacking" (stack A,B,C in order to T), which take current headroom into account, so don't clip.<br/>
+See also Modulation System.
+
+
+Order controls: these allow to swap around
