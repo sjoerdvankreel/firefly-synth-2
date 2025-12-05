@@ -41,6 +41,19 @@ Shows the name of the last tweaked parameter as well as a textbox that allows fo
 Shows a plot of the last tweaked module.<br/>
 For example this can be an oscilloscope, filter frequency response, waveshaper response or others, depending on the module being shown.
 
+## CV-Only Modules
+These have no GUI and no user-controllable parameters, they just provide CV outputs for use in the matrix.
+
+### MIDI
+
+Mirrors incoming MIDI events.
+
+#### CV Outputs
+
+* Mod Wheel
+* Pitch Bend
+* 128 CC parameters
+
 ## Main section
 This is the primary screen for patch design.<br/>
 It contains all parameters for oscillators, filters, effects, envelopes and LFOs as well as all audio routing controls and high-level parameters like microtuning and portamento controls.
@@ -102,7 +115,7 @@ This is useful for controlling the mod amount of other sources or controlling mu
 Pitchtracking sources (see Modulation System):
 * Pitch Bend (adjusted for Bend Range, does NOT track microtuning)
 * Last/Low/High Key Pitch and Low/High Velocity Pitch + smoothed versions (react to Settings MIDI/Automation smoothing):<br/>
-These DO track microtuning and include the PB component as well. 
+These DO track microtuning and include the PB component as well.
 
 <a id="3689411E-F31C-4F8C-BE3D-6F87938A1A1B"></a>
 ### Settings
