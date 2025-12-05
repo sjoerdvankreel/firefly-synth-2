@@ -45,14 +45,30 @@ For example this can be an oscilloscope, filter frequency response, waveshaper r
 These have no GUI and no user-controllable parameters, they just provide CV outputs for use in the matrix.
 
 ### MIDI
-
 Mirrors incoming MIDI events.
 
 #### CV Outputs
-
 * Mod Wheel
 * Pitch Bend
 * 128 CC parameters
+
+### Voice Note
+Provides a set of fixed values at the start of the voice (so, fixed for voice lifetime).
+
+#### CV Outputs
+* Velo: MIDI key velocity
+* Key: MIDI key note (excluding microtuning)
+* RndUni/RndNorm: 3x random generators fixed at voice start, both normal and gaussion.
+* GrpRndUni/GrpRndNorm: likewise, but these are the same across all voices in a global unison group.
+
+### Global Note
+This is a continuously updated matrix of MIDI note events.<br/>
+Does not include microtuning.
+
+#### CV Outputs
+* Last Key Key, Current Low Key Key, Current High Key Key, Current Low Velocity Key, Current High Velocity Key
+* Last Key Velocity, Current Low Key Velocity, Current High Key Velocity, Current Low Velocity Velocity, Current High Velocity Velocity
+* Plus smoothed versions (react to Settings MIDI/Automation smoothing)
 
 ## Main section
 This is the primary screen for patch design.<br/>
