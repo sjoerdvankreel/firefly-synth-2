@@ -27,6 +27,7 @@ TODOLIST for beta-1
 [ ] easy access
 [ ] PDC
 [ ] explain clap/matrix/easy-access/GUNI interaction
+[ ] explain pitchtracking sources and coarse mod
 [ ] a note about "everything is modulatable"
 [ ] on demand alloc is not realtime safe
 [ ] debug check every description is there

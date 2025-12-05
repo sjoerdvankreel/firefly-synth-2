@@ -85,6 +85,15 @@ There are 4 auxiliary parameters which also don't target anything by default.<br
 Use the mod matrix to assign modulation targets to them.<br/>
 This is useful for controlling the mod amount of other sources or controlling multiple parameters at once.
 
+#### CV Outputs
+* Modwheel
+* 4x Auxiliary control
+* Pitch Bend Raw (control signal value 0..1)
+
+Pitchtracking sources (apply to any coarse parameter):
+* Pitch Bend (adjusted for Bend Range)
+* Last/Low/High Key Pitch and Low/High Velocity Pitch + smoothed versions (react to Settings MIDI/Automation smoothing)
+
 <a id="3689411E-F31C-4F8C-BE3D-6F87938A1A1B"></a>
 ### Settings
 ![image](screenshot_manual_settings.png)
