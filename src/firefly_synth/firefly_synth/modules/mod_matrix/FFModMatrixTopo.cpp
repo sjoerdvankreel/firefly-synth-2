@@ -108,6 +108,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   slots.name = "Slots";
   slots.slotCount = 1;
   slots.id = prefix + "{511B2721-2733-4BB4-BA75-C55AB8B6C54D}";
+  slots.description = "Matrix Max Active Slot Count";
   slots.type = FBParamType::Discrete;
   slots.Discrete().valueCount = maxSlotCount + 1;
   auto selectSlots = [](auto& module) { return &module.block.slots; };
@@ -132,6 +133,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     return "BP Stk"; // pitch bend
   };
   opType.id = prefix + "{8D28D968-8585-4A4D-B636-F365C5873973}";
+  opType.description = "Matrix Slot Modulation Operator";
   opType.type = FBParamType::List;
   opType.List().items = {
     { "{8E7F2BE6-12B7-483E-8308-DD96F63C7743}", FFModulationOpTypeToString(FFModulationOpType::Off) },
@@ -169,6 +171,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   };
   source.slotCount = maxSlotCount;
   source.id = prefix + "{08DB9477-1B3A-4EC8-88C9-AF3A9ABA9CD8}";
+  source.description = "Matrix Slot Modulation Source";
   source.type = FBParamType::List;
   source.List().linkedTargets = { (int)FFModMatrixParam::Scale, (int)FFModMatrixParam::Target };
   auto selectSource = [](auto& module) { return &module.block.source; };
@@ -186,6 +189,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   sourceInv.slotCount = maxSlotCount;
   sourceInv.defaultText = "Off";
   sourceInv.id = prefix + "{1A234BC2-632D-478A-A7D9-B51099E4D320}";
+  sourceInv.description = "Matrix Slot Invert Modulation Source";
   sourceInv.type = FBParamType::Boolean;
   auto selectSourceInv = [](auto& module) { return &module.block.sourceInv; };
   sourceInv.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSourceInv);
@@ -203,6 +207,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   sourceLow.slotCount = maxSlotCount;
   sourceLow.unit = "%";
   sourceLow.id = prefix + "{4508141F-3677-43DA-A58A-BB2F941105C0}";
+  sourceLow.description = "Matrix Slot Modulation Source Low";
   sourceLow.type = FBParamType::Identity;
   auto selectSourceLow = [](auto& module) { return &module.acc.sourceLow; };
   sourceLow.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSourceLow);
@@ -220,6 +225,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   sourceHigh.slotCount = maxSlotCount;
   sourceHigh.unit = "%";
   sourceHigh.id = prefix + "{6154B7B8-A2F4-42FD-948B-7D0F0AAE2530}";
+  sourceHigh.description = "Matrix Slot Modulation Source High";
   sourceHigh.type = FBParamType::Identity;
   auto selectSourceHigh = [](auto& module) { return &module.acc.sourceHigh; };
   sourceHigh.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSourceHigh);
@@ -235,6 +241,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scale.slotCount = maxSlotCount;
   scale.defaultText = "None";
   scale.id = prefix + "{4A166295-A1EF-4354-AA2E-3F14B98A70CE}";
+  scale.description = "Matrix Slot Target Amount Scale";
   scale.type = FBParamType::List;
   scale.List().linkedSource = (int)FFModMatrixParam::Source;
   auto selectScale = [](auto& module) { return &module.block.scale; };
@@ -302,6 +309,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scaleMin.slotCount = maxSlotCount;
   scaleMin.unit = "%";
   scaleMin.id = prefix + "{07BE86E6-B3A7-4088-9E45-D0961B704E72}";
+  scaleMin.description = "Matrix Slot Target Amount Scale Min";
   scaleMin.type = FBParamType::Identity;
   auto selectScaleMin = [](auto& module) { return &module.acc.scaleMin; };
   scaleMin.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectScaleMin);
@@ -319,6 +327,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scaleMax.slotCount = maxSlotCount;
   scaleMax.unit = "%";
   scaleMax.id = prefix + "{CCB21DD2-7060-4C13-B7F5-2B23A47C0991}";
+  scaleMax.description = "Matrix Slot Target Amount Scale Max";
   scaleMax.type = FBParamType::Identity;
   auto selectScaleMax = [](auto& module) { return &module.acc.scaleMax; };
   scaleMax.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectScaleMax);
@@ -343,6 +352,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     return "Mst Pitch Bend"; // pitch bend
   };
   target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
+  target.description = "Matrix Slot Modulation Target";
   target.type = FBParamType::List;
   target.List().linkedSource = (int)FFModMatrixParam::Source;
   auto selectTarget = [](auto& module) { return &module.block.target; };
@@ -417,6 +427,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   targetAmt.slotCount = maxSlotCount;
   targetAmt.unit = "%";
   targetAmt.id = prefix + "{880BC229-2794-45CC-859E-608E85A51D72}";
+  targetAmt.description = "Matrix Slot Modulation Target Amount";
   targetAmt.type = FBParamType::Identity;
   auto selectTargetAmt = [](auto& module) { return &module.acc.targetAmt; };
   targetAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTargetAmt);
