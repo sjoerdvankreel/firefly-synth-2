@@ -1,19 +1,17 @@
-# Modules
-
-## Top section
+# GUI Top section
 Contains everything that is not directly related to generating audio.
 
 ![image](screenshot_manual_top.png)
 
-### Output panel
+## Output panel
 Shows CPU usage relative to single core, voice usage and output gain with a maximum of 0dB.<br/>
 The MTS-ESP indicator shows whether an MTS-ESP master is connected.
 
-### Panic button
+## Panic button
 Kills all active voices and flushes delay lines.<br/>
 Comes in handy for stuck notes or when you managed to fill the delay lines with garbage.
 
-### Patch panel
+## Patch panel
 Shows the name of the last loaded patch.<br/>
 Comes with regular load-from/save-to-file, init patch to defaults, and load factory preset options, as well as:
 
@@ -21,7 +19,7 @@ Comes with regular load-from/save-to-file, init patch to defaults, and load fact
 * Reload: revert the patch state to the last time a patch was loaded from file, preset, or default values (init patch).
 
 <a id="E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B"></a>
-### GUI settings
+## GUI settings
 * Show modulation bounds:<br/>
 Highlights the minimum and maximum values currently applied to a parameter by the mod matrix and direct modulators.
 * Show tweaked from:<br/>
@@ -34,12 +32,14 @@ Draws the current state of the audio engine into the graph plots, taking all mod
 For per-voice modules, this is an additional line per voice.<br/>
 When off, graph plots reflect only the current state of the parameters as shown in the GUI.
 
-### Last tweaked
+## Last tweaked
 Shows the name of the last tweaked parameter as well as a textbox that allows for precise-editing that parameters value.
 
 ### Graph plots
 Shows a plot of the last tweaked module.<br/>
 For example this can be an oscilloscope, filter frequency response, waveshaper response or others, depending on the module being shown.
+
+# Modules
 
 ## CV-Only Modules
 These have no GUI and no user-controllable parameters, they just provide CV outputs for use in the matrix.
