@@ -695,7 +695,8 @@ Be sure to set this as low as possible, as even inactive slots take up some cpu.
 Just a couple controls to swap slots around and delete/insert empty slot at a specific position (since processing order matters).
 
 ## Slot section
-* Inv: invert source.
+* Inv:<br/>
+Invert source.
 * Operator type: defines how to apply source to target.
 <br/>See Modulation System.
 * Source: source signal.<br/>
@@ -704,7 +705,11 @@ For voice matrix, all global CV sources, all per-voices sources, and on-note ver
 * Lo/Hi: these clamp the source to a range and then scales back to full-scale.<br/>
 Use case: use a pitch tracking source (like MIDI key) and get a full scale signal from playing f.e. a 2-octave keyboard range.<br/>
 This requires a bit of tweaking, say you want an input range of C4-C6 to get a full-scale signal, set low to 60/127 and set high to 84/127.
-* Scale: optional additional source that scales the target amount parameter, not the source (hence the need for the invert option).
-* Min/max: controls how much the scale affects the target amount parameter.
-* Target: modulation target.
-* Target amount: how much does the source signal affect the target signal (adjusted by scale).
+* Scale:<br/>
+Optional additional source that scales the target amount parameter, not the source (hence the need for the invert option).
+* Min/max:<br/>
+Controls how much the scale affects the target amount parameter.
+* Target:<br/>
+Modulation target.
+* Target amount:<br/>
+How much does the source signal affect the target signal (adjusted by scale).
