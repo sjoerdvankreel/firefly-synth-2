@@ -728,8 +728,8 @@ Global unison-spawned voices are otherwise not "special" - they each come out of
 ![image](screenshot_manual_unison.png)
 
 Global unison is as much a global-level feature as it is a voice-level feature.<br/>
-The idea is to build up a voice "spectrum" (f.e. 25%, 50%, 75% with 50% being center),<br/>
-and apply it to a target parameter for all voices in a group.<br/>
+The idea is to build up a voice "spectrum" (f.e. 25%, 50%, 75% with 50% being center)<br/>
+per parameter, and apply it to a target parameter for all voices in a group.<br/>
 For example, have 3 voices and set fine pitch for each of them to -25/0 (center)/25%.<br/>
 Voice spectrum can either be build up by hand (manual mode) or automatically by spread, skew and randomize parameters.<br/>
 
