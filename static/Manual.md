@@ -769,6 +769,9 @@ Normally this is not a concern, but it does come into play when using CLAP polyp
 A note is only reported as finished to the host when all voices in the group have cleared.<br/>
 This also means CLAP polyphonic modulators do not affect single voices - they target global unison voice groups.
 
+In the (typical) case when a parameter targets a multi-slot module, like oscillator, a parameter targets all module slots at once.<br/>
+For example, oscillator gain will affect all 4 oscillators.
+
 ### Shared manual/automatic parameters
 * Mode: manual or automatic linear/exponential with spectrum skewing control.
 * Operator: add, multiply, stack, etc. Defaults (mostly) to remap. See Modulation System.
