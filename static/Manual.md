@@ -719,4 +719,6 @@ How much does the source signal affect the target signal (adjusted by scale).
 <a id="5A505AF6-4E05-4680-BAFE-B880CE4E1BC2"></a>
 # Global Unison
 
-blugh
+Global unison module with up to 8 voices and a bunch of per-voice controllable target parameters.<br/>
+When enabled (voice count > 1), each incoming MIDI note kicks off multiple voices which all react (continuously) to the unison parameters.<br/>
+Global unison-spawned voices are otherwise not "special" - they each come out of the 64 available voices.
