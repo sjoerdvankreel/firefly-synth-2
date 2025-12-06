@@ -41,12 +41,12 @@ For example this can be an oscilloscope, filter frequency response, waveshaper r
 
 # Modules
 
-## Main section
+All modules are contained within the Main tab.<br/>
 This is the primary screen for patch design.<br/>
 It contains all parameters for oscillators, filters, effects, envelopes and LFOs as well as all audio routing controls and high-level parameters like microtuning and portamento controls.
 
 <a id="AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8"></a>
-### Voice
+## Voice
 Contains controls affecting an entire voice (all per-voice oscillators and filters).
 
 ![image](screenshot_manual_voice.png)
@@ -67,7 +67,7 @@ Best illustrated with an example:
 This feature works strictly by tracking note-on/off events.<br/>
 Section "shortening" will kick in only for overlapping notes, or notes that are both triggered and released at the exact same time.
 
-#### CV Outputs
+### CV Outputs
 * Fine Pitch Raw (control signal value 0..1)
 
 Pitchtracking sources (see Modulation System):
@@ -77,7 +77,7 @@ Pitchtracking sources (see Modulation System):
 * Voice Pitch (tracks voice key, fine/coarse pitch, portamento, master PB and microtuning)
 
 <a id="83AA98D4-9D12-4D61-81A4-4FAA935EDF5D"></a>
-### Master
+## Master
 Contains controls affecting the plugin as a whole.<br/>
 These parameters control all voices together as well as affect global filters and effects.
 
@@ -94,7 +94,7 @@ There are 4 auxiliary parameters which also don't target anything by default.<br
 Use the mod matrix to assign modulation targets to them.<br/>
 This is useful for controlling the mod amount of other sources or controlling multiple parameters at once.
 
-#### CV Outputs
+### CV Outputs
 * Modwheel
 * 4x Auxiliary control
 * Pitch Bend Raw (control signal value 0..1)
@@ -105,7 +105,7 @@ Pitchtracking sources (see Modulation System):
 These DO track microtuning and include the PB component as well.
 
 <a id="3689411E-F31C-4F8C-BE3D-6F87938A1A1B"></a>
-### Settings
+## Settings
 ![image](screenshot_manual_settings.png)
 
 Receive MIDI notes controls whether the plugin kicks off a new voice on incoming midi note on messages.<br/>
@@ -139,7 +139,7 @@ These affect whether voice-level pitch and global last/low/high-key pitch source
 See the matrix section for more details.
 
 <a id="5C91D5A0-3EC1-4142-935A-3FE83B60C04E"></a>
-### Voice mixer
+## Voice mixer
 Controls the signal path of the per-voice audio engine.
 
 ![image](screenshot_manual_vmix.png)
@@ -177,7 +177,7 @@ Balance control: this is just a straightforward stereo balancer with an optional
 Osc mix to out: controls how much the internal osci mixer stage contributes to the final voice output.
 
 <a id="09ED2CCE-3AC5-455E-935C-A684BEBC154D"></a>
-### Global mixer
+## Global mixer
 Controls the signal path of the global audio engine.
 
 ![image](screenshot_manual_gmix.png)
@@ -202,14 +202,14 @@ The amplitude parameter is just master gain with an optional LFO applied to it.<
 Likewise the balance control is global stereo balance with an optional LFO applied to it.
 
 <a id="73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6"></a>
-### Oscillator
+## Oscillator
 
 ![image](screenshot_manual_osci.png)
 
 The graph plot for oscillators is an oscilloscope.<br/>
 For engine visualization, plots higher notes (relative to C4) as shorter and lower notes as longer.
 
-#### Main section
+### Main section
 Contains controls common to all oscillator types.
 
 Oscillator type:
@@ -238,7 +238,7 @@ This source combines everything that affects voice-level pitch and then applies 
 Rationale: i don't know how to individually microtune PB, voice coarse offset, portamento etc and still have the result come out "correct",
 i.e., equal to the result of tuning them all together at once. Don't even know if it's possible or not.
 
-#### Unison section
+### Unison section
 Controls osci-level unison.
 
 These controls apply to all oscillator types:
@@ -259,7 +259,7 @@ With zero phase offset, the unison output will have a harsh attack to it as all 
 With 100% phase offset, the unison output produces more of a string-like sound but still with a very distinctive phasing effect.<br/>
 Use the phase offset randomization control to produce a more natural sound.
 
-#### Wave section
+### Wave section
 
 6 sub-slots per oscillator slot. Take your pick of:<br/>
 * 2x basic waveform with nothing but a gain control:<br/>
@@ -276,7 +276,7 @@ Bandwidth mode allows to specify a range between base frequency only (0%) or all
 The DSF generator is based on [https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html](https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html).<br/>
 All others can be found in the polyblep section over here [https://www.taletn.com/reaper/mono_synth](https://www.taletn.com/reaper/mono_synth).
 
-#### FM section
+### FM section
 
 This is a dedicated FM-generator with 3 operators and a 3x3 matrix with unit delay on the feedback path.<br/>
 Since FM produces a "wide" signal (frequency wise) it's quite easy to cause aliasing with it.<br/>
@@ -294,7 +294,7 @@ Operator 1 is implicitly defined as "1", and you can select op2:op1 and op3:op2 
 So, set both to 2:1, then op3:op1 will be 4:1. Either 4 times the pitch or 4 times the frequency, depending on the mode.<br/>
 FM Index: this controls how much of the modulator signal to add to the phase (linear) or pitch (exponential) of the carrier.
 
-#### String section
+### String section
 
 This is a combined noise/string generator.<br/>
 It can be used to generate plucked strings, bowed strings, and colored noise.<br/>
@@ -328,7 +328,7 @@ Damping is primarily used to shorten low notes.<br/>
 Feedback is primarily used to lengthen high notes.<br/>
 Both of them can be keyboard-tracked relative to the root key.
 
-#### External Audio Section
+### External Audio Section
 
 Allows to use external audio input as an oscillator.<br/>
 Primary use case is to allow an external signal as an FM/RM/PM source.<br/>
@@ -340,7 +340,7 @@ FF2 does not support true stereo oscillators before the unison stage.
 * Built-in low/highpass filters for additional control.
 
 <a id="546F9D74-670A-463D-80B0-B4BBD061DA88"></a>
-### Oscillator Oversampling and Cross-modulation
+## Oscillator Oversampling and Cross-modulation
 
 ![image](screenshot_manual_osci_mod.png)
 
@@ -358,7 +358,7 @@ Exponential (on): modulator controls the carriers pitch. Causes pitch-drift.
 
 <a id="G154051CE-66D9-41C8-B479-C52D1111C962"></a>
 <a id="V154051CE-66D9-41C8-B479-C52D1111C962"></a>
-### Voice FX and Global FX
+## Voice FX and Global FX
 Effect module with 4 subslots, each slot can be a state variable filter, comb filter, or waveshaper.
 
 ![image](screenshot_manual_fx.png)
@@ -373,7 +373,7 @@ The graph plot for waveshapers is a shaper plot.<br/>
 The graph plot for filters is a frequency response.<br/>
 The graph plot for everything combined is a ramp response.<br/>
 
-#### Filter modes
+### Filter modes
 Both SV filters and comb filters can be used in frequency mode, pitch mode or pitch-tracking mode.
 * For frequency mode (regular) you can specify the filter cutoff in Hz.<br/>
 Keyboard tracking is done against the difference between base pitch and root key.<br/>
@@ -389,21 +389,21 @@ Both pitch modes can be used to have high-resonance filters play in tune with th
 Just like with oscillators, if you want non-pitch-tracking filters to be properly microtuned,<br/>
 you have to use the dedicated/unified pitch tracking matrix sources ("Voice Pitch" and "Master Last/Low/High Pitch").
 
-#### Envelope and LFO modulators
+### Envelope and LFO modulators
 For SV filters these affect the frequency and pitch controls.<br/>
 For comb filters these affect both the feedback and feedforward frequency and pitch controls.<br/>
 For all shaper types, affect the Drive parameter.
 
-#### State variable filter
+### State variable filter
 This is FF2's implementation of the filters found over here:<br/>
 [https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf](https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf).<br/>
 Comes in 9 flavors: lowpass, highpass, bandpass, bandstop, allpass, peaking, bell (with gain control) and low/high shelf with shelving gain.
 
-#### Comb filter
+### Comb filter
 Choice of feedback, feed-forward or both.<br/>
 Comb filters are now specified in Hz (or pitch) instead of milliseconds like FF1.
 
-#### Waveshaper
+### Waveshaper
 All waveshapers have these common parameters:
 * Bias: offsets the input signal level.
 * Drive: multiplies the input signal after bias.
@@ -422,7 +422,7 @@ Choice of unipolar and bipolar modes with continuous amount control.
 
 <a id="GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
 <a id="VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
-### Voice Echo and Global Echo
+## Voice Echo and Global Echo
 
 ![image](screenshot_manual_echo.png)
 
@@ -437,7 +437,7 @@ All subslots have these common controls:
 Each echo type has a control labelled LRX for left/right crossover.<br/>
 This controls the amount by which one channel's input affects the other channel's output.<br/>
 
-#### Main section
+### Main section
 * Gain: make-up gain to compensate dry/wet mixes.
 * Processing order: allows to route multi-tap, feedback delay and reverb in any order.
 * Sync: switches between time-based and tempo-based (bars) for feedback and multi-tap.
@@ -459,7 +459,7 @@ The engine is set up such that at each stage, the voice envelope is applied firs
 followed by the echo (provided they target the same stage).<br/>
 See the routing overview for more details.
 
-#### Per-voice echo specific
+### Per-voice echo specific
 It's expensive both cpu and memory wise.<br/>
 The echo actually "lives within the voice itself".
 
@@ -477,14 +477,14 @@ So your 500 millisecond voice (by voice amp envelope) gets extended by that much
 "Full scale" and "linear fadeout" here mean after the voice amplitude envelope is already applied.<br/>
 So, when your oscis hit silence (by voice envelope), allows another 5 seconds of full scale echo followed by 5 seconds of fade-out echo.
 
-#### Multi tap delay
+### Multi tap delay
 ![image](screenshot_manual_echo_multitap.png)
 
 * 8-tap delay line with full control over each taps individual parameters.
 * Per-tap delay time (or bars), level, stereo balance and stereo crossover.
 * Optional per-tap low and highpass filters on the output.
 
-#### Feedback delay
+### Feedback delay
 Feedback delay line with time/bars control and feedback amount.<br/>
 Comes with an internal LFO (Mod Rate/Mod Amount controls) that affect the delay time.<br/>
 This works both for when the delay time is specified in seconds or in bars<br/>
@@ -498,14 +498,14 @@ Which again is a great usecase for the panic button.<br/>
 If you need filters applied to the output of the feedback delay instead,<br/>
 you'll have to position (Target) the echo module to somewhere before an FX module.
 
-#### Reverb
+### Reverb
 Implementation based on [https://github.com/sinshu/freeverb](https://github.com/sinshu/freeverb).
 * Room size, damping factor and allpass filter controls.
 * Optional low and highpass filters on the output.
 
 <a id="G6E9EC930-5391-41BB-9EDA-C9B79F3BE745"></a>
 <a id="V6E9EC930-5391-41BB-9EDA-C9B79F3BE745"></a>
-### Voice LFO and Global LFO
+## Voice LFO and Global LFO
 LFO module with 3 subslots and optional tempo-syncing.
 
 ![image](screenshot_manual_lfo.png)
@@ -528,7 +528,7 @@ So, if you set slot A to multiply, the entire LFO becomes silence.<br/>
 Note that the mod matrix allows any signal to be treated as unipolar or bipolar regardless.<br/>
 All 3 subslots are basically the same except for some skewing parameters on slot A.
 
-#### Main section
+### Main section
 * Sync: switches between time-based and tempo-based (bars).
 * Seed: random seed for the backing random generators of noise-based LFOs.
 * Smooth: this is a smoothing filter applied to the final output only.<br/>
@@ -543,7 +543,7 @@ Snap: snaps the phase to DAW project time, if available (i.e. not freewheeling).
 In free mode, clicking around in the DAW transport has no effect.<br/>
 In snap mode, setting transport to X.Y bars resets the LFO phase to "where it would have been", counting back from project time zero.
 
-#### Shared parameters for all subslots
+### Shared parameters for all subslots
 * Rate: controls the LFO rate in time or bars.
 * Operator: add, multiply, stack, etc. See Modulation System.
 * Min/max: controls min/max output value, can also be used to invert the signal.
@@ -557,7 +557,7 @@ Both static and smooth noise generators come in periodic and free-running modes 
 Free-running mode is not a periodic signal so the phase offset parameter just controls the starting point.<br/>
 Note: random generators really need a step count of greater than 1.
 
-#### Skewing parameters for slot A
+### Skewing parameters for slot A
 Comes in unipolar and bipolar modes.
 
 * Skew X: this skews the phase.<br/>
@@ -568,12 +568,12 @@ Bipolar preserves the horizontal center point, unipolar does not.
 Forces the output towards/away from vertical center.<br/>
 Bipolar preserves the vertical center point, unipolar does not.
 
-#### CV Outputs
+### CV Outputs
 * Combined LFO output including smoothing.
 * Non-smoothed output of individual subslots.
 
 <a id="FC1DC75A-200C-4465-8CBE-0100E2C8FAF2"></a>
-### Envelope
+## Envelope
 15-stage per-voice envelope generator with customizable loop and release points.
 
 ![image](screenshot_manual_env.png)
@@ -595,7 +595,7 @@ envelopes for the Voice Amp envelope, and jumps straight to the end on note-off.
 With both loop and release turned on, the engine jumps from the current loop stage to the release point<br/>
 ONLY if the release point is after the current loop stage. This also takes into account the current level.
 
-#### Main section
+### Main section
 * Start: controls the envelope start level
 * Type: choose between linear and exponential envelopes
 * Sync: switches between time-based and tempo-based (bars)
@@ -605,13 +605,13 @@ Useful for looping envelopes where the start and end point have unequal level.
 * Release point: the envelope jumps to here on note-off<br>
 (Except if before the current loop stage, in which case looping is just finished and the envelope plays out normally.)
 
-#### Stage section
+### Stage section
 Controls individual stage length (time or bars), stage level and slope for exponential mode.<br/>
 Every control in here can also be edited using the MSEG editor but it's nice to have them anyway.<br/>
 The stage controls react to automation and modulation both, the MSEG editor reacts only to automation.<br/>
 Also unlike the editor, stage controls have a regular context menu attached to them so can show the host context menu.
 
-#### MSEG editor
+### MSEG editor
 Construct the envelope by dragging and clicking around.
 
 ![image](screenshot_manual_env_mseg.png)
@@ -634,7 +634,7 @@ Snapping is an edit-only feature.<br/>
 Envelope points can become "unsnapped" from the grid by automation or modulation, or dragging the stage controls.<br/>
 During MSEG editing the time and tempo-synced (bars) stage length are kept in sync, with the bars version being rounded to nearest.<br/>
 
-#### CV Outputs
+### CV Outputs
 * Envelope output only.
 
 ## CV-Only Modules
