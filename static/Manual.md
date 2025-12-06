@@ -721,6 +721,11 @@ How much does the source signal affect the target signal (adjusted by scale).
 
 Global unison module with up to 8 voices and a bunch of per-voice controllable target parameters.<br/>
 When enabled (voice count > 1), each incoming MIDI note kicks off multiple voices which all react (continuously) to the unison parameters.<br/>
+Each spawned voice in this case becomes part of the same global unison group.<br/>
+See also per-group on-note-random sources in the mod matrix / voice-note module.<br/>
 Global unison-spawned voices are otherwise not "special" - they each come out of the 64 available voices.
 
 ![image](screenshot_manual_unison.png)
+
+Global unison is as much a global-level feature as it is a voice-level feature.<br/>
+The idea is to build up a voice "spectrum" (f.e. -25%, 0%, 25%) and apply it to all voices in a group.<br/>
