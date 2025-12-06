@@ -728,4 +728,13 @@ Global unison-spawned voices are otherwise not "special" - they each come out of
 ![image](screenshot_manual_unison.png)
 
 Global unison is as much a global-level feature as it is a voice-level feature.<br/>
-The idea is to build up a voice "spectrum" (f.e. -25%, 0%, 25%) and apply it to all voices in a group.<br/>
+The idea is to build up a voice "spectrum" (f.e. -25%, 0%, 25%) and apply it to a target parameter for all voices in a group.<br/>
+For example, have 3 voices and set fine pitch for each of them to -25/0/25%.<br/>
+Voice spectrum can either be build up by hand (manual mode) or automatically by spread, skew and randomize parameters.<br/>
+
+Key insight here (at least it was for me when i build the thing):<br/>
+Changing a single voice position in the spectrum affects that specific voice's parameter in all currently active groups.<br/>
+For example, have a patch with a long envelope release, set global unison voice to 3, rapidly play "A-B-C".<br/>
+You now have 9 voices, 3 in the "A" group, 3 in the "B" group, and 3 in the "C" group.<br/>
+Now set voice fine pitch target to manual mode and play around with the "Manual Voice Fine 1" parameter.<br/>
+This will affect the first voice in the A group as well as the first voice in the B and C groups, but not the A/B/C groups as a whole.
