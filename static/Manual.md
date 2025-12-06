@@ -705,6 +705,6 @@ For voice matrix, all global CV sources, all per-voices sources, and on-note ver
 Use case: use a pitch tracking source (like MIDI key) and get a full scale signal from playing f.e. a 2-octave keyboard range.<br/>
 This requires a bit of tweaking, say you want an input range of C4-C6 to get a full-scale signal, set low to 60/127 and set high to 84/127.
 * Scale: optional additional source that scales the target amount parameter, not the source (hence the need for the invert option).
-* Min/max: controls how much the scale affects the target signal.
+* Min/max: controls how much the scale affects the target amount parameter.
 * Target: modulation target.
 * Target amount: how much does the source signal affect the target signal (adjusted by scale).
