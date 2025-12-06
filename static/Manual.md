@@ -715,3 +715,8 @@ Controls how much the scale affects the target amount parameter.
 Modulation target.
 * Target amount:<br/>
 How much does the source signal affect the target signal (adjusted by scale).
+
+<a id="5A505AF6-4E05-4680-BAFE-B880CE4E1BC2"></a>
+# Global Unison
+
+blugh
