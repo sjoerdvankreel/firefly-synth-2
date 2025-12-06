@@ -761,7 +761,7 @@ that will affect the entire spectrum and in this example modulate all 9 voices a
 This controls a couple dozen hand-picked per-voice modulatable parameters.<br/>
 You can control things like voice-level pitch/gain and osci-level pitch and gain.<br/>
 Perhaps more interesting is the ability to affect voice-level echo, FX, LFO and envelopes in a group.<br/>
-This allows for neat tricks like have C4 dry but with a fully-wet reverb on C5 (this idea came to me from a github ticket - thanks!).<br/>
+For echo this allows for neat tricks like have C4 dry but with a fully-wet reverb on C5 (this idea came to me from a github ticket - thanks!).<br/>
 
 The envelope stretch parameter results in unequal voice length for voices in a group.<br/>
 In this case, the group as a whole is "gone" only when the last voice exits.<br/>
