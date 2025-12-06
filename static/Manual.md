@@ -752,3 +752,17 @@ Now set voice fine pitch target to manual mode and play around with the "Manual 
 This will affect the first voice in the A group as well as the first voice in the B and C groups, but not the A/B/C groups as a whole.<br/>
 Of course, when not in manual but automatic mode, and you play around with the spread and skew parameters,<br/>
 that will affect the entire spectrum and in this example modulate all 9 voices at once.
+
+## Main section
+* Init: reset to default values.
+* Voice count: 1 to disable, > 1 to kick off that many voices per incoming MIDI note.
+
+## Parameter section
+This controls a couple dozen hand-picked per-voice modulatable parameters.<br/>
+You can control things like voice-level pitch/gain and osci-level pitch and gain.<br/>
+Perhaps more interesting is the ability to affect voice-level echo, FX, LFO and envelopes in a group.<br/>
+The envelope stretch parameter results in unequal voice length for voices in a group.<br/>
+In this case, the group as a whole is "gone" only when the last voice exits.<br/>
+Normally this is not a concern, but it does come into play when using CLAP polyphonic modulators.<br/>
+A note is only reported as finished to the host when all voices in the group have cleared.<br/>
+This also means CLAP polyphonic modulators do not affect single voices - they target global unison voice groups.
