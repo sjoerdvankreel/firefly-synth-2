@@ -769,6 +769,11 @@ Normally this is not a concern, but it does come into play when using CLAP polyp
 A note is only reported as finished to the host when all voices in the group have cleared.<br/>
 This also means CLAP polyphonic modulators do not affect single voices - they target global unison voice groups.
 
+To clarify: in the above example of A/B/C groups each with 3 voices:<br/>
+* You now have voices A1, A2, A3, B1, B2, B3, C1, C2, C3
+* CLAP modulation targets either group A, B, or C as a whole
+* Global unison modulation targets A1/B1/C1, A2/B2/C2 or A3/B3/C3
+
 In the (typical) case when a parameter targets a multi-slot module, like oscillator, a parameter targets all module slots at once.<br/>
 For example, oscillator gain will affect all 4 oscillators.
 
