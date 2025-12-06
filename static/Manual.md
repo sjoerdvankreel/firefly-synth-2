@@ -703,7 +703,7 @@ Invert source.
 <br/>See Modulation System.
 * Source: source signal.<br/>
 For global matrix, all global CV sources.<br/>
-For voice matrix, all global CV sources, all per-voices sources, and on-note versions of all global sources.
+For voice matrix, all global CV sources, all per-voice sources, and on-note versions of all global sources.
 * Lo/Hi: these clamp the source to a range and then scales back to full-scale.<br/>
 Use case: use a pitch tracking source (like MIDI key) and get a full scale signal from playing f.e. a 2-octave keyboard range.<br/>
 This requires a bit of tweaking, say you want an input range of C4-C6 to get a full-scale signal, set low to 60/127 and set high to 84/127.
