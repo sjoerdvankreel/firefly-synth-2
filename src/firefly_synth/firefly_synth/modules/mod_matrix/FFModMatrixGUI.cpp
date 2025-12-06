@@ -120,6 +120,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, slots, std::to_string(global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount)));
   
   auto clean = plugGUI->StoreComponent<FBAutoSizeButton>("Clean");
+  clean->setTooltip("Remove Inactive Slots");
   grid->Add(0, 5, clean);
   clean->onClick = [plugGUI, global]() {
     std::vector<double> scaleNorm = {};
@@ -177,6 +178,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
   };
 
   auto initButton = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
+  initButton->setTooltip("Set To Defaults");
   grid->Add(0, 6, initButton);
   initButton->onClick = [plugGUI, global]() {
     int moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);

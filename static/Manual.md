@@ -684,3 +684,9 @@ In case multiple sources target a single parameter, things are applied in order.
 So, add source A to target T, then multiply target T by source B, comes out different vs multiply by B first, then add A.<br/>
 There are dedicated operator types for "stacking" (stack A,B,C in order to T), which take current headroom into account, so don't clip.<br/>
 The matrix plots take stacking multiple sources to a single target into account. See also Modulation System.
+
+## Main section
+* Init: set matrix to default values.
+* Clean: removes inactive slots and minimizes slot count.
+* Slot count: selects maximum active slot count.<br/>
+Be sure to set this as low as possible, as even inactive slots take up some cpu.
