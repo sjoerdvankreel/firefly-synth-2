@@ -723,7 +723,7 @@ Global unison module with up to 8 voices and a bunch of per-voice controllable t
 When enabled (voice count > 1), each incoming MIDI note kicks off multiple voices which all react (continuously) to the unison parameters.<br/>
 Each spawned voice in this case becomes part of the same global unison group.<br/>
 See also per-group on-note-random sources in the mod matrix / voice-note module.<br/>
-Global unison-spawned voices are otherwise not "special" - they each come out of the 64 available voices.
+Global unison-spawned voices are otherwise not "special" - they each come out of the 64 available voices.<br/>
 
 ![image](screenshot_manual_unison.png)
 
@@ -731,6 +731,12 @@ Global unison is as much a global-level feature as it is a voice-level feature.<
 The idea is to build up a voice "spectrum" (f.e. -25%, 0%, 25%) and apply it to a target parameter for all voices in a group.<br/>
 For example, have 3 voices and set fine pitch for each of them to -25/0/25%.<br/>
 Voice spectrum can either be build up by hand (manual mode) or automatically by spread, skew and randomize parameters.<br/>
+
+In terms of modulation, global unison always comes last (after CLAP mod, matrix and dedicated modulators).<br/>
+In order to do this correctly, FF2 contains a couple modulation operators designed specifically for unison.<br/>
+These are the "remap" operator types (default for most slots) which take an already-modulated signal and remap it according to the voice position in the spectrum.
+Example: have 2 unison voices with an already-modulated stereo balance (f.e. by matrix) between 0 and 100% (hard left to hard right).<br/>
+Now set voice 1 spectrum position to 25% and voice 2 to 75% - voice 1 stereo balance now modulates from 0% to 50%, voice 2 from 50% to 100%.
 
 Key insight here (at least it was for me when i build the thing):<br/>
 All global unison parameters are global parameters - not per voice parameters.<br/>
