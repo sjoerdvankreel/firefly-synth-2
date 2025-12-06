@@ -737,7 +737,8 @@ In terms of modulation, global unison always comes last (after CLAP mod, matrix 
 In order to do this correctly, FF2 contains a couple modulation operators designed specifically for unison.<br/>
 These are the "remap" operator types (default for most slots) which take an already-modulated signal and remap it according to the voice position in the spectrum.
 Example: have 2 unison voices with an already-modulated stereo balance (f.e. by matrix) between 0 and 100% (hard left to hard right).
-Now set voice 1 spectrum position for the VMix Balance parameter to 25% and voice 2 to 75% - voice 1 stereo balance now modulates from 0% to 50%, voice 2 from 50% to 100%.
+Now set voice 1 spectrum position for the VMix Balance parameter to 25% and voice 2 to 75%.<br/>
+Voice 1 stereo balance now modulates from 0% to 50%, voice 2 from 50% to 100%.
 
 Key insight here (at least it was for me when i build the thing):<br/>
 All global unison parameters are global parameters - not per voice parameters.<br/>
