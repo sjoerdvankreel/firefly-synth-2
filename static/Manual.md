@@ -768,3 +768,20 @@ In this case, the group as a whole is "gone" only when the last voice exits.<br/
 Normally this is not a concern, but it does come into play when using CLAP polyphonic modulators.<br/>
 A note is only reported as finished to the host when all voices in the group have cleared.<br/>
 This also means CLAP polyphonic modulators do not affect single voices - they target global unison voice groups.
+
+### Shared manual/automatic parameters
+* Operator: add, multiply, stack, etc. Defaults (mostly) to remap. See Modulation System.
+* 
+
+### Manual mode
+Allows full control over each voice position within all active groups.
+
+### Automatic mode
+* Linear/exponential:<br/>
+Mostly the same but exponential allows skewing the spectrum.<br/>
+Costs a bit of CPU, and needs 4+ voices.
+* Spread:<br/>
+Primary control for creating the voice spectrum.<br/>
+* Skew:<br/>
+When exponential, pushes the voice positions within the spectrum towards/away from center.
+*
