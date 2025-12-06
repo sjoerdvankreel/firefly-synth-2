@@ -732,6 +732,7 @@ The idea is to build up a voice "spectrum" (f.e. 25%, 50%, 75% with 50% being ce
 per parameter, and apply it to a target parameter for all voices in a group.<br/>
 For example, have 3 voices and set fine pitch for each of them to -25/0 (center)/25%.<br/>
 Voice spectrum can either be build up by hand (manual mode) or automatically by spread, skew and randomize parameters.<br/>
+All manual and automatic parameters are themselves continuously automatable and modulatable targets, so participate in the mod matrix.
 
 In terms of modulation, global unison always comes last (after CLAP mod, matrix and dedicated modulators).<br/>
 In order to do this correctly, FF2 contains a couple modulation operators designed specifically for unison.<br/>
@@ -749,4 +750,4 @@ You now have 9 voices, 3 in the "A" group, 3 in the "B" group, and 3 in the "C" 
 Now set voice fine pitch target to manual mode and play around with the "Manual Voice Fine 1" parameter.<br/>
 This will affect the first voice in the A group as well as the first voice in the B and C groups, but not the A/B/C groups as a whole.<br/>
 Of course, when not in manual but automatic mode, and you play around with the spread and skew parameters,<br/>
-that will affect the entire spectrum and in this example modulate all 9 voices at once. 
+that will affect the entire spectrum and in this example modulate all 9 voices at once.
