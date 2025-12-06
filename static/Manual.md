@@ -673,6 +673,8 @@ During MSEG editing the time and tempo-synced (bars) stage length are kept in sy
 For per-voice, provides on-note (ON Master, ON GLFO etc) versions of global sources (this is just sample-and-hold).<br/>
 See per-module CV outputs for a description of available matrix sources.
 
+![image](screenshot_manual_matrix.png)
+
 Unlike FF1 there is no distiction between CV-to-Audio and CV-to-CV anymore.<br/>
 Anything goes, provided the source module comes before (in processing order) the target module (see Routing Overview).<br/>
 
