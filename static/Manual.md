@@ -35,7 +35,7 @@ When off, graph plots reflect only the current state of the parameters as shown 
 ## Last tweaked
 Shows the name of the last tweaked parameter as well as a textbox that allows for precise-editing that parameters value.
 
-### Graph plots
+## Graph plots
 Shows a plot of the last tweaked module.<br/>
 For example this can be an oscilloscope, filter frequency response, waveshaper response or others, depending on the module being shown.
 
