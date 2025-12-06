@@ -784,4 +784,7 @@ Costs a bit of CPU, and needs 4+ voices.
 Primary control for creating the voice spectrum.<br/>
 * Skew:<br/>
 When exponential, pushes the voice positions within the spectrum towards/away from center.
-*
+* Random/seed/free:<br/>
+Randomizes the voice position in the spectrum by "Rnd" amount.<br/>
+Seed controls the backing generator, free mode allows free-running random.<br/>
+If not in free mode, the random generator is reset at each block start.
