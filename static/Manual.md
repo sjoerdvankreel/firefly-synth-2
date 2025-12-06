@@ -733,7 +733,7 @@ For example, have 3 voices and set fine pitch for each of them to -25/0/25%.<br/
 Voice spectrum can either be build up by hand (manual mode) or automatically by spread, skew and randomize parameters.<br/>
 
 Key insight here (at least it was for me when i build the thing):<br/>
-Changing a single voice position in the spectrum affects that specific voice's parameter in all currently active groups.<br/>
+Changing a single voice parameter position in the spectrum affects that specific voice's parameter in all currently active groups.<br/>
 For example, have a patch with a long envelope release, set global unison voice to 3, rapidly play "A-B-C".<br/>
 You now have 9 voices, 3 in the "A" group, 3 in the "B" group, and 3 in the "C" group.<br/>
 Now set voice fine pitch target to manual mode and play around with the "Manual Voice Fine 1" parameter.<br/>
