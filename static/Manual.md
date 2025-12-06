@@ -744,7 +744,7 @@ Key insight here (at least it was for me when i build the thing):<br/>
 All global unison parameters are global parameters - not per voice parameters.<br/>
 They affect voices, but not necessarily a single voice.<br/>
 Changing a single voice parameter position in the spectrum affects that specific voice's parameter in all currently active groups.<br/>
-For example, have a patch with a long envelope release, set global unison voice to 3, rapidly play "A-B-C".<br/>
+For example, have a patch with a long envelope release, set global unison voice count to 3, rapidly play "A-B-C".<br/>
 You now have 9 voices, 3 in the "A" group, 3 in the "B" group, and 3 in the "C" group.<br/>
 Now set voice fine pitch target to manual mode and play around with the "Manual Voice Fine 1" parameter.<br/>
 This will affect the first voice in the A group as well as the first voice in the B and C groups, but not the A/B/C groups as a whole.
