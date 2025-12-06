@@ -770,7 +770,7 @@ A note is only reported as finished to the host when all voices in the group hav
 This also means CLAP polyphonic modulators do not affect single voices - they target global unison voice groups.
 
 ### Shared manual/automatic parameters
-* Mode: manual or automatic linear/exponential with skewing control.
+* Mode: manual or automatic linear/exponential with spectrum skewing control.
 * Operator: add, multiply, stack, etc. Defaults (mostly) to remap. See Modulation System.
 
 ### Manual mode
