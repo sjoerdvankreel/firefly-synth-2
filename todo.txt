@@ -29,6 +29,7 @@ TODOLIST for beta-1
 [x] explain inst/fx
 [x] do tooltips on labels ("tap dly" => tap delay)
 [x] PDC
+[ ] on demand alloc is not realtime safe
 [ ] microtuning
 [ ] clap mod docs
 [ ] modulation system
@@ -36,7 +37,6 @@ TODOLIST for beta-1
 [ ] explain clap/matrix/easy-access/GUNI interaction
 [ ] explain pitchtracking sources and coarse mod
 [ ] a note about "everything is modulatable"
-[ ] on demand alloc is not realtime safe
 [ ] run a debug build
 [ ] debug check every description is there
 [ ] patchfromscratch with TEMP in the manual
