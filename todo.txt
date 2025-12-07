@@ -29,22 +29,26 @@ TODOLIST for beta-1
 [x] explain inst/fx
 [x] do tooltips on labels ("tap dly" => tap delay)
 [x] PDC
-[ ] on demand alloc is not realtime safe
+[x] on demand alloc is not realtime safe
+
 [ ] microtuning
+
 [ ] clap mod docs
 [ ] modulation system
 [ ] easy access
 [ ] explain clap/matrix/easy-access/GUNI interaction
 [ ] explain pitchtracking sources and coarse mod
 [ ] a note about "everything is modulatable"
+
+[ ] routing diagram + explain target params + order diagram
+[ ] check the ff1 manual also (undo, context menus, mts, etc etc etc, host menus, mseg, blabla anything)
+
 [ ] run a debug build
 [ ] debug check every description is there
 [ ] patchfromscratch with TEMP in the manual
 [ ] SET THE ONLINE LOCATION TO MAIN BRANCH
 [ ] write the manual
 [ ] explain inner workings
-[ ] routing diagram + explain target params + order diagram
-[ ] check the ff1 manual also (undo, context menus, mts, etc etc etc, host menus, mseg, blabla anything)
 
 TODOLIST for beta-2
 [ ] string low end bug
