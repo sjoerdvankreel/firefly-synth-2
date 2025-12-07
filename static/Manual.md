@@ -145,6 +145,12 @@ Now, when the input LFO is at 0%/50%/100% (viewed as unipolar), gain at 50%:
 * BP Mul: 50 to 100%. With gain set at 150%, 100 to 150%.
 * BP Stack: 0, 50, 100%. With gain set to 0%, 0, 100, 200%. With gain set to 175%, 150%, 175%, 200%.
 
+The remap types are a bit more involved.<br/>
+They are designed to take in an already-modulated signal and remap the output according to source.<br/>
+Primarily used for creating a voice spectrum in the global unison.<br/>
+
+
+
 # GUI Top section
 Contains everything that is not directly related to generating audio.
 
