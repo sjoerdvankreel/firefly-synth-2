@@ -3,6 +3,8 @@ If possible, prefer the CLAP version even if not using the CLAP host modulation 
 Some hosts (especially but not only) on Linux have troubles with the realtime audio engine visualization for the VST3 build.<br/>
 Other than that both are pretty much equal, there's no performance advantages for one over the other.<br/>
 In particular, FF2 does not make use of CLAP's threadpool feature.<br/>
+
+FF2 fully supports CLAP's modulation feature including per-voice (polyphonic) modulation.<br/>
 Patches can be shared between the VST3 and CLAP builds.
 
 # Instrument vs FX build
