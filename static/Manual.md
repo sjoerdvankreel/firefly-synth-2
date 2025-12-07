@@ -44,7 +44,7 @@ When you turn on such a feature while the audio is running, you risk glitches.
 Now since it's obviously not acceptible to NOT be able to run glitch-free, here's what happens:
 * If the feature was OFF during session load, and you turn it ON during audio playback, may glitch.
 * If the feature was ON during session load, all buffers are pre-allocated when the plug is initialized, problem solved.
-* If the feature was ON during session load, memory is retained for the entire session.
+* If the feature was ON during session load, or turned ON during session, memory is retained for the entire session.
 <br/>If you turn it OFF and save the session, you will only regain memory by reloading the session.
 
 So basically this means FF2 will up-front allocate memory for whatever was saved with the session,<br/>
