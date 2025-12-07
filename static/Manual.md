@@ -1,6 +1,8 @@
 # CLAP vs VST3 build
 If possible, prefer the CLAP version even if not using the CLAP host modulation feature.<br/>
 Some hosts (especially but not only) on Linux have troubles with the realtime audio engine visualization for the VST3 build.<br/>
+Not a big problem, that just get you static graph plots (based on the patch state only) instead of displaying the actual engine state.
+
 Other than that both are pretty much equal, there's no performance advantages for one over the other.<br/>
 In particular, FF2 does not make use of CLAP's threadpool feature.<br/>
 
