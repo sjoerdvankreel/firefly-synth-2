@@ -179,8 +179,10 @@ This also means if you take (in the matrix) "Voice Fine" as a source and add it 
 
 There is just one caveat:
 * All coarse pitch targets are bipolar, ranging from [-127..127] normalized
-* NOT all pitch sources are bipolar. Most of them are, but if a source includes the MIDI key, then it becomes unipolar.
-Net effect is that you need to choose between Bipolar-Add-To-Bipolar or Unipolar-Add-To-Bipolar, dependening on the source, to build up pitch by hand from the matrix.
+* NOT all pitch sources are bipolar.<br/>
+Most of them are, but if a source includes the MIDI key, then it becomes unipolar.<br/>
+Net effect is that you need to choose between Bipolar-Add-To-Bipolar or Unipolar-Add-To-Bipolar,<br/>
+dependening on the source, to build up pitch by hand from the matrix.
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
