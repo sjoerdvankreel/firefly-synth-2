@@ -158,6 +158,10 @@ You can just as well "phase-wrap" a filter cutoff parameter by an LFO.<br/>
 Sounds a bit funky, but the plugin doesn't care.<br/>
 So really as long as it sounds OK, its probably good.
 
+### Pitch-tracking modulation
+
+bluh
+
 # GUI Top section
 Contains everything that is not directly related to generating audio.
 

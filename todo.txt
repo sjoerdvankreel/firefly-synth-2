@@ -39,9 +39,8 @@ TODOLIST for beta-1
 [x] optype list
 [x] modulation system
 [x] remap gui bounds broken
-[ ] unison adjust bounds
-[ ] guni free-mode should be continuous
 [ ] explain pitchtracking sources and coarse mod
+[ ] unison adjust bounds
 
 [ ] routing diagram + explain target params + order diagram
 [ ] check the ff1 manual also (undo, context menus, mts, etc etc etc, host menus, mseg, blabla anything)
