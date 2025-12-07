@@ -1,3 +1,8 @@
+# Microtuning
+FF2 is an MTS-ESP client.<br/>
+It cannot load or edit tuning files on it's own.<br/>
+See Settings Module for a description of tuning options.
+
 # CLAP vs VST3 build
 If possible, prefer the CLAP version even if not using the CLAP host modulation feature.<br/>
 Some hosts (especially but not only) on Linux have troubles with the realtime audio engine visualization for the VST3 build.<br/>
@@ -69,9 +74,6 @@ Backing storage for tap delay lines, feedback delay line, and internal comb and 
 
 Any kind of automation and modulation is of course also OK since these can only target knobs and sliders anyway.<br/>
 And of course, the whole thing may glitch anyway when the system is under load.
-
-# Microtuning
-blu
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
