@@ -134,8 +134,16 @@ F.e. add 80% source to 80% target, get 160%, scale back, get 60%. Obviously usef
 
 All this stuff sounds like a bunch of technical mumbo-jumbo (and it is), so here's some examples:<br/>
 Take a full-scale LFO as a source (0%..100%).<br/>
-Take gain as an unipolar target (0%..200%).<br/>
-Take balance as a bipolar target (-100%..100%).
+Take gain as a target (0%..200%), current value 50%.<br/>
+
+Now, when the input LFO is at 0%/50%/100% (viewed as unipolar), gain at 50%:
+* UP AdU => 50, 150, 250% (clips)
+* UP AdB => 50, 100, 150%
+* UP Mul => 0, 25, 50%
+* UP Stack => 50, 125, 200%
+* BP AdB, BP AdU => -50 (clips), 0, 50, 100, 150%
+* BP Mul: 50 to 100%. With gain set at 150%, 100 to 150%.
+* BP Stack: 0, 50, 100%. With gain set to 0%, 0, 100, 200%. With gain set to 175%, 150%, 175%, 200%.
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
