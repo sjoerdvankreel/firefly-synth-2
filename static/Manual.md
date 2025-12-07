@@ -75,6 +75,9 @@ Backing storage for tap delay lines, feedback delay line, and internal comb and 
 Any kind of automation and modulation is of course also OK since these can only target knobs and sliders anyway.<br/>
 And of course, the whole thing may glitch anyway when the system is under load.
 
+# Modulation System
+fkurgh
+
 # GUI Top section
 Contains everything that is not directly related to generating audio.
 
