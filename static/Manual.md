@@ -3,6 +3,13 @@ FF2 is an MTS-ESP client.<br/>
 It cannot load or edit tuning files on it's own.<br/>
 See Settings Module for a description of tuning options.
 
+# Plugin Delay Compensation
+FF2 internally employs a fixed processing block size of 16 samples.<br/>
+This is done to allow using the cpu's vector (SIMD) instructions.<br/>
+AKA make it go faster/use less cpu.<br/>
+Side effect is that this introduces a very small delay in the output signal (1/3th of a millisecond at 48kHz).<br/>
+I have not seen a host yet which doesn't automatically compensate for this, but it might be good to know anyway.
+
 # CLAP vs VST3 build
 If possible, prefer the CLAP version even if not using the CLAP host modulation feature.<br/>
 Some hosts (especially but not only) on Linux have troubles with the realtime audio engine visualization for the VST3 build.<br/>
@@ -28,13 +35,6 @@ All the rest is really just different default values:
 * Global mixer default routes External Audio to master out for FX, Voice Mixdown to master out for instrument.
 
 Patches can be shared between the FX and instrument builds.
-
-# Plugin Delay Compensation
-FF2 internally employs a fixed processing block size of 16 samples.<br/>
-This is done to allow using the cpu's vector (SIMD) instructions.<br/>
-AKA make it go faster/use less cpu.<br/>
-Side effect is that this introduces a very small delay in the output signal (1/3th of a millisecond at 48kHz).<br/>
-I have not seen a host yet which doesn't automatically compensate for this, but it might be good to know anyway.
 
 # Real-time safety
 FF2 is mostly written to not do expensive operations on the audio thread (which might cause pops/clicks in the output).<br/>
