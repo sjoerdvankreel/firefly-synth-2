@@ -148,8 +148,10 @@ Now, when the input LFO is at 0%/50%/100% (viewed as unipolar), gain at 50%:
 The remap types are a bit more involved.<br/>
 They are designed to take in an already-modulated signal and remap the output according to source.<br/>
 Primarily used for creating a voice spectrum in the global unison.<br/>
-
-
+Example bipolar remapping of full-scale modulated parameter (0%..100%) by full-scale mod source:
+* Amount 50% (center) does nothing.
+* Amount 40% maps 0..100% onto 0..80%.
+* Amount 70% maps 0..100% onto 40..100%.
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
