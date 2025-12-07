@@ -104,7 +104,7 @@ If you want to add an envelope to the osci gain instead, you'll have to use the 
 ### Modulation operator types
 These appear throughout the plug's UI, most notably in the mod matrix and the global unison.<br/>
 They allow to add, multiply, or remap output by input signal.<br/>
-They appear in the lfo's as well, to build up the final lfo signal by combining a couple of subslots.
+They appear in the lfo's as well, to build up the final lfo signal by combining a couple of subslots.<br/>
 For the direct-access modulators, the operator type is implicitly fixed.<br/>
 
 Inside the modulation system everything is not polarity-aware (just normalized [0..1] range).<br/>
