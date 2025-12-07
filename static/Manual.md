@@ -85,7 +85,7 @@ If it is a discrete parameter (toggle/combo), it is neither automatable nor modu
 For 99% of continuous parameters, this means both automatable and modulatable per-sample (sample accurate).<br/>
 There are a couple of exceptions which are continuous parameters that are only automatable/modulatable at voice-start.<br/>
 These are valid targets for host envelopes and internal (matrix) modulation, but the value will be picked up at voice-start only.<br/>
-An example is envelope stage time (to allow f.e. a bit of per-note randomization on the envelopest).<br/>
+An example is envelope stage time (to allow f.e. a bit of per-note randomization on the envelopes).<br/>
 But there are some others, see GUI parameter tooltips for "Automation: Per-Sample" vs "Automation: At-Voice-Start".
 
 # GUI Top section
