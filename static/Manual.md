@@ -2,10 +2,23 @@
 If possible, prefer the CLAP version even if not using the CLAP host modulation feature.<br/>
 Some hosts (especially but not only) on Linux have troubles with the realtime audio engine visualization for the VST3 build.<br/>
 Other than that both are pretty much equal, there's no performance advantages for one over the other.<br/>
-In particular, FF2 does not make use of CLAP's threadpool feature.
+In particular, FF2 does not make use of CLAP's threadpool feature.<br/>
+Patches can be shared between the VST3 and CLAP builds.
 
 # Instrument vs FX build
-mnjajaja
+The only real differences are:
+* One presents to the host as an instrument, the other as an effect.
+* Instrument advertises audio input as aux in, fx advertises audio input as main in.
+
+Some hosts make a big fuss about these distictions, some do not.<br/>
+Some hosts allow to send midi notes to an FX plugin, some do not.<br/>
+
+All the rest is really is just different default values:
+* Receive MIDI notes: default Off for FX, On for instrument.
+* Global echo target defaults to External Audio for FX, off for instrument.
+* Global mixer default routes External Audio to master out for FX, Voice Mixdown to master our for instrument.
+
+Patches can be shared between the FX and instrument builds.
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
