@@ -1,16 +1,18 @@
-# Microtuning
+# Overview
+
+## Microtuning
 FF2 is an MTS-ESP client.<br/>
 It cannot load or edit tuning files on it's own.<br/>
 See Settings Module for a description of tuning options.
 
-# Plugin Delay Compensation
+## Plugin Delay Compensation
 FF2 internally employs a fixed processing block size of 16 samples.<br/>
 This is done to allow using the cpu's vector (SIMD) instructions.<br/>
 AKA make it go faster/use less cpu.<br/>
 Side effect is that this introduces a very small delay in the output signal (1/3th of a millisecond at 48kHz).<br/>
 I have not seen a host yet which doesn't automatically compensate for this, but it might be good to know anyway.
 
-# CLAP vs VST3 build
+## CLAP vs VST3 build
 If possible, prefer the CLAP version even if not using the CLAP host modulation feature.<br/>
 Some hosts (especially but not only) on Linux have troubles with the realtime audio engine visualization for the VST3 build.<br/>
 Not a big problem, that just gets you static graph plots (based on the patch state only) instead of displaying the actual engine state.
@@ -21,7 +23,7 @@ In particular, FF2 does not make use of CLAP's threadpool feature.<br/>
 FF2 fully supports CLAP's modulation feature including per-voice (polyphonic) modulation.<br/>
 Patches can be shared between the VST3 and CLAP builds.
 
-# Instrument vs FX build
+## Instrument vs FX build
 The only real differences are:
 * One presents to the host as an instrument, the other as an effect.
 * Instrument advertises audio input as aux in (allows sidechaining), fx advertises audio input as main in.
@@ -36,7 +38,7 @@ All the rest is really just different default values:
 
 Patches can be shared between the FX and instrument builds.
 
-# Real-time safety
+## Real-time safety
 FF2 is mostly written to not do expensive operations on the audio thread (which might cause pops/clicks in the output).<br/>
 However some features require a lot of memory and this is not allocated by default.<br/>
 It's only allocated (on the realtime thread! - expensive operation) once you turn on a specific feature.<br/>
@@ -75,7 +77,7 @@ Backing storage for tap delay lines, feedback delay line, and internal comb and 
 Any kind of automation and modulation is of course also OK since these can only target knobs and sliders anyway.<br/>
 And of course, the whole thing may glitch anyway when the system is under load.
 
-# Modulation System
+## Modulation System
 
 The basic rule is: if it is a continuous parameter (knob/slider), it is both automatable and modulatable.<br/>
 If it is a discrete parameter (toggle/combo), it is neither automatable nor modulatable.
