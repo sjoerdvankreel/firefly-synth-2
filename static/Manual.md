@@ -49,7 +49,8 @@ Now since it's obviously not acceptible to NOT be able to run glitch-free, here'
 
 So basically this means FF2 will up-front allocate memory for whatever was saved with the session,<br/>
 on-demand allocate (may glitch) any memory for features turned on during the session,<br/>
-and never release what was already allocated. If you need to reclaim memory for a now-unused-feature, need to save and reload the session.
+and never release what was already allocated.<br/>
+If you need to reclaim memory for a now-unused-feature, need to save and reload the session.
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
