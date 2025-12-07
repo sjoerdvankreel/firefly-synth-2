@@ -39,7 +39,7 @@ It's only allocated (on the realtime thread! - expensive operation) once you tur
 The reason is "don't pay for what you don't use".<br/>
 The absolute worst offender here is per-voice echo,<br/>
 which allocates a couple 100 MB at 48kHz (and doubles at 96kHz, quadruples at 192kHz etc).<br/>
-When you turn such a feature on while the audio is running, you risk glitches.
+When you turn on such a feature while the audio is running, you risk glitches.
 
 Now since it's obviously not acceptible to NOT be able to run glitch-free, here's what happens:
 * If the feature was OFF during session load, and you turn it ON during audio playback, may glitch.
