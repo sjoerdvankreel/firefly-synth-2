@@ -59,6 +59,10 @@ but should you be brave enough to do so, here are the rules of thumb:
 * Do NOT hit the panic button (zeros-out all delay lines)
 * It is OK to turn knobs and sliders
 
+Any kind of automation and modulation is of course also OK since these can only target knobs and sliders anyway.
+
+
+
 # GUI Top section
 Contains everything that is not directly related to generating audio.
 
