@@ -35,6 +35,7 @@ I have not seen a host yet which doesn't automatically compensate for this, but 
 FF2 is mostly written to not do expensive operations on the audio thread (which might cause pops/clicks in the output).<br/>
 However some features require a lot of memory and this is not allocated by default.<br/>
 It's only allocated (on the realtime thread! - expensive operation) once you turn on a specific feature.<br/>
+
 The reason is "don't pay for what you don't use".<br/>
 The absolute worst offender here is per-voice echo,<br/>
 which allocates a couple 100 MB at 48kHz (and doubles at 96kHz, quadruples at 192kHz etc).<br/>
