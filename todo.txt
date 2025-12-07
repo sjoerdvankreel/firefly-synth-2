@@ -36,10 +36,11 @@ TODOLIST for beta-1
 [x] easy access
 [x] explain clap/matrix/easy-access/GUNI interaction
 [x] a note about "everything is modulatable"
-[ ] explain pitchtracking sources and coarse mod
-[ ] modulation system
-[ ] optype list
+[x] optype list
+[x] modulation system
+[x] remap gui bounds broken
 [ ] unison adjust bounds
+[ ] explain pitchtracking sources and coarse mod
 
 [ ] routing diagram + explain target params + order diagram
 [ ] check the ff1 manual also (undo, context menus, mts, etc etc etc, host menus, mseg, blabla anything)

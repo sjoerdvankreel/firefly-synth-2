@@ -339,11 +339,11 @@ FFApplyGUIModulationBounds(FFModulationOpType opType, float amount, float& minNo
   float newMinNorm1 = minNorm;
   FFApplyModulation(opType, 0.0f, amount, newMinNorm0);
   FFApplyModulation(opType, 1.0f, amount, newMinNorm1);
-  minNorm = std::min(newMinNorm0, newMinNorm1);
+  minNorm = std::min(minNorm, std::min(newMinNorm0, newMinNorm1));
 
   float newMaxNorm0 = maxNorm;
   float newMaxNorm1 = maxNorm;
   FFApplyModulation(opType, 0.0f, amount, newMaxNorm0);
   FFApplyModulation(opType, 1.0f, amount, newMaxNorm1);
-  maxNorm = std::max(newMaxNorm0, newMaxNorm1);
+  maxNorm = std::max(maxNorm, std::max(newMaxNorm0, newMaxNorm1));
 }
