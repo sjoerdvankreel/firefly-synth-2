@@ -98,7 +98,7 @@ These are (processed in order):<br/>
 
 Direct-access mods are those present on the main screen.<br/>
 Things like LFO to fine pitch, envelope to amplitude, LFO/envelope to filter frequency etc.<br/>
-The modulation type for these controls is fixed and hand-picked (read: I did whatever i felt made sense).<br/>
+The modulation operator type for these controls is fixed and hand-picked (read: I did whatever i felt made sense).<br/>
 For example the modulation type for envelope to osci gain is fixed to "multiply".<br/>
 If you want to add an envelope to the osci gain instead, you'll have to use the mod matrix.
 
