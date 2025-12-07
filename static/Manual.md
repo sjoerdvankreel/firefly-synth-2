@@ -31,6 +31,24 @@ AKA make it go faster/use less cpu.<br/>
 Side effect is that this introduces a very small delay in the output signal (1/3th of a millisecond at 48kHz).<br/>
 I have not seen a host yet which doesn't automatically compensate for this, but it might be good to know anyway.
 
+# Real-time safety
+FF2 is mostly written to not do expensive operations on the audio thread (which might cause pops/clicks in the output).<br/>
+However some features require a lot of memory and this is not allocated by default.<br/>
+It's only allocated (on the realtime thread! - expensive operation) once you turn on a specific feature.<br/>
+The reason is "don't pay for what you don't use".<br/>
+The absolute worst offender here is per-voice echo, which allocates a couple 100 MB at 48kHz (and doubles at 96kHz, quadruples at 192kHz etc).<br/>
+When you turn such a feature on while the audio is running, you risk glitches.
+
+Now since it's obviously not acceptible to NOT be able to run glitch-free, here's what happens:
+* If the feature was OFF during session load, and you turn it ON during audio playback, may glitch.
+* If the feature was ON during session load, all buffers are pre-allocated when the plug is initialized, problem solved.
+* If the feature was ON during session load, memory is retained for the entire session.
+<br/>If you turn it OFF and save the session, you will only regain memory by reloading the session.
+
+So basically this means FF2 will up-front allocate memory for whatever was saved with the session,<br/>
+on-demand allocate (may glitch) any memory for features turned on during the session,<br/>
+and never release what was already allocated. If you need to reclaim memory for a now-unused-feature, need to save and reload the session.
+
 # GUI Top section
 Contains everything that is not directly related to generating audio.
 
