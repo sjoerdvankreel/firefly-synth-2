@@ -39,6 +39,7 @@ TODOLIST for beta-1
 [ ] explain pitchtracking sources and coarse mod
 [ ] modulation system
 [ ] optype list
+[ ] unison adjust bounds
 
 [ ] routing diagram + explain target params + order diagram
 [ ] check the ff1 manual also (undo, context menus, mts, etc etc etc, host menus, mseg, blabla anything)

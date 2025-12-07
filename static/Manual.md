@@ -153,6 +153,11 @@ Example bipolar remapping of full-scale modulated parameter (0%..100%) by full-s
 * Amount 40% maps 0..100% onto 0..80%.
 * Amount 70% maps 0..100% onto 40..100%.
 
+In the end "anything goes".<br/>
+You can just as well "phase-wrap" a filter cutoff parameter by an LFO.<br/>
+Probably won't sound pretty, but the plugin doesn't care.<br/>
+So really as long as it sounds OK, its probably good.
+
 # GUI Top section
 Contains everything that is not directly related to generating audio.
 
