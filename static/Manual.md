@@ -12,7 +12,7 @@ Patches can be shared between the VST3 and CLAP builds.
 # Instrument vs FX build
 The only real differences are:
 * One presents to the host as an instrument, the other as an effect.
-* Instrument advertises audio input as aux in, fx advertises audio input as main in.
+* Instrument advertises audio input as aux in (allows sidechaining), fx advertises audio input as main in.
 
 Some hosts make a big fuss about these distictions, some do not.<br/>
 Some hosts allow to send midi notes to an FX plugin, some do not.<br/>
