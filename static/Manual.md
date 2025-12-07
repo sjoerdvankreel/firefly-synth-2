@@ -59,7 +59,7 @@ but should you be brave enough to do so, here are the rules of thumb:
 * Do NOT hit the panic button (zeros-out all delay lines)
 * It is OK to turn knobs and sliders
 
-And here are the actual rules at time of writing, all of these are on-demand allocated:
+And here are the actual rules, all of these are on-demand allocated:
 * Voice FX and Global FX:<br/>
 Backing storage for comb filters.
 * Oscillator:<br/>
