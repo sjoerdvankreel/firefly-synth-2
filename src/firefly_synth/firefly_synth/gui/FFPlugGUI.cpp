@@ -164,7 +164,6 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
 bool 
 FFPlugGUI::GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const
 {
-  // Note: we only take into account the matrix and the easy-access controls, not the unison.
   bool result = false;
   float valueNorm = (float)HostContext()->GetAudioParamNormalized(index);
   float currentMinNorm = valueNorm;
@@ -172,12 +171,18 @@ FFPlugGUI::GetParamModulationBounds(int index, double& minNorm, double& maxNorm)
 
   // Matrix goes first, as in DSP!
   result |= FFModMatrixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
+
+  // Followed by direct access.
   result |= FFOsciAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
   result |= FFVMixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
   result |= FFGMixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
   result |= FFEffectAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
   result |= FFVoiceModuleAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
-  minNorm = result? currentMinNorm: 0.0;
+
+  // Followed by unison.
+  result |= FFGlobalUniAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
+
+  minNorm = result ? currentMinNorm: 0.0;
   maxNorm = result ? currentMaxNorm : 0.0f;
   return result;
 }

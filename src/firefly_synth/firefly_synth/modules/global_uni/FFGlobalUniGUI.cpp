@@ -223,3 +223,16 @@ FFMakeGlobalUniGUI(
   grid->Add(1, 0, 1, 2, MakeGlobalUniContent(plugGUI, graphRenderState, fixedGraphs));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
+
+bool
+FFGlobalUniAdjustParamModulationGUIBounds(
+  FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
+{
+  // Figure out maximum bounds of what the unison would do.
+  // TODO
+  (void)ctx;
+  (void)index;
+  (void)currentMinNorm;
+  (void)currentMaxNorm;
+  return false;
+}

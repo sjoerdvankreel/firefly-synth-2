@@ -412,7 +412,7 @@ FFModMatrixAdjustParamModulationGUIBounds(
   FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
 {
   // Figure out maximum bounds of what the mod matrix would do to the 
-  // current value if all sources/scales would use the full 0..1 range.
+  // current value of all sources/scales would use the full 0..1 range.
 
   bool haveAny = false;
   int rtIndex = ctx->Topo()->audio.params[index].runtimeModuleIndex;

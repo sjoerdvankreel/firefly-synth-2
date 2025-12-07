@@ -40,6 +40,7 @@ TODOLIST for beta-1
 [x] modulation system
 [x] remap gui bounds broken
 [ ] unison adjust bounds
+[ ] guni free-mode should be continuous
 [ ] explain pitchtracking sources and coarse mod
 
 [ ] routing diagram + explain target params + order diagram
