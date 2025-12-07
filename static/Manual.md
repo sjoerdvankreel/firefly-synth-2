@@ -87,13 +87,14 @@ These are valid targets for host envelopes and internal (matrix/unison) modulati
 An example is envelope stage time (to allow f.e. a bit of on-note randomization on the envelopes).<br/>
 But there are some others, see parameter GUI tooltips for "Automation: Per-Sample" vs "Automation: At-Voice-Start".
 
-For any continous parameter there are up to 5 things controlling that parameter.<br/>
+For any continous parameter there are up to 6 things controlling that parameter.<br/>
 These are (processed in order):<br/>
-1. Host automation.
-2. CLAP host modulation.
-3. Mod matrix.
-4. Direct-access/easy access modulators.
-5. Global unison modulators.
+1. You (so, GUI).
+2. Host automation.
+3. CLAP host modulation.
+4. Mod matrix.
+5. Direct-access/easy access modulators.
+6. Global unison modulators.
 
 Direct-access mods are those present on the main screen.<br/>
 Things like LFO to fine pitch, envelope to amplitude, LFO/envelope to filter frequency etc.<br/>
