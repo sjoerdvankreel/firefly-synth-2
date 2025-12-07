@@ -41,7 +41,7 @@ FFMakeSettingsTopo(bool isFx)
   receiveNotes.slotCount = 1;
   receiveNotes.defaultText = isFx ? "Off" : "On";
   receiveNotes.id = "{D996862F-74B0-460F-A50B-61261B400961}";
-  receiveNotes.description = "Receive MIDI Notes";
+  receiveNotes.description = "Incoming MIDI Note Triggers New Voice";
   receiveNotes.type = FBParamType::Boolean;
   auto selectReceiveNotes = [](auto& module) { return &module.block.receiveNotes; };
   receiveNotes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReceiveNotes);

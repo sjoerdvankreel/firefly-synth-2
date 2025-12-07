@@ -137,6 +137,10 @@ This is enabled by default for the instrument version of the plug and disabled b
 Some hosts allow to send midi notes to an fx plugin, others do not.<br/>
 If possible, you can do nice things like keyboard tracking global filters in the fx build.
 
+"Receive MIDI notes" is a bit of a misnomer.<br/>
+The plugin receives any note the host sends to it.<br/>
+In the global matrix source, Last/Low/High Key etc will just work, even with Receive Notes disabled.<br/>
+
 The MIDI and automation smoothing control parameter can be used to smooth sudden changes in incoming MIDI and automation events.<br/>
 This parameter affects CLAP modulation events as well.
 
