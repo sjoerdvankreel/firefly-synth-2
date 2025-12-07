@@ -59,9 +59,15 @@ but should you be brave enough to do so, here are the rules of thumb:
 * Do NOT hit the panic button (zeros-out all delay lines)
 * It is OK to turn knobs and sliders
 
+And here are the actual rules at time of writing, all of these are on-demand allocated:
+* Voice FX and Global FX:<br/>
+Backing storage for comb filters.
+* Oscillator:<br/>
+Backing storage for string osci delay line.
+* VEcho and GEcho:<br/>
+Backing storage for tap delay lines, feedback delay line, and internal comb and allpass filters for reverb.
+
 Any kind of automation and modulation is of course also OK since these can only target knobs and sliders anyway.
-
-
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
