@@ -104,8 +104,19 @@ If you want to add an envelope to the osci gain instead, you'll have to use the 
 ### Modulation operator types
 These appear throughout the plug's UI, most notably in the mod matrix and the global unison.<br/>
 They allow to add, multiply, or remap output by input signal.<br/>
-For the direct-access modulators, the operator type is implicitly fixed.<br/>
 They appear in the lfo's as well, to build up the final lfo signal by combining a couple of subslots.
+For the direct-access modulators, the operator type is implicitly fixed.<br/>
+
+Inside the modulation system everything is not polarity-aware (just normalized [0..1] range).<br/>
+By switching between operator types (UP (unipolar) vs BP (bipolar)) you can treat any source or target as either unipolar or bipolar.<br/>
+For example, Osc 1 gain control ranges from 0% to 200% with 100% being center position.<br/>
+With osc 1 gain being in center, modulate full-scale by an LFO:<br/>
+UP-Add results in gain modulation from 100% to 200%, since the source is viewed as [0%..100%].<br/>
+BP-Add results in gain modulation from 0% to 200%, since the source is viewed as [-100%..100%].
+
+
+Here's the list:
+* UP AdU: add unipolar source to unipolar target.
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
