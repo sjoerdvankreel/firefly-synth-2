@@ -26,6 +26,7 @@ TODOLIST for beta-1
 [x] screenshots in the docs?
 [x] guni should not bpaddu-> should bpaddb for pitch ?
 [ ] run a debug build
+[ ] receive MIDI notes is a misnomer
 [ ] microtuning
 [ ] clap mod docs
 [ ] modulation system
