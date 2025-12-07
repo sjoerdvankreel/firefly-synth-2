@@ -169,6 +169,17 @@ For unipolar sources like MIDI key, this means [0..127] scaled back to normalize
 Example: MIDI note 60 (C4) is represented as 60/127 = 0.472 in the matrix.<br/>
 For bipolar sources like pitch bend, this means [-127..127] scaled back to normalized with 0 being 50%/no offset.<br/>
 Example: with PB range set to +/-12, normalized values come out as [0.5 - (12/127 * 0.5) .. 0.5 + (12/127 * 0.5)].<br/>
+For Voice Fine Pitch (which ranges from -1 to +1 semitones), the raw output comes out as [-100%..100%] bipolar.<br/>
+However the Pitch output (Voice Fine in the matrix) comes out as [0.5 - 1/127 * 0.5 .. 0.5 + 1/127 * 0.5].<br/>
+
+The whole idea is that you can take pitch-tracking sources like coarse pitch, fine pitch, pitchbend, portamento etc<br/>
+and sum them to a coarse-pitch parameter by matrix, and have the right result come out.<br/>
+This also means if you take (in the matrix) "Voice Fine" as a source and add it to "Osci Coarse", the "right" thing will happen.
+
+There is just one caveat:
+* All coarse pitch targets are bipolar, ranging from [-127..127] normalized
+* NOT all pitch sources are bipolar. Most of them are, but if a source includes the MIDI key, then it becomes unipolar.
+Net effect is that you need to choose between Bipolar-Add-To-Bipolar or Unipolar-Add-To-Bipolar, dependening on the source, to build up pitch by hand from the matrix.
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
