@@ -24,7 +24,7 @@ TODOLIST for beta-1
 [x] list mod sources per module
 [x] do stacking in the matrix plot
 [x] screenshots in the docs?
-[ ] guni should not bpaddu-> should bpaddb for pitch ?
+[x] guni should not bpaddu-> should bpaddb for pitch ?
 [ ] run a debug build
 [ ] microtuning
 [ ] clap mod docs

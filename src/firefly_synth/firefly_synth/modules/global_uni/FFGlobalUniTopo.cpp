@@ -200,10 +200,10 @@ FFMakeGlobalUniTopo()
     auto target = (FFGlobalUniTarget)ps;
     switch (target)
     {
-    case FFGlobalUniTarget::VoiceCoarse: return "BP AdU";
+    case FFGlobalUniTarget::VoiceCoarse: return "BP AdB";
     case FFGlobalUniTarget::VMixAmp: return "UP Rmp";
     case FFGlobalUniTarget::OscGain: return "UP Rmp";
-    case FFGlobalUniTarget::OscCoarse: return "BP AdU";
+    case FFGlobalUniTarget::OscCoarse: return "BP AdB";
     case FFGlobalUniTarget::OscPhaseOffset: return "Ph Wrp";
     case FFGlobalUniTarget::LFOPhaseOffset: return "Ph Wrp";
     case FFGlobalUniTarget::LFORate: return "BP AdU";
