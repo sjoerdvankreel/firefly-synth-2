@@ -20,7 +20,7 @@ Some hosts allow to send midi notes to an FX plugin, some do not.<br/>
 All the rest is really just different default values:
 * Receive MIDI notes: default Off for FX, On for instrument.
 * Global echo target defaults to External Audio for FX, off for instrument.
-* Global mixer default routes External Audio to master out for FX, Voice Mixdown to master our for instrument.
+* Global mixer default routes External Audio to master out for FX, Voice Mixdown to master out for instrument.
 
 Patches can be shared between the FX and instrument builds.
 
