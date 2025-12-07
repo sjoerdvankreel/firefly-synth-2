@@ -78,7 +78,6 @@ Any kind of automation and modulation is of course also OK since these can only 
 And of course, the whole thing may glitch anyway when the system is under load.
 
 ## Modulation System
-
 The basic rule is: if it is a continuous parameter (knob/slider), it is both automatable and modulatable.<br/>
 If it is a discrete parameter (toggle/combo), it is neither automatable nor modulatable.
 
@@ -88,11 +87,17 @@ These are valid targets for host envelopes and internal (matrix) modulation, but
 An example is envelope stage time (to allow f.e. a bit of per-note randomization on the envelopes).<br/>
 But there are some others, see GUI parameter tooltips for "Automation: Per-Sample" vs "Automation: At-Voice-Start".
 
-For any modulatable parameter there are up to 4 mod sources in addition to host automation.<br/>
+For any continous parameter there are up to 5 sources controlling that parameter.<br/>
 These are (processed in order):<br/>
-1. z
-2. b
+1. Host automation.
+2. CLAP host modulation.
+3. Mod matrix.
+4. Direct-access/easy access modulators.
+5. Global unison modulators.
 
+Direct-access mods are those present on the main screen.<br/>
+Things like LFO to fine pitch, envelope to amplitude, LFO/envelope to filter frequency etc.<br/>
+The modulation type for these controls is fixed and hand-picked (read: I did whatever i felt made sense).<br/>
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
