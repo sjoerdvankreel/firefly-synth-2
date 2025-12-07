@@ -168,7 +168,7 @@ All tracking modulation sources in FF2 have a specific meaning in the pitch doma
 For unipolar sources like MIDI key, this means [0..127] scaled back to normalized.<br/>
 Example: MIDI note 60 (C4) is represented as 60/127 = 0.472 in the matrix.<br/>
 For bipolar sources like pitch bend, this means [-127..127] scaled back to normalized with 0 being 50%/no offset.<br/>
-Example: with PB range set to +/-12, normalized values come out as [0.5 - (12/127*0.5) .. 0.5 + (12/127*0.5)].<br/>
+Example: with PB range set to +/-12, normalized values come out as [0.5 - (12/127 * 0.5) .. 0.5 + (12/127 * 0.5)].<br/>
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
