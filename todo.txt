@@ -39,7 +39,7 @@ TODOLIST for beta-1
 [x] optype list
 [x] modulation system
 [x] remap gui bounds broken
-[ ] explain pitchtracking sources and coarse mod
+[x] explain pitchtracking sources and coarse mod
 [ ] unison adjust bounds
 
 [ ] routing diagram + explain target params + order diagram
