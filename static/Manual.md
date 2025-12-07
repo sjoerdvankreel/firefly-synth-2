@@ -101,6 +101,12 @@ The modulation type for these controls is fixed and hand-picked (read: I did wha
 For example the modulation type for envelope to osci gain is fixed to "multiply".<br/>
 If you want to add an envelope to the osci gain instead, you'll have to use the mod matrix.
 
+### Modulation operator types
+These appear throughout the plug's UI, most notably in the mod matrix and the global unison.<br/>
+They allow to add, multiple, or remap output by input signal.<br/>
+For the direct-access modulators, the operator type is implicitly fixed.<br/>
+They appear in the lfo's as well, to build up the final lfo signal by combining a couple of subslots.
+
 # GUI Top section
 Contains everything that is not directly related to generating audio.
 
