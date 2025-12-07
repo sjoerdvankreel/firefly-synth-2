@@ -37,7 +37,7 @@ TODOLIST for beta-1
 [ ] easy access
 [ ] explain clap/matrix/easy-access/GUNI interaction
 [ ] explain pitchtracking sources and coarse mod
-[ ] a note about "everything is modulatable"
+[x] a note about "everything is modulatable"
 
 [ ] routing diagram + explain target params + order diagram
 [ ] check the ff1 manual also (undo, context menus, mts, etc etc etc, host menus, mseg, blabla anything)

@@ -88,6 +88,12 @@ These are valid targets for host envelopes and internal (matrix) modulation, but
 An example is envelope stage time (to allow f.e. a bit of per-note randomization on the envelopes).<br/>
 But there are some others, see GUI parameter tooltips for "Automation: Per-Sample" vs "Automation: At-Voice-Start".
 
+For any modulatable parameter there are up to 4 mod sources in addition to host automation.<br/>
+These are (processed in order):<br/>
+1. z
+2. b
+
+
 # GUI Top section
 Contains everything that is not directly related to generating audio.
 
