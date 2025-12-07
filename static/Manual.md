@@ -114,9 +114,23 @@ With osc 1 gain being in center, modulate full-scale by an LFO:<br/>
 UP-Add results in gain modulation from 100% to 200%, since the source is viewed as [0%..100%].<br/>
 BP-Add results in gain modulation from 0% to 200%, since the source is viewed as [-100%..100%].
 
-
 Here's the list:
 * UP AdU: add unipolar source to unipolar target.
+* UP AdB: add unipolar source to bipolar target.
+* UP Mul: multiply source by target.
+* UP Stk: stack unipolar source to target. Takes headroom into account, so non-clipping.
+* UP Rmp: unipolar remap.
+* BP AdB: add bipolar source to bipolar target.
+* BP AdU: add bipolar source to unipolar target.
+* BP Mul: bipolar-multiply source by target.
+* BP Stk: stack bipolar source to target. Takes headroom into account, so non-clipping.
+* BP Rmp: bipolar remap.
+* Ph Wrp: phase wrap.
+
+Now there's some values "missing" (f.e. unipolar-stack-to-bipolar), but i found i never missed those.<br/>
+Should these be needed, no problem in adding them later on.
+
+
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
