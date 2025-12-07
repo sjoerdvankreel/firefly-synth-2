@@ -52,6 +52,13 @@ on-demand allocate (may glitch) any memory for features turned on during the ses
 and never release what was already allocated.<br/>
 If you need to reclaim memory for a now-unused-feature, need to save and reload the session.
 
+I don't expect anyone to use my spare-time-hobby-project-FF2 for live performances,<br/>
+but should you be brave enough to do so, here are the rules of thumb:
+
+* Do NOT touch checkboxes or combos while the audio is running
+* Do NOT hit the panic button (zeros-out all delay lines)
+* It is OK to turn knobs and sliders
+
 # GUI Top section
 Contains everything that is not directly related to generating audio.
 
