@@ -128,9 +128,14 @@ Here's the list:
 * Ph Wrp: phase wrap.
 
 Now there's some values "missing" (f.e. unipolar-stack-to-bipolar), but i found i never missed those.<br/>
-Should these be needed, no problem in adding them later on.
+Should these be needed, no problem in adding them later on.<br/>
+Phase wrap is the simple one: just unconditionally adds source to target, then wraps back into [0%..100%].<br/>
+F.e. add 80% source to 80% target, get 160%, scale back, get 60%. Obviously useful for phase-offset targets.
 
-
+All this stuff sounds like a bunch of technical mumbo-jumbo (and it is), so here's some examples:
+Take a full-scale LFO as a source (0%..100%).<br/>
+Take gain as an unipolar target (0%..200%).<br/>
+Take balance as a bipolar target (-100%..100%).
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
