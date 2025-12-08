@@ -137,7 +137,7 @@ FFModulatePhaseWrap(
   float source,
   float amount, float target)
 {
-  return FBPhaseWrap(source + amount * target);
+  return FBPhaseWrap(target + amount * source);
 }
 
 inline float
@@ -283,7 +283,7 @@ FFModulatePhaseWrap(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
-  return FBPhaseWrap(source + amount * target);
+  return FBPhaseWrap(target + amount * source);
 }
 
 inline FBBatch<float>
@@ -335,6 +335,17 @@ FFApplyModulation(
 inline void
 FFApplyGUIModulationBounds(FFModulationOpType opType, float minSource, float maxSource, float amount, float& minNorm, float& maxNorm)
 {
+  if (opType == FFModulationOpType::PhaseWrap)
+  {
+    float x = maxNorm + amount * maxSource;
+    if (FBPhaseWrap2(x))
+    {
+      minNorm = 0.0f;
+      maxNorm = 1.0f;
+      return;
+    }
+  }
+
   float newMinNorm0 = minNorm;
   float newMinNorm1 = minNorm;
   FFApplyModulation(opType, minSource, amount, newMinNorm0);
