@@ -384,6 +384,21 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
   if (param.static_.mode == FBParamMode::VoiceStart)
     result += "\r\nAutomation: At Voice Start";
   result += "\r\nStored In: " + (param.static_.storeInPatch ? std::string("Session And Patch") : std::string("Session Only"));
+
+  double modMin = 1.0;
+  double modMax = 0.0;
+  FBParamModulationBoundsSource source = GetParamModulationBounds(index, modMin, modMax);
+  if (source == FBParamModulationBoundsSource::None)
+    return result;
+
+  result += "\r\n";
+  if ((source & FBParamModulationBoundsSource::Matrix) != 0)
+    result += "\r\nModulated By Matrix";
+  if ((source & FBParamModulationBoundsSource::Unison) != 0)
+    result += "\r\nModulated By Unison";
+  if ((source & FBParamModulationBoundsSource::DirectAccess) != 0)
+    result += "\r\nModulated By Direct Mod";
+
   return result;
 }
 

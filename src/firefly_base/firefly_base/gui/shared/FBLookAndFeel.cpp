@@ -68,7 +68,7 @@ GetSliderModulationBounds(Slider const& s, double& minNorm, double& maxNorm)
     return false;
   if (!ps->PlugGUI()->HighlightModulationBounds())
     return false;
-  if (!ps->PlugGUI()->GetParamModulationBounds(ps->Param()->runtimeParamIndex, minNorm, maxNorm))
+  if (ps->PlugGUI()->GetParamModulationBounds(ps->Param()->runtimeParamIndex, minNorm, maxNorm) == FBParamModulationBoundsSource::None)
     return false;
   auto const& staticParam = ps->Param()->static_;
   minNorm = ConvertValueFromSkewed(staticParam, minNorm);

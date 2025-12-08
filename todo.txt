@@ -40,7 +40,7 @@ TODOLIST for beta-1
 [x] modulation system
 [x] remap gui bounds broken
 [x] explain pitchtracking sources and coarse mod
-[ ] do mod sources in the tooltip
+[x] do mod sources in the tooltip
 [ ] unison adjust bounds - phase wrap is no good
 [ ] note global uni apply only continuous
 [ ] describe all the targeTs or at least it works on multiple

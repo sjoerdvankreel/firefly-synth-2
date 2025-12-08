@@ -161,30 +161,37 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
   RequestFixedGraphsRerender(tweakedModule);
 }
 
-bool 
+FBParamModulationBoundsSource 
 FFPlugGUI::GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const
 {
-  bool result = false;
+  int result = FBParamModulationBoundsSource::None;
   float valueNorm = (float)HostContext()->GetAudioParamNormalized(index);
   float currentMinNorm = valueNorm;
   float currentMaxNorm = valueNorm;    
 
   // Matrix goes first, as in DSP!
-  result |= FFModMatrixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
+  if (FFModMatrixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::Matrix;
 
   // Followed by direct access.
-  result |= FFOsciAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
-  result |= FFVMixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
-  result |= FFGMixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
-  result |= FFEffectAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
-  result |= FFVoiceModuleAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
+  if(FFOsciAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::DirectAccess;
+  if(FFVMixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::DirectAccess;
+  if(FFGMixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::DirectAccess;
+  if(FFEffectAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::DirectAccess;
+  if(FFVoiceModuleAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::DirectAccess;
 
   // Followed by unison.
-  result |= FFGlobalUniAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
+  if(FFGlobalUniAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::Unison;
 
-  minNorm = result ? currentMinNorm: 0.0;
-  maxNorm = result ? currentMaxNorm : 0.0f;
-  return result;
+  minNorm = result != FBParamModulationBoundsSource::None ? currentMinNorm: 0.0;
+  maxNorm = result != FBParamModulationBoundsSource::None ? currentMaxNorm : 0.0f;
+  return (FBParamModulationBoundsSource)result;
 }
 
 bool

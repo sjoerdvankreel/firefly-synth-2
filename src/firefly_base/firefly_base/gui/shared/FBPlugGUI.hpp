@@ -18,6 +18,15 @@ class FBHostGUIContext;
 class FBContentComponent;
 struct FBParamTopoIndices;
 
+// Well here goes my nice distinction between plug and base library again.
+enum FBParamModulationBoundsSource
+{
+  None = 0x0,
+  Matrix = 0x1,
+  Unison = 0x2,
+  DirectAccess = 0x4
+};
+
 class IFBParamListener
 {
 public:
@@ -101,7 +110,7 @@ public:
   virtual bool HighlightModulationBounds() const = 0;
   virtual FBHighlightTweakMode HighlightTweakedMode() const = 0;
   virtual FBGUIRenderType GetRenderType(bool graphOrKnob) const = 0;
-  virtual bool GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const = 0;  
+  virtual FBParamModulationBoundsSource GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const = 0;
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
