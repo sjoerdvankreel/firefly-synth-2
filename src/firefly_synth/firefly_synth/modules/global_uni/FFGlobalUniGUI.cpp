@@ -1,5 +1,6 @@
 #include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/dsp/shared/FFModulate.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniTopo.hpp>
 
@@ -224,15 +225,60 @@ FFMakeGlobalUniGUI(
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
+static void
+ApplyGlobalUniGUIModulationBounds(FFModulationOpType opType, float source, float& minNorm, float& maxNorm)
+{
+  float newMinNorm = minNorm;
+  FFApplyModulation(opType, source, 1.0f, newMinNorm);
+  minNorm = std::min(minNorm, newMinNorm);
+
+  float newMaxNorm = maxNorm;
+  FFApplyModulation(opType, source, 1.0f, newMaxNorm);
+  maxNorm = std::max(maxNorm, newMaxNorm);
+}
+
 bool
 FFGlobalUniAdjustParamModulationGUIBounds(
   FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
 {
-  // Figure out maximum bounds of what the unison would do.
-  // TODO
-  (void)ctx;
-  (void)index;
-  (void)currentMinNorm;
-  (void)currentMaxNorm;
-  return false;
+  // Better keep this in check with the processor's ApplyToVoice.
+
+  int voiceCount = ctx->GetAudioParamDiscrete({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } });
+  if (voiceCount < 2)
+    return false;
+  auto target = FFParamToGlobalUniTarget(ctx->Topo(), index);
+  if (target == (FFGlobalUniTarget)-1)
+    return false;
+  auto mode = ctx->GetAudioParamList<FFGlobalUniMode>({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, (int)target}});
+  if (mode == FFGlobalUniMode::Off)
+    return false;
+  auto opType = ctx->GetAudioParamList<FFModulationOpType>({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, (int)target} });
+  if (opType == FFModulationOpType::Off)
+    return false;
+  
+  // We don't need skewing or randomization to determine the outer bounds.
+  float spread = (float)ctx->GetAudioParamLinear({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, (int)target} });
+  if (mode == FFGlobalUniMode::AutoLinear || mode == FFGlobalUniMode::AutoExp)
+  {
+    float modSource;
+    for (int voicePos = 0; voicePos <= 1; voicePos++)
+    {
+      if (FFModulationOpTypeIsBipolar(opType))
+        modSource = 0.5f + (voicePos - 0.5f) * spread;
+      else
+        modSource = voicePos * spread;
+      ApplyGlobalUniGUIModulationBounds(opType, modSource, currentMinNorm, currentMaxNorm);
+    }
+  }
+  else
+  {
+    int manualParamIndex = (int)FFGlobalUniParam::ManualFirst + (int)target;
+    for (int voiceSlotInGroup = 0; voiceSlotInGroup < voiceCount; voiceSlotInGroup++)
+    {
+      float modSource = (float)ctx->GetAudioParamLinear({ { (int)FFModuleType::GlobalUni, 0 }, { manualParamIndex, voiceSlotInGroup } });
+      ApplyGlobalUniGUIModulationBounds(opType, modSource, currentMinNorm, currentMaxNorm);
+    }
+  }
+
+  return true;
 }
