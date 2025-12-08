@@ -54,14 +54,14 @@ FFVMixAdjustParamModulationGUIBounds(
   if (rtParam.topoIndices.param.index == (int)FFVMixParam::Amp)
   {
     double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::AmpEnvToAmp, 0 } });
-    FFApplyGUIModulationBounds(FFModulationOpType::UPMul, (float)modAmount, currentMinNorm, currentMaxNorm);
+    FFApplyGUIModulationBounds(FFModulationOpType::UPMul, 0.0f, 1.0f, (float)modAmount, currentMinNorm, currentMaxNorm);
     return true;
   }
 
   if (rtParam.topoIndices.param.index == (int)FFVMixParam::Bal)
   {
     double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::LFO6ToBal, 0 } });
-    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, (float)modAmount, currentMinNorm, currentMaxNorm);
+    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, 0.0f, 1.0f, (float)modAmount, currentMinNorm, currentMaxNorm);
     return true;
   }
 

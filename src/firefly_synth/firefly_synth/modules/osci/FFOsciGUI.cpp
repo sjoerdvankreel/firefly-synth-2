@@ -58,14 +58,14 @@ FFOsciAdjustParamModulationGUIBounds(
   if (rtParam.topoIndices.param.index == (int)FFOsciParam::Gain)
   {
     double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::Osci, rtParam.topoIndices.module.slot }, { (int)FFOsciParam::EnvToGain, 0 } });
-    FFApplyGUIModulationBounds(FFModulationOpType::UPMul, (float)modAmount, currentMinNorm, currentMaxNorm);
+    FFApplyGUIModulationBounds(FFModulationOpType::UPMul, 0.0f, 1.0f, (float)modAmount, currentMinNorm, currentMaxNorm);
     return true;
   }
 
   if (rtParam.topoIndices.param.index == (int)FFOsciParam::Fine)
   {
     double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::Osci, rtParam.topoIndices.module.slot }, { (int)FFOsciParam::LFOToFine, 0 } });
-    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, (float)modAmount, currentMinNorm, currentMaxNorm);
+    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, 0.0f, 1.0f, (float)modAmount, currentMinNorm, currentMaxNorm);
     return true;
   }
 

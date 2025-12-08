@@ -225,18 +225,6 @@ FFMakeGlobalUniGUI(
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
-static void
-ApplyGlobalUniGUIModulationBounds(FFModulationOpType opType, float source, float& minNorm, float& maxNorm)
-{
-  float newMinNorm = minNorm;
-  FFApplyModulation(opType, source, 1.0f, newMinNorm);
-  minNorm = std::min(minNorm, newMinNorm);
-
-  float newMaxNorm = maxNorm;
-  FFApplyModulation(opType, source, 1.0f, newMaxNorm);
-  maxNorm = std::max(maxNorm, newMaxNorm);
-}
-
 bool
 FFGlobalUniAdjustParamModulationGUIBounds(
   FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
@@ -257,17 +245,23 @@ FFGlobalUniAdjustParamModulationGUIBounds(
     return false;
   
   // We don't need skewing or randomization to determine the outer bounds.
-  float spread = (float)ctx->GetAudioParamLinear({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, (int)target} });
+  float maxModSource = 0.0;
+  float minModSource = 1.0f;
+  float spread = (float)ctx->GetAudioParamIdentity({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, (int)target} });
   if (mode == FFGlobalUniMode::AutoLinear || mode == FFGlobalUniMode::AutoExp)
   {
-    float modSource;
     for (int voicePos = 0; voicePos <= 1; voicePos++)
     {
       if (FFModulationOpTypeIsBipolar(opType))
-        modSource = 0.5f + (voicePos - 0.5f) * spread;
+      {
+        minModSource = std::min(minModSource, 0.5f + (voicePos - 0.5f) * spread);
+        maxModSource = std::max(maxModSource, 0.5f + (voicePos - 0.5f) * spread);
+      }
       else
-        modSource = voicePos * spread;
-      ApplyGlobalUniGUIModulationBounds(opType, modSource, currentMinNorm, currentMaxNorm);
+      {
+        minModSource = std::min(minModSource, voicePos * spread);
+        maxModSource = std::max(maxModSource, voicePos * spread);
+      }
     }
   }
   else
@@ -275,10 +269,12 @@ FFGlobalUniAdjustParamModulationGUIBounds(
     int manualParamIndex = (int)FFGlobalUniParam::ManualFirst + (int)target;
     for (int voiceSlotInGroup = 0; voiceSlotInGroup < voiceCount; voiceSlotInGroup++)
     {
-      float modSource = (float)ctx->GetAudioParamLinear({ { (int)FFModuleType::GlobalUni, 0 }, { manualParamIndex, voiceSlotInGroup } });
-      ApplyGlobalUniGUIModulationBounds(opType, modSource, currentMinNorm, currentMaxNorm);
+      float modSource = (float)ctx->GetAudioParamIdentity({ { (int)FFModuleType::GlobalUni, 0 }, { manualParamIndex, voiceSlotInGroup } });
+      minModSource = std::min(modSource, minModSource);
+      maxModSource = std::max(modSource, maxModSource);
     }
   }
 
+  FFApplyGUIModulationBounds(opType, minModSource, maxModSource, 1.0f, currentMinNorm, currentMaxNorm);
   return true;
 }
