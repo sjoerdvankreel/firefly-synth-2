@@ -77,7 +77,7 @@ class alignas(alignof(TAccurate)) FFGlobalUniAccParamState final
   std::array<TAccurate, FFGlobalUniMaxCount> manualEnvStretch = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoFade = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoExtend = {};
-  std::array<TAccurate, FFGlobalUniMaxCount> manualEchoTapMix = {};
+  std::array<TAccurate, FFGlobalUniMaxCount> manualEchoTapsMix = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoTapDelay = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoTapBal = {};
   std::array<TAccurate, FFGlobalUniMaxCount> manualEchoTapLPF = {};

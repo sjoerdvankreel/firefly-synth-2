@@ -107,7 +107,7 @@ FFGlobalUniProcessor::Process(FBModuleProcState& state)
     exchangeParams.acc.manualEnvStretch[i] = params.acc.manualEnvStretch[i].Global().Last();
     exchangeParams.acc.manualEchoFade[i] = params.acc.manualEchoFade[i].Global().Last();
     exchangeParams.acc.manualEchoExtend[i] = params.acc.manualEchoExtend[i].Global().Last();
-    exchangeParams.acc.manualEchoTapMix[i] = params.acc.manualEchoTapMix[i].Global().Last();
+    exchangeParams.acc.manualEchoTapsMix[i] = params.acc.manualEchoTapsMix[i].Global().Last();
     exchangeParams.acc.manualEchoTapDelay[i] = params.acc.manualEchoTapDelay[i].Global().Last();
     exchangeParams.acc.manualEchoTapBal[i] = params.acc.manualEchoTapBal[i].Global().Last();
     exchangeParams.acc.manualEchoTapLPF[i] = params.acc.manualEchoTapLPF[i].Global().Last();

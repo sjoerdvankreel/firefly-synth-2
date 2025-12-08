@@ -594,7 +594,7 @@ FFEchoProcessor<Global>::ProcessTaps(
   {
     if (!graph)
     {
-      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoTapMix, false, voice, -1, tapsMixNormModulated);
+      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoTapsMix, false, voice, -1, tapsMixNormModulated);
       for (int t = 0; t < FFEchoTapCount; t++)
         if (_tapOn[t])
         {

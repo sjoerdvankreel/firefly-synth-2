@@ -2,7 +2,9 @@
 #include <firefly_synth/shared/FFTopoDetail.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniTopo.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniGraph.hpp>
+
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 float
 FFGlobalUniTargetGetDefaultValue(
@@ -19,6 +21,95 @@ FFGlobalUniTargetGetDefaultValue(
   default:
     return 0.5f;
   }
+}
+
+FFGlobalUniTarget
+FFParamToGlobalUniTarget(FBRuntimeTopo const* topo, int index)
+{
+  auto const& indices = topo->audio.params[index].topoIndices;
+  if (indices.module.index == (int)FFModuleType::VoiceModule && indices.param.index == (int)FFVoiceModuleParam::Coarse)
+    return FFGlobalUniTarget::VoiceCoarse;
+  if (indices.module.index == (int)FFModuleType::VoiceModule && indices.param.index == (int)FFVoiceModuleParam::Fine)
+    return FFGlobalUniTarget::VoiceFine;
+  if (indices.module.index == (int)FFModuleType::VMix && indices.param.index == (int)FFVMixParam::Amp)
+    return FFGlobalUniTarget::VMixAmp;
+  if (indices.module.index == (int)FFModuleType::VMix && indices.param.index == (int)FFVMixParam::Bal)
+    return FFGlobalUniTarget::VMixBal;
+  if (indices.module.index == (int)FFModuleType::Osci && indices.param.index == (int)FFOsciParam::Gain)
+    return FFGlobalUniTarget::OscGain;
+  if (indices.module.index == (int)FFModuleType::Osci && indices.param.index == (int)FFOsciParam::Pan)
+    return FFGlobalUniTarget::OscPan;
+  if (indices.module.index == (int)FFModuleType::Osci && indices.param.index == (int)FFOsciParam::Coarse)
+    return FFGlobalUniTarget::OscCoarse;
+  if (indices.module.index == (int)FFModuleType::Osci && indices.param.index == (int)FFOsciParam::Fine)
+    return FFGlobalUniTarget::OscFine;
+  if (indices.module.index == (int)FFModuleType::Osci && indices.param.index == (int)FFOsciParam::Phase)
+    return FFGlobalUniTarget::OscPhaseOffset;
+  if (indices.module.index == (int)FFModuleType::VLFO && indices.param.index == (int)FFLFOParam::RateHz)
+    return FFGlobalUniTarget::LFORate;
+  if (indices.module.index == (int)FFModuleType::VLFO && indices.param.index == (int)FFLFOParam::Min)
+    return FFGlobalUniTarget::LFOMin;
+  if (indices.module.index == (int)FFModuleType::VLFO && indices.param.index == (int)FFLFOParam::Max)
+    return FFGlobalUniTarget::LFOMax;
+  if (indices.module.index == (int)FFModuleType::VLFO && indices.param.index == (int)FFLFOParam::Phase)
+    return FFGlobalUniTarget::LFOPhaseOffset;
+  if (indices.module.index == (int)FFModuleType::VLFO && indices.param.index == (int)FFLFOParam::SkewAXAmt)
+    return FFGlobalUniTarget::LFOSkewAX;
+  if (indices.module.index == (int)FFModuleType::VLFO && indices.param.index == (int)FFLFOParam::SkewAYAmt)
+    return FFGlobalUniTarget::LFOSkewAY;
+  if (indices.module.index == (int)FFModuleType::Env && indices.param.index == (int)FFEnvParam::StageSlope)
+    return FFGlobalUniTarget::EnvSlope;
+  if (indices.module.index == (int)FFModuleType::Env && indices.param.index == (int)FFEnvParam::StageTime)
+    return FFGlobalUniTarget::EnvStretch;
+  if (indices.module.index == (int)FFModuleType::VEffect && indices.param.index == (int)FFEffectParam::StVarFreqFreq)
+    return (FFGlobalUniTarget)((int)FFGlobalUniTarget::VFXParamA + indices.param.slot);
+  if (indices.module.index == (int)FFModuleType::VEffect && indices.param.index == (int)FFEffectParam::StVarPitchCoarse)
+    return (FFGlobalUniTarget)((int)FFGlobalUniTarget::VFXParamA + indices.param.slot);
+  if (indices.module.index == (int)FFModuleType::VEffect && indices.param.index == (int)FFEffectParam::CombFreqFreqMin)
+    return (FFGlobalUniTarget)((int)FFGlobalUniTarget::VFXParamA + indices.param.slot);
+  if (indices.module.index == (int)FFModuleType::VEffect && indices.param.index == (int)FFEffectParam::CombFreqFreqPlus)
+    return (FFGlobalUniTarget)((int)FFGlobalUniTarget::VFXParamA + indices.param.slot);
+  if (indices.module.index == (int)FFModuleType::VEffect && indices.param.index == (int)FFEffectParam::CombPitchCoarseMin)
+    return (FFGlobalUniTarget)((int)FFGlobalUniTarget::VFXParamA + indices.param.slot);
+  if (indices.module.index == (int)FFModuleType::VEffect && indices.param.index == (int)FFEffectParam::CombPitchCoarsePlus)
+    return (FFGlobalUniTarget)((int)FFGlobalUniTarget::VFXParamA + indices.param.slot);
+  if (indices.module.index == (int)FFModuleType::VEffect && indices.param.index == (int)FFEffectParam::DistDrive)
+    return (FFGlobalUniTarget)((int)FFGlobalUniTarget::VFXParamA + indices.param.slot);
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::VoiceExtendTime)
+    return FFGlobalUniTarget::EchoExtend;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::VoiceFadeTime)
+    return FFGlobalUniTarget::EchoFade;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::TapsMix)
+    return FFGlobalUniTarget::EchoTapsMix;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::TapBalance)
+    return FFGlobalUniTarget::EchoTapBal;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::TapDelayTime)
+    return FFGlobalUniTarget::EchoTapDelay;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::TapLPFreq)
+    return FFGlobalUniTarget::EchoTapLPF;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::TapHPFreq)
+    return FFGlobalUniTarget::EchoTapHPF;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::FeedbackDelayTime)
+    return FFGlobalUniTarget::EchoFdbkDelay;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::FeedbackMix)
+    return FFGlobalUniTarget::EchoFdbkMix;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::FeedbackAmount)
+    return FFGlobalUniTarget::EchoFdbkAmt;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::FeedbackLPFreq)
+    return FFGlobalUniTarget::EchoFdbkLPF;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::FeedbackHPFreq)
+    return FFGlobalUniTarget::EchoFdbkHPF;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::ReverbMix)
+    return FFGlobalUniTarget::EchoReverbMix;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::ReverbSize)
+    return FFGlobalUniTarget::EchoReverbSize;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::ReverbDamp)
+    return FFGlobalUniTarget::EchoReverbDamp;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::ReverbLPFreq)
+    return FFGlobalUniTarget::EchoReverbLPF;
+  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::ReverbHPFreq)
+    return FFGlobalUniTarget::EchoReverbHPF;
+  return (FFGlobalUniTarget)-1;
 }
 
 FFModuleType
@@ -49,7 +140,7 @@ FFGlobalUniTargetToModule(FFGlobalUniTarget target)
   case FFGlobalUniTarget::VFXParamD: return FFModuleType::VEffect;
   case FFGlobalUniTarget::EchoExtend: 
   case FFGlobalUniTarget::EchoFade: 
-  case FFGlobalUniTarget::EchoTapMix:
+  case FFGlobalUniTarget::EchoTapsMix:
   case FFGlobalUniTarget::EchoTapDelay:
   case FFGlobalUniTarget::EchoTapBal: 
   case FFGlobalUniTarget::EchoTapLPF:
@@ -96,7 +187,7 @@ FFGlobalUniTargetToString(FFGlobalUniTarget target)
   case FFGlobalUniTarget::VFXParamD: return "VFX Param D";
   case FFGlobalUniTarget::EchoExtend: return "VEcho Extend";
   case FFGlobalUniTarget::EchoFade: return "VEcho Fade";
-  case FFGlobalUniTarget::EchoTapMix: return "VEcho Tap Mix";
+  case FFGlobalUniTarget::EchoTapsMix: return "VEcho Taps Mix";
   case FFGlobalUniTarget::EchoTapDelay: return "VEcho Tap Dly";
   case FFGlobalUniTarget::EchoTapBal: return "VEcho Tap Bal";
   case FFGlobalUniTarget::EchoTapLPF: return "VEcho Tap LPF";
@@ -705,21 +796,21 @@ FFMakeGlobalUniTopo()
   manualEchoFade.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoFade);
   SetManualParamEnabledWhen(manualEchoFade, FFGlobalUniTarget::EchoFade);
 
-  auto& manualEchoTapMix = result->params[(int)FFGlobalUniParam::ManualEchoTapMix];
-  manualEchoTapMix.mode = FBParamMode::Accurate;
-  manualEchoTapMix.defaultText = "50";
-  manualEchoTapMix.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapMix, s); };
-  manualEchoTapMix.slotFormatterOverrides = true;
-  manualEchoTapMix.slotCount = FFGlobalUniMaxCount;
-  manualEchoTapMix.unit = "%";
-  manualEchoTapMix.id = "{A480C75C-3429-44A1-BAAF-44341E793F80}";
-  manualEchoTapMix.description = "Unison Manual Param VEcho Taps Dry/Wet Mix";
-  manualEchoTapMix.type = FBParamType::Identity;
-  auto selectManualEchoTapMix = [](auto& module) { return &module.acc.manualEchoTapMix; };
-  manualEchoTapMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoTapMix);
-  manualEchoTapMix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoTapMix);
-  manualEchoTapMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoTapMix);
-  SetManualParamEnabledWhen(manualEchoTapMix, FFGlobalUniTarget::EchoTapMix);
+  auto& manualEchoTapsMix = result->params[(int)FFGlobalUniParam::ManualEchoTapsMix];
+  manualEchoTapsMix.mode = FBParamMode::Accurate;
+  manualEchoTapsMix.defaultText = "50";
+  manualEchoTapsMix.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapsMix, s); };
+  manualEchoTapsMix.slotFormatterOverrides = true;
+  manualEchoTapsMix.slotCount = FFGlobalUniMaxCount;
+  manualEchoTapsMix.unit = "%";
+  manualEchoTapsMix.id = "{A480C75C-3429-44A1-BAAF-44341E793F80}";
+  manualEchoTapsMix.description = "Unison Manual Param VEcho Taps Dry/Wet Mix";
+  manualEchoTapsMix.type = FBParamType::Identity;
+  auto selectManualEchoTapsMix = [](auto& module) { return &module.acc.manualEchoTapsMix; };
+  manualEchoTapsMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoTapsMix);
+  manualEchoTapsMix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoTapsMix);
+  manualEchoTapsMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoTapsMix);
+  SetManualParamEnabledWhen(manualEchoTapsMix, FFGlobalUniTarget::EchoTapsMix);
 
   auto& manualEchoTapDelay = result->params[(int)FFGlobalUniParam::ManualEchoTapDelay];
   manualEchoTapDelay.mode = FBParamMode::Accurate;
