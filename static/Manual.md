@@ -224,8 +224,13 @@ Right-click on an audio parameter:
 
 ## Graph plots
 
-booyah
+Most modules provide some graph plots.<br/>
+F.e. oscilloscope or filter frequency response plot.<br/>
+When you tweak such a module's parameters FF2 will switch to showing the relevant plots.<br/>
 
+Each plot shows 1 line representing the current parameter state (basically, what you have set up in the GUI).<br/>
+If enabled ("Plot Visuals From Engine") this shows an additional line (for global modules)<br/>
+or an additional line per voice (for voice modules) that accurately reflects what the audio engine is currently doing.
 
 ## Top section
 Contains everything that is not directly related to generating audio.
