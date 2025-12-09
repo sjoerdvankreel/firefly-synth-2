@@ -186,7 +186,10 @@ dependening on the source, to build up pitch by hand from the matrix.
 
 # UI
 
-bluh
+resizing
+context menus
+tooltips
+explain the graphs
 
 # GUI Top section
 Contains everything that is not directly related to generating audio.
