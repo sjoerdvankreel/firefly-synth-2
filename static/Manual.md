@@ -201,7 +201,8 @@ For example anything global can modulate anything per-voice, GLFO1 can modulate 
 likewise VLFO1 can modulate VLFO2, Osc1 can modulate Osc2 etc.<br/>
 
 For the per-voice stage, envelopes and LFO's are processed in lock-step with envelopes going first.<br/>
-So ENV1 can modulate both ENV2(+) and VLFO1(+), while VLFO1 can modulate VLFO2(+) and ENV2(+).
+So ENV1 can modulate both ENV2(+) and VLFO1(+), while VLFO1 can modulate VLFO2(+) and ENV2(+).<br/>
+Reason: i wanted to be able to both env-to-lfo mod as well as the other way around.
 
 The global processing order is: 
 * Global Matrix
