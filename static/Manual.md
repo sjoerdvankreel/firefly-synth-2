@@ -458,7 +458,7 @@ Voice amplitude envelope target: this controls at which stage the voice amp enve
 The most natural setting for this is "VMix Out", but it can be set to individual oscillators, osci mix, or individual FX as well.<br/>
 The primary use case for this is to cooperate with per-voice echo. Per-voice echo can be applied to the voice as a whole,<br/>
 but also to individual oscis and FX. In which case, it is necessary to change the target accordingly, to prevent the voice echo<br/>
-from being cut short by the voice amplitude envelope. See the Voice Echo section and the routing overview for more details.
+from being cut short by the voice amplitude envelope. See the Voice Echo section and the Signal Flow for more details.
 
 Balance control: this is just a straightforward stereo balancer with an optional LFO applied to it.<br/>
 Osc mix to out: controls how much the internal osci mixer stage contributes to the final voice output.
@@ -744,7 +744,7 @@ Rule of thumb: set VEcho target to the same processing stage, or later, as VMix 
 So both to osci premix/postmix, fx in/out etc.<br/>
 The engine is set up such that at each stage, the voice envelope is applied first,<br/>
 followed by the echo (provided they target the same stage).<br/>
-See the routing overview for more details.
+See the Signal Flow for more details.
 
 ### Per-voice echo specific
 It's expensive both cpu and memory wise.<br/>
@@ -963,7 +963,7 @@ See per-module CV outputs for a description of available matrix sources.
 ![image](screenshot_manual_matrix.png)
 
 Unlike FF1 there is no distiction between CV-to-Audio and CV-to-CV anymore.<br/>
-Anything goes, provided the source module comes before (in processing order) the target module (see Routing Overview).<br/>
+Anything goes, provided the source module comes before (in processing order) the target module (see Signal Flow).<br/>
 
 The matrix provides it's own set of graph plots.<br/>
 These are not based on real input, but shows what a sine modulator would do to a ramp signal for current parameter values.<br/>
