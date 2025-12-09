@@ -186,6 +186,17 @@ dependening on the source, to build up pitch by hand from the matrix.
 
 # UI
 
+## Resizing
+Drag the bottom-right corner of the plugin window to resize.<br/>
+The plugin also reacts to system DPI settings.
+
+## Tooltips
+Hover over a parameter to show details.<br/>
+For GUI-only parameters, this doesn't show a whole lot, but for audio parameters:
+* foo
+* bar
+
+
 resizing
 context menus
 tooltips
