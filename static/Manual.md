@@ -232,6 +232,8 @@ This is not entirely accurate as you can position the echo modules to just about
 
 ### Routing diagram
 
+![image](routing_diagram.png)
+
 # UI
 
 ## Resizing
