@@ -227,6 +227,8 @@ The Voice Stage processing order is:
 * Voice Mixer
 * Voice Echo
 
+This is not entirely accurate as you can position the echo modules to just about anywhere, but, close enough.
+
 # UI
 
 ## Resizing
