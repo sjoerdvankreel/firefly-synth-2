@@ -12,6 +12,12 @@ AKA make it go faster/use less cpu.<br/>
 Side effect is that this introduces a very small delay in the output signal (1/3th of a millisecond at 48kHz).<br/>
 I have not seen a host yet which doesn't automatically compensate for this, but it might be good to know anyway.
 
+## No Monophonic Mode
+I found this increasingly difficult to implement right, especially in the face of CLAP polyphonic modulators.<br/>
+Mono mode was also one of the most complicated (and buggiest) features in FF1, so i decided to not rebuild it.<br/>
+If you want to do leads with portamento and short attack/decay this can be accomplished by using the "Section Portamento Mode".<br/>
+See Voice Section for details.
+
 ## CLAP vs VST3 build
 If possible, prefer the CLAP version even if not using the CLAP host modulation feature.<br/>
 Some hosts (especially but not only) on Linux have troubles with the realtime audio engine visualization for the VST3 build.<br/>
