@@ -22,7 +22,6 @@ digraph Synth {
   "MIDI"
   "GNote"
   "VNote"
-  "Voice Out"
   "Global Out"
   "External Audio"
 
@@ -68,18 +67,16 @@ digraph Synth {
   "Osc Mod" -> "Osc" [style = "dotted"]
   "External Audio" -> "Osc" [style = "dashed"]
 
-  "Osc" -> "VFX" [style = "dashed"]
-  "VFX" -> "VFX" [style = "dashed"]
-  "Osc" -> "Osc Mix" [style = "dashed"]
-  "Osc Mix" -> "VFX" [style = "dashed"]
-  "Osc" -> "Voice Out" [style = "dashed"]
-  "VFX" -> "Voice Out" [style = "dashed"]
-  "Osc Mix" -> "Voice Out" [style = "dashed"]
+  "Osc" -> "VMix" [style = "dashed"]
+  "VFX" -> "VMix" [style = "dashed"]
+  "Osc Mix" -> "VMix" [style = "dashed"]
+  "VMix" -> "Osc" [style = "dashed"]
+  "VMix" -> "VFX" [style = "dashed"]
+  "VMix" -> "Osc Mix" [style = "dashed"]
 
-  "Voice Out" -> "GFX" [style = "dashed"]
-  "External Audio" -> "GFX" [style = "dashed"]
-  "GFX" -> "GFX" [style = "dashed"]
-  "GFX" -> "Global Out" [style = "dashed"]
-  "Voice Out" -> "Global Out" [style = "dashed"]
-  "External Audio" -> "Global Out" [style = "dashed"]
+  "VMix" -> "GMix" [style = "dashed"]
+  "External Audio" -> "GMix" [style = "dashed"]
+  "GFX" -> "GMix" [style = "dashed"]
+  "GMix" -> "GFX" [style = "dashed"]
+  "GMix" -> "Global Out" [style = "dashed"]
 }
