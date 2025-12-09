@@ -205,9 +205,7 @@ but automation to that parameter is linear from 0 to 10 seconds.
 * Automate type: indicates if a parameter is skewed w.r.t automation.<br/>
 For example filter frequency ranges from 20 to 20000 Hz, but a host automation envelope value of 50% will set it to only 600Hz.
 
-resizing
 context menus
-tooltips
 explain the graphs
 
 # GUI Top section
