@@ -222,8 +222,10 @@ Right-click on an audio parameter:
 * Show manual: shows this document at the relevant section.
 * Host menu options: DAW specific but typically contains stuff like "add automation lane".
 
-context menus
-explain the graphs
+## Graph plots
+
+booyah
+
 
 ## Top section
 Contains everything that is not directly related to generating audio.
