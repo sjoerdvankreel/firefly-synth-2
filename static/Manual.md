@@ -227,6 +227,9 @@ Contains everything that is not directly related to generating audio.
 
 ![image](screenshot_manual_top.png)
 
+### Last tweaked
+Shows the name of the last tweaked parameter as well as a textbox that allows for precise-editing that parameters value.
+
 ### Output panel
 Shows CPU usage relative to single core, voice usage and output gain with a maximum of 0dB.<br/>
 The MTS-ESP indicator shows whether an MTS-ESP master is connected.
@@ -255,9 +258,6 @@ For per-voice parameters, takes into account the minimum and maximum values acro
 Draws the current state of the audio engine into the graph plots, taking all modulation into account.<br/>
 For per-voice modules, this is an additional line per voice.<br/>
 When off, graph plots reflect only the current state of the parameters as shown in the GUI.
-
-### Last tweaked
-Shows the name of the last tweaked parameter as well as a textbox that allows for precise-editing that parameters value.
 
 ### Graph plots
 ![image](screenshot_manual_graph_plot.png)
