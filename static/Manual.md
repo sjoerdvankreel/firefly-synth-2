@@ -1,75 +1,4 @@
-# UI
-
-## Resizing
-Drag the bottom-right corner of the plugin window to resize.<br/>
-The plugin also reacts to system DPI settings.
-
-## Tooltips
-Hover over a parameter to show details.<br/>
-For GUI-only parameters, this doesn't show a whole lot.<br/>
-
-For audio parameters:
-* Automation type: either per-sample (sample accurate) or at-voice-start.
-* Stored In: indicates if this parameter is saved within the patch or the DAW session only.
-* Current audio engine min/max values across all voices (they are equal for global parameters)
-* Modulated by: indicates if this parameter is currently modulated by direct-access controls, the matrix, or the global unison.
-* Edit type: indicates if a parameter is skewed in the UI only.<br/>
-For example envelope stage time is edited as skewed/logarithmic for more precise control,<br/>
-but automation to that parameter is linear from 0 to 10 seconds.
-* Automate type: indicates if a parameter is skewed w.r.t automation.<br/>
-For example filter frequency ranges from 20 to 20000 Hz, but a host automation envelope value of 50% will set it to only 600Hz.
-
-## Context menus
-Right-click on some empty space to show the generic context menu.
-* Undo/redo options.
-* Show manual: shows this document.
-* Copy/paste patch: allows copy/paste across plugin instances.
-
-context menus
-explain the graphs
-
-## Top section
-Contains everything that is not directly related to generating audio.
-
-![image](screenshot_manual_top.png)
-
-### Output panel
-Shows CPU usage relative to single core, voice usage and output gain with a maximum of 0dB.<br/>
-The MTS-ESP indicator shows whether an MTS-ESP master is connected.
-
-### Panic button
-Kills all active voices and flushes delay lines.<br/>
-Comes in handy for stuck notes or when you managed to fill the delay lines with garbage.
-
-### Patch panel
-Shows the name of the last loaded patch.<br/>
-Comes with regular load-from/save-to-file, init patch to defaults, and load factory preset options, as well as:
-
-* Session: revert the patch state to the time the DAW session was loaded.
-* Reload: revert the patch state to the last time a patch was loaded from file, preset, or default values (init patch).
-
-<a id="E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B"></a>
-### GUI settings
-* Show modulation bounds:<br/>
-Highlights the minimum and maximum values currently applied to a parameter by the mod matrix and direct modulators.
-* Show tweaked from:<br/>
-Highlights the parameters that differ from either default values, last loaded DAW session state, or last loaded patch state.
-* Knob visuals from engine:<br/>
-Highlights a parameters current audio engine state.<br/>
-For per-voice parameters, takes into account the minimum and maximum values across all voices.
-* Plot visuals from engine:<br/>
-Draws the current state of the audio engine into the graph plots, taking all modulation into account.<br/>
-For per-voice modules, this is an additional line per voice.<br/>
-When off, graph plots reflect only the current state of the parameters as shown in the GUI.
-
-### Last tweaked
-Shows the name of the last tweaked parameter as well as a textbox that allows for precise-editing that parameters value.
-
-### Graph plots
-Shows a plot of the last tweaked module.<br/>
-For example this can be an oscilloscope, filter frequency response, waveshaper response or others, depending on the module being shown.
-
-# Other
+# Overview
 
 ## Microtuning
 FF2 is an MTS-ESP client.<br/>
@@ -254,6 +183,77 @@ There is just one caveat:
 Most of them are, but if a source includes the MIDI key, then it becomes unipolar.<br/>
 Net effect is that you need to choose between Bipolar-Add-To-Bipolar or Unipolar-Add-To-Bipolar,<br/>
 dependening on the source, to build up pitch by hand from the matrix.
+
+# UI
+
+## Resizing
+Drag the bottom-right corner of the plugin window to resize.<br/>
+The plugin also reacts to system DPI settings.
+
+## Tooltips
+Hover over a parameter to show details.<br/>
+For GUI-only parameters, this doesn't show a whole lot.<br/>
+
+For audio parameters:
+* Automation type: either per-sample (sample accurate) or at-voice-start.
+* Stored In: indicates if this parameter is saved within the patch or the DAW session only.
+* Current audio engine min/max values across all voices (they are equal for global parameters)
+* Modulated by: indicates if this parameter is currently modulated by direct-access controls, the matrix, or the global unison.
+* Edit type: indicates if a parameter is skewed in the UI only.<br/>
+For example envelope stage time is edited as skewed/logarithmic for more precise control,<br/>
+but automation to that parameter is linear from 0 to 10 seconds.
+* Automate type: indicates if a parameter is skewed w.r.t automation.<br/>
+For example filter frequency ranges from 20 to 20000 Hz, but a host automation envelope value of 50% will set it to only 600Hz.
+
+## Context menus
+Right-click on some empty space to show the generic context menu.
+* Undo/redo options.
+* Show manual: shows this document.
+* Copy/paste patch: allows copy/paste across plugin instances.
+
+context menus
+explain the graphs
+
+## Top section
+Contains everything that is not directly related to generating audio.
+
+![image](screenshot_manual_top.png)
+
+### Output panel
+Shows CPU usage relative to single core, voice usage and output gain with a maximum of 0dB.<br/>
+The MTS-ESP indicator shows whether an MTS-ESP master is connected.
+
+### Panic button
+Kills all active voices and flushes delay lines.<br/>
+Comes in handy for stuck notes or when you managed to fill the delay lines with garbage.
+
+### Patch panel
+Shows the name of the last loaded patch.<br/>
+Comes with regular load-from/save-to-file, init patch to defaults, and load factory preset options, as well as:
+
+* Session: revert the patch state to the time the DAW session was loaded.
+* Reload: revert the patch state to the last time a patch was loaded from file, preset, or default values (init patch).
+
+<a id="E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B"></a>
+### GUI settings
+* Show modulation bounds:<br/>
+Highlights the minimum and maximum values currently applied to a parameter by the mod matrix and direct modulators.
+* Show tweaked from:<br/>
+Highlights the parameters that differ from either default values, last loaded DAW session state, or last loaded patch state.
+* Knob visuals from engine:<br/>
+Highlights a parameters current audio engine state.<br/>
+For per-voice parameters, takes into account the minimum and maximum values across all voices.
+* Plot visuals from engine:<br/>
+Draws the current state of the audio engine into the graph plots, taking all modulation into account.<br/>
+For per-voice modules, this is an additional line per voice.<br/>
+When off, graph plots reflect only the current state of the parameters as shown in the GUI.
+
+### Last tweaked
+Shows the name of the last tweaked parameter as well as a textbox that allows for precise-editing that parameters value.
+
+### Graph plots
+Shows a plot of the last tweaked module.<br/>
+For example this can be an oscilloscope, filter frequency response, waveshaper response or others, depending on the module being shown.
 
 # Modules
 
