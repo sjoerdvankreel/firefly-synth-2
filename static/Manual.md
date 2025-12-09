@@ -230,6 +230,8 @@ The Voice Stage processing order is:
 
 This is not entirely accurate as you can position the echo modules to just about anywhere, but, close enough.
 
+### Routing diagram
+
 # UI
 
 ## Resizing

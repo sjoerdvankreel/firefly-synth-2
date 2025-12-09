@@ -1,0 +1,85 @@
+digraph Synth {
+
+  rankdir="LR";
+
+  "Voice"
+  "Master"
+  "VMix"
+  "GMix"
+  "Osc"
+  "Osc Mod"
+  "Osc Mix"
+  "VFX"
+  "GFX"
+  "VEcho"
+  "GEcho"
+  "VLFO"
+  "GLFO"
+  "Env"
+  "VMatrix"
+  "GMatrix"
+  "Unison"
+  "MIDI"
+  "GNote"
+  "VNote"
+  "Voice Out"
+  "Global Out"
+  "External Audio"
+
+  "GLFO" -> "GMatrix"
+  "MIDI" -> "GMatrix"
+  "GNote" -> "GMatrix"
+  "Master" -> "GMatrix"
+
+  "GMatrix" -> "Master"
+  "GMatrix" -> "Unison"
+  "GMatrix" -> "GFX"
+  "GMatrix" -> "GLFO"
+  "GMatrix" -> "GMix"
+  "GMatrix" -> "GEcho"
+
+  "GLFO" -> "VMatrix"
+  "MIDI" -> "VMatrix"
+  "GNote" -> "VMatrix"
+  "Master" -> "VMatrix"
+  "Voice" -> "VMatrix"
+  "VNote" -> "VMatrix"
+  "Env" -> "VMatrix"
+  "VLFO" -> "VMatrix"
+
+  "VMatrix" -> "Voice"
+  "VMatrix" -> "Osc"
+  "VMatrix" -> "Osc Mod"
+  "VMatrix" -> "Env"
+  "VMatrix" -> "VFX"
+  "VMatrix" -> "VLFO"
+  "VMatrix" -> "VMix"
+  "VMatrix" -> "VEcho"
+  
+  "Unison" -> "Voice"
+  "Unison" -> "VMix"
+  "Unison" -> "Osc"
+  "Unison" -> "VLFO"
+  "Unison" -> "VFX"
+  "Unison" -> "Env"
+  "Unison" -> "VEcho"
+  
+  "Osc" -> "Osc Mod" [style = "dotted"]
+  "Osc Mod" -> "Osc" [style = "dotted"]
+  "External Audio" -> "Osc" [style = "dashed"]
+
+  "Osc" -> "VFX" [style = "dashed"]
+  "VFX" -> "VFX" [style = "dashed"]
+  "Osc" -> "Osc Mix" [style = "dashed"]
+  "Osc Mix" -> "VFX" [style = "dashed"]
+  "Osc" -> "Voice Out" [style = "dashed"]
+  "VFX" -> "Voice Out" [style = "dashed"]
+  "Osc Mix" -> "Voice Out" [style = "dashed"]
+
+  "Voice Out" -> "GFX" [style = "dashed"]
+  "External Audio" -> "GFX" [style = "dashed"]
+  "GFX" -> "GFX" [style = "dashed"]
+  "GFX" -> "Global Out" [style = "dashed"]
+  "Voice Out" -> "Global Out" [style = "dashed"]
+  "External Audio" -> "Global Out" [style = "dashed"]
+}
