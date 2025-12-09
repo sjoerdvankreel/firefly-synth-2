@@ -260,14 +260,18 @@ When off, graph plots reflect only the current state of the parameters as shown 
 Shows the name of the last tweaked parameter as well as a textbox that allows for precise-editing that parameters value.
 
 ### Graph plots
-
 Most modules provide some graph plots.<br/>
 F.e. oscilloscope or filter frequency response plot.<br/>
 When you tweak such a module's parameters FF2 will switch to showing the relevant plots.<br/>
 
 Each plot shows 1 line representing the current parameter state (basically, what you have set up in the GUI).<br/>
 If enabled ("Plot Visuals From Engine") this shows an additional line (for global modules)<br/>
-or an additional line per voice (for voice modules) that accurately reflects what the audio engine is currently doing.
+or an additional line per voice (for voice modules) that accurately reflects what the audio engine is currently doing.<br/>
+For some module types like envelope and lfo, it will also show a (per-voic) position indicator.
+
+Note: for VST3, this feature relies on the host being able to deal with VST3's data exchange interfaces.<br/>
+Most Win and Mac hosts can do this, but at time of writing, only Reaper is good on Linux.<br/>
+CLAP should be good everywhere.
 
 # Modules
 
