@@ -44,10 +44,8 @@ TODOLIST for beta-1
 [x] unison adjust bounds - phase wrap is no good
 [x] note global uni apply only continuous - docs
 [x] describe all the targets or at least it works on multiple
-
-[ ] copy over the microtuning docs from release notes
-[ ] routing diagram + explain target params + order diagram
 [ ] check the ff1 manual also (undo, context menus, mts, etc etc etc, host menus, mseg, blabla anything)
+[ ] routing diagram + explain target params + order diagram
 
 [ ] check the release notes
 [ ] run a debug build
