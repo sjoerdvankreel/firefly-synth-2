@@ -260,6 +260,8 @@ When off, graph plots reflect only the current state of the parameters as shown 
 Shows the name of the last tweaked parameter as well as a textbox that allows for precise-editing that parameters value.
 
 ### Graph plots
+![image](screenshot_manual_graph_plot.png)
+
 Most modules provide some graph plots.<br/>
 F.e. oscilloscope or filter frequency response plot.<br/>
 When you tweak such a module's parameters FF2 will switch to showing the relevant plots.<br/>
