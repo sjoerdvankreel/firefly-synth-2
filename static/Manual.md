@@ -235,6 +235,7 @@ This is not entirely accurate as you can position the echo modules to just about
 * Straight line: CV signal
 * Dashed line: audio signal
 * Dotted line: audio-rate modulation
+* Blue dashed line: user-selectable audio path
 
 ![image](routing_diagram.png)
 
