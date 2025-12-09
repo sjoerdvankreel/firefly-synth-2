@@ -943,6 +943,14 @@ This will affect the first voice in the A group as well as the first voice in th
 Of course, when not in manual but in automatic mode, and you play around with the spread and skew parameters,<br/>
 that will affect the entire spectrum and in this example modulate all 9 voices at once.
 
+## What is being modulated
+All global unison controls affect continuous parameters only.<br/>
+Read: they really target parameter modulation, not some special intermediate dsp state.<br/>
+Most often this is not a big deal, but it does not play well with tempo-synced controls.<br/>
+Global unison can not affect tempo-synced LFO rates, envelope stage lengths, or delay line lengths.<br/>
+When an unison parameter targets a multi-slot module (like oscillator: Osc1, Osc2 etc) then *all* module slots are affected.<br/>
+For example if you use the envelope stretch option this will change all 7 available envelopes.
+
 ## Main section
 * Init: reset to default values.
 * Voice count: 1 to disable, > 1 to kick off that many voices per incoming MIDI note.
