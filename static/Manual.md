@@ -190,6 +190,9 @@ Most of them are, but if a source includes the MIDI key, then it becomes unipola
 Net effect is that you need to choose between Bipolar-Add-To-Bipolar or Unipolar-Add-To-Bipolar,<br/>
 dependening on the source, to build up pitch by hand from the matrix.
 
+## Signal Flow
+booyah
+
 # UI
 
 ## Resizing

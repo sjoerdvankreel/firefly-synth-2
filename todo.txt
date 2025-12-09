@@ -45,10 +45,10 @@ TODOLIST for beta-1
 [x] note global uni apply only continuous - docs
 [x] describe all the targets or at least it works on multiple
 [x] check the ff1 manual also (undo, context menus, mts, etc etc etc, host menus, mseg, blabla anything)
-[ ] NO mono mode
-[ ] routing diagram + explain target params + order diagram
+[x] NO mono mode
+[x] check the release notes
 
-[ ] check the release notes
+[ ] routing diagram + explain target params + order diagram
 [ ] run a debug build
 [ ] debug check every description is there
 [ ] patchfromscratch with TEMP in the manual
