@@ -45,9 +45,11 @@ TODOLIST for beta-1
 [ ] note global uni apply only continuous - docs
 [ ] describe all the targets or at least it works on multiple
 
+[ ] copy over the microtuning docs from release notes
 [ ] routing diagram + explain target params + order diagram
 [ ] check the ff1 manual also (undo, context menus, mts, etc etc etc, host menus, mseg, blabla anything)
 
+[ ] check the release notes
 [ ] run a debug build
 [ ] debug check every description is there
 [ ] patchfromscratch with TEMP in the manual
