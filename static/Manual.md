@@ -242,7 +242,7 @@ This is not entirely accurate as you can position the echo modules to just about
 
 # Patch From Scratch
 
-booyah
+booyah not forget panic/disable matrix
 
 # UI
 
