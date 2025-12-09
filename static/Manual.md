@@ -211,9 +211,9 @@ The global processing order is:
 * Master
 * GLFO
 * Global Unison
-* Voice Stage
-* GFX
-* Global Mixer
+* Voice Stage (VMix target for Global Echo)
+* GFX (GFX In and GFX Out target for Global Echo)
+* Global Mixer (GMix In and GMix Out target for Global Echo)
 * Global Echo
 
 The Voice Stage processing order is: 
@@ -222,9 +222,10 @@ The Voice Stage processing order is:
 * Env/VLFO in lock-step
 * Voice Module (voice-level coarse/fine etc)
 * Inter-Osci Mod
-* Osci
-* VFX
-* Voice Mixer
+* Osci (Osc Premix and Osc Postmix targets for Voice Amp and Voice Echo)
+* Osci Mix (Osc Mix targets for Voice Amp and Voice Echo)
+* VFX (VFX In and VFX Out targets for Voice Amp and Voice Echo)
+* Voice Mixer (VMix In and VMix Out targets for Voice Amp and Voice Echo)
 * Voice Echo
 
 This is not entirely accurate as you can position the echo modules to just about anywhere, but, close enough.
