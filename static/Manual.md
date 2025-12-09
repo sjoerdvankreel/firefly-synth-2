@@ -211,6 +211,17 @@ Right-click on some empty space to show the generic context menu.
 * Show manual: shows this document.
 * Copy/paste patch: allows copy/paste across plugin instances.
 
+Right-click on a GUI parameter (f.e. "Show Modulation Bounds"):
+* Set to default.
+* Show manual: shows this document at the relevant section.
+
+Right-click on an audio parameter:
+* Set to default: set to default value.
+* Set to session: set to value at time of DAW session load.
+* Set to patch: set to value at the last time load/reload/init/load preset was used.
+* Show manual: shows this document at the relevant section.
+* Host menu options: DAW specific but typically contains stuff like "add automation lane".
+
 context menus
 explain the graphs
 
