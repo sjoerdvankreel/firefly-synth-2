@@ -222,16 +222,6 @@ Right-click on an audio parameter:
 * Show manual: shows this document at the relevant section.
 * Host menu options: DAW specific but typically contains stuff like "add automation lane".
 
-## Graph plots
-
-Most modules provide some graph plots.<br/>
-F.e. oscilloscope or filter frequency response plot.<br/>
-When you tweak such a module's parameters FF2 will switch to showing the relevant plots.<br/>
-
-Each plot shows 1 line representing the current parameter state (basically, what you have set up in the GUI).<br/>
-If enabled ("Plot Visuals From Engine") this shows an additional line (for global modules)<br/>
-or an additional line per voice (for voice modules) that accurately reflects what the audio engine is currently doing.
-
 ## Top section
 Contains everything that is not directly related to generating audio.
 
@@ -268,6 +258,16 @@ When off, graph plots reflect only the current state of the parameters as shown 
 
 ### Last tweaked
 Shows the name of the last tweaked parameter as well as a textbox that allows for precise-editing that parameters value.
+
+### Graph plots
+
+Most modules provide some graph plots.<br/>
+F.e. oscilloscope or filter frequency response plot.<br/>
+When you tweak such a module's parameters FF2 will switch to showing the relevant plots.<br/>
+
+Each plot shows 1 line representing the current parameter state (basically, what you have set up in the GUI).<br/>
+If enabled ("Plot Visuals From Engine") this shows an additional line (for global modules)<br/>
+or an additional line per voice (for voice modules) that accurately reflects what the audio engine is currently doing.
 
 # Modules
 
