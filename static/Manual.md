@@ -201,8 +201,28 @@ likewise VLFO1 can modulate VLFO2, Osc1 can modulate Osc2 etc.<br/>
 For the per-voice stage, envelopes and LFO's are processed in lock-step with envelopes going first.<br/>
 So ENV1 can modulate both ENV2(+) and VLFO1(+), while VLFO1 can modulate VLFO2(+) and ENV2(+).
 
-The global processing order is: Global Matrix, MIDI, Global Note, Master, GLFO, Global Unison, Voice Stage, GFX, Global Mixer, Global Echo.<br/>
-The Voice Stage processing order is: Voice Matrix, Voice Note, Env/VLFO in lock-step, Voice Module (voice-level coarse/fine etc), Inter-Osci Mod, Osci, VFX, Voice Mixer, Voice Echo.
+The global processing order is: 
+* Global Matrix
+* MIDI
+* Global Note
+* Master
+* GLFO
+* Global Unison
+* Voice Stage
+* GFX
+* Global Mixer
+* Global Echo
+
+The Voice Stage processing order is: 
+* Voice Matrix
+* Voice Note
+* Env/VLFO in lock-step
+* Voice Module (voice-level coarse/fine etc)
+* Inter-Osci Mod
+* Osci
+* VFX
+* Voice Mixer
+* Voice Echo
 
 # UI
 
