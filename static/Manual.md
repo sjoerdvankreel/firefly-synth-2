@@ -193,7 +193,8 @@ dependening on the source, to build up pitch by hand from the matrix.
 ## Signal Flow
 
 ### Processing Order
-The engine processing order determines what can modulate what.<br/>
+The engine processing order determines what can modulate what (for CV, think LFO's etc),<br/>
+as well as what can audio-input to what (for audio, think Osci to FX, FX to FX etc).<br/>
 In general everything that "comes before" can modulate everything that "comes after".<br/>
 For example anything global can modulate anything per-voice, GLFO1 can modulate GLFO2,<br/>
 likewise VLFO1 can modulate VLFO2, Osc1 can modulate Osc2 etc.<br/>
