@@ -240,6 +240,10 @@ This is not entirely accurate as you can position the echo modules to just about
 
 ![image](plug_routing_diagram.png)
 
+# Patch From Scratch
+
+booyah
+
 # UI
 
 ## Resizing
