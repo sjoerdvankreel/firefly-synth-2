@@ -199,6 +199,7 @@ as well as what can audio-input to what (for audio, think Osci to FX, FX to FX e
 In general everything that "comes before" can modulate or feed everything that "comes after".<br/>
 For example anything global can modulate anything per-voice, GLFO1 can modulate GLFO2,<br/>
 likewise VLFO1 can modulate VLFO2, Osc1 can modulate Osc2 etc.<br/>
+Oscillators can feed VFX, VFX1 can feed VFX2, oscillators and VFX can feed VEcho.
 
 For the per-voice stage, envelopes and LFO's are processed in lock-step with envelopes going first.<br/>
 So ENV1 can modulate both ENV2(+) and VLFO1(+), while VLFO1 can modulate VLFO2(+) and ENV2(+).<br/>
