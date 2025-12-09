@@ -195,15 +195,15 @@ Hover over a parameter to show details.<br/>
 For GUI-only parameters, this doesn't show a whole lot.<br/>
 
 For audio parameters:
+* Automation type: either per-sample (sample accurate) or at-voice-start.
+* Stored In: indicates if this parameter is saved within the patch or the DAW session only.
 * Current audio engine min/max values across all voices (they are equal for global parameters)
+* Modulated by: indicates if this parameter is currently modulated by direct-access controls, the matrix, or the global unison.
 * Edit type: indicates if a parameter is skewed in the UI only.<br/>
 For example envelope stage time is edited as skewed/logarithmic for more precise control,<br/>
 but automation to that parameter is linear from 0 to 10 seconds.
 * Automate type: indicates if a parameter is skewed w.r.t automation.<br/>
 For example filter frequency ranges from 20 to 20000 Hz, but a host automation envelope value of 50% will set it to only 600Hz.
-* Automation type: either per-sample (sample accurate) or at-voice-start.
-* Stored In: indicates if this parameter is saved within the patch or the DAW session only.
-* Modulated by: indicates if this parameter is currently modulated by direct-access controls, the matrix, or the global unison.
 
 resizing
 context menus
