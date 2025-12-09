@@ -57,6 +57,7 @@ TODOLIST for beta-1
 [ ] explain inner workings
 
 TODOLIST for beta-2
+[ ] panic should not context menu
 [ ] string low end bug
 [ ] theme and prettify the gui
 [ ] not right-click-change horizontal sliders
