@@ -47,8 +47,8 @@ TODOLIST for beta-1
 [x] check the ff1 manual also (undo, context menus, mts, etc etc etc, host menus, mseg, blabla anything)
 [x] NO mono mode
 [x] check the release notes
+[x] routing diagram + explain target params + order diagram
 
-[ ] routing diagram + explain target params + order diagram
 [ ] run a debug build
 [ ] debug check every description is there
 [ ] patchfromscratch with TEMP in the manual
