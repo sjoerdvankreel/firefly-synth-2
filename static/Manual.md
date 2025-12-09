@@ -218,7 +218,7 @@ Right-click on a GUI parameter (f.e. "Show Modulation Bounds"):
 Right-click on an audio parameter:
 * Set to default: set to default value.
 * Set to session: set to value at time of DAW session load.
-* Set to patch: set to value at the last time load/reload/init/load preset was used.
+* Set to patch: set to value at the last time load/reload/init/load preset was used in the current session.
 * Show manual: shows this document at the relevant section.
 * Host menu options: DAW specific but typically contains stuff like "add automation lane".
 
