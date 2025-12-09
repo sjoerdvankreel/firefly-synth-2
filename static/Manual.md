@@ -260,7 +260,9 @@ For per-voice modules, this is an additional line per voice.<br/>
 When off, graph plots reflect only the current state of the parameters as shown in the GUI.
 
 ### Graph plots
-![image](screenshot_manual_graph_plot.png)
+![image](screenshot_manual_graph_plot_fx.png)
+![image](screenshot_manual_graph_plot_osc.png)
+![image](screenshot_manual_graph_plot_env.png)
 
 Most modules provide some graph plots.<br/>
 F.e. oscilloscope or filter frequency response plot.<br/>
