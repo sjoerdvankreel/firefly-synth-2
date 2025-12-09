@@ -237,7 +237,7 @@ This is not entirely accurate as you can position the echo modules to just about
 * Dotted line: audio-rate modulation
 * Blue dashed line: user-selectable audio path
 
-![image](routing_diagram.png)
+![image](plug_routing_diagram.png)
 
 # UI
 
