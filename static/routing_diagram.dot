@@ -84,4 +84,9 @@ digraph Synth {
   "GMix" -> "GEcho" [style = "dashed"][color = "#0000FF"]
   "VMix" -> "GEcho" [style = "dashed"][color = "#0000FF"]
   "External Audio" -> "GEcho" [style = "dashed"][color = "#0000FF"]
+  
+  "VFX" -> "VEcho" [style = "dashed"][color = "#0000FF"]
+  "VMix" -> "VEcho" [style = "dashed"][color = "#0000FF"]
+  "Osc" -> "VEcho" [style = "dashed"][color = "#0000FF"]
+  "Osc Mix" -> "VEcho" [style = "dashed"][color = "#0000FF"]
 }
