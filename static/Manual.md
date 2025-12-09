@@ -269,7 +269,7 @@ When you tweak such a module's parameters FF2 will switch to showing the relevan
 Each plot shows 1 line representing the current parameter state (basically, what you have set up in the GUI).<br/>
 If enabled ("Plot Visuals From Engine") this shows an additional line (for global modules)<br/>
 or an additional line per voice (for voice modules) that accurately reflects what the audio engine is currently doing.<br/>
-For some module types like envelope and lfo, it will also show a (per-voic) position indicator.
+For some module types like envelope and lfo, it will also show a (per-voice) position indicator.
 
 Note: for VST3, this feature relies on the host being able to deal with VST3's data exchange interfaces.<br/>
 Most Win and Mac hosts can do this, but at time of writing, only Reaper is good on Linux.<br/>
