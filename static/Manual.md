@@ -95,7 +95,8 @@ End with this: [demo_patch_from_scratch_final.ff2preset](/static/demo_patch_from
 ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_final.mp3))
 ([Reaper](/static/demo_patch_from_scratch_final.rpp))
 
-1. Enable VFX1 ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_1.mp3))
+1. Enable VFX1 ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_1.mp3))<br/>
+Sets a lowpass SV filter with Env1 targeting the frequency, followed by a waveshaper (clipper)
 
 ## Modulation System
 The basic rule is: if it is a continuous parameter (knob/slider), it is both automatable and modulatable.<br/>
