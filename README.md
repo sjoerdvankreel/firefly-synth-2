@@ -11,7 +11,7 @@
 # Nearly ready for V2
 Only needs theming and some presets.
 
-Read the [Manual](/static/Manual.md).<br/>
+Read the [Manual](/static/Manual.md). Note: github has this nice feature where it will make a table-of-contents, click the outline (3 dashes) menu.<br/>
 See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test) for host compatibility tests.<br/>
 See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for feature tests<br/>
 (and some nice demos along the way).
