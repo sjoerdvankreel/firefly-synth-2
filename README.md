@@ -16,7 +16,7 @@ See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://g
   </tr>
 </table>
 
-# Some demo material
+# Demo Material
 * Bowed strings
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_bowstring.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_bowstring.rpp)
