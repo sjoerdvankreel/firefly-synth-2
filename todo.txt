@@ -1,4 +1,5 @@
 TODOLIST for beta-2
+[ ] rename demo to feature test
 [ ] panic should not context menu
 [ ] string low end bug
 [ ] theme and prettify the gui
