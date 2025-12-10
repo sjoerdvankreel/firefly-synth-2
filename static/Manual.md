@@ -107,7 +107,9 @@ Also some offsets on the phase and fine pitch.
 4. Set global echo target to GMix Out and enable the multi-tap echo. ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_4.mp3))<br/>
 Adds 4 taps spread 1/4th apart, alternating left-right.
 5. Open the global echo multi-tap editor and enable LPF on tap 2 and HPF on tap 4. ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_5.mp3))<br/>
-Filters for these taps have high resonance set to puts some extra accent on those taps.
+Filters for these taps have high resonance set so puts some extra accent on those taps.
+6. Enable GEcho feedback delay. ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_6.mp3))<br/>
+Set to 3/16th bars for typical rhythm effect.
 
 ## Modulation System
 The basic rule is: if it is a continuous parameter (knob/slider), it is both automatable and modulatable.<br/>
