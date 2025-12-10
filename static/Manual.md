@@ -90,7 +90,7 @@ Maybe your thing, maybe not, but it's a simple way to showcase some of the plug'
 
 Start with this: [demo_patch_from_scratch_start.ff2preset](/static/demo_patch_from_scratch_start.ff2preset)
 ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_start.mp3))
-([Reaper](/static/demo_patch_from_scratch_start.rpp))
+([Reaper](/static/demo_patch_from_scratch_start.rpp))<br/>
 End with this: [demo_patch_from_scratch_final.ff2preset](/static/demo_patch_from_scratch_final.ff2preset)
 ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_final.mp3))
 ([Reaper](/static/demo_patch_from_scratch_final.rpp))
