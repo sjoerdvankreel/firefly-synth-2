@@ -28,6 +28,7 @@ public:
   juce::String getTooltip() override;
   void buttonStateChanged() override;
   void parentHierarchyChanged() override;
+  void mouseUp(const juce::MouseEvent& e) override;
 
   void SetValueNormalized(double normalized) override;
   FBGUIParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param);

@@ -45,7 +45,7 @@ public FBPlugGUI
   FBGridComponent* _topModules = {};
   FBAutoSizeTabComponent* _tabs = {};
   FBGridComponent* _headerAndGraph = {};
-  FBGridComponent* _outputAndPatch = {};
+  FBGridComponent* _outputOtherAndPatch = {};
   FBGridComponent* _guiSettingsAndTweak = {};
 
   FBModuleGraphComponent* _mainGraph = {};
@@ -65,7 +65,7 @@ public FBPlugGUI
   bool HighlightModulationBounds() const override;
   FBHighlightTweakMode HighlightTweakedMode() const override;
   FBGUIRenderType GetRenderType(bool graphOrKnob) const override;
-  bool GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const override;
+  FBParamModulationBoundsSource GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const override;
 
 protected:
   void OnPatchChanged() override;

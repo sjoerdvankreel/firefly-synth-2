@@ -332,7 +332,8 @@ FFEffectProcessor::Process(
         {
           auto basePitch = _filterMode[i] == FFEffectFilterMode::Track? NextBasePitchBatch<Global>(s): FBBatch<float>(0.0f);
           auto coarsePlain = topo.NormalizedToLinearFast(FFEffectParam::StVarPitchCoarse, stVarPitchCoarseNormModulated[i].Load(s));
-          coarsePlain += (basePitch - (trkk + 60.0f)) * ktrk;
+          auto trackAgainst = _filterMode[i] == FFEffectFilterMode::Track ? basePitch : coarsePlain;
+          coarsePlain += (trackAgainst - (trkk + 60.0f)) * ktrk;
           coarsePlain = xsimd::clip(coarsePlain, FBBatch<float>(-FFModCoarseSemis), FBBatch<float>(FFModCoarseSemis));
           stVarPitchCoarsePlain[i].Store(s, coarsePlain);
           realFreqPlain = xsimd::clip(FBPitchToFreq(basePitch + coarsePlain), FBBatch<float>(FFMinStateVariableFilterFreq), FBBatch<float>(FFMaxStateVariableFilterFreq));
@@ -418,7 +419,8 @@ FFEffectProcessor::Process(
           {
             auto basePitch = _filterMode[i] == FFEffectFilterMode::Track ? NextBasePitchBatch<Global>(s) : FBBatch<float>(0.0f);
             auto coarsePlain = topo.NormalizedToLinearFast(FFEffectParam::CombPitchCoarseMin, combPitchCoarseMinNormModulated[i].Load(s));
-            coarsePlain += (basePitch - (trkk + 60.0f)) * ktrk;
+            auto trackAgainst = _filterMode[i] == FFEffectFilterMode::Track ? basePitch : coarsePlain;
+            coarsePlain += (trackAgainst - (trkk + 60.0f)) * ktrk;
             coarsePlain = xsimd::clip(coarsePlain, FBBatch<float>(-FFModCoarseSemis), FBBatch<float>(FFModCoarseSemis));
             combPitchCoarseMinPlain[i].Store(s, coarsePlain);
             realFreqPlain = xsimd::clip(FBPitchToFreq(basePitch + coarsePlain), FBBatch<float>(FFMinCombFilterFreq), FBBatch<float>(FFMaxCombFilterFreq));
@@ -497,7 +499,8 @@ FFEffectProcessor::Process(
           {
             auto basePitch = _filterMode[i] == FFEffectFilterMode::Track ? NextBasePitchBatch<Global>(s) : FBBatch<float>(0.0f);
             auto coarsePlain = topo.NormalizedToLinearFast(FFEffectParam::CombPitchCoarsePlus, combPitchCoarsePlusNormModulated[i].Load(s));
-            coarsePlain += (basePitch - (trkk + 60.0f)) * ktrk;
+            auto trackAgainst = _filterMode[i] == FFEffectFilterMode::Track ? basePitch : coarsePlain;
+            coarsePlain += (trackAgainst - (trkk + 60.0f)) * ktrk;
             coarsePlain = xsimd::clip(coarsePlain, FBBatch<float>(-FFModCoarseSemis), FBBatch<float>(FFModCoarseSemis));
             combPitchCoarsePlusPlain[i].Store(s, coarsePlain);
             realFreqPlain = xsimd::clip(FBPitchToFreq(basePitch + coarsePlain), FBBatch<float>(FFMinCombFilterFreq), FBBatch<float>(FFMaxCombFilterFreq));

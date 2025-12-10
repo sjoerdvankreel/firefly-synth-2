@@ -37,6 +37,17 @@ auto constexpr FFPlugControllerId = FFPlugControllerIdInst;
 
 class MTSClient;
 
+class FFVST3EditController final:
+public FBVST3EditController
+{
+public:
+  FFVST3EditController(std::unique_ptr<FBStaticTopo>&& topo):
+  FBVST3EditController(std::move(topo)) {}
+
+  std::string OnlineManualLocation() const override 
+  { return FFPlugOnlineManualLocation; }
+};
+
 class FFVST3AudioEffect:
 public FBVST3AudioEffect
 {
@@ -80,7 +91,7 @@ ControllerFactory(void*)
 {
   return FBWithLogException([]() 
   {
-    auto result = new FBVST3EditController(FFMakeTopo(FBPlugFormat::VST3, FF_IS_FX != 0));
+    auto result = new FFVST3EditController(FFMakeTopo(FBPlugFormat::VST3, FF_IS_FX != 0));
     return static_cast<IEditController*>(result);
   });
 }

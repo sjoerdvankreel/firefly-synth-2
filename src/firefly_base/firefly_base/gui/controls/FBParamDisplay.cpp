@@ -5,7 +5,7 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
-static int const MeterBarCount = 32;
+static int const MeterBarCount = 25;
 
 using namespace juce;
 

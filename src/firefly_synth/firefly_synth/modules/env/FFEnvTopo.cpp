@@ -109,6 +109,7 @@ FFMakeEnvTopo()
   type.name = "Type";
   type.slotCount = 1;
   type.id = "{40F1DCF0-03B1-4ABE-B6B5-A29BF2C8C229}";
+  type.description = "Envelope Type";
   type.type = FBParamType::List;
   type.List().items = {
     { "{6F0DA153-9544-4EFB-BC6D-88F761583F39}", "Off" },
@@ -126,6 +127,7 @@ FFMakeEnvTopo()
   sync.display = "Sync";
   sync.slotCount = 1;
   sync.id = "{B1128167-2EB6-4AFA-81B7-C4B7606502BB}";
+  sync.description = "Envelope Tempo Sync";
   sync.defaultText = "Off";
   sync.type = FBParamType::Boolean;
   auto selectSync = [](auto& module) { return &module.block.sync; };
@@ -140,6 +142,7 @@ FFMakeEnvTopo()
   release.name = "Release";
   release.slotCount = 1;
   release.id = "{38670133-4372-461F-ACB8-0E1E156BD3DF}";
+  release.description = "Envelope Release Point";
   release.type = FBParamType::Discrete;
   release.Discrete().valueCount = FFEnvStageCount + 1;
   release.Discrete().valueFormatter = [](int v) { return v == 0 ? "Off" : std::to_string(v); };
@@ -156,6 +159,7 @@ FFMakeEnvTopo()
   loopStart.display = "Loop";
   loopStart.slotCount = 1;
   loopStart.id = "{97402218-4546-447E-A925-AB3DFD21A9F8}";
+  loopStart.description = "Envelope Loop Start Point";
   loopStart.type = FBParamType::Discrete;
   loopStart.Discrete().valueCount = FFEnvStageCount + 2;
   loopStart.Discrete().valueFormatter = [](int v) { return v == 0 ? "Off" : std::to_string(v - 1); };
@@ -172,6 +176,7 @@ FFMakeEnvTopo()
   loopLength.display = "Length";
   loopLength.slotCount = 1;
   loopLength.id = "{078E33B3-02EB-4637-84E0-949E2830A0DB}";
+  loopLength.description = "Envelope Loop Length";
   loopLength.type = FBParamType::Discrete;
   loopLength.Discrete().valueCount = FFEnvStageCount + 1;
   auto selectLoopLength = [](auto& module) { return &module.block.loopLength; };
@@ -188,6 +193,7 @@ FFMakeEnvTopo()
   smoothTime.slotCount = 1;
   smoothTime.unit = "Sec";
   smoothTime.id = "{1F5A4312-4483-4F30-9E63-D0D81CF4CD0B}";
+  smoothTime.description = "Envelope Smooth Length Time";
   smoothTime.type = FBParamType::Linear;
   smoothTime.Linear().min = 0.0f;
   smoothTime.Linear().max = 10.0f;
@@ -207,6 +213,7 @@ FFMakeEnvTopo()
   smoothBars.slotCount = 1;
   smoothBars.unit = "Bars";
   smoothBars.id = "{EA0FC641-ED92-417A-ABCF-305A854F59C8}";
+  smoothBars.description = "Envelope Smooth Length Bars";
   smoothBars.type = FBParamType::Bars;
   smoothBars.Bars().items = FFEnvMakeBarsItems();
   auto selectSmoothBars = [](auto& module) { return &module.block.smoothBars; };
@@ -223,6 +230,7 @@ FFMakeEnvTopo()
   startLevel.slotCount = 1;
   startLevel.unit = "%";
   startLevel.id = "{AB53D9B4-965E-4AED-A60B-B6AB16738977}";
+  startLevel.description = "Envelope Start Level";
   startLevel.defaultText = "0";
   startLevel.type = FBParamType::Identity;
   auto selectStartLevel = [](auto& module) { return &module.acc.startLevel; };
@@ -237,6 +245,7 @@ FFMakeEnvTopo()
   stageLevel.slotCount = FFEnvStageCount;
   stageLevel.unit = "%";
   stageLevel.id = "{0E6A1B2B-AC57-473B-9B31-F67631C6B152}";
+  stageLevel.description = "Envelope Stage Level";
   stageLevel.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : ps == 1 ? "25" : "0"; };
   stageLevel.type = FBParamType::Identity;
   auto selectStageLevel = [](auto& module) { return &module.acc.stageLevel; };
@@ -252,6 +261,7 @@ FFMakeEnvTopo()
   stageSlope.slotCount = FFEnvStageCount;
   stageSlope.unit = "%";
   stageSlope.id = "{A860A5DD-A18D-4B00-A394-53E4328642D2}";
+  stageSlope.description = "Envelope Stage Slope";
   stageSlope.type = FBParamType::Identity;
   stageSlope.Identity().displayAsBipolar = true;
   auto selectStageSlope = [](auto& module) { return &module.acc.stageSlope; };
@@ -266,6 +276,7 @@ FFMakeEnvTopo()
   stageTime.slotCount = FFEnvStageCount;
   stageTime.unit = "Sec";
   stageTime.id = "{3023BA36-07C3-422F-A894-5F6372603EEF}";
+  stageTime.description = "Envelope Stage Length Time";
   stageTime.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "0.1" : ps == 1 ? "0.2" : ps == 2 ? "0.4" : "0"; };
   stageTime.type = FBParamType::Linear;
   stageTime.Linear().min = 0.0f;
@@ -284,6 +295,7 @@ FFMakeEnvTopo()
   stageBars.slotCount = FFEnvStageCount;
   stageBars.unit = "Bars";
   stageBars.id = "{43780C3A-3C23-4A94-8BDF-152FDF408A5F}";
+  stageBars.description = "Envelope Stage Length Bars";
   stageBars.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "1/16" : ps == 1 ? "1/8" : ps == 2 ? "1/4" : "Off"; };
   stageBars.type = FBParamType::Bars;
   stageBars.Bars().items = FFEnvMakeBarsItems();
@@ -296,11 +308,13 @@ FFMakeEnvTopo()
 
   auto& guiMSEGXEditMode = result->guiParams[(int)FFEnvGUIParam::MSEGXEditMode];
   guiMSEGXEditMode.name = "MSEG X Edit Mode";
+  guiMSEGXEditMode.description = "MSEG X Edit Mode";
   guiMSEGXEditMode.slotCount = 1;
   guiMSEGXEditMode.defaultText = "Free";
   guiMSEGXEditMode.id = "{576F4AC3-55F6-4B83-A113-128EFF880D5B}";
   guiMSEGXEditMode.type = FBParamType::List;
   guiMSEGXEditMode.List().items = {
+    { "{D24CA66E-48FA-41B3-AF51-90CC0A8E697A}", "Off" },
     { "{0299B125-071F-4281-B32C-3933D1CF0159}", "Free" },
     { "{4A5D75D8-553F-4ADE-9E46-DA705DE5195B}", "Snap" },
     { "{8C5D0496-222C-408C-8ADA-4B71C2A50C81}", "Stretch" } };
@@ -309,6 +323,7 @@ FFMakeEnvTopo()
 
   auto& guiMSEGYEditMode = result->guiParams[(int)FFEnvGUIParam::MSEGYEditMode];
   guiMSEGYEditMode.name = "MSEG Y Edit Mode";
+  guiMSEGYEditMode.description = "MSEG Y Edit Mode";
   guiMSEGYEditMode.slotCount = 1;
   guiMSEGYEditMode.defaultText = "Free";
   guiMSEGYEditMode.id = "{F801AF0D-0224-4FC8-832E-ECC7A0DDC021}";
@@ -321,6 +336,7 @@ FFMakeEnvTopo()
 
   auto& guiMSEGSnapXCount = result->guiParams[(int)FFEnvGUIParam::MSEGSnapXCount];
   guiMSEGSnapXCount.name = "MSEG Snap X Count";
+  guiMSEGSnapXCount.description = "MSEG Snap X Count";
   guiMSEGSnapXCount.slotCount = 1;
   guiMSEGSnapXCount.defaultText = "64";
   guiMSEGSnapXCount.id = "{C409B95E-A2E3-4D7A-8916-B6029C54C964}";
@@ -331,6 +347,7 @@ FFMakeEnvTopo()
 
   auto& guiMSEGSnapYCount = result->guiParams[(int)FFEnvGUIParam::MSEGSnapYCount];
   guiMSEGSnapYCount.name = "MSEG Snap Y Count";
+  guiMSEGSnapYCount.description = "MSEG Snap Y Count";
   guiMSEGSnapYCount.slotCount = 1;
   guiMSEGSnapYCount.defaultText = "16";
   guiMSEGSnapYCount.id = "{838AB77F-91B5-48CD-AC51-368963DE3CC9}";

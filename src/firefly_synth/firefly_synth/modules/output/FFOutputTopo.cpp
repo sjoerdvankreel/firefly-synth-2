@@ -19,6 +19,7 @@ FFMakeOutputTopo()
   voices.mode = FBParamMode::Output;
   voices.defaultText = "0";
   voices.name = "Voices";
+  voices.description = "Voice Count";
   voices.unit = "%";
   voices.slotCount = 1;
   voices.id = "{54C6CAD4-FA5A-4395-8131-C768E0AD48CF}";
@@ -33,6 +34,7 @@ FFMakeOutputTopo()
   cpu.mode = FBParamMode::Output;
   cpu.defaultText = "0";
   cpu.name = "CPU";
+  cpu.description = "CPU Usage";
   cpu.unit = "%";
   cpu.slotCount = 1;
   cpu.id = "{F7E383FA-61A6-4CDB-898B-C62C248633A0}";
@@ -47,6 +49,7 @@ FFMakeOutputTopo()
   gain.mode = FBParamMode::Output;
   gain.defaultText = "0";
   gain.name = "Gain";
+  gain.description = "Output Gain";
   gain.unit = "%";
   gain.slotCount = 1;
   gain.id = "{F0F8F4CA-8F90-4C6D-B685-24119817CC1D}";
@@ -60,6 +63,7 @@ FFMakeOutputTopo()
   auto& mtsEspOn = result->params[(int)FFOutputParam::MtsEspOn];
   mtsEspOn.mode = FBParamMode::Output;
   mtsEspOn.name = "MTS-ESP";
+  mtsEspOn.description = "MTS-ESP Master Connected";
   mtsEspOn.slotCount = 1;
   mtsEspOn.defaultText = "Off";
   mtsEspOn.id = "{9803DBBB-E1C9-4FAC-ACEA-B0E7F9E28979}";
@@ -68,19 +72,6 @@ FFMakeOutputTopo()
   mtsEspOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectMtsEspOn);
   mtsEspOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectMtsEspOn);
   mtsEspOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectMtsEspOn);
-
-  // dummy which we check on the audio if it changed
-  auto& flushAudioToggle = result->params[(int)FFOutputParam::FlushAudioToggle];
-  flushAudioToggle.mode = FBParamMode::Fake;
-  flushAudioToggle.name = "Flush Audio";
-  flushAudioToggle.slotCount = 1;
-  flushAudioToggle.defaultText = "Off";
-  flushAudioToggle.id = "{2A072D35-45DA-4C6D-BB64-9EB4FB2AC06F}";
-  flushAudioToggle.type = FBParamType::Boolean;
-  auto selectFlushAudioToggle = [](auto& module) { return &module.block.flushAudioToggle; };
-  flushAudioToggle.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFlushAudioToggle);
-  flushAudioToggle.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFlushAudioToggle);
-  flushAudioToggle.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFlushAudioToggle);
 
   return result;
 }

@@ -26,3 +26,7 @@ FFMakeGlobalUniGUI(
   FBPlugGUI* plugGUI,
   FBGraphRenderState* graphRenderState,
   std::vector<FBModuleGraphComponent*>* fixedGraphs);
+
+bool 
+FFGlobalUniAdjustParamModulationGUIBounds(
+FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm);

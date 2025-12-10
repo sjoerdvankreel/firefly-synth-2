@@ -9,9 +9,9 @@ SwapContextForItem(
   FBUndoItem& item)
 {
   FBScalarStateContainer temp(*hostContext->Topo());
-  temp.CopyFrom(hostContext);
-  item.state.CopyTo(hostContext);
-  item.state.CopyFrom(temp);
+  temp.CopyFrom(hostContext, false);
+  item.state.CopyTo(hostContext, false);
+  item.state.CopyFrom(hostContext->Topo(), temp, false);
 
   std::string tempName(hostContext->PatchName());
   hostContext->SetPatchName(item.patchName);
@@ -44,7 +44,7 @@ FBUndoStateContainer::Snapshot(std::string const& action)
   _items.erase(_items.begin() + _position, _items.end());
   FBUndoItem item(*_hostContext->Topo());
   item.action = action;
-  item.state.CopyFrom(_hostContext);
+  item.state.CopyFrom(_hostContext, false);
   item.patchName = _hostContext->PatchName();
   _items.push_back(std::move(item));
   while (_items.size() > _hostContext->Topo()->static_->maxUndoSize)

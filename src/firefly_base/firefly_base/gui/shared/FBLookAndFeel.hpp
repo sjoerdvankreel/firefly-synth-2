@@ -29,6 +29,9 @@ public:
   juce::BorderSize<int> getLabelBorderSize(
     juce::Label&) override;
 
+  juce::Label* createComboBoxTextBox(
+    juce::ComboBox&) override;
+
   void positionComboBoxText(
     juce::ComboBox&, juce::Label&) override;
 
@@ -37,6 +40,11 @@ public:
 
   void drawLabel(
     juce::Graphics&, juce::Label&) override;
+
+  juce::Rectangle<int> getTooltipBounds(
+    const juce::String& tipText, 
+    juce::Point<int> screenPos, 
+    juce::Rectangle<int> parentArea) override;
 
   void drawTooltip(
     juce::Graphics& g, const juce::String& text,

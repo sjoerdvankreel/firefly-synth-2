@@ -56,14 +56,14 @@ FFVoiceModuleAdjustParamModulationGUIBounds(
   if (rtParam.topoIndices.param.index == (int)FFVoiceModuleParam::Coarse)
   {
     double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::Env5ToCoarse, 0 } });
-    FFApplyGUIModulationBounds(FFModulationOpType::UPStack, (float)modAmount, currentMinNorm, currentMaxNorm);
+    FFApplyGUIModulationBounds(FFModulationOpType::UPStack, 0.0f, 1.0f, (float)modAmount, currentMinNorm, currentMaxNorm);
     return true;
   }
 
   if (rtParam.topoIndices.param.index == (int)FFVoiceModuleParam::Fine)
   {
     double modAmount = ctx->GetAudioParamNormalized({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::LFO5ToFine, 0 } });
-    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, (float)modAmount, currentMinNorm, currentMaxNorm);
+    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, 0.0f, 1.0f, (float)modAmount, currentMinNorm, currentMaxNorm);
     return true;
   }
 

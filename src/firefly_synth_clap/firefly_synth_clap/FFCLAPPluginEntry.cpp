@@ -73,6 +73,8 @@ class FFCLAPPlugin:
 public FBCLAPPlugin
 {
 public:
+  std::string OnlineManualLocation() const override 
+  { return FFPlugOnlineManualLocation; }
   std::unique_ptr<IFBPlugProcessor> MakePlugProcessor() override
   { return std::make_unique<FFPlugProcessor>(this); }
 

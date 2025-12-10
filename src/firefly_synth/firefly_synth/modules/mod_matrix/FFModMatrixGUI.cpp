@@ -120,6 +120,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, slots, std::to_string(global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount)));
   
   auto clean = plugGUI->StoreComponent<FBAutoSizeButton>("Clean");
+  clean->setTooltip("Remove Inactive Slots");
   grid->Add(0, 5, clean);
   clean->onClick = [plugGUI, global]() {
     std::vector<double> scaleNorm = {};
@@ -177,6 +178,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
   };
 
   auto initButton = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
+  initButton->setTooltip("Set To Defaults");
   grid->Add(0, 6, initButton);
   initButton->onClick = [plugGUI, global]() {
     int moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
@@ -410,7 +412,7 @@ FFModMatrixAdjustParamModulationGUIBounds(
   FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
 {
   // Figure out maximum bounds of what the mod matrix would do to the 
-  // current value if all sources/scales would use the full 0..1 range.
+  // current value of all sources/scales would use the full 0..1 range.
 
   bool haveAny = false;
   int rtIndex = ctx->Topo()->audio.params[index].runtimeModuleIndex;
@@ -436,8 +438,8 @@ FFModMatrixAdjustParamModulationGUIBounds(
           float scaleMin = (float)ctx->GetAudioParamNormalized({ { moduleType, 0, }, { (int)FFModMatrixParam::ScaleMin, s } });
           float scaleMax = (float)ctx->GetAudioParamNormalized({ { moduleType, 0, }, { (int)FFModMatrixParam::ScaleMax, s } });
           float targetAmt = (float)ctx->GetAudioParamNormalized({ { moduleType, 0, }, { (int)FFModMatrixParam::TargetAmt, s } });
-          FFApplyGUIModulationBounds(opType, scaleMin * targetAmt, currentMinNorm, currentMaxNorm);
-          FFApplyGUIModulationBounds(opType, scaleMax * targetAmt, currentMinNorm, currentMaxNorm);
+          FFApplyGUIModulationBounds(opType, 0.0f, 1.0f, scaleMin * targetAmt, currentMinNorm, currentMaxNorm);
+          FFApplyGUIModulationBounds(opType, 0.0f, 1.0f, scaleMax * targetAmt, currentMinNorm, currentMaxNorm);
           haveAny = true;
         }
       }

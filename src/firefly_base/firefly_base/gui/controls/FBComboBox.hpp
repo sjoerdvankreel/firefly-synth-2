@@ -31,6 +31,7 @@ public:
   juce::String getTooltip() override;
   void parentHierarchyChanged() override;
   void valueChanged(juce::Value& value) override;
+  void mouseUp(juce::MouseEvent const& event) override;
 
   void SetValueNormalized(double normalized) override;
   FBGUIParamComboBox(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param);

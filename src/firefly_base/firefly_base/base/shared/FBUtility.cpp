@@ -27,6 +27,22 @@ FBAsciiToUpper(std::string const& in)
   return result;
 }
 
+std::vector<std::string>
+FBStringSplit(std::string str, std::string const& delim)
+{
+  std::vector<std::string> result;
+  std::string token;
+  std::size_t pos = 0;
+  while ((pos = str.find(delim)) != std::string::npos) 
+  {
+    token = str.substr(0, pos);
+    result.push_back(token);
+    str.erase(0, pos + delim.length());
+  }
+  result.push_back(str);
+  return result;
+}
+
 std::optional<double>
 FBStringToDoubleOptCLocale(std::string const& text)
 {

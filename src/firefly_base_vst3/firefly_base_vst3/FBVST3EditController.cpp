@@ -215,7 +215,7 @@ FBVST3EditController::setComponentState(IBStream* state)
     for (int i = 0; i < edit.Params().size(); i++)
       setParamNormalized(_topo->audio.params[i].tag, *edit.Params()[i]);
 
-    MarkAsSessionState();
+    MarkPatchAsSessionState();
     return kResultOk;
   });
 }

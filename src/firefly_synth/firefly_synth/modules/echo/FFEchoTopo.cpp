@@ -88,6 +88,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   vTargetOrGTarget.mode = FBParamMode::Block;
   vTargetOrGTarget.slotCount = 1;
   vTargetOrGTarget.id = prefix + "{60F7D173-C5F9-46AD-A108-D17D40FE4C1D}";
+  vTargetOrGTarget.description = "Echo Target Stage";
   vTargetOrGTarget.name = "Target";
   vTargetOrGTarget.defaultText = global && isFx? FFGEchoTargetToString(FFGEchoTarget::ExtAudio): "Off";
   vTargetOrGTarget.type = FBParamType::List;
@@ -141,6 +142,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   order.name = "Order";
   order.defaultText = "T\U00002192F\U00002192R";
   order.id = prefix + "{D84A623A-7F5C-40C6-A892-A441497783CD}";
+  order.description = "Echo Processing Order";
   order.type = FBParamType::List;
   order.List().items = {
     { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "T\U00002192F\U00002192R" },
@@ -164,6 +166,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   gain.slotCount = 1;
   gain.unit = "%";
   gain.id = prefix + "{557D9FBC-0EA3-4DDD-914F-7C9E647E25E0}";
+  gain.description = "Echo Make-up Gain";
   gain.type = FBParamType::Linear;
   gain.Linear().min = 0.0f;
   gain.Linear().max = 4.0f;
@@ -182,6 +185,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   sync.display = "Sync";
   sync.slotCount = 1;
   sync.id = prefix + "{6CBE8845-0C59-4A95-B9F7-24C7AA061DFA}";
+  sync.description = "Echo Tempo Sync";
   sync.defaultText = "Off";
   sync.type = FBParamType::Boolean;
   auto selectSync = [](auto& module) { return &module.block.sync; };
@@ -196,10 +200,11 @@ FFMakeEchoTopo(bool global, bool isFx)
   delaySmoothTime.mode = FBParamMode::Block;
   delaySmoothTime.defaultText = "500";
   delaySmoothTime.display = "Smth";
-  delaySmoothTime.name = "Delay Smooth Time";
+  delaySmoothTime.name = "Delay Smooth Length Time";
   delaySmoothTime.slotCount = 1;
   delaySmoothTime.unit = "Ms";
   delaySmoothTime.id = prefix + "{8694FBC8-003F-47B3-BB0E-8FB610CD4BD1}";
+  delaySmoothTime.description = "Echo Delay Smoothing Time";
   delaySmoothTime.type = FBParamType::Linear;
   delaySmoothTime.Linear().min = 0.02f;
   delaySmoothTime.Linear().max = 5.0f;
@@ -217,10 +222,11 @@ FFMakeEchoTopo(bool global, bool isFx)
   auto& delaySmoothBars = result->params[(int)FFEchoParam::DelaySmoothBars];
   delaySmoothBars.mode = FBParamMode::Block;
   delaySmoothBars.display = "Smth";
-  delaySmoothBars.name = "Delay Smooth Bars";
+  delaySmoothBars.name = "Delay Smooth Length Bars";
   delaySmoothBars.slotCount = 1;
   delaySmoothBars.unit = "Bars";
   delaySmoothBars.id = prefix + "{5554CC4B-29E6-4F3C-8FFE-95947033676C}";
+  delaySmoothBars.description = "Echo Delay Smoothing Bars";
   delaySmoothBars.defaultText = "1/4";
   delaySmoothBars.type = FBParamType::Bars;
   delaySmoothBars.Bars().items = MakeEchoSmoothBarsItems();
@@ -242,6 +248,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   voiceExtendTime.slotCount = 1;
   voiceExtendTime.unit = "Ms";
   voiceExtendTime.id = prefix + "{1FD9788A-41D1-4705-AF68-29956B1337E1}";
+  voiceExtendTime.description = "Echo Voice Lifetime Extend Full Scale Time";
   voiceExtendTime.type = FBParamType::Linear;
   voiceExtendTime.Linear().min = 0.0f;
   voiceExtendTime.Linear().max = 5.0f;
@@ -263,6 +270,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   voiceExtendBars.slotCount = 1;
   voiceExtendBars.unit = "Bars";
   voiceExtendBars.id = prefix + "{4BFA9D36-87B5-403F-A05F-CB9D1A9D874E}";
+  voiceExtendBars.description = "Echo Voice Lifetime Extend Full Scale Bars";
   voiceExtendBars.defaultText = "1/2";
   voiceExtendBars.type = FBParamType::Bars;
   voiceExtendBars.Bars().items = MakeEchoBarsItems();
@@ -283,6 +291,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   voiceFadeTime.slotCount = 1;
   voiceFadeTime.unit = "Ms";
   voiceFadeTime.id = prefix + "{13DB349F-81B4-415D-B79D-F742632E0036}";
+  voiceFadeTime.description = "Echo Voice Lifetime Extend Linear Fade Time";
   voiceFadeTime.type = FBParamType::Linear;
   voiceFadeTime.Linear().min = 0.0f;
   voiceFadeTime.Linear().max = 5.0f;
@@ -304,6 +313,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   voiceFadeBars.slotCount = 1;
   voiceFadeBars.unit = "Bars";
   voiceFadeBars.id = prefix + "{FB75B598-21C8-4D33-B296-F471F1AFD95A}";
+  voiceFadeBars.description = "Echo Voice Lifetime Extend Linear Fade Bars";
   voiceFadeBars.defaultText = "1/2";
   voiceFadeBars.type = FBParamType::Bars;
   voiceFadeBars.Bars().items = MakeEchoBarsItems();
@@ -324,6 +334,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapsMix.display = "Mix";
   tapsMix.slotCount = 1;
   tapsMix.id = prefix + "{56DF16E6-A079-4E97-92D9-DA65826DB20F}";
+  tapsMix.description = "Multi-Tap Delay Dry/Wet Mix";
   tapsMix.type = FBParamType::Identity;
   auto selectTapsMix = [](auto& module) { return &module.acc.tapsMix; };
   tapsMix.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapsMix);
@@ -340,6 +351,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapsOn.slotCount = 1;
   tapsOn.defaultText = "Off";
   tapsOn.id = prefix + "{C5FAD167-9D4B-4640-AD46-0C3B55089197}";
+  tapsOn.description = "Multi-Tap Delay Enabled";
   tapsOn.type = FBParamType::Boolean;
   auto selectTapsOn = [](auto& module) { return &module.block.tapsOn; };
   tapsOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapsOn);
@@ -356,6 +368,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapOn.slotCount = FFEchoTapCount;
   tapOn.defaultTextSelector = [](int, int, int ps) { return ps < 4 ? "On" : "Off"; };
   tapOn.id = prefix + "{0EA26FE5-F45F-431E-9421-0FDD9E508CB8}";
+  tapOn.description = "Multi-Tap Delay Tap Enabled";
   tapOn.type = FBParamType::Boolean;
   tapOn.slotFormatDisplay = true;
   auto selectTapOn = [](auto& module) { return &module.block.tapOn; };
@@ -373,6 +386,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapLevel.display = "Lvl";
   tapLevel.slotCount = FFEchoTapCount;
   tapLevel.id = prefix + "{E3633411-F79D-4D2A-A748-82E03A35434E}";
+  tapLevel.description = "Multi-Tap Delay Tap Level";
   tapLevel.defaultTextSelector = [](int, int, int ps) { return ps == 0? "100": ps == 1? "80": ps == 2? "60": ps == 3? "40": "0"; };
   tapLevel.type = FBParamType::Identity;
   auto selectTapLevel = [](auto& module) { return &module.acc.tapLevel; };
@@ -390,6 +404,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapDelayTime.slotCount = FFEchoTapCount;
   tapDelayTime.unit = "Sec";
   tapDelayTime.id = prefix + "{7ADA9075-213B-4809-B32E-39B2794B010F}";
+  tapDelayTime.description = "Multi-Tap Delay Tap Length Time";
   tapDelayTime.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "0.5" : ps == 1 ? "1" : ps == 2 ? "1.5" : ps == 3 ? "2" : "0"; };
   tapDelayTime.type = FBParamType::Linear;
   tapDelayTime.Linear().min = 0.0f;
@@ -411,6 +426,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapDelayBars.slotCount = FFEchoTapCount;
   tapDelayBars.unit = "Bars";
   tapDelayBars.id = prefix + "{BEDF76D3-211D-4A1F-AF42-85E9C4E5374F}";
+  tapDelayBars.description = "Multi-Tap Delay Tap Length Bars";
   tapDelayBars.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "1/4" : ps == 1 ? "1/2" : ps == 2 ? "3/4" : ps == 3 ? "1/1" : "Off"; };
   tapDelayBars.type = FBParamType::Bars;
   tapDelayBars.Bars().items = MakeEchoBarsItems();
@@ -430,6 +446,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapBal.slotCount = FFEchoTapCount;
   tapBal.unit = "%";
   tapBal.id = prefix + "{2DCCEE86-4381-4E7F-98B6-FA94059F253B}";
+  tapBal.description = "Multi-Tap Delay Tap Stereo Balance";
   tapBal.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "-33" : ps == 1 ? "33" : ps == 2 ? "-67" : ps == 3 ? "67" : "0"; };
   tapBal.type = FBParamType::Linear;
   tapBal.Linear().displayMultiplier = 100;
@@ -451,6 +468,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapXOver.display = "LRX";
   tapXOver.slotCount = FFEchoTapCount;
   tapXOver.id = prefix + "{C26420EA-2838-44E8-AA57-A4CA8E1A4759}";
+  tapXOver.description = "Multi-Tap Delay Tap Stereo Crossover";
   tapXOver.type = FBParamType::Identity;
   auto selectTapXOver = [](auto& module) { return &module.acc.tapXOver; };
   tapXOver.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapXOver);
@@ -467,6 +485,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapLPOn.slotCount = FFEchoTapCount;
   tapLPOn.defaultText = "Off";
   tapLPOn.id = prefix + "{483FDB57-3842-49B8-8B66-4A642A926D16}";
+  tapLPOn.description = "Multi-Tap Delay Tap LP On";
   tapLPOn.type = FBParamType::Boolean;
   auto selectTapLPOn = [](auto& module) { return &module.block.tapLPOn; };
   tapLPOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapLPOn);
@@ -484,6 +503,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapLPFreq.slotCount = FFEchoTapCount;
   tapLPFreq.unit = "Hz";
   tapLPFreq.id = prefix + "{D8CA3B61-6335-4457-9A4F-71F5A912C0D7}";
+  tapLPFreq.description = "Multi-Tap Delay Tap LP Frequency";
   tapLPFreq.type = FBParamType::Log2;
   tapLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectTapLPFreq = [](auto& module) { return &module.acc.tapLPFreq; };
@@ -502,6 +522,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapLPRes.slotCount = FFEchoTapCount;
   tapLPRes.unit = "%";
   tapLPRes.id = prefix + "{38991C7F-01FB-459B-9086-1F19E876D3CA}";
+  tapLPRes.description = "Multi-Tap Delay Tap LP Resonance";
   tapLPRes.type = FBParamType::Identity;
   auto selectTapLPRes = [](auto& module) { return &module.acc.tapLPRes; };
   tapLPRes.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapLPRes);
@@ -518,6 +539,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapHPOn.slotCount = FFEchoTapCount;
   tapHPOn.defaultText = "Off";
   tapHPOn.id = prefix + "{B60F324E-6A6A-4E02-AA9E-2C6345E26F6A}";
+  tapHPOn.description = "Multi-Tap Delay Tap HP On";
   tapHPOn.type = FBParamType::Boolean;
   auto selectTapHPOn = [](auto& module) { return &module.block.tapHPOn; };
   tapHPOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapHPOn);
@@ -535,6 +557,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapHPFreq.slotCount = FFEchoTapCount;
   tapHPFreq.unit = "Hz";
   tapHPFreq.id = prefix + "{3B3F90D7-CAF0-45ED-8316-D21BE4508E05}";
+  tapHPFreq.description = "Multi-Tap Delay Tap HP Frequency";
   tapHPFreq.type = FBParamType::Log2;
   tapHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectTapHPFreq = [](auto& module) { return &module.acc.tapHPFreq; };
@@ -553,6 +576,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   tapHPRes.slotCount = FFEchoTapCount;
   tapHPRes.unit = "%";
   tapHPRes.id = prefix + "{E8174982-FF15-4375-84BA-1C8AFBE8CF28}";
+  tapHPRes.description = "Multi-Tap Delay Tap HP Resonance";
   tapHPRes.type = FBParamType::Identity;
   auto selectTapHPRes = [](auto& module) { return &module.acc.tapHPRes; };
   tapHPRes.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapHPRes);
@@ -569,6 +593,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackOn.slotCount = 1;
   feedbackOn.defaultText = "On";
   feedbackOn.id = prefix + "{E28CD2D5-59B4-4C77-830F-BC961239299C}";
+  feedbackOn.description = "Feedback Delay Enabled";
   feedbackOn.type = FBParamType::Boolean;
   auto selectFeedbackOn = [](auto& module) { return &module.block.feedbackOn; };
   feedbackOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackOn);
@@ -586,6 +611,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackMix.display = "Mix";
   feedbackMix.slotCount = 1;
   feedbackMix.id = prefix + "{47D9FE5B-D161-4198-9AC2-44089966575E}";
+  feedbackMix.description = "Feedback Delay Dry/Wet Mix";
   feedbackMix.type = FBParamType::Identity;
   auto selectFeedbackMix = [](auto& module) { return &module.acc.feedbackMix; };
   feedbackMix.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackMix);
@@ -603,6 +629,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackXOver.display = "LRX";
   feedbackXOver.slotCount = 1;
   feedbackXOver.id = prefix + "{C4D67CA6-41FE-4B54-8C2B-9C87F0DA6F0C}";
+  feedbackXOver.description = "Feedback Delay Stereo Crossover";
   feedbackXOver.type = FBParamType::Identity;
   auto selectFeedbackXOver = [](auto& module) { return &module.acc.feedbackXOver; };
   feedbackXOver.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackXOver);
@@ -620,6 +647,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackAmount.display = "Amt";
   feedbackAmount.slotCount = 1;
   feedbackAmount.id = prefix + "{56017DC9-4B7D-44A5-AB7C-B6158BA584C3}";
+  feedbackAmount.description = "Feedback Delay Feedback Amount";
   feedbackAmount.type = FBParamType::Identity;
   auto selectFeedbackAmount = [](auto& module) { return &module.acc.feedbackAmount; };
   feedbackAmount.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackAmount);
@@ -637,6 +665,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackDelayTime.slotCount = 1;
   feedbackDelayTime.unit = "Sec";
   feedbackDelayTime.id = prefix + "{CBD0A273-5E74-460E-A327-5EE9EE1C6F49}";
+  feedbackDelayTime.description = "Feedback Delay Length Time";
   feedbackDelayTime.type = FBParamType::Linear;
   feedbackDelayTime.Linear().max = 10.0f;
   feedbackDelayTime.Linear().min = 0.002f;
@@ -658,6 +687,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackDelayBars.slotCount = 1;
   feedbackDelayBars.unit = "Bars";
   feedbackDelayBars.id = prefix + "{BAC85A14-5F60-4692-9D45-81AB29477F61}";
+  feedbackDelayBars.description = "Feedback Delay Length Bars";
   feedbackDelayBars.type = FBParamType::Bars;
   feedbackDelayBars.Bars().items = MakeEchoBarsItems();
   auto selectFeedbackDelayBars = [](auto& module) { return &module.block.feedbackDelayBars; };
@@ -677,6 +707,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackModRate.slotCount = 1;
   feedbackModRate.unit = "Hz";
   feedbackModRate.id = prefix + "{640B47FC-7506-4853-93E0-2C628F8BF3D8}";
+  feedbackModRate.description = "Feedback Delay Length Modulation Rate";
   feedbackModRate.type = FBParamType::Linear;
   feedbackModRate.Linear().min = 0.05f;
   feedbackModRate.Linear().max = 5.0f;
@@ -696,6 +727,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackModAmt.display = "Mod Amt";
   feedbackModAmt.slotCount = 1;
   feedbackModAmt.id = prefix + "{686BE077-623D-4B14-94A2-F708139F8535}";
+  feedbackModAmt.description = "Feedback Delay Length Modulation Amount";
   feedbackModAmt.type = FBParamType::Linear;
   feedbackModAmt.Linear().min = 0.0f;
   feedbackModAmt.Linear().max = 0.002f;
@@ -715,6 +747,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackLPOn.slotCount = 1;
   feedbackLPOn.defaultText = "Off";
   feedbackLPOn.id = prefix + "{CE69D29E-65D9-4B4B-AF76-16AAD3DC912F}";
+  feedbackLPOn.description = "Feedback Delay LP On";
   feedbackLPOn.type = FBParamType::Boolean;
   auto selectFeedbackLPOn = [](auto& module) { return &module.block.feedbackLPOn; };
   feedbackLPOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackLPOn);
@@ -732,6 +765,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackLPFreq.slotCount = 1;
   feedbackLPFreq.unit = "Hz";
   feedbackLPFreq.id = prefix + "{E4D8EB30-BF2A-4935-AE14-053F6CF9C446}";
+  feedbackLPFreq.description = "Feedback Delay LP Frequency";
   feedbackLPFreq.type = FBParamType::Log2;
   feedbackLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectFeedbackLPFreq = [](auto& module) { return &module.acc.feedbackLPFreq; };
@@ -750,6 +784,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackLPRes.slotCount = 1;
   feedbackLPRes.unit = "%";
   feedbackLPRes.id = prefix + "{178C853C-F11C-45C6-A8D3-D62FFA202D9E}";
+  feedbackLPRes.description = "Feedback Delay LP Resonance";
   feedbackLPRes.type = FBParamType::Identity;
   auto selectFeedbackLPRes = [](auto& module) { return &module.acc.feedbackLPRes; };
   feedbackLPRes.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackLPRes);
@@ -766,6 +801,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackHPOn.slotCount = 1;
   feedbackHPOn.defaultText = "Off";
   feedbackHPOn.id = prefix + "{3A9398F7-38C2-4C3A-9F8A-33C1FBFE75D7}";
+  feedbackHPOn.description = "Feedback Delay HP On";
   feedbackHPOn.type = FBParamType::Boolean;
   auto selectFeedbackHPOn = [](auto& module) { return &module.block.feedbackHPOn; };
   feedbackHPOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackHPOn);
@@ -783,6 +819,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackHPFreq.slotCount = 1;
   feedbackHPFreq.unit = "Hz";
   feedbackHPFreq.id = prefix + "{FE81A57D-1D98-4D3D-B563-8A63B099DB99}";
+  feedbackHPFreq.description = "Feedback Delay HP Frequency";
   feedbackHPFreq.type = FBParamType::Log2;
   feedbackHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectFeedbackHPFreq = [](auto& module) { return &module.acc.feedbackHPFreq; };
@@ -801,6 +838,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   feedbackHPRes.slotCount = 1;
   feedbackHPRes.unit = "%";
   feedbackHPRes.id = prefix + "{FD6F1412-EE09-4A50-835E-A8051AC39411}";
+  feedbackHPRes.description = "Feedback Delay HP Resonance";
   feedbackHPRes.type = FBParamType::Identity;
   auto selectFeedbackHPRes = [](auto& module) { return &module.acc.feedbackHPRes; };
   feedbackHPRes.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackHPRes);
@@ -817,6 +855,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbOn.slotCount = 1;
   reverbOn.defaultText = "Off";
   reverbOn.id = prefix + "{935D11F3-1131-40DE-81E5-FC3DCDCBAE73}";
+  reverbOn.description = "Reverb Enabled";
   reverbOn.type = FBParamType::Boolean;
   auto selectReverbOn = [](auto& module) { return &module.block.reverbOn; };
   reverbOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbOn);
@@ -834,6 +873,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbMix.display = "Mix";
   reverbMix.slotCount = 1;
   reverbMix.id = prefix + "{D40CAAA2-186D-4296-BE87-7DFCCA33C4AF}";
+  reverbMix.description = "Reverb Dry/Wet Mix";
   reverbMix.type = FBParamType::Identity;
   auto selectReverbMix = [](auto& module) { return &module.acc.reverbMix; };
   reverbMix.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbMix);
@@ -851,6 +891,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbXOver.display = "LRX";
   reverbXOver.slotCount = 1;
   reverbXOver.id = prefix + "{F31A5809-1558-4B9C-A953-EAC108530E3E}";
+  reverbXOver.description = "Reverb Stereo Crossover";
   reverbXOver.type = FBParamType::Identity;
   auto selectReverbXOver = [](auto& module) { return &module.acc.reverbXOver; };
   reverbXOver.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbXOver);
@@ -868,6 +909,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbAPF.display = "APF";
   reverbAPF.slotCount = 1;
   reverbAPF.id = prefix + "{3D12C8EF-6891-4980-8BAD-33E74AD79298}";
+  reverbAPF.description = "Reverb Allpass Filter";
   reverbAPF.type = FBParamType::Identity;
   auto selectReverbAPF = [](auto& module) { return &module.acc.reverbAPF; };
   reverbAPF.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbAPF);
@@ -885,6 +927,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbDamp.display = "Damp";
   reverbDamp.slotCount = 1;
   reverbDamp.id = prefix + "{5E33AA4C-F65E-432A-9DCB-E67F4AF46770}";
+  reverbDamp.description = "Reverb Damping Factor";
   reverbDamp.type = FBParamType::Identity;
   auto selectReverbDamp = [](auto& module) { return &module.acc.reverbDamp; };
   reverbDamp.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbDamp);
@@ -902,6 +945,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbSize.display = "Size";
   reverbSize.slotCount = 1;
   reverbSize.id = prefix + "{2B4B1255-6875-49B3-B52D-CC9711C6D7A4}";
+  reverbSize.description = "Reverb Room Size";
   reverbSize.type = FBParamType::Identity;
   auto selectReverbSize = [](auto& module) { return &module.acc.reverbSize; };
   reverbSize.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbSize);
@@ -918,6 +962,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbLPOn.slotCount = 1;
   reverbLPOn.defaultText = "Off";
   reverbLPOn.id = prefix + "{BDB27A94-D5D0-44F6-8DBE-D98C70CFBD0D}";
+  reverbLPOn.description = "Reverb LP On";
   reverbLPOn.type = FBParamType::Boolean;
   auto selectReverbLPOn = [](auto& module) { return &module.block.reverbLPOn; };
   reverbLPOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbLPOn);
@@ -935,6 +980,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbLPFreq.slotCount = 1;
   reverbLPFreq.unit = "Hz";
   reverbLPFreq.id = prefix + "{9B215206-8C8A-4F37-9F54-60EF7AAA67E1}";
+  reverbLPFreq.description = "Reverb LP Frequency";
   reverbLPFreq.type = FBParamType::Log2;
   reverbLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectReverbLPFreq = [](auto& module) { return &module.acc.reverbLPFreq; };
@@ -953,6 +999,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbLPRes.slotCount = 1;
   reverbLPRes.unit = "%";
   reverbLPRes.id = prefix + "{94A61E63-8CEA-48B0-A2C1-AE170F8812D7}";
+  reverbLPRes.description = "Reverb LP Resonance";
   reverbLPRes.type = FBParamType::Identity;
   auto selectReverbLPRes = [](auto& module) { return &module.acc.reverbLPRes; };
   reverbLPRes.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbLPRes);
@@ -969,6 +1016,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbHPOn.slotCount = 1;
   reverbHPOn.defaultText = "Off";
   reverbHPOn.id = prefix + "{D4C2AF4D-98C2-4A3B-9534-6C61FE2E5CA8}";
+  reverbHPOn.description = "Reverb HP On";
   reverbHPOn.type = FBParamType::Boolean;
   auto selectReverbHPOn = [](auto& module) { return &module.block.reverbHPOn; };
   reverbHPOn.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbHPOn);
@@ -986,6 +1034,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbHPFreq.slotCount = 1;
   reverbHPFreq.unit = "Hz";
   reverbHPFreq.id = prefix + "{1CB4ACC6-1EA4-4693-B4D5-D93A73E1E01B}";
+  reverbHPFreq.description = "Reverb HP Frequency";
   reverbHPFreq.type = FBParamType::Log2;
   reverbHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectReverbHPFreq = [](auto& module) { return &module.acc.reverbHPFreq; };
@@ -1004,6 +1053,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   reverbHPRes.slotCount = 1;
   reverbHPRes.unit = "%";
   reverbHPRes.id = prefix + "{AE3A50D6-187E-4C20-84DF-C9311103950C}";
+  reverbHPRes.description = "Reverb HP Resonance";
   reverbHPRes.type = FBParamType::Identity;
   auto selectReverbHPRes = [](auto& module) { return &module.acc.reverbHPRes; };
   reverbHPRes.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectReverbHPRes);

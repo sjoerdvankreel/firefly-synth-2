@@ -231,13 +231,40 @@ FBPlugGUI::UpdateExchangeState()
 }
 
 void
+FBPlugGUI::ShowMenuForGUIParam(int index)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto menu = std::make_shared<PopupMenu>();
+  menu->addItem(1, "Show Manual");
+  menu->addSeparator();
+  menu->addItem(2, "Set To Default");
+  auto clicked = [this, index](int tag) {
+    if (tag <= 0)
+      return;
+    if (tag == 1)
+    {
+      HostContext()->ShowOnlineManualForGUIParam(index);
+    }
+    else if (tag == 2)
+    {
+      double normalized = HostContext()->Topo()->gui.params[index].DefaultNormalizedByText();
+      HostContext()->SetGUIParamNormalized(index, normalized);
+      GUIParamNormalizedChanged(index, normalized);
+    }
+  };
+  ShowPopupMenuFor(this, *menu, clicked);
+}
+
+void
 FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
 {
   FB_LOG_ENTRY_EXIT();
   auto menu = std::make_shared<PopupMenu>();
-  menu->addItem(1, "Set To Patch");
-  menu->addItem(2, "Set To Session");
-  menu->addItem(3, "Set To Default");
+  menu->addItem(1, "Show Manual");
+  menu->addSeparator();
+  menu->addItem(2, "Set To Patch");
+  menu->addItem(3, "Set To Session");
+  menu->addItem(4, "Set To Default");
   if (showHostMenu)
   {
     auto hostMenuItems = HostContext()->MakeAudioParamContextMenu(index);
@@ -250,17 +277,21 @@ FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
   auto clicked = [this, index](int tag) {
     if (tag <= 0)
       return;
-    else if (tag == 1)
+    if (tag == 1)
+    {
+      HostContext()->ShowOnlineManualForAudioParam(index);
+    }
+    else if (tag == 2)
     {
       HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Patch");
       HostContext()->PerformImmediateAudioParamEdit(index, *HostContext()->PatchState().Params()[index]);
     }
-    else if (tag == 2)
+    else if (tag == 3)
     {
       HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Session");
       HostContext()->PerformImmediateAudioParamEdit(index, *HostContext()->SessionState().Params()[index]);
     }
-    else if (tag == 3)
+    else if (tag == 4)
     {
       HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Default");
       HostContext()->PerformImmediateAudioParamEdit(index, HostContext()->Topo()->audio.params[index].DefaultNormalizedByText());
@@ -305,8 +336,11 @@ FBPlugGUI::GetTooltipForGUIParam(int index) const
 {
   auto const& param = HostContext()->Topo()->gui.params[index];
   double normalized = HostContext()->GetGUIParamNormalized(index);
-  std::string result = param.shortName + ": " + param.NormalizedToTextWithUnit(false, normalized);
+  std::string result = param.static_.description;
+  result += "\r\n";
+  result += "\r\n" + param.shortName + ": " + param.NormalizedToTextWithUnit(false, normalized);
   result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
+  result += "\r\nStored In: Session Only";
   return result;
 }
 
@@ -319,8 +353,27 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
   double engineMin = paramActive.active ? paramActive.minValue : normalized;
   double engineMax = paramActive.active ? paramActive.maxValue : normalized;
 
-  std::string result = param.shortName + ": ";
+  std::string result = param.static_.description;
+#ifndef NDEBUG
+  result += "\r\nParam index: " + std::to_string(index);
+  result += "\r\nParam tag: " + std::to_string(param.tag);
+#endif
+
+  result += "\r\n";
+  result += "\r\n" + param.shortName + ": ";
   result += param.NormalizedToTextWithUnit(false, normalized);
+  if (param.static_.IsOutput())
+    return result;
+
+  if (!param.static_.IsVoice())
+    result += "\r\nEngine: " + param.NormalizedToTextWithUnit(false, engineMin);
+  else
+  {
+    result += "\r\nEngine min: " + param.NormalizedToTextWithUnit(false, engineMin);
+    result += "\r\nEngine max: " + param.NormalizedToTextWithUnit(false, engineMax);
+  }
+
+  result += "\r\n";
   result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
   if (param.static_.mode == FBParamMode::Accurate || param.static_.mode == FBParamMode::VoiceStart)
     result += "\r\nAutomate: " + FBEditTypeToString(param.static_.NonRealTime().AutomationEditType());
@@ -330,17 +383,22 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
     result += "\r\nAutomation: Per-Sample";
   if (param.static_.mode == FBParamMode::VoiceStart)
     result += "\r\nAutomation: At Voice Start";
-  if (!param.static_.IsVoice())
-    result += "\r\nEngine: " + param.NormalizedToTextWithUnit(false, engineMin);
-  else
-  {
-    result += "\r\nEngine min: " + param.NormalizedToTextWithUnit(false, engineMin);
-    result += "\r\nEngine max: " + param.NormalizedToTextWithUnit(false, engineMax);
-  }
-#ifndef NDEBUG
-  result += "\r\nParam index: " + std::to_string(index);
-  result += "\r\nParam tag: " + std::to_string(param.tag);
-#endif
+  result += "\r\nStored In: " + (param.static_.storeInPatch ? std::string("Session And Patch") : std::string("Session Only"));
+
+  double modMin = 1.0;
+  double modMax = 0.0;
+  FBParamModulationBoundsSource source = GetParamModulationBounds(index, modMin, modMax);
+  if (source == FBParamModulationBoundsSource::None)
+    return result;
+
+  result += "\r\n";
+  if ((source & FBParamModulationBoundsSource::Matrix) != 0)
+    result += "\r\nModulated By Matrix";
+  if ((source & FBParamModulationBoundsSource::Unison) != 0)
+    result += "\r\nModulated By Unison";
+  if ((source & FBParamModulationBoundsSource::DirectAccess) != 0)
+    result += "\r\nModulated By Direct Mod";
+
   return result;
 }
 
@@ -357,8 +415,14 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   if (dynamic_cast<FBParamControl*>(event.eventComponent))
     return;
 
+  // pops up gui param context menu
+  if (dynamic_cast<FBGUIParamControl*>(event.eventComponent))
+    return;
+
   // for combos
   if (event.eventComponent && event.eventComponent->findParentComponentOfClass<FBParamControl>())
+    return;
+  if (event.eventComponent && event.eventComponent->findParentComponentOfClass<FBGUIParamControl>())
     return;
 
   // pops up module context menu
@@ -367,25 +431,29 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
 
   auto& undoState = HostContext()->UndoState();
   PopupMenu menu;
+  menu.addItem(1, "Show Manual");
+  menu.addSeparator();
+  menu.addItem(2, "Copy Patch");
+  menu.addItem(3, "Paste Patch");
+  menu.addSeparator();
   if (undoState.CanUndo())
-    menu.addItem(1, "Undo " + undoState.UndoAction());
+    menu.addItem(4, "Undo " + undoState.UndoAction());
   if (undoState.CanRedo())
-    menu.addItem(2, "Redo " + undoState.RedoAction());
-  menu.addItem(3, "Copy Patch");
-  menu.addItem(4, "Paste Patch");
+    menu.addItem(5, "Redo " + undoState.RedoAction());
 
   PopupMenu::Options options;
   options = options.withParentComponent(this);
   options = options.withMousePosition();
   menu.showMenuAsync(options, [this](int id) {
-    if (id == 1) HostContext()->UndoState().Undo();
-    if (id == 2) HostContext()->UndoState().Redo(); 
-    if (id == 3) {
+    if (id == 1) HostContext()->ShowOnlineManual();
+    if (id == 4) HostContext()->UndoState().Undo();
+    if (id == 5) HostContext()->UndoState().Redo(); 
+    if (id == 2) {
       FBScalarStateContainer editState(*HostContext()->Topo());
-      editState.CopyFrom(HostContext());
+      editState.CopyFrom(HostContext(), true);
       SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveEditStateToString(editState, true));
     }
-    if (id == 4) {
+    if (id == 3) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
         AlertWindow::showMessageBoxAsync(
           MessageBoxIconType::InfoIcon,
@@ -401,8 +469,8 @@ FBPlugGUI::ReloadPatch()
   FB_LOG_ENTRY_EXIT();
   std::string oldName = HostContext()->PatchName();
   HostContext()->UndoState().Snapshot("Reload Patch");
-  HostContext()->RevertToPatchState();
-  HostContext()->MarkAsPatchState(oldName);
+  HostContext()->RevertPatchToPatchState();
+  HostContext()->MarkPatchAsPatchState(oldName);
   OnPatchChanged();
 }
 
@@ -411,7 +479,7 @@ FBPlugGUI::ReloadSession()
 {
   FB_LOG_ENTRY_EXIT();
   HostContext()->UndoState().Snapshot("Reload Session");
-  HostContext()->RevertToSessionState();
+  HostContext()->RevertPatchToSessionState();
   OnPatchChanged();
 }
 
@@ -422,8 +490,9 @@ FBPlugGUI::InitPatch()
   HostContext()->UndoState().Snapshot("Init Patch");
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
-    HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
-  HostContext()->MarkAsPatchState("Init Patch");
+    if(HostContext()->Topo()->audio.params[i].static_.storeInPatch)
+      HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
+  HostContext()->MarkPatchAsPatchState("Init Patch");
   OnPatchChanged();
 }
 
@@ -440,7 +509,7 @@ FBPlugGUI::SavePatchToFile()
     delete &chooser;
     if (file.getFullPathName().length() == 0) return;
     FBScalarStateContainer editState(*HostContext()->Topo());
-    editState.CopyFrom(HostContext());
+    editState.CopyFrom(HostContext(), true);
     file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState, true));
   });
 }
@@ -456,8 +525,8 @@ FBPlugGUI::LoadPatchFromText(
   if (!HostContext()->Topo()->LoadEditStateFromString(text, editState, true))
     return false;
   HostContext()->UndoState().Snapshot(undoAction);
-  editState.CopyTo(HostContext());
-  HostContext()->MarkAsPatchState(patchName);
+  editState.CopyTo(HostContext(), true);
+  HostContext()->MarkPatchAsPatchState(patchName);
   OnPatchChanged();
   return true;
 }

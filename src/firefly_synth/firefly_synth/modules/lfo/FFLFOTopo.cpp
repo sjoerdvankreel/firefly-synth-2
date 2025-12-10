@@ -81,6 +81,7 @@ FFMakeLFOTopo(bool global)
   type.name = "Type";
   type.slotCount = 1;
   type.id = prefix + "{D75D506B-3976-44C3-A609-3982D26B4F2D}";
+  type.description = "LFO Type";
   type.type = FBParamType::List;
   type.List().items = {
     { "{EBD31B78-C404-4B86-A8BA-48788922F34B}" },
@@ -115,6 +116,7 @@ FFMakeLFOTopo(bool global)
   sync.slotCount = 1;
   sync.defaultText = "Off";
   sync.id = prefix + "{879655C7-41EC-4089-84E0-A5E244E47F56}";
+  sync.description = "LFO Tempo Sync";
   sync.type = FBParamType::Boolean;
   auto selectSync = [](auto& module) { return &module.block.sync; };
   sync.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSync);
@@ -130,6 +132,7 @@ FFMakeLFOTopo(bool global)
   seed.name = "Seed";
   seed.slotCount = 1;
   seed.id = prefix + "{3283748D-70B7-41FC-986B-1B76D4E35F48}";
+  seed.description = "LFO Random Seed";
   seed.type = FBParamType::Discrete;
   seed.Discrete().valueCount = FFLFOMaxSeed + 1;
   auto selectSeed = [](auto& module) { return &module.block.seed; };
@@ -148,6 +151,7 @@ FFMakeLFOTopo(bool global)
   smoothTime.slotCount = 1;
   smoothTime.unit = "Sec";
   smoothTime.id = prefix + "{6064C303-9588-433E-84FE-79B61FDD2ABE}";
+  smoothTime.description = "LFO Smooth Time";
   smoothTime.type = FBParamType::Linear;
   smoothTime.Linear().min = 0.0f;
   smoothTime.Linear().max = 10.0f;
@@ -169,6 +173,7 @@ FFMakeLFOTopo(bool global)
   smoothBars.slotCount = 1;
   smoothBars.unit = "Bars";
   smoothBars.id = prefix + "{B1FEDD9E-47D0-4D3D-981C-E7C8D8A65BC7}";
+  smoothBars.description = "LFO Smooth Bars";
   smoothBars.type = FBParamType::Bars;
   smoothBars.Bars().items = MakeLFOBarsItems(true);
   auto selectSmoothBars = [](auto& module) { return &module.block.smoothBars; };
@@ -187,6 +192,7 @@ FFMakeLFOTopo(bool global)
   opType.slotCount = FFLFOBlockCount;
   opType.slotFormatter = FFFormatBlockSlot;
   opType.id = prefix + "{B60CF69F-B21F-4BB6-891A-9E1493D0E40E}";
+  opType.description = "LFO Operator";
   opType.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "UP AdU" : "Off"; };
   opType.type = FBParamType::List;
   opType.List().items = {
@@ -219,6 +225,7 @@ FFMakeLFOTopo(bool global)
   min.slotFormatter = FFFormatBlockSlot;
   min.unit = "%";
   min.id = prefix + "{6E12AC6E-B1C3-4DA4-A1C0-EEB7C2187208}";
+  min.description = "LFO Min Value";
   min.type = FBParamType::Identity;
   auto selectMin = [](auto& module) { return &module.acc.min; };
   min.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectMin);
@@ -237,6 +244,7 @@ FFMakeLFOTopo(bool global)
   max.slotFormatter = FFFormatBlockSlot;
   max.unit = "%";
   max.id = prefix + "{C6DC5AF0-39EF-4C85-8FD6-6A0FDFC88732}";
+  max.description = "LFO Max Value";
   max.type = FBParamType::Identity;
   auto selectMax = [](auto& module) { return &module.acc.max; };
   max.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectMax);
@@ -254,6 +262,7 @@ FFMakeLFOTopo(bool global)
   waveMode.slotCount = FFLFOBlockCount;
   waveMode.slotFormatter = FFFormatBlockSlot;
   waveMode.id = prefix + "{140C3465-BD6A-495A-BA65-17A82290571E}";
+  waveMode.description = "LFO Waveform Mode";
   waveMode.type = FBParamType::List;
   waveMode.List().items = {
     { "{9BD329A7-3F02-4DDC-8A42-C21D6D780C28}", FFLFOWaveModeToString(FFTrigSin) },
@@ -303,6 +312,7 @@ FFMakeLFOTopo(bool global)
   rateHz.slotFormatter = FFFormatBlockSlot;
   rateHz.unit = "Hz";
   rateHz.id = prefix + "{EFAAB971-9F51-4FFD-9873-D33D4591F606}";
+  rateHz.description = "LFO Rate Time";
   rateHz.type = FBParamType::Linear;
   rateHz.Linear().min = 0.05f;
   rateHz.Linear().max = 20.0f;
@@ -325,6 +335,7 @@ FFMakeLFOTopo(bool global)
   rateBars.slotFormatter = FFFormatBlockSlot;
   rateBars.unit = "Bars";
   rateBars.id = prefix + "{394760D6-D4CE-453F-9C95-29B788E1E284}";
+  rateBars.description = "LFO Rate Bars";
   rateBars.type = FBParamType::Bars;
   rateBars.Bars().items = MakeLFOBarsItems(false);
   auto selectRateBars = [](auto& module) { return &module.block.rateBars; };
@@ -344,6 +355,7 @@ FFMakeLFOTopo(bool global)
   steps.slotCount = FFLFOBlockCount;
   steps.slotFormatter = FFFormatBlockSlot;
   steps.id = prefix + "{F356CD96-80FD-4A45-A2BE-76785CC5463F}";
+  steps.description = "LFO Step Count";
   steps.type = FBParamType::Discrete;
   steps.Discrete().valueCount = 32;
   steps.Discrete().valueOffset = 1;
@@ -364,6 +376,7 @@ FFMakeLFOTopo(bool global)
   phase.slotFormatter = FFFormatBlockSlot;
   phase.unit = "%";
   phase.id = prefix + "{4BFEC447-4A16-4AE4-9E73-4FDC889046D1}";
+  phase.description = "LFO Phase Offset";
   phase.type = FBParamType::Identity;
   auto selectPhase = [](auto& module) { return &module.voiceStart.phase; };
   phase.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectPhase);
@@ -380,6 +393,7 @@ FFMakeLFOTopo(bool global)
   skewAXMode.name = "Skew A X Mode";
   skewAXMode.slotCount = 1;
   skewAXMode.id = prefix + "{AA602AF4-882F-49E0-AA2B-B4D00C1723C2}";
+  skewAXMode.description = "LFO Horizontal Skew Mode";
   skewAXMode.type = FBParamType::List;
   skewAXMode.List().items = {
     { "{D057104A-C083-4BA4-9799-63307147B2E2}", "Off" },
@@ -402,6 +416,7 @@ FFMakeLFOTopo(bool global)
   skewAXAmt.slotCount = 1;
   skewAXAmt.unit = "%";
   skewAXAmt.id = prefix + "{49209170-5BA6-4B96-8E60-79A287680EAD}";
+  skewAXAmt.description = "LFO Horizontal Skew Amount";
   skewAXAmt.type = FBParamType::Identity;
   auto selectSkewAXAmt = [](auto& module) { return &module.acc.skewAXAmt; };
   skewAXAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAXAmt);
@@ -418,6 +433,7 @@ FFMakeLFOTopo(bool global)
   skewAYMode.name = "Skew A Y Mode";
   skewAYMode.slotCount = 1;
   skewAYMode.id = prefix + "{20D3F79F-F727-4164-AE04-27D9D254CE60}";
+  skewAYMode.description = "LFO Vertical Skew Mode";
   skewAYMode.type = FBParamType::List;
   skewAYMode.List().items = {
     { "{ADE99968-98D3-4314-BDE4-09A440FADB45}", "Off" },
@@ -438,6 +454,7 @@ FFMakeLFOTopo(bool global)
   skewAYAmt.slotCount = 1;
   skewAYAmt.unit = "%";
   skewAYAmt.id = prefix + "{E8E4BD9E-7E2A-4B26-AA42-87157C5246BF}";
+  skewAYAmt.description = "LFO Vertical Skew Amount";
   skewAYAmt.type = FBParamType::Identity;
   auto selectSkewAYAmt = [](auto& module) { return &module.acc.skewAYAmt; };
   skewAYAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAYAmt);

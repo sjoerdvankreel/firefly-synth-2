@@ -21,6 +21,7 @@ FFMakeGUISettingsTopo()
   guiUserScale.name = "User Scale";
   guiUserScale.slotCount = 1;
   guiUserScale.id = "{48F2A59F-789F-4076-AB4B-4CC19B3A929A}";
+  guiUserScale.description = "User Scale";
   guiUserScale.type = FBParamType::Linear;
   guiUserScale.Linear().min = 0.5f;
   guiUserScale.Linear().max = 4.0f;
@@ -32,6 +33,7 @@ FFMakeGUISettingsTopo()
   guiHilightMod.slotCount = 1;
   guiHilightMod.defaultText = "On";
   guiHilightMod.id = "{193F0F95-D4D2-46A5-A978-C8740E0C08B3}";
+  guiHilightMod.description = "Highlight Parameter Modulation Bounds";
   guiHilightMod.type = FBParamType::Boolean;
   auto selectGuiHilightMod = [](auto& module) { return &module.hilightMod; };
   guiHilightMod.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightMod);
@@ -41,6 +43,7 @@ FFMakeGUISettingsTopo()
   guiHilightTweakMode.slotCount = 1;
   guiHilightTweakMode.defaultText = "Default";
   guiHilightTweakMode.id = "{486DAE85-F8CC-4825-ACEA-D13D3D8A6933}";
+  guiHilightTweakMode.description = "Highlight Tweaked Parameters";
   guiHilightTweakMode.type = FBParamType::List;
   guiHilightTweakMode.List().items = {
    { "{C89F3D84-0C5E-4130-9663-FE372973FBCE}", "Off" },
@@ -55,6 +58,7 @@ FFMakeGUISettingsTopo()
   guiKnobVisualsMode.name = "Knob Visuals From Engine";
   guiKnobVisualsMode.slotCount = 1;
   guiKnobVisualsMode.id = "{75702E18-0499-45ED-935E-A1BC1D0348C3}";
+  guiKnobVisualsMode.description = "Highlight Engine Parameter State";
   guiKnobVisualsMode.type = FBParamType::List;
   guiKnobVisualsMode.List().items = {
     { "{74535D7D-90EC-407D-A439-946A9C09351D}", "Off" },
@@ -68,6 +72,7 @@ FFMakeGUISettingsTopo()
   guiGraphVisualsMode.name = "Plot Visuals From Engine";
   guiGraphVisualsMode.slotCount = 1;
   guiGraphVisualsMode.id = "{6C5F2DC2-C796-444C-8D43-077708580609}";
+  guiGraphVisualsMode.description = "Show Engine State In Graph Plots";
   guiGraphVisualsMode.type = FBParamType::List;
   guiGraphVisualsMode.List().items = {
     { "{D5C9FC77-0DE8-4077-9D07-073B44F5076F}", "Off" },
@@ -81,6 +86,7 @@ FFMakeGUISettingsTopo()
   guiOscSelectedTab.name = "Osc Selected Tab";
   guiOscSelectedTab.slotCount = 1;
   guiOscSelectedTab.id = "{677ADE6F-E531-4FA0-AF84-1D31D78AACCB}";
+  guiOscSelectedTab.description = "Osc Selected Tab";
   guiOscSelectedTab.type = FBParamType::Discrete;
   guiOscSelectedTab.Discrete().valueCount = FFOsciCount + 1;
   auto selectGuiOscSelectedTab = [](auto& module) { return &module.oscSelectedTab; };
@@ -89,6 +95,7 @@ FFMakeGUISettingsTopo()
   auto& guiFxSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::FXSelectedTab];
   guiFxSelectedTab.defaultText = "0";
   guiFxSelectedTab.name = "FX Selected Tab";
+  guiFxSelectedTab.description = "FX Selected Tab";
   guiFxSelectedTab.slotCount = 1;
   guiFxSelectedTab.id = "{EA9332F9-2B1F-4D96-B67C-F632231F7C7B}";
   guiFxSelectedTab.type = FBParamType::Discrete;
@@ -99,6 +106,7 @@ FFMakeGUISettingsTopo()
   auto& guiLFOSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::LFOSelectedTab];
   guiLFOSelectedTab.defaultText = "0";
   guiLFOSelectedTab.name = "LFO Selected Tab";
+  guiLFOSelectedTab.description = "LFO Selected Tab";
   guiLFOSelectedTab.slotCount = 1;
   guiLFOSelectedTab.id = "{23C0E87A-9224-43BB-97CE-549586B39BF4}";
   guiLFOSelectedTab.type = FBParamType::Discrete;
@@ -109,6 +117,7 @@ FFMakeGUISettingsTopo()
   auto& guiMixSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::MixSelectedTab];
   guiMixSelectedTab.defaultText = "0";
   guiMixSelectedTab.name = "Mix Selected Tab";
+  guiMixSelectedTab.description = "Mix Selected Tab";
   guiMixSelectedTab.slotCount = 1;
   guiMixSelectedTab.id = "{862452C8-DA0C-4AB6-AB54-2922F8F00E7E}";
   guiMixSelectedTab.type = FBParamType::Discrete;
@@ -119,6 +128,7 @@ FFMakeGUISettingsTopo()
   auto& guiEnvSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::EnvSelectedTab];
   guiEnvSelectedTab.defaultText = "0";
   guiEnvSelectedTab.name = "Env Selected Tab";
+  guiEnvSelectedTab.description = "Env Selected Tab";
   guiEnvSelectedTab.slotCount = 1;
   guiEnvSelectedTab.id = "{83D56B7F-28A7-4A02-AEBB-8D55E6CDB4D8}";
   guiEnvSelectedTab.type = FBParamType::Discrete;
@@ -129,6 +139,7 @@ FFMakeGUISettingsTopo()
   auto& guiEchoSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::EchoSelectedTab];
   guiEchoSelectedTab.defaultText = "0";
   guiEchoSelectedTab.name = "Echo Selected Tab";
+  guiEchoSelectedTab.description = "Echo Selected Tab";
   guiEchoSelectedTab.slotCount = 1;
   guiEchoSelectedTab.id = "{0087ED9D-5B24-4A22-9F3D-738AF0605136}";
   guiEchoSelectedTab.type = FBParamType::Discrete;

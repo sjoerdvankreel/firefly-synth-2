@@ -1,7 +1,9 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
+#include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
@@ -11,6 +13,30 @@ using namespace juce;
 
 static const int TabSizeSmall = 40;
 static const int TabSizeLarge = 60;
+
+// Juce delegates combo tooltip to label tooltip, but we never set that one.
+// We just generate tooltips on the fly. So instead, have the label ask the combo for the tip.
+class FBComboBoxLabel :
+public juce::Label
+{
+  ComboBox* _box;
+
+public:
+  String getTooltip() override;
+  FBComboBoxLabel(ComboBox* box) : _box(box) {}
+};
+
+String
+FBComboBoxLabel::getTooltip()
+{
+  FBParamComboBox* paramBox = nullptr;
+  if ((paramBox = dynamic_cast<FBParamComboBox*>(_box)) != nullptr)
+    return paramBox->FBParamComboBox::getTooltip();
+  FBGUIParamComboBox* guiParamBox = nullptr;
+  if ((guiParamBox = dynamic_cast<FBGUIParamComboBox*>(_box)) != nullptr)
+    return guiParamBox->FBGUIParamComboBox::getTooltip();
+  return Label::getTooltip();
+}
 
 static double
 ConvertValueFromSkewed(FBStaticParamBase const& param, double normalized)
@@ -42,7 +68,7 @@ GetSliderModulationBounds(Slider const& s, double& minNorm, double& maxNorm)
     return false;
   if (!ps->PlugGUI()->HighlightModulationBounds())
     return false;
-  if (!ps->PlugGUI()->GetParamModulationBounds(ps->Param()->runtimeParamIndex, minNorm, maxNorm))
+  if (ps->PlugGUI()->GetParamModulationBounds(ps->Param()->runtimeParamIndex, minNorm, maxNorm) == FBParamModulationBoundsSource::None)
     return false;
   auto const& staticParam = ps->Param()->static_;
   minNorm = ConvertValueFromSkewed(staticParam, minNorm);
@@ -186,6 +212,13 @@ FBLookAndFeel::getTabButtonBestWidth(
   return result;
 }
 
+Label* 
+FBLookAndFeel::createComboBoxTextBox(
+  ComboBox& box)
+{
+  return new FBComboBoxLabel(&box);
+}
+
 void 
 FBLookAndFeel::positionComboBoxText(
   ComboBox& b, Label& l)
@@ -199,6 +232,13 @@ void
 FBLookAndFeel::drawLabel(
   Graphics& g, Label& label)
 {
+  if (dynamic_cast<FBAutoSizeLabel2*>(&label) ||
+      dynamic_cast<FBLastTweakedLabel*>(&label))
+  {
+    g.setColour(Colour(0xFF333333));
+    g.fillRoundedRectangle(label.getLocalBounds().toFloat(), 2.0f);
+  }
+
   g.fillAll(label.findColour(Label::backgroundColourId));
   auto alpha = label.isEnabled() ? 1.0f : 0.5f;
   const Font font(getLabelFont(label));
@@ -474,6 +514,57 @@ FBLookAndFeel::drawRotarySlider(
     DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
 }
 
+juce::Rectangle<int> 
+FBLookAndFeel::getTooltipBounds(
+  const juce::String& tipText,
+  juce::Point<int> screenPos,
+  juce::Rectangle<int> parentArea)
+{
+  auto trimmed = tipText.trim();
+
+  float th = 0.0f;
+  float tw = 0.0f;
+  float fontSize = 13.0f;
+  float textHeight = FBGUIGetFontHeightFloat() + 2.0f;
+  auto lines = FBStringSplit(trimmed.toStdString(), "\r\n");
+  auto font = Font(FontOptions(fontSize, Font::bold).withMetricsKind(getDefaultMetricsKind()));
+  for (int i = 0; i < lines.size(); i++)
+  {
+    th += textHeight;
+#if _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4996)
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+    // The JUCE suggested alternatives hang on occasion.
+    tw = std::max(tw, font.getStringWidthFloat(lines[i]));
+#if _MSC_VER
+#pragma warning(pop)
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
+  }
+
+  int pad = 3;
+  int itw = (int)std::ceil(tw) + 2 * pad + 2;
+  int ith = (int)std::ceil(th) + 2 * pad + 2;
+  return Rectangle<int>(screenPos.x > parentArea.getCentreX() ? screenPos.x - (itw + 12) : screenPos.x + 24,
+    screenPos.y > parentArea.getCentreY() ? screenPos.y - (ith + 6) : screenPos.y + 6,
+    itw, ith)
+    .constrainedWithin(parentArea);
+}
+
 void 
 FBLookAndFeel::drawTooltip(
   Graphics& g, const String& text,
@@ -481,7 +572,26 @@ FBLookAndFeel::drawTooltip(
 {
   auto cornerSize = 5.0f;
   Rectangle<int> bounds(width, height);
-  LookAndFeel_V4::drawTooltip(g, text, width, height);
+  g.setColour(findColour(TooltipWindow::backgroundColourId));
+  g.fillRoundedRectangle(bounds.toFloat(), cornerSize);
+  g.setColour(findColour(TooltipWindow::outlineColourId));
+  g.drawRoundedRectangle(bounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+
+  float pad = 3.0f;
+  float fontSize = 13.0f;
+  auto trimmed = text.trim();
+  float textHeight = FBGUIGetFontHeightFloat() + 2.0f;
+  auto lines = FBStringSplit(trimmed.toStdString(), "\r\n");
+  auto textBounds = Rectangle<float>(pad, pad, width - 2.0f * pad, textHeight);
+  g.setColour(findColour(TooltipWindow::textColourId));
+  g.setFont(Font(FontOptions(fontSize, Font::bold).withMetricsKind(getDefaultMetricsKind())));
+  while (lines.size() > 0)
+  {
+    if (lines[0].size() > 0)
+      g.drawText(lines[0], textBounds, Justification::left, false);
+    lines.erase(lines.begin());
+    textBounds.translate(0.0f, textHeight);
+  }
   g.setColour(Colours::white);
   g.drawRoundedRectangle(bounds.toFloat(), cornerSize, 2.0f);
 }

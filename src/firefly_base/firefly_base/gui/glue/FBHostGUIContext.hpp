@@ -74,6 +74,8 @@ private:
   // updated on daw load
   FBScalarStateContainer _sessionState;
 
+  void ShowOnlineManualForModule(int index) const;
+
   std::shared_ptr<FBPresetFolder>
   LoadPresetList(std::filesystem::path const& p) const;
 
@@ -88,10 +90,10 @@ protected:
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
 
 public:
-  void RevertToPatchState();
-  void MarkAsSessionState();
-  void RevertToSessionState();
-  void MarkAsPatchState(std::string const& name);
+  void RevertPatchToPatchState();
+  void MarkPatchAsSessionState();
+  void RevertPatchToSessionState();
+  void MarkPatchAsPatchState(std::string const& name);
 
   double GetUserScaleMin() const;
   double GetUserScaleMax() const;
@@ -101,7 +103,12 @@ public:
   std::string const& PatchName() const;
   void SetPatchName(std::string const& name);
   bool IsPatchLoaded() const { return _isPatchLoaded; }
+  
+  void ShowOnlineManual() const;
+  void ShowOnlineManualForGUIParam(int index) const;
+  void ShowOnlineManualForAudioParam(int index) const;
   std::shared_ptr<FBPresetFolder> LoadPresetList() const;
+  virtual std::string OnlineManualLocation() const = 0;
 
   void AddListener(IFBHostGUIContextListener* listener);
   void RemoveListener(IFBHostGUIContextListener* listener);

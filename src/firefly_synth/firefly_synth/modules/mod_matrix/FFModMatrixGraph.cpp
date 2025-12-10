@@ -82,11 +82,11 @@ FFModMatrixGraph::paint(Graphics& g)
   bool sourceInv = false;
   float scaleMin = 0.0f;
   float scaleMax = 1.0f;
-  float targetAmt = 1.0f;
   float sourceLow = 0.0f;
   float sourceHigh = 1.0f;
   FFModulationOpType opType = FFModulationOpType::UPAddU;
 
+  int slotCount = 0;
   if (_trackingParam != nullptr)
   {
     int slot = _trackingParam->topoIndices.param.slot;
@@ -96,14 +96,13 @@ FFModMatrixGraph::paint(Graphics& g)
     targetType = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Target, slot } });
     scaleMin = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMin, slot } });
     scaleMax = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMax, slot } });
-    targetAmt = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::TargetAmt, slot } });
     sourceInv = (float)_plugGUI->HostContext()->GetAudioParamBool({ module, { (int)FFModMatrixParam::SourceInv, slot } });
     sourceLow = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceLow, slot } });
     sourceHigh = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceHigh, slot } });
     opType = _plugGUI->HostContext()->GetAudioParamList<FFModulationOpType>({ module, { (int)FFModMatrixParam::OpType, slot } });
     prefix = ((module.index == (int)FFModuleType::GMatrix) ? std::string("G") : std::string("V")) + std::to_string(slot + 1) + " ";
 
-    int slotCount = _plugGUI->HostContext()->GetAudioParamDiscrete({ module, { (int)FFModMatrixParam::Slots, 0 } });
+    slotCount = _plugGUI->HostContext()->GetAudioParamDiscrete({ module, { (int)FFModMatrixParam::Slots, 0 } });
     if (slotCount <= slot)
       opType = FFModulationOpType::Off;
   }
@@ -151,24 +150,41 @@ FFModMatrixGraph::paint(Graphics& g)
         yNormalized.push_back(GraphGetScaleMinMax(scaleNorm, scaleMin, scaleMax));
       }
     break;
-  case FFModMatrixGraphType::Target:
-    text = "Tgt";
+  case FFModMatrixGraphType::TargetIn:
+    text = "Tgt In";
     for (int i = 0; i < bounds.getWidth(); i++)
       yNormalized.push_back(GraphGetTarget(i / (float)bounds.getWidth()));
     break;
-  case FFModMatrixGraphType::TargetOnOff:
-    text = (opType == FFModulationOpType::Off || targetType == 0 || sourceType == 0) ? "Tgt Off" : "Tgt On";
-    if (opType != FFModulationOpType::Off && targetType != 0 && sourceType != 0)
-      for (int i = 0; i < bounds.getWidth(); i++)
+  case FFModMatrixGraphType::TargetOut:
+    text = "Tgt Out";
+    for (int i = 0; i < bounds.getWidth(); i++)
+    {
+      float x = i / (float)bounds.getWidth();
+      float target = GraphGetTarget(x);
+      if (_trackingParam != nullptr)
       {
-        float x = i / (float)bounds.getWidth();
-        float target = GraphGetTarget(x);
-        float source = GraphGetSource(x, sourceInv);
-        float scale = scaleType == 0 ? 1.0f : GraphGetScale(x);
-        float scaleMinMax = GraphGetScaleMinMax(scale, scaleMin, scaleMax);
-        FFApplyModulation(opType, source, scaleMinMax * targetAmt, target);
-        yNormalized.push_back(target);
+        FBTopoIndices module = _trackingParam->topoIndices.module;
+        for (int s = 0; s < slotCount; s++)
+        {
+          int thisTargetType = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Target, s } });
+          int thisSourceType = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Source, s } });
+          auto thisOpType = _plugGUI->HostContext()->GetAudioParamList<FFModulationOpType>({ module, { (int)FFModMatrixParam::OpType, s } });
+          if (targetType == thisTargetType && targetType != 0 && thisOpType != FFModulationOpType::Off && thisSourceType != 0)
+          {
+            int thisScaleType = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Scale, s } });
+            bool thisSourceInv = (float)_plugGUI->HostContext()->GetAudioParamBool({ module, { (int)FFModMatrixParam::SourceInv, s } });
+            float thisScaleMin = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMin, s } });
+            float thisScaleMax = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMax, s } });
+            float thisTargetAmt = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::TargetAmt, s } });
+            float thisSource = GraphGetSource(x, thisSourceInv);
+            float thisScale = thisScaleType == 0 ? 1.0f : GraphGetScale(x);
+            float thisScaleMinMax = GraphGetScaleMinMax(thisScale, thisScaleMin, thisScaleMax);
+            FFApplyModulation(thisOpType, thisSource, thisScaleMinMax * thisTargetAmt, target);
+          }
+        }
       }
+      yNormalized.push_back(target);
+    }
     break;
   default:
     FB_ASSERT(false);
@@ -190,13 +206,13 @@ FFModMatrixGraph::paint(Graphics& g)
   switch (_type)
   {
   case FFModMatrixGraphType::Scale:
-  case FFModMatrixGraphType::Target:
   case FFModMatrixGraphType::Source:
+  case FFModMatrixGraphType::TargetIn:
     g.setColour(Colours::grey);
     break;
   case FFModMatrixGraphType::ScaleOn:
+  case FFModMatrixGraphType::TargetOut:
   case FFModMatrixGraphType::SourceOnOff:
-  case FFModMatrixGraphType::TargetOnOff:
     g.setColour(Colours::white);
     break;
   default:

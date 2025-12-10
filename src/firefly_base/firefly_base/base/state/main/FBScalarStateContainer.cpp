@@ -45,29 +45,33 @@ _freeRawState(topo.static_->freeRawScalarState)
 }
 
 void 
-FBScalarStateContainer::CopyTo(FBHostGUIContext* context) const
+FBScalarStateContainer::CopyTo(FBHostGUIContext* context, bool patchOnly) const
 {
   for (int p = 0; p < Params().size(); p++)
-    context->PerformImmediateAudioParamEdit(p, *Params()[p]);
+    if(!patchOnly || context->Topo()->audio.params[p].static_.storeInPatch)
+      context->PerformImmediateAudioParamEdit(p, *Params()[p]);
 }
 
 void 
-FBScalarStateContainer::CopyFrom(FBHostGUIContext const* context)
+FBScalarStateContainer::CopyFrom(FBHostGUIContext const* context, bool patchOnly)
 {
   for (int p = 0; p < Params().size(); p++)
-    *Params()[p] = context->GetAudioParamNormalized(p);
+    if (!patchOnly || context->Topo()->audio.params[p].static_.storeInPatch)
+      *Params()[p] = context->GetAudioParamNormalized(p);
 }
 
 void
-FBScalarStateContainer::CopyFrom(FBProcStateContainer const& proc)
+FBScalarStateContainer::CopyFrom(FBRuntimeTopo const* topo, FBProcStateContainer const& proc, bool patchOnly)
 {
   for (int p = 0; p < Params().size(); p++)
-    *Params()[p] = proc.Params()[p].Value();
+    if (!patchOnly || topo->audio.params[p].static_.storeInPatch)
+      *Params()[p] = proc.Params()[p].Value();
 }
 
 void 
-FBScalarStateContainer::CopyFrom(FBScalarStateContainer const& scalar)
+FBScalarStateContainer::CopyFrom(FBRuntimeTopo const* topo, FBScalarStateContainer const& scalar, bool patchOnly)
 {
   for (int p = 0; p < Params().size(); p++)
-    *Params()[p] = *scalar.Params()[p];
+    if (!patchOnly || topo->audio.params[p].static_.storeInPatch)
+      *Params()[p] = *scalar.Params()[p];
 }

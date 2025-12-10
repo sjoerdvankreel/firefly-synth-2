@@ -69,9 +69,9 @@ FFEffectAdjustParamModulationGUIBounds(
     rtParam.topoIndices.param.index == (int)FFEffectParam::CombPitchCoarsePlus)
   {
     double modAmountEnv = ctx->GetAudioParamNormalized({ { staticIndex, rtParam.topoIndices.module.slot }, { (int)FFEffectParam::EnvAmt, rtParam.topoIndices.param.slot } });
-    FFApplyGUIModulationBounds(FFModulationOpType::UPStack, (float)modAmountEnv, currentMinNorm, currentMaxNorm);
+    FFApplyGUIModulationBounds(FFModulationOpType::UPStack, 0.0f, 1.0f, (float)modAmountEnv, currentMinNorm, currentMaxNorm);
     double modAmountLFO = ctx->GetAudioParamNormalized({ { staticIndex, rtParam.topoIndices.module.slot }, { (int)FFEffectParam::LFOAmt, rtParam.topoIndices.param.slot } });
-    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, (float)modAmountLFO, currentMinNorm, currentMaxNorm);
+    FFApplyGUIModulationBounds(FFModulationOpType::BPStack, 0.0f, 1.0f, (float)modAmountLFO, currentMinNorm, currentMaxNorm);
     return true;
   }
 

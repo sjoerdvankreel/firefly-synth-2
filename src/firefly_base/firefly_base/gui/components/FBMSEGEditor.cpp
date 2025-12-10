@@ -27,9 +27,10 @@ _snapYCounts(snapYCounts)
   };
 
   PopupMenu xEditMenu;
-  xEditMenu.addItem(1, "Free");
-  xEditMenu.addItem(2, "Snap");
-  xEditMenu.addItem(3, "Stretch");
+  xEditMenu.addItem(1, "Off");
+  xEditMenu.addItem(2, "Free");
+  xEditMenu.addItem(3, "Snap");
+  xEditMenu.addItem(4, "Stretch");
   PopupMenu yEditMenu;
   yEditMenu.addItem(1, "Free");
   yEditMenu.addItem(2, "Snap");

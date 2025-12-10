@@ -30,21 +30,21 @@ _sessionState(*_topo.get())
 }
 
 void 
-FBHostGUIContext::RevertToPatchState()
+FBHostGUIContext::RevertPatchToPatchState()
 {
-  _patchState.CopyTo(this);
+  _patchState.CopyTo(this, true);
 }
 
 void
-FBHostGUIContext::MarkAsSessionState()
+FBHostGUIContext::MarkPatchAsSessionState()
 {
-  _sessionState.CopyFrom(this);
+  _sessionState.CopyFrom(this, true);
 }
 
 void
-FBHostGUIContext::RevertToSessionState()
+FBHostGUIContext::RevertPatchToSessionState()
 {
-  _sessionState.CopyTo(this);
+  _sessionState.CopyTo(this, true);
 }
 
 std::string const& 
@@ -91,9 +91,9 @@ FBHostGUIContext::RemoveListener(IFBHostGUIContextListener* listener)
 }
 
 void
-FBHostGUIContext::MarkAsPatchState(std::string const& name)
+FBHostGUIContext::MarkPatchAsPatchState(std::string const& name)
 {
-  _patchState.CopyFrom(this);
+  _patchState.CopyFrom(this, true);
   _isPatchLoaded = true;
   OnPatchLoaded();
   SetPatchName(name);
@@ -306,6 +306,37 @@ FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int 
   for (int p = 0; p < staticModule.params.size(); p++)
     for (int s = 0; s < staticModule.params[p].slotCount; s++)
       CopyAudioParam({ moduleIndices, { p, s } }, { { moduleIndices.index, toSlot }, { p, s } });
+}
+
+void 
+FBHostGUIContext::ShowOnlineManual() const
+{
+  juce::URL(OnlineManualLocation()).launchInDefaultBrowser();
+}
+
+void
+FBHostGUIContext::ShowOnlineManualForGUIParam(int index) const
+{
+  int rtModuleIndex = Topo()->gui.params[index].runtimeModuleIndex;
+  ShowOnlineManualForModule(rtModuleIndex);
+}
+
+void
+FBHostGUIContext::ShowOnlineManualForAudioParam(int index) const
+{
+  int rtModuleIndex = Topo()->audio.params[index].runtimeModuleIndex;
+  ShowOnlineManualForModule(rtModuleIndex);
+}
+
+void
+FBHostGUIContext::ShowOnlineManualForModule(int index) const
+{
+  int staticModuleIndex = Topo()->modules[index].topoIndices.index;
+  auto const& moduleId = Topo()->static_->modules[staticModuleIndex].id;
+  auto cleanModuleId = moduleId;
+  std::erase(cleanModuleId, '{');
+  std::erase(cleanModuleId, '}');
+  juce::URL(OnlineManualLocation()).withAnchor(cleanModuleId).launchInDefaultBrowser();
 }
 
 std::shared_ptr<FBPresetFolder>

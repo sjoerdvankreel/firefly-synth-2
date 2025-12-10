@@ -8,6 +8,8 @@
 #include <firefly_synth/modules/mix/FFMixGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
 #include <firefly_synth/modules/echo/FFEchoGUI.hpp>
+#include <firefly_synth/modules/other/FFOtherGUI.hpp>
+#include <firefly_synth/modules/other/FFOtherTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
@@ -159,25 +161,37 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
   RequestFixedGraphsRerender(tweakedModule);
 }
 
-bool 
+FBParamModulationBoundsSource 
 FFPlugGUI::GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const
 {
-  // Note: we only take into account the matrix and the easy-access controls, not the unison.
-  bool result = false;
+  int result = FBParamModulationBoundsSource::None;
   float valueNorm = (float)HostContext()->GetAudioParamNormalized(index);
   float currentMinNorm = valueNorm;
   float currentMaxNorm = valueNorm;    
 
   // Matrix goes first, as in DSP!
-  result |= FFModMatrixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
-  result |= FFOsciAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
-  result |= FFVMixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
-  result |= FFGMixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
-  result |= FFEffectAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
-  result |= FFVoiceModuleAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm);
-  minNorm = result? currentMinNorm: 0.0;
-  maxNorm = result ? currentMaxNorm : 0.0f;
-  return result;
+  if (FFModMatrixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::Matrix;
+
+  // Followed by direct access.
+  if(FFOsciAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::DirectAccess;
+  if(FFVMixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::DirectAccess;
+  if(FFGMixAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::DirectAccess;
+  if(FFEffectAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::DirectAccess;
+  if(FFVoiceModuleAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::DirectAccess;
+
+  // Followed by unison.
+  if(FFGlobalUniAdjustParamModulationGUIBounds(HostContext(), index, currentMinNorm, currentMaxNorm))
+    result |= FBParamModulationBoundsSource::Unison;
+
+  minNorm = result != FBParamModulationBoundsSource::None ? currentMinNorm: 0.0;
+  maxNorm = result != FBParamModulationBoundsSource::None ? currentMaxNorm : 0.0f;
+  return (FBParamModulationBoundsSource)result;
 }
 
 bool
@@ -212,7 +226,7 @@ FFPlugGUI::GetRenderType(bool graphOrKnob) const
 void
 FFPlugGUI::FlushAudio()
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::FlushAudioToggle, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::Other, 0 }, { (int)FFOtherParam::FlushAudioToggle, 0 } };
   double flushNorm = HostContext()->GetAudioParamNormalized(indices);
   double newFlushNorm = flushNorm > 0.5 ? 0.0 : 1.0;
   HostContext()->PerformImmediateAudioParamEdit(indices, newFlushNorm);
@@ -228,9 +242,10 @@ FFPlugGUI::SetupGUI()
   _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
   _headerAndGraph->Add(0, 1, _mainGraph);
 
-  _outputAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0 } });
-  _outputAndPatch->Add(0, 0, FFMakeOutputGUI(this));
-  _outputAndPatch->Add(0, 1, FFMakePatchGUI(this));
+  _outputOtherAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
+  _outputOtherAndPatch->Add(0, 0, FFMakeOutputGUI(this));
+  _outputOtherAndPatch->Add(0, 1, FFMakeOtherGUI(this));
+  _outputOtherAndPatch->Add(0, 2, FFMakePatchGUI(this));
 
   _guiSettingsAndTweak = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
   _guiSettingsAndTweak->Add(0, 0, FFMakeGUISettingsGUI(this));
@@ -260,7 +275,7 @@ FFPlugGUI::SetupGUI()
   _tabs->getTabbedButtonBar().addChangeListener(_mainTabChangedListener.get());
 
   _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 6, 6, 9, 92 } }, std::vector<int> { { 1 } });
-  _container->Add(0, 0, _outputAndPatch);
+  _container->Add(0, 0, _outputOtherAndPatch);
   _container->Add(1, 0, _guiSettingsAndTweak);
   _container->Add(2, 0, _headerAndGraph);
   _container->Add(3, 0, _tabs);

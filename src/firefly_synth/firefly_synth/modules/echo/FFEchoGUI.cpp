@@ -165,6 +165,7 @@ MakeEchoSectionTaps(
 
   auto tapsEditor = MakeEchoTapsEditor(plugGUI, global);
   *showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Multi Tap");
+  (*showTapsEditor)->setTooltip("Show Taps Editor");
   (*showTapsEditor)->onClick = [plugGUI, tapsEditor, global]() { 
     std::string title = std::string(global ? "G" : "V") + "Echo Multi Tap";
     dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, tapsEditor, 400, 275, true, [plugGUI, global]() {

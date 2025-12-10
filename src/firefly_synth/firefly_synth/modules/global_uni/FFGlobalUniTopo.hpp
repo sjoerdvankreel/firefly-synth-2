@@ -2,6 +2,7 @@
 
 #include <memory>
 
+struct FBRuntimeTopo;
 struct FBStaticModule;
 
 inline int constexpr FFGlobalUniMaxCount = 8;
@@ -16,7 +17,7 @@ enum class FFGlobalUniTarget {
   VFXParamA, VFXParamB, VFXParamC, VFXParamD,
   EnvSlope, EnvStretch,
   EchoExtend, EchoFade, 
-  EchoTapMix, EchoTapDelay, EchoTapBal, EchoTapLPF, EchoTapHPF,
+  EchoTapsMix, EchoTapDelay, EchoTapBal, EchoTapLPF, EchoTapHPF,
   EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt, EchoFdbkLPF, EchoFdbkHPF,
   EchoReverbMix, EchoReverbSize, EchoReverbDamp, EchoReverbLPF, EchoReverbHPF, Count };
 
@@ -26,6 +27,8 @@ std::string
 FFGlobalUniTargetToString(FFGlobalUniTarget target);
 float
 FFGlobalUniTargetGetDefaultValue(FFGlobalUniTarget target);
+FFGlobalUniTarget
+FFParamToGlobalUniTarget(FBRuntimeTopo const* topo, int index);
 
 enum class FFGlobalUniParam { 
   VoiceCount, 
@@ -38,7 +41,7 @@ enum class FFGlobalUniParam {
   ManualVFXParamA, ManualVFXParamB, ManualVFXParamC, ManualVFXParamD,
   ManualEnvSlope, ManualEnvStretch,
   ManualEchoExtend, ManualEchoFade,
-  ManualEchoTapMix, ManualEchoTapDelay, ManualEchoTapBal, ManualEchoTapLPF, ManualEchoTapHPF,
+  ManualEchoTapsMix, ManualEchoTapDelay, ManualEchoTapBal, ManualEchoTapLPF, ManualEchoTapHPF,
   ManualEchoFdbkDelay, ManualEchoFdbkMix, ManualEchoFdbkAmt, ManualEchoFdbkLPF, ManualEchoFdbkHPF,
   ManualEchoReverbMix, ManualEchoReverbSize, ManualEchoReverbDamp, ManualEchoReverbLPF, ManualEchoReverbHPF,
   ManualLast = ManualEchoReverbHPF,

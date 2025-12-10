@@ -49,6 +49,15 @@ FBGUIParamToggleButton::SetValueNormalized(double normalized)
 }
 
 void
+FBGUIParamToggleButton::mouseUp(const MouseEvent& event)
+{
+  if (isEnabled() && event.mods.isRightButtonDown())
+    _plugGUI->ShowMenuForGUIParam(_param->runtimeParamIndex);
+  else
+    ToggleButton::mouseUp(event);
+}
+
+void
 FBGUIParamToggleButton::buttonStateChanged()
 {
   double normalized = _param->static_.NonRealTime().PlainToNormalized(getToggleState()? 1.0: 0.0);
@@ -98,11 +107,15 @@ FBParamToggleButton::mouseUp(const MouseEvent& e)
   if (!isEnabled())
     return;
 
+  if (e.mods.isRightButtonDown())
+  {
+    _plugGUI->ShowMenuForAudioParam(_param->runtimeParamIndex, false);
+    return;
+  }
+
   // need to catch real user input for the undo state, not all kinds of async callbacks
   _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
   ToggleButton::mouseUp(e);
-  if (e.mods.isRightButtonDown())
-    _plugGUI->ShowMenuForAudioParam(_param->runtimeParamIndex, false);
 }
 
 void

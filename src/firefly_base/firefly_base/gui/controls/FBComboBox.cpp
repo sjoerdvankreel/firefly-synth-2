@@ -73,6 +73,13 @@ FBGUIParamComboBox::getTooltip()
 }
 
 void
+FBGUIParamComboBox::mouseUp(MouseEvent const& event)
+{
+  if (isEnabled() && event.mods.isRightButtonDown())
+    _plugGUI->ShowMenuForGUIParam(_param->runtimeParamIndex);
+}
+
+void
 FBGUIParamComboBox::SetValueNormalized(double normalized)
 {
   double plain = _param->static_.NonRealTime().NormalizedToPlain(normalized);
@@ -87,7 +94,6 @@ FBGUIParamComboBox::valueChanged(Value& /*value*/)
   double normalized = _param->static_.NonRealTime().PlainToNormalized(plain);
   _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
   _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
-  setTooltip(getTooltip()); // hack but needed
 }
 
 FBParamComboBox::
@@ -132,7 +138,6 @@ FBParamComboBox::valueChanged(Value& /*value*/)
   double normalized = _param->static_.NonRealTime().PlainToNormalized(plain);
   _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
   _plugGUI->AudioParamNormalizedChangedFromUI(_param->runtimeParamIndex, normalized);
-  setTooltip(getTooltip()); // hack but needed
 }
 
 void

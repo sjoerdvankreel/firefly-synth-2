@@ -181,7 +181,7 @@ FBRuntimeTopo::SaveProcStateToVar(
   FBProcStateContainer const& procState, bool patchOnly) const
 {
   FBScalarStateContainer editState(*this);
-  editState.CopyFrom(procState);
+  editState.CopyFrom(this, procState, patchOnly);
   return SaveEditStateToVar(editState, patchOnly);
 }
 
@@ -254,6 +254,7 @@ FBRuntimeTopo::LoadProcStateFromStringWithDryRun(
   std::string const& text, FBProcStateContainer& procState, bool patchOnly) const
 {
   FBScalarStateContainer dryEditState(*this);
+  dryEditState.CopyFrom(this, procState, patchOnly);
   if (LoadEditStateFromString(text, dryEditState, patchOnly))
     procState.InitProcessing(dryEditState);
 }
@@ -263,8 +264,9 @@ FBRuntimeTopo::LoadEditStateFromStringWithDryRun(
   std::string const& text, FBScalarStateContainer& editState, bool patchOnly) const
 {
   FBScalarStateContainer dryEditState(*this);
+  dryEditState.CopyFrom(this, editState, patchOnly);
   if (LoadEditStateFromString(text, dryEditState, patchOnly))
-    editState.CopyFrom(dryEditState);
+    editState.CopyFrom(this, dryEditState, patchOnly);
 }
 
 void 
@@ -273,11 +275,12 @@ FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
 {
   FBGUIStateContainer dryGUIState(*this);
   FBScalarStateContainer dryEditState(*this);
+  dryEditState.CopyFrom(this, editState, patchOnly);
   if (!LoadEditAndGUIStateFromString(text, dryEditState, dryGUIState, patchOnly))
     return;
   guiState.CopyFrom(dryGUIState);
   guiState.SetPatchName(dryGUIState.PatchName());
-  editState.CopyFrom(dryEditState);
+  editState.CopyFrom(this, dryEditState, patchOnly);
 }
 
 var 
@@ -303,7 +306,7 @@ FBRuntimeTopo::LoadEditAndGUIStateFromVar(
     return LoadEditStateFromVar(obj->getProperty("edit"), editState, patchOnly);
   FB_LOG_ERROR("Missing edit state.");
   FBScalarStateContainer editDefaultState(*this);
-  editState.CopyFrom(editDefaultState);
+  editState.CopyFrom(this, editDefaultState, patchOnly);
   return true;
 }
 
@@ -471,7 +474,8 @@ FBRuntimeTopo::LoadParamStateFromVar(
     auto defaultText = params.params[p].GetDefaultText();
     if(defaultText.size())
       defaultNormalized = params.params[p].TextToNormalized(false, defaultText).value();
-    *container.Params()[p] = static_cast<float>(defaultNormalized);
+    if(!patchOnly || params.params[p].static_.StoreInPatch())
+      *container.Params()[p] = static_cast<float>(defaultNormalized);
   }
 
   auto converter = static_->deserializationConverterFactory(loadingVersion, this);
