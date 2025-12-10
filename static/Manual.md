@@ -98,7 +98,11 @@ End with this: [demo_patch_from_scratch_final.ff2preset](/static/demo_patch_from
 1. Enable VFX1 ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_1.mp3))<br/>
 Sets a lowpass SV filter with Env1 targeting the frequency, followed by a waveshaper (clipper)
 2. Set osci 1 unison voice count to 2 ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_2.mp3))<br/>
-Appies oscillator-level unison. The output of both oscillator unison voices is routed through VFX1's filter and shaper.
+Appies oscillator-level unison.<br/>
+The output of both oscillator unison voices is routed through VFX1's filter and shaper.
+3. Set global unison voice count to 3 ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_3.mp3))<br/>
+Appies global-level unison. In this case each voice has coarse pitch offsets of -12, 0, and +12 semitones (so plays 3 octaves).<br/>
+Also some offsets on the phase and fine pitch.
 
 ## Modulation System
 The basic rule is: if it is a continuous parameter (knob/slider), it is both automatable and modulatable.<br/>
