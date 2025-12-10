@@ -48,7 +48,7 @@ TODOLIST for beta-1
 [x] NO mono mode
 [x] check the release notes
 [x] routing diagram + explain target params + order diagram
-[ ] patchfromscratch with TEMP in the manual -> vfx on, osc uni on, globuni on, gecho gmix out, gecho taps filters, gecho lpf fdbk on, then matrix + panic
+[x] patchfromscratch with TEMP in the manual -> vfx on, osc uni on, globuni on, gecho gmix out, gecho taps filters, gecho lpf fdbk on, then matrix + panic
 
 [ ] run a debug build
 [ ] debug check every description is there
