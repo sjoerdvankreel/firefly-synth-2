@@ -31,7 +31,7 @@ inline constexpr char FFPlugUniqueIdFX[] = "E761431919AC4A2087B3CF8EFCD6396F";
 inline constexpr char FFPlugUniqueIdInst[] = "754068B351A04DB4813B58D562BDFC1F";
 inline constexpr char FFPlugControllerIdFX[] = "51E397E58B694A129208424AEF1C7A84";
 inline constexpr char FFPlugControllerIdInst[] = "959E6302402B461A8C9AA5A6737BCAAD"; 
-inline constexpr char FFPlugOnlineManualLocation[] = "https://github.com/sjoerdvankreel/firefly-synth-2/blob/beta-1/static/Manual.md"; // TODO
+inline constexpr char FFPlugOnlineManualLocation[] = "https://github.com/sjoerdvankreel/firefly-synth-2/blob/main/static/Manual.md";
 
 enum class FFModuleType {
   GUISettings, Settings, MIDI, GNote, Master, GlobalUni, VoiceModule, Osci, OsciMod, VNote, Env, 

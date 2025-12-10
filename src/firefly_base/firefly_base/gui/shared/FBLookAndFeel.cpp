@@ -531,12 +531,15 @@ FBLookAndFeel::getTooltipBounds(
   for (int i = 0; i < lines.size(); i++)
   {
     th += textHeight;
-// TODO gcc and clang
+#if _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 4996)
+#endif
     // The JUCE suggested alternatives hang on occasion.
     tw = std::max(tw, font.getStringWidthFloat(lines[i]));
+#if _MSC_VER
 #pragma warning(pop)
+#endif
   }
 
   int pad = 3;
