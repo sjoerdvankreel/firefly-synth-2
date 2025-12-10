@@ -113,6 +113,11 @@ Set to 3/16th bars for typical rhythm effect.
 7. Enable GEcho feedback delay LPF. ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_7.mp3))<br/>
 Set to high resonance with a modulator on the filter frequency to make the feedback jump out even more.
 
+To show the usefulness of the panic button:<br/>
+Go into the matrix and disable the slot that targets global echo feedback delay filter frequency.<br/>
+This gets the feedback delay line into a state where the filter is continuously amplifying the feedback path.<br/>
+So, even without new audio input, the echo output will have infinitely increasing gain.
+
 ## Modulation System
 The basic rule is: if it is a continuous parameter (knob/slider), it is both automatable and modulatable.<br/>
 If it is a discrete parameter (toggle/combo), it is neither automatable nor modulatable.
