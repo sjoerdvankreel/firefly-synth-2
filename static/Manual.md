@@ -83,6 +83,13 @@ Backing storage for tap delay lines, feedback delay line, and internal comb and 
 Any kind of automation and modulation is of course also OK since these can only target knobs and sliders anyway.<br/>
 And of course, the whole thing may glitch anyway when the system is under load.
 
+## Patch From Scratch
+
+Just a short example of how to turn your regular init-saw into your regular super-wet super-saw.<br/>
+Maybe your thing, maybe not, but it's a simple way to showcase some of the plug's features.<br/>
+
+Start with this patch: [demo_patch_from_scratch_start.ff2preset](/static/demo_patch_from_scratch_start.ff2preset).
+
 ## Modulation System
 The basic rule is: if it is a continuous parameter (knob/slider), it is both automatable and modulatable.<br/>
 If it is a discrete parameter (toggle/combo), it is neither automatable nor modulatable.
@@ -239,13 +246,6 @@ This is not entirely accurate as you can position the echo modules to just about
 * Blue dashed line: user-selectable audio path
 
 ![image](plug_routing_diagram.png)
-
-## Patch From Scratch
-
-Just a short example of how to turn your regular init-saw into your regular super-wet super-saw.<br/>
-Maybe your thing, maybe not, but it's a simple way to showcase some of the plug's features.<br/>
-
-Start with this patch: [demo_patch_from_scratch_start.ff2preset](/static/demo_patch_from_scratch_start.ff2preset).
 
 # UI
 
