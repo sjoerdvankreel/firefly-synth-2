@@ -3,7 +3,7 @@ Only needs theming and some presets.
 
 Read the [Manual](/static/Manual.md).<br/>
 See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test) for host compatibility tests.<br/>
-See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for feature tests (and some nice demos along the way).<br/>
+See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for feature tests (and some nice demos along the way).<br/>
 
 # Legal
 <table>
