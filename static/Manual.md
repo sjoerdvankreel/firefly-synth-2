@@ -104,6 +104,8 @@ The output of both oscillator unison voices is routed through VFX1's filter and 
 Appies global-level unison.<br/>
 In this case each voice has coarse pitch offsets of -12, 0, and +12 semitones (so plays 3 octaves).<br/>
 Also some offsets on the phase and fine pitch.
+4. Set global echo target to GMix Out and enable the multi-tap echo. ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_4.mp3))<br/>
+Adds 4 taps spread 1/4th apart, alternating left-right.
 
 ## Modulation System
 The basic rule is: if it is a continuous parameter (knob/slider), it is both automatable and modulatable.<br/>
