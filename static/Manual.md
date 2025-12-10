@@ -339,7 +339,7 @@ Comes with regular load-from/save-to-file, init patch to defaults, and load fact
 <a id="E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B"></a>
 ### GUI settings
 * Show modulation bounds:<br/>
-Highlights the minimum and maximum values currently applied to a parameter by the mod matrix and direct modulators.
+Highlights the minimum and maximum values currently applied to a parameter by the mod matrix, global unison, and direct modulators.
 * Show tweaked from:<br/>
 Highlights the parameters that differ from either default values, last loaded DAW session state, or last loaded patch state.
 * Knob visuals from engine:<br/>
