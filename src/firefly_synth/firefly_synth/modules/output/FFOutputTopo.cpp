@@ -19,6 +19,7 @@ FFMakeOutputTopo()
   voices.mode = FBParamMode::Output;
   voices.defaultText = "0";
   voices.name = "Voices";
+  voices.description = "Voice Count";
   voices.unit = "%";
   voices.slotCount = 1;
   voices.id = "{54C6CAD4-FA5A-4395-8131-C768E0AD48CF}";
@@ -33,6 +34,7 @@ FFMakeOutputTopo()
   cpu.mode = FBParamMode::Output;
   cpu.defaultText = "0";
   cpu.name = "CPU";
+  cpu.description = "CPU Usage";
   cpu.unit = "%";
   cpu.slotCount = 1;
   cpu.id = "{F7E383FA-61A6-4CDB-898B-C62C248633A0}";
@@ -47,6 +49,7 @@ FFMakeOutputTopo()
   gain.mode = FBParamMode::Output;
   gain.defaultText = "0";
   gain.name = "Gain";
+  gain.description = "Output Gain";
   gain.unit = "%";
   gain.slotCount = 1;
   gain.id = "{F0F8F4CA-8F90-4C6D-B685-24119817CC1D}";
@@ -60,6 +63,7 @@ FFMakeOutputTopo()
   auto& mtsEspOn = result->params[(int)FFOutputParam::MtsEspOn];
   mtsEspOn.mode = FBParamMode::Output;
   mtsEspOn.name = "MTS-ESP";
+  mtsEspOn.description = "MTS-ESP Master Connected";
   mtsEspOn.slotCount = 1;
   mtsEspOn.defaultText = "Off";
   mtsEspOn.id = "{9803DBBB-E1C9-4FAC-ACEA-B0E7F9E28979}";

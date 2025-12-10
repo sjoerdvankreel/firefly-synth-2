@@ -21,6 +21,7 @@ FFMakeGUISettingsTopo()
   guiUserScale.name = "User Scale";
   guiUserScale.slotCount = 1;
   guiUserScale.id = "{48F2A59F-789F-4076-AB4B-4CC19B3A929A}";
+  guiUserScale.description = "User Scale";
   guiUserScale.type = FBParamType::Linear;
   guiUserScale.Linear().min = 0.5f;
   guiUserScale.Linear().max = 4.0f;
@@ -85,6 +86,7 @@ FFMakeGUISettingsTopo()
   guiOscSelectedTab.name = "Osc Selected Tab";
   guiOscSelectedTab.slotCount = 1;
   guiOscSelectedTab.id = "{677ADE6F-E531-4FA0-AF84-1D31D78AACCB}";
+  guiOscSelectedTab.description = "Osc Selected Tab";
   guiOscSelectedTab.type = FBParamType::Discrete;
   guiOscSelectedTab.Discrete().valueCount = FFOsciCount + 1;
   auto selectGuiOscSelectedTab = [](auto& module) { return &module.oscSelectedTab; };
@@ -93,6 +95,7 @@ FFMakeGUISettingsTopo()
   auto& guiFxSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::FXSelectedTab];
   guiFxSelectedTab.defaultText = "0";
   guiFxSelectedTab.name = "FX Selected Tab";
+  guiFxSelectedTab.description = "FX Selected Tab";
   guiFxSelectedTab.slotCount = 1;
   guiFxSelectedTab.id = "{EA9332F9-2B1F-4D96-B67C-F632231F7C7B}";
   guiFxSelectedTab.type = FBParamType::Discrete;
@@ -103,6 +106,7 @@ FFMakeGUISettingsTopo()
   auto& guiLFOSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::LFOSelectedTab];
   guiLFOSelectedTab.defaultText = "0";
   guiLFOSelectedTab.name = "LFO Selected Tab";
+  guiLFOSelectedTab.description = "LFO Selected Tab";
   guiLFOSelectedTab.slotCount = 1;
   guiLFOSelectedTab.id = "{23C0E87A-9224-43BB-97CE-549586B39BF4}";
   guiLFOSelectedTab.type = FBParamType::Discrete;
@@ -113,6 +117,7 @@ FFMakeGUISettingsTopo()
   auto& guiMixSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::MixSelectedTab];
   guiMixSelectedTab.defaultText = "0";
   guiMixSelectedTab.name = "Mix Selected Tab";
+  guiMixSelectedTab.description = "Mix Selected Tab";
   guiMixSelectedTab.slotCount = 1;
   guiMixSelectedTab.id = "{862452C8-DA0C-4AB6-AB54-2922F8F00E7E}";
   guiMixSelectedTab.type = FBParamType::Discrete;
@@ -123,6 +128,7 @@ FFMakeGUISettingsTopo()
   auto& guiEnvSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::EnvSelectedTab];
   guiEnvSelectedTab.defaultText = "0";
   guiEnvSelectedTab.name = "Env Selected Tab";
+  guiEnvSelectedTab.description = "Env Selected Tab";
   guiEnvSelectedTab.slotCount = 1;
   guiEnvSelectedTab.id = "{83D56B7F-28A7-4A02-AEBB-8D55E6CDB4D8}";
   guiEnvSelectedTab.type = FBParamType::Discrete;
@@ -133,6 +139,7 @@ FFMakeGUISettingsTopo()
   auto& guiEchoSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::EchoSelectedTab];
   guiEchoSelectedTab.defaultText = "0";
   guiEchoSelectedTab.name = "Echo Selected Tab";
+  guiEchoSelectedTab.description = "Echo Selected Tab";
   guiEchoSelectedTab.slotCount = 1;
   guiEchoSelectedTab.id = "{0087ED9D-5B24-4A22-9F3D-738AF0605136}";
   guiEchoSelectedTab.type = FBParamType::Discrete;

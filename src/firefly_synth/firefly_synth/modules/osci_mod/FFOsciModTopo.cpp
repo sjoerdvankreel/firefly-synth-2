@@ -55,6 +55,7 @@ FFMakeOsciModTopo()
   oversample.defaultText = "Off";
   oversample.slotCount = 1;
   oversample.id = "{2449CE02-EE0D-48E7-A716-E59633F279FB}";
+  oversample.description = "Oscillator 4X Oversampling";
   oversample.type = FBParamType::Boolean;
   auto selectOversample = [](auto& module) { return &module.block.oversample; };
   oversample.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOversample);
@@ -67,6 +68,7 @@ FFMakeOsciModTopo()
   expoFM.defaultText = "Off";
   expoFM.slotCount = 1;
   expoFM.id = "{23FC415C-06AD-4ED3-8B29-08724D536096}";
+  expoFM.description = "Enable Exponential FM";
   expoFM.type = FBParamType::Boolean;
   auto selectExpoFM = [](auto& module) { return &module.block.expoFM; };
   expoFM.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExpoFM);
@@ -79,6 +81,7 @@ FFMakeOsciModTopo()
   amMode.defaultText = "Off";
   amMode.slotCount = FFOsciModSlotCount;
   amMode.id = "{AE135DBF-A88E-49A4-9205-08C908E6FC12}";
+  amMode.description = "Inter-Osci Select Amplitude/Ring Modulation";
   amMode.type = FBParamType::List;
   amMode.slotFormatter = FFOsciModFormatSlot;
   amMode.List().items = {
@@ -97,6 +100,7 @@ FFMakeOsciModTopo()
   amMix.slotCount = FFOsciModSlotCount;
   amMix.unit = "%";
   amMix.id = "{F0D5C59D-7E40-46A6-AE88-D3B663A675B7}";
+  amMix.description = "Inter-Osci AM/RM Dry/Wet Mix";
   amMix.type = FBParamType::Identity;
   amMix.slotFormatter = FFOsciModFormatSlot;
   auto selectAMMix = [](auto& module) { return &module.acc.amMix; };
@@ -111,6 +115,7 @@ FFMakeOsciModTopo()
   fmOn.defaultText = "Off";
   fmOn.slotCount = FFOsciModSlotCount;
   fmOn.id = "{E4F09B87-FBDB-4B72-B6E3-D64BE0733C3D}";
+  fmOn.description = "Inter-Osci FM Enabled";
   fmOn.type = FBParamType::Boolean;
   fmOn.slotFormatter = FFOsciModFormatSlot;
   auto selectFMOn = [](auto& module) { return &module.block.fmOn; };
@@ -124,6 +129,7 @@ FFMakeOsciModTopo()
   fmIndex.name = "FM Index";
   fmIndex.slotCount = FFOsciModSlotCount;
   fmIndex.id = "{9E37D313-1F48-4559-A6DD-01B235240F44}";
+  fmIndex.description = "Inter-Osci FM Index";
   fmIndex.type = FBParamType::Log2;
   fmIndex.Log2().Init(-0.01, 0.01f, 16.01f);
   fmIndex.slotFormatter = FFOsciModFormatSlot;

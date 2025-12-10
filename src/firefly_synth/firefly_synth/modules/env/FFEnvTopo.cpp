@@ -308,6 +308,7 @@ FFMakeEnvTopo()
 
   auto& guiMSEGXEditMode = result->guiParams[(int)FFEnvGUIParam::MSEGXEditMode];
   guiMSEGXEditMode.name = "MSEG X Edit Mode";
+  guiMSEGXEditMode.description = "MSEG X Edit Mode";
   guiMSEGXEditMode.slotCount = 1;
   guiMSEGXEditMode.defaultText = "Free";
   guiMSEGXEditMode.id = "{576F4AC3-55F6-4B83-A113-128EFF880D5B}";
@@ -322,6 +323,7 @@ FFMakeEnvTopo()
 
   auto& guiMSEGYEditMode = result->guiParams[(int)FFEnvGUIParam::MSEGYEditMode];
   guiMSEGYEditMode.name = "MSEG Y Edit Mode";
+  guiMSEGYEditMode.description = "MSEG Y Edit Mode";
   guiMSEGYEditMode.slotCount = 1;
   guiMSEGYEditMode.defaultText = "Free";
   guiMSEGYEditMode.id = "{F801AF0D-0224-4FC8-832E-ECC7A0DDC021}";
@@ -334,6 +336,7 @@ FFMakeEnvTopo()
 
   auto& guiMSEGSnapXCount = result->guiParams[(int)FFEnvGUIParam::MSEGSnapXCount];
   guiMSEGSnapXCount.name = "MSEG Snap X Count";
+  guiMSEGSnapXCount.description = "MSEG Snap X Count";
   guiMSEGSnapXCount.slotCount = 1;
   guiMSEGSnapXCount.defaultText = "64";
   guiMSEGSnapXCount.id = "{C409B95E-A2E3-4D7A-8916-B6029C54C964}";
@@ -344,6 +347,7 @@ FFMakeEnvTopo()
 
   auto& guiMSEGSnapYCount = result->guiParams[(int)FFEnvGUIParam::MSEGSnapYCount];
   guiMSEGSnapYCount.name = "MSEG Snap Y Count";
+  guiMSEGSnapYCount.description = "MSEG Snap Y Count";
   guiMSEGSnapYCount.slotCount = 1;
   guiMSEGSnapYCount.defaultText = "16";
   guiMSEGSnapYCount.id = "{838AB77F-91B5-48CD-AC51-368963DE3CC9}";
