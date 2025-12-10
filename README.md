@@ -17,7 +17,9 @@ See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://g
 (and some nice demos along the way).
 
 # Build it
-Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
+* Git clone recursive
+* Build scripts are in /scripts
+* build_windows.bat/build_linux.sh/build_mac.bat Debug|RelWithDebInfo|Release (0|1):(warn as error) (0|1):(enable asan)
 
 # Demo Material
 * Bowed strings
