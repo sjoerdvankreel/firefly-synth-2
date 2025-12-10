@@ -18,8 +18,8 @@ See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://g
 
 # Build it
 * Git clone recursive
-* Build scripts are in /scripts
-* build_windows.bat/build_linux.sh/build_mac.bat Debug|RelWithDebInfo|Release (0|1):(warn as error) (0|1):(enable asan)
+* Build scripts are in /scripts: build_windows.bat/build_linux.sh/build_mac.bat
+* build_xyz Debug|RelWithDebInfo|Release (0|1):(warn as error) (0|1):(enable asan)
 
 # Demo Material
 * Bowed strings
