@@ -116,7 +116,7 @@ Set to high resonance with a modulator on the filter frequency to make the feedb
 To show the usefulness of the panic button:<br/>
 Go into the matrix and disable the slot that targets global echo feedback delay filter frequency.<br/>
 This gets the feedback delay line into a state where the filter is continuously amplifying the feedback path.<br/>
-So, even without new audio input, the echo output will have infinitely increasing gain.
+So, even without new audio input, the echo output will have infinitely increasing gain (it's self-sustaining).
 
 ## Modulation System
 The basic rule is: if it is a continuous parameter (knob/slider), it is both automatable and modulatable.<br/>
