@@ -1,11 +1,3 @@
-# Nearly ready for V2
-Only needs theming and some presets.
-
-Read the [Manual](/static/Manual.md).<br/>
-See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test) for host compatibility tests.<br/>
-See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for feature tests<br/>
-(and some nice demos along the way).
-
 # Legal
 <table>
   <tr>
@@ -15,6 +7,14 @@ See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://g
     <td>VST is a trademark of Steinberg Media Technologies GmbH, registered in Europe and other countries.</td>
   </tr>
 </table>
+
+# Nearly ready for V2
+Only needs theming and some presets.
+
+Read the [Manual](/static/Manual.md).<br/>
+See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test) for host compatibility tests.<br/>
+See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for feature tests<br/>
+(and some nice demos along the way).
 
 # Demo Material
 * Bowed strings
