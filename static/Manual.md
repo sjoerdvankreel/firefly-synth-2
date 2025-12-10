@@ -128,7 +128,7 @@ These are valid targets for host envelopes and internal (matrix/unison) modulati
 An example is envelope stage time (to allow f.e. a bit of on-note randomization on the envelopes).<br/>
 But there are some others, see parameter GUI tooltips for "Automation: Per-Sample" vs "Automation: At-Voice-Start".
 
-For any continous parameter there are up to 6 things controlling that parameter.<br/>
+For any continuous parameter there are up to 6 things controlling that parameter.<br/>
 These are (processed in order):<br/>
 1. You (so, GUI).
 2. Host automation.
