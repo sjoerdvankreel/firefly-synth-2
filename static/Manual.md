@@ -110,6 +110,8 @@ Adds 4 taps spread 1/4th apart, alternating left-right.
 Filters for these taps have high resonance set so puts some extra accent on those taps.
 6. Enable GEcho feedback delay. ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_6.mp3))<br/>
 Set to 3/16th bars for typical rhythm effect.
+7. Enable GEcho feedback delay LPF. ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_7.mp3))<br/>
+Set to high resonance with a modulator on the filter frequency to make the feedback jump out even more.
 
 ## Modulation System
 The basic rule is: if it is a continuous parameter (knob/slider), it is both automatable and modulatable.<br/>
