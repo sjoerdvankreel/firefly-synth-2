@@ -49,10 +49,9 @@ TODOLIST for beta-1
 [x] check the release notes
 [x] routing diagram + explain target params + order diagram
 [x] patchfromscratch with TEMP in the manual -> vfx on, osc uni on, globuni on, gecho gmix out, gecho taps filters, gecho lpf fdbk on, then matrix + panic
-
+[x] SET THE ONLINE LOCATION TO MAIN BRANCH
 [ ] run a debug build
 [ ] debug check every description is there
-[ ] SET THE ONLINE LOCATION TO MAIN BRANCH
 
 TODOLIST for beta-2
 [ ] panic should not context menu

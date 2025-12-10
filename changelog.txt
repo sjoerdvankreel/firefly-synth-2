@@ -1,3 +1,25 @@
+December 10, 2025 - Beta 1.
+
+- Bugfix: tooltips in combos where not always updated.
+- Bugfix: right-click a toggle button should not toggle it.
+- Bugfix: vertically center text in the last-tweaked editor.
+- Bugfix: disabled tracking control for external audio osci.
+- Bugfix: phase wrap operator type was implemented backwards.
+- Bugfix: output parameters should not show edit/automation tooltips.
+- Bugfix: load-patch overwrites things that are not part of the patch.
+- Bugfix: global unison set a few default operator types wrong for coarse pitch targets.
+- Bugfix: no-pitch-tracking pitch-based filters where keyboard tracking c0 instead of the coarse pitch itself.
+
+- Wrote the manual.
+- Tooltips extended with more descriptive parameter names.
+- Tooltips extended with current parameter modulation sources.
+- Tooltips now show if a parameter is saved in patch/session only.
+- GUI parameters now have a context menu just like audio parameters.
+- Global unison is now part of the visual parameter modulation bounds.
+- MSEG editor now allows to keep horizontal point position fixed (useful for tempo-synced mode).
+- Matrix plots now show stacked mod sources if multiple sources are targeting the same parameter.
+- New context menu option "Show Manual". For parameter context menus, jumps to the relevant section in the manual.
+
 November 27, 2025 - Alpha 26.
 
 - FX version now defaults to global echo ON.
