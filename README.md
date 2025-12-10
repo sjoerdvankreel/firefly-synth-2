@@ -16,6 +16,9 @@ See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test](http
 See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for feature tests<br/>
 (and some nice demos along the way).
 
+# Build it
+Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
+
 # Demo Material
 * Bowed strings
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_bowstring.mp3)
@@ -90,9 +93,6 @@ See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://g
 - Xsimd: [https://github.com/xtensor-stack/xsimd](https://github.com/xtensor-stack/xsimd)
 - Steinberg VST3 SDK: [https://github.com/steinbergmedia/vst3sdk](https://github.com/steinbergmedia/vst3sdk)
 - Readerwriterqueue: [https://github.com/cameron314/readerwriterqueue](https://github.com/cameron314/readerwriterqueue)
-
-# Build it
-Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
 
 # Screenshots
 <img alt="Screenshot Main" src="static/screenshot_main.png"/>
