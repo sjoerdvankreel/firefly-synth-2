@@ -85,7 +85,7 @@ And of course, the whole thing may glitch anyway when the system is under load.
 
 ## Patch From Scratch
 
-Just a short example of how to turn your regular init-saw into your regular super-wet super-saw.<br/>
+Just a short example of how to turn your regular init-saw into your regular super-wet super-wide saw.<br/>
 Maybe your thing, maybe not, but it's a simple way to showcase some of the plug's features.<br/>
 
 Start with this: [demo_patch_from_scratch_start.ff2preset](/static/demo_patch_from_scratch_start.ff2preset)
