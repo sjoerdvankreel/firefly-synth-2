@@ -9,12 +9,9 @@
   </tr>
 </table>
 
-# This is not a finished product
-* But it is a fully functional clap and vst3 plugin.
-* Everything on the audio engine side ready for first release.
-* Builds and runs on win/lin (ubuntu 22+)/mac (both Intel and ARM).
-* Tested on reaper, renoise, fruity, bitwig, carla, ardour.
-* Stock JUCE GUI, no presets, theming still to-do.
+Nearly ready for V2!, only needs theming and some presets.<br/>
+See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test) for host compatibility tests.
+
 
 # Some demo material
 * Bowed strings
