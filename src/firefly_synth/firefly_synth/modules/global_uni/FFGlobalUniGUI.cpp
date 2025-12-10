@@ -269,7 +269,8 @@ FFGlobalUniAdjustParamModulationGUIBounds(
     int manualParamIndex = (int)FFGlobalUniParam::ManualFirst + (int)target;
     for (int voiceSlotInGroup = 0; voiceSlotInGroup < voiceCount; voiceSlotInGroup++)
     {
-      float modSource = (float)ctx->GetAudioParamIdentity({ { (int)FFModuleType::GlobalUni, 0 }, { manualParamIndex, voiceSlotInGroup } });
+      auto const* paramTopo = ctx->Topo()->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { manualParamIndex, voiceSlotInGroup } });
+      float modSource = (float)ctx->GetAudioParamNormalized(paramTopo->runtimeParamIndex);
       minModSource = std::min(modSource, minModSource);
       maxModSource = std::max(modSource, maxModSource);
     }
