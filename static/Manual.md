@@ -242,7 +242,10 @@ This is not entirely accurate as you can position the echo modules to just about
 
 # Patch From Scratch
 
-booyah not forget panic/disable matrix
+Just a short example of how to turn your regular init-saw into your regular super-wet super-saw.<br/>
+Maybe your thing, maybe not, but it's a simple way to showcase some of the plug's features.<br/>
+
+Start with this patch: (demo_patch_from_scratch_start.ff2preset)[/demo_patch_from_scratch_start.ff2preset].
 
 # UI
 
