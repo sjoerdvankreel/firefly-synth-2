@@ -535,10 +535,24 @@ FBLookAndFeel::getTooltipBounds(
 #pragma warning(push)
 #pragma warning(disable: 4996)
 #endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
     // The JUCE suggested alternatives hang on occasion.
     tw = std::max(tw, font.getStringWidthFloat(lines[i]));
 #if _MSC_VER
 #pragma warning(pop)
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
 #endif
   }
 
