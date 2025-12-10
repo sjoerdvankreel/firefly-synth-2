@@ -95,6 +95,8 @@ End with this: [demo_patch_from_scratch_final.ff2preset](/static/demo_patch_from
 ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_final.mp3))
 ([Reaper](/static/demo_patch_from_scratch_final.rpp))
 
+1. Enable VFX1 ([MP3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_patch_from_scratch_1.mp3))
+
 ## Modulation System
 The basic rule is: if it is a continuous parameter (knob/slider), it is both automatable and modulatable.<br/>
 If it is a discrete parameter (toggle/combo), it is neither automatable nor modulatable.
