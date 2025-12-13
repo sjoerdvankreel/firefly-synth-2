@@ -339,7 +339,7 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
 
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
-  dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+  dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2; });
   auto section =  plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, section, 0, indices, dependencies);
 }

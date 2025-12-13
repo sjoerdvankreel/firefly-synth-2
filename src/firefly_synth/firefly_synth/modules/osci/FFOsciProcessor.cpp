@@ -69,7 +69,7 @@ FFOsciProcessor::AllocOnDemandBuffers(
   int uniCount = moduleTopo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm); 
   int oversampleTimes = graph ? 1 : FFOsciOversampleTimes;
   int maxDelayLineSize = static_cast<int>(std::ceil(sampleRate * oversampleTimes / FFOsciStringMinFreq));
-  if(graph || type == FFOsciType::String)
+  if(graph || (type == FFOsciType::String1 || type == FFOsciType::String2))
     for (int i = 0; i < (graph? FFOsciUniMaxCount: uniCount); i++)
       _stringUniState[i].delayLine.AllocBuffersIfChanged(state->MemoryPool(), maxDelayLineSize);
 }
@@ -168,7 +168,9 @@ FFOsciProcessor::BeginVoice(
     BeginVoiceWave(state, uniPhaseInit);
   else if (_type == FFOsciType::FM)
     BeginVoiceFM(state, uniPhaseInit);
-  else if (_type == FFOsciType::String)
+  else if (_type == FFOsciType::String1)
+    BeginVoiceString(state, graph);
+  else if (_type == FFOsciType::String2)
     BeginVoiceString(state, graph);
   else if (_type == FFOsciType::ExtAudio)
     BeginVoiceExtAudio(state);
@@ -300,7 +302,7 @@ FFOsciProcessor::Process(
     ProcessWave(state, basePitchPlain, uniDetunePlain);
   else if (_type == FFOsciType::FM)
     ProcessFM(state, basePitchPlain, uniDetunePlain);
-  else if (_type == FFOsciType::String)
+  else if (_type == FFOsciType::String1 || _type == FFOsciType::String2)
     ProcessString(state, 
       topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNormModulated.Get(0)),
       topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNormModulated.Get(0)),
@@ -361,7 +363,7 @@ FFOsciProcessor::Process(
   float lastBaseFreq = FBPitchToFreq(basePitchPlain.Get(_oversampleTimes * FBFixedBlockSamples - 1));
   if (exchangeToGUI == nullptr)
   {
-    if (_type == FFOsciType::String)
+    if (_type == FFOsciType::String1 || _type == FFOsciType::String2)
     {
       int graphSamples = FBFreqToSamples(lastBaseFreq, sampleRate) * FFOsciStringGraphRounds;
       return std::clamp(graphSamples - _graphPosition, 0, FBFixedBlockSamples);
