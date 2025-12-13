@@ -40,6 +40,7 @@ struct FFOsciStringUniVoiceState final
   float lastDraw = 0.0f;
   float prevDelayVal = 0.f;
   float phaseTowardsX = 0.0f;
+  int haveNoiseSamples = 0;
   int colorFilterPosition = 0;
 
   FFParkMillerPRNG xPrng = {};
@@ -49,6 +50,13 @@ struct FFOsciStringUniVoiceState final
   FFScalarPhaseGenerator phaseGen = {};
   FFMarsagliaPRNG<true> normalPrng = {};
   FBSArray<float, FFOsciStringMaxPoles> colorFilterBuffer = {};
+
+  std::array<float*, 1> noiseDownsampledChannelPtr = {};
+  FBSArray<float, FBFixedBlockSamples> noiseOutput = {};
+  juce::dsp::AudioBlock<float> noiseOversampledBlock = {};
+  juce::dsp::AudioBlock<float> noiseDownsampledBlock = {};
+  std::unique_ptr<juce::dsp::Oversampling<float>> noiseOversampler = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> noiseOutputOversampled = {};
 };
 
 class FFOsciProcessor final
@@ -102,7 +110,6 @@ class FFOsciProcessor final
 
   FFStateVariableFilter<1> _extAudioLPFilter = {};
   FFStateVariableFilter<1> _extAudioHPFilter = {};
-
   FFStateVariableFilter<FFOsciUniMaxCount> _stringLPFilter = {};
   FFStateVariableFilter<FFOsciUniMaxCount> _stringHPFilter = {};
   std::array<FFOsciStringUniVoiceState, FFOsciUniMaxCount> _stringUniState = {};
