@@ -46,8 +46,7 @@ FFOsciTypeToString(FFOsciType type)
   case FFOsciType::FM: return "FM";
   case FFOsciType::Off: return "Off";
   case FFOsciType::Wave: return "Wave";
-  case FFOsciType::String1: return "String1";
-  case FFOsciType::String2: return "String2";
+  case FFOsciType::String: return "String";
   case FFOsciType::ExtAudio: return "Ext Audio";
   default: FB_ASSERT(false); return {};
   }
@@ -79,8 +78,7 @@ FFMakeOsciTopo()
     { "{449E467A-2DC0-43B0-8487-57C4492F9FE2}", FFOsciTypeToString(FFOsciType::Off) },
     { "{3F55D6D7-5BDF-4B7F-B1E0-2E59B96EA5C0}", FFOsciTypeToString(FFOsciType::Wave)  },
     { "{83E9DBC4-5CBF-4C96-93EB-AB16C2E7C769}", FFOsciTypeToString(FFOsciType::FM)  } ,
-    { "{F4095D2B-688D-4A89-82FE-359A8902963C}", FFOsciTypeToString(FFOsciType::String1) },
-    { "{5DF983C9-46B4-451A-8405-BF059A4BBA0D}", FFOsciTypeToString(FFOsciType::String2) },
+    { "{F4095D2B-688D-4A89-82FE-359A8902963C}", FFOsciTypeToString(FFOsciType::String) },
     { "{509BDB4D-7EF9-42DD-AEBE-85BA60EBC7ED}", FFOsciTypeToString(FFOsciType::ExtAudio) } };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
@@ -119,7 +117,7 @@ FFMakeOsciTopo()
   phase.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPhase);
   phase.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectPhase);
   phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPhase);
-  phase.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String1 && vs[0] != (int)FFOsciType::String2 && vs[0] != (int)FFOsciType::ExtAudio; });
+  phase.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[0] != (int)FFOsciType::ExtAudio; });
 
   auto& keyTrack = result->params[(int)FFOsciParam::KeyTrack];
   keyTrack.mode = FBParamMode::Block;
@@ -250,7 +248,7 @@ FFMakeOsciTopo()
   uniOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniOffset);
   uniOffset.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniOffset);
   uniOffset.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniOffset);
-  uniOffset.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String1 && vs[0] != (int)FFOsciType::String2 && vs[1] != 1 && vs[0] != (int)FFOsciType::ExtAudio; });
+  uniOffset.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[1] != 1 && vs[0] != (int)FFOsciType::ExtAudio; });
 
   auto& uniRandom = result->params[(int)FFOsciParam::UniRandom];
   uniRandom.mode = FBParamMode::VoiceStart;
@@ -266,7 +264,7 @@ FFMakeOsciTopo()
   uniRandom.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniRandom);
   uniRandom.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniRandom);
   uniRandom.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniRandom);
-  uniRandom.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String1 && vs[0] != (int)FFOsciType::String2 && vs[1] != 1 && vs[0] != (int)FFOsciType::ExtAudio; });
+  uniRandom.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[1] != 1 && vs[0] != (int)FFOsciType::ExtAudio; });
 
   auto& uniDetune = result->params[(int)FFOsciParam::UniDetune];
   uniDetune.mode = FBParamMode::Accurate;
@@ -726,7 +724,7 @@ FFMakeOsciTopo()
   stringMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringMode);
   stringMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringMode);
   stringMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringMode);
-  stringMode.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2; });
+  stringMode.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringSeed = result->params[(int)FFOsciParam::StringSeed];
   stringSeed.mode = FBParamMode::Block;
@@ -742,7 +740,7 @@ FFMakeOsciTopo()
   stringSeed.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringSeed);
   stringSeed.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringSeed);
   stringSeed.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringSeed);
-  stringSeed.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2; });
+  stringSeed.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringPoles = result->params[(int)FFOsciParam::StringPoles];
   stringPoles.mode = FBParamMode::Block;
@@ -759,7 +757,7 @@ FFMakeOsciTopo()
   stringPoles.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringPoles);
   stringPoles.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringPoles);
   stringPoles.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringPoles);
-  stringPoles.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2; });
+  stringPoles.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringColor = result->params[(int)FFOsciParam::StringColor];
   stringColor.mode = FBParamMode::Accurate;
@@ -775,7 +773,7 @@ FFMakeOsciTopo()
   stringColor.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringColor);
   stringColor.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringColor);
   stringColor.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringColor);
-  stringColor.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2; });
+  stringColor.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringX = result->params[(int)FFOsciParam::StringX];
   stringX.mode = FBParamMode::Accurate;
@@ -791,7 +789,7 @@ FFMakeOsciTopo()
   stringX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringX);
   stringX.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringX);
   stringX.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringX);
-  stringX.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2; });
+  stringX.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringY = result->params[(int)FFOsciParam::StringY];
   stringY.mode = FBParamMode::Accurate;
@@ -807,7 +805,7 @@ FFMakeOsciTopo()
   stringY.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringY);
   stringY.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringY);
   stringY.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringY);
-  stringY.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2; });
+  stringY.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringExcite = result->params[(int)FFOsciParam::StringExcite];
   stringExcite.mode = FBParamMode::Accurate;
@@ -825,7 +823,7 @@ FFMakeOsciTopo()
   stringExcite.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringExcite);
   stringExcite.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringExcite);
   stringExcite.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringExcite);
-  stringExcite.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2; });
+  stringExcite.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringLPOn = result->params[(int)FFOsciParam::StringLPOn];
   stringLPOn.mode = FBParamMode::Block;
@@ -840,7 +838,7 @@ FFMakeOsciTopo()
   stringLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringLPOn);
   stringLPOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringLPOn);
   stringLPOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringLPOn);
-  stringLPOn.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2; });
+  stringLPOn.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringLPFreq = result->params[(int)FFOsciParam::StringLPFreq];
   stringLPFreq.mode = FBParamMode::Accurate;
@@ -857,7 +855,7 @@ FFMakeOsciTopo()
   stringLPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringLPFreq);
   stringLPFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringLPFreq);
   stringLPFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringLPFreq);
-  stringLPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::StringLPOn }, [](auto const& vs) { return (vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2) && vs[1] != 0; });
+  stringLPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::StringLPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String && vs[1] != 0; });
 
   auto& stringLPRes = result->params[(int)FFOsciParam::StringLPRes];
   stringLPRes.mode = FBParamMode::Accurate;
@@ -873,7 +871,7 @@ FFMakeOsciTopo()
   stringLPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringLPRes);
   stringLPRes.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringLPRes);
   stringLPRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringLPRes);
-  stringLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::StringLPOn }, [](auto const& vs) { return (vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2) && vs[1] != 0; });
+  stringLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::StringLPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String && vs[1] != 0; });
 
   auto& stringLPKTrk = result->params[(int)FFOsciParam::StringLPKTrk];
   stringLPKTrk.mode = FBParamMode::Accurate;
@@ -892,7 +890,7 @@ FFMakeOsciTopo()
   stringLPKTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringLPKeyTrk);
   stringLPKTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringLPKeyTrk);
   stringLPKTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringLPKeyTrk);
-  stringLPKTrk.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::StringLPOn }, [](auto const& vs) { return (vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2) && vs[1] != 0; });
+  stringLPKTrk.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::StringLPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String && vs[1] != 0; });
 
   auto& stringHPOn = result->params[(int)FFOsciParam::StringHPOn];
   stringHPOn.mode = FBParamMode::Block;
@@ -907,7 +905,7 @@ FFMakeOsciTopo()
   stringHPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringHPOn);
   stringHPOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringHPOn);
   stringHPOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringHPOn);
-  stringHPOn.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return (vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2); });
+  stringHPOn.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringHPFreq = result->params[(int)FFOsciParam::StringHPFreq];
   stringHPFreq.mode = FBParamMode::Accurate;
@@ -924,7 +922,7 @@ FFMakeOsciTopo()
   stringHPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringHPFreq);
   stringHPFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringHPFreq);
   stringHPFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringHPFreq);
-  stringHPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::StringHPOn }, [](auto const& vs) { return (vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2) && vs[1] != 0; });
+  stringHPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::StringHPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String && vs[1] != 0; });
 
   auto& stringHPRes = result->params[(int)FFOsciParam::StringHPRes];
   stringHPRes.mode = FBParamMode::Accurate;
@@ -940,7 +938,7 @@ FFMakeOsciTopo()
   stringHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringHPRes);
   stringHPRes.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringHPRes);
   stringHPRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringHPRes);
-  stringHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::StringHPOn }, [](auto const& vs) { return (vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2) && vs[1] != 0; });
+  stringHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::StringHPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String && vs[1] != 0; });
 
   auto& stringHPKTrk = result->params[(int)FFOsciParam::StringHPKTrk];
   stringHPKTrk.mode = FBParamMode::Accurate;
@@ -959,7 +957,7 @@ FFMakeOsciTopo()
   stringHPKTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringHPKeyTrk);
   stringHPKTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringHPKeyTrk);
   stringHPKTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringHPKeyTrk);
-  stringHPKTrk.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::StringHPOn }, [](auto const& vs) { return (vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2) && vs[1] != 0; });
+  stringHPKTrk.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::StringHPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String && vs[1] != 0; });
 
   auto& stringDamp = result->params[(int)FFOsciParam::StringDamp];
   stringDamp.mode = FBParamMode::Accurate;
@@ -975,7 +973,7 @@ FFMakeOsciTopo()
   stringDamp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringDamp);
   stringDamp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringDamp);
   stringDamp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringDamp);
-  stringDamp.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return (vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2); });
+  stringDamp.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringDampKTrk = result->params[(int)FFOsciParam::StringDampKTrk];
   stringDampKTrk.mode = FBParamMode::Accurate;
@@ -994,7 +992,7 @@ FFMakeOsciTopo()
   stringDampKTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringDampKTrk);
   stringDampKTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringDampKTrk);
   stringDampKTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringDampKTrk);
-  stringDampKTrk.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return (vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2); });
+  stringDampKTrk.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringFeedback = result->params[(int)FFOsciParam::StringFeedback];
   stringFeedback.mode = FBParamMode::Accurate;
@@ -1010,7 +1008,7 @@ FFMakeOsciTopo()
   stringFeedback.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringFeedback);
   stringFeedback.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringFeedback);
   stringFeedback.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringFeedback);
-  stringFeedback.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return (vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2); });
+  stringFeedback.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringFeedbackKTrk = result->params[(int)FFOsciParam::StringFeedbackKTrk];
   stringFeedbackKTrk.mode = FBParamMode::Accurate;
@@ -1029,7 +1027,7 @@ FFMakeOsciTopo()
   stringFeedbackKTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringFeedbackKTrk);
   stringFeedbackKTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringFeedbackKTrk);
   stringFeedbackKTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringFeedbackKTrk);
-  stringFeedbackKTrk.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return (vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2); });
+  stringFeedbackKTrk.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringTrackingKey = result->params[(int)FFOsciParam::StringTrackingKey];
   stringTrackingKey.mode = FBParamMode::Accurate;
@@ -1047,7 +1045,7 @@ FFMakeOsciTopo()
   stringTrackingKey.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringTrackingKey);
   stringTrackingKey.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringTrackingKey);
   stringTrackingKey.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringTrackingKey);
-  stringTrackingKey.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return (vs[0] == (int)FFOsciType::String1 || vs[0] == (int)FFOsciType::String2); });
+  stringTrackingKey.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& extAudioLPOn = result->params[(int)FFOsciParam::ExtAudioLPOn];
   extAudioLPOn.mode = FBParamMode::Block;

@@ -18,14 +18,6 @@ float
 FFOsciProcessor::StringDraw(
   int uniVoice)
 {
-  if (_type == FFOsciType::String1)
-  {
-    if (_stringMode == FFOsciStringMode::Uni)
-      return FBToBipolar(_stringUniState[uniVoice].uniformPrng.NextScalar());
-    else
-      return _stringUniState[uniVoice].normalPrng.NextScalar();
-  }
-
   if (_stringUniState[uniVoice].haveNoiseSamples == 0)
   {
     for (int s = 0; s < FFOsciFixedBlockOversamples; s += FFOsciOversampleTimes * _oversampleTimes)

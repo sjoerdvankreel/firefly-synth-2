@@ -113,7 +113,7 @@ PlotParams(FBModuleGraphComponentData const* data, int /*graphIndex*/)
   float pitch = 60.0f + static_cast<float>(state->AudioParamLinear(indices, false, -1));
   pitch += state->AudioParamLinear({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Fine, 0 } }, false, -1);
   auto type = state->AudioParamList<FFOsciType>({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Type, 0 } }, false, -1);
-  int rounds = (type == FFOsciType::String1 || type == FFOsciType::String2) ? FFOsciStringGraphRounds : 1;
+  int rounds = type == FFOsciType::String? FFOsciStringGraphRounds : 1;
 
   // make it debuggable, ardour acts weird
   auto freq = FBPitchToFreq(pitch);
