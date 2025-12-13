@@ -15,12 +15,13 @@
 static inline float const StringDCBlockFreq = 20.0f;
 
 float
-FFOsciProcessor::StringDraw()
+FFOsciProcessor::StringDraw(
+  int uniVoice)
 {
   if (_stringMode == FFOsciStringMode::Uni)
-    return FBToBipolar(_uniformPrng.NextScalar());
+    return FBToBipolar(_stringUniState[uniVoice].uniformPrng.NextScalar());
   FB_ASSERT(_stringMode == FFOsciStringMode::Norm);
-  return _stringNormalPrng.NextScalar();
+  return _stringUniState[uniVoice].normalPrng.NextScalar();
 }
 
 float
@@ -43,10 +44,10 @@ FFOsciProcessor::StringNext(
     return _stringUniState[uniVoice].lastDraw * scale;
 
   _stringUniState[uniVoice].phaseTowardsX = 0.0f;
-  if (_uniformPrng.NextScalar() > y)
+  if (_stringUniState[uniVoice].xPrng.NextScalar() > y)
     return _stringUniState[uniVoice].lastDraw * scale;
 
-  _stringUniState[uniVoice].lastDraw = StringDraw();
+  _stringUniState[uniVoice].lastDraw = StringDraw(uniVoice);
   float a = 1.0f;
   for (int i = 0; i < _stringPoles; i++)
   {
@@ -83,8 +84,6 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
 
   _stringLPFilter.Reset();
   _stringHPFilter.Reset();
-  _stringNormalPrng = FFMarsagliaPRNG<true>(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
-  _uniformPrng = FFParkMillerPRNG(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
   for (int u = 0; u < _uniCount; u++)
   {
     _stringUniState[u].phaseGen = {};
@@ -93,12 +92,15 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
     _stringUniState[u].phaseTowardsX = 0.0f;
     _stringUniState[u].colorFilterPosition = 0;
     _stringUniState[u].dcFilter.SetCoeffs(StringDCBlockFreq, oversampledRate);
+    _stringUniState[u].xPrng = FFParkMillerPRNG(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
+    _stringUniState[u].uniformPrng = FFParkMillerPRNG(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
+    _stringUniState[u].normalPrng = FFMarsagliaPRNG<true>(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
     if (graph)
       _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize());
     else
       _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() * _oversampleTimes / FFOsciOversampleTimes);
     for (int p = 0; p < _stringPoles; p++)
-      _stringUniState[u].colorFilterBuffer.Set(p, StringDraw());
+      _stringUniState[u].colorFilterBuffer.Set(p, StringDraw(u));
   }
 }
 
