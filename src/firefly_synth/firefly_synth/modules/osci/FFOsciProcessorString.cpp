@@ -15,12 +15,17 @@
 static inline float const StringDCBlockFreq = 20.0f;
 
 float
-FFOsciProcessor::StringDraw()
+FFOsciProcessor::StringDraw(int uniVoice)
 {
+  (void)uniVoice;
+
+  return 0;
+#if 0
   if (_stringMode == FFOsciStringMode::Uni)
     return FBToBipolar(_uniformPrng.NextScalar());
   FB_ASSERT(_stringMode == FFOsciStringMode::Norm);
   return _stringNormalPrng.NextScalar();
+#endif
 }
 
 float
@@ -30,6 +35,16 @@ FFOsciProcessor::StringNext(
   float excite, float colorPlain,
   float xPlain, float yPlain)
 {
+  (void)uniVoice;
+  (void)sampleRate;
+  (void)uniFreq;
+  (void)excite;
+  (void)colorPlain;
+  (void)xPlain;
+  (void)yPlain;
+
+  return 0;
+#if 0
   float const empirical1 = 0.75f;
   float const empirical2 = 4.0f;
   float x = xPlain;
@@ -57,11 +72,15 @@ FFOsciProcessor::StringNext(
   _stringUniState[uniVoice].colorFilterBuffer.Set(_stringUniState[uniVoice].colorFilterPosition, _stringUniState[uniVoice].lastDraw);
   _stringUniState[uniVoice].colorFilterPosition = (_stringUniState[uniVoice].colorFilterPosition + 1) % _stringPoles;
   return _stringUniState[uniVoice].lastDraw * scale;
+#endif
 }
 
 void 
 FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
 {
+  (void)state;
+  (void)graph;
+#if 0
   int voice = state.voice->slot;
   float sampleRate = state.input->sampleRate;
   float oversampledRate = sampleRate * _oversampleTimes;
@@ -100,6 +119,7 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
     for (int p = 0; p < _stringPoles; p++)
       _stringUniState[u].colorFilterBuffer.Set(p, StringDraw());
   }
+#endif
 }
 
 void 
@@ -110,6 +130,17 @@ FFOsciProcessor::ProcessString(
   FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
   FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain)
 {
+  (void)state;
+  (void)coarsePlain0;
+  (void)finePlain0;
+  (void)uniDetunePlain0;
+  (void)voiceBasePitch;
+  (void)basePitchPlain;
+  (void)uniDetunePlain;
+
+  _graphPosition++;
+
+#if 0
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   float sampleRate = state.input->sampleRate;
@@ -361,4 +392,5 @@ FFOsciProcessor::ProcessString(
   exchangeParams.acc.stringTrackingKey[0][voice] = stringTrackingKeyNorm.Last();
   exchangeParams.acc.stringFeedbackKTrk[0][voice] = stringFeedbackKTrkNorm.Last();
   exchangeParams.acc.stringColor[0][voice] = stringColorNorm.Last();
+#endif
 }
