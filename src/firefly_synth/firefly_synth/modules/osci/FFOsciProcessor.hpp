@@ -42,14 +42,11 @@ struct FFOsciStringUniVoiceState final
   float phaseTowardsX = 0.0f;
   int colorFilterPosition = 0;
 
-  int d = 0;
-  float p = 0;
-  juce::Random random = {};
   FFDelayLine<1> delayLine = {};
   FFBasicHPFilter dcFilter = {};
-  //FFParkMillerPRNG uniformPrng = {};
+  FFParkMillerPRNG _uniformPrng = {};
   FFScalarPhaseGenerator phaseGen = {};
-  //FFMarsagliaPRNG<true> normalPrng = {};
+  FFMarsagliaPRNG<true> _normalPrng = {};
   FBSArray<float, FFOsciStringMaxPoles> colorFilterBuffer = {};
 };
 
