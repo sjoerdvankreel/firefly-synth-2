@@ -12,19 +12,29 @@
 
 #include <xsimd/xsimd.hpp>
 
+static juce::Random r = {};
+
 static inline float const StringDCBlockFreq = 20.0f;
 
 float
 FFOsciProcessor::StringDraw(int uniVoice)
 {
-  (void)uniVoice;
+  if (_stringUniState[uniVoice].d == 0)
+    _stringUniState[uniVoice].p = _stringUniState[uniVoice].random.nextFloat();
+  _stringUniState[uniVoice].d++;
+  if (_stringUniState[uniVoice].d == 4)
+    _stringUniState[uniVoice].d = 0;
+  return _stringUniState[uniVoice].p;
 
-  return 0;
 #if 0
+  _stringLPFilter.Set(FFStateVariableFilterMode::LPF, 48000, 20000.0, 0.0, 0.0);
+  _stringHPFilter.Set(FFStateVariableFilterMode::HPF, 48000, 20.0, 0.0, 0.0);
+  return FBToBipolar((float)_stringLPFilter.Next(0, _stringHPFilter.Next(0, _stringUniState[uniVoice].random.nextFloat())));
+
   if (_stringMode == FFOsciStringMode::Uni)
-    return FBToBipolar(_uniformPrng.NextScalar());
+    return FBToBipolar(_stringUniState[uniVoice].uniformPrng.NextScalar());
   FB_ASSERT(_stringMode == FFOsciStringMode::Norm);
-  return _stringNormalPrng.NextScalar();
+  return _stringUniState[uniVoice].normalPrng.NextScalar();
 #endif
 }
 
@@ -43,7 +53,8 @@ FFOsciProcessor::StringNext(
   (void)xPlain;
   (void)yPlain;
 
-  return 0;
+
+  return StringDraw(uniVoice);
 #if 0
   float const empirical1 = 0.75f;
   float const empirical2 = 4.0f;
@@ -78,8 +89,23 @@ FFOsciProcessor::StringNext(
 void 
 FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
 {
-  (void)state;
-  (void)graph;
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& params = procState->param.voice.osci[state.moduleSlot];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
+
+  float stringModeNorm = params.block.stringMode[0].Voice()[voice];
+  _stringMode = topo.NormalizedToListFast<FFOsciStringMode>(FFOsciParam::StringMode, stringModeNorm);
+  for (int u = 0; u < _uniCount; u++)
+  {
+    //_stringUniState[u].uniformPrng = FFParkMillerPRNG(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
+    //_stringUniState[u].normalPrng = FFMarsagliaPRNG<true>(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
+    if (graph)
+      _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize());
+    else
+      _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() * _oversampleTimes / FFOsciOversampleTimes);
+  }
+
 #if 0
   int voice = state.voice->slot;
   float sampleRate = state.input->sampleRate;
@@ -138,7 +164,52 @@ FFOsciProcessor::ProcessString(
   (void)basePitchPlain;
   (void)uniDetunePlain;
 
-  _graphPosition++;
+  int voice = state.voice->slot;
+  float sampleRate = state.input->sampleRate;
+  float oversampledRate = sampleRate * _oversampleTimes;
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+
+  auto* procState = state.ProcAs<FFProcState>();
+  auto& voiceState = procState->dsp.voice[voice];
+  auto const& procParams = procState->param.voice.osci[state.moduleSlot];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
+  auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
+
+  if (_firstProcess)
+  {
+    // Need access to modulated voice base pitch for this.
+    int delayLineSize = static_cast<int>(std::ceil(oversampledRate / FFOsciStringMinFreq));
+    for (int i = 0; i < delayLineSize; i++)
+    {
+      double dNextVal = StringDraw(0);// StringNext(u, oversampledRate, uniFreq, stringExcitePlain.Get(0), stringColorPlain.Get(0), stringXPlain.Get(0), stringYPlain.Get(0));
+      _stringUniState[0].delayLine.Push(static_cast<float>(dNextVal));
+    }
+  }
+
+  auto const& stringExciteNorm = procParams.acc.stringExcite[0].Voice()[voice];
+  FBSArray<float, FFOsciFixedBlockOversamples> stringExcitePlain = {};
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+  {
+    stringExcitePlain.Store(s, topo.NormalizedToLog2Fast(FFOsciParam::StringExcite, stringExciteNorm, s));
+  }
+
+  if (_oversampleTimes != 1)
+  {
+    stringExcitePlain.UpsampleStretch<FFOsciOversampleTimes>();
+  }
+
+  for (int s = 0; s < totalSamples; s++)
+  {
+    float excite = stringExcitePlain.Get(s);
+    float freq = FBPitchToFreq(voiceBasePitch.Get(s));
+    _stringUniState[0].delayLine.Delay(0, oversampledRate / freq);
+    float thisVal = _stringUniState[0].delayLine.GetLinearInterpolate(0);
+    _stringUniState[0].delayLine.Pop();
+    float feedbackVal = (1.0f - excite) * thisVal + excite * StringDraw(0);
+    _stringUniState[0].delayLine.Push(feedbackVal);
+    uniOutputOversampled[0].Set(s, StringDraw(1));
+    _graphPosition++;
+  }
 
 #if 0
   int voice = state.voice->slot;

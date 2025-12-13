@@ -1,4 +1,6 @@
 TODOLIST for beta-2
+[ ] white noise is not white
+[ ] use generator per unison voice
 [ ] rename demo to feature test
 [ ] panic should not context menu
 [ ] string low end bug
