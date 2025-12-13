@@ -18,25 +18,10 @@ float
 FFOsciProcessor::StringDraw(
   int uniVoice)
 {
-  if (_stringUniState[uniVoice].haveNoiseSamples == 0)
-  {
-    for (int s = 0; s < FFOsciFixedBlockOversamples; s += FFOsciOversampleTimes * _oversampleTimes)
-    {
-      float noise;
-      if (_stringMode == FFOsciStringMode::Uni)
-        noise = FBToBipolar(_stringUniState[uniVoice].uniformPrng.NextScalar());
-      else
-        noise = _stringUniState[uniVoice].normalPrng.NextScalar();
-      for (int so = 0; so < FFOsciOversampleTimes * _oversampleTimes; so++)
-        _stringUniState[uniVoice].noiseOversampledBlock.setSample(0, s + so, noise);
-    }
-    auto channelBlockDown = _stringUniState[uniVoice].noiseDownsampledBlock.getSubsetChannelBlock(0, 1);
-    _stringUniState[uniVoice].noiseOversampler->processSamplesDown(channelBlockDown);
-    _stringUniState[uniVoice].haveNoiseSamples = FBFixedBlockSamples;
-  }
-  float out = _stringUniState[uniVoice].noiseOutput.Get(FBFixedBlockSamples - _stringUniState[uniVoice].haveNoiseSamples);
-  _stringUniState[uniVoice].haveNoiseSamples--;
-  return out;
+  if (_stringMode == FFOsciStringMode::Uni)
+    return FBToBipolar(_stringUniState[uniVoice].uniformPrng.NextScalar());
+  FB_ASSERT(_stringMode == FFOsciStringMode::Norm);
+  return _stringUniState[uniVoice].normalPrng.NextScalar();
 }
 
 float
@@ -53,7 +38,6 @@ FFOsciProcessor::StringNext(
   float color = 1.99f * (1.0f - colorPlain);
   float scale = 1.0f - ((1.0f - colorPlain) * empirical1);
   scale *= (1.0f + empirical2 * (1.0f - excite));
-  scale /= _oversampleTimes;
 
   _stringUniState[uniVoice].phaseTowardsX += uniFreq / sampleRate;
   if (_stringUniState[uniVoice].phaseTowardsX < 1.0f - x)
@@ -106,7 +90,6 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
     _stringUniState[u].lastDraw = 0.0f;
     _stringUniState[u].prevDelayVal = 0.0f;
     _stringUniState[u].phaseTowardsX = 0.0f;
-    _stringUniState[u].haveNoiseSamples = 0;
     _stringUniState[u].colorFilterPosition = 0;
     _stringUniState[u].dcFilter.SetCoeffs(StringDCBlockFreq, oversampledRate);
     _stringUniState[u].xPrng = FFParkMillerPRNG(_stringSeed / (FFOsciStringMaxSeed + 1.0f));

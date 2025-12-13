@@ -31,16 +31,6 @@ _oversampler(
     _downsampledChannelPtrs[u] = _uniOutput[u].Ptr(0);
   _downsampledBlock = AudioBlock<float>(_downsampledChannelPtrs.data(), FFOsciUniMaxCount, 0, FBFixedBlockSamples);
   _oversampledBlock = _oversampler.processSamplesUp(_downsampledBlock);
-
-  for (int u = 0; u < FFOsciUniMaxCount; u++)
-  {
-    _stringUniState[u].noiseOversampler = std::make_unique<Oversampling<float>>(
-      1, FFOsciOversampleFactor, Oversampling<float>::filterHalfBandPolyphaseIIR, false, false);
-    _stringUniState[u].noiseOversampler->initProcessing(FBFixedBlockSamples);
-    _stringUniState[u].noiseDownsampledChannelPtr[0] = _stringUniState[u].noiseOutput.Ptr(0);
-    _stringUniState[u].noiseDownsampledBlock = AudioBlock<float>(_stringUniState[u].noiseDownsampledChannelPtr.data(), 1, 0, FBFixedBlockSamples);
-    _stringUniState[u].noiseOversampledBlock = _stringUniState[u].noiseOversampler->processSamplesUp(_stringUniState[u].noiseDownsampledBlock);
-  }
 }
 
 void 
