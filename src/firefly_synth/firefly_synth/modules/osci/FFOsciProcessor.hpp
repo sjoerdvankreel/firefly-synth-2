@@ -42,12 +42,9 @@ struct FFOsciStringUniVoiceState final
   float phaseTowardsX = 0.0f;
   int colorFilterPosition = 0;
 
-  FFParkMillerPRNG xPrng = {};
-  FFBasicHPFilter dcFilter = {};
   FFDelayLine<1> delayLine = {};
-  FFParkMillerPRNG uniformPrng = {};
+  FFBasicHPFilter dcFilter = {};
   FFScalarPhaseGenerator phaseGen = {};
-  FFMarsagliaPRNG<true> normalPrng = {};
   FBSArray<float, FFOsciStringMaxPoles> colorFilterBuffer = {};
 };
 
@@ -103,11 +100,12 @@ class FFOsciProcessor final
   FFStateVariableFilter<1> _extAudioLPFilter = {};
   FFStateVariableFilter<1> _extAudioHPFilter = {};
 
+  FFParkMillerPRNG _uniformPrng = {};
+  FFMarsagliaPRNG<true> _stringNormalPrng = {};
   FFStateVariableFilter<FFOsciUniMaxCount> _stringLPFilter = {};
   FFStateVariableFilter<FFOsciUniMaxCount> _stringHPFilter = {};
   std::array<FFOsciStringUniVoiceState, FFOsciUniMaxCount> _stringUniState = {};
 
-  FFParkMillerPRNG _unisonPrng = {};
   std::array<FFOsciWavePhaseGenerator, FFOsciUniMaxCount> _uniWavePhaseGens = {};
   FBSArray2<float, FFOsciUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
   std::array<std::array<FFOsciFMPhaseGenerator, FFOsciUniMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount> _uniFMPhaseGens = {};
@@ -117,8 +115,7 @@ class FFOsciProcessor final
   FBSArray2<float, FBFixedBlockSamples, FFOsciUniMaxCount> _uniOutput = {};
 
   float 
-  StringDraw(
-    int uniVoice);
+  StringDraw();
   float 
   StringNext(
     int uniVoice,
