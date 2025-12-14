@@ -1,11 +1,13 @@
 TODOLIST for beta-2
-[ ] rename demo to feature test
-[ ] panic should not context menu
-[ ] string low end bug
+[x] bugfix: string unison voices not share random generator
+[x] bugfix: string random gen not shared between X and excite
 [ ] theme and prettify the gui
-[ ] not right-click-change horizontal sliders
 
 TODOLIST for beta-next
+[ ] not right-click-change horizontal sliders
+[ ] panic should not context menu
+[ ] string low end bug?
+[ ] rename demo to feature test
 [ ] make some presets
 [ ] compare to ff1
 [ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
