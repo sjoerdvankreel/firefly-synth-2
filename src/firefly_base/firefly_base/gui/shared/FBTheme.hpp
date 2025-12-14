@@ -21,13 +21,13 @@ struct FBColorScheme
 
 struct FBModuleColors
 {
-  std::string schemeName = {};
-  std::map<std::string, std::string> paramSchemeOverrides = {};
+  std::string colorScheme = {};
+  std::map<std::string, std::string> paramColorSchemes = {};
 };
 
 struct FBTheme
 {
   std::string name = {};
-  std::map<std::string, FBColorScheme> schemes = {};
-  std::map<std::string, FBModuleColors> modules = {};
+  std::map<std::string, FBColorScheme> colorSchemes = {};
+  std::map<std::string, FBModuleColors> moduleColors = {};
 };
