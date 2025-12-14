@@ -86,7 +86,6 @@ static Component*
 MakeGlobalUniVoices(
   FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0 });
   auto voiceCount = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } });
@@ -101,7 +100,6 @@ static Component*
 MakeGlobalUniInit(
   FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 1, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBFillerComponent>(1, 1));
   auto initButton = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
@@ -118,7 +116,6 @@ MakeGlobalUniContent(
   FBGraphRenderState* graphRenderState,
   std::vector<FBModuleGraphComponent*>* fixedGraphs)
 {
-  FB_LOG_ENTRY_EXIT();
   auto rowSizes = std::vector<int>();
   rowSizes.push_back(1);
   int uniTargetCount = (int)FFGlobalUniTarget::Count;

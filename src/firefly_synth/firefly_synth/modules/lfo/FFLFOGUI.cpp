@@ -21,7 +21,6 @@ using namespace juce;
 static Component*
 MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
   auto type = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Type, 0 } });
@@ -46,7 +45,6 @@ MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 static Component*
 MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot, int block)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0 });
   auto opType = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, block } });
@@ -80,7 +78,6 @@ MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot,
 static Component*
 MakeLFOSectionSkewA(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 1 });
   auto skewAXMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAXMode, 0 } });
@@ -100,7 +97,6 @@ MakeLFOSectionSkewA(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 static Component*
 MakeLFOSectionA(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   grid->Add(0, 0, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, 0));
   grid->Add(0, 1, MakeLFOSectionSkewA(plugGUI, moduleType, moduleSlot));
@@ -110,7 +106,6 @@ MakeLFOSectionA(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 static Component*
 MakeLFOSectionBC(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot, int block)
 {
-  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0 });
   grid->Add(0, 0, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, block));
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
@@ -119,7 +114,6 @@ MakeLFOSectionBC(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot, in
 static Component*
 MakeLFOTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
   columnSizes.push_back(0);
   columnSizes.push_back(1);

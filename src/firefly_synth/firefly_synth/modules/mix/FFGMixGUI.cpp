@@ -70,7 +70,6 @@ FFGMixAdjustParamModulationGUIBounds(
 static Component*
 MakeGMixSectionVoiceToGFXAndExtAudioToGFX(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("VMix\U00002192GFX"));
@@ -89,7 +88,6 @@ MakeGMixSectionVoiceToGFXAndExtAudioToGFX(FBPlugGUI* plugGUI)
 static Component*
 MakeGMixSectionGFXToOut(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 1 });
   for (int e = 0; e < FFEffectCount; e++)
@@ -108,7 +106,6 @@ MakeGMixSectionGFXToOut(FBPlugGUI* plugGUI)
 static Component*
 MakeGMixGUISectionVoiceAndExtAudioToOut(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1 });
   auto voiceMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::VoiceToOut, 0 } });
@@ -124,7 +121,6 @@ MakeGMixGUISectionVoiceAndExtAudioToOut(FBPlugGUI* plugGUI)
 static Component*
 MakeGMixGUISectionAmpBal(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0 });
   auto amp = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0}, { (int)FFGMixParam::Amp, 0}});

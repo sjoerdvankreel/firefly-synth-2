@@ -107,7 +107,6 @@ FFModMatrixParamListener::AudioParamChanged(
 static Component*
 MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   std::vector<int> rowSizes = { { 1 } };
   std::vector<int> columnSizes = { 0, 0, 0, 0, 1, 0, 0 };
   auto moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
@@ -366,7 +365,6 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
 static Component*
 MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   // + 1 for repeat header
   int rowCount = (FFModMatrixGlobalMaxSlotCount + FFModMatrixVoiceMaxSlotCount + 1) / 2;
   std::vector<int> rowSizes(rowCount + 1, 1);
@@ -401,6 +399,7 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI)
 Component*
 FFMakeModMatrixGUI(FFPlugGUI* plugGUI)
 {
+  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1 } });
   grid->Add(0, 0, MakeModMatrixTopGUI(plugGUI));
   grid->Add(1, 0, MakeModMatrixSlotsGUI(plugGUI));

@@ -21,7 +21,6 @@ using namespace juce;
 static Component*
 MakeMasterSectionMain(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> columnSizes = { 0, 0, 0, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
@@ -44,7 +43,6 @@ MakeMasterSectionMain(FBPlugGUI* plugGUI)
 static Component*
 MakeMasterSectionAux(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> columnSizes = {};
   for (int i = 0; i < FFMasterAuxCount / 2; i++)
@@ -68,7 +66,6 @@ MakeMasterSectionAux(FBPlugGUI* plugGUI)
 static Component*
 MakeMasterTab(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   grid->Add(0, 0, MakeMasterSectionMain(plugGUI));
   grid->Add(0, 1, MakeMasterSectionAux(plugGUI));

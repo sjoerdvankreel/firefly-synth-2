@@ -23,7 +23,6 @@ using namespace juce;
 static Component* 
 MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
 {
-  FB_LOG_ENTRY_EXIT();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   auto topo = plugGUI->HostContext()->Topo();
   auto rowSizes = std::vector<int>();
@@ -112,7 +111,6 @@ MakeEchoSectionMain(
   FBPlugGUI* plugGUI, bool global,
   FBParamComboBox** targetBoxOut)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 1, 0, 1, 0 });
@@ -158,7 +156,6 @@ MakeEchoSectionTaps(
   FBParamToggleButton** tapsOnToggle,
   FBAutoSizeButton** showTapsEditor)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0 });
@@ -195,7 +192,6 @@ MakeEchoSectionTaps(
 static Component*
 MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
@@ -248,7 +244,6 @@ MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
 static Component*
 MakeEchoSectionReverb(FBPlugGUI* plugGUI, bool global)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
@@ -295,8 +290,6 @@ MakeEchoSectionReverb(FBPlugGUI* plugGUI, bool global)
 static Component*
 MakeGEchoTab(FBPlugGUI* plugGUI, bool global)
 {
-  FB_LOG_ENTRY_EXIT();
-
   FBParamComboBox* echoTargetBox = {};
   FBParamToggleButton* tapsOnToggle = {};
   FBAutoSizeButton* showTapsEditorButton = {};

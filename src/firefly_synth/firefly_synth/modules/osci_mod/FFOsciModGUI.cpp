@@ -18,7 +18,6 @@ using namespace juce;
 static Component*
 FFMakeOsciModGUISectionMain(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0 });
   auto oversample = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::Oversample, 0 } });
@@ -34,7 +33,6 @@ FFMakeOsciModGUISectionMain(FBPlugGUI* plugGUI)
 static Component*
 FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
   columnSizes.push_back(0);
   for (int i = 0; i < FFOsciModSlotCount; i++)
@@ -67,6 +65,7 @@ FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI)
 Component*
 FFMakeOsciModTab(FBPlugGUI* plugGUI)
 {
+  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   grid->Add(0, 0, FFMakeOsciModGUISectionMain(plugGUI));
   grid->Add(0, 1, FFMakeOsciModGUISectionMod(plugGUI));

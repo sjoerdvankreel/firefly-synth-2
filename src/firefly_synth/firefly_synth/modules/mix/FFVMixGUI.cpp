@@ -71,7 +71,6 @@ FFVMixAdjustParamModulationGUIBounds(
 static Component*
 MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
   auto topo = plugGUI->HostContext()->Topo();
   for (int i = 0; i < FFOsciCount / 2; i++)
@@ -101,7 +100,6 @@ MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
 static Component*
 MakeVMixSectionOsciAndVFXToOut(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
   auto topo = plugGUI->HostContext()->Topo();
   columnSizes.push_back(0);
@@ -128,7 +126,6 @@ MakeVMixSectionOsciAndVFXToOut(FBPlugGUI* plugGUI)
 static Component*
 MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
   auto topo = plugGUI->HostContext()->Topo();
   columnSizes.push_back(0);
@@ -155,7 +152,6 @@ MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(FBPlugGUI* plugGUI)
 static Component*
 MakeVMixGUISectionAmpBalAndOsciMixToOut(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo(); 
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 1 });
   auto amp = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0}, { (int)FFVMixParam::Amp, 0} });

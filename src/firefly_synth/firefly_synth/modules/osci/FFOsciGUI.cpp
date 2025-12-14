@@ -75,7 +75,6 @@ FFOsciAdjustParamModulationGUIBounds(
 static Component*
 MakeOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> autoSizeColForRow = { -1, -1 };
   std::vector<int> autoSizeRowForCol = { 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 };
@@ -114,7 +113,6 @@ MakeOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 MakeOsciSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   auto count = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::UniCount, 0 } });
@@ -142,7 +140,6 @@ MakeOsciSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1 });
   for (int i = 0; i < FFOsciWaveBasicCount; i++)
@@ -210,7 +207,6 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 1, 1, 1, 1, 1, 1 });
   
@@ -268,7 +264,6 @@ MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> columnSizes = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
@@ -347,7 +342,6 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 MakeOsciSectionExtAudio(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> columnSizes = { 0, 1, 0, 0, 0, 1, 0, 1 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
@@ -388,7 +382,6 @@ MakeOsciSectionExtAudio(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1 });
   grid->Add(0, 0, MakeOsciSectionMain(plugGUI, moduleSlot));
   grid->Add(0, 1, MakeOsciSectionUni(plugGUI, moduleSlot));

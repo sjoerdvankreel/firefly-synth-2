@@ -73,7 +73,6 @@ FFVoiceModuleAdjustParamModulationGUIBounds(
 static Component*
 MakeVoiceModuleSectionPorta(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> columnSizes = { 0, 0, 0, 0, 0, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
@@ -105,7 +104,6 @@ MakeVoiceModuleSectionPorta(FBPlugGUI* plugGUI)
 static Component*
 MakeVoiceModuleSectionPitch(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> columnSizes = { 0, 0, 0, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
@@ -128,7 +126,6 @@ MakeVoiceModuleSectionPitch(FBPlugGUI* plugGUI)
 static Component*
 MakeVoiceModuleTab(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   grid->Add(0, 0, MakeVoiceModuleSectionPitch(plugGUI));
   grid->Add(0, 1, MakeVoiceModuleSectionPorta(plugGUI));
