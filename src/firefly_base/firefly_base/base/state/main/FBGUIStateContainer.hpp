@@ -11,7 +11,7 @@ class FBGUIStateContainer final
 {
   friend class FBPlugGUIContext;
 
-  std::string _themeName = "";
+  std::string _themeName = "Default";
   std::string _patchName = "Init Patch";
 
   std::vector<double*> _params;
