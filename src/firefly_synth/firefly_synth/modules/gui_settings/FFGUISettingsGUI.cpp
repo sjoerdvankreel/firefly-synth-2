@@ -37,7 +37,8 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 7, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, graphVisualsMode));
   grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>("Theme"));
   auto themeCombo = plugGUI->StoreComponent<ComboBox>();
-  themeCombo->addItem("hoi", 1);
+  for (int i = 0; i < plugGUI->Themes().size(); i++)
+    themeCombo->addItem(plugGUI->Themes()[i].name, i + 1);
   grid->Add(0, 9, themeCombo);
   grid->MarkSection({ { 0, 0 }, { 1, 10 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
