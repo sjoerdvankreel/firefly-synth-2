@@ -53,6 +53,12 @@ FBHostGUIContext::PatchName() const
   return _guiState->PatchName(); 
 }
 
+std::string const&
+FBHostGUIContext::ThemeName() const
+{
+  return _guiState->ThemeName();
+}
+
 void
 FBHostGUIContext::OnPatchLoaded()
 {
@@ -72,6 +78,12 @@ FBHostGUIContext::SetPatchName(std::string const& name)
 {
   _guiState->SetPatchName(name);
   OnPatchNameChanged();
+}
+
+void
+FBHostGUIContext::SetThemeName(std::string const& name)
+{
+  _guiState->SetThemeName(name);
 }
 
 void 
