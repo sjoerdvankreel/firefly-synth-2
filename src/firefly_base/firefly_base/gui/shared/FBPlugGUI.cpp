@@ -32,7 +32,7 @@ FBPlugGUI::
 FBPlugGUI(FBHostGUIContext* hostContext) :
 _hostContext(hostContext)
 {
-  _themes = FBLoadThemes();
+  _themes = FBLoadThemes(hostContext->Topo());
   if (_themes.empty())
     FB_LOG_ERROR("No themes found.");
 

@@ -7,6 +7,7 @@
 #include <string>
 
 struct FBTheme;
+struct FBRuntimeTopo;
 
 struct FBColorScheme
 {
@@ -32,4 +33,4 @@ struct FBTheme
 };
 
 std::vector<FBTheme>
-FBLoadThemes();
+FBLoadThemes(FBRuntimeTopo const* topo);

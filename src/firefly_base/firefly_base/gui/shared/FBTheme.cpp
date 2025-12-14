@@ -1,6 +1,7 @@
 #include <firefly_base/gui/shared/FBTheme.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 #include <juce_core/juce_core.h>
 
@@ -145,7 +146,7 @@ ParseModuleColors(
 }
 
 static bool
-ParseTheme(String const& jsonText, FBTheme& theme)
+ParseTheme(FBRuntimeTopo const* topo, String const& jsonText, FBTheme& theme)
 {
   theme = {};
   var json;
@@ -167,12 +168,29 @@ ParseTheme(String const& jsonText, FBTheme& theme)
   if (!ParseModuleColors(obj->getProperty("moduleColors").getDynamicObject(), theme.moduleColors))
     return false;
 
-  // todo validate against topo
+  for(auto const& kv: theme.moduleColors)
+  {
+    if (theme.colorSchemes.find(kv.second.colorScheme) == theme.colorSchemes.end())
+    {
+      FB_LOG_ERROR("Color scheme '" + kv.second.colorScheme + "' not found.");
+      return false;
+    }
+    for (auto const& pkv : kv.second.paramColorSchemes)
+    {
+      if (theme.colorSchemes.find(pkv.second) == theme.colorSchemes.end())
+      {
+        FB_LOG_ERROR("Color scheme '" + pkv.second + "' not found.");
+        return false;
+      }
+    }
+  } 
+
+  (void)topo;
   return true;
 }
 
 std::vector<FBTheme>
-FBLoadThemes()
+FBLoadThemes(FBRuntimeTopo const* topo)
 {
   std::filesystem::path themeRoot(FBGetResourcesFolderPath() / "ui" / "themes");
   if (!std::filesystem::exists(themeRoot))
@@ -188,7 +206,7 @@ FBLoadThemes()
         {
           FB_LOG_INFO("Loading theme file '" + i.path().string() + "'.");
           FBTheme theme = {};
-          if (ParseTheme(file.loadFileAsString(), theme))
+          if (ParseTheme(topo, file.loadFileAsString(), theme))
           { 
             bool foundName = false;
             for(int j = 0; j < result.size(); j++)
