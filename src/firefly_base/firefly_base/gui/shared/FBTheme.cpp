@@ -144,8 +144,8 @@ ParseModuleColors(
   return true;
 }
 
-bool
-FBThemeLoad(std::string const& jsonText, FBTheme& theme)
+static bool
+ParseTheme(std::string const& jsonText, FBTheme& theme)
 {
   theme = {};
   var json;
@@ -169,4 +169,10 @@ FBThemeLoad(std::string const& jsonText, FBTheme& theme)
 
   // todo validate against topo
   return true;
+}
+
+std::map<std::string, FBTheme>
+FBLoadThemes()
+{
+
 }

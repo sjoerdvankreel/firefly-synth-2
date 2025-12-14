@@ -1,13 +1,11 @@
 #pragma once
 
 #include <juce_gui_basics/juce_gui_basics.h>
+
+#include <map>
 #include <string>
 
 struct FBTheme;
-bool
-FBThemeLoad(
-  std::string const& jsonText,
-  FBTheme& theme);
 
 struct FBColorScheme
 {
@@ -31,3 +29,6 @@ struct FBTheme
   std::map<std::string, FBColorScheme> colorSchemes = {};
   std::map<std::string, FBModuleColors> moduleColors = {};
 };
+
+std::map<std::string, FBTheme>
+FBLoadThemes();

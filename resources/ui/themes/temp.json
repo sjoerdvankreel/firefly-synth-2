@@ -1,0 +1,34 @@
+{
+  "name": "Default",
+  "colorSchemes": {
+    "SA": {
+      "highlight1": "00FF0000",
+      "highlight2": "FFFF0000",
+      "background1": "000000FF",
+      "background2": "FF0000FF",
+      "foreground1": "0000FF00",
+      "foreground2": "FF00FF00"
+    },
+    "SB": {
+      "highlight1": "00EE0000",
+      "highlight2": "FFEE0000",
+      "background1": "000000EE",
+      "background2": "FF0000EE",
+      "foreground1": "0000EE00",
+      "foreground2": "FF00EE00"
+    }
+  },
+  "moduleColors": {
+    "VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23": {
+      "colorScheme": "SA",
+      "paramColorSchemes": {}
+    },
+    "GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23": {
+      "colorScheme": "SB",
+      "paramColorSchemes": {
+        "G60F7D173-C5F9-46AD-A108-D17D40FE4C1D": "SB",
+        "GD84A623A-7F5C-40C6-A892-A441497783CD": "SA"
+      }
+    }
+  }
+}
