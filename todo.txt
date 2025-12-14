@@ -1,6 +1,7 @@
 TODOLIST for beta-2
 [x] bugfix: string unison voices not share random generator
 [x] bugfix: string random gen not shared between X and excite
+[ ] dump module/paramlist option
 [ ] theme and prettify the gui
 
 TODOLIST for beta-next

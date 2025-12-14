@@ -1,5 +1,7 @@
 #pragma once
 
+#include <juce_core/juce_core.h>
+
 #include <string>
 #include <vector>
 #include <cassert>
@@ -98,6 +100,8 @@ FBStringToDoubleOptCLocale(std::string const& text);
 
 std::vector<std::uint8_t>
 FBReadFile(std::filesystem::path const& p);
+bool
+FBParseJson(std::string const& text, juce::var& json);
 
 std::filesystem::path
 FBGetUserDataFolder();

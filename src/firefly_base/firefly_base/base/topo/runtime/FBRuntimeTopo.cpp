@@ -14,19 +14,6 @@ using namespace juce;
 static std::string const 
 Magic = "{84A1EBED-4BE5-47F2-8E53-13B965628974}";
 
-static bool
-ParseJson(std::string const& text, var& json)
-{
-  auto parsed = JSON::parse(text, json);
-  DynamicObject* obj = json.getDynamicObject();
-  if (!parsed.wasOk() || obj == nullptr)
-  {
-    FB_LOG_ERROR("Failed to parse json.");
-    return false;
-  }
-  return true;
-}
-
 static std::map<FBTopoIndices, int>
 MakeModuleTopoToRuntime(
   std::vector<FBRuntimeModule> const& modules)
@@ -201,7 +188,7 @@ FBRuntimeTopo::LoadGUIStateFromString(
   std::string const& text, FBGUIStateContainer& guiState) const
 {
   var json;
-  if (!ParseJson(text, json))
+  if (!FBParseJson(text, json))
     return false;
   return LoadGUIStateFromVar(json, guiState);
 }
@@ -211,7 +198,7 @@ FBRuntimeTopo::LoadProcStateFromString(
   std::string const& text, FBProcStateContainer& procState, bool patchOnly) const
 {
   var json;
-  if (!ParseJson(text, json))
+  if (!FBParseJson(text, json))
     return false;
   return LoadProcStateFromVar(json, procState, patchOnly);
 }
@@ -221,7 +208,7 @@ FBRuntimeTopo::LoadEditStateFromString(
   std::string const& text, FBScalarStateContainer& editState, bool patchOnly) const
 {
   var json;
-  if (!ParseJson(text, json))
+  if (!FBParseJson(text, json))
     return false;
   return LoadEditStateFromVar(json, editState, patchOnly);
 }
@@ -232,7 +219,7 @@ FBRuntimeTopo::LoadEditAndGUIStateFromString(
   FBScalarStateContainer& editState, FBGUIStateContainer& guiState, bool patchOnly) const
 {
   var json;
-  if (!ParseJson(text, json))
+  if (!FBParseJson(text, json))
     return false;
   return LoadEditAndGUIStateFromVar(json, editState, guiState, patchOnly);
 }

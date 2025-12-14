@@ -129,3 +129,16 @@ FBReadFile(std::filesystem::path const& p)
   FB_LOG_INFO("Read file " + p.string());
   return buffer;
 }
+
+bool
+FBParseJson(std::string const& text, var& json)
+{
+  auto parsed = JSON::parse(text, json);
+  DynamicObject* obj = json.getDynamicObject();
+  if (!parsed.wasOk() || obj == nullptr)
+  {
+    FB_LOG_ERROR("Failed to parse json.");
+    return false;
+  }
+  return true;
+}
