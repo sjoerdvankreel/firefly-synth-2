@@ -181,14 +181,15 @@ FBLoadThemes()
   std::vector<FBTheme> result = {};
   for (auto const& i : std::filesystem::directory_iterator(themeRoot))
     if (std::filesystem::is_regular_file(i.path()))
-      if (i.path().has_extension() && i.path().extension().string() == "json")
+      if (i.path().has_extension() && i.path().extension().string() == ".json")
       {
         File file(String(i.path().string()));
         if (file.exists())
         {
-          FBTheme theme;
+          FB_LOG_INFO("Loading theme file '" + i.path().string() + "'.");
+          FBTheme theme = {};
           if (ParseTheme(file.loadFileAsString(), theme))
-          {
+          { 
             bool foundName = false;
             for(int j = 0; j < result.size(); j++)
               if (result[j].name == theme.name)
@@ -199,6 +200,7 @@ FBLoadThemes()
             if(!foundName)
               result.push_back(theme);
           }
+          FB_LOG_INFO("Load theme file '" + i.path().string() + "'.");
         }
       }
   return result;  
