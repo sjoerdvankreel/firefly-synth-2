@@ -145,11 +145,11 @@ ParseModuleColors(
 }
 
 static bool
-ParseTheme(std::string const& jsonText, FBTheme& theme)
+ParseTheme(String const& jsonText, FBTheme& theme)
 {
   theme = {};
   var json;
-  if (!FBParseJson(jsonText, json))
+  if (!FBParseJson(jsonText.toStdString(), json))
     return false;
   DynamicObject const* obj = json.getDynamicObject();
 
@@ -171,8 +171,35 @@ ParseTheme(std::string const& jsonText, FBTheme& theme)
   return true;
 }
 
-std::map<std::string, FBTheme>
+std::vector<FBTheme>
 FBLoadThemes()
 {
+  std::filesystem::path themeRoot(FBGetResourcesFolderPath() / "ui" / "themes");
+  if (!std::filesystem::exists(themeRoot))
+    return {};
 
+  std::vector<FBTheme> result = {};
+  for (auto const& i : std::filesystem::directory_iterator(themeRoot))
+    if (std::filesystem::is_regular_file(i.path()))
+      if (i.path().has_extension() && i.path().extension().string() == "json")
+      {
+        File file(String(i.path().string()));
+        if (file.exists())
+        {
+          FBTheme theme;
+          if (ParseTheme(file.loadFileAsString(), theme))
+          {
+            bool foundName = false;
+            for(int j = 0; j < result.size(); j++)
+              if (result[j].name == theme.name)
+              {
+                foundName = true;
+                break;
+              }
+            if(!foundName)
+              result.push_back(theme);
+          }
+        }
+      }
+  return result;  
 }

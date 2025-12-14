@@ -32,6 +32,10 @@ FBPlugGUI::
 FBPlugGUI(FBHostGUIContext* hostContext) :
 _hostContext(hostContext)
 {
+  _themes = FBLoadThemes();
+  if (_themes.empty())
+    FB_LOG_ERROR("No themes found.");
+
   _tooltipWindow = StoreComponent<TooltipWindow>();
   _hostContext->AddListener(this);
   addAndMakeVisible(_tooltipWindow);

@@ -247,7 +247,7 @@ FFPlugGUI::SetupGUI()
   _outputOtherAndPatch->Add(0, 1, FFMakeOtherGUI(this));
   _outputOtherAndPatch->Add(0, 2, FFMakePatchGUI(this));
 
-  _guiSettingsAndTweak = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
+  _guiSettingsAndTweak = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 2, 1 } });
   _guiSettingsAndTweak->Add(0, 0, FFMakeGUISettingsGUI(this));
   _guiSettingsAndTweak->Add(0, 1, FFMakeTweakGUI(this));
 

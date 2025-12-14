@@ -3,6 +3,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <map>
+#include <vector>
 #include <string>
 
 struct FBTheme;
@@ -30,5 +31,5 @@ struct FBTheme
   std::map<std::string, FBModuleColors> moduleColors = {};
 };
 
-std::map<std::string, FBTheme>
+std::vector<FBTheme>
 FBLoadThemes();

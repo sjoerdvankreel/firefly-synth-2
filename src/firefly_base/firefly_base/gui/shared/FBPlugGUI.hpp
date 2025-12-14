@@ -2,10 +2,12 @@
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/gui/shared/FBTheme.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
+#include <map>
 #include <chrono>
 #include <vector>
 #include <unordered_map>
@@ -71,6 +73,7 @@ public:
   void SavePatchToFile();
   void LoadPatchFromFile();
   void LoadPreset(juce::Component* clickedFrom);
+  std::vector<FBTheme> const& Themes() const { return _themes; }
 
   void HideOverlayComponent();
   void ShowOverlayComponent(
@@ -128,6 +131,7 @@ private:
   void GUIParamNormalizedChanged(int index);
   void AudioParamNormalizedChanged(int index);
 
+  std::vector<FBTheme> _themes = {};
   FBHostGUIContext* const _hostContext;
   juce::TooltipWindow* _tooltipWindow = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};

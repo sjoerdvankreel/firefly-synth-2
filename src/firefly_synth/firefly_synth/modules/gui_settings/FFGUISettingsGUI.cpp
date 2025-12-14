@@ -22,7 +22,7 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 });
   auto hilightMod = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightMod, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightMod));
   grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, hilightMod));
@@ -35,8 +35,11 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   auto graphVisualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::GraphVisualsMode, 0 } });
   grid->Add(0, 6, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, graphVisualsMode));
   grid->Add(0, 7, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, graphVisualsMode));
-  grid->Add(0, 8, plugGUI->StoreComponent<FBFillerComponent>(15, 1));
-  grid->MarkSection({ { 0, 0 }, { 1, 9 } });
+  grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>("Theme"));
+  auto themeCombo = plugGUI->StoreComponent<ComboBox>();
+  themeCombo->addItem("hoi", 1);
+  grid->Add(0, 9, themeCombo);
+  grid->MarkSection({ { 0, 0 }, { 1, 10 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(subSection);
 }
