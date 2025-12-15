@@ -328,13 +328,42 @@ LoadThemeJsons()
 static bool
 MakeModuleColors(
   FBRuntimeTopo const* topo,
+  int staticModuleIndex,
+  int staticModuleSlot,
   FBModuleColorsJson const& json,
   FBModuleColors& result)
 {
-  (void)topo; 
   result = {};
   result.colorScheme = json.colorScheme;
-  return true; // todo
+  for (int i = 0; i < json.paramColorSchemes.size(); i++)
+  {
+    int foundIndex = -1;
+    for (int j = 0; j < topo->static_->modules[staticModuleIndex].params.size(); j++)
+      if (FBCleanTopoId(topo->static_->modules[staticModuleIndex].params[j].id) == json.paramColorSchemes[i].paramId)
+      {     
+        foundIndex = j;
+        break;
+      }
+    if (foundIndex == -1)
+    {
+      FB_LOG_ERROR("Cannot find param '" + json.paramColorSchemes[i].paramId + "'.");
+      return false;
+    }
+    if (json.paramColorSchemes[i].paramSlot >= topo->static_->modules[staticModuleIndex].params[foundIndex].slotCount)
+    {
+      FB_LOG_ERROR("Invalid param slot '" + std::to_string(json.paramColorSchemes[i].paramSlot) + "'.");
+      return false;
+    }
+
+    // todo stuff with gui params
+    for (int j = 0; j < topo->static_->modules[staticModuleIndex].params[foundIndex].slotCount; j++)
+      if (json.paramColorSchemes[i].paramSlot == -1 || json.paramColorSchemes[i].paramSlot == j)
+      {
+        int rtIndex = topo->audio.paramTopoToRuntime[staticModuleIndex][staticModuleSlot][foundIndex][j];
+        result.paramColorSchemes[rtIndex] = json.paramColorSchemes[i].colorScheme;
+      }
+  }
+  return true;
 }
 
 static bool
@@ -348,9 +377,6 @@ MakeTheme(
   theme.colorSchemes = themeJson.colorSchemes;
   for (int i = 0; i < themeJson.moduleColors.size(); i++)
   {
-    FBModuleColors moduleColors = {};
-    if (!MakeModuleColors(topo, themeJson.moduleColors[i], moduleColors))
-      return false;
     int foundIndex = -1;
     for (int j = 0; j < topo->static_->modules.size(); j++)
       if (FBCleanTopoId(topo->static_->modules[j].id) == themeJson.moduleColors[i].moduleId)
@@ -368,9 +394,13 @@ MakeTheme(
       FB_LOG_ERROR("Invalid module slot '" + std::to_string(themeJson.moduleColors[i].moduleSlot) + "'.");
       return false;
     } 
+
     for (int j = 0; j < topo->static_->modules[foundIndex].slotCount; j++)
       if (themeJson.moduleColors[i].moduleSlot == -1 || themeJson.moduleColors[i].moduleSlot == j)
       {
+        FBModuleColors moduleColors = {};
+        if (!MakeModuleColors(topo, foundIndex, j, themeJson.moduleColors[i], moduleColors))
+          return false;
         int rtIndex = topo->moduleTopoToRuntime.at({ foundIndex, j });
         theme.moduleColors[rtIndex] = moduleColors;
       }
