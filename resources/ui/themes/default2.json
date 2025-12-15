@@ -4,8 +4,8 @@
     "SA": {
       "highlight1": "00FF0000",
       "highlight2": "FFFF0000",
-      "background1": "000000FF",
-      "background2": "FF0000FF",
+      "background1": "FFFFFF00",
+      "background2": "FF00FFFF",
       "foreground1": "0000FF00",
       "foreground2": "FF00FF00"
     },

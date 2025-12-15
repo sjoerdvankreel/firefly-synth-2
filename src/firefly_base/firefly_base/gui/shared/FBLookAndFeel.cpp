@@ -100,7 +100,7 @@ FBLookAndFeel::FindColorSchemeFor(
   static FBColorScheme fallback = {};
   if (auto p = dynamic_cast<FBParamControl const*>(&c))
   {
-    int rtModuleIndex = p->Param()->runtimeParamIndex;
+    int rtModuleIndex = p->Param()->runtimeModuleIndex;
     auto moduleIter = Theme().moduleColors.find(rtModuleIndex);
     if (moduleIter != Theme().moduleColors.end())
     {
@@ -300,7 +300,7 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   auto const& scheme = FindColorSchemeFor(box);
   g.setColour(scheme.background1);
   g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
-
+   
   auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
   if(paramCombo != nullptr && paramCombo->IsHighlightTweaked())
     g.setColour(Colours::white.withAlpha(box.isEnabled()? 1.0f: 0.75f));
