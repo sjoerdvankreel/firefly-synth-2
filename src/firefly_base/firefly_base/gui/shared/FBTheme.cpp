@@ -340,7 +340,7 @@ MakeModuleColors(
     int foundIndex = -1;
     for (int j = 0; j < topo->static_->modules[staticModuleIndex].params.size(); j++)
       if (FBCleanTopoId(topo->static_->modules[staticModuleIndex].params[j].id) == json.paramColorSchemes[i].paramId)
-      {      
+      {       
         foundIndex = j;
         break;
       }

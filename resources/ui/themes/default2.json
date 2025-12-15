@@ -27,17 +27,17 @@
     },
     {
       "moduleId": "GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
-      "moduleSlot": 1,
+      "moduleSlot": 0,
       "colorScheme": "SB",
       "paramColorSchemes": [
         {
           "paramId": "G60F7D173-C5F9-46AD-A108-D17D40FE4C1D",
-          "paramSlot": 1,
+          "paramSlot": -1,
           "colorScheme": "SA"
         },
         {
           "paramId": "GD84A623A-7F5C-40C6-A892-A441497783CD",
-          "paramSlot": 2,
+          "paramSlot": 0,
           "colorScheme": "SB"
         }
       ]
