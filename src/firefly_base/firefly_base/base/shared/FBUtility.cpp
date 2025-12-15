@@ -9,6 +9,15 @@
 using namespace juce;
 
 std::string
+FBCleanTopoId(std::string const& topoId)
+{
+  auto result = topoId;
+  std::erase(result, '{');
+  std::erase(result, '}');
+  return result;
+}
+
+std::string
 FBFormatDouble(double val, int precision)
 {
   std::stringstream ss;

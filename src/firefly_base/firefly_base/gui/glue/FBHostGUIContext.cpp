@@ -345,9 +345,7 @@ FBHostGUIContext::ShowOnlineManualForModule(int index) const
 {
   int staticModuleIndex = Topo()->modules[index].topoIndices.index;
   auto const& moduleId = Topo()->static_->modules[staticModuleIndex].id;
-  auto cleanModuleId = moduleId;
-  std::erase(cleanModuleId, '{');
-  std::erase(cleanModuleId, '}');
+  auto cleanModuleId = FBCleanTopoId(moduleId);
   juce::URL(OnlineManualLocation()).withAnchor(cleanModuleId).launchInDefaultBrowser();
 }
 

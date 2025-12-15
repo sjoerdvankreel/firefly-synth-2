@@ -1,6 +1,7 @@
 #include <firefly_base/gui/shared/FBTheme.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 #include <juce_core/juce_core.h>
@@ -324,11 +325,70 @@ LoadThemeJsons()
   return result;
 }
 
+static bool
+MakeModuleColors(
+  FBRuntimeTopo const* topo,
+  FBModuleColorsJson const& json,
+  FBModuleColors& result)
+{
+  (void)topo; 
+  result = {};
+  result.colorScheme = json.colorScheme;
+  return true; // todo
+}
+
+static bool
+MakeTheme(
+  FBRuntimeTopo const* topo,
+  FBThemeJson const& themeJson,
+  FBTheme& theme)
+{
+  theme = {};
+  theme.name = themeJson.name;
+  theme.colorSchemes = themeJson.colorSchemes;
+  for (int i = 0; i < themeJson.moduleColors.size(); i++)
+  {
+    FBModuleColors moduleColors = {};
+    if (!MakeModuleColors(topo, themeJson.moduleColors[i], moduleColors))
+      return false;
+    int foundIndex = -1;
+    for (int j = 0; j < topo->static_->modules.size(); j++)
+      if (FBCleanTopoId(topo->static_->modules[j].id) == themeJson.moduleColors[i].moduleId)
+      {
+        foundIndex = j;
+        break;
+      }
+    if (foundIndex == -1)
+    {
+      FB_LOG_ERROR("Cannot find module '" + themeJson.moduleColors[i].moduleId + "'.");
+      return false;
+    }
+    if (themeJson.moduleColors[i].moduleSlot >= topo->static_->modules[foundIndex].slotCount)
+    {
+      FB_LOG_ERROR("Invalid module slot '" + std::to_string(themeJson.moduleColors[i].moduleSlot) + "'.");
+      return false;
+    } 
+    for (int j = 0; j < topo->static_->modules[foundIndex].slotCount; j++)
+      if (themeJson.moduleColors[i].moduleSlot == -1 || themeJson.moduleColors[i].moduleSlot == j)
+      {
+        int rtIndex = topo->moduleTopoToRuntime.at({ foundIndex, j });
+        theme.moduleColors[rtIndex] = moduleColors;
+      }
+  }
+  return true;
+}
+
 std::vector<FBTheme>
 FBLoadThemes(FBRuntimeTopo const* topo)
 {
   (void)topo;
   std::vector<FBTheme> result = {};
-  LoadThemeJsons();
+  auto themeJsons = LoadThemeJsons();
+  for (int i = 0; i < themeJsons.size(); i++)
+  {
+    FBTheme theme = {};
+    if (MakeTheme(topo, themeJsons[i], theme))
+      result.push_back(theme);
+  }
   return result;
 }
