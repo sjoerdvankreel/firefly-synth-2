@@ -1,5 +1,5 @@
 {
-  "name": "Default",
+  "name": "Default2",
   "colorSchemes": {
     "SA": {
       "highlight1": "00FF0000",
@@ -33,12 +33,12 @@
         {
           "paramId": "G60F7D173-C5F9-46AD-A108-D17D40FE4C1D",
           "paramSlot": -1,
-          "colorScheme": "SA"
+          "colorScheme": "SB"
         },
         {
           "paramId": "GD84A623A-7F5C-40C6-A892-A441497783CD",
           "paramSlot": 0,
-          "colorScheme": "SB"
+          "colorScheme": "SA"
         }
       ]
     }

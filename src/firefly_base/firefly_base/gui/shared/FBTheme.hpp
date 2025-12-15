@@ -22,14 +22,14 @@ struct FBColorScheme
 struct FBModuleColors
 {
   std::string colorScheme = {};
-  std::map<std::string, std::string> paramColorSchemes = {};
+  std::map<int, std::string> paramColorSchemes = {}; // runtime param index
 };
 
 struct FBTheme
 {
   std::string name = {};
+  std::map<int, FBModuleColors> moduleColors = {}; // runtime module index
   std::map<std::string, FBColorScheme> colorSchemes = {};
-  std::map<std::string, FBModuleColors> moduleColors = {};
 };
 
 std::vector<FBTheme>

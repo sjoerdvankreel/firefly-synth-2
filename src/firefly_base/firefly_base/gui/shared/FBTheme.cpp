@@ -7,6 +7,28 @@
 
 using namespace juce;
 
+struct FBParamColorsJson
+{
+  int paramSlot = -1; // -1 = all
+  std::string paramId = {};
+  std::string colorScheme = {};
+};  
+
+struct FBModuleColorsJson
+{
+  int moduleSlot = -1; // -1 = all
+  std::string moduleId = {};
+  std::string colorScheme = {};
+  std::vector<FBParamColorsJson> paramColorSchemes = {};
+};
+
+struct FBThemeJson
+{
+  std::string name = {};
+  std::vector<FBModuleColorsJson> moduleColors = {};
+  std::map<std::string, FBColorScheme> colorSchemes = {};
+};
+
 static bool
 RequireProperty(
   DynamicObject const* obj, 
@@ -15,6 +37,21 @@ RequireProperty(
   if (!obj->hasProperty(name))
   {
     FB_LOG_ERROR("Missing json property '" + name.toStdString() + "'.");
+    return false;
+  }
+  return true;
+}
+
+static bool
+RequireIntProperty(
+  DynamicObject const* obj,
+  String const& name)
+{
+  if (!RequireProperty(obj, name))
+    return false;
+  if (!obj->getProperty(name).isInt())
+  {
+    FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not an integer.");
     return false;
   }
   return true;
@@ -51,10 +88,27 @@ RequireObjectProperty(
 }
 
 static bool
+RequireArrayProperty(
+  DynamicObject const* obj,
+  String const& name)
+{
+  if (!RequireProperty(obj, name))
+    return false;
+  if (!obj->getProperty(name).isArray())
+  {
+    FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not an array.");
+    return false;
+  }
+  return true;
+}
+
+static bool
 ParseColorScheme(
   DynamicObject const* obj, 
   FBColorScheme& result)
 {
+  result = {};
+
   if (!RequireStringProperty(obj, "background1"))
     return false;
   result.background1 = Colour::fromString(obj->getProperty("background1").toString());
@@ -83,8 +137,11 @@ ParseColorScheme(
 }
 
 static bool
-ParseColorSchemes(DynamicObject const* obj, std::map<std::string, FBColorScheme>& result)
+ParseColorSchemesJson(
+  DynamicObject const* obj, 
+  std::map<std::string, FBColorScheme>& result)
 {
+  result = {};
   for (auto i = obj->getProperties().begin(); i != obj->getProperties().end(); i++)
   {
     if (!RequireObjectProperty(obj, i->name.toString()))
@@ -98,105 +155,148 @@ ParseColorSchemes(DynamicObject const* obj, std::map<std::string, FBColorScheme>
 }
 
 static bool
-ParseParamColorSchemes(
+ParseParamColorSchemeJson(
   DynamicObject const* obj,
-  std::map<std::string, std::string>& result)
+  FBParamColorsJson& result)
 {
-  for (auto i = obj->getProperties().begin(); i != obj->getProperties().end(); i++)
+  result = {};
+  if (!RequireIntProperty(obj, "paramSlot"))
+    return false;
+  result.paramSlot = (int)obj->getProperty("paramSlot");
+  if (result.paramSlot < -1)
   {
-    if (!RequireStringProperty(obj, i->name.toString()))
+    FB_LOG_ERROR("Invalid value '" + std::to_string(result.paramSlot) + "'");
+    return false;
+  }
+  if (!RequireStringProperty(obj, "paramId"))
+    return false;
+  result.paramId = obj->getProperty("paramId").toString().toStdString();
+  if (!RequireStringProperty(obj, "colorScheme"))
+    return false;
+  result.colorScheme = obj->getProperty("colorScheme").toString().toStdString();
+  return true;
+} 
+
+static bool
+ParseParamColorSchemesJson(
+  juce::var const& json,
+  std::vector<FBParamColorsJson>& result)
+{
+  result = {};
+  for (int i = 0; i < json.size(); i++)
+  {
+    if (!json[i].isObject())
       return false;
-    result[i->name.toString().toStdString()] = i->value.toString().toStdString();
+    FBParamColorsJson paramColors = {};
+    if (!ParseParamColorSchemeJson(json[i].getDynamicObject(), paramColors))
+      return false;
+    result.push_back(paramColors);
   }
   return true;
 }
 
 static bool
-ParseModuleColors(
+ParseModuleColorsJson(
   DynamicObject const* obj,
-  FBModuleColors& result)
+  FBModuleColorsJson& result)
 {
   if (!RequireStringProperty(obj, "colorScheme"))
     return false;
   result.colorScheme = obj->getProperty("colorScheme").toString().toStdString();
 
-  if (!RequireObjectProperty(obj, "paramColorSchemes"))
+  if (!RequireStringProperty(obj, "moduleId"))
     return false;
-  if (!ParseParamColorSchemes(obj->getProperty("paramColorSchemes").getDynamicObject(), result.paramColorSchemes))
+  result.moduleId = obj->getProperty("moduleId").toString().toStdString();
+  
+  if (!RequireIntProperty(obj, "moduleSlot"))
+    return false;
+  result.moduleSlot = (int)obj->getProperty("moduleSlot");
+  if (result.moduleSlot < -1)
+  {
+    FB_LOG_ERROR("Invalid value '" + std::to_string(result.moduleSlot) + "'");
+    return false;
+  }
+
+  if (!RequireArrayProperty(obj, "paramColorSchemes"))
+    return false;
+  if (!ParseParamColorSchemesJson(obj->getProperty("paramColorSchemes"), result.paramColorSchemes))
     return false;
 
   return true;
 }
 
 static bool
-ParseModuleColors(
-  DynamicObject const* obj,
-  std::map<std::string, FBModuleColors>& result)
+ParseModuleColorsJson(
+  var const& json,
+  std::vector<FBModuleColorsJson>& result)
 {
-  for (auto i = obj->getProperties().begin(); i != obj->getProperties().end(); i++)
+  result = {};
+  for (int i = 0; i < json.size(); i++)
   {
-    if (!RequireObjectProperty(obj, i->name.toString()))
+    if(!json[i].isObject())
       return false;
-    if (!ParseModuleColors(
-      obj->getProperty(i->name.toString()).getDynamicObject(), 
-      result[i->name.toString().toStdString()]))
+    FBModuleColorsJson moduleColors = {};
+    if (!ParseModuleColorsJson(json[i].getDynamicObject(), moduleColors))
       return false;
+    result.push_back(moduleColors);
   }
   return true;
 }
 
 static bool
-ParseTheme(FBRuntimeTopo const* topo, String const& jsonText, FBTheme& theme)
+ParseThemeJson(String const& jsonText, FBThemeJson& result)
 {
-  theme = {};
   var json;
+  result = {};
+  
   if (!FBParseJson(jsonText.toStdString(), json))
     return false;
   DynamicObject const* obj = json.getDynamicObject();
 
   if (!RequireStringProperty(obj, "name"))
     return false;
-  theme.name = obj->getProperty("name").toString().toStdString();
+  result.name = obj->getProperty("name").toString().toStdString();
 
   if (!RequireObjectProperty(obj, "colorSchemes"))
     return false;
-  if (!ParseColorSchemes(obj->getProperty("colorSchemes").getDynamicObject(), theme.colorSchemes))
+  if (!ParseColorSchemesJson(obj->getProperty("colorSchemes").getDynamicObject(), result.colorSchemes))
     return false;
 
-  if (!RequireObjectProperty(obj, "moduleColors"))
+  if (!RequireArrayProperty(obj, "moduleColors"))
     return false;
-  if (!ParseModuleColors(obj->getProperty("moduleColors").getDynamicObject(), theme.moduleColors))
+  if (!ParseModuleColorsJson(obj->getProperty("moduleColors"), result.moduleColors))
     return false;
 
-  for(auto const& kv: theme.moduleColors)
+  for(int i = 0; i < result.moduleColors.size(); i++)
   {
-    if (theme.colorSchemes.find(kv.second.colorScheme) == theme.colorSchemes.end())
+    auto const& moduleScheme = result.moduleColors[i].colorScheme;
+    if (result.colorSchemes.find(moduleScheme) == result.colorSchemes.end())
     {
-      FB_LOG_ERROR("Color scheme '" + kv.second.colorScheme + "' not found.");
+      FB_LOG_ERROR("Color scheme '" + moduleScheme + "' not found.");
       return false;
     }
-    for (auto const& pkv : kv.second.paramColorSchemes)
+    for(int j = 0; j < result.moduleColors[i].paramColorSchemes.size(); j++)
     {
-      if (theme.colorSchemes.find(pkv.second) == theme.colorSchemes.end())
+      auto const& paramScheme = result.moduleColors[i].paramColorSchemes[i].colorScheme;
+      if (result.colorSchemes.find(paramScheme) == result.colorSchemes.end())
       {
-        FB_LOG_ERROR("Color scheme '" + pkv.second + "' not found.");
+        FB_LOG_ERROR("Color scheme '" + paramScheme + "' not found.");
         return false;
       }
     }
   } 
-
-  (void)topo;
+  
   return true;
 }
 
-std::vector<FBTheme>
-FBLoadThemes(FBRuntimeTopo const* topo)
+static std::vector<FBThemeJson>
+LoadThemeJsons()
 {
   std::filesystem::path themeRoot(FBGetResourcesFolderPath() / "ui" / "themes");
   if (!std::filesystem::exists(themeRoot))
     return {};
 
-  std::vector<FBTheme> result = {};
+  std::vector<FBThemeJson> result = {};
   for (auto const& i : std::filesystem::directory_iterator(themeRoot))
     if (std::filesystem::is_regular_file(i.path()))
       if (i.path().has_extension() && i.path().extension().string() == ".json")
@@ -205,21 +305,30 @@ FBLoadThemes(FBRuntimeTopo const* topo)
         if (file.exists())
         {
           FB_LOG_INFO("Loading theme file '" + i.path().string() + "'.");
-          FBTheme theme = {};
-          if (ParseTheme(topo, file.loadFileAsString(), theme))
-          { 
+          FBThemeJson themeJson = {};
+          if (ParseThemeJson(file.loadFileAsString(), themeJson))
+          {
             bool foundName = false;
-            for(int j = 0; j < result.size(); j++)
-              if (result[j].name == theme.name)
+            for (int j = 0; j < result.size(); j++)
+              if (result[j].name == themeJson.name)
               {
                 foundName = true;
                 break;
               }
-            if(!foundName)
-              result.push_back(theme);
+            if (!foundName)
+              result.push_back(themeJson);
           }
           FB_LOG_INFO("Load theme file '" + i.path().string() + "'.");
         }
       }
-  return result;  
+  return result;
+}
+
+std::vector<FBTheme>
+FBLoadThemes(FBRuntimeTopo const* topo)
+{
+  (void)topo;
+  std::vector<FBTheme> result = {};
+  LoadThemeJsons();
+  return result;
 }
