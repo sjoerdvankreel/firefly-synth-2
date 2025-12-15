@@ -93,6 +93,27 @@ static void CreateTabTextLayout(
   textLayout.createLayout(s, length);
 }
 
+FBColorScheme const& 
+FBLookAndFeel::FindColorSchemeFor(
+  Component const& c) const
+{
+  static FBColorScheme fallback = {};
+  if (auto p = dynamic_cast<FBParamControl const*>(&c))
+  {
+    int rtModuleIndex = p->Param()->runtimeParamIndex;
+    auto moduleIter = Theme().moduleColors.find(rtModuleIndex);
+    if (moduleIter != Theme().moduleColors.end())
+    {
+      int rtParamIndex = p->Param()->runtimeParamIndex;
+      auto paramIter = moduleIter->second.paramColorSchemes.find(rtParamIndex);
+      if (paramIter == moduleIter->second.paramColorSchemes.end())
+        return Theme().colorSchemes.at(moduleIter->second.colorScheme);
+      return Theme().colorSchemes.at(paramIter->second);
+    }
+  }
+  return fallback;
+}
+
 void 
 FBLookAndFeel::DrawLinearSliderExchangeThumb(
   Graphics& g, FBParamSlider& slider, 
@@ -276,7 +297,8 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   auto cornerSize = 3.0f;
   Rectangle<int> boxBounds(2, 1, width - 4, height - 2);
 
-  g.setColour(box.findColour(ComboBox::backgroundColourId));
+  auto const& scheme = FindColorSchemeFor(box);
+  g.setColour(scheme.background1);
   g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
 
   auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
