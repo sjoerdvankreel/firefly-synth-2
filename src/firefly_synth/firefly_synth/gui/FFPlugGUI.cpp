@@ -53,6 +53,7 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
   FB_LOG_ENTRY_EXIT();
   SetupGUI();
   InitAllDependencies();
+  SwitchTheme(HostContext()->ThemeName());
   resized();
 }
 

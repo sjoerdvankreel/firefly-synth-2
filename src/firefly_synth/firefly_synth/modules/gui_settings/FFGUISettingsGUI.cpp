@@ -5,6 +5,7 @@
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
@@ -39,7 +40,8 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   auto themeCombo = plugGUI->StoreComponent<ComboBox>();
   for (int i = 0; i < plugGUI->Themes().size(); i++)
     themeCombo->addItem(plugGUI->Themes()[i].name, i + 1);
-  themeCombo->onChange = [plugGUI, themeCombo] { plugGUI->HostContext()->SetThemeName(themeCombo->getText().toStdString()); };
+  themeCombo->onChange = [plugGUI, themeCombo] { 
+    plugGUI->SwitchTheme(themeCombo->getText().toStdString()); };
   for (int i = 0; i < plugGUI->Themes().size(); i++)
     if (plugGUI->Themes()[i].name == plugGUI->HostContext()->ThemeName())
       themeCombo->setSelectedItemIndex(i);

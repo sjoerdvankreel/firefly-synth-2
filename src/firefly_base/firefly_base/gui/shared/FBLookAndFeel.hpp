@@ -1,6 +1,8 @@
 #pragma once
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBTheme.hpp>
+
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class FBParamSlider;
@@ -8,6 +10,8 @@ class FBParamSlider;
 class FBLookAndFeel:
 public juce::LookAndFeel_V4
 {
+  FBTheme _theme = {};
+
   void DrawLinearSliderExchangeThumb(
     juce::Graphics& g, FBParamSlider& slider, 
     int y, int height, float exchangeValue);
@@ -26,6 +30,9 @@ public juce::LookAndFeel_V4
     juce::Rectangle<int> const& activeArea);
 
 public:  
+  FBTheme const& Theme() const { return _theme; }
+  void SetTheme(FBTheme const& theme) { _theme = theme; }
+
   juce::BorderSize<int> getLabelBorderSize(
     juce::Label&) override;
 

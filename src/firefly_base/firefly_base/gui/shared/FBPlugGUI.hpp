@@ -73,6 +73,9 @@ public:
   void SavePatchToFile();
   void LoadPatchFromFile();
   void LoadPreset(juce::Component* clickedFrom);
+  
+  FBTheme const& GetTheme() const;
+  void SwitchTheme(std::string const& themeName);
   std::vector<FBTheme> const& Themes() const { return _themes; }
 
   void HideOverlayComponent();

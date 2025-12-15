@@ -1,5 +1,6 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/shared/FBParamComponent.hpp>
 #include <firefly_base/gui/shared/FBParamsDependent.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
@@ -41,6 +42,26 @@ _hostContext(hostContext)
   addAndMakeVisible(_tooltipWindow);
   addMouseListener(this, true);
   SetupOverlayGUI();
+}
+
+FBTheme const& 
+FBPlugGUI::GetTheme() const
+{
+  static FBTheme fallback = {};
+  for (int i = 0; i < Themes().size(); i++)
+    if (Themes()[i].name == HostContext()->ThemeName())
+      return Themes()[i];
+  if (Themes().size() > 0)
+    return Themes()[0];
+  return fallback;
+}
+
+void 
+FBPlugGUI::SwitchTheme(std::string const& themeName)
+{
+  HostContext()->SetThemeName(themeName);
+  FBGetLookAndFeel()->SetTheme(GetTheme());
+  repaint();
 }
 
 void
