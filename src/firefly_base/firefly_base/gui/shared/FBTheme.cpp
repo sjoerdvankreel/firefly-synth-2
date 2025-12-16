@@ -461,6 +461,7 @@ MakeTheme(
   theme = {};
   theme.name = themeJson.name;
   theme.colorSchemes = themeJson.colorSchemes;
+  theme.defaultColorScheme = themeJson.defaultColorScheme;
   for (int i = 0; i < themeJson.moduleColors.size(); i++)
   {
     int foundIndex = -1;
