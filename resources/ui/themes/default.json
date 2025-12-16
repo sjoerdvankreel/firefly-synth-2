@@ -10,7 +10,7 @@
     "controlTweaked": "FFFFFFFF",
     "controlBorder": "FFFFCC00",
     "controlBackground": "FF333333",
-    "controlForeground": "FFFFFFFF",
+    "controlForeground": "FFEEEEEE",
   },
   "colorSchemes": {
     "SA": {

@@ -365,8 +365,16 @@ FBLookAndFeel::drawTickBox(
 
   if (ticked)
   {
+    auto pathBounds = tickBounds.reduced(6.0f, 6.0f);
     g.setColour(scheme.controlForeground.darker(component.isEnabled()? 0.0f: scheme.dimDisabled));
-    g.fillEllipse(tickBounds.reduced(4.0f, 4.0f));
+    Path p;
+    p.startNewSubPath(pathBounds.getTopLeft());
+    p.lineTo(pathBounds.getBottomRight());
+    g.strokePath(p, PathStrokeType(3.0f, PathStrokeType::JointStyle::beveled, PathStrokeType::EndCapStyle::rounded));
+    p = {};
+    p.startNewSubPath(pathBounds.getBottomLeft());
+    p.lineTo(pathBounds.getTopRight());
+    g.strokePath(p, PathStrokeType(3.0f, PathStrokeType::JointStyle::beveled, PathStrokeType::EndCapStyle::rounded));
   }
 }
 
