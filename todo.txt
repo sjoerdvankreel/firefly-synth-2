@@ -6,6 +6,7 @@ TODOLIST for beta-2
 [ ] error out on notfound stuff in the json
 [ ] dump module/paramlist guid option
 [ ] theme and prettify the gui
+[ ] theme the combo popouts (or all of them, filepicker etc)
 [ ] explain theme in manual
 
 TODOLIST for beta-next

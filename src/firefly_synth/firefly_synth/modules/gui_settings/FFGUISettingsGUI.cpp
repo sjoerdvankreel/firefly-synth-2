@@ -11,6 +11,7 @@
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/gui/components/FBModuleComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
@@ -48,5 +49,6 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 9, themeCombo);   
   grid->MarkSection({ { 0, 0 }, { 1, 10 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBSectionComponent>(subSection);
+  auto section = plugGUI->StoreComponent<FBSectionComponent>(subSection);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::GUISettings, 0, section);
 }
