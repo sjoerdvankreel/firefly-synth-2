@@ -331,7 +331,7 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
    
   auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
-  // todo enabled   
+  // todo enabled    
   if(paramCombo != nullptr && paramCombo->IsHighlightTweaked())
     g.setColour(scheme.controlTweaked);
   else
