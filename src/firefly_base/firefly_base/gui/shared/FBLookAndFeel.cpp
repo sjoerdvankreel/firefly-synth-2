@@ -298,14 +298,15 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   Rectangle<int> boxBounds(2, 1, width - 4, height - 2);
 
   auto const& scheme = FindColorSchemeFor(box);
-  g.setColour(scheme.background1);
+  g.setColour(scheme.controlBackground);
   g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
    
   auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
+  // todo enabled   
   if(paramCombo != nullptr && paramCombo->IsHighlightTweaked())
-    g.setColour(Colours::white.withAlpha(box.isEnabled()? 1.0f: 0.75f));
+    g.setColour(scheme.controlTweaked);
   else
-    g.setColour(box.findColour(ComboBox::outlineColourId));
+    g.setColour(scheme.controlBorder);
   g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
 }
 

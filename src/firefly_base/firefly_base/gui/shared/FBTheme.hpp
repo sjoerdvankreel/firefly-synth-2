@@ -11,12 +11,15 @@ struct FBRuntimeTopo;
 
 struct FBColorScheme
 {
-  juce::Colour highlight1 = {};
-  juce::Colour highlight2 = {};
-  juce::Colour background1 = {};
-  juce::Colour background2 = {};
-  juce::Colour foreground1 = {};
-  juce::Colour foreground2 = {};
+  juce::Colour border = {};
+  juce::Colour background = {};
+  juce::Colour foreground = {};
+  juce::Colour controlBounds = {};
+  juce::Colour controlEngine = {};
+  juce::Colour controlTweaked = {};
+  juce::Colour controlBorder = {};
+  juce::Colour controlBackground = {};
+  juce::Colour controlForeground = {};
 };
 
 struct FBModuleColors

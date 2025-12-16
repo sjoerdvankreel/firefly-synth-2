@@ -110,29 +110,41 @@ ParseColorScheme(
 {
   result = {};
 
-  if (!RequireStringProperty(obj, "background1"))
+  if (!RequireStringProperty(obj, "border"))
     return false;
-  result.background1 = Colour::fromString(obj->getProperty("background1").toString());
+  result.border = Colour::fromString(obj->getProperty("border").toString());
 
-  if (!RequireStringProperty(obj, "background2"))
+  if (!RequireStringProperty(obj, "background"))
     return false;
-  result.background2 = Colour::fromString(obj->getProperty("background2").toString());
+  result.background = Colour::fromString(obj->getProperty("background").toString());
 
-  if (!RequireStringProperty(obj, "foreground1"))
+  if (!RequireStringProperty(obj, "foreground"))
     return false;
-  result.foreground1 = Colour::fromString(obj->getProperty("foreground1").toString());
+  result.foreground = Colour::fromString(obj->getProperty("foreground").toString());
 
-  if (!RequireStringProperty(obj, "foreground2"))
+  if (!RequireStringProperty(obj, "controlBounds"))
     return false;
-  result.foreground2 = Colour::fromString(obj->getProperty("foreground2").toString());
+  result.controlBounds = Colour::fromString(obj->getProperty("controlBounds").toString());
 
-  if (!RequireStringProperty(obj, "highlight1"))
+  if (!RequireStringProperty(obj, "controlEngine"))
     return false;
-  result.highlight1 = Colour::fromString(obj->getProperty("highlight1").toString());
+  result.controlEngine = Colour::fromString(obj->getProperty("controlEngine").toString());
 
-  if (!RequireStringProperty(obj, "highlight2"))
+  if (!RequireStringProperty(obj, "controlTweaked"))
     return false;
-  result.highlight2 = Colour::fromString(obj->getProperty("highlight2").toString());
+  result.controlTweaked = Colour::fromString(obj->getProperty("controlTweaked").toString());
+   
+  if (!RequireStringProperty(obj, "controlBorder"))
+    return false;
+  result.controlBorder = Colour::fromString(obj->getProperty("controlBorder").toString());
+
+  if (!RequireStringProperty(obj, "controlBackground"))
+    return false;
+  result.controlBackground = Colour::fromString(obj->getProperty("controlBackground").toString());
+
+  if (!RequireStringProperty(obj, "controlForeground"))
+    return false;
+  result.controlForeground = Colour::fromString(obj->getProperty("controlForeground").toString());
 
   return true;
 }
