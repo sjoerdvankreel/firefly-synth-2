@@ -351,16 +351,15 @@ FBLookAndFeel::drawTickBox(
   Rectangle<float> tickBounds(x, y, w, h);
   auto const& scheme = FindColorSchemeFor(component);
 
-  g.setColour(scheme.controlBackground);
-  g.fillRoundedRectangle(tickBounds, 2.0f);
-
-  Colour border;
+  Colour background = scheme.controlBackground;
   auto* paramToggle = dynamic_cast<FBParamToggleButton*>(&component);
   if (paramToggle != nullptr && paramToggle->IsHighlightTweaked())
-    border = scheme.controlTweaked;
-  else
-    border = scheme.controlBorder;
-  g.setColour(border.darker(component.isEnabled()? 0.0f: scheme.dimDisabled));
+    background = scheme.controlTweaked;
+  g.setColour(background);
+  g.fillRoundedRectangle(tickBounds, 2.0f);
+
+  auto borderColor = scheme.controlBorder.darker(component.isEnabled() ? 0.0f : scheme.dimDisabled);
+  g.setColour(borderColor);
   g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
 
   if (ticked)

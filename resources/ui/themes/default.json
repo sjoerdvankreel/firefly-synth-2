@@ -7,7 +7,7 @@
     "foreground": "FF000000",
     "controlBounds": "FFFF0000",
     "controlEngine": "FFFF0000",
-    "controlTweaked": "FFFFFFFF",
+    "controlTweaked": "FF555555",
     "controlBorder": "FFFFCC00",
     "controlBackground": "FF333333",
     "controlForeground": "FFEEEEEE",
