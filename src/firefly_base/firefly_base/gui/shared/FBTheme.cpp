@@ -61,6 +61,21 @@ RequireIntProperty(
 }
 
 static bool
+RequireDoubleProperty(
+  DynamicObject const* obj,
+  String const& name)
+{
+  if (!RequireProperty(obj, name))
+    return false;
+  if (!obj->getProperty(name).isDouble())
+  {
+    FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not a double.");
+    return false;
+  }
+  return true;
+}
+
+static bool
 RequireStringProperty(
   DynamicObject const* obj, 
   String const& name)
@@ -142,11 +157,38 @@ OptionalArrayProperty(
 }
 
 static bool
+OptionalDoubleProperty(
+  DynamicObject const* obj,
+  String const& name,
+  bool& present)
+{
+  present = false;
+  if (!obj->hasProperty(name))
+    return true;
+  if (!obj->getProperty(name).isDouble())
+  {
+    FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not a double.");
+    return false;
+  }
+  present = true;
+  return true;
+}
+
+static bool
 ParseDefaultColorScheme(
   DynamicObject const* obj, 
   FBColorScheme& result)
 {
   result = {};
+
+  if (!RequireDoubleProperty(obj, "dimDisabled"))
+    return false;
+  result.dimDisabled = (float)(double)obj->getProperty("dimDisabled");
+  if (result.dimDisabled < 0.0 || result.dimDisabled > 1.0)
+  {
+    FB_LOG_ERROR("Dim disabled should be between 0 and 1.");
+    return false;
+  }
 
   if (!RequireStringProperty(obj, "border"))
     return false;
@@ -195,6 +237,15 @@ ParseColorScheme(
 {
   result = {};
   bool present = false;
+
+  if (!OptionalDoubleProperty(obj, "dimDisabled", present))
+    return false;
+  result.dimDisabled = present ? (float)(double)obj->getProperty("dimDisabled") : defaultScheme.dimDisabled;
+  if (result.dimDisabled < 0.0 || result.dimDisabled > 1.0)
+  {
+    FB_LOG_ERROR("Dim disabled should be between 0 and 1.");
+    return false;
+  }
 
   if (!OptionalStringProperty(obj, "border", present))
     return false;

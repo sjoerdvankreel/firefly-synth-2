@@ -11,6 +11,7 @@ struct FBRuntimeTopo;
 
 struct FBColorScheme
 {
+  float dimDisabled = {};
   juce::Colour border = {};
   juce::Colour background = {};
   juce::Colour foreground = {};

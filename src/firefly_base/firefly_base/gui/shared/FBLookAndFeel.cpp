@@ -352,20 +352,20 @@ FBLookAndFeel::drawTickBox(
   auto const& scheme = FindColorSchemeFor(component);
 
   g.setColour(scheme.controlBackground);
-  g.fillRoundedRectangle(tickBounds, 4.0f);
+  g.fillRoundedRectangle(tickBounds, 2.0f);
 
-  // todo enabled
+  Colour border;
   auto* paramToggle = dynamic_cast<FBParamToggleButton*>(&component);
   if (paramToggle != nullptr && paramToggle->IsHighlightTweaked())
-    g.setColour(scheme.controlTweaked);
+    border = scheme.controlTweaked;
   else
-    g.setColour(scheme.controlBorder);
-  g.drawRoundedRectangle(tickBounds, 4.0f, 1.0f);
+    border = scheme.controlBorder;
+  g.setColour(border.darker(component.isEnabled()? 0.0f: scheme.dimDisabled));
+  g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
 
   if (ticked)
   {
-    // todo enabled
-    g.setColour(scheme.controlBorder);
+    g.setColour(scheme.controlForeground.darker(component.isEnabled()? 0.0f: scheme.dimDisabled));
     g.fillEllipse(tickBounds.reduced(4.0f, 4.0f));
   }
 }
