@@ -42,7 +42,7 @@ FFMakeGUISettingsTopo()
   guiHilightTweakMode.name = "Show Tweaked From";
   guiHilightTweakMode.slotCount = 1;
   guiHilightTweakMode.defaultText = "Default";
-  guiHilightTweakMode.id = "{486DAE85-F8CC-4825-ACEA-D13D3D8A6933}";
+  guiHilightTweakMode.id = "{486DAE85-F8CC-4825-ACEA-D13D3D8A6933}"; 
   guiHilightTweakMode.description = "Highlight Tweaked Parameters";
   guiHilightTweakMode.type = FBParamType::List;
   guiHilightTweakMode.List().items = {

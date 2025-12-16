@@ -28,7 +28,14 @@
     {
       "moduleId": "E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B",
       "moduleSlot": -1,
-      "colorScheme": "SA"
+      "colorScheme": "SA",
+      "guiParamColorSchemes": [
+        {
+          "paramId": "486DAE85-F8CC-4825-ACEA-D13D3D8A6933",
+          "paramSlot": -1,
+          "colorScheme": "SB"
+        }
+      ]
     },
     {
       "moduleId": "GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
