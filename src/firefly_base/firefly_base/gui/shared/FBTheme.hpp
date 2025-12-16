@@ -31,6 +31,7 @@ struct FBModuleColors
 struct FBTheme
 {
   std::string name = {};
+  FBColorScheme defaultColorScheme = {};
   std::map<int, FBModuleColors> moduleColors = {}; // runtime module index
   std::map<std::string, FBColorScheme> colorSchemes = {};
 };

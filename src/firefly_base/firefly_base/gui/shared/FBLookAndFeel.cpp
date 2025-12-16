@@ -110,6 +110,7 @@ FBLookAndFeel::FindColorSchemeFor(
         return Theme().colorSchemes.at(moduleIter->second.colorScheme);
       return Theme().colorSchemes.at(paramIter->second);
     }
+    return Theme().defaultColorScheme;
   }
   return fallback;
 }

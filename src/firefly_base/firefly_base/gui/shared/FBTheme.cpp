@@ -26,6 +26,7 @@ struct FBModuleColorsJson
 struct FBThemeJson
 {
   std::string name = {};
+  FBColorScheme defaultColorScheme = {};
   std::vector<FBModuleColorsJson> moduleColors = {};
   std::map<std::string, FBColorScheme> colorSchemes = {};
 };
@@ -74,6 +75,24 @@ RequireStringProperty(
 }
 
 static bool
+OptionalStringProperty(
+  DynamicObject const* obj,
+  String const& name,
+  bool& present)
+{
+  present = false;
+  if (!obj->hasProperty(name))
+    return true;
+  if (!obj->getProperty(name).isString())
+  {
+    FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not a string.");
+    return false;
+  }
+  present = true;
+  return true;
+}
+
+static bool
 RequireObjectProperty(
   DynamicObject const* obj, 
   String const& name)
@@ -104,7 +123,7 @@ RequireArrayProperty(
 }
 
 static bool
-ParseColorScheme(
+ParseDefaultColorScheme(
   DynamicObject const* obj, 
   FBColorScheme& result)
 {
@@ -150,8 +169,57 @@ ParseColorScheme(
 }
 
 static bool
+ParseColorScheme(
+  DynamicObject const* obj,
+  FBColorScheme const& defaultScheme,
+  FBColorScheme& result)
+{
+  result = {};
+  bool present = false;
+
+  if (!OptionalStringProperty(obj, "border", present))
+    return false;
+  result.border = present ? Colour::fromString(obj->getProperty("border").toString()) : defaultScheme.border;
+
+  if (!OptionalStringProperty(obj, "background", present))
+    return false;
+  result.background = present ? Colour::fromString(obj->getProperty("background").toString()) : defaultScheme.background;
+
+  if (!OptionalStringProperty(obj, "foreground", present))
+    return false;
+  result.foreground = present ? Colour::fromString(obj->getProperty("foreground").toString()) : defaultScheme.foreground;
+
+  if (!OptionalStringProperty(obj, "controlBounds", present))
+    return false;
+  result.controlBounds = present ? Colour::fromString(obj->getProperty("controlBounds").toString()) : defaultScheme.controlBounds;
+
+  if (!OptionalStringProperty(obj, "controlEngine", present))
+    return false;
+  result.controlEngine = present ? Colour::fromString(obj->getProperty("controlEngine").toString()) : defaultScheme.controlEngine;
+
+  if (!OptionalStringProperty(obj, "controlTweaked", present))
+    return false;
+  result.controlTweaked = present ? Colour::fromString(obj->getProperty("controlTweaked").toString()) : defaultScheme.controlTweaked;
+
+  if (!OptionalStringProperty(obj, "controlBorder", present))
+    return false;
+  result.controlBorder = present ? Colour::fromString(obj->getProperty("controlBorder").toString()) : defaultScheme.controlBorder;
+
+  if (!OptionalStringProperty(obj, "controlBackground", present))
+    return false;
+  result.controlBackground = present ? Colour::fromString(obj->getProperty("controlBackground").toString()) : defaultScheme.controlBackground;
+
+  if (!OptionalStringProperty(obj, "controlForeground", present))
+    return false;
+  result.controlForeground = present ? Colour::fromString(obj->getProperty("controlForeground").toString()) : defaultScheme.controlForeground;
+
+  return true;
+}
+
+static bool
 ParseColorSchemesJson(
   DynamicObject const* obj, 
+  FBColorScheme const& defaultScheme,
   std::map<std::string, FBColorScheme>& result)
 {
   result = {};
@@ -161,6 +229,7 @@ ParseColorSchemesJson(
       return false;
     if (!ParseColorScheme(
       i->value.getDynamicObject(), 
+      defaultScheme,
       result[i->name.toString().toStdString()]))
       return false;
   }
@@ -270,9 +339,14 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     return false;
   result.name = obj->getProperty("name").toString().toStdString();
 
+  if (!RequireObjectProperty(obj, "defaultColorScheme"))
+    return false;
+  if (!ParseDefaultColorScheme(obj->getProperty("defaultColorScheme").getDynamicObject(), result.defaultColorScheme))
+    return false;
+
   if (!RequireObjectProperty(obj, "colorSchemes"))
     return false;
-  if (!ParseColorSchemesJson(obj->getProperty("colorSchemes").getDynamicObject(), result.colorSchemes))
+  if (!ParseColorSchemesJson(obj->getProperty("colorSchemes").getDynamicObject(), result.defaultColorScheme, result.colorSchemes))
     return false;
 
   if (!RequireArrayProperty(obj, "moduleColors"))

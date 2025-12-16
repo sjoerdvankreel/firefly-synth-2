@@ -1,27 +1,22 @@
 {
   "name": "Default",
+  "defaultColorScheme": {
+    "border": "FF000000",
+    "background": "FF000000",
+    "foreground": "FF000000",
+    "controlBounds": "FFFF0000",
+    "controlEngine": "FFFF0000",
+    "controlTweaked": "FFFF0000",
+    "controlBorder": "FF00FF00",
+    "controlBackground": "FF444444",
+    "controlForeground": "FF000000",
+  },
   "colorSchemes": {
     "SA": {
-      "border": "FF000000",
-      "background": "FF000000",
-      "foreground": "FF000000",
-      "controlBounds": "FFFF0000",
-      "controlEngine": "FFFF0000",
-      "controlTweaked": "FFFF0000",
-      "controlBorder": "FF00FF00",
-      "controlBackground": "FF444444",
-      "controlForeground": "FF000000",
+      "controlBackground": "FFFF00FF",
     },
     "SB": {
-      "border": "FF000000",
-      "background": "FF000000",
-      "foreground": "FF000000",
-      "controlBounds": "FFFF0000",
-      "controlEngine": "FFFF0000",
-      "controlTweaked": "FFFF0000",
-      "controlBorder": "FFFF0000",
-      "controlBackground": "FF000000",
-      "controlForeground": "FF000000",
+      "controlBackground": "FFFFFF00",
     }
   },
   "moduleColors": [
