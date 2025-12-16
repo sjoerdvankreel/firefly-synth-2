@@ -98,6 +98,7 @@ FBLookAndFeel::FindColorSchemeFor(
   Component const& c) const
 {
   static FBColorScheme fallback = {};
+  
   if (auto p = dynamic_cast<FBParamControl const*>(&c))
   {
     int rtModuleIndex = p->Param()->runtimeModuleIndex;
@@ -105,13 +106,29 @@ FBLookAndFeel::FindColorSchemeFor(
     if (moduleIter != Theme().moduleColors.end())
     {
       int rtParamIndex = p->Param()->runtimeParamIndex;
-      auto paramIter = moduleIter->second.paramColorSchemes.find(rtParamIndex);
-      if (paramIter == moduleIter->second.paramColorSchemes.end())
+      auto paramIter = moduleIter->second.audioParamColorSchemes.find(rtParamIndex);
+      if (paramIter == moduleIter->second.audioParamColorSchemes.end())
         return Theme().colorSchemes.at(moduleIter->second.colorScheme);
       return Theme().colorSchemes.at(paramIter->second);
     }
     return Theme().defaultColorScheme;
   }
+
+  if (auto p = dynamic_cast<FBGUIParamControl const*>(&c))
+  {
+    int rtModuleIndex = p->Param()->runtimeModuleIndex;
+    auto moduleIter = Theme().moduleColors.find(rtModuleIndex);
+    if (moduleIter != Theme().moduleColors.end())
+    {
+      int rtParamIndex = p->Param()->runtimeParamIndex;
+      auto paramIter = moduleIter->second.guiParamColorSchemes.find(rtParamIndex);
+      if (paramIter == moduleIter->second.guiParamColorSchemes.end())
+        return Theme().colorSchemes.at(moduleIter->second.colorScheme);
+      return Theme().colorSchemes.at(paramIter->second);
+    }
+    return Theme().defaultColorScheme;
+  }
+
   return fallback;
 }
 

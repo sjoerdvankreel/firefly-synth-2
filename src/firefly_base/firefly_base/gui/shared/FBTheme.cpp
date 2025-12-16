@@ -20,7 +20,8 @@ struct FBModuleColorsJson
   int moduleSlot = -1; // -1 = all
   std::string moduleId = {};
   std::string colorScheme = {};
-  std::vector<FBParamColorsJson> paramColorSchemes = {};
+  std::vector<FBParamColorsJson> guiParamColorSchemes = {};
+  std::vector<FBParamColorsJson> audioParamColorSchemes = {};
 };
 
 struct FBThemeJson
@@ -75,24 +76,6 @@ RequireStringProperty(
 }
 
 static bool
-OptionalStringProperty(
-  DynamicObject const* obj,
-  String const& name,
-  bool& present)
-{
-  present = false;
-  if (!obj->hasProperty(name))
-    return true;
-  if (!obj->getProperty(name).isString())
-  {
-    FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not a string.");
-    return false;
-  }
-  present = true;
-  return true;
-}
-
-static bool
 RequireObjectProperty(
   DynamicObject const* obj, 
   String const& name)
@@ -119,6 +102,42 @@ RequireArrayProperty(
     FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not an array.");
     return false;
   }
+  return true;
+}
+
+static bool
+OptionalStringProperty(
+  DynamicObject const* obj,
+  String const& name,
+  bool& present)
+{
+  present = false;
+  if (!obj->hasProperty(name))
+    return true;
+  if (!obj->getProperty(name).isString())
+  {
+    FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not a string.");
+    return false;
+  }
+  present = true;
+  return true;
+}
+
+static bool
+OptionalArrayProperty(
+  DynamicObject const* obj,
+  String const& name,
+  bool& present)
+{
+  present = false;
+  if (!obj->hasProperty(name))
+    return true;
+  if (!obj->getProperty(name).isArray())
+  {
+    FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not an array.");
+    return false;
+  }
+  present = true;
   return true;
 }
 
@@ -282,6 +301,8 @@ ParseModuleColorsJson(
   DynamicObject const* obj,
   FBModuleColorsJson& result)
 {
+  bool present = false;
+
   if (!RequireStringProperty(obj, "colorScheme"))
     return false;
   result.colorScheme = obj->getProperty("colorScheme").toString().toStdString();
@@ -299,9 +320,14 @@ ParseModuleColorsJson(
     return false;
   }
 
-  if (!RequireArrayProperty(obj, "paramColorSchemes"))
+  if (!OptionalArrayProperty(obj, "guiParamColorSchemes", present))
     return false;
-  if (!ParseParamColorSchemesJson(obj->getProperty("paramColorSchemes"), result.paramColorSchemes))
+  if (present && !ParseParamColorSchemesJson(obj->getProperty("guiParamColorSchemes"), result.guiParamColorSchemes))
+    return false;
+
+  if (!OptionalArrayProperty(obj, "audioParamColorSchemes", present))
+    return false;
+  if (present && !ParseParamColorSchemesJson(obj->getProperty("audioParamColorSchemes"), result.audioParamColorSchemes))
     return false;
 
   return true;
@@ -362,16 +388,25 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
       FB_LOG_ERROR("Color scheme '" + moduleScheme + "' not found.");
       return false;
     }
-    for(int j = 0; j < result.moduleColors[i].paramColorSchemes.size(); j++)
+    for(int j = 0; j < result.moduleColors[i].guiParamColorSchemes.size(); j++)
     {
-      auto const& paramScheme = result.moduleColors[i].paramColorSchemes[i].colorScheme;
+      auto const& paramScheme = result.moduleColors[i].guiParamColorSchemes[i].colorScheme;
       if (result.colorSchemes.find(paramScheme) == result.colorSchemes.end())
       {
         FB_LOG_ERROR("Color scheme '" + paramScheme + "' not found.");
         return false;
       }
     }
-  } 
+    for (int j = 0; j < result.moduleColors[i].audioParamColorSchemes.size(); j++)
+    {
+      auto const& paramScheme = result.moduleColors[i].audioParamColorSchemes[i].colorScheme;
+      if (result.colorSchemes.find(paramScheme) == result.colorSchemes.end())
+      {
+        FB_LOG_ERROR("Color scheme '" + paramScheme + "' not found.");
+        return false;
+      }
+    }
+  }
   
   return true;
 }
@@ -411,6 +446,47 @@ LoadThemeJsons()
   return result;
 }
 
+template <class TParam>
+static bool
+MakeParamColors(
+  std::vector<FBParamColorsJson> const& paramColorSchemes,
+  std::vector<TParam> const& params,
+  std::vector<std::vector<int>> const& moduleParamTopoToRuntime,
+  std::map<int, std::string>& result)
+{
+  result = {};
+
+  for (int i = 0; i < paramColorSchemes.size(); i++)
+  {
+    int foundIndex = -1;
+    for (int j = 0; j < params.size(); j++)
+      if (FBCleanTopoId(params[j].id) == paramColorSchemes[i].paramId)
+      {
+        foundIndex = j;
+        break;
+      }
+    if (foundIndex == -1)
+    {
+      FB_LOG_ERROR("Cannot find param '" + paramColorSchemes[i].paramId + "'.");
+      return false;
+    }
+    if (paramColorSchemes[i].paramSlot >= params[foundIndex].slotCount)
+    {
+      FB_LOG_ERROR("Invalid param slot '" + std::to_string(paramColorSchemes[i].paramSlot) + "'.");
+      return false;
+    }
+
+    for (int j = 0; j < params[foundIndex].slotCount; j++)
+      if (paramColorSchemes[i].paramSlot == -1 || paramColorSchemes[i].paramSlot == j)
+      {
+        int rtIndex = moduleParamTopoToRuntime[foundIndex][j];
+        result[rtIndex] = paramColorSchemes[i].colorScheme;
+      }
+  }
+
+  return true;
+}
+
 static bool
 MakeModuleColors(
   FBRuntimeTopo const* topo,
@@ -421,34 +497,18 @@ MakeModuleColors(
 {
   result = {};
   result.colorScheme = json.colorScheme;
-  for (int i = 0; i < json.paramColorSchemes.size(); i++)
-  {
-    int foundIndex = -1;
-    for (int j = 0; j < topo->static_->modules[staticModuleIndex].params.size(); j++)
-      if (FBCleanTopoId(topo->static_->modules[staticModuleIndex].params[j].id) == json.paramColorSchemes[i].paramId)
-      {       
-        foundIndex = j;
-        break;
-      }
-    if (foundIndex == -1)
-    {
-      FB_LOG_ERROR("Cannot find param '" + json.paramColorSchemes[i].paramId + "'.");
-      return false;
-    }
-    if (json.paramColorSchemes[i].paramSlot >= topo->static_->modules[staticModuleIndex].params[foundIndex].slotCount)
-    {
-      FB_LOG_ERROR("Invalid param slot '" + std::to_string(json.paramColorSchemes[i].paramSlot) + "'.");
-      return false;
-    }
-
-    // todo stuff with gui params
-    for (int j = 0; j < topo->static_->modules[staticModuleIndex].params[foundIndex].slotCount; j++)
-      if (json.paramColorSchemes[i].paramSlot == -1 || json.paramColorSchemes[i].paramSlot == j)
-      {
-        int rtIndex = topo->audio.paramTopoToRuntime[staticModuleIndex][staticModuleSlot][foundIndex][j];
-        result.paramColorSchemes[rtIndex] = json.paramColorSchemes[i].colorScheme;
-      }
-  }
+  if (!MakeParamColors(
+    json.audioParamColorSchemes,
+    topo->static_->modules[staticModuleIndex].params,
+    topo->audio.paramTopoToRuntime[staticModuleIndex][staticModuleSlot],
+    result.audioParamColorSchemes))
+    return false;
+  if (!MakeParamColors(
+    json.guiParamColorSchemes,
+    topo->static_->modules[staticModuleIndex].guiParams,
+    topo->gui.paramTopoToRuntime[staticModuleIndex][staticModuleSlot],
+    result.guiParamColorSchemes))
+    return false;
   return true;
 }
 

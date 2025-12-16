@@ -25,7 +25,8 @@ struct FBColorScheme
 struct FBModuleColors
 {
   std::string colorScheme = {};
-  std::map<int, std::string> paramColorSchemes = {}; // runtime param index
+  std::map<int, std::string> guiParamColorSchemes = {}; // runtime param index
+  std::map<int, std::string> audioParamColorSchemes = {}; // runtime param index
 };
 
 struct FBTheme
