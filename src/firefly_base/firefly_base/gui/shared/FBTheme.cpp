@@ -390,7 +390,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     }
     for(int j = 0; j < result.moduleColors[i].guiParamColorSchemes.size(); j++)
     {
-      auto const& paramScheme = result.moduleColors[i].guiParamColorSchemes[i].colorScheme;
+      auto const& paramScheme = result.moduleColors[i].guiParamColorSchemes[j].colorScheme;
       if (result.colorSchemes.find(paramScheme) == result.colorSchemes.end())
       {
         FB_LOG_ERROR("Color scheme '" + paramScheme + "' not found.");
@@ -399,7 +399,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     }
     for (int j = 0; j < result.moduleColors[i].audioParamColorSchemes.size(); j++)
     {
-      auto const& paramScheme = result.moduleColors[i].audioParamColorSchemes[i].colorScheme;
+      auto const& paramScheme = result.moduleColors[i].audioParamColorSchemes[j].colorScheme;
       if (result.colorSchemes.find(paramScheme) == result.colorSchemes.end())
       {
         FB_LOG_ERROR("Color scheme '" + paramScheme + "' not found.");

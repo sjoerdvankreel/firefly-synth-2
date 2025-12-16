@@ -23,14 +23,18 @@
     {
       "moduleId": "VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
       "moduleSlot": -1,
-      "colorScheme": "SA",
-      "paramColorSchemes": []
+      "colorScheme": "SB"
+    },
+    {
+      "moduleId": "E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B",
+      "moduleSlot": -1,
+      "colorScheme": "SA"
     },
     {
       "moduleId": "GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
       "moduleSlot": 0,
       "colorScheme": "SB",
-      "paramColorSchemes": [
+      "audioParamColorSchemes": [
         {
           "paramId": "G60F7D173-C5F9-46AD-A108-D17D40FE4C1D",
           "paramSlot": -1,
