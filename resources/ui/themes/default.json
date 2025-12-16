@@ -7,9 +7,9 @@
     "controlBounds": "FFFF0000",
     "controlEngine": "FFFF0000",
     "controlTweaked": "FFFF0000",
-    "controlBorder": "FF00FF00",
-    "controlBackground": "FF444444",
-    "controlForeground": "FF000000",
+    "controlBorder": "FFFFCC00",
+    "controlBackground": "FF333333",
+    "controlForeground": "FFFFFFFF",
   },
   "colorSchemes": {
     "SA": {

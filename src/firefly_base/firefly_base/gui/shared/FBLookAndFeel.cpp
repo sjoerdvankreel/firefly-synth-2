@@ -114,7 +114,7 @@ FBLookAndFeel::FindColorSchemeFor(
     }
     return Theme().defaultColorScheme;
   }
-
+   
   if (auto p = dynamic_cast<FBGUIParamControl const*>(&c))
   {
     int rtModuleIndex = p->Param()->runtimeModuleIndex;
