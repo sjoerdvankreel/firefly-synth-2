@@ -370,11 +370,10 @@ FBLookAndFeel::drawLinearSlider(
   Graphics& g,
   int x, int y, int width, int height,
   float sliderPos, float /*minSliderPos*/, float /*maxSliderPos*/,
-  Slider::SliderStyle style, Slider& slider)
+  Slider::SliderStyle /*style*/, Slider& slider)
 {
   auto const& scheme = FindColorSchemeFor(slider);
-  auto isThreeVal = (style == Slider::SliderStyle::ThreeValueVertical || style == Slider::SliderStyle::ThreeValueHorizontal);
-  auto trackWidth = jmin(6.0f, slider.isHorizontal() ? (float)height * 0.25f : (float)width * 0.25f);
+  auto trackWidth = 4.0f;
 
   FB_ASSERT(slider.isHorizontal());
   Path backgroundTrackFull;
@@ -382,22 +381,22 @@ FBLookAndFeel::drawLinearSlider(
   Point<float> endPointFull((float)(width + x), startPointFull.y);
   backgroundTrackFull.startNewSubPath(startPointFull);
   backgroundTrackFull.lineTo(endPointFull);
-  g.setColour(slider.findColour(Slider::backgroundColourId));
+  g.setColour(scheme.paramBackground);
   g.strokePath(backgroundTrackFull, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
   Path valueTrack;
-  Point<float> minPoint, maxPoint, thumbPoint;
+  Point<float> minPoint, maxPoint;
   auto kx = slider.isHorizontal() ? sliderPos : ((float)x + (float)width * 0.5f);
   auto ky = slider.isHorizontal() ? ((float)y + (float)height * 0.5f) : sliderPos;
   minPoint = startPointFull;
   maxPoint = { kx, ky };
-  auto thumbWidth = getSliderThumbRadius(slider);
 
   valueTrack.startNewSubPath(minPoint);
-  valueTrack.lineTo(isThreeVal ? thumbPoint : maxPoint);
-  g.setColour(slider.findColour(Slider::trackColourId));
+  valueTrack.lineTo(maxPoint);
+  g.setColour(scheme.sliderTrack);
   g.strokePath(valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
+#if 0 // todo
   double modMin, modMax;
   FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
   if (GetSliderModulationBounds(slider, modMin, modMax))
@@ -410,10 +409,16 @@ FBLookAndFeel::drawLinearSlider(
     g.setColour(Colours::white.withAlpha(0.5f));
     g.strokePath(backgroundTrackMod, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
   }
+#endif
 
+  float thumbW = trackWidth;
+  float thumbH = (float)height * 0.5f;
+  float thumbY = (float)y + (float)height * 0.25f;
   g.setColour(scheme.paramOutline);
-  g.fillEllipse(Rectangle<float>(static_cast<float> (thumbWidth), static_cast<float> (thumbWidth)).withCentre(isThreeVal ? thumbPoint : maxPoint));
-
+  g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
+  g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
+  
+#if 0 // todo
   if (paramSlider == nullptr)
     return;
   auto paramActive = paramSlider->ParamActiveExchangeState();
@@ -422,6 +427,7 @@ FBLookAndFeel::drawLinearSlider(
   DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, y, height, paramActive.minValue);
   if (paramSlider->Param()->static_.IsVoice())
     DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, y, height, paramActive.maxValue);
+#endif 
 }
 
 void 
