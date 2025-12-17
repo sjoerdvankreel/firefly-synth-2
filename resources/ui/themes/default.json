@@ -11,47 +11,25 @@
     "paramBackground": "FF181818"
   },
   "colorSchemes": {
-    "SA": {
-      "controlBackground": "FFFF00FF",
-    },
-    "SB": {
-      "controlBackground": "FFFFFF00",
+    "CV": {
+      "paramPrimary": "FF288EF2",
     }
   },
   "moduleColors": [
     {
-      "moduleId": "VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
+      "moduleId": "G6E9EC930-5391-41BB-9EDA-C9B79F3BE745",
       "moduleSlot": -1,
-      "colorScheme": "SB"
+      "colorScheme": "CV"
     },
     {
-      "moduleId": "E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B",
+      "moduleId": "V6E9EC930-5391-41BB-9EDA-C9B79F3BE745",
       "moduleSlot": -1,
-      "colorScheme": "SA",
-      "guiParamColorSchemes": [
-        {
-          "paramId": "486DAE85-F8CC-4825-ACEA-D13D3D8A6933",
-          "paramSlot": -1,
-          "colorScheme": "SB"
-        }
-      ]
+      "colorScheme": "CV"
     },
     {
-      "moduleId": "GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
-      "moduleSlot": 0,
-      "colorScheme": "SB",
-      "audioParamColorSchemes": [
-        {
-          "paramId": "G60F7D173-C5F9-46AD-A108-D17D40FE4C1D",
-          "paramSlot": -1,
-          "colorScheme": "SA"
-        },
-        {
-          "paramId": "GD84A623A-7F5C-40C6-A892-A441497783CD",
-          "paramSlot": 0,
-          "colorScheme": "SB"
-        }
-      ]
+      "moduleId": "FC1DC75A-200C-4465-8CBE-0100E2C8FAF2",
+      "moduleSlot": -1,
+      "colorScheme": "CV"
     }
   ]
 }
