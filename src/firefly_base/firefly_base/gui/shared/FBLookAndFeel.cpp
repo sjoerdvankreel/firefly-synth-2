@@ -289,16 +289,11 @@ FBLookAndFeel::drawLabel(
     g.fillRoundedRectangle(label.getLocalBounds().toFloat(), 2.0f);
   }
 
-  g.fillAll(label.findColour(Label::backgroundColourId));
-  auto alpha = label.isEnabled() ? 1.0f : 0.5f;
-  const Font font(getLabelFont(label));
-  g.setColour(label.findColour(Label::textColourId).withMultipliedAlpha(alpha));
-  g.setFont(font);
-
+  auto const& scheme = FindColorSchemeFor(label);
+  g.setFont(getLabelFont(label));
+  g.setColour(scheme.foreground);
   auto textArea = getLabelBorderSize(label).subtractedFrom(label.getLocalBounds());
   g.drawText(label.getText(), textArea, label.getJustificationType(), false);
-  g.setColour(label.findColour(Label::outlineColourId).withMultipliedAlpha(alpha));
-  g.drawRect(label.getLocalBounds());
 }
 
 void
@@ -324,18 +319,17 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   int	/*buttonX*/, int /*buttonY*/, int	/*buttonW*/, int /*buttonH*/, ComboBox& box)
 {
   auto cornerSize = 3.0f;
+  auto const& scheme = FindColorSchemeFor(box);
   Rectangle<int> boxBounds(2, 1, width - 4, height - 2);
 
-  auto const& scheme = FindColorSchemeFor(box);
-  g.setColour(scheme.controlBackground);
-  g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
-   
+  Colour background = scheme.controlBackground;
   auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
-  // todo enabled    
-  if(paramCombo != nullptr && paramCombo->IsHighlightTweaked())
-    g.setColour(scheme.controlTweaked);
-  else
-    g.setColour(scheme.controlBorder);
+  if (paramCombo != nullptr && paramCombo->IsHighlightTweaked())
+    background = scheme.controlTweaked;
+  g.setColour(background);
+  g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
+
+  g.setColour(scheme.controlBorder);
   g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
 }
 
@@ -358,8 +352,7 @@ FBLookAndFeel::drawTickBox(
   g.setColour(background);
   g.fillRoundedRectangle(tickBounds, 2.0f);
 
-  auto borderColor = scheme.controlBorder.darker(component.isEnabled() ? 0.0f : scheme.dimDisabled);
-  g.setColour(borderColor);
+  g.setColour(scheme.controlBorder);
   g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
 
   if (ticked)
