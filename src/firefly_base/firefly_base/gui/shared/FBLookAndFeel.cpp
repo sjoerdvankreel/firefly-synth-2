@@ -391,10 +391,9 @@ FBLookAndFeel::drawLinearSlider(
   minPoint = startPointFull;
   maxPoint = { kx, ky };
 
-  if (auto ps = dynamic_cast<FBParamSlider*>(&slider))
-  {
-    bool bipolar = ps->Param()->static_.NonRealTime().DisplayAsBipolar();
-    if (bipolar)
+  auto paramSlider = dynamic_cast<FBParamSlider*>(&slider);
+  if (paramSlider != nullptr)
+    if (paramSlider->Param()->static_.NonRealTime().DisplayAsBipolar())
     {
       auto centerPoint = Point<float>((float)x + width * 0.5f, (float)y + (float)height * 0.5f);
       float sliderPosNorm = (sliderPos - (float)x) / width;
@@ -406,7 +405,6 @@ FBLookAndFeel::drawLinearSlider(
         maxPoint = centerPoint;
       }
     }
-  }
 
   valueTrack.startNewSubPath(minPoint);
   valueTrack.lineTo(maxPoint);
@@ -431,9 +429,15 @@ FBLookAndFeel::drawLinearSlider(
   float thumbW = 4.0f;
   float thumbH = (float)height * 0.6f;
   float thumbY = (float)y + (float)height * 0.2f;
-  g.setColour(scheme.paramOutline);
+  g.setColour(scheme.paramOutline.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
   g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
   g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
+  if (paramSlider != nullptr && paramSlider->IsHighlightTweaked())
+  {
+    g.setColour(scheme.paramHighlight);
+    g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
+    g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
+  }
   
 #if 0 // todo
   if (paramSlider == nullptr)
