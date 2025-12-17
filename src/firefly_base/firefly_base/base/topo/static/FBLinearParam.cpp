@@ -3,6 +3,7 @@
 
 bool FBLinearParamNonRealTime::IsItems() const { return false; }
 bool FBLinearParamNonRealTime::IsStepped() const { return false; }
+bool FBLinearParamNonRealTime::DisplayAsBipolar() const { return min < 0.0; }
 int FBLinearParamNonRealTime::ValueCount() const { return 0; }
 int FBLinearParamNonRealTime::ValueOffset() const { return 0; }
 FBEditType FBLinearParamNonRealTime::AutomationEditType() const { return FBEditType::Linear; }

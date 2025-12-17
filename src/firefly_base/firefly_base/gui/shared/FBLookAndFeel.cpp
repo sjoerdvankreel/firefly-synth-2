@@ -523,9 +523,23 @@ FBLookAndFeel::drawRotarySlider(
   g.strokePath(backgroundArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
 
   Path valueArc;
+  float trackEndAngle = toAngle;
+  float trackStartAngle = rotaryStartAngle;
+  if (auto ps = dynamic_cast<FBParamSlider*>(&slider))
+  {
+    bool bipolar = ps->Param()->static_.NonRealTime().DisplayAsBipolar();
+    if (bipolar)
+    {
+      float centerAngle = rotaryStartAngle + 0.5f * (rotaryEndAngle - rotaryStartAngle);
+      if (sliderPos > 0.5f)
+        trackStartAngle = centerAngle;
+      else
+        trackEndAngle = centerAngle;
+    }
+  }
   valueArc.addCentredArc(
     bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
-    0.0f, rotaryStartAngle, toAngle, true);
+    0.0f, trackStartAngle, trackEndAngle, true);
   g.setColour(scheme.sliderTrack);
   g.strokePath(valueArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
 

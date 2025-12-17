@@ -17,6 +17,7 @@ struct FBParamNonRealTime
   virtual bool IsStepped() const = 0;
   virtual int ValueCount() const = 0;
   virtual int ValueOffset() const = 0;
+  virtual bool DisplayAsBipolar() const = 0;
   virtual FBEditType GUIEditType() const = 0;
   virtual FBEditType AutomationEditType() const = 0;
 

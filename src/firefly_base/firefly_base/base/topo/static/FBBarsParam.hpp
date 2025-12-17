@@ -30,6 +30,7 @@ public FBItemsParamNonRealTime
   bool IsStepped() const override;
   int ValueCount() const override;
   int ValueOffset() const override;
+  bool DisplayAsBipolar() const override;
   FBEditType GUIEditType() const override;
   FBEditType AutomationEditType() const override;
   juce::PopupMenu MakePopupMenu(int moduleIndex) const override;

@@ -5,6 +5,7 @@ using namespace juce;
 
 bool FBListParamNonRealTime::IsItems() const { return true; }
 bool FBListParamNonRealTime::IsStepped() const { return true; }
+bool FBListParamNonRealTime::DisplayAsBipolar() const { return false; }
 int FBListParamNonRealTime::ValueOffset() const { return 0; }
 int FBListParamNonRealTime::ValueCount() const { return static_cast<int>(items.size()); }
 FBEditType FBListParamNonRealTime::GUIEditType() const { return FBEditType::Stepped; }

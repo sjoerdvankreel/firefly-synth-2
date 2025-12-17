@@ -36,6 +36,7 @@ public FBParamNonRealTime
   bool IsStepped() const override;
   int ValueCount() const override;
   int ValueOffset() const override;
+  bool DisplayAsBipolar() const override;
   FBEditType GUIEditType() const override;
   FBEditType AutomationEditType() const override;
 
