@@ -391,6 +391,23 @@ FBLookAndFeel::drawLinearSlider(
   minPoint = startPointFull;
   maxPoint = { kx, ky };
 
+  if (auto ps = dynamic_cast<FBParamSlider*>(&slider))
+  {
+    bool bipolar = ps->Param()->static_.NonRealTime().DisplayAsBipolar();
+    if (bipolar)
+    {
+      auto centerPoint = Point<float>((float)x + width * 0.5f, (float)y + (float)height * 0.5f);
+      float sliderPosNorm = (sliderPos - (float)x) / width;
+      if (sliderPosNorm > 0.5f)
+        minPoint = centerPoint;
+      else
+      {
+        minPoint = maxPoint;
+        maxPoint = centerPoint;
+      }
+    }
+  }
+
   valueTrack.startNewSubPath(minPoint);
   valueTrack.lineTo(maxPoint);
   g.setColour(scheme.sliderTrack);
