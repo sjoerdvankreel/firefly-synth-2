@@ -51,8 +51,6 @@ ConvertValueFromSkewed(FBStaticParamBase const& param, double normalized)
 static bool
 GetSliderModulationBounds(Slider const& s, double& minNorm, double& maxNorm)
 {
-  if (!s.isEnabled())
-    return false;
   FBParamSlider const* ps = dynamic_cast<FBParamSlider const*>(&s);
   if (ps == nullptr)
     return false;
@@ -147,7 +145,7 @@ FBLookAndFeel::DrawLinearSliderExchangeThumb(
   Point<float> maxPoint = { kx, ky };
   float thumbWidth = static_cast<float>(getSliderThumbRadius(slider));
   g.setColour(scheme.paramOutline.withAlpha(0.5f)); // todo
-  g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(maxPoint));
+  g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(maxPoint)); 
 }
 
 void 

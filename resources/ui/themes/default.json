@@ -6,7 +6,7 @@
     "background": "FF282828",
     "foreground": "FFEEEEEE",
     "sliderTrack": "FF505050",
-    "paramOutline": "FFFFCC00",
+    "paramOutline": "FFF28C28",
     "paramHighlight": "80FFFFFF",
     "paramBackground": "FF181818",
     "controlForeground": "FFEEEEEE"
