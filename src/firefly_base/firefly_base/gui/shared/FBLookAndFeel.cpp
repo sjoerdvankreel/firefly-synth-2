@@ -274,7 +274,7 @@ FBLookAndFeel::drawLabel(
   }
 
   auto const& scheme = FindColorSchemeFor(label);
-  auto colorText = scheme.foreground;
+  auto colorText = scheme.text;
   if (auto b = label.findParentComponentOfClass<ComboBox>())
     colorText = scheme.paramPrimary.darker(b->isEnabled() ? 0.0f : scheme.dimDisabled);
 

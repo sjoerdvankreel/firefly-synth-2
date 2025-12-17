@@ -201,9 +201,9 @@ ParseDefaultColorScheme(
     return false;
   result.background = Colour::fromString(obj->getProperty("background").toString());
 
-  if (!RequireStringProperty(obj, "foreground"))
+  if (!RequireStringProperty(obj, "text"))
     return false;
-  result.foreground = Colour::fromString(obj->getProperty("foreground").toString());
+  result.text = Colour::fromString(obj->getProperty("text").toString());
 
   if (!RequireStringProperty(obj, "paramSecondary"))
     return false;
@@ -250,9 +250,9 @@ ParseColorScheme(
     return false;
   result.background = present ? Colour::fromString(obj->getProperty("background").toString()) : defaultScheme.background;
 
-  if (!OptionalStringProperty(obj, "foreground", present))
+  if (!OptionalStringProperty(obj, "text", present))
     return false;
-  result.foreground = present ? Colour::fromString(obj->getProperty("foreground").toString()) : defaultScheme.foreground;
+  result.text = present ? Colour::fromString(obj->getProperty("text").toString()) : defaultScheme.text;
 
   if (!OptionalStringProperty(obj, "paramSecondary", present))
     return false;

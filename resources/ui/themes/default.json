@@ -2,9 +2,9 @@
   "name": "Default",
   "defaultColorScheme": {
     "dimDisabled": 0.25,
-    "border": "FF000000",
+    "text": "FFEEEEEE",
+    "border": "FF505050",
     "background": "FF282828",
-    "foreground": "FFEEEEEE",
     "paramPrimary": "FFF28C28",
     "paramSecondary": "FF505050",
     "paramHighlight": "80FFFFFF",
