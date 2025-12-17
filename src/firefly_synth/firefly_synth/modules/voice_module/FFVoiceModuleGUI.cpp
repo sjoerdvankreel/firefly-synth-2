@@ -90,7 +90,7 @@ MakeVoiceModuleSectionPitch(FBPlugGUI* plugGUI)
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lfo5ToFine));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lfo5ToFine, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ { 0, 0 }, { 2, 4 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
+  return grid;
 }
 
 static Component*
@@ -121,7 +121,7 @@ MakeVoiceModuleSectionPorta(FBPlugGUI* plugGUI)
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, ampRelease));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, ampRelease, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ { 0, 0 }, { 2, 6 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
+  return grid;
 }
 
 static Component*
@@ -130,7 +130,8 @@ MakeVoiceModuleTab(FBPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   grid->Add(0, 0, MakeVoiceModuleSectionPitch(plugGUI));
   grid->Add(0, 1, MakeVoiceModuleSectionPorta(plugGUI));
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::VoiceModule, 0, grid);
+  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::VoiceModule, 0, section);
 }
 
 Component*

@@ -195,8 +195,8 @@ FBGridComponent::resized()
 
   if (_rowColGap)
   {
-    _grid.rowGap = Grid::Px(2);
-    _grid.columnGap = Grid::Px(2);
+    _grid.rowGap = Grid::Px(1);
+    _grid.columnGap = Grid::Px(1);
   }
 
   for (auto const& e : _cells)

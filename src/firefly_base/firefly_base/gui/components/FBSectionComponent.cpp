@@ -2,7 +2,7 @@
 
 using namespace juce;
 
-// todo get rid of it
+// todo get rid of it?
 FBSectionComponent::
 FBSectionComponent(Component* content):
 Component()
@@ -30,6 +30,7 @@ FBSectionComponent::FixedWidth(int height) const
   return dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height - 4) + 4;
 }
 
+// todo get rid of it?
 FBSubSectionComponent::
 FBSubSectionComponent(bool last, Component* content, bool topLevel) :
 Component(),
