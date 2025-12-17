@@ -373,7 +373,7 @@ FBLookAndFeel::drawLinearSlider(
   Slider::SliderStyle /*style*/, Slider& slider)
 {
   auto const& scheme = FindColorSchemeFor(slider);
-  auto trackWidth = 4.0f;
+  auto trackWidth = 6.0f;
 
   FB_ASSERT(slider.isHorizontal());
   Path backgroundTrackFull;
@@ -411,9 +411,9 @@ FBLookAndFeel::drawLinearSlider(
   }
 #endif
 
-  float thumbW = trackWidth;
-  float thumbH = (float)height * 0.5f;
-  float thumbY = (float)y + (float)height * 0.25f;
+  float thumbW = 4.0f;
+  float thumbH = (float)height * 0.6f;
+  float thumbY = (float)y + (float)height * 0.2f;
   g.setColour(scheme.paramOutline);
   g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
   g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
