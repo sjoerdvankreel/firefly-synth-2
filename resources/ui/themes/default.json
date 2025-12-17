@@ -1,15 +1,15 @@
 {
   "name": "Default",
   "defaultColorScheme": {
-    "dimDisabled": 0.33,
+    "dimDisabled": 0.25,
     "border": "FF000000",
-    "background": "FF000000",
+    "background": "FF282828",
     "foreground": "FFEEEEEE",
     "controlBounds": "FFFF0000",
     "controlEngine": "FFFF0000",
-    "controlTweaked": "FF555555",
+    "controlTweaked": "FF404040",
     "controlBorder": "FFFFCC00",
-    "controlBackground": "FF333333",
+    "controlBackground": "FF181818",
     "controlForeground": "FFEEEEEE",
   },
   "colorSchemes": {

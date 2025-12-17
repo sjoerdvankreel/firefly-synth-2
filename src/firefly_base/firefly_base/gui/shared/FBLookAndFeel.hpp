@@ -29,10 +29,11 @@ public juce::LookAndFeel_V4
     std::string const& text,
     juce::Rectangle<int> const& activeArea);
 
+public:  
+
   FBColorScheme const& FindColorSchemeFor(
     juce::Component const& c) const;
 
-public:  
   FBTheme const& Theme() const { return _theme; }
   void SetTheme(FBTheme const& theme) { _theme = theme; }
 

@@ -1,3 +1,5 @@
+#include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 
 using namespace juce;
@@ -227,9 +229,9 @@ FBGridComponent::paint(Graphics& g)
 {
   float x0, x1, y0, y1;
   x0 = x1 = y0 = y1 = -1.0f;
-  g.setColour(Colour(0xFF181818));
+  g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).background);
   for (int i = 0; i < _sections.size(); i++)
-  {
+  {      
     for (int j = 0; j < _grid.items.size(); j++)
     {
       if (_grid.items[j].row.start.getNumber() == _sections[i].pos.row + 1)
