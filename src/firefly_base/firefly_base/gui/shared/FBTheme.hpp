@@ -13,13 +13,14 @@ struct FBRuntimeTopo;
 struct FBColorScheme
 {
   float dimDisabled = {};
+  float dimPrimaryAsBackground = {};
   juce::Colour border = {};
   juce::Colour background = {};
   juce::Colour foreground = {};
   juce::Colour sliderTrack = {};
-  juce::Colour paramOutline = {};
+  juce::Colour paramPrimary = {};
   juce::Colour paramHighlight = {};
-  juce::Colour paramBackground = {};
+  juce::Colour sliderBackground = {};
   juce::Colour controlForeground = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme);
 };

@@ -2,13 +2,14 @@
   "name": "Default",
   "defaultColorScheme": {
     "dimDisabled": 0.25,
+    "dimPrimaryAsBackground": 0.5,
     "border": "FF000000",
     "background": "FF282828",
     "foreground": "FFEEEEEE",
     "sliderTrack": "FF505050",
-    "paramOutline": "FFF28C28",
+    "paramPrimary": "FFF28C28",
     "paramHighlight": "80FFFFFF",
-    "paramBackground": "FF181818",
+    "sliderBackground": "FF181818",
     "controlForeground": "FFEEEEEE"
   },
   "colorSchemes": {

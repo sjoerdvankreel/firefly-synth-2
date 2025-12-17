@@ -276,7 +276,7 @@ FBLookAndFeel::drawLabel(
   auto const& scheme = FindColorSchemeFor(label);
   auto foreground = scheme.foreground;
   if (auto b = label.findParentComponentOfClass<ComboBox>())
-    foreground = scheme.controlForeground.darker(b->isEnabled() ? 0.0f : scheme.dimDisabled);
+    foreground = scheme.controlForeground;
 
   g.setFont(getLabelFont(label));
   g.setColour(foreground);
@@ -310,10 +310,8 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   auto const& scheme = FindColorSchemeFor(box);
   Rectangle<int> boxBounds(2, 2, width - 4, height - 4);
 
-  g.setColour(scheme.paramBackground);
-  g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
-  g.setColour(scheme.paramOutline);
-  g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+  g.setColour(scheme.paramPrimary.darker(scheme.dimPrimaryAsBackground).darker(box.isEnabled()? 0.0f: scheme.dimDisabled));
+  g.fillRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize);
   auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
   if (paramCombo != nullptr && paramCombo->IsHighlightTweaked())
   {
@@ -334,10 +332,8 @@ FBLookAndFeel::drawTickBox(
   Rectangle<float> tickBounds(x, y, w, h);
   auto const& scheme = FindColorSchemeFor(component);
 
-  g.setColour(scheme.paramBackground);
+  g.setColour(scheme.paramPrimary.darker(scheme.dimPrimaryAsBackground).darker(component.isEnabled()? 0.0f: scheme.dimDisabled));
   g.fillRoundedRectangle(tickBounds, 2.0f);
-  g.setColour(scheme.paramOutline);
-  g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
   auto* paramToggle = dynamic_cast<FBParamToggleButton*>(&component);
   if (paramToggle != nullptr && paramToggle->IsHighlightTweaked())
   {
@@ -348,7 +344,7 @@ FBLookAndFeel::drawTickBox(
   if (ticked)
   {
     auto pathBounds = tickBounds.reduced(6.0f, 6.0f);
-    g.setColour(scheme.controlForeground.darker(component.isEnabled()? 0.0f: scheme.dimDisabled));
+    g.setColour(scheme.controlForeground);
     Path p;
     p.startNewSubPath(pathBounds.getTopLeft());
     p.lineTo(pathBounds.getBottomRight());
@@ -376,7 +372,7 @@ FBLookAndFeel::drawLinearSlider(
   Point<float> endPointFull((float)(width + x), startPointFull.y);
   backgroundTrackFull.startNewSubPath(startPointFull);
   backgroundTrackFull.lineTo(endPointFull);
-  g.setColour(scheme.paramBackground);
+  g.setColour(scheme.sliderBackground);
   g.strokePath(backgroundTrackFull, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
   Path valueTrack;
@@ -432,7 +428,7 @@ FBLookAndFeel::drawLinearSlider(
     }
   }
 
-  g.setColour(scheme.paramOutline.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
+  g.setColour(scheme.paramPrimary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
   g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
   g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
   if (paramSlider != nullptr && paramSlider->IsHighlightTweaked())
@@ -538,7 +534,7 @@ FBLookAndFeel::drawRotarySlider(
   backgroundArc.addCentredArc(
     bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
     0.0f, rotaryStartAngle, rotaryEndAngle, true);
-  g.setColour(scheme.paramBackground);
+  g.setColour(scheme.sliderBackground);
   g.strokePath(backgroundArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
 
   Path valueArc;
@@ -594,7 +590,7 @@ FBLookAndFeel::drawRotarySlider(
   auto thumbWidth = lineW * 2.0f;
   Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(scheme.paramOutline.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
+  g.setColour(scheme.paramPrimary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 
   if (paramSlider != nullptr && paramSlider->IsHighlightTweaked())

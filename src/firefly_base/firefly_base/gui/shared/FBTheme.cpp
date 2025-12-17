@@ -193,6 +193,15 @@ ParseDefaultColorScheme(
     return false;
   }
 
+  if (!RequireDoubleProperty(obj, "dimPrimaryAsBackground"))
+    return false;
+  result.dimPrimaryAsBackground = (float)(double)obj->getProperty("dimPrimaryAsBackground");
+  if (result.dimPrimaryAsBackground < 0.0 || result.dimPrimaryAsBackground > 1.0)
+  {
+    FB_LOG_ERROR("Dim primary as background should be between 0 and 1.");
+    return false;
+  }
+
   if (!RequireStringProperty(obj, "border"))
     return false;
   result.border = Colour::fromString(obj->getProperty("border").toString());
@@ -209,17 +218,17 @@ ParseDefaultColorScheme(
     return false;
   result.sliderTrack = Colour::fromString(obj->getProperty("sliderTrack").toString());
 
-  if (!RequireStringProperty(obj, "paramOutline"))
+  if (!RequireStringProperty(obj, "paramPrimary"))
     return false;
-  result.paramOutline = Colour::fromString(obj->getProperty("paramOutline").toString());
+  result.paramPrimary = Colour::fromString(obj->getProperty("paramPrimary").toString());
 
   if (!RequireStringProperty(obj, "paramHighlight"))
     return false;
   result.paramHighlight = Colour::fromString(obj->getProperty("paramHighlight").toString());
 
-  if (!RequireStringProperty(obj, "paramBackground"))
+  if (!RequireStringProperty(obj, "sliderBackground"))
     return false;
-  result.paramBackground = Colour::fromString(obj->getProperty("paramBackground").toString());
+  result.sliderBackground = Colour::fromString(obj->getProperty("sliderBackground").toString());
 
   if (!RequireStringProperty(obj, "controlForeground"))
     return false;
@@ -246,6 +255,15 @@ ParseColorScheme(
     return false;
   }
 
+  if (!OptionalDoubleProperty(obj, "dimPrimaryAsBackground", present))
+    return false;
+  result.dimPrimaryAsBackground = present ? (float)(double)obj->getProperty("dimPrimaryAsBackground") : defaultScheme.dimPrimaryAsBackground;
+  if (result.dimPrimaryAsBackground < 0.0 || result.dimPrimaryAsBackground > 1.0)
+  {
+    FB_LOG_ERROR("Dim primary as background should be between 0 and 1.");
+    return false;
+  }
+
   if (!OptionalStringProperty(obj, "border", present))
     return false;
   result.border = present ? Colour::fromString(obj->getProperty("border").toString()) : defaultScheme.border;
@@ -262,17 +280,17 @@ ParseColorScheme(
     return false;
   result.sliderTrack = present ? Colour::fromString(obj->getProperty("sliderTrack").toString()) : defaultScheme.sliderTrack;
 
-  if (!OptionalStringProperty(obj, "paramOutline", present))
+  if (!OptionalStringProperty(obj, "paramPrimary", present))
     return false;
-  result.paramOutline = present ? Colour::fromString(obj->getProperty("paramOutline").toString()) : defaultScheme.paramOutline;
+  result.paramPrimary = present ? Colour::fromString(obj->getProperty("paramPrimary").toString()) : defaultScheme.paramPrimary;
 
   if (!OptionalStringProperty(obj, "paramHighlight", present))
     return false;
   result.paramHighlight = present ? Colour::fromString(obj->getProperty("paramHighlight").toString()) : defaultScheme.paramHighlight;
 
-  if (!OptionalStringProperty(obj, "paramBackground", present))
+  if (!OptionalStringProperty(obj, "sliderBackground", present))
     return false;
-  result.paramBackground = present ? Colour::fromString(obj->getProperty("paramBackground").toString()) : defaultScheme.paramBackground;
+  result.sliderBackground = present ? Colour::fromString(obj->getProperty("sliderBackground").toString()) : defaultScheme.sliderBackground;
   
   if (!OptionalStringProperty(obj, "controlForeground", present))
     return false;
