@@ -13,6 +13,7 @@ struct FBParamColorsJson
   int paramSlot = -1; // -1 = all
   std::string paramId = {};
   std::string colorScheme = {};
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBParamColorsJson);
 };  
 
 struct FBModuleColorsJson
@@ -22,6 +23,7 @@ struct FBModuleColorsJson
   std::string colorScheme = {};
   std::vector<FBParamColorsJson> guiParamColorSchemes = {};
   std::vector<FBParamColorsJson> audioParamColorSchemes = {};
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBModuleColorsJson);
 };
 
 struct FBThemeJson
@@ -30,6 +32,7 @@ struct FBThemeJson
   FBColorScheme defaultColorScheme = {};
   std::vector<FBModuleColorsJson> moduleColors = {};
   std::map<std::string, FBColorScheme> colorSchemes = {};
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBThemeJson);
 };
 
 static bool
@@ -214,9 +217,13 @@ ParseDefaultColorScheme(
     return false;
   result.controlTweaked = Colour::fromString(obj->getProperty("controlTweaked").toString());
    
-  if (!RequireStringProperty(obj, "controlBorder"))
+  if (!RequireStringProperty(obj, "controlTrack"))
     return false;
-  result.controlBorder = Colour::fromString(obj->getProperty("controlBorder").toString());
+  result.controlTrack = Colour::fromString(obj->getProperty("controlTrack").toString());
+
+  if (!RequireStringProperty(obj, "controlOutline"))
+    return false;
+  result.controlOutline = Colour::fromString(obj->getProperty("controlOutline").toString());
 
   if (!RequireStringProperty(obj, "controlBackground"))
     return false;
@@ -271,9 +278,13 @@ ParseColorScheme(
     return false;
   result.controlTweaked = present ? Colour::fromString(obj->getProperty("controlTweaked").toString()) : defaultScheme.controlTweaked;
 
-  if (!OptionalStringProperty(obj, "controlBorder", present))
+  if (!OptionalStringProperty(obj, "controlTrack", present))
     return false;
-  result.controlBorder = present ? Colour::fromString(obj->getProperty("controlBorder").toString()) : defaultScheme.controlBorder;
+  result.controlTrack = present ? Colour::fromString(obj->getProperty("controlTrack").toString()) : defaultScheme.controlTrack;
+
+  if (!OptionalStringProperty(obj, "controlOutline", present))
+    return false;
+  result.controlOutline = present ? Colour::fromString(obj->getProperty("controlOutline").toString()) : defaultScheme.controlOutline;
 
   if (!OptionalStringProperty(obj, "controlBackground", present))
     return false;
@@ -334,7 +345,7 @@ ParseParamColorSchemesJson(
   juce::var const& json,
   std::vector<FBParamColorsJson>& result)
 {
-  result = {};
+  result.clear();
   for (int i = 0; i < json.size(); i++)
   {
     if (!json[i].isObject())
@@ -389,7 +400,7 @@ ParseModuleColorsJson(
   var const& json,
   std::vector<FBModuleColorsJson>& result)
 {
-  result = {};
+  result.clear();
   for (int i = 0; i < json.size(); i++)
   {
     if(!json[i].isObject())
@@ -572,7 +583,7 @@ MakeTheme(
   theme = {};
   theme.name = themeJson.name;
   theme.colorSchemes = themeJson.colorSchemes;
-  theme.defaultColorScheme = themeJson.defaultColorScheme;
+  theme.defaultColorScheme = FBColorScheme(themeJson.defaultColorScheme);
   for (int i = 0; i < themeJson.moduleColors.size(); i++)
   {
     int foundIndex = -1;
@@ -600,7 +611,7 @@ MakeTheme(
         if (!MakeModuleColors(topo, foundIndex, j, themeJson.moduleColors[i], moduleColors))
           return false;
         int rtIndex = topo->moduleTopoToRuntime.at({ foundIndex, j });
-        theme.moduleColors[rtIndex] = moduleColors;
+        theme.moduleColors[rtIndex] = FBModuleColors(moduleColors);
       }
   }
   return true;

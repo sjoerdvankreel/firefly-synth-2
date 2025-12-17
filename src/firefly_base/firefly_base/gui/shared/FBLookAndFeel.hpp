@@ -13,11 +13,11 @@ public juce::LookAndFeel_V4
   FBTheme _theme = {};
 
   void DrawLinearSliderExchangeThumb(
-    juce::Graphics& g, FBParamSlider& slider, 
+    juce::Graphics& g, FBParamSlider& slider, FBColorScheme const& scheme,
     int y, int height, float exchangeValue);
 
   void DrawRotarySliderExchangeThumb(
-    juce::Graphics& g, FBParamSlider& slider,
+    juce::Graphics& g, FBParamSlider& slider, FBColorScheme const& scheme,
     int x, int y, int width, int height,
     float rotaryStartAngle, float rotaryEndAngle, 
     float exchangeValue);
@@ -35,7 +35,7 @@ public:
     juce::Component const& c) const;
 
   FBTheme const& Theme() const { return _theme; }
-  void SetTheme(FBTheme const& theme) { _theme = theme; }
+  void SetTheme(FBTheme const& theme) { _theme = FBTheme(theme); }
 
   juce::BorderSize<int> getLabelBorderSize(
     juce::Label&) override;

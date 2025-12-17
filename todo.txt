@@ -3,6 +3,7 @@ TODOLIST for beta-2
 [x] bugfix: string random gen not shared between X and excite
 [x] less logging
 [ ] not dim labels
+[ ] bipolar
 [ ] "disabled by" tooltip
 [ ] modulecomponent everywhere
 [ ] dimfactor

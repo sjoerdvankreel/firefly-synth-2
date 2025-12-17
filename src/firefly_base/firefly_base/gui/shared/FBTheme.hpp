@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_base/base/shared/FBUtility.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <map>
@@ -18,9 +19,11 @@ struct FBColorScheme
   juce::Colour controlBounds = {};
   juce::Colour controlEngine = {};
   juce::Colour controlTweaked = {};
-  juce::Colour controlBorder = {};
+  juce::Colour controlTrack = {};
+  juce::Colour controlOutline = {};
   juce::Colour controlBackground = {};
   juce::Colour controlForeground = {};
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme);
 };
 
 struct FBModuleColors
@@ -28,6 +31,7 @@ struct FBModuleColors
   std::string colorScheme = {};
   std::map<int, std::string> guiParamColorSchemes = {}; // runtime param index
   std::map<int, std::string> audioParamColorSchemes = {}; // runtime param index
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBModuleColors);
 };
 
 struct FBTheme
@@ -36,6 +40,7 @@ struct FBTheme
   FBColorScheme defaultColorScheme = {};
   std::map<int, FBModuleColors> moduleColors = {}; // runtime module index
   std::map<std::string, FBColorScheme> colorSchemes = {};
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBTheme);
 };
 
 std::vector<FBTheme>

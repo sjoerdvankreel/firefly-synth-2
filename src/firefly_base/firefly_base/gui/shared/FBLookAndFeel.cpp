@@ -49,14 +49,14 @@ ConvertValueFromSkewed(FBStaticParamBase const& param, double normalized)
 }
 
 static Colour
-GetSliderThumbColor(Slider const& s)
+GetSliderThumbColor(Slider const& s, FBColorScheme const& scheme)
 {
   bool isHighlightTweaked = false;
   FBParamSlider const* ps = dynamic_cast<FBParamSlider const*>(&s);
   if (ps != nullptr)
     isHighlightTweaked = ps->IsHighlightTweaked();
-  auto result = isHighlightTweaked? Colours::white : s.findColour(Slider::thumbColourId);
-  return s.isEnabled() ? result : result.darker(0.6f);
+  auto result = isHighlightTweaked ? scheme.controlTweaked : scheme.controlOutline;
+  return result.darker(s.isEnabled() ? 0.0f : scheme.dimDisabled);
 }
 
 static bool
@@ -145,7 +145,7 @@ FBLookAndFeel::FindColorSchemeFor(
 
 void 
 FBLookAndFeel::DrawLinearSliderExchangeThumb(
-  Graphics& g, FBParamSlider& slider, 
+  Graphics& g, FBParamSlider& slider, FBColorScheme const& scheme,
   int y, int height, float exchangeValue) 
 {
   auto layout = getSliderLayout(slider);
@@ -157,13 +157,13 @@ FBLookAndFeel::DrawLinearSliderExchangeThumb(
   float ky = static_cast<float>(y) + height * 0.5f;
   Point<float> maxPoint = { kx, ky };
   float thumbWidth = static_cast<float>(getSliderThumbRadius(slider));
-  g.setColour(GetSliderThumbColor(slider).withAlpha(0.5f));
+  g.setColour(GetSliderThumbColor(slider, scheme).withAlpha(0.5f)); // todo
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(maxPoint));
 }
 
 void 
 FBLookAndFeel::DrawRotarySliderExchangeThumb(
-  Graphics& g, FBParamSlider& slider,
+  Graphics& g, FBParamSlider& slider, FBColorScheme const& scheme,
   int x, int y, int width, int height,
   float rotaryStartAngle, float rotaryEndAngle, 
   float exchangeValue)
@@ -178,7 +178,7 @@ FBLookAndFeel::DrawRotarySliderExchangeThumb(
   Point<float> thumbPoint(
     bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(GetSliderThumbColor(slider).withAlpha(0.5f));
+  g.setColour(GetSliderThumbColor(slider, scheme).withAlpha(0.5f)); // todo
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 }
 
@@ -333,7 +333,7 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   g.setColour(background);
   g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
 
-  g.setColour(scheme.controlBorder);
+  g.setColour(scheme.controlOutline);
   g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
 }
 
@@ -356,7 +356,7 @@ FBLookAndFeel::drawTickBox(
   g.setColour(background);
   g.fillRoundedRectangle(tickBounds, 2.0f);
 
-  g.setColour(scheme.controlBorder);
+  g.setColour(scheme.controlOutline);
   g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
 
   if (ticked)
@@ -381,6 +381,7 @@ FBLookAndFeel::drawLinearSlider(
   float sliderPos, float /*minSliderPos*/, float /*maxSliderPos*/,
   Slider::SliderStyle style, Slider& slider)
 {
+  auto const& scheme = FindColorSchemeFor(slider);
   auto isThreeVal = (style == Slider::SliderStyle::ThreeValueVertical || style == Slider::SliderStyle::ThreeValueHorizontal);
   auto trackWidth = jmin(6.0f, slider.isHorizontal() ? (float)height * 0.25f : (float)width * 0.25f);
 
@@ -419,7 +420,7 @@ FBLookAndFeel::drawLinearSlider(
     g.strokePath(backgroundTrackMod, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
   }
 
-  g.setColour(GetSliderThumbColor(slider));
+  g.setColour(GetSliderThumbColor(slider, scheme));
   g.fillEllipse(Rectangle<float>(static_cast<float> (thumbWidth), static_cast<float> (thumbWidth)).withCentre(isThreeVal ? thumbPoint : maxPoint));
 
   if (paramSlider == nullptr)
@@ -427,9 +428,9 @@ FBLookAndFeel::drawLinearSlider(
   auto paramActive = paramSlider->ParamActiveExchangeState();
   if (!paramActive.active)
     return;
-  DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramActive.minValue);
+  DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, y, height, paramActive.minValue);
   if (paramSlider->Param()->static_.IsVoice())
-    DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramActive.maxValue);
+    DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, y, height, paramActive.maxValue);
 }
 
 void 
@@ -516,8 +517,7 @@ FBLookAndFeel::drawRotarySlider(
   width += 14;
   height += 14;
 
-  auto outline = slider.findColour(Slider::rotarySliderOutlineColourId);
-  auto fill = slider.findColour(Slider::rotarySliderFillColourId);
+  auto const& scheme = FindColorSchemeFor(slider);
   auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(10);
   auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
   auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
@@ -528,8 +528,8 @@ FBLookAndFeel::drawRotarySlider(
   backgroundArc.addCentredArc(
     bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
     0.0f, rotaryStartAngle, rotaryEndAngle, true);
-  g.setColour(outline);
-  g.strokePath(backgroundArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::rounded));
+  g.setColour(scheme.controlBackground);
+  g.strokePath(backgroundArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
 
   if (slider.isEnabled())
   {
@@ -537,8 +537,8 @@ FBLookAndFeel::drawRotarySlider(
     valueArc.addCentredArc(
       bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
       0.0f, rotaryStartAngle, toAngle, true);
-    g.setColour(fill);
-    g.strokePath(valueArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::rounded));
+    g.setColour(scheme.controlForeground);
+    g.strokePath(valueArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
   }
 
   double minNorm;
@@ -552,13 +552,13 @@ FBLookAndFeel::drawRotarySlider(
       bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
       0.0f, (float)minAngle, (float)maxAngle, true);
     g.setColour(Colours::white.withAlpha(0.5f));
-    g.strokePath(modArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::rounded));
+    g.strokePath(modArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
   }
 
   auto thumbWidth = lineW * 2.0f;
   Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(GetSliderThumbColor(slider));
+  g.setColour(GetSliderThumbColor(slider, scheme));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 
   FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
@@ -567,9 +567,9 @@ FBLookAndFeel::drawRotarySlider(
   auto paramActive = paramSlider->ParamActiveExchangeState();
   if (!paramActive.active)
     return;
-  DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.minValue);
+  DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.minValue);
   if (paramSlider->Param()->static_.IsVoice())
-    DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
+    DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
 }
 
 juce::Rectangle<int> 
