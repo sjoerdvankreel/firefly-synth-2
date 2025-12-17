@@ -245,7 +245,8 @@ FBGridComponent::paint(Graphics& g)
     }
     g.fillRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 3.0f);\
     // todo
-    g.setColour(Colour(0xFF505050));
+    //g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).paramPrimary.darker(0.5f));
+    g.setColour(Colours::white.withAlpha(0.5f));
     g.drawRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 3.0f, 1.0f);
   }
 }
