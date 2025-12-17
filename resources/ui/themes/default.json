@@ -5,6 +5,7 @@
     "border": "FF000000",
     "background": "FF282828",
     "foreground": "FFEEEEEE",
+
     "controlBounds": "FFFF0000",
     "controlEngine": "FFFF0000",
     "controlTweaked": "FF404040",

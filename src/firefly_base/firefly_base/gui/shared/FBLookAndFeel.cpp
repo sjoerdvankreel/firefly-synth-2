@@ -358,6 +358,11 @@ FBLookAndFeel::drawTickBox(
 
   g.setColour(scheme.controlOutline);
   g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
+  if (paramToggle != nullptr && paramToggle->IsHighlightTweaked())
+  {
+    g.setColour(Colours::white.withAlpha(0.5f));
+    g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
+  }
 
   if (ticked)
   {
