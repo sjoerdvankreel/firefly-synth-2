@@ -290,8 +290,12 @@ FBLookAndFeel::drawLabel(
   }
 
   auto const& scheme = FindColorSchemeFor(label);
+  auto foreground = scheme.foreground;
+  if (auto b = label.findParentComponentOfClass<ComboBox>())
+    foreground = scheme.controlForeground.darker(b->isEnabled() ? 0.0f : scheme.dimDisabled);
+
   g.setFont(getLabelFont(label));
-  g.setColour(scheme.foreground);
+  g.setColour(foreground);
   auto textArea = getLabelBorderSize(label).subtractedFrom(label.getLocalBounds());
   g.drawText(label.getText(), textArea, label.getJustificationType(), false);
 }
