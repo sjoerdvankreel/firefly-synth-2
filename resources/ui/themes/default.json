@@ -5,11 +5,11 @@
     "border": "FF000000",
     "background": "FF282828",
     "foreground": "FFEEEEEE",
-    "sliderTrack": "FF606060",
+    "sliderTrack": "FF505050",
     "paramOutline": "FFFFCC00",
-    "paramHighlight: "80FFFFFF",
+    "paramHighlight": "80FFFFFF",
     "paramBackground": "FF181818",
-    "controlForeground": "FFEEEEEE",
+    "controlForeground": "FFEEEEEE"
   },
   "colorSchemes": {
     "SA": {

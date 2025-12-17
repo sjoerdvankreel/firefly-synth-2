@@ -167,7 +167,7 @@ FBLookAndFeel::DrawRotarySliderExchangeThumb(
   Point<float> thumbPoint(
     bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(scheme.paramOutline.withAlpha(0.5f)); // todo
+  g.setColour(scheme.paramHighlight);
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 }
 
@@ -522,15 +522,12 @@ FBLookAndFeel::drawRotarySlider(
   g.setColour(scheme.paramBackground);
   g.strokePath(backgroundArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
 
-  if (slider.isEnabled())
-  {
-    Path valueArc;
-    valueArc.addCentredArc(
-      bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
-      0.0f, rotaryStartAngle, toAngle, true);
-    g.setColour(scheme.sliderTrack);
-    g.strokePath(valueArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
-  }
+  Path valueArc;
+  valueArc.addCentredArc(
+    bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
+    0.0f, rotaryStartAngle, toAngle, true);
+  g.setColour(scheme.sliderTrack);
+  g.strokePath(valueArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
 
   double minNorm;
   double maxNorm;
@@ -549,12 +546,19 @@ FBLookAndFeel::drawRotarySlider(
   auto thumbWidth = lineW * 2.0f;
   Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(scheme.paramOutline);
+  g.setColour(scheme.paramOutline.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 
   FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
   if (paramSlider == nullptr)
     return;
+   
+  if (paramSlider->IsHighlightTweaked())
+  { 
+    g.setColour(scheme.paramHighlight);
+    g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
+  }
+
   auto paramActive = paramSlider->ParamActiveExchangeState();
   if (!paramActive.active)
     return;

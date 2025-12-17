@@ -2,6 +2,7 @@ TODOLIST for beta-2
 [x] bugfix: string unison voices not share random generator
 [x] bugfix: string random gen not shared between X and excite
 [x] less logging
+[ ] hunt down all juce::colour and 0xFFBLA
 [ ] not dim labels
 [ ] bipolar
 [ ] "disabled by" tooltip
