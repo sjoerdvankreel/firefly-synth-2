@@ -522,10 +522,10 @@ FBLookAndFeel::drawRotarySlider(
   float rotaryStartAngle, float rotaryEndAngle, Slider& slider)
 {
   // juce default reduces by 10
-  x -= 7;
-  y -= 7;
-  width += 14;
-  height += 14;
+  x -= 6;
+  y -= 6;
+  width += 12;
+  height += 12;
 
   auto const& scheme = FindColorSchemeFor(slider);
   auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(10);
