@@ -125,8 +125,7 @@ MakeLFOTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   grid->Add(0, 1, MakeLFOSectionA(plugGUI, moduleType, moduleSlot));
   grid->Add(0, 2, MakeLFOSectionBC(plugGUI, moduleType, moduleSlot, 1));
   grid->Add(0, 3, MakeLFOSectionBC(plugGUI, moduleType, moduleSlot, 2));
-  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, moduleSlot, section);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, moduleSlot, grid);
 }
 
 Component*

@@ -2,6 +2,7 @@
 
 using namespace juce;
 
+// todo get rid of it
 FBSectionComponent::
 FBSectionComponent(Component* content):
 Component()

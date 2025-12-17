@@ -313,8 +313,7 @@ MakeEchoTab(FBPlugGUI* plugGUI, bool global)
 
   tapsOnToggle->onStateChange = updateTapEditEnabled;
   echoTargetBox->onChange = updateTapEditEnabled;
-  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, 0, section);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, 0, grid);
 }
 
 Component*

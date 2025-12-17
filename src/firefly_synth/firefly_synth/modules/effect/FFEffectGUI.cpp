@@ -195,8 +195,7 @@ MakeEffectTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   grid->Add(0, 0, MakeEffectSectionMain(plugGUI, moduleType, moduleSlot));
   for(int i = 0; i < FFEffectBlockCount; i++)
     grid->Add(0, 1 + i, MakeEffectSectionBlock(plugGUI, moduleType, moduleSlot, i));
-  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, moduleSlot, section);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, moduleSlot, grid);
 }
 
 Component*

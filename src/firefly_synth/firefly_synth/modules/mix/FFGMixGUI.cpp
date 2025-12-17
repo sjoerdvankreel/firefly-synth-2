@@ -150,6 +150,5 @@ FFMakeGMixGUITab(FBPlugGUI* plugGUI)
   grid->Add(0, 2, MakeGMixSectionGFXToOut(plugGUI));
   grid->Add(0, 3, MakeGMixGUISectionVoiceAndExtAudioToOut(plugGUI));
   grid->Add(0, 4, MakeGMixGUISectionAmpBal(plugGUI));
-  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::GMix, 0, section);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::GMix, 0, grid);
 }

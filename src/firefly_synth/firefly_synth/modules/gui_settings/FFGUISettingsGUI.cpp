@@ -49,6 +49,5 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 9, themeCombo);   
   grid->MarkSection({ { 0, 0 }, { 1, 10 } });
   auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
-  auto section = plugGUI->StoreComponent<FBSectionComponent>(subSection);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::GUISettings, 0, section);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::GUISettings, 0, subSection);
 }

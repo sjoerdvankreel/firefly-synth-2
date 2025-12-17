@@ -191,6 +191,5 @@ FFMakeVMixGUITab(FBPlugGUI* plugGUI)
   grid->Add(0, 2, MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(plugGUI));
   grid->Add(0, 3, MakeVMixSectionOsciAndVFXToOut(plugGUI));
   grid->Add(0, 4, MakeVMixGUISectionAmpBalAndOsciMixToOut(plugGUI));
-  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::VMix, 0, section);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::VMix, 0, grid);
 }
