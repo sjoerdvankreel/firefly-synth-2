@@ -205,13 +205,13 @@ ParseDefaultColorScheme(
     return false;
   result.foreground = Colour::fromString(obj->getProperty("foreground").toString());
 
-  if (!RequireStringProperty(obj, "sliderTrack"))
+  if (!RequireStringProperty(obj, "paramSecondary"))
     return false;
-  result.sliderTrack = Colour::fromString(obj->getProperty("sliderTrack").toString());
+  result.paramSecondary = Colour::fromString(obj->getProperty("paramSecondary").toString());
 
-  if (!RequireStringProperty(obj, "paramOutline"))
+  if (!RequireStringProperty(obj, "paramPrimary"))
     return false;
-  result.paramOutline = Colour::fromString(obj->getProperty("paramOutline").toString());
+  result.paramPrimary = Colour::fromString(obj->getProperty("paramPrimary").toString());
 
   if (!RequireStringProperty(obj, "paramHighlight"))
     return false;
@@ -220,10 +220,6 @@ ParseDefaultColorScheme(
   if (!RequireStringProperty(obj, "paramBackground"))
     return false;
   result.paramBackground = Colour::fromString(obj->getProperty("paramBackground").toString());
-
-  if (!RequireStringProperty(obj, "controlForeground"))
-    return false;
-  result.controlForeground = Colour::fromString(obj->getProperty("controlForeground").toString());
 
   return true;
 }
@@ -258,13 +254,13 @@ ParseColorScheme(
     return false;
   result.foreground = present ? Colour::fromString(obj->getProperty("foreground").toString()) : defaultScheme.foreground;
 
-  if (!OptionalStringProperty(obj, "sliderTrack", present))
+  if (!OptionalStringProperty(obj, "paramSecondary", present))
     return false;
-  result.sliderTrack = present ? Colour::fromString(obj->getProperty("sliderTrack").toString()) : defaultScheme.sliderTrack;
+  result.paramSecondary = present ? Colour::fromString(obj->getProperty("paramSecondary").toString()) : defaultScheme.paramSecondary;
 
-  if (!OptionalStringProperty(obj, "paramOutline", present))
+  if (!OptionalStringProperty(obj, "paramPrimary", present))
     return false;
-  result.paramOutline = present ? Colour::fromString(obj->getProperty("paramOutline").toString()) : defaultScheme.paramOutline;
+  result.paramPrimary = present ? Colour::fromString(obj->getProperty("paramPrimary").toString()) : defaultScheme.paramPrimary;
 
   if (!OptionalStringProperty(obj, "paramHighlight", present))
     return false;
@@ -273,10 +269,6 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "paramBackground", present))
     return false;
   result.paramBackground = present ? Colour::fromString(obj->getProperty("paramBackground").toString()) : defaultScheme.paramBackground;
-  
-  if (!OptionalStringProperty(obj, "controlForeground", present))
-    return false;
-  result.controlForeground = present ? Colour::fromString(obj->getProperty("controlForeground").toString()) : defaultScheme.controlForeground;
 
   return true;
 }
