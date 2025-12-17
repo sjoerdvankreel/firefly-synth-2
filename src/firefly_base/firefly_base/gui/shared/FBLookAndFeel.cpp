@@ -534,7 +534,10 @@ FBLookAndFeel::drawRotarySlider(
       if (sliderPos > 0.5f)
         trackStartAngle = centerAngle;
       else
+      {
+        trackStartAngle = toAngle;
         trackEndAngle = centerAngle;
+      }
     }
   }
   valueArc.addCentredArc(
