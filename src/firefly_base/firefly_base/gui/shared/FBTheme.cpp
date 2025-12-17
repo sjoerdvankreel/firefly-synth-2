@@ -205,29 +205,21 @@ ParseDefaultColorScheme(
     return false;
   result.foreground = Colour::fromString(obj->getProperty("foreground").toString());
 
-  if (!RequireStringProperty(obj, "controlBounds"))
+  if (!RequireStringProperty(obj, "sliderTrack"))
     return false;
-  result.controlBounds = Colour::fromString(obj->getProperty("controlBounds").toString());
+  result.sliderTrack = Colour::fromString(obj->getProperty("sliderTrack").toString());
 
-  if (!RequireStringProperty(obj, "controlEngine"))
+  if (!RequireStringProperty(obj, "paramOutline"))
     return false;
-  result.controlEngine = Colour::fromString(obj->getProperty("controlEngine").toString());
+  result.paramOutline = Colour::fromString(obj->getProperty("paramOutline").toString());
 
-  if (!RequireStringProperty(obj, "controlTweaked"))
+  if (!RequireStringProperty(obj, "paramHighlight"))
     return false;
-  result.controlTweaked = Colour::fromString(obj->getProperty("controlTweaked").toString());
-   
-  if (!RequireStringProperty(obj, "controlTrack"))
-    return false;
-  result.controlTrack = Colour::fromString(obj->getProperty("controlTrack").toString());
+  result.paramHighlight = Colour::fromString(obj->getProperty("paramHighlight").toString());
 
-  if (!RequireStringProperty(obj, "controlOutline"))
+  if (!RequireStringProperty(obj, "paramBackground"))
     return false;
-  result.controlOutline = Colour::fromString(obj->getProperty("controlOutline").toString());
-
-  if (!RequireStringProperty(obj, "controlBackground"))
-    return false;
-  result.controlBackground = Colour::fromString(obj->getProperty("controlBackground").toString());
+  result.paramBackground = Colour::fromString(obj->getProperty("paramBackground").toString());
 
   if (!RequireStringProperty(obj, "controlForeground"))
     return false;
@@ -266,30 +258,22 @@ ParseColorScheme(
     return false;
   result.foreground = present ? Colour::fromString(obj->getProperty("foreground").toString()) : defaultScheme.foreground;
 
-  if (!OptionalStringProperty(obj, "controlBounds", present))
+  if (!OptionalStringProperty(obj, "sliderTrack", present))
     return false;
-  result.controlBounds = present ? Colour::fromString(obj->getProperty("controlBounds").toString()) : defaultScheme.controlBounds;
+  result.sliderTrack = present ? Colour::fromString(obj->getProperty("sliderTrack").toString()) : defaultScheme.sliderTrack;
 
-  if (!OptionalStringProperty(obj, "controlEngine", present))
+  if (!OptionalStringProperty(obj, "paramOutline", present))
     return false;
-  result.controlEngine = present ? Colour::fromString(obj->getProperty("controlEngine").toString()) : defaultScheme.controlEngine;
+  result.paramOutline = present ? Colour::fromString(obj->getProperty("paramOutline").toString()) : defaultScheme.paramOutline;
 
-  if (!OptionalStringProperty(obj, "controlTweaked", present))
+  if (!OptionalStringProperty(obj, "paramHighlight", present))
     return false;
-  result.controlTweaked = present ? Colour::fromString(obj->getProperty("controlTweaked").toString()) : defaultScheme.controlTweaked;
+  result.paramHighlight = present ? Colour::fromString(obj->getProperty("paramHighlight").toString()) : defaultScheme.paramHighlight;
 
-  if (!OptionalStringProperty(obj, "controlTrack", present))
+  if (!OptionalStringProperty(obj, "paramBackground", present))
     return false;
-  result.controlTrack = present ? Colour::fromString(obj->getProperty("controlTrack").toString()) : defaultScheme.controlTrack;
-
-  if (!OptionalStringProperty(obj, "controlOutline", present))
-    return false;
-  result.controlOutline = present ? Colour::fromString(obj->getProperty("controlOutline").toString()) : defaultScheme.controlOutline;
-
-  if (!OptionalStringProperty(obj, "controlBackground", present))
-    return false;
-  result.controlBackground = present ? Colour::fromString(obj->getProperty("controlBackground").toString()) : defaultScheme.controlBackground;
-
+  result.paramBackground = present ? Colour::fromString(obj->getProperty("paramBackground").toString()) : defaultScheme.paramBackground;
+  
   if (!OptionalStringProperty(obj, "controlForeground", present))
     return false;
   result.controlForeground = present ? Colour::fromString(obj->getProperty("controlForeground").toString()) : defaultScheme.controlForeground;

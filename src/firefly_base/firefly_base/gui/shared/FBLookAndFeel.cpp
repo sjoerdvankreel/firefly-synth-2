@@ -48,17 +48,6 @@ ConvertValueFromSkewed(FBStaticParamBase const& param, double normalized)
   return range.convertTo0to1(normalized);
 }
 
-static Colour
-GetSliderThumbColor(Slider const& s, FBColorScheme const& scheme)
-{
-  bool isHighlightTweaked = false;
-  FBParamSlider const* ps = dynamic_cast<FBParamSlider const*>(&s);
-  if (ps != nullptr)
-    isHighlightTweaked = ps->IsHighlightTweaked();
-  auto result = isHighlightTweaked ? scheme.controlTweaked : scheme.controlOutline;
-  return result.darker(s.isEnabled() ? 0.0f : scheme.dimDisabled);
-}
-
 static bool
 GetSliderModulationBounds(Slider const& s, double& minNorm, double& maxNorm)
 {
@@ -157,7 +146,7 @@ FBLookAndFeel::DrawLinearSliderExchangeThumb(
   float ky = static_cast<float>(y) + height * 0.5f;
   Point<float> maxPoint = { kx, ky };
   float thumbWidth = static_cast<float>(getSliderThumbRadius(slider));
-  g.setColour(GetSliderThumbColor(slider, scheme).withAlpha(0.5f)); // todo
+  g.setColour(scheme.paramOutline.withAlpha(0.5f)); // todo
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(maxPoint));
 }
 
@@ -178,7 +167,7 @@ FBLookAndFeel::DrawRotarySliderExchangeThumb(
   Point<float> thumbPoint(
     bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(GetSliderThumbColor(slider, scheme).withAlpha(0.5f)); // todo
+  g.setColour(scheme.paramOutline.withAlpha(0.5f)); // todo
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 }
 
@@ -326,15 +315,16 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   auto const& scheme = FindColorSchemeFor(box);
   Rectangle<int> boxBounds(2, 2, width - 4, height - 4);
 
-  Colour background = scheme.controlBackground;
+  g.setColour(scheme.paramBackground);
+  g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
+  g.setColour(scheme.paramOutline);
+  g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
   auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
   if (paramCombo != nullptr && paramCombo->IsHighlightTweaked())
-    background = scheme.controlTweaked;
-  g.setColour(background);
-  g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
-
-  g.setColour(scheme.controlOutline);
-  g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+  {
+    g.setColour(scheme.paramHighlight);
+    g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+  }
 }
 
 void 
@@ -349,18 +339,14 @@ FBLookAndFeel::drawTickBox(
   Rectangle<float> tickBounds(x, y, w, h);
   auto const& scheme = FindColorSchemeFor(component);
 
-  Colour background = scheme.controlBackground;
+  g.setColour(scheme.paramBackground);
+  g.fillRoundedRectangle(tickBounds, 2.0f);
+  g.setColour(scheme.paramOutline);
+  g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
   auto* paramToggle = dynamic_cast<FBParamToggleButton*>(&component);
   if (paramToggle != nullptr && paramToggle->IsHighlightTweaked())
-    background = scheme.controlTweaked;
-  g.setColour(background);
-  g.fillRoundedRectangle(tickBounds, 2.0f);
-
-  g.setColour(scheme.controlOutline);
-  g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
-  if (paramToggle != nullptr && paramToggle->IsHighlightTweaked())
   {
-    g.setColour(Colours::white.withAlpha(0.5f));
+    g.setColour(scheme.paramHighlight);
     g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
   }
 
@@ -425,7 +411,7 @@ FBLookAndFeel::drawLinearSlider(
     g.strokePath(backgroundTrackMod, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
   }
 
-  g.setColour(GetSliderThumbColor(slider, scheme));
+  g.setColour(scheme.paramOutline);
   g.fillEllipse(Rectangle<float>(static_cast<float> (thumbWidth), static_cast<float> (thumbWidth)).withCentre(isThreeVal ? thumbPoint : maxPoint));
 
   if (paramSlider == nullptr)
@@ -533,7 +519,7 @@ FBLookAndFeel::drawRotarySlider(
   backgroundArc.addCentredArc(
     bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
     0.0f, rotaryStartAngle, rotaryEndAngle, true);
-  g.setColour(scheme.controlBackground);
+  g.setColour(scheme.paramBackground);
   g.strokePath(backgroundArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
 
   if (slider.isEnabled())
@@ -542,7 +528,7 @@ FBLookAndFeel::drawRotarySlider(
     valueArc.addCentredArc(
       bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
       0.0f, rotaryStartAngle, toAngle, true);
-    g.setColour(scheme.controlTrack);
+    g.setColour(scheme.sliderTrack);
     g.strokePath(valueArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
   }
 
@@ -556,14 +542,14 @@ FBLookAndFeel::drawRotarySlider(
     modArc.addCentredArc(
       bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
       0.0f, (float)minAngle, (float)maxAngle, true);
-    g.setColour(Colours::white.withAlpha(0.5f));
+    g.setColour(scheme.paramHighlight);
     g.strokePath(modArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
   }
 
   auto thumbWidth = lineW * 2.0f;
   Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(GetSliderThumbColor(slider, scheme));
+  g.setColour(scheme.paramOutline);
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 
   FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);

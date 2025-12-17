@@ -16,12 +16,10 @@ struct FBColorScheme
   juce::Colour border = {};
   juce::Colour background = {};
   juce::Colour foreground = {};
-  juce::Colour controlBounds = {};
-  juce::Colour controlEngine = {};
-  juce::Colour controlTweaked = {};
-  juce::Colour controlTrack = {};
-  juce::Colour controlOutline = {};
-  juce::Colour controlBackground = {};
+  juce::Colour sliderTrack = {};
+  juce::Colour paramOutline = {};
+  juce::Colour paramHighlight = {};
+  juce::Colour paramBackground = {};
   juce::Colour controlForeground = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme);
 };
