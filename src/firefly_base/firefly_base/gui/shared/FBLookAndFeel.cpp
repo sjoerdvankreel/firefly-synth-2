@@ -543,28 +543,29 @@ FBLookAndFeel::drawRotarySlider(
     g.strokePath(modArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
   }
 
+  FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
+  if (paramSlider != nullptr)
+  {
+    auto paramActive = paramSlider->ParamActiveExchangeState();
+    if (paramActive.active)
+    {
+      DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.minValue);
+      if (paramSlider->Param()->static_.IsVoice())
+        DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
+    }
+  }
+
   auto thumbWidth = lineW * 2.0f;
   Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
   g.setColour(scheme.paramOutline.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 
-  FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
-  if (paramSlider == nullptr)
-    return;
-   
-  if (paramSlider->IsHighlightTweaked())
+  if (paramSlider != nullptr && paramSlider->IsHighlightTweaked())
   { 
     g.setColour(scheme.paramHighlight);
     g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
   }
-
-  auto paramActive = paramSlider->ParamActiveExchangeState();
-  if (!paramActive.active)
-    return;
-  DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.minValue);
-  if (paramSlider->Param()->static_.IsVoice())
-    DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
 }
 
 juce::Rectangle<int> 
