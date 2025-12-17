@@ -537,7 +537,7 @@ FBLookAndFeel::drawRotarySlider(
     valueArc.addCentredArc(
       bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
       0.0f, rotaryStartAngle, toAngle, true);
-    g.setColour(scheme.controlForeground);
+    g.setColour(scheme.controlTrack);
     g.strokePath(valueArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
   }
 
