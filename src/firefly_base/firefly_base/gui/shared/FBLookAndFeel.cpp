@@ -318,9 +318,9 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   int	width, int height, bool	/*isButtonDown*/,
   int	/*buttonX*/, int /*buttonY*/, int	/*buttonW*/, int /*buttonH*/, ComboBox& box)
 {
-  auto cornerSize = 3.0f;
+  auto cornerSize = 2.0f;
   auto const& scheme = FindColorSchemeFor(box);
-  Rectangle<int> boxBounds(2, 1, width - 4, height - 2);
+  Rectangle<int> boxBounds(2, 2, width - 4, height - 4);
 
   Colour background = scheme.controlBackground;
   auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
