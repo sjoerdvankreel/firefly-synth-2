@@ -633,7 +633,7 @@ FBPlugGUI::SetupOverlayGUI()
   overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } });
   _overlayContent = StoreComponent<FBContentComponent>();
   overlayGrid->Add(1, 0, 1, 3, _overlayContent);
-  _overlayContainer = StoreComponent<FBSubSectionComponent>(overlayGrid, true);
+  _overlayContainer = StoreComponent<FBSubSectionComponent>(true, overlayGrid, true);
 }
 
 void

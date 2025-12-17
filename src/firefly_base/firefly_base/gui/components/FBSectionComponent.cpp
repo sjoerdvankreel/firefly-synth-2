@@ -30,8 +30,9 @@ FBSectionComponent::FixedWidth(int height) const
 }
 
 FBSubSectionComponent::
-FBSubSectionComponent(Component* content, bool topLevel) :
+FBSubSectionComponent(bool last, Component* content, bool topLevel) :
 Component(),
+_last(last),
 _topLevel(topLevel)
 {
   addAndMakeVisible(content);
@@ -40,30 +41,36 @@ _topLevel(topLevel)
 void 
 FBSubSectionComponent::paint(Graphics& g)
 {
+  // TODO drop toplevel ?
   if (_topLevel)
   {
     g.setColour(Colours::black);
     g.fillAll();
   }
-  g.setColour(Colour(0xFFA0A0A0));
-  g.drawRoundedRectangle(0.0f, 0.0f, (float)getWidth(), (float)getHeight(), 6.0f, 2.0f);
+  // todo border - no its in grid
+  //g.setColour(Colour(0xFF505050));
+  //g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(3.0f, 3.0f), 3.0f, 1.0f);
 }
 
 void
 FBSubSectionComponent::resized()
 {
-  getChildComponent(0)->setBounds(getLocalBounds().reduced(3, 3));
+  if (_last)
+    getChildComponent(0)->setBounds(getLocalBounds().reduced(1, 1));
+  else
+    getChildComponent(0)->setBounds(getLocalBounds().reduced(0, 1).withX(1).withWidth(getLocalBounds().getWidth() - 1));
   getChildComponent(0)->resized();
 }
 
 int
 FBSubSectionComponent::FixedHeight() const
 {
-  return dynamic_cast<IFBVerticalAutoSize*>(getChildComponent(0))->FixedHeight() + 6;
+  return dynamic_cast<IFBVerticalAutoSize*>(getChildComponent(0))->FixedHeight() + 2;
 }
 
 int
 FBSubSectionComponent::FixedWidth(int height) const
 {
-  return dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height - 6) + 6;
+  auto childWidth = dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height - 2);
+  return childWidth + _last ? 2 : 1;
 }

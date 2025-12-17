@@ -49,6 +49,7 @@ FBAutoSizeTabComponent::
 FBAutoSizeTabComponent():
 TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop)
 {
+  setOutline(0);
   setTabBarDepth(FBTabBarDepth);
   setLookAndFeel(FBGetLookAndFeel());
 }

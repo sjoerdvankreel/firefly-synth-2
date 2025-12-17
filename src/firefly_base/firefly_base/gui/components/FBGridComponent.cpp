@@ -243,6 +243,9 @@ FBGridComponent::paint(Graphics& g)
       if (_grid.items[j].column.end.getNumber() == _sections[i].pos.col + _sections[i].span.col + 1)
         x1 = static_cast<float>(_grid.items[j].associatedComponent->getRight());
     }
-    g.fillRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 6.0f);
+    g.fillRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 3.0f);\
+    // todo
+    g.setColour(Colour(0xFF505050));
+    g.drawRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 3.0f, 1.0f);
   }
 }
