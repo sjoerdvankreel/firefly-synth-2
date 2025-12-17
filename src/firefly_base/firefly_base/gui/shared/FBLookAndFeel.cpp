@@ -411,9 +411,7 @@ FBLookAndFeel::drawLinearSlider(
   g.setColour(scheme.sliderTrack);
   g.strokePath(valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
-#if 0 // todo
   double modMin, modMax;
-  FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
   if (GetSliderModulationBounds(slider, modMin, modMax))
   {
     Path backgroundTrackMod;
@@ -421,10 +419,9 @@ FBLookAndFeel::drawLinearSlider(
     Point<float> endPointMod((float)(width * modMax + x), startPointMod.y);
     backgroundTrackMod.startNewSubPath(startPointMod);
     backgroundTrackMod.lineTo(endPointMod);
-    g.setColour(Colours::white.withAlpha(0.5f));
+    g.setColour(scheme.paramHighlight);
     g.strokePath(backgroundTrackMod, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
   }
-#endif
 
   float thumbW = 4.0f;
   float thumbH = (float)height * 0.6f;
