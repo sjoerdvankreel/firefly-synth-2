@@ -133,19 +133,16 @@ FBLookAndFeel::FindColorSchemeFor(
 void 
 FBLookAndFeel::DrawLinearSliderExchangeThumb(
   Graphics& g, FBParamSlider& slider, FBColorScheme const& scheme,
-  int y, int height, float exchangeValue) 
+  float thumbW, float thumbH, float thumbY, float exchangeValue) 
 {
   auto layout = getSliderLayout(slider);
   int sliderRegionStart = layout.sliderBounds.getX();
   int sliderRegionSize = layout.sliderBounds.getWidth();
   float skewed = (float)ConvertValueFromSkewed(slider.Param()->static_, exchangeValue);
-  float minExchangePos = static_cast<float>(sliderRegionStart + skewed * sliderRegionSize);
-  float kx = minExchangePos;
-  float ky = static_cast<float>(y) + height * 0.5f;
-  Point<float> maxPoint = { kx, ky };
-  float thumbWidth = static_cast<float>(getSliderThumbRadius(slider));
-  g.setColour(scheme.paramOutline.withAlpha(0.5f)); // todo
-  g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(maxPoint)); 
+  float kx = static_cast<float>(sliderRegionStart + skewed * sliderRegionSize);
+  g.setColour(scheme.paramHighlight);
+  g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
+  g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
 }
 
 void 
@@ -424,6 +421,17 @@ FBLookAndFeel::drawLinearSlider(
   float thumbW = 4.0f;
   float thumbH = (float)height * 0.6f;
   float thumbY = (float)y + (float)height * 0.2f;
+  if (paramSlider != nullptr)
+  {
+    auto paramActive = paramSlider->ParamActiveExchangeState();
+    if (paramActive.active)
+    {
+      DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, thumbW, thumbH, thumbY, paramActive.minValue);
+      if (paramSlider->Param()->static_.IsVoice())
+        DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, thumbW, thumbH, thumbY, paramActive.maxValue);
+    }
+  }
+
   g.setColour(scheme.paramOutline.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
   g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
   g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
@@ -433,17 +441,6 @@ FBLookAndFeel::drawLinearSlider(
     g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
     g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
   }
-  
-#if 0 // todo
-  if (paramSlider == nullptr)
-    return;
-  auto paramActive = paramSlider->ParamActiveExchangeState();
-  if (!paramActive.active)
-    return;
-  DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, y, height, paramActive.minValue);
-  if (paramSlider->Param()->static_.IsVoice())
-    DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, y, height, paramActive.maxValue);
-#endif 
 }
 
 void 

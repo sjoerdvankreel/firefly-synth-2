@@ -14,7 +14,7 @@ public juce::LookAndFeel_V4
 
   void DrawLinearSliderExchangeThumb(
     juce::Graphics& g, FBParamSlider& slider, FBColorScheme const& scheme,
-    int y, int height, float exchangeValue);
+    float thumbW, float thumbH, float thumbY, float exchangeValue);
 
   void DrawRotarySliderExchangeThumb(
     juce::Graphics& g, FBParamSlider& slider, FBColorScheme const& scheme,

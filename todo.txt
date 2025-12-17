@@ -2,14 +2,14 @@ TODOLIST for beta-2
 [x] bugfix: string unison voices not share random generator
 [x] bugfix: string random gen not shared between X and excite
 [x] less logging
+[x] not dim labels
+[x] bipolar
+[x] dimfactor
+[x] error out on notfound stuff in the json
 [ ] env stage nr when not synced
 [ ] hunt down all juce::colour and 0xFFBLA and colourid
-[ ] not dim labels
-[ ] bipolar
 [ ] "disabled by" tooltip
 [ ] modulecomponent everywhere
-[ ] dimfactor
-[ ] error out on notfound stuff in the json
 [ ] dump module/paramlist guid option
 [ ] theme and prettify the gui
 [ ] theme the combo popouts (or all of them, filepicker etc)
