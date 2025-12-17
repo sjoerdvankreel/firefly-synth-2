@@ -15,6 +15,7 @@
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBModuleComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
 
@@ -288,7 +289,7 @@ MakeEchoSectionReverb(FBPlugGUI* plugGUI, bool global)
 }
 
 static Component*
-MakeGEchoTab(FBPlugGUI* plugGUI, bool global)
+MakeEchoTab(FBPlugGUI* plugGUI, bool global)
 {
   FBParamComboBox* echoTargetBox = {};
   FBParamToggleButton* tapsOnToggle = {};
@@ -312,7 +313,8 @@ MakeGEchoTab(FBPlugGUI* plugGUI, bool global)
 
   tapsOnToggle->onStateChange = updateTapEditEnabled;
   echoTargetBox->onChange = updateTapEditEnabled;
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, 0, section);
 }
 
 Component*
@@ -322,8 +324,8 @@ FFMakeEchoGUI(FBPlugGUI* plugGUI)
   auto topo = plugGUI->HostContext()->Topo();
   auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::EchoSelectedTab, 0 } });
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
-  tabs->AddModuleTab(false, true, { (int)FFModuleType::VEcho, 0 }, MakeGEchoTab(plugGUI, false));
-  tabs->AddModuleTab(false, true, { (int)FFModuleType::GEcho, 0 }, MakeGEchoTab(plugGUI, true));
+  tabs->AddModuleTab(false, true, { (int)FFModuleType::VEcho, 0 }, MakeEchoTab(plugGUI, false));
+  tabs->AddModuleTab(false, true, { (int)FFModuleType::GEcho, 0 }, MakeEchoTab(plugGUI, true));
   tabs->ActivateStoredSelectedTab();
   return tabs;
 }

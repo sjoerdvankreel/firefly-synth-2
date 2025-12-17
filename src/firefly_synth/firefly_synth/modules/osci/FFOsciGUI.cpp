@@ -15,6 +15,7 @@
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBModuleComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
 
@@ -389,7 +390,8 @@ MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 2, MakeOsciSectionFM(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeOsciSectionString(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeOsciSectionExtAudio(plugGUI, moduleSlot));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Osci, moduleSlot, section);
 }
 
 Component*

@@ -13,6 +13,7 @@
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/controls/FBParamDisplay.hpp>
+#include <firefly_base/gui/components/FBModuleComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
@@ -219,7 +220,8 @@ FFMakeGlobalUniGUI(
   grid->Add(0, 0, MakeGlobalUniVoices(plugGUI));
   grid->Add(0, 1, MakeGlobalUniInit(plugGUI));
   grid->Add(1, 0, 1, 2, MakeGlobalUniContent(plugGUI, graphRenderState, fixedGraphs));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::GlobalUni, 0, section);
 }
 
 bool

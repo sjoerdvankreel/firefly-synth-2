@@ -13,6 +13,7 @@
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBModuleComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
 
@@ -124,7 +125,8 @@ MakeLFOTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   grid->Add(0, 1, MakeLFOSectionA(plugGUI, moduleType, moduleSlot));
   grid->Add(0, 2, MakeLFOSectionBC(plugGUI, moduleType, moduleSlot, 1));
   grid->Add(0, 3, MakeLFOSectionBC(plugGUI, moduleType, moduleSlot, 2));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, moduleSlot, section);
 }
 
 Component*

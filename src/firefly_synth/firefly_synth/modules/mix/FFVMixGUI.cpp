@@ -10,6 +10,7 @@
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
+#include <firefly_base/gui/components/FBModuleComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -190,5 +191,6 @@ FFMakeVMixGUITab(FBPlugGUI* plugGUI)
   grid->Add(0, 2, MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(plugGUI));
   grid->Add(0, 3, MakeVMixSectionOsciAndVFXToOut(plugGUI));
   grid->Add(0, 4, MakeVMixGUISectionAmpBalAndOsciMixToOut(plugGUI));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::VMix, 0, section);
 }
