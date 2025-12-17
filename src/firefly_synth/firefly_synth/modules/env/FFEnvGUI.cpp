@@ -197,7 +197,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
       });
     };
 
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
 }
 
 static Component*
@@ -228,7 +228,7 @@ MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
     lower->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slope, Slider::SliderStyle::RotaryVerticalDrag));
     grid->MarkSection({ { 0, 1 + i }, { 2, 1 } });
   }
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
 }
 
 static Component*

@@ -30,7 +30,7 @@ MakeSettingsSectionMain(FBPlugGUI* plugGUI)
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smooth));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ { 0, 0 }, { 2, 2 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
 }
 
 static Component*
@@ -57,7 +57,7 @@ MakeSettingsSectionTuning(FBPlugGUI* plugGUI)
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneVoiceMatrix));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneVoiceMatrix));
   grid->MarkSection({ { 0, 0 }, { 2, 6 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
 }
 
 static Component*

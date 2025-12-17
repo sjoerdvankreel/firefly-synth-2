@@ -72,5 +72,5 @@ int
 FBSubSectionComponent::FixedWidth(int height) const
 {
   auto childWidth = dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height - 2);
-  return childWidth + _last ? 2 : 1;
+  return childWidth + (_last ? 2 : 1);
 }

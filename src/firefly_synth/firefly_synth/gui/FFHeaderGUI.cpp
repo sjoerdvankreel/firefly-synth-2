@@ -29,6 +29,6 @@ FFMakeHeaderGUI(FFPlugGUI* plugGUI)
 #endif
   grid->Add(1, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(formatName + " " + archName));
   grid->MarkSection({ { 0, 0 }, { 2, 2 } });
-  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBSectionComponent>(section);
+  auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(subSection);
 };

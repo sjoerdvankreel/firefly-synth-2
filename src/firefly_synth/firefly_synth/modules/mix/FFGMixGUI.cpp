@@ -83,7 +83,7 @@ MakeGMixSectionVoiceToGFXAndExtAudioToGFX(FBPlugGUI* plugGUI)
     grid->Add(1, 1 + e, plugGUI->StoreComponent<FBParamSlider>(plugGUI, extAudioToGFX, Slider::SliderStyle::RotaryVerticalDrag));
   }
   grid->MarkSection({ { 0, 0 }, { 2, 5 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
 }
 
 static Component*
@@ -101,7 +101,7 @@ MakeGMixSectionGFXToOut(FBPlugGUI* plugGUI)
     grid->Add(r, c * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gfxToOut, Slider::SliderStyle::LinearHorizontal));
   }
   grid->MarkSection({ { 0, 0 }, { 2, 4 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
 }
 
 static Component*
@@ -116,7 +116,7 @@ MakeGMixGUISectionVoiceAndExtAudioToOut(FBPlugGUI* plugGUI)
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, extAudioMix));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, extAudioMix, Slider::SliderStyle::LinearHorizontal));
   grid->MarkSection({ { 0, 0 }, { 2, 2 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
 }
 
 static Component*
@@ -137,7 +137,7 @@ MakeGMixGUISectionAmpBal(FBPlugGUI* plugGUI)
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lfo6ToBal));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lfo6ToBal, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ { 0, 0 }, { 2, 4 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
 }
 
 Component*

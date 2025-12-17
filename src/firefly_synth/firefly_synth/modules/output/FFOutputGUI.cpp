@@ -35,7 +35,7 @@ FFMakeOutputGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mtsEspOn));
   grid->Add(0, 7, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, mtsEspOn));
   grid->MarkSection({ { 0, 0 }, { 1, 8 } });
-  auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  auto subSection = plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
   auto section = plugGUI->StoreComponent<FBSectionComponent>(subSection);
   return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Output, 0, section);
 }

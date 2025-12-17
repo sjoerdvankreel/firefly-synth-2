@@ -38,7 +38,7 @@ MakeMasterSectionMain(FBPlugGUI* plugGUI)
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bendTarget));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bendTarget));
   grid->MarkSection({ { 0, 0 }, { 2, 4 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
 }
 
 static Component*
@@ -61,7 +61,7 @@ MakeMasterSectionAux(FBPlugGUI* plugGUI)
     grid->Add(row, col * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, aux, Slider::SliderStyle::RotaryVerticalDrag));
   }
   grid->MarkSection({ { 0, 0 }, { 2, 2 * FFMasterAuxCount / 2 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
 }
 
 static Component*

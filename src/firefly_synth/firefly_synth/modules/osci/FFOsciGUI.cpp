@@ -108,7 +108,7 @@ MakeOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(1, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, keyTrack));
   grid->Add(1, 9, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, keyTrack));
   grid->MarkSection({ { 0, 0 }, { 2, 10 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
 }
 
 static Component*
@@ -135,7 +135,7 @@ MakeOsciSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, random));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, random, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ { 0, 0 }, { 2, 6 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
 }
 
 static Component*
@@ -201,7 +201,7 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Off || vs[0] == (int)FFOsciType::Wave; });
-  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
   return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, section, 0, indices, dependencies);
 }
 
@@ -258,7 +258,7 @@ MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
-  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
   return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, section, 0, indices, dependencies);
 }
 
@@ -336,7 +336,7 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
-  auto section =  plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  auto section =  plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
   return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, section, 0, indices, dependencies);
 }
 
@@ -376,7 +376,7 @@ MakeOsciSectionExtAudio(FBPlugGUI* plugGUI, int moduleSlot)
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio; });
-  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
   return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, section, 0, indices, dependencies);
 }
 

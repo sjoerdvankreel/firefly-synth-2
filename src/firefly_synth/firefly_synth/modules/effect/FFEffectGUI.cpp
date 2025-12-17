@@ -97,7 +97,7 @@ MakeEffectSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlo
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lastKeySmoothTime));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lastKeySmoothTime, Slider::SliderStyle::LinearHorizontal));
   grid->MarkSection({ { 0, 0 }, { 2, 4 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
 }
 
 static Component*
@@ -181,7 +181,7 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lfoAmt, Slider::SliderStyle::RotaryVerticalDrag));
 
   grid->MarkSection({ { 0, 0 }, { 2, 8 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(moduleSlot == FFEffectBlockCount - 1, grid);
 }
 
 static Component*

@@ -148,7 +148,7 @@ MakeEchoSectionMain(
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
   grid->MarkSection({ { 0, 0 }, { 2, 7 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
 }
 
 static Component*
@@ -187,7 +187,7 @@ MakeEchoSectionTaps(
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
 
   grid->MarkSection({ { 0, 0 }, { 2, 2 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
 }
 
 static Component*
@@ -239,7 +239,7 @@ MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
   grid->Add(1, 11, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
   grid->Add(1, 12, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ { 0, 0 }, { 2, 13 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
 }
 
 static Component*
@@ -285,7 +285,7 @@ MakeEchoSectionReverb(FBPlugGUI* plugGUI, bool global)
   grid->Add(1, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
   grid->Add(1, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ { 0, 0 }, { 2, 12 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
 }
 
 static Component*

@@ -28,7 +28,7 @@ FFMakeOsciModGUISectionMain(FBPlugGUI* plugGUI)
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, expoFM));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, expoFM));
   grid->MarkSection({ { 0, 0 }, { 2, 2 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
 }
 
 static Component*
@@ -60,7 +60,7 @@ FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI)
     grid->Add(1, 1 + i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::LinearHorizontal));
     grid->MarkSection({ { 0, 1 + i * 3 }, { 2, 3 } });
   }
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
 }
 
 Component*
