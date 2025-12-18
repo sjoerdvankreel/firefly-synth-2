@@ -291,7 +291,6 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
   auto y = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringY, 0 } });
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, y));
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, y, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 8 } });
 
   auto lpOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringLPOn, 0 } });
   grid->Add(0, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpOn));
@@ -329,7 +328,7 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
   auto feedbackKTrk = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringFeedbackKTrk, 0 } });
   grid->Add(1, 18, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackKTrk));
   grid->Add(1, 19, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedbackKTrk, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 8 }, { 2, 12 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 20 } }, true);
 
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
