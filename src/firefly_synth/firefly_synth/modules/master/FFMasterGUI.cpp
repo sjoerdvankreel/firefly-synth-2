@@ -37,7 +37,7 @@ MakeMasterSectionMain(FBPlugGUI* plugGUI)
   auto bendTarget = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::PitchBendTarget, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bendTarget));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bendTarget));
-  grid->MarkSection({ { 0, 0 }, { 2, 4 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 4 } }, true);
   return grid;
 }
 

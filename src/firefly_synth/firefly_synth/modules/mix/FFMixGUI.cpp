@@ -32,7 +32,7 @@ FFMakeMixGUISectionFXToFX(FBPlugGUI* plugGUI, int moduleType, int fxToFXParam)
     grid->Add(row, colStart * 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
     grid->Add(row, colStart * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, sliderStyle));
   }
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } }, true);
   return grid;
 }
 

@@ -53,9 +53,12 @@ FBGridComponent::Add(int row, int col, Component* child)
 }
 
 void
-FBGridComponent::MarkSection(FBGridSection const& section)
+FBGridComponent::MarkSection(FBGridSection const& section, bool alternate)
 {
-  _sections.push_back(section);
+  FBGridSectionAndAlternate sectionAndAlternate = {};
+  sectionAndAlternate.section = section;
+  sectionAndAlternate.alternate = alternate;
+  _sections.push_back(sectionAndAlternate);
 }
 
 int
@@ -229,24 +232,25 @@ FBGridComponent::paint(Graphics& g)
 {
   float x0, x1, y0, y1;
   x0 = x1 = y0 = y1 = -1.0f;
-  g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).background);
   for (int i = 0; i < _sections.size(); i++)
   {      
     for (int j = 0; j < _grid.items.size(); j++)
     {
-      if (_grid.items[j].row.start.getNumber() == _sections[i].pos.row + 1)
+      if (_grid.items[j].row.start.getNumber() == _sections[i].section.pos.row + 1)
         y0 = static_cast<float>(_grid.items[j].associatedComponent->getY());
-      if (_grid.items[j].column.start.getNumber() == _sections[i].pos.col + 1)
+      if (_grid.items[j].column.start.getNumber() == _sections[i].section.pos.col + 1)
         x0 = static_cast<float>(_grid.items[j].associatedComponent->getX());
-      if (_grid.items[j].row.end.getNumber() == _sections[i].pos.row + _sections[i].span.row + 1)
+      if (_grid.items[j].row.end.getNumber() == _sections[i].section.pos.row + _sections[i].section.span.row + 1)
         y1 = static_cast<float>(_grid.items[j].associatedComponent->getBottom());
-      if (_grid.items[j].column.end.getNumber() == _sections[i].pos.col + _sections[i].span.col + 1)
+      if (_grid.items[j].column.end.getNumber() == _sections[i].section.pos.col + _sections[i].section.span.col + 1)
         x1 = static_cast<float>(_grid.items[j].associatedComponent->getRight());
     }
-    g.fillRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 3.0f);\
-    // todo
-    //g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).paramPrimary.darker(0.5f));
-    g.setColour(Colours::white.withAlpha(0.5f));
-    g.drawRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 3.0f, 1.0f);
+    g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).background);
+    g.fillRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 3.0f);
+    if (_sections[i].alternate)
+      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).paramPrimary.withAlpha(0.5f));
+    else
+      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).border);
+    g.drawRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 3.0f, 2.0f);
   }
-}
+} 
