@@ -114,7 +114,7 @@ FFMakeEnvTopo()
   type.List().items = {
     { "{6F0DA153-9544-4EFB-BC6D-88F761583F39}", "Off" },
     { "{BD01A08E-5639-4DB3-87CD-3276BCDB54E1}", "Linear" },
-    { "{30BF083A-81F1-477C-BC6B-5AA4DFB111A8}", "Exp" } };
+    { "{30BF083A-81F1-477C-BC6B-5AA4DFB111A8}", "Exp" } }; // todo exponential?
   type.defaultTextSelector = [](int /*mi*/, int ms, int /*ps*/) { return ms == FFAmpEnvSlot ? "Linear" : "Off"; }; 
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);

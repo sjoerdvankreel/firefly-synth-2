@@ -630,7 +630,7 @@ FFMakeOsciTopo()
   fmMode.type = FBParamType::List;
   fmMode.List().items = {
     { "{8DF1F983-F892-4B5A-B784-C4222563E5BC}", "Linear" },
-    { "{5DE278F5-21B2-4DD5-AB5A-BBF43BDFDD7F}", "Exp" } };
+    { "{5DE278F5-21B2-4DD5-AB5A-BBF43BDFDD7F}", "Exponential" } };
   auto selectFMMode = [](auto& module) { return &module.block.fmMode; };
   fmMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFMMode);
   fmMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFMMode);

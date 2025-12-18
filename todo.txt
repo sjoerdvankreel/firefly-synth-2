@@ -7,6 +7,7 @@ TODOLIST for beta-2
 [x] dimfactor
 [x] error out on notfound stuff in the json
 [ ] longer display names
+[ ] longer comboboxes
 [ ] check all the buttons
 [ ] the buttons must be smaller
 [ ] run a debug build

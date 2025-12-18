@@ -64,7 +64,7 @@ FFMakeOsciModTopo()
 
   auto& expoFM = result->params[(int)FFOsciModParam::ExpoFM];
   expoFM.mode = FBParamMode::Block;
-  expoFM.name = "Exp FM";
+  expoFM.name = "Exponential FM";
   expoFM.defaultText = "Off";
   expoFM.slotCount = 1;
   expoFM.id = "{23FC415C-06AD-4ED3-8B29-08724D536096}";
