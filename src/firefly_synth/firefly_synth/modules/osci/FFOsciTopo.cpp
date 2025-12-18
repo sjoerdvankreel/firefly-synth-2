@@ -220,8 +220,8 @@ FFMakeOsciTopo()
   auto& uniCount = result->params[(int)FFOsciParam::UniCount];
   uniCount.mode = FBParamMode::Block;
   uniCount.defaultText = "1";
-  uniCount.display = "Uni";
-  uniCount.name = "Uni Count";
+  uniCount.display = "Unison";
+  uniCount.name = "Unison Count";
   uniCount.slotCount = 1;
   uniCount.id = "{60313673-95FE-4B6D-99A6-B628ACDE6D56}";
   uniCount.description = "Osc Unison Voice Count";
@@ -237,7 +237,7 @@ FFMakeOsciTopo()
   auto& uniOffset = result->params[(int)FFOsciParam::UniOffset];
   uniOffset.mode = FBParamMode::VoiceStart;
   uniOffset.defaultText = "50";
-  uniOffset.display = "Phs";
+  uniOffset.display = "Phase";
   uniOffset.name = "Uni Phase";
   uniOffset.slotCount = 1;
   uniOffset.unit = "%";
@@ -269,7 +269,7 @@ FFMakeOsciTopo()
   auto& uniDetune = result->params[(int)FFOsciParam::UniDetune];
   uniDetune.mode = FBParamMode::Accurate;
   uniDetune.defaultText = "33";
-  uniDetune.display = "Dtn";
+  uniDetune.display = "Detune";
   uniDetune.name = "Uni Detune";
   uniDetune.slotCount = 1;
   uniDetune.unit = "%";
@@ -285,7 +285,7 @@ FFMakeOsciTopo()
   auto& uniSpread = result->params[(int)FFOsciParam::UniSpread];
   uniSpread.mode = FBParamMode::Accurate;
   uniSpread.defaultText = "50";
-  uniSpread.display = "Sprd";
+  uniSpread.display = "Spread";
   uniSpread.name = "Uni Spread";
   uniSpread.slotCount = 1;
   uniSpread.unit = "%";
@@ -301,7 +301,7 @@ FFMakeOsciTopo()
   auto& uniBlend = result->params[(int)FFOsciParam::UniBlend];
   uniBlend.mode = FBParamMode::Accurate;
   uniBlend.defaultText = "100";
-  uniBlend.display = "Blnd";
+  uniBlend.display = "Blend";
   uniBlend.name = "Uni Blend";
   uniBlend.slotCount = 1;
   uniBlend.unit = "%";
@@ -446,7 +446,7 @@ FFMakeOsciTopo()
   waveHSMode.mode = FBParamMode::Block;
   waveHSMode.defaultText = "Off";
   waveHSMode.name = "Hard Sync Mode";
-  waveHSMode.display = "Hard Sync";
+  waveHSMode.display = "HSync";
   waveHSMode.slotFormatDisplay = true;
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";
