@@ -6,6 +6,7 @@ TODOLIST for beta-2
 [x] bipolar
 [x] dimfactor
 [x] error out on notfound stuff in the json
+[ ] check all the buttons
 [ ] the buttons must be smaller
 [ ] run a debug build
 [ ] split the osci subsections
