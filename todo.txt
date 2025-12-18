@@ -6,6 +6,7 @@ TODOLIST for beta-2
 [x] bipolar
 [x] dimfactor
 [x] error out on notfound stuff in the json
+[ ] maybe drop filler
 [ ] env stage nr when not synced
 [ ] hunt down all juce::colour and 0xFFBLA and colourid
 [ ] "disabled by" tooltip

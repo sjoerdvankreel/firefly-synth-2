@@ -97,7 +97,7 @@ static Component*
 MakeVoiceModuleSectionPorta(FBPlugGUI* plugGUI)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  std::vector<int> columnSizes = { 0, 0, 0, 0, 0, 0 };
+  std::vector<int> columnSizes = { 0, 0, 0, 1, 0, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
   auto type = topo->audio.ParamAtTopo({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::PortaType, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
@@ -127,7 +127,7 @@ MakeVoiceModuleSectionPorta(FBPlugGUI* plugGUI)
 static Component*
 MakeVoiceModuleTab(FBPlugGUI* plugGUI)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   grid->Add(0, 0, MakeVoiceModuleSectionPitch(plugGUI));
   grid->Add(0, 1, MakeVoiceModuleSectionPorta(plugGUI));
   auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
