@@ -147,7 +147,7 @@ MakeEchoSectionMain(
   auto sync = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Sync, 0 } });
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
-  grid->MarkSection({ { 0, 0 }, { 2, 7 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 7 } }, true);
   return grid;
 }
 
@@ -186,7 +186,7 @@ MakeEchoSectionTaps(
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::LinearHorizontal));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
 
-  grid->MarkSection({ { 0, 0 }, { 2, 2 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, false);
   return grid;
 }
 
@@ -238,7 +238,7 @@ MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
   auto hpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackHPRes, 0 } });
   grid->Add(1, 11, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
   grid->Add(1, 12, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 13 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 13 } }, true);
   return grid;
 }
 
@@ -284,7 +284,7 @@ MakeEchoSectionReverb(FBPlugGUI* plugGUI, bool global)
   auto hpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbHPRes, 0 } });
   grid->Add(1, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
   grid->Add(1, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 12 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 12 } }, false);
   return grid;
 }
 
