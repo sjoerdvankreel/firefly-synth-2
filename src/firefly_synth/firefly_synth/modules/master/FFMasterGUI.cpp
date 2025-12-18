@@ -38,7 +38,7 @@ MakeMasterSectionMain(FBPlugGUI* plugGUI)
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bendTarget));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bendTarget));
   grid->MarkSection({ { 0, 0 }, { 2, 4 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
+  return grid;
 }
 
 static Component*
@@ -61,7 +61,7 @@ MakeMasterSectionAux(FBPlugGUI* plugGUI)
     grid->Add(row, col * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, aux, Slider::SliderStyle::RotaryVerticalDrag));
   }
   grid->MarkSection({ { 0, 0 }, { 2, 2 * FFMasterAuxCount / 2 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
+  return grid;
 }
 
 static Component*
@@ -70,7 +70,8 @@ MakeMasterTab(FBPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   grid->Add(0, 0, MakeMasterSectionMain(plugGUI));
   grid->Add(0, 1, MakeMasterSectionAux(plugGUI));
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Master, 0, grid);
+  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Master, 0, section);
 }
 
 Component*

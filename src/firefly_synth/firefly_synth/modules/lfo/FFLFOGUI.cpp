@@ -40,7 +40,7 @@ MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
   grid->MarkSection({ { 0, 0 }, { 2, 4 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
+  return grid;
 }
 
 static Component*
@@ -101,7 +101,7 @@ MakeLFOSectionA(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   grid->Add(0, 0, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, 0));
   grid->Add(0, 1, MakeLFOSectionSkewA(plugGUI, moduleType, moduleSlot));
-  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
+  return grid;
 }
 
 static Component*
@@ -109,7 +109,7 @@ MakeLFOSectionBC(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot, in
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0 });
   grid->Add(0, 0, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, block));
-  return plugGUI->StoreComponent<FBSubSectionComponent>(moduleSlot == FFLFOBlockCount - 1, grid);
+  return grid;
 }
 
 static Component*
@@ -125,7 +125,8 @@ MakeLFOTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   grid->Add(0, 1, MakeLFOSectionA(plugGUI, moduleType, moduleSlot));
   grid->Add(0, 2, MakeLFOSectionBC(plugGUI, moduleType, moduleSlot, 1));
   grid->Add(0, 3, MakeLFOSectionBC(plugGUI, moduleType, moduleSlot, 2));
-  return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, moduleSlot, grid);
+  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, moduleSlot, section);
 }
 
 Component*
