@@ -35,7 +35,6 @@ static Component*
 FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI)
 {
   std::vector<int> columnSizes = {};
-  columnSizes.push_back(0);
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     columnSizes.push_back(0);
@@ -44,24 +43,21 @@ FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI)
   }
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("AM"));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("FM"));
-  grid->MarkSection({ { 0, 0 }, { 2, 1 } });
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
-    grid->Add(0, 1 + i * 3, 2, 1, plugGUI->StoreComponent<FBAutoSizeMultiLineLabel>(FFOsciModFormatSlotVertical(i), -2));
+    grid->Add(0, i * 3, 2, 1, plugGUI->StoreComponent<FBAutoSizeMultiLineLabel>(FFOsciModFormatSlotVertical(i), -2));
     auto amMode = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::AMMode, i } });
-    grid->Add(0, 1 + i * 3 + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, amMode));
+    grid->Add(0, i * 3 + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, amMode));
     auto amMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::AMMix, i } });
-    grid->Add(0, 1 + i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amMix, Slider::SliderStyle::LinearHorizontal));
+    grid->Add(0, i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amMix, Slider::SliderStyle::LinearHorizontal));
     auto fmOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::FMOn, i } });
-    grid->Add(1, 1 + i * 3 + 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, fmOn));
+    grid->Add(1, i * 3 + 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, fmOn));
     auto fmIndex = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::FMIndex, i } });
-    grid->Add(1, 1 + i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::LinearHorizontal));
+    grid->Add(1, i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::LinearHorizontal));
   }
-  grid->MarkSection({ { 0, 0 }, { 2, 4 } }, false);
-  grid->MarkSection({ { 0, 4 }, { 2, 6 } }, true);
-  grid->MarkSection({ { 0, 10 }, { 2, 9 } }, false);
+  grid->MarkSection({ { 0, 0 }, { 2, 3 } }, false);
+  grid->MarkSection({ { 0, 3 }, { 2, 6 } }, true);
+  grid->MarkSection({ { 0, 9 }, { 2, 9 } }, false);
   return grid;
 }
 

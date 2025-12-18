@@ -14,7 +14,7 @@ _textSize(FBGUIGetStringSizeCached(text)) {}
 int 
 FBAutoSizeMultiLineLabel::FixedWidth(int /*height*/) const
 {
-  return _textSize.x + 2;
+  return _textSize.x + 4;
 }
 
 void
@@ -24,5 +24,5 @@ FBAutoSizeMultiLineLabel::paint(Graphics& g)
   g.setFont(getLookAndFeel().getLabelFont(dummy));
   g.setColour(getLookAndFeel().findColour(Label::ColourIds::textColourId));
   int y = static_cast<int>(std::ceil((getBounds().getHeight() - _textSize.y) * 0.5f) + _vOffset);
-  g.drawMultiLineText(_text, 1, y, _textSize.x, Justification::centred);
+  g.drawMultiLineText(_text, 3, y, _textSize.x, Justification::centredLeft);
 }
