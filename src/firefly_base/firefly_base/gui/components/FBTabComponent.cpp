@@ -58,7 +58,7 @@ int
 FBAutoSizeTabComponent::FixedWidth(int height) const
 {
   auto& content = dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0));
-  return content.FixedWidth(height - FBGUIFontSize + 2) + 2;
+  return content.FixedWidth(height - FBGUIFontSize + 2) - 6;
 }
 
 TabBarButton*
