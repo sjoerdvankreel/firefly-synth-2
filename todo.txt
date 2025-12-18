@@ -8,6 +8,7 @@ TODOLIST for beta-2
 [x] error out on notfound stuff in the json
 [ ] longer display names
 [ ] longer comboboxes
+[ ] "oversample" in v/gfx is not pretty. could do dropdown list, needs convert
 [ ] check all the buttons
 [ ] the buttons must be smaller
 [ ] run a debug build
