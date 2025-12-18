@@ -445,8 +445,8 @@ FFMakeOsciTopo()
   auto& waveHSMode = result->params[(int)FFOsciParam::WaveHSMode];
   waveHSMode.mode = FBParamMode::Block;
   waveHSMode.defaultText = "Off";
-  waveHSMode.name = "HardSync Mode";
-  waveHSMode.display = "H.Sync";
+  waveHSMode.name = "Hard Sync Mode";
+  waveHSMode.display = "Hard Sync";
   waveHSMode.slotFormatDisplay = true;
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";
