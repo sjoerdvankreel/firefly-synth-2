@@ -463,40 +463,6 @@ FBLookAndFeel::drawButtonBackground(
     g.setColour(scheme.paramHighlight);
     g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
   }
-
-#if 0
-  g.setColour(baseColour);
-
-  auto flatOnLeft = button.isConnectedOnLeft();
-  auto flatOnRight = button.isConnectedOnRight();
-  auto flatOnTop = button.isConnectedOnTop();
-  auto flatOnBottom = button.isConnectedOnBottom();
-
-  if (flatOnLeft || flatOnRight || flatOnTop || flatOnBottom)
-  {
-    Path path;
-    path.addRoundedRectangle(bounds.getX(), bounds.getY(),
-      bounds.getWidth(), bounds.getHeight(),
-      cornerSize, cornerSize,
-      !(flatOnLeft || flatOnTop),
-      !(flatOnRight || flatOnTop),
-      !(flatOnLeft || flatOnBottom),
-      !(flatOnRight || flatOnBottom));
-
-    g.fillPath(path);
-
-    g.setColour(button.findColour(ComboBox::outlineColourId));
-    g.strokePath(path, PathStrokeType(1.0f));
-  }
-  else
-  {
-    g.fillRoundedRectangle(bounds, cornerSize);
-
-    g.setColour(button.findColour(ComboBox::outlineColourId));
-    g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
-  }
-#endif
-
 }
 
 void 
