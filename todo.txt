@@ -6,13 +6,14 @@ TODOLIST for beta-2
 [x] bipolar
 [x] dimfactor
 [x] error out on notfound stuff in the json
+[x] "oversample" in v/gfx is not pretty. could do dropdown list, needs convert
+[x] the buttons must be smaller
+[x] split the osci subsections
 [ ] longer display names
 [ ] longer comboboxes
-[ ] "oversample" in v/gfx is not pretty. could do dropdown list, needs convert
+[ ] theme the overlays
 [ ] check all the buttons
-[ ] the buttons must be smaller
 [ ] run a debug build
-[ ] split the osci subsections
 [ ] maybe drop filler
 [ ] env stage nr when not synced
 [ ] hunt down all juce::colour and 0xFFBLA and colourid

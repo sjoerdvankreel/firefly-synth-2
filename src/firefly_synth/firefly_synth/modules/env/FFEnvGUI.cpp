@@ -181,7 +181,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
     return GetMSEGTooltip(plugGUI, moduleSlot, hitType, index); };
 
   showMSEG->onClick = [plugGUI, msegEditor_ = *msegEditor, title, moduleSlot]() {
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, msegEditor_, 800, 240, true, [plugGUI, title, moduleSlot]() {
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, (int)FFModuleType::Env, moduleSlot, msegEditor_, 800, 240, true, [plugGUI, title, moduleSlot]() {
       plugGUI->HostContext()->UndoState().Snapshot("Init " + title + " MSEG");
       plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } });
       plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StartLevel, 0 } });

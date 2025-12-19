@@ -12,14 +12,19 @@ public juce::Component,
 public IFBHorizontalAutoSize,
 public IFBVerticalAutoSize
 {
-  int const _moduleIndex;
-  int const _moduleSlot;
+  int _moduleSlot = -1;
+  int _moduleIndex = -1;
+  juce::Component* _content = nullptr;
+
 public:
-  int ModuleIndex() const { return _moduleIndex; }
   int ModuleSlot() const { return _moduleSlot; }
+  int ModuleIndex() const { return _moduleIndex; }
 
   void resized() override;
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
+
+  FBModuleComponent() = default;
   FBModuleComponent(int moduleIndex, int moduleSlot, juce::Component* content);
+  void SetModuleContent(int moduleIndex, int moduleSlot, juce::Component* content);
 };
