@@ -446,18 +446,24 @@ FBLookAndFeel::drawLinearSlider(
 void 
 FBLookAndFeel::drawButtonBackground(
   juce::Graphics& g, juce::Button& button, 
-  const juce::Colour& backgroundColour,
+  const juce::Colour& /*backgroundColour*/,
   bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
   auto cornerSize = 6.0f;
   auto bounds = button.getLocalBounds().toFloat().reduced(3.0f, 3.0f);
+  auto const& scheme = FindColorSchemeFor(button);
 
-  auto baseColour = backgroundColour.withMultipliedSaturation(button.hasKeyboardFocus(true) ? 1.3f : 0.9f)
-    .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f);
-
+  g.setColour(scheme.paramPrimary.darker(1.0f));
+  g.fillRoundedRectangle(bounds, cornerSize);
+  g.setColour(scheme.paramPrimary);
+  g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
   if (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted)
-    baseColour = baseColour.contrasting(shouldDrawButtonAsDown ? 0.2f : 0.05f);
+  {
+    g.setColour(scheme.paramHighlight);
+    g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
+  }
 
+#if 0
   g.setColour(baseColour);
 
   auto flatOnLeft = button.isConnectedOnLeft();
@@ -488,6 +494,8 @@ FBLookAndFeel::drawButtonBackground(
     g.setColour(button.findColour(ComboBox::outlineColourId));
     g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
   }
+#endif
+
 }
 
 void 
