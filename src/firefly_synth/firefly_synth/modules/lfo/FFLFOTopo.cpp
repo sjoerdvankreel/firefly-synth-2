@@ -399,8 +399,8 @@ FFMakeLFOTopo(bool global)
     { "{D057104A-C083-4BA4-9799-63307147B2E2}", "Off" },
     { "{D1FD1E7B-E20F-47DA-9FB8-F03DE80BB109}", "UP Scale" },
     { "{1556925C-34F8-44F7-A1C9-62E4C4A40265}", "BP Scale" },
-    { "{ECCADB9A-4735-4916-93B0-BB179C78247B}", "UP Exp" },
-    { "{E2E3B133-B375-4F83-BAE3-EEAD6FF10FF8}", "BP Exp" } };
+    { "{ECCADB9A-4735-4916-93B0-BB179C78247B}", "UP Expo" },
+    { "{E2E3B133-B375-4F83-BAE3-EEAD6FF10FF8}", "BP Expo" } };
   auto selectSkewAXMode = [](auto& module) { return &module.block.skewAXMode; };
   skewAXMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAXMode);
   skewAXMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAXMode);
@@ -437,8 +437,8 @@ FFMakeLFOTopo(bool global)
   skewAYMode.type = FBParamType::List;
   skewAYMode.List().items = {
     { "{ADE99968-98D3-4314-BDE4-09A440FADB45}", "Off" },
-    { "{077725EA-4293-48A3-8D1B-6EE452327255}", "UP Exp" },
-    { "{47B2CD10-27B4-40BE-AD54-053F4DCBCFA0}", "BP Exp" } };
+    { "{077725EA-4293-48A3-8D1B-6EE452327255}", "UP Expo" },
+    { "{47B2CD10-27B4-40BE-AD54-053F4DCBCFA0}", "BP Expo" } };
   auto selectSkewAYMode = [](auto& module) { return &module.block.skewAYMode; };
   skewAYMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAYMode);
   skewAYMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAYMode);
