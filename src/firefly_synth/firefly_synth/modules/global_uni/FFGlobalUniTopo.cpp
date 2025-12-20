@@ -301,7 +301,7 @@ FFMakeGlobalUniTopo()
     case FFGlobalUniTarget::EnvStretch: return "BP Stack";
     case FFGlobalUniTarget::EchoFdbkDelay: return "BP Add UP";
     case FFGlobalUniTarget::EchoTapDelay: return "BP Add UP";
-    default: return "BP Rmp";
+    default: return "BP Remap";
     }
   };
   opType.type = FBParamType::List;
