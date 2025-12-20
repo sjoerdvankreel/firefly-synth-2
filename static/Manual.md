@@ -907,7 +907,7 @@ Bipolar preserves the vertical center point, unipolar does not.
 
 <a id="FC1DC75A-200C-4465-8CBE-0100E2C8FAF2"></a>
 ## Envelope
-15-stage per-voice envelope generator with customizable loop and release points.
+16-stage per-voice envelope generator with customizable loop and release points.
 
 ![image](screenshot_manual_env.png)
 
