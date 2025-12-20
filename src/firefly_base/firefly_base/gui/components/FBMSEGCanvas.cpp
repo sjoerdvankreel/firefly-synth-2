@@ -568,11 +568,11 @@ FBMSEGCanvas::paint(Graphics& g)
   path.closeSubPath();
   
   auto fillColor = scheme.paramPrimary.darker(_model.enabled ? 0.0f : scheme.dimDisabled);
-  g.setColour(fillColor.withAlpha(0.67f));
+  g.setColour(fillColor.withAlpha(scheme.graphAlpha));
   g.fillPath(path);
   g.setColour(fillColor);
   g.strokePath(path, PathStrokeType(1.0f));
-
+   
   if (_model.looping && _currentPointsScreen.size() > 0)
   {
     float dashes[2] = { 4, 2 };

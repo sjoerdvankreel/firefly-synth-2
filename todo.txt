@@ -9,7 +9,8 @@ TODOLIST for beta-2
 [x] "oversample" in v/gfx is not pretty. could do dropdown list, needs convert
 [x] the buttons must be smaller
 [x] split the osci subsections
-[ ] 16 env stage
+[x] 16 env stage
+[ ] do always show grid option for mseg
 [ ] longer display names
 [ ] longer comboboxes
 [ ] theme the overlays

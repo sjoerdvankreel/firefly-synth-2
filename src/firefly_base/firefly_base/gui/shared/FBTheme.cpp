@@ -193,6 +193,15 @@ ParseDefaultColorScheme(
     return false;
   }
 
+  if (!RequireDoubleProperty(obj, "graphAlpha"))
+    return false;
+  result.graphAlpha = (float)(double)obj->getProperty("graphAlpha");
+  if (result.graphAlpha < 0.0 || result.graphAlpha > 1.0)
+  {
+    FB_LOG_ERROR("Graph alpha should be between 0 and 1.");
+    return false;
+  }
+
   if (!RequireStringProperty(obj, "background"))
     return false;
   result.background = Colour::fromString(obj->getProperty("background").toString());
@@ -251,6 +260,15 @@ ParseColorScheme(
   if (result.dimDisabled < 0.0 || result.dimDisabled > 1.0)
   {
     FB_LOG_ERROR("Dim disabled should be between 0 and 1.");
+    return false;
+  }
+
+  if (!OptionalDoubleProperty(obj, "graphAlpha", present))
+    return false;
+  result.graphAlpha = present ? (float)(double)obj->getProperty("graphAlpha") : defaultScheme.graphAlpha;
+  if (result.graphAlpha < 0.0 || result.graphAlpha > 1.0)
+  {
+    FB_LOG_ERROR("Graph alpha should be between 0 and 1.");
     return false;
   }
 
