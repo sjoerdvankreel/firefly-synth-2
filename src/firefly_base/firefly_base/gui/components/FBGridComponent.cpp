@@ -53,12 +53,12 @@ FBGridComponent::Add(int row, int col, Component* child)
 }
 
 void
-FBGridComponent::MarkSection(FBGridSection const& section, bool alternate)
+FBGridComponent::MarkSection(FBGridSection const& section, FBGridSectionMark mark)
 {
-  FBGridSectionAndAlternate sectionAndAlternate = {};
-  sectionAndAlternate.section = section;
-  sectionAndAlternate.alternate = alternate;
-  _sections.push_back(sectionAndAlternate);
+  FBGridSectionAndMark sectionAndMark = {};
+  sectionAndMark.section = section;
+  sectionAndMark.mark = mark;
+  _sectionsAndMarks.push_back(sectionAndMark);
 }
 
 int
@@ -232,23 +232,23 @@ FBGridComponent::paint(Graphics& g)
 {
   float x0, x1, y0, y1;
   x0 = x1 = y0 = y1 = -1.0f;
-  for (int i = 0; i < _sections.size(); i++)
+  for (int i = 0; i < _sectionsAndMarks.size(); i++)
   {      
     for (int j = 0; j < _grid.items.size(); j++)
     {
-      if (_grid.items[j].row.start.getNumber() == _sections[i].section.pos.row + 1)
+      if (_grid.items[j].row.start.getNumber() == _sectionsAndMarks[i].section.pos.row + 1)
         y0 = static_cast<float>(_grid.items[j].associatedComponent->getY());
-      if (_grid.items[j].column.start.getNumber() == _sections[i].section.pos.col + 1)
+      if (_grid.items[j].column.start.getNumber() == _sectionsAndMarks[i].section.pos.col + 1)
         x0 = static_cast<float>(_grid.items[j].associatedComponent->getX());
-      if (_grid.items[j].row.end.getNumber() == _sections[i].section.pos.row + _sections[i].section.span.row + 1)
+      if (_grid.items[j].row.end.getNumber() == _sectionsAndMarks[i].section.pos.row + _sectionsAndMarks[i].section.span.row + 1)
         y1 = static_cast<float>(_grid.items[j].associatedComponent->getBottom());
-      if (_grid.items[j].column.end.getNumber() == _sections[i].section.pos.col + _sections[i].section.span.col + 1)
+      if (_grid.items[j].column.end.getNumber() == _sectionsAndMarks[i].section.pos.col + _sectionsAndMarks[i].section.span.col + 1)
         x1 = static_cast<float>(_grid.items[j].associatedComponent->getRight());
     }
-    float subtractR = i == _sections.size() - 1 ? 0.0f : 2.0f;
+    float subtractR = i == _sectionsAndMarks.size() - 1 ? 0.0f : 2.0f;
     g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).sectionBackground);
     g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, 3.0f);
-    if (_sections[i].alternate)
+    if (_sectionsAndMarks[i].mark == FBGridSectionMark::Alternate)
       g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).paramPrimary.withAlpha(0.5f));
     else
       g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).sectionBorder);

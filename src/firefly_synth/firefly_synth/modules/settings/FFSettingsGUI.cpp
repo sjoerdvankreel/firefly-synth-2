@@ -29,7 +29,7 @@ MakeSettingsSectionMain(FBPlugGUI* plugGUI)
   auto smooth = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::HostSmoothTime, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smooth));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, true);
+  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, FBGridSectionMark::Alternate);
   return grid;
 }
 
