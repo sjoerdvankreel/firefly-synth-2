@@ -209,8 +209,8 @@ MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
   for (int i = 0; i < FFEnvStageCount; i++)
     columnSizes.push_back(0);
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, columnSizes);
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Stage"));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Lvl/Slp"));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Stage Len"));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Level/Slope"));
   grid->MarkSection({ { 0, 0 }, { 2, 1 } });
   for (int i = 0; i < FFEnvStageCount; i++)
   {

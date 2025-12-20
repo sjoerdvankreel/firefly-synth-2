@@ -539,7 +539,7 @@ FFMakeEffectTopo(bool global)
     { "{A629BC3E-4732-4A6A-AB79-38CE84F04B0D}", "TSQ" },
     { "{C0E30CBB-596C-4267-96E9-9FBFD5D26C27}", "Cube" },
     { "{192BF63E-663D-494C-956F-3A8BB2E22067}", "Inv" },
-    { "{8A58AAB2-0AE7-426E-B71F-A444653286A6}", "Exp" } };
+    { "{8A58AAB2-0AE7-426E-B71F-A444653286A6}", "Expo" } };
   auto selectClipMode = [](auto& module) { return &module.block.clipMode; };
   clipMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectClipMode);
   clipMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectClipMode);
