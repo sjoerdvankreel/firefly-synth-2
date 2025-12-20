@@ -252,6 +252,7 @@ FBGridComponent::paint(Graphics& g)
       g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).paramPrimary.withAlpha(0.5f));
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::Border)
       g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).sectionBorder);
-    g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, 3.0f, 2.0f);
+    if (_sectionsAndMarks[i].mark != FBGridSectionMark::Background)
+      g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, 3.0f, 2.0f);
   }
 } 

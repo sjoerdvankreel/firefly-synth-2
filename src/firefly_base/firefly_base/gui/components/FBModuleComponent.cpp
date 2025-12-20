@@ -1,3 +1,5 @@
+#include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBModuleComponent.hpp>
 
 using namespace juce;
@@ -10,6 +12,12 @@ _moduleIndex(moduleIndex),
 _content(content)
 {
   addAndMakeVisible(content);
+}
+
+void 
+FBModuleComponent::paint(Graphics& g)
+{
+  g.fillAll(FBGetLookAndFeel()->FindColorSchemeFor(*this).background);
 }
 
 void

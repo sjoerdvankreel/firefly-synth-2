@@ -21,6 +21,8 @@ public:
   int ModuleIndex() const { return _moduleIndex; }
 
   void resized() override;
+  void paint(juce::Graphics& g) override;
+
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
 
