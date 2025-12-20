@@ -3,6 +3,8 @@
   "defaultColorScheme": {
     "dimDisabled": 0.25,
     "background": "FF000000",
+    "graphGrid": "FF404040",
+    "graphBackground": "FF181818",
     "sectionText": "FFEEEEEE",
     "sectionBorder": "80FFFFFF",
     "sectionBackground": "FF282828",

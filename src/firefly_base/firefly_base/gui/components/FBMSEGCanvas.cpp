@@ -1,6 +1,7 @@
 #include <firefly_base/gui/components/FBMSEGCanvas.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
@@ -455,8 +456,9 @@ FBMSEGCanvas::paint(Graphics& g)
   auto const innerBounds = outerBounds.reduced(MSEGInnerPadding);
 
   // todo all of mesg and graphs
-  g.fillAll(Colours::black);
-  g.setColour(Colour(0xFF181818));
+  auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
+  g.fillAll(scheme.background);
+  g.setColour(scheme.graphBackground); 
   g.fillRoundedRectangle(outerBounds.toFloat(), 2.0f * MSEGInnerPadding);
 
   _totalLengthTime = 0.0;
@@ -479,7 +481,7 @@ FBMSEGCanvas::paint(Graphics& g)
   double w = innerBounds.getWidth();
   double h = innerBounds.getHeight();
 
-  g.setColour(Colours::darkgrey);
+  g.setColour(scheme.graphGrid);
   _currentSnapXScreen.clear();
   if (_model.xEditMode == FBMSEGXEditMode::Snap)
   {
@@ -556,7 +558,7 @@ FBMSEGCanvas::paint(Graphics& g)
 
   if (_currentPointsScreen.size() == 0)
   {
-    g.setColour(Colours::grey);
+    g.setColour(scheme.paramPrimary); // todo
     g.setFont(FBGUIGetFont().withHeight(20.0f));
     g.drawText("OFF", innerBounds, Justification::centred, false);
     return;
@@ -564,10 +566,12 @@ FBMSEGCanvas::paint(Graphics& g)
 
   path.lineTo(_currentPointsScreen[_currentPointsScreen.size() - 1].getX(), zeroPointScreenY);
   path.closeSubPath();
-  g.setColour(_model.enabled ? Colours::grey : Colours::darkgrey);
-  g.strokePath(path, PathStrokeType(1.0f));
-  g.setColour((_model.enabled ? Colours::grey : Colours::darkgrey).withAlpha(0.67f));
+  
+  auto fillColor = scheme.paramPrimary.darker(_model.enabled ? 0.0f : scheme.dimDisabled);
+  g.setColour(fillColor.withAlpha(0.67f));
   g.fillPath(path);
+  g.setColour(fillColor);
+  g.strokePath(path, PathStrokeType(1.0f));
 
   if (_model.looping && _currentPointsScreen.size() > 0)
   {

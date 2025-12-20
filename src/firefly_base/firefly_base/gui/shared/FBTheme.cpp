@@ -197,6 +197,14 @@ ParseDefaultColorScheme(
     return false;
   result.background = Colour::fromString(obj->getProperty("background").toString());
 
+  if (!RequireStringProperty(obj, "graphGrid"))
+    return false;
+  result.graphGrid = Colour::fromString(obj->getProperty("graphGrid").toString());
+  
+  if (!RequireStringProperty(obj, "graphBackground"))
+    return false;
+  result.graphBackground = Colour::fromString(obj->getProperty("graphBackground").toString());
+
   if (!RequireStringProperty(obj, "sectionBorder"))
     return false;
   result.sectionBorder = Colour::fromString(obj->getProperty("sectionBorder").toString());
@@ -249,6 +257,14 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "background", present))
     return false;
   result.background = present ? Colour::fromString(obj->getProperty("background").toString()) : defaultScheme.background;
+
+  if (!OptionalStringProperty(obj, "graphGrid", present))
+    return false;
+  result.graphGrid = present ? Colour::fromString(obj->getProperty("graphGrid").toString()) : defaultScheme.graphGrid;
+
+  if (!OptionalStringProperty(obj, "graphBackground", present))
+    return false;
+  result.graphBackground = present ? Colour::fromString(obj->getProperty("graphBackground").toString()) : defaultScheme.graphBackground;
 
   if (!OptionalStringProperty(obj, "sectionBorder", present))
     return false;

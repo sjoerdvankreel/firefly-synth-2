@@ -14,6 +14,8 @@ struct FBColorScheme
 {
   float dimDisabled = {};
   juce::Colour background = {};
+  juce::Colour graphGrid = {};
+  juce::Colour graphBackground = {};
   juce::Colour sectionText = {};
   juce::Colour sectionBorder = {};
   juce::Colour sectionBackground = {};
