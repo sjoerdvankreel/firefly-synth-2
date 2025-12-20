@@ -216,8 +216,11 @@ MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
   {
     auto upper = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
     grid->Add(0, 1 + i, upper);
+    auto timeGrid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
     auto time = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
-    upper->Add(0, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, time, Slider::SliderStyle::RotaryVerticalDrag));
+    timeGrid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1)));
+    timeGrid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, time, Slider::SliderStyle::RotaryVerticalDrag));
+    upper->Add(0, 0, timeGrid);
     auto bars = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } });
     upper->Add(0, 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bars));
     auto lower = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 1, 1 });
