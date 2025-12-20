@@ -483,26 +483,21 @@ FBMSEGCanvas::paint(Graphics& g)
 
   g.setColour(scheme.graphGrid);
   _currentSnapXScreen.clear();
-  if (_model.xEditMode == FBMSEGXEditMode::Snap)
+  for (int i = 0; i <= _model.snapXCount; i++)
   {
-    for (int i = 0; i <= _model.snapXCount; i++)
-    {
-      float xPosNorm = i / (float)_model.snapXCount;
-      float xPosScreen = xPosNorm * (float)w + MSEGInnerPadding + MSEGOuterPadding;
-      g.drawLine(xPosScreen, (float)y, xPosScreen, (float)(y + h), 1.0f);
-      _currentSnapXScreen.push_back(xPosScreen);
-    }
+    float xPosNorm = i / (float)_model.snapXCount;
+    float xPosScreen = xPosNorm * (float)w + MSEGInnerPadding + MSEGOuterPadding;
+    g.drawLine(xPosScreen, (float)y, xPosScreen, (float)(y + h), 1.0f);
+    _currentSnapXScreen.push_back(xPosScreen);
   }
+
   _currentSnapYScreen.clear();
-  if (_model.yEditMode == FBMSEGYEditMode::Snap)
+  for (int i = 0; i <= _model.snapYCount; i++)
   {
-    for (int i = 0; i <= _model.snapYCount; i++)
-    {
-      float yPosNorm = i / (float)_model.snapYCount;
-      float yPosScreen = yPosNorm * (float)h + MSEGInnerPadding + MSEGOuterPadding;
-      g.drawLine((float)x, yPosScreen, (float)(x + w), yPosScreen, 1.0f);
-      _currentSnapYScreen.push_back(yPosScreen);
-    }
+    float yPosNorm = i / (float)_model.snapYCount;
+    float yPosScreen = yPosNorm * (float)h + MSEGInnerPadding + MSEGOuterPadding;
+    g.drawLine((float)x, yPosScreen, (float)(x + w), yPosScreen, 1.0f);
+    _currentSnapYScreen.push_back(yPosScreen);
   }
 
   Path path = {};
