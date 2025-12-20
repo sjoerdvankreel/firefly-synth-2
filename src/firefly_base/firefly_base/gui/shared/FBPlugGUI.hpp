@@ -6,6 +6,7 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBModuleComponent.hpp>
+#include <firefly_base/gui/components/FBSectionComponent.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -47,6 +48,7 @@ public IFBHostGUIContextListener
   std::function<void()> _overlayInit = {};
   FBGridComponent* _overlayGrid = {};
   juce::Component* _overlayComponent = {};
+  FBSectionComponent* _overlaySection = {};
   FBContentComponent* _overlayContent = {};
   FBModuleComponent* _overlayContainer = {};
   std::vector<IFBParamListener*> _paramListeners = {};
