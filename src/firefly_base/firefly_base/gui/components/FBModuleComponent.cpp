@@ -2,11 +2,21 @@
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBModuleComponent.hpp>
 
+static int const OverlayMargin = 2;
+
 using namespace juce;
+
+FBModuleComponent::
+FBModuleComponent(bool isOverlay) :
+Component(),
+_isOverlay(isOverlay)
+{
+}
 
 FBModuleComponent::
 FBModuleComponent(int moduleIndex, int moduleSlot, Component* content):
 Component(),
+_isOverlay(false),
 _moduleSlot(moduleSlot),
 _moduleIndex(moduleIndex),
 _content(content)
@@ -25,7 +35,7 @@ FBModuleComponent::resized()
 {
   if (_content != nullptr)
   {
-    getChildComponent(0)->setBounds(getLocalBounds());
+    getChildComponent(0)->setBounds(getLocalBounds().reduced(_isOverlay? OverlayMargin: 0));
     getChildComponent(0)->resized();
   }
 }
@@ -52,7 +62,7 @@ FBModuleComponent::FixedHeight() const
   if (_content == nullptr)
     return 0;
   auto sizingChild = dynamic_cast<IFBVerticalAutoSize*>(getChildComponent(0));
-  return sizingChild != nullptr ? sizingChild->FixedHeight() : 0;
+  return sizingChild != nullptr ? sizingChild->FixedHeight() - 2 * OverlayMargin : 0;
 }
 
 int
@@ -61,5 +71,5 @@ FBModuleComponent::FixedWidth(int height) const
   if (_content == nullptr)
     return 0;
   auto sizingChild = dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0));
-  return sizingChild != nullptr ? sizingChild->FixedWidth(height) : 0;
+  return sizingChild != nullptr ? sizingChild->FixedWidth(height) - 2 * OverlayMargin : 0;
 }
