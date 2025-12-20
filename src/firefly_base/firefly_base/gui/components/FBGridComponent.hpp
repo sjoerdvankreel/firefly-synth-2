@@ -13,7 +13,8 @@ enum class FBGridSectionMark
   Border,
   Alternate,
   BackgroundAndBorder,
-  BackgroundAndAlternate
+  BackgroundAndAlternate,
+  AlternateAndAlternate
 };
 
 struct FBGridCell final

@@ -253,8 +253,14 @@ FBGridComponent::paint(Graphics& g)
       g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).sectionBackground);
       g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, 3.0f);
     }
+    if (_sectionsAndMarks[i].mark == FBGridSectionMark::AlternateAndAlternate)
+    {
+      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).paramPrimary.darker(4.0f));
+      g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, 3.0f);
+    }
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::Alternate ||
-      _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndAlternate)
+      _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndAlternate ||
+      _sectionsAndMarks[i].mark == FBGridSectionMark::AlternateAndAlternate)
     {
       g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).paramPrimary.withAlpha(0.5f));
       g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, 3.0f, 2.0f);

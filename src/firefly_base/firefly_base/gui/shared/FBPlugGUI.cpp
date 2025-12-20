@@ -630,7 +630,7 @@ FBPlugGUI::SetupOverlayGUI()
   auto overlayCloseSection = StoreComponent<FBSectionComponent>(overlayClose);
   _overlayGrid->Add(0, 2, overlayCloseSection);
 
-  _overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::BackgroundAndAlternate);
+  _overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::AlternateAndAlternate);
   _overlayContent = StoreComponent<FBContentComponent>();
   _overlaySection = StoreComponent<FBSectionComponent>(_overlayContent);
   _overlayGrid->Add(1, 0, 1, 3, _overlaySection);
