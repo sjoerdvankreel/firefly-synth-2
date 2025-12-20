@@ -2,7 +2,7 @@
   "name": "Default",
   "defaultColorScheme": {
     "dimDisabled": 0.25,
-    "background": "FF00FF00",
+    "background": "FF000000",
     "sectionText": "FFEEEEEE",
     "sectionBorder": "80FFFFFF",
     "sectionBackground": "FF282828",

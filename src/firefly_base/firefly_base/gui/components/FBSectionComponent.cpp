@@ -30,28 +30,12 @@ FBSectionComponent::FixedWidth(int height) const
   return dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height - 4) + 4;
 }
 
-// todo get rid of it?
 FBSubSectionComponent::
-FBSubSectionComponent(bool last, Component* content, bool topLevel) :
+FBSubSectionComponent(bool last, Component* content) :
 Component(),
-_last(last),
-_topLevel(topLevel)
+_last(last)
 {
   addAndMakeVisible(content);
-}
-
-void 
-FBSubSectionComponent::paint(Graphics& g)
-{
-  // TODO drop toplevel ?
-  if (_topLevel)
-  {
-    g.setColour(Colours::black);
-    //g.fillAll();
-  }
-  // todo border - no its in grid
-  //g.setColour(Colour(0xFF505050));
-  //g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(3.0f, 3.0f), 3.0f, 1.0f);
 }
 
 void

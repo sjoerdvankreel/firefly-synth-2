@@ -23,7 +23,6 @@ public IFBHorizontalAutoSize,
 public IFBVerticalAutoSize
 {
   bool const _last;
-  bool const _topLevel;
 
 public:
   void resized() override;
@@ -31,5 +30,5 @@ public:
 
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
-  FBSubSectionComponent(bool last, juce::Component* content, bool topLevel = false);
+  FBSubSectionComponent(bool last, juce::Component* content);
 };
