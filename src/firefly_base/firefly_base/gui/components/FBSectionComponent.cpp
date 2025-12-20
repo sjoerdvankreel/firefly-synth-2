@@ -47,7 +47,7 @@ FBSubSectionComponent::paint(Graphics& g)
   if (_topLevel)
   {
     g.setColour(Colours::black);
-    g.fillAll();
+    //g.fillAll();
   }
   // todo border - no its in grid
   //g.setColour(Colour(0xFF505050));

@@ -454,6 +454,7 @@ FBMSEGCanvas::paint(Graphics& g)
   auto const outerBounds = getLocalBounds().reduced(MSEGOuterPadding);
   auto const innerBounds = outerBounds.reduced(MSEGInnerPadding);
 
+  // todo all of mesg and graphs
   g.fillAll(Colours::black);
   g.setColour(Colour(0xFF181818));
   g.fillRoundedRectangle(outerBounds.toFloat(), 2.0f * MSEGInnerPadding);

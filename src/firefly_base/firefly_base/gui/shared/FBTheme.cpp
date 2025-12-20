@@ -193,17 +193,21 @@ ParseDefaultColorScheme(
     return false;
   }
 
-  if (!RequireStringProperty(obj, "border"))
-    return false;
-  result.border = Colour::fromString(obj->getProperty("border").toString());
-
   if (!RequireStringProperty(obj, "background"))
     return false;
   result.background = Colour::fromString(obj->getProperty("background").toString());
 
-  if (!RequireStringProperty(obj, "text"))
+  if (!RequireStringProperty(obj, "sectionBorder"))
     return false;
-  result.text = Colour::fromString(obj->getProperty("text").toString());
+  result.sectionBorder = Colour::fromString(obj->getProperty("sectionBorder").toString());
+
+  if (!RequireStringProperty(obj, "sectionBackground"))
+    return false;
+  result.sectionBackground = Colour::fromString(obj->getProperty("sectionBackground").toString());
+
+  if (!RequireStringProperty(obj, "sectionText"))
+    return false;
+  result.sectionText = Colour::fromString(obj->getProperty("sectionText").toString());
 
   if (!RequireStringProperty(obj, "paramSecondary"))
     return false;
@@ -242,17 +246,21 @@ ParseColorScheme(
     return false;
   }
 
-  if (!OptionalStringProperty(obj, "border", present))
-    return false;
-  result.border = present ? Colour::fromString(obj->getProperty("border").toString()) : defaultScheme.border;
-
   if (!OptionalStringProperty(obj, "background", present))
     return false;
   result.background = present ? Colour::fromString(obj->getProperty("background").toString()) : defaultScheme.background;
 
-  if (!OptionalStringProperty(obj, "text", present))
+  if (!OptionalStringProperty(obj, "sectionBorder", present))
     return false;
-  result.text = present ? Colour::fromString(obj->getProperty("text").toString()) : defaultScheme.text;
+  result.sectionBorder = present ? Colour::fromString(obj->getProperty("sectionBorder").toString()) : defaultScheme.sectionBorder;
+
+  if (!OptionalStringProperty(obj, "sectionBackground", present))
+    return false;
+  result.sectionBackground = present ? Colour::fromString(obj->getProperty("sectionBackground").toString()) : defaultScheme.sectionBackground;
+
+  if (!OptionalStringProperty(obj, "sectionText", present))
+    return false;
+  result.sectionText = present ? Colour::fromString(obj->getProperty("sectionText").toString()) : defaultScheme.sectionText;
 
   if (!OptionalStringProperty(obj, "paramSecondary", present))
     return false;

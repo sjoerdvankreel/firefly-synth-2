@@ -1,6 +1,8 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContainer.hpp>
+
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -40,7 +42,7 @@ _gui(hostContext->Topo()->static_->guiFactory(hostContext))
 void 
 FBPlugGUIContainer::paint(Graphics& g)
 {
-  g.fillAll(Colours::black);
+  g.fillAll(FBGetLookAndFeel()->FindColorSchemeFor(*this).background);
 }
 
 void

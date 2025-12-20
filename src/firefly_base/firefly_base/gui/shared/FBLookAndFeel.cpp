@@ -85,8 +85,6 @@ FBColorScheme const&
 FBLookAndFeel::FindColorSchemeFor(
   Component const& c) const
 {
-  static FBColorScheme fallback = {};
-  
   if (auto p = dynamic_cast<FBParamControl const*>(&c))
   {
     int rtModuleIndex = p->Param()->runtimeModuleIndex;
@@ -99,7 +97,6 @@ FBLookAndFeel::FindColorSchemeFor(
         return Theme().colorSchemes.at(moduleIter->second.colorScheme);
       return Theme().colorSchemes.at(paramIter->second);
     }
-    return Theme().defaultColorScheme;
   }
    
   if (auto p = dynamic_cast<FBGUIParamControl const*>(&c))
@@ -114,7 +111,6 @@ FBLookAndFeel::FindColorSchemeFor(
         return Theme().colorSchemes.at(moduleIter->second.colorScheme);
       return Theme().colorSchemes.at(paramIter->second);
     }
-    return Theme().defaultColorScheme;
   }
 
   if(auto gui = c.findParentComponentOfClass<FBPlugGUI>())
@@ -124,10 +120,9 @@ FBLookAndFeel::FindColorSchemeFor(
       auto moduleIter = Theme().moduleColors.find(rtModuleIndex);
       if (moduleIter != Theme().moduleColors.end())
         return Theme().colorSchemes.at(moduleIter->second.colorScheme);
-      return Theme().defaultColorScheme;
     }
 
-  return fallback;
+  return Theme().defaultColorScheme;
 }
 
 void 
@@ -274,7 +269,7 @@ FBLookAndFeel::drawLabel(
   }
 
   auto const& scheme = FindColorSchemeFor(label);
-  auto colorText = scheme.text;
+  auto colorText = scheme.sectionText;
   if (auto b = label.findParentComponentOfClass<ComboBox>())
     colorText = scheme.paramPrimary.darker(b->isEnabled() ? 0.0f : scheme.dimDisabled);
 
