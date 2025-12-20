@@ -39,7 +39,7 @@ MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   auto sync = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Sync, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
-  grid->MarkSection({ { 0, 0 }, { 2, 4 } }, FBGridSectionMark::Alternate);
+  grid->MarkSection({ { 0, 0 }, { 2, 4 } }, FBGridSectionMark::BackgroundAndAlternate);
   return grid;
 }
 

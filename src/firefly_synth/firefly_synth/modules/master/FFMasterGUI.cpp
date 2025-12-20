@@ -37,7 +37,7 @@ MakeMasterSectionMain(FBPlugGUI* plugGUI)
   auto bendTarget = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::PitchBendTarget, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bendTarget));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bendTarget));
-  grid->MarkSection({ { 0, 0 }, { 2, 4 } }, FBGridSectionMark::Alternate);
+  grid->MarkSection({ { 0, 0 }, { 2, 4 } }, FBGridSectionMark::BackgroundAndAlternate);
   return grid;
 }
 
@@ -60,7 +60,7 @@ MakeMasterSectionAux(FBPlugGUI* plugGUI)
     grid->Add(row, col * 2 + 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, aux));
     grid->Add(row, col * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, aux, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ { 0, 0 }, { 2, 2 * FFMasterAuxCount / 2 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 2 * FFMasterAuxCount / 2 } }, FBGridSectionMark::BackgroundAndBorder);
   return grid;
 }
 

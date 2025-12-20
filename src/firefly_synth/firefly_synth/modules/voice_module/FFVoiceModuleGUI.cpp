@@ -89,7 +89,7 @@ MakeVoiceModuleSectionPitch(FBPlugGUI* plugGUI)
   auto lfo5ToFine = topo->audio.ParamAtTopo({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::LFO5ToFine, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lfo5ToFine));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lfo5ToFine, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 4 } }, FBGridSectionMark::Alternate);
+  grid->MarkSection({ { 0, 0 }, { 2, 4 } }, FBGridSectionMark::BackgroundAndAlternate);
   return grid;
 }
 
@@ -120,7 +120,7 @@ MakeVoiceModuleSectionPorta(FBPlugGUI* plugGUI)
   auto ampRelease = topo->audio.ParamAtTopo({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::PortaSectionAmpRelease, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, ampRelease));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, ampRelease, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } }, FBGridSectionMark::BackgroundAndBorder);
   return grid;
 }
 

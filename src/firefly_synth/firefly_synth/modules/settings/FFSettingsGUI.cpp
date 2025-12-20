@@ -29,7 +29,7 @@ MakeSettingsSectionMain(FBPlugGUI* plugGUI)
   auto smooth = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::HostSmoothTime, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smooth));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, FBGridSectionMark::Alternate);
+  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, FBGridSectionMark::BackgroundAndAlternate);
   return grid;
 }
 
@@ -56,7 +56,7 @@ MakeSettingsSectionTuning(FBPlugGUI* plugGUI)
   auto tuneVoiceMatrix = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneVoiceMatrix, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneVoiceMatrix));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneVoiceMatrix));
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } }, FBGridSectionMark::BackgroundAndBorder);
   return grid;
 }
 
