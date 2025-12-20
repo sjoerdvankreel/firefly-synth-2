@@ -255,7 +255,7 @@ FBGridComponent::paint(Graphics& g)
     }
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::AlternateAndAlternate)
     {
-      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).paramPrimary.darker(4.0f));
+      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).paramPrimary.darker(2.0f));
       g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, 3.0f);
     }
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::Alternate ||
