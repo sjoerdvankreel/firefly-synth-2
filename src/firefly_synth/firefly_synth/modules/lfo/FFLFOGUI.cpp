@@ -72,7 +72,7 @@ MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot,
   auto steps = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Steps, block } });
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, steps));
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, steps, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 7 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 7 } }, block % 2 == 0? FBGridSectionMark::BackgroundAndBorder: FBGridSectionMark::BackgroundAndAlternate);
   return grid;
 }
 
@@ -91,7 +91,7 @@ MakeLFOSectionSkewA(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewAYMode));
   auto skewAYAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAYAmt, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skewAYAmt, Slider::SliderStyle::LinearHorizontal));
-  grid->MarkSection({ { 0, 0 }, { 2, 3 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::BackgroundAndBorder);
   return grid;
 }
 
