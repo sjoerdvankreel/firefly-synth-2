@@ -291,16 +291,16 @@ FFMakeGlobalUniTopo()
     auto target = (FFGlobalUniTarget)ps;
     switch (target)
     {
-    case FFGlobalUniTarget::VoiceCoarse: return "BP AdB";
-    case FFGlobalUniTarget::VMixAmp: return "UP Rmp";
-    case FFGlobalUniTarget::OscGain: return "UP Rmp";
-    case FFGlobalUniTarget::OscCoarse: return "BP AdB";
-    case FFGlobalUniTarget::OscPhaseOffset: return "Ph Wrp";
-    case FFGlobalUniTarget::LFOPhaseOffset: return "Ph Wrp";
-    case FFGlobalUniTarget::LFORate: return "BP AdU";
-    case FFGlobalUniTarget::EnvStretch: return "BP Stk";
-    case FFGlobalUniTarget::EchoFdbkDelay: return "BP AdU";
-    case FFGlobalUniTarget::EchoTapDelay: return "BP AdU";
+    case FFGlobalUniTarget::VoiceCoarse: return "BP Add BP";
+    case FFGlobalUniTarget::VMixAmp: return "UP Remap";
+    case FFGlobalUniTarget::OscGain: return "UP Remap";
+    case FFGlobalUniTarget::OscCoarse: return "BP Add BP";
+    case FFGlobalUniTarget::OscPhaseOffset: return "Phs Wrap";
+    case FFGlobalUniTarget::LFOPhaseOffset: return "Phs Wrap";
+    case FFGlobalUniTarget::LFORate: return "BP Add UP";
+    case FFGlobalUniTarget::EnvStretch: return "BP Stack";
+    case FFGlobalUniTarget::EchoFdbkDelay: return "BP Add UP";
+    case FFGlobalUniTarget::EchoTapDelay: return "BP Add UP";
     default: return "BP Rmp";
     }
   };

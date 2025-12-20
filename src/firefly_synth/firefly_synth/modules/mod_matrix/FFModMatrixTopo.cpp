@@ -129,8 +129,8 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     if (ps > 1)
       return "Off";
     if (ps == 0)
-      return "UP Stk"; // mod wheel
-    return "BP Stk"; // pitch bend
+      return "UP Stack"; // mod wheel
+    return "BP Stack"; // pitch bend
   };
   opType.id = prefix + "{8D28D968-8585-4A4D-B636-F365C5873973}";
   opType.description = "Matrix Slot Modulation Operator";
