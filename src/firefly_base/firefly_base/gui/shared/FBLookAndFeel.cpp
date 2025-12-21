@@ -182,6 +182,8 @@ FBLookAndFeel::DrawTabButtonPart(
   auto const& scheme = FindColorSchemeFor(button);
   if (isSeparator)
     g.setColour(scheme.paramSecondary);
+  else if(toggleState)
+    g.setColour(scheme.primary.darker(1.0f));
   else
     g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(activeArea.toFloat(), 2.0f);
@@ -189,7 +191,7 @@ FBLookAndFeel::DrawTabButtonPart(
   if(toggleState)
     g.setColour(scheme.primary);
   else
-    g.setColour(scheme.sectionBorder);
+    g.setColour(scheme.sectionBorder);  
   g.drawRoundedRectangle(activeArea.toFloat(), 2.0f, 1.0f);
 
   TextLayout textLayout;
