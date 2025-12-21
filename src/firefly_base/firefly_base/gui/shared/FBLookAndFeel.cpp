@@ -179,8 +179,17 @@ FBLookAndFeel::DrawTabButtonPart(
   std::string const& text,
   Rectangle<int> const& activeArea)
 {
-  const Colour bkg(button.getTabBackgroundColour());
+  (void)toggleState;
+  (void)isMouseDown;
+  (void)isMouseOver;
 
+  auto const& scheme = FindColorSchemeFor(button);
+  g.setColour(scheme.paramBackground);
+  g.fillRoundedRectangle(activeArea.toFloat(), 2.0f);
+  g.setColour(scheme.sectionBorder);
+  g.drawRoundedRectangle(activeArea.toFloat(), 2.0f, 1.0f);
+
+#if 0
   if (toggleState)
     g.setColour(bkg);
   else
@@ -188,7 +197,6 @@ FBLookAndFeel::DrawTabButtonPart(
       bkg.brighter(0.2f), activeArea.getTopLeft().toFloat(),
       bkg.darker(0.1f), activeArea.getBottomLeft().toFloat(), false));
 
-  auto const& scheme = FindColorSchemeFor(button);
   g.setColour(scheme.primary.darker(1.0f));
   g.fillRect(activeArea);
   g.setColour(button.findColour(TabbedButtonBar::tabOutlineColourId));
@@ -208,14 +216,17 @@ FBLookAndFeel::DrawTabButtonPart(
     if (bar->isColourSpecified(colID))
       col = bar->findColour(colID);
     else if (isColourSpecified(colID))
+    
       col = findColour(colID);
   }
+#endif
+
 
   TextLayout textLayout;
   const Rectangle<float> area(activeArea.toFloat());
   float length = area.getWidth();
   float depth = area.getHeight();
-  ::CreateTabTextLayout(button, length, col, FBGUIGetFont(), centerText, text, textLayout);
+  ::CreateTabTextLayout(button, length, scheme.text, FBGUIGetFont(), centerText, text, textLayout);
 
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));
   textLayout.draw(g, Rectangle<float>(length, depth));
@@ -696,13 +707,13 @@ FBLookAndFeel::drawTabButton(
 
   if (separatorText.empty())
   {
-    DrawTabButtonPart(button, g, isMouseOver, isMouseDown, toggleState, centerText, buttonText, activeArea);
+    DrawTabButtonPart(button, g, isMouseOver, isMouseDown, toggleState, centerText, buttonText, activeArea.reduced(1, 0));
     return;
   }
 
   int size = large ? TabSizeLarge : TabSizeSmall;
-  auto separatorArea = Rectangle<int>(activeArea.getX(), activeArea.getY(), TabSizeLarge - 1, activeArea.getHeight());
+  auto separatorArea = Rectangle<int>(activeArea.getX() + 1, activeArea.getY(), TabSizeLarge - 2, activeArea.getHeight());
   DrawTabButtonPart(button, g, false, false, false, false, separatorText, separatorArea);
-  auto buttonArea = Rectangle<int>(activeArea.getX() + TabSizeLarge, activeArea.getY(), size, activeArea.getHeight());
+  auto buttonArea = Rectangle<int>(activeArea.getX() + TabSizeLarge + 1, activeArea.getY(), size - 2, activeArea.getHeight());
   DrawTabButtonPart(button, g, isMouseOver, isMouseDown, toggleState, centerText, buttonText, buttonArea);
 }
