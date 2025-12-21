@@ -179,6 +179,8 @@ FBLookAndFeel::DrawTabButtonPart(
   bool isSeparator, std::string const& text,
   Rectangle<int> const& activeArea)
 {
+  bool isHeader = button.getTabbedButtonBar().getNumTabs() == 1;
+
   auto const& scheme = FindColorSchemeFor(button);
   if (isSeparator)
     g.setColour(scheme.paramSecondary);
@@ -188,7 +190,7 @@ FBLookAndFeel::DrawTabButtonPart(
     g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(activeArea.toFloat(), 2.0f);
 
-  if(toggleState)
+  if(toggleState || isHeader)
     g.setColour(scheme.primary);
   else
     g.setColour(scheme.sectionBorder);  
@@ -198,7 +200,7 @@ FBLookAndFeel::DrawTabButtonPart(
   const Rectangle<float> area(activeArea.toFloat());
   float length = area.getWidth();
   float depth = area.getHeight();
-  auto textColor = scheme.text.darker(isSeparator || isMouseOver || toggleState ? 0.0f : scheme.dimDisabled);
+  auto textColor = isHeader? scheme.primary: scheme.text.darker(isSeparator || isMouseOver || toggleState ? 0.0f : scheme.dimDisabled);
   ::CreateTabTextLayout(button, length, textColor, FBGUIGetFont(), centerText, text, textLayout);
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));
   textLayout.draw(g, Rectangle<float>(length, depth));
