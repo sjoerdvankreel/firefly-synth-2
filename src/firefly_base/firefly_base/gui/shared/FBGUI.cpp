@@ -15,6 +15,7 @@ static Font _font = Font(FontOptions());
 static std::unique_ptr<FBLookAndFeel> _lookAndFeel = {};
 
 Font const& FBGUIGetFont() { return _font; }
+float FBGUIGetPopupMenuFontHeightFloat() { return 13.0f; }
 FBLookAndFeel* FBGetLookAndFeel() { return _lookAndFeel.get(); }
 float FBGUIGetFontHeightFloat() { return FBGUIGetFont().getHeight(); }
 int FBGUIGetStandardPopupMenuItemHeight() { return FBGUIGetFontHeightInt() + 10; }
