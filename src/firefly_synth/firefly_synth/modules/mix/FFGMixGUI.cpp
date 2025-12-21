@@ -11,6 +11,7 @@
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/components/FBModuleComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
@@ -150,6 +151,6 @@ FFMakeGMixGUITab(FBPlugGUI* plugGUI)
   grid->Add(0, 2, MakeGMixSectionGFXToOut(plugGUI));
   grid->Add(0, 3, MakeGMixGUISectionVoiceAndExtAudioToOut(plugGUI));
   grid->Add(0, 4, MakeGMixGUISectionAmpBal(plugGUI));
-  auto section = plugGUI->StoreComponent<FBSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::GMix, 0, section);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(false, false, true, true, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::GMix, 0, margin);
 }

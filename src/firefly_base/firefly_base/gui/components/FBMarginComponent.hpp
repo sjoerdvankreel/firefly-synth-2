@@ -5,16 +5,22 @@
 
 class FBPlugGUI;
 
-class FBSubSectionComponent:
+class FBMarginComponent:
 public juce::Component,
 public IFBHorizontalAutoSize,
 public IFBVerticalAutoSize
 {
-  bool const _last;
+  bool const _left;
+  bool const _right;
+  bool const _top;
+  bool const _bottom;
+
+  int ExtraX() const;
+  int ExtraY() const;
 
 public:
   void resized() override;
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
-  FBSubSectionComponent(bool last, juce::Component* content);
+  FBMarginComponent(bool l, bool r, bool t, bool b, juce::Component* content);
 };

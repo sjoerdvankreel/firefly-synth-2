@@ -13,6 +13,7 @@ TODOLIST for beta-2
 [x] do always show grid option for mseg
 [ ] section->margin
 [ ] subsection->section
+[ ] recheck all the margins
 [ ] tooltips
 [ ] longer display names
 [ ] longer comboboxes

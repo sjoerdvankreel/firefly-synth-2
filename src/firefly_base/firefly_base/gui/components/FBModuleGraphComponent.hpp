@@ -8,7 +8,7 @@
 
 class FBPlugGUI;
 class FBGridComponent;
-class FBSectionComponent;
+class FBMarginComponent;
 class FBGraphRenderState;
 class FBModuleGraphDisplayComponent;
 
@@ -22,7 +22,7 @@ public juce::Component
 {
   int _tweakedModuleByUI = -1;
   std::unique_ptr<FBGridComponent> _grid = {};
-  std::unique_ptr<FBSectionComponent> _section = {};
+  std::unique_ptr<FBMarginComponent> _margin = {};
   std::function<FBGUIRenderType()> _getCurrentRenderType;
 
   int const _fixedToRuntimeModuleIndex;

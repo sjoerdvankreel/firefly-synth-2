@@ -20,6 +20,7 @@ class FBParamControl;
 class FBGUIParamControl;
 class FBParamsDependent;
 class FBHostGUIContext;
+class FBMarginComponent;
 class FBContentComponent;
 struct FBParamTopoIndices;
 
@@ -48,7 +49,7 @@ public IFBHostGUIContextListener
   std::function<void()> _overlayInit = {};
   FBGridComponent* _overlayGrid = {};
   juce::Component* _overlayComponent = {};
-  FBSectionComponent* _overlaySection = {};
+  FBMarginComponent* _overlayMargin = {};
   FBContentComponent* _overlayContent = {};
   FBModuleComponent* _overlayContainer = {};
   std::vector<IFBParamListener*> _paramListeners = {};

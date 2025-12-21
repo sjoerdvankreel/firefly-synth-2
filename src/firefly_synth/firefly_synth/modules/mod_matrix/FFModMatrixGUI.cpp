@@ -18,6 +18,7 @@
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBModuleComponent.hpp>
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
@@ -404,7 +405,7 @@ FFMakeModMatrixGUI(FFPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1 } });
   grid->Add(0, 0, MakeModMatrixTopGUI(plugGUI));
   grid->Add(1, 0, MakeModMatrixSlotsGUI(plugGUI));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBMarginComponent>(false, false, true, true, grid);
 }
 
 bool

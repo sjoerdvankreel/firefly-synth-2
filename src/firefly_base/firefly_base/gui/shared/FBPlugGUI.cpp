@@ -12,7 +12,7 @@
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
-#include <firefly_base/gui/components/FBSectionComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBContentComponent.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
@@ -622,18 +622,18 @@ FBPlugGUI::SetupOverlayGUI()
 
   auto overlayInit = StoreComponent<FBAutoSizeButton>("Init");
   overlayInit->onClick = [this] { _overlayInit(); };
-  auto overlayInitSection = StoreComponent<FBSectionComponent>(overlayInit);
+  auto overlayInitSection = StoreComponent<FBMarginComponent>(false, false, true, true, overlayInit);
   _overlayGrid->Add(0, 1, overlayInitSection);
 
   auto overlayClose = StoreComponent<FBAutoSizeButton>("Close");
   overlayClose->onClick = [this] { HideOverlayComponent(); };
-  auto overlayCloseSection = StoreComponent<FBSectionComponent>(overlayClose);
+  auto overlayCloseSection = StoreComponent<FBMarginComponent>(false, true, true, true, overlayClose);
   _overlayGrid->Add(0, 2, overlayCloseSection);
 
   _overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::AlternateAndAlternate);
   _overlayContent = StoreComponent<FBContentComponent>();
-  _overlaySection = StoreComponent<FBSectionComponent>(_overlayContent);
-  _overlayGrid->Add(1, 0, 1, 3, _overlaySection);
+  _overlayMargin = StoreComponent<FBMarginComponent>(true, true, true, true, _overlayContent);
+  _overlayGrid->Add(1, 0, 1, 3, _overlayMargin);
   _overlayGrid->MarkSection({ { 1, 0 }, { 1, 3 } }, FBGridSectionMark::Border);
   _overlayContainer = StoreComponent<FBModuleComponent>(true);
 }
