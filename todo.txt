@@ -12,17 +12,16 @@ TODOLIST for beta-2
 [x] 16 env stage
 [x] do always show grid option for mseg
 [x] section->margin
-[ ] roundedrect 3?
-[ ] subsection->section
+[x] subsection->section
+[x] theme the overlays
+[x] env stage nr when not synced
 [ ] recheck all the margins
 [ ] tooltips
 [ ] longer display names
 [ ] longer comboboxes
-[ ] theme the overlays
 [ ] check all the buttons
 [ ] run a debug build
 [ ] maybe drop filler
-[ ] env stage nr when not synced
 [ ] hunt down all juce::colour and 0xFFBLA and colourid
 [ ] "disabled by" tooltip
 [ ] modulecomponent everywhere
