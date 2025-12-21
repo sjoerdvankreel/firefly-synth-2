@@ -52,8 +52,24 @@ public:
   void drawLabel(
     juce::Graphics&, juce::Label&) override;
 
-  void drawPopupMenuBackground(
-    juce::Graphics& g, int width, int height) override;
+  void drawPopupMenuBackgroundWithOptions(
+    juce::Graphics& g, 
+    int width, int height, 
+    const juce::PopupMenu::Options& options) override;
+
+  void drawPopupMenuItemWithOptions(
+    juce::Graphics& g, const juce::Rectangle<int>& area,
+    bool isHighlighted,
+    const juce::PopupMenu::Item& item,
+    const juce::PopupMenu::Options& options) override;
+
+  void drawPopupMenuItem(
+    juce::Graphics& g, const juce::Rectangle<int>& area,
+    const bool isSeparator, const bool isActive,
+    const bool isHighlighted, const bool isTicked,
+    const bool hasSubMenu, const juce::String& text,
+    const juce::String& shortcutKeyText,
+    const juce::Drawable* icon, const juce::Colour* const textColourToUse) override;
 
   juce::Rectangle<int> getTooltipBounds(
     const juce::String& tipText, 
