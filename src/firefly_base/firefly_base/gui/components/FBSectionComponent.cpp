@@ -13,7 +13,7 @@ Component()
 void
 FBSectionComponent::resized()
 {
-  getChildComponent(0)->setBounds(getLocalBounds().reduced(2, 2));
+  getChildComponent(0)->setBounds(getLocalBounds().reduced(0, 2));
   getChildComponent(0)->resized();
 }
 
@@ -27,7 +27,7 @@ FBSectionComponent::FixedHeight() const
 int
 FBSectionComponent::FixedWidth(int height) const
 {
-  return dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height - 4) + 4;
+  return dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height - 4);
 }
 
 FBSubSectionComponent::

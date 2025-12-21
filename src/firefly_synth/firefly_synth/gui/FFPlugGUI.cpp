@@ -269,9 +269,9 @@ FFPlugGUI::SetupGUI()
   _main->Add(6, 0, FFMakeEnvGUI(this, _msegEditors));
 
   _tabs = StoreComponent<FBAutoSizeTabComponent>();
-  _tabs->addTab("Main", Colours::black, _main, false);
-  _tabs->addTab("Matrix", Colours::black, _matrix, false);
-  _tabs->addTab("Unison", Colours::black, _globalUni, false);
+  _tabs->addTab("Main", Colours::black, StoreComponent<FBSectionComponent>(_main), false);
+  _tabs->addTab("Matrix", Colours::black, StoreComponent<FBSectionComponent>(_matrix), false);
+  _tabs->addTab("Unison", Colours::black, StoreComponent<FBSectionComponent>(_globalUni), false);
   _mainTabChangedListener = std::make_unique<FFMainTabChangedListener>(this);
   _tabs->getTabbedButtonBar().addChangeListener(_mainTabChangedListener.get());
 
