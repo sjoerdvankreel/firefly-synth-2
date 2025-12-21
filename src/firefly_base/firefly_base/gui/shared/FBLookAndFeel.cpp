@@ -174,63 +174,30 @@ FBLookAndFeel::DrawRotarySliderExchangeThumb(
 void
 FBLookAndFeel::DrawTabButtonPart(
   TabBarButton& button, Graphics& g,
-  bool isMouseOver, bool isMouseDown,
+  bool isMouseOver, bool /*isMouseDown*/,
   bool toggleState, bool centerText,
   bool isSeparator, std::string const& text,
   Rectangle<int> const& activeArea)
 {
-  (void)toggleState;
-  (void)isMouseDown;
-  (void)isMouseOver;
-
   auto const& scheme = FindColorSchemeFor(button);
   if(isSeparator)
     g.setColour(scheme.primary.darker(1.0f));
   else
     g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(activeArea.toFloat(), 2.0f);
-  g.setColour(scheme.sectionBorder);
-  g.drawRoundedRectangle(activeArea.toFloat(), 2.0f, 1.0f);
 
-#if 0
-  if (toggleState)
-    g.setColour(bkg);
+  if(toggleState)
+    g.setColour(scheme.primary);
   else
-    g.setGradientFill(ColourGradient(
-      bkg.brighter(0.2f), activeArea.getTopLeft().toFloat(),
-      bkg.darker(0.1f), activeArea.getBottomLeft().toFloat(), false));
-
-  g.setColour(scheme.primary.darker(1.0f));
-  g.fillRect(activeArea);
-  g.setColour(button.findColour(TabbedButtonBar::tabOutlineColourId));
-
-  Rectangle<int> r(activeArea);
-  g.fillRect(r.removeFromTop(1));
-  g.fillRect(r.removeFromLeft(1));
-  g.fillRect(r.removeFromRight(1));
-  g.fillRect(r.removeFromBottom(1));
-
-  const float alpha = button.isEnabled() ? ((isMouseOver || isMouseDown) ? 1.0f : 0.8f) : 0.3f;
-  Colour col(bkg.contrasting().withMultipliedAlpha(alpha));
-
-  if (TabbedButtonBar* bar = button.findParentComponentOfClass<TabbedButtonBar>())
-  {
-    TabbedButtonBar::ColourIds colID = button.isFrontTab() ? TabbedButtonBar::frontTextColourId : TabbedButtonBar::tabTextColourId;
-    if (bar->isColourSpecified(colID))
-      col = bar->findColour(colID);
-    else if (isColourSpecified(colID))
-    
-      col = findColour(colID);
-  }
-#endif
-
+    g.setColour(scheme.sectionBorder);
+  g.drawRoundedRectangle(activeArea.toFloat(), 2.0f, 1.0f);
 
   TextLayout textLayout;
   const Rectangle<float> area(activeArea.toFloat());
   float length = area.getWidth();
   float depth = area.getHeight();
-  ::CreateTabTextLayout(button, length, scheme.text, FBGUIGetFont(), centerText, text, textLayout);
-
+  auto textColor = scheme.text.darker(isSeparator || isMouseOver || toggleState ? 0.0f : scheme.dimDisabled);
+  ::CreateTabTextLayout(button, length, textColor, FBGUIGetFont(), centerText, text, textLayout);
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));
   textLayout.draw(g, Rectangle<float>(length, depth));
 }
