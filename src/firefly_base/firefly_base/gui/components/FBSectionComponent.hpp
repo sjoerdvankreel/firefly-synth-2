@@ -5,7 +5,7 @@
 
 class FBPlugGUI;
 
-class FBSubSectionComponent:
+class FBSectionComponent :
 public juce::Component,
 public IFBHorizontalAutoSize,
 public IFBVerticalAutoSize
@@ -16,5 +16,5 @@ public:
   void resized() override;
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
-  FBSubSectionComponent(bool last, juce::Component* content);
+  FBSectionComponent(bool last, juce::Component* content);
 };

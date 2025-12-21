@@ -2,8 +2,8 @@
 
 using namespace juce;
 
-FBSubSectionComponent::
-FBSubSectionComponent(bool last, Component* content) :
+FBSectionComponent::
+FBSectionComponent(bool last, Component* content) :
 Component(),
 _last(last)
 {
@@ -11,7 +11,7 @@ _last(last)
 }
 
 void
-FBSubSectionComponent::resized()
+FBSectionComponent::resized()
 {
   if (_last)
     getChildComponent(0)->setBounds(getLocalBounds().reduced(1, 1));
@@ -21,13 +21,13 @@ FBSubSectionComponent::resized()
 }
 
 int
-FBSubSectionComponent::FixedHeight() const
+FBSectionComponent::FixedHeight() const
 {
   return dynamic_cast<IFBVerticalAutoSize*>(getChildComponent(0))->FixedHeight() + 2;
 }
 
 int
-FBSubSectionComponent::FixedWidth(int height) const
+FBSectionComponent::FixedWidth(int height) const
 {
   auto childWidth = dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height - 2);
   return childWidth + (_last ? 2 : 1);

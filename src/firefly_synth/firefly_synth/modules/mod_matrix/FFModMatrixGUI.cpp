@@ -202,7 +202,7 @@ MakeModMatrixSlotControlGUI(FFPlugGUI* plugGUI)
   grid->Add(0, 2, plugGUI->StoreComponent<FBFillerComponent>(26, 1));
   grid->MarkSection({ { 0, 0 }, { 1, 1 } });
   grid->MarkSection({ { 0, 1 }, { 1, 2 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(false, grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(false, grid);
 }
 
 static Component*
@@ -211,7 +211,7 @@ MakeModMatrixGraphGUI(FFPlugGUI* plugGUI, FFModMatrixGraphType type)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FFModMatrixGraph>(plugGUI, type));
   grid->MarkSection({ { 0, 0 }, { 1, 1 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(true, grid);
 }
 
 static Component*
@@ -395,7 +395,7 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI)
       grid->MarkSection({ { r, c * MatrixControlCount + 13 }, { 1, 2 } });
     }
 
-  return plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(true, grid);
 }
 
 Component*

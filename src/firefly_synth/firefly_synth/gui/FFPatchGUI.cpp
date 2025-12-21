@@ -63,5 +63,5 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
   grid->Add(0, 8, plugGUI->StoreComponent<FBFillerComponent>(13, 1));
   grid->MarkSection({ { 0, 0 }, { 1, 9 } });
 
-  return plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(true, grid);
 }

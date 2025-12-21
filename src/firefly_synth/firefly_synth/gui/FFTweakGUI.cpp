@@ -17,5 +17,5 @@ FFMakeTweakGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 1, plugGUI->StoreComponent<FBLastTweakedLabel>(plugGUI));
   grid->Add(0, 2, plugGUI->StoreComponent<FBLastTweakedTextBox>(plugGUI, 150));
   grid->MarkSection({ { 0, 0 }, { 1, 3 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(true, grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(true, grid);
 }
