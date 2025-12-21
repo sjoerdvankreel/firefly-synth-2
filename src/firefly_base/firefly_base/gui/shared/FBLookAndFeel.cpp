@@ -180,8 +180,8 @@ FBLookAndFeel::DrawTabButtonPart(
   Rectangle<int> const& activeArea)
 {
   auto const& scheme = FindColorSchemeFor(button);
-  if(isSeparator)
-    g.setColour(scheme.primary.darker(1.0f));
+  if (isSeparator)
+    g.setColour(scheme.paramSecondary);
   else
     g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(activeArea.toFloat(), 2.0f);
