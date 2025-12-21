@@ -1,22 +1,22 @@
 {
   "name": "Default",
   "defaultColorScheme": {
-    "dimDisabled": 0.25,
-    "background": "FF000000",
     "graphAlpha": 0.6,
+    "dimDisabled": 0.25,
+    "text": "FFEEEEEE",
+    "primary": "FFF28C28",
+    "background": "FF000000",
     "graphGrid": "FF404040",
     "graphBackground": "FF181818",
-    "sectionText": "FFEEEEEE",
     "sectionBorder": "80FFFFFF",
     "sectionBackground": "FF282828",
-    "paramPrimary": "FFF28C28",
     "paramSecondary": "FF505050",
     "paramHighlight": "80FFFFFF",
     "paramBackground": "FF181818"
   },
   "colorSchemes": {
     "CV": {
-      "paramPrimary": "FF288EF2",
+      "primary": "FF288EF2",
     }
   },
   "moduleColors": [

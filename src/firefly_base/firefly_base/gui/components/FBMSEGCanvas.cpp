@@ -553,7 +553,7 @@ FBMSEGCanvas::paint(Graphics& g)
 
   if (_currentPointsScreen.size() == 0)
   {
-    g.setColour(scheme.paramPrimary); // todo
+    g.setColour(scheme.text.withAlpha(0.5f));
     g.setFont(FBGUIGetFont().withHeight(20.0f));
     g.drawText("OFF", innerBounds, Justification::centred, false);
     return;
@@ -562,7 +562,7 @@ FBMSEGCanvas::paint(Graphics& g)
   path.lineTo(_currentPointsScreen[_currentPointsScreen.size() - 1].getX(), zeroPointScreenY);
   path.closeSubPath();
   
-  auto fillColor = scheme.paramPrimary.darker(_model.enabled ? 0.0f : scheme.dimDisabled);
+  auto fillColor = scheme.primary.darker(_model.enabled ? 0.0f : scheme.dimDisabled);
   g.setColour(fillColor.withAlpha(scheme.graphAlpha));
   g.fillPath(path);
   g.setColour(fillColor);

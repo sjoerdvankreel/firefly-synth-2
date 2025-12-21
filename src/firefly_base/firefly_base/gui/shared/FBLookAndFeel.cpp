@@ -269,9 +269,9 @@ FBLookAndFeel::drawLabel(
   }
 
   auto const& scheme = FindColorSchemeFor(label);
-  auto colorText = scheme.sectionText;
+  auto colorText = scheme.text;
   if (auto b = label.findParentComponentOfClass<ComboBox>())
-    colorText = scheme.paramPrimary.darker(b->isEnabled() ? 0.0f : scheme.dimDisabled);
+    colorText = scheme.primary.darker(b->isEnabled() ? 0.0f : scheme.dimDisabled);
 
   g.setFont(getLabelFont(label));
   g.setColour(colorText);
@@ -343,7 +343,7 @@ FBLookAndFeel::drawTickBox(
   if (ticked)
   {
     auto pathBounds = tickBounds.reduced(6.0f, 6.0f);
-    g.setColour(scheme.paramPrimary.darker(component.isEnabled()? 0.0f: scheme.dimDisabled));
+    g.setColour(scheme.primary.darker(component.isEnabled()? 0.0f: scheme.dimDisabled));
     Path p;
     p.startNewSubPath(pathBounds.getTopLeft());
     p.lineTo(pathBounds.getBottomRight());
@@ -427,7 +427,7 @@ FBLookAndFeel::drawLinearSlider(
     }
   }
 
-  g.setColour(scheme.paramPrimary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
+  g.setColour(scheme.primary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
   g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
   g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
   if (paramSlider != nullptr && paramSlider->IsHighlightTweaked())
@@ -448,10 +448,10 @@ FBLookAndFeel::drawButtonBackground(
   auto bounds = button.getLocalBounds().toFloat().reduced(3.0f, 3.0f);
   auto const& scheme = FindColorSchemeFor(button);
 
-  auto color = scheme.paramPrimary;
-  g.setColour(scheme.paramPrimary.darker(1.0f).brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
+  auto color = scheme.primary;
+  g.setColour(scheme.primary.darker(1.0f).brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
   g.fillRoundedRectangle(bounds, cornerSize);
-  g.setColour(scheme.paramPrimary);
+  g.setColour(scheme.primary);
   g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
   if (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted)
   {
@@ -564,14 +564,14 @@ FBLookAndFeel::drawRotarySlider(
   auto thumbWidth = lineW * 2.0f;
   Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(scheme.paramPrimary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
+  g.setColour(scheme.primary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 
   if (paramSlider != nullptr && paramSlider->IsHighlightTweaked())
   { 
     g.setColour(scheme.paramHighlight);
     g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
-  }
+  } 
 }
 
 juce::Rectangle<int> 

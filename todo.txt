@@ -10,7 +10,8 @@ TODOLIST for beta-2
 [x] the buttons must be smaller
 [x] split the osci subsections
 [x] 16 env stage
-[ ] do always show grid option for mseg
+[x] do always show grid option for mseg
+[ ] tooltips
 [ ] longer display names
 [ ] longer comboboxes
 [ ] theme the overlays

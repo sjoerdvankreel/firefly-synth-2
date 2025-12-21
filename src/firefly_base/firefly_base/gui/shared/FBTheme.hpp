@@ -14,13 +14,13 @@ struct FBColorScheme
 {
   float graphAlpha = {};
   float dimDisabled = {};
+  juce::Colour text = {};
   juce::Colour background = {};
   juce::Colour graphGrid = {};
   juce::Colour graphBackground = {};
-  juce::Colour sectionText = {};
   juce::Colour sectionBorder = {};
   juce::Colour sectionBackground = {};
-  juce::Colour paramPrimary = {};
+  juce::Colour primary = {};
   juce::Colour paramSecondary = {};
   juce::Colour paramHighlight = {};
   juce::Colour paramBackground = {};

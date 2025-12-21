@@ -222,17 +222,17 @@ ParseDefaultColorScheme(
     return false;
   result.sectionBackground = Colour::fromString(obj->getProperty("sectionBackground").toString());
 
-  if (!RequireStringProperty(obj, "sectionText"))
+  if (!RequireStringProperty(obj, "text"))
     return false;
-  result.sectionText = Colour::fromString(obj->getProperty("sectionText").toString());
+  result.text = Colour::fromString(obj->getProperty("text").toString());
 
   if (!RequireStringProperty(obj, "paramSecondary"))
     return false;
   result.paramSecondary = Colour::fromString(obj->getProperty("paramSecondary").toString());
 
-  if (!RequireStringProperty(obj, "paramPrimary"))
+  if (!RequireStringProperty(obj, "primary"))
     return false;
-  result.paramPrimary = Colour::fromString(obj->getProperty("paramPrimary").toString());
+  result.primary = Colour::fromString(obj->getProperty("primary").toString());
 
   if (!RequireStringProperty(obj, "paramHighlight"))
     return false;
@@ -292,17 +292,17 @@ ParseColorScheme(
     return false;
   result.sectionBackground = present ? Colour::fromString(obj->getProperty("sectionBackground").toString()) : defaultScheme.sectionBackground;
 
-  if (!OptionalStringProperty(obj, "sectionText", present))
+  if (!OptionalStringProperty(obj, "text", present))
     return false;
-  result.sectionText = present ? Colour::fromString(obj->getProperty("sectionText").toString()) : defaultScheme.sectionText;
+  result.text = present ? Colour::fromString(obj->getProperty("text").toString()) : defaultScheme.text;
 
   if (!OptionalStringProperty(obj, "paramSecondary", present))
     return false;
   result.paramSecondary = present ? Colour::fromString(obj->getProperty("paramSecondary").toString()) : defaultScheme.paramSecondary;
 
-  if (!OptionalStringProperty(obj, "paramPrimary", present))
+  if (!OptionalStringProperty(obj, "primary", present))
     return false;
-  result.paramPrimary = present ? Colour::fromString(obj->getProperty("paramPrimary").toString()) : defaultScheme.paramPrimary;
+  result.primary = present ? Colour::fromString(obj->getProperty("primary").toString()) : defaultScheme.primary;
 
   if (!OptionalStringProperty(obj, "paramHighlight", present))
     return false;
