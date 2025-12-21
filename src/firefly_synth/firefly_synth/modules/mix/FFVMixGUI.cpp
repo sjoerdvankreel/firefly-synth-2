@@ -192,6 +192,6 @@ FFMakeVMixGUITab(FBPlugGUI* plugGUI)
   grid->Add(0, 2, MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(plugGUI));
   grid->Add(0, 3, MakeVMixSectionOsciAndVFXToOut(plugGUI));
   grid->Add(0, 4, MakeVMixGUISectionAmpBalAndOsciMixToOut(plugGUI));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(false, false, true, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::VMix, 0, margin);
 }

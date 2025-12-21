@@ -69,6 +69,6 @@ FFMakeOsciModTab(FBPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   grid->Add(0, 0, FFMakeOsciModGUISectionMain(plugGUI));
   grid->Add(0, 1, FFMakeOsciModGUISectionMod(plugGUI));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(false, false, true, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::OsciMod, 0, margin);
 }

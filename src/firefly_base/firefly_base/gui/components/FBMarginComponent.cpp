@@ -1,6 +1,7 @@
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 
-static int const MarginSize = 2;
+static int const MarginX = 1;
+static int const MarginY = 2;
 
 using namespace juce;
 
@@ -18,21 +19,21 @@ _bottom(b)
 int
 FBMarginComponent::ExtraX() const
 {
-  return (_left ? 1 : 0) * MarginSize + (_right ? 1 : 0) * MarginSize;
+  return (_left ? 1 : 0) * MarginX + (_right ? 1 : 0) * MarginX;
 }
 
 int
 FBMarginComponent::ExtraY() const
 {
-  return (_top ? 1 : 0) * MarginSize + (_bottom ? 1 : 0) * MarginSize;
+  return (_top ? 1 : 0) * MarginY + (_bottom ? 1 : 0) * MarginY;
 }
 
 void
 FBMarginComponent::resized()
 {
   auto bounds = Rectangle<int>(
-    getLocalBounds().getX() + _left ? MarginSize : 0,
-    getLocalBounds().getY() + _top ? MarginSize : 0,
+    getLocalBounds().getX() + _left ? MarginX : 0,
+    getLocalBounds().getY() + _top ? MarginY : 0,
     getLocalBounds().getWidth() - ExtraX(),
     getLocalBounds().getHeight() - ExtraY());
   getChildComponent(0)->setBounds(bounds);

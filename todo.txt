@@ -11,6 +11,7 @@ TODOLIST for beta-2
 [x] split the osci subsections
 [x] 16 env stage
 [x] do always show grid option for mseg
+[ ] roundedrect 3
 [ ] section->margin
 [ ] subsection->section
 [ ] recheck all the margins

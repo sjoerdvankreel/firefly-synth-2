@@ -386,7 +386,7 @@ MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 2, MakeOsciSectionFM(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeOsciSectionString(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeOsciSectionExtAudio(plugGUI, moduleSlot));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(false, false, true, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Osci, moduleSlot, margin);
 }
 

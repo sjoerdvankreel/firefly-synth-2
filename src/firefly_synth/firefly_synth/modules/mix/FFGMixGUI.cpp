@@ -151,6 +151,6 @@ FFMakeGMixGUITab(FBPlugGUI* plugGUI)
   grid->Add(0, 2, MakeGMixSectionGFXToOut(plugGUI));
   grid->Add(0, 3, MakeGMixGUISectionVoiceAndExtAudioToOut(plugGUI));
   grid->Add(0, 4, MakeGMixGUISectionAmpBal(plugGUI));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(false, false, true, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::GMix, 0, margin);
 }

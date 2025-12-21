@@ -111,7 +111,7 @@ MakeLFOTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   grid->Add(0, 2, MakeLFOSectionSkewA(plugGUI, moduleType, moduleSlot));
   for (int i = 0; i < FFLFOBlockCount - 1; i++)
     grid->Add(0, 3 + i, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, i + 1));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(false, false, true, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, moduleSlot, margin);
 }
 
