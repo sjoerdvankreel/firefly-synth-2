@@ -170,6 +170,7 @@ FBModuleTabComponent::TabRightClicked(int tabIndex)
 
   PopupMenu::Options options;
   options = options.withParentComponent(_plugGUI);
+  options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
   options = options.withTargetComponent(getTabbedButtonBar().getTabButton(tabIndex));
   menu.showMenuAsync(options, [this, moduleIndices, slotCount = staticModule.slotCount](int id) {
     std::string name = _plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;

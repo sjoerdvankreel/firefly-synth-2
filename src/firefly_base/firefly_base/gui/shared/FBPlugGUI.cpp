@@ -236,6 +236,7 @@ FBPlugGUI::ShowPopupMenuFor(
   PopupMenu::Options options;
   options = options.withParentComponent(this);
   options = options.withTargetComponent(target);
+  options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
   options = options.withMousePosition();
   menu.showMenuAsync(options, callback);
 }
@@ -467,8 +468,9 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
     menu.addItem(5, "Redo " + undoState.RedoAction());
 
   PopupMenu::Options options;
-  options = options.withParentComponent(this);
   options = options.withMousePosition();
+  options = options.withParentComponent(this);
+  options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
   menu.showMenuAsync(options, [this](int id) {
     if (id == 1) HostContext()->ShowOnlineManual();
     if (id == 4) HostContext()->UndoState().Undo();
@@ -587,6 +589,7 @@ FBPlugGUI::LoadPreset(Component* clickedFrom)
   PopupMenu::Options options = {};
   options = options.withParentComponent(this);
   options = options.withTargetComponent(clickedFrom);
+  options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
   presetMenu.showMenuAsync(options);
 }
 

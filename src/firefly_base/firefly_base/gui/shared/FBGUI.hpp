@@ -19,6 +19,7 @@ int FBGUIGetFontHeightInt();
 float FBGUIGetFontHeightFloat();
 juce::Font const& FBGUIGetFont();
 FBLookAndFeel* FBGetLookAndFeel();
+int FBGUIGetStandardPopupMenuItemHeight();
 
 int FBGUIGetStringWidthCached(std::string const& text);
 juce::Point<int> FBGUIGetStringSizeCached(std::string const& text);
