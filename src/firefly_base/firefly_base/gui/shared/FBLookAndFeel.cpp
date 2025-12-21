@@ -255,6 +255,16 @@ FBLookAndFeel::positionComboBoxText(
 }
 
 void 
+FBLookAndFeel::drawPopupMenuBackground(
+  Graphics& g, int width, int height)
+{
+  auto const& scheme = Theme().defaultColorScheme;
+  g.fillAll(scheme.paramBackground);
+  g.setColour(scheme.paramSecondary);
+  g.drawRect(0, 0, width, height);
+}
+
+void 
 FBLookAndFeel::drawLabel(
   Graphics& g, Label& label)
 {

@@ -15,6 +15,7 @@ TODOLIST for beta-2
 [x] subsection->section
 [x] theme the overlays
 [x] env stage nr when not synced
+[ ] test lin and mac
 [ ] recheck all the margins
 [ ] tooltips
 [ ] longer display names
