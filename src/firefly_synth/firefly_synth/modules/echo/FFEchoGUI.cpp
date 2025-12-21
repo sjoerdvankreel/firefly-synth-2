@@ -325,6 +325,7 @@ FFMakeEchoGUI(FBPlugGUI* plugGUI)
   auto topo = plugGUI->HostContext()->Topo();
   auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::EchoSelectedTab, 0 } });
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
+  tabs->SetTabSeparatorText(0, "Echo");
   tabs->AddModuleTab(false, true, { (int)FFModuleType::VEcho, 0 }, MakeEchoTab(plugGUI, false));
   tabs->AddModuleTab(false, true, { (int)FFModuleType::GEcho, 0 }, MakeEchoTab(plugGUI, true));
   tabs->ActivateStoredSelectedTab();

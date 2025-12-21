@@ -43,6 +43,7 @@ FFMakeMixGUI(FBPlugGUI* plugGUI)
   auto topo = plugGUI->HostContext()->Topo();
   auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::MixSelectedTab, 0 } });
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
+  tabs->SetTabSeparatorText(0, "Mix");
   tabs->AddModuleTab(false, true, { (int)FFModuleType::VMix, 0 }, FFMakeVMixGUITab(plugGUI));
   tabs->AddModuleTab(false, true, { (int)FFModuleType::GMix, 0 }, FFMakeGMixGUITab(plugGUI));
   tabs->ActivateStoredSelectedTab();

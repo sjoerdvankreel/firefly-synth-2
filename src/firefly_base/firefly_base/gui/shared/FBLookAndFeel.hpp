@@ -26,7 +26,7 @@ public juce::LookAndFeel_V4
     juce::TabBarButton& button, juce::Graphics& g,
     bool isMouseOver, bool isMouseDown,
     bool toggleState, bool centerText,
-    std::string const& text,
+    bool isSeparator, std::string const& text,
     juce::Rectangle<int> const& activeArea);
 
 public:  

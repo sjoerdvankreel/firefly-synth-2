@@ -176,7 +176,7 @@ FBLookAndFeel::DrawTabButtonPart(
   TabBarButton& button, Graphics& g,
   bool isMouseOver, bool isMouseDown,
   bool toggleState, bool centerText,
-  std::string const& text,
+  bool isSeparator, std::string const& text,
   Rectangle<int> const& activeArea)
 {
   (void)toggleState;
@@ -184,7 +184,10 @@ FBLookAndFeel::DrawTabButtonPart(
   (void)isMouseOver;
 
   auto const& scheme = FindColorSchemeFor(button);
-  g.setColour(scheme.paramBackground);
+  if(isSeparator)
+    g.setColour(scheme.primary.darker(1.0f));
+  else
+    g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(activeArea.toFloat(), 2.0f);
   g.setColour(scheme.sectionBorder);
   g.drawRoundedRectangle(activeArea.toFloat(), 2.0f, 1.0f);
@@ -707,13 +710,13 @@ FBLookAndFeel::drawTabButton(
 
   if (separatorText.empty())
   {
-    DrawTabButtonPart(button, g, isMouseOver, isMouseDown, toggleState, centerText, buttonText, activeArea.reduced(1, 0));
+    DrawTabButtonPart(button, g, isMouseOver, isMouseDown, toggleState, centerText, false, buttonText, activeArea.reduced(1, 0));
     return;
   }
 
   int size = large ? TabSizeLarge : TabSizeSmall;
   auto separatorArea = Rectangle<int>(activeArea.getX() + 1, activeArea.getY(), TabSizeLarge - 2, activeArea.getHeight());
-  DrawTabButtonPart(button, g, false, false, false, false, separatorText, separatorArea);
+  DrawTabButtonPart(button, g, false, false, false, false, true, separatorText, separatorArea);
   auto buttonArea = Rectangle<int>(activeArea.getX() + TabSizeLarge + 1, activeArea.getY(), size - 2, activeArea.getHeight());
-  DrawTabButtonPart(button, g, isMouseOver, isMouseDown, toggleState, centerText, buttonText, buttonArea);
+  DrawTabButtonPart(button, g, isMouseOver, isMouseDown, toggleState, centerText, false, buttonText, buttonArea);
 }
