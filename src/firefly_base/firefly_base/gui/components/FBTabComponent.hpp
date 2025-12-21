@@ -18,6 +18,9 @@ public juce::TabBarButton
 public:
   bool large = false;
   bool centerText = false;
+  bool isModuleTab = false;
+  FBTopoIndices moduleIndices = {};
+
   FBTabBarButton(
     const juce::String& name, 
     juce::TabbedButtonBar& bar);

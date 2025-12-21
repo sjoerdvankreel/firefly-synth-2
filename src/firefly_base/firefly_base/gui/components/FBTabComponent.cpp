@@ -133,8 +133,11 @@ FBModuleTabComponent::AddModuleTab(
 
   addTab(header, Colours::black, component, false);
   auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
-  dynamic_cast<FBTabBarButton&>(*button).large = large;
-  dynamic_cast<FBTabBarButton&>(*button).centerText = centerText;
+  auto& fbTabButton = dynamic_cast<FBTabBarButton&>(*button);
+  fbTabButton.large = large;
+  fbTabButton.centerText = centerText;
+  fbTabButton.isModuleTab = true;
+  fbTabButton.moduleIndices = moduleIndices;
 }
 
 void 

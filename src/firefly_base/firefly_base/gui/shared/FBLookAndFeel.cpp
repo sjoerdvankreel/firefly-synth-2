@@ -113,14 +113,24 @@ FBLookAndFeel::FindColorSchemeFor(
     }
   }
 
-  if(auto gui = c.findParentComponentOfClass<FBPlugGUI>())
-    if (auto m = c.findParentComponentOfClass<FBModuleComponent>())
+  if (auto gui = c.findParentComponentOfClass<FBPlugGUI>())
+  {
+    int rtModuleIndex = -1;
+    FBTabBarButton const* tabBarButton = nullptr;
+    tabBarButton = dynamic_cast<FBTabBarButton const*>(&c);
+    if (tabBarButton == nullptr)
+      tabBarButton = c.findParentComponentOfClass<FBTabBarButton>();
+    if (tabBarButton != nullptr)
+      rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at(tabBarButton->moduleIndices);
+    else if (auto m = c.findParentComponentOfClass<FBModuleComponent>())
+      rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at({ m->ModuleIndex(), m->ModuleSlot() });
+    if (rtModuleIndex != -1)
     {
-      int rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at({ m->ModuleIndex(), m->ModuleSlot() });
       auto moduleIter = Theme().moduleColors.find(rtModuleIndex);
       if (moduleIter != Theme().moduleColors.end())
         return Theme().colorSchemes.at(moduleIter->second.colorScheme);
     }
+  }
 
   return Theme().defaultColorScheme;
 }
@@ -178,6 +188,8 @@ FBLookAndFeel::DrawTabButtonPart(
       bkg.brighter(0.2f), activeArea.getTopLeft().toFloat(),
       bkg.darker(0.1f), activeArea.getBottomLeft().toFloat(), false));
 
+  auto const& scheme = FindColorSchemeFor(button);
+  g.setColour(scheme.primary.darker(1.0f));
   g.fillRect(activeArea);
   g.setColour(button.findColour(TabbedButtonBar::tabOutlineColourId));
 
