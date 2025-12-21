@@ -30,6 +30,7 @@ TODOLIST for beta-2
 [ ] theme and prettify the gui
 [ ] theme the combo popouts (or all of them, filepicker etc)
 [ ] explain theme in manual
+[ ] update docs for string HPF (see GitHub bug)
 
 TODOLIST for beta-next
 [ ] not right-click-change horizontal sliders
