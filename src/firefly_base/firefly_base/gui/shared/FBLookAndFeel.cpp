@@ -342,7 +342,7 @@ FBLookAndFeel::drawPopupMenuItem(
     if (font.getHeight() > maxFontHeight)
       font.setHeight(maxFontHeight);
 
-    g.setFont(font.withHeight(FBGUIGetPopupMenuFontHeightInt()));
+    g.setFont(font.withHeight(FBGUIGetPopupMenuFontHeightFloat()));
 
     auto iconArea = r.removeFromLeft(roundToInt(maxFontHeight)).toFloat();
 
