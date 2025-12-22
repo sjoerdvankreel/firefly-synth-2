@@ -4,6 +4,7 @@
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 
 using namespace juce;
@@ -15,7 +16,8 @@ FFMakeTweakGUI(FBPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Last Tweaked:"));
   grid->Add(0, 1, plugGUI->StoreComponent<FBLastTweakedLabel>(plugGUI));
-  grid->Add(0, 2, plugGUI->StoreComponent<FBLastTweakedTextBox>(plugGUI, 150));
+  auto box = plugGUI->StoreComponent<FBLastTweakedTextBox>(plugGUI, 150);
+  grid->Add(0, 2, plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, box));
   grid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::BackgroundAndBorder);
   return plugGUI->StoreComponent<FBSectionComponent>(true, grid);
 }
