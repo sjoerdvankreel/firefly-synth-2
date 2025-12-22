@@ -1,5 +1,6 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/controls/FBParamDisplay.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -69,6 +70,8 @@ FBParamDisplayMeter::SetValueNormalizedFromHost(double normalized)
 void 
 FBParamDisplayMeter::paint(Graphics& g)
 {
+  auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
+
   float const gapSize = 2.0f;
   float const barHeight = 10.0f;
   int const gapCount = MeterBarCount - 1;
@@ -77,10 +80,10 @@ FBParamDisplayMeter::paint(Graphics& g)
   float const barSize = (getLocalBounds().getWidth() - totalGapSize) / MeterBarCount;
 
   int i = 0;
-  g.setColour(Colours::lightgrey);
+  g.setColour(scheme.primary);
   for (; i < _fillCount; i++)
     g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
-  g.setColour(Colours::darkgrey);
+  g.setColour(scheme.paramSecondary);
   for (; i < MeterBarCount; i++)
     g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
 }
