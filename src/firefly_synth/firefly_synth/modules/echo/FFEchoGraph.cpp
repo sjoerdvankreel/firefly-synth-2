@@ -169,16 +169,22 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
 
   int tapsOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Taps);
   FBRenderModuleGraph<Global, true>(renderData, tapsOrder);
+  graphData->graphs[tapsOrder].moduleSlot = 0;
+  graphData->graphs[tapsOrder].moduleIndex = (int)moduleType;
   graphData->graphs[tapsOrder].title = FBAsciiToUpper(moduleName + " Taps");
   graphData->graphs[tapsOrder].subtext = IsTapsOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   int feedbackOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Feedback);
   FBRenderModuleGraph<Global, true>(renderData, feedbackOrder);
+  graphData->graphs[feedbackOrder].moduleSlot = 0;
+  graphData->graphs[feedbackOrder].moduleIndex = (int)moduleType;
   graphData->graphs[feedbackOrder].title = FBAsciiToUpper(moduleName + " Fdbk");
   graphData->graphs[feedbackOrder].subtext = IsFeedbackOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   int reverbOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Reverb);
   FBRenderModuleGraph<Global, true>(renderData, reverbOrder);
+  graphData->graphs[reverbOrder].moduleSlot = 0;
+  graphData->graphs[reverbOrder].moduleIndex = (int)moduleType;
   graphData->graphs[reverbOrder].title = FBAsciiToUpper(moduleName + " Rvrb");
   graphData->graphs[reverbOrder].subtext = IsReverbOn(renderState, Global, false, -1) ? "ON" : "OFF";
 

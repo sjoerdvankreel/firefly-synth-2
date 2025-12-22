@@ -204,6 +204,8 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     graphData->graphs[o].title = FBAsciiToUpper(graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name);
     auto envType = graphData->renderState->AudioParamList<FFEnvType>(paramIndices, false, -1);
     graphData->graphs[o].subtext = FBAsciiToUpper(FFEnvTypeToString(envType));
+    graphData->graphs[o].moduleSlot = o;
+    graphData->graphs[o].moduleIndex = (int)FFModuleType::Env;
   }
   graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;
 }

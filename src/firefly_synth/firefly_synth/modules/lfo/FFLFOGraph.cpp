@@ -144,6 +144,8 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   for (int i = 0; i <= FFLFOBlockCount; i++)
   {
     FBRenderModuleGraph<Global, false>(renderData, i);
+    graphData->graphs[i].moduleSlot = moduleSlot;
+    graphData->graphs[i].moduleIndex = (int)moduleType;
     if (i == FFLFOBlockCount)
     {
       graphData->graphs[i].title = moduleName;

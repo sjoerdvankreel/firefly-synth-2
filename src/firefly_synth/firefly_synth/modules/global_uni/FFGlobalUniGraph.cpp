@@ -110,6 +110,8 @@ GlobalUniGraphRenderData::DoPostProcess(
 void
 FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData)
 {
+  // TODO slots
+
   GlobalUniGraphRenderData renderData = {};
   graphData->bipolar = false;
   graphData->pointIndicatorSize = 4;

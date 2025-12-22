@@ -33,6 +33,8 @@ private:
   mutable float _absMaxValueAllSeries = {};
 
 public:
+  int moduleSlot = -1;
+  int moduleIndex = -1;
   std::string title = {};
   std::string subtext = {};
   std::vector<int> primaryMarkers = {};
