@@ -743,30 +743,52 @@ FBLookAndFeel::drawTooltip(
   Graphics& g, const String& text,
   int width, int height)
 {
+  // Tooltip window doesnt provide the target component, so wing it.
+  // Won't be 100% accurate, but worst that can happen is we pick up the wrong color scheme.
+  bool newCompIsParam = false;
+  auto const* scheme = &Theme().defaultColorScheme;
+  const auto mouseSource = Desktop::getInstance().getMainMouseSource();
+  auto* newComp = mouseSource.isTouch() ? nullptr : mouseSource.getComponentUnderMouse();
+  if (newComp != nullptr)
+  {
+    scheme = &FindColorSchemeFor(*newComp);
+    newCompIsParam |= dynamic_cast<FBParamControl*>(newComp) != nullptr;
+    newCompIsParam |= dynamic_cast<FBGUIParamControl*>(newComp) != nullptr;
+    newCompIsParam |= dynamic_cast<FBParamControl*>(newComp->findParentComponentOfClass<ComboBox>()) != nullptr;
+    newCompIsParam |= dynamic_cast<FBGUIParamControl*>(newComp->findParentComponentOfClass<ComboBox>()) != nullptr;
+  }
+
   auto cornerSize = 5.0f;
   Rectangle<int> bounds(width, height);
-  g.setColour(findColour(TooltipWindow::backgroundColourId));
+  g.setColour(scheme->background);
+  g.fillRect(bounds.toFloat());
+  g.setColour(scheme->paramBackground);
   g.fillRoundedRectangle(bounds.toFloat(), cornerSize);
-  g.setColour(findColour(TooltipWindow::outlineColourId));
+  g.setColour(scheme->primary);
   g.drawRoundedRectangle(bounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
 
+  int i = 0;
   float pad = 3.0f;
   float fontSize = 13.0f;
   auto trimmed = text.trim();
   float textHeight = FBGUIGetFontHeightFloat() + 2.0f;
   auto lines = FBStringSplit(trimmed.toStdString(), "\r\n");
   auto textBounds = Rectangle<float>(pad, pad, width - 2.0f * pad, textHeight);
-  g.setColour(findColour(TooltipWindow::textColourId));
   g.setFont(Font(FontOptions(fontSize, Font::bold).withMetricsKind(getDefaultMetricsKind())));
   while (lines.size() > 0)
   {
     if (lines[0].size() > 0)
+    {
+      if(i == 0 && newCompIsParam)
+        g.setColour(scheme->primary);
+      else
+        g.setColour(scheme->text);
       g.drawText(lines[0], textBounds, Justification::left, false);
+    }
     lines.erase(lines.begin());
     textBounds.translate(0.0f, textHeight);
+    i++;
   }
-  g.setColour(Colours::white);
-  g.drawRoundedRectangle(bounds.toFloat(), cornerSize, 2.0f);
 }
 
 void
