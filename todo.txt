@@ -18,24 +18,25 @@ TODOLIST for beta-2
 [x] panic should not context menu
 [x] tooltips
 [x] extend the tabbar
+[x] sectionborderalpha
+[x] graph pick up the module style
+[x] check all the buttons
+[ ] graph bipolar per slot for fx
+[ ] stuff crashes
 [ ] check the todos
 [ ] check the findcolours
 [ ] check the top rows margins
 [ ] check the alert windows
-[ ] sectionborderalpha
-[ ] graph pick up the module style
-[ ] check all the buttons
 [ ] the default scheme should be grayscale
 [ ] test lin and mac
 [ ] recheck all the margins
 [ ] longer display names
 [ ] longer comboboxes
 [ ] run a debug build
-[ ] maybe drop filler
 [ ] hunt down all juce::colour and 0xFFBLA and colourid
 [ ] "disabled by" tooltip
 [ ] modulecomponent everywhere
-[ ] dump module/paramlist guid option
+[ ] dump module/paramlist guid option?
 [ ] theme and prettify the gui
 [ ] theme the combo popouts (or all of them, filepicker etc)
 [ ] explain theme in manual
