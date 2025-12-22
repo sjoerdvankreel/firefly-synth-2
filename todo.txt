@@ -16,13 +16,13 @@ TODOLIST for beta-2
 [x] theme the overlays
 [x] env stage nr when not synced
 [x] panic should not context menu
+[ ] tooltips
+[ ] check all the buttons
 [ ] the default scheme should be grayscale
 [ ] test lin and mac
 [ ] recheck all the margins
-[ ] tooltips
 [ ] longer display names
 [ ] longer comboboxes
-[ ] check all the buttons
 [ ] run a debug build
 [ ] maybe drop filler
 [ ] hunt down all juce::colour and 0xFFBLA and colourid

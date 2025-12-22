@@ -278,7 +278,8 @@ FBPlugGUI::ShowMenuForGUIParam(int index)
       GUIParamNormalizedChanged(index, normalized);
     }
   };
-  ShowPopupMenuFor(this, *menu, clicked);
+  auto* control = &dynamic_cast<Component&>(*GetControlForAudioParamIndex(index, 0));
+  ShowPopupMenuFor(control, *menu, clicked);
 }
 
 void
@@ -327,7 +328,8 @@ FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
       HostContext()->AudioParamContextMenuClicked(index, tag - 1000);
     }
   };
-  ShowPopupMenuFor(this, *menu, clicked);
+  auto* control = &dynamic_cast<Component&>(*GetControlForAudioParamIndex(index, 0));
+  ShowPopupMenuFor(control, *menu, clicked);
 }
 
 Component*
