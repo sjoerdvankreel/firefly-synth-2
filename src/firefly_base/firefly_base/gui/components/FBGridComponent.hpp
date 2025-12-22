@@ -32,6 +32,7 @@ struct FBGridSection final
 
 struct FBGridSectionAndMark final 
 {
+  int marginR = 0;
   FBGridSection section = {};
   FBGridSectionMark mark = {};
 };
@@ -71,7 +72,7 @@ public:
   void Add(int row, int col, juce::Component* child);
   void Remove(int row, int col, juce::Component* child);
   void Add(int row, int col, int rowSpan, int colSpan, juce::Component* child);
-  void MarkSection(FBGridSection const& section, FBGridSectionMark mark = FBGridSectionMark::Background);
+  void MarkSection(FBGridSection const& section, FBGridSectionMark mark = FBGridSectionMark::Background, int marginR = 0);
 
   FBGridComponent() = delete;
   FBGridComponent(bool rowColGap, int rows, int cols);

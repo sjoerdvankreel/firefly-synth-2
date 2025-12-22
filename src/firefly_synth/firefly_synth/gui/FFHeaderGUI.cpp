@@ -28,6 +28,6 @@ FFMakeHeaderGUI(FFPlugGUI* plugGUI)
   std::string archName = "X64";
 #endif
   grid->Add(1, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(formatName + " " + archName));
-  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, FBGridSectionMark::BackgroundAndBorder, 2);
   return plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
 };

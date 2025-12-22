@@ -53,11 +53,12 @@ FBGridComponent::Add(int row, int col, Component* child)
 }
 
 void
-FBGridComponent::MarkSection(FBGridSection const& section, FBGridSectionMark mark)
+FBGridComponent::MarkSection(FBGridSection const& section, FBGridSectionMark mark, int marginR)
 {
   FBGridSectionAndMark sectionAndMark = {};
-  sectionAndMark.section = section;
   sectionAndMark.mark = mark;
+  sectionAndMark.marginR = marginR;
+  sectionAndMark.section = section;
   _sectionsAndMarks.push_back(sectionAndMark);
 }
 
@@ -246,6 +247,7 @@ FBGridComponent::paint(Graphics& g)
         x1 = static_cast<float>(_grid.items[j].associatedComponent->getRight());
     }
     float subtractR = i == _sectionsAndMarks.size() - 1 ? 0.0f : 2.0f;
+    subtractR += _sectionsAndMarks[i].marginR;
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::Background ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndBorder ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndAlternate)
