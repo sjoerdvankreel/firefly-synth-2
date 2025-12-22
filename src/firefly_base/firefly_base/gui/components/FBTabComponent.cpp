@@ -47,11 +47,16 @@ FBModuleTabBarButton::clicked(const ModifierKeys& modifiers)
 
 FBAutoSizeTabComponent::
 FBAutoSizeTabComponent():
-TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop)
+FBAutoSizeTabComponent(false) {}
+
+FBAutoSizeTabComponent::
+FBAutoSizeTabComponent(bool big):
+TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop),
+_big(big)
 {
   setOutline(0);
-  setTabBarDepth(FBTabBarDepth);
   setLookAndFeel(FBGetLookAndFeel());
+  setTabBarDepth(_big? FBTabBarDepthBig: FBTabBarDepth);
 }
 
 int

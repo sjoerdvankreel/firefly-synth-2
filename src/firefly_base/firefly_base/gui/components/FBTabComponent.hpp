@@ -11,6 +11,7 @@ class FBPlugGUI;
 struct FBRuntimeGUIParam;
 
 inline int constexpr FBTabBarDepth = 20;
+inline int constexpr FBTabBarDepthBig = 30;
 
 class FBTabBarButton:
 public juce::TabBarButton
@@ -51,9 +52,13 @@ class FBAutoSizeTabComponent:
 public juce::TabbedComponent,
 public IFBHorizontalAutoSize
 {
+  bool const _big;
+
 public:
   FBAutoSizeTabComponent();
+  FBAutoSizeTabComponent(bool big);
 
+  bool Big() const { return _big; }
   int FixedWidth(int height) const override;
 
   juce::TabBarButton* 

@@ -268,7 +268,7 @@ FFPlugGUI::SetupGUI()
   _main->Add(5, 0, FFMakeLFOGUI(this));
   _main->Add(6, 0, FFMakeEnvGUI(this, _msegEditors));
 
-  _tabs = StoreComponent<FBAutoSizeTabComponent>();
+  _tabs = StoreComponent<FBAutoSizeTabComponent>(true);
   _tabs->addTab("Main", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _main), false);
   _tabs->addTab("Matrix", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _matrix), false);
   _tabs->addTab("Unison", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _globalUni), false);
