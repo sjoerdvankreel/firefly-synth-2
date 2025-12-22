@@ -11,7 +11,7 @@ class FBPlugGUI;
 struct FBRuntimeGUIParam;
 
 inline int constexpr FBTabBarDepth = 20;
-inline int constexpr FBTabBarDepthBig = 30;
+inline int constexpr FBTabBarDepthBig = 26;
 
 class FBTabBarButton:
 public juce::TabBarButton
