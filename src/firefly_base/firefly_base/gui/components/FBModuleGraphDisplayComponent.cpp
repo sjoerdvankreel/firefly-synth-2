@@ -191,6 +191,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     auto& graphData = _data->graphs[graph];
     auto const& primarySeries = graphData.primarySeries;
     auto const& secondarySeries = graphData.secondarySeries;
+    auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
     bool stereo = !primarySeries.r.empty();
     graphData.GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
     FB_ASSERT(graphData.secondarySeries.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
@@ -199,12 +200,12 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     auto x0 = static_cast<int>(PointXLocation(graph, 0.0f, false));
     auto x1 = static_cast<int>(PointXLocation(graph, 1.0f, false));
     auto graphBounds = Rectangle<int>(x0, bounds.getY(), x1 - x0, bounds.getHeight());
-    g.setColour(Colour(0xFF181818));
+    g.setColour(scheme.graphBackground);
     g.fillRoundedRectangle(graphBounds.toFloat(), 5.0f);
 
     if (_withBorder)
     {
-      g.setColour(Colour(0xFFA0A0A0));
+      g.setColour(scheme.sectionBorder.withAlpha(0.125f));
       g.drawRoundedRectangle(graphBounds.toFloat(), 5.0f, 2.0f);
     }
 
@@ -228,7 +229,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
 
     if (graphData.subtext.size())
     {
-      g.setColour(Colour(0xFF404040));
+      g.setColour(scheme.graphGrid);
       g.setFont(FBGUIGetFont().withHeight(20.0f));
       g.drawText(graphData.subtext, graphBounds, Justification::centred, false);
     }
@@ -294,9 +295,9 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         (float)graphBounds.getY() + labelPad,
         textSize.getWidth() + labelPad,
         textSize.getHeight() + labelPad);
-      g.setColour(Colour(0xE0333333));
+      g.setColour(scheme.sectionBackground.withAlpha(0.75f));
       g.fillRoundedRectangle(textBounds, 2.0f);
-      g.setColour(getLookAndFeel().findColour(Slider::ColourIds::thumbColourId));
+      g.setColour(scheme.text);
       g.setFont(newFont);
       g.drawText(graphData.title, textBounds, Justification::centred, false);
     }
