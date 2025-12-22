@@ -796,6 +796,7 @@ FBLookAndFeel::drawTabButton(
   TabBarButton& button, Graphics& g,
   bool isMouseOver, bool isMouseDown)
 {
+  bool big = {};
   bool large = {};
   bool centerText = {};
   std::string separatorText = {};
@@ -808,7 +809,10 @@ FBLookAndFeel::drawTabButton(
   }
 
   if (auto fbt = button.findParentComponentOfClass<FBAutoSizeTabComponent>())
-    centerText |= fbt->Big();
+  {
+    big = fbt->Big();
+    centerText |= big;
+  }
 
   bool toggleState = button.getToggleState();
   isMouseOver &= button.getTabbedButtonBar().getNumTabs() > 1;
