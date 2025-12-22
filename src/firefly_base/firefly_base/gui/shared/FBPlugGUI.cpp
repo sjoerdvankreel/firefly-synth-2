@@ -437,6 +437,9 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
     return;
   }
 
+  if (dynamic_cast<Button*>(event.eventComponent))
+    return;
+
   // pops up host context menu
   if (dynamic_cast<FBParamControl*>(event.eventComponent))
     return;

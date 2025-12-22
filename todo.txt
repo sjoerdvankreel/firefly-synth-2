@@ -15,6 +15,7 @@ TODOLIST for beta-2
 [x] subsection->section
 [x] theme the overlays
 [x] env stage nr when not synced
+[x] panic should not context menu
 [ ] the default scheme should be grayscale
 [ ] test lin and mac
 [ ] recheck all the margins
@@ -35,7 +36,6 @@ TODOLIST for beta-2
 
 TODOLIST for beta-next
 [ ] not right-click-change horizontal sliders
-[ ] panic should not context menu
 [ ] string low end bug?
 [ ] rename demo to feature test
 [ ] make some presets
