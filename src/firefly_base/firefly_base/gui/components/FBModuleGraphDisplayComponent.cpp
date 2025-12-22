@@ -1,5 +1,7 @@
-#include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/dsp/shared/FBDSPUtility.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
 #include <firefly_base/gui/components/FBModuleGraphDisplayComponent.hpp>
 
@@ -17,6 +19,21 @@ FBModuleGraphDisplayComponent(FBModuleGraphComponentData const* data, bool withB
 Component(),
 _withBorder(withBorder),
 _data(data) {}
+
+FBColorScheme const& 
+FBModuleGraphDisplayComponent::FindColorSchemeFor(
+  int moduleIndex, int moduleSlot) const
+{
+  auto const& theme = FBGetLookAndFeel()->Theme();
+  if (auto gui = findParentComponentOfClass<FBPlugGUI>())
+  {
+    int rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at({ moduleIndex, moduleSlot });
+    auto moduleIter = theme.moduleColors.find(rtModuleIndex);
+    if (moduleIter != theme.moduleColors.end())
+      return theme.colorSchemes.at(moduleIter->second.colorScheme);
+  }
+  return theme.defaultColorScheme;
+}
 
 Point<float>
 FBModuleGraphDisplayComponent::PointLocation(
@@ -159,6 +176,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     auto const& primarySeries = graphData.primarySeries;
     auto const& secondarySeries = graphData.secondarySeries;
     bool stereo = !primarySeries.r.empty();
+    auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
     graphData.GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
     FB_ASSERT(graphData.secondarySeries.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
 
@@ -224,7 +242,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         }
       }
 
-      PaintSeries(g, Colours::white, graph, primarySeries.l,
+      PaintSeries(g, scheme.primary, graph, primarySeries.l,
         stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
       if (stereo)
         PaintSeries(g, Colours::white, graph, primarySeries.r,

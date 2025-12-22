@@ -1,6 +1,8 @@
 #pragma once
 
+#include <firefly_base/gui/shared/FBTheme.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
+
 #include <juce_gui_basics/juce_gui_basics.h>
 
 struct FBModuleGraphComponentData;
@@ -10,6 +12,9 @@ public juce::Component
 {
   bool _withBorder;
   FBModuleGraphComponentData const* const _data;
+
+  FBColorScheme const& FindColorSchemeFor(
+    int moduleIndex, int moduleSlot) const;
 
 public:
   void paint(juce::Graphics& g) override;
