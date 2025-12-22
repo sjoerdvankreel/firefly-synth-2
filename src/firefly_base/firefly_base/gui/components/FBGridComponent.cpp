@@ -267,13 +267,13 @@ FBGridComponent::paint(Graphics& g)
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndAlternate ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::AlternateAndAlternate)
     {
-      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).primary.withAlpha(0.5f));
+      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).primary.withAlpha(0.25f));
       g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize, lineThickness);
     }
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::Border ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndBorder)
     {
-      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).sectionBorder);
+      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).sectionBorder.withAlpha(0.125f));
       g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize, lineThickness);
     }      
   }
