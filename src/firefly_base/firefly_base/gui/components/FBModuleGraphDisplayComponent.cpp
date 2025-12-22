@@ -85,10 +85,13 @@ FBModuleGraphDisplayComponent::PaintVerticalIndicator(
   Graphics& g, int graph, int point, bool primary,
   int maxSizeAllSeries, float absMaxValueAllSeries)
 {
+  auto const& graphData = _data->graphs[graph];
+  auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
+
   float dashes[2] = { 4, 2 };
-  g.setColour(Colours::white.withAlpha(0.5f));
+  g.setColour(scheme.text.withAlpha(0.5f));
   if (!primary)
-    g.setColour(Colours::white.withAlpha(0.25f));
+    g.setColour(scheme.text.withAlpha(0.25f));
   float x = PointXLocation(graph, point / static_cast<float>(maxSizeAllSeries), true);
   float y0 = PointYLocation(0.0f, false, false, absMaxValueAllSeries, true);
   float y1 = PointYLocation(absMaxValueAllSeries, false, false, absMaxValueAllSeries, true);
@@ -107,7 +110,10 @@ FBModuleGraphDisplayComponent::PaintMarker(
   if (points.size() == 0)
     return;
 
-  auto color = Colours::white;
+  auto const& graphData = _data->graphs[graph];
+  auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
+
+  auto color = scheme.text;
   if (_data->paintAsDisabled)
     color = color.darker(0.67f);
   if (!primary)
@@ -135,12 +141,15 @@ FBModuleGraphDisplayComponent::PaintClipBoundaries(
   int graph, bool stereo, bool left,
   float absMaxValueAllSeries)
 {
+  auto const& graphData = _data->graphs[graph];
+  auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
+
   float dashes[2] = { 4.0, 2.0 };
   float x0 = PointXLocation(graph, 0.0f, true);
   float x1 = PointXLocation(graph, 1.0f, true);
   float upperY = PointYLocation(1.0f, stereo, left, absMaxValueAllSeries, true);
   float lowerY = PointYLocation(_data->bipolar? -1.0f: 0.0f, stereo, left, absMaxValueAllSeries, true);
-  g.setColour(Colours::white.withAlpha(0.25f));
+  g.setColour(scheme.text.withAlpha(0.25f));
   g.drawDashedLine(Line<float>(x0, upperY, x1, upperY), dashes, 2);
   g.drawDashedLine(Line<float>(x0, lowerY, x1, lowerY), dashes, 2);
 }
