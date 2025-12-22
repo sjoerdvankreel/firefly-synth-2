@@ -52,6 +52,12 @@ public:
   void drawLabel(
     juce::Graphics&, juce::Label&) override;
 
+  void fillTextEditorBackground(
+    juce::Graphics& g, int width, int height, juce::TextEditor& te) override;
+
+  void drawTextEditorOutline(
+    juce::Graphics& g, int width, int height, juce::TextEditor& te) override;
+
   void drawPopupMenuBackgroundWithOptions(
     juce::Graphics& g, 
     int width, int height, 

@@ -18,6 +18,8 @@ TODOLIST for beta-2
 [x] panic should not context menu
 [x] tooltips
 [x] extend the tabbar
+[ ] check the todos
+[ ] check the findcolours
 [ ] check the alert windows
 [ ] sectionborderalpha
 [ ] graph pick up the module style

@@ -267,6 +267,47 @@ FBLookAndFeel::positionComboBoxText(
   l.setBounds(3, 1, b.getWidth() - 6, b.getHeight() - 2);
 }
 
+void
+FBLookAndFeel::fillTextEditorBackground(
+  Graphics& g, int width, int height, TextEditor& te)
+{
+  // todo the alerts
+  if (dynamic_cast<AlertWindow*>(te.getParentComponent()) != nullptr)
+  {
+    g.setColour(te.findColour(TextEditor::backgroundColourId));
+    g.fillRect(0, 0, width, height);
+    g.setColour(te.findColour(TextEditor::outlineColourId));
+    g.drawHorizontalLine(height - 1, 0.0f, static_cast<float> (width));
+  }
+  else
+  {
+    g.fillAll(te.findColour(TextEditor::backgroundColourId));
+  }
+}
+
+void 
+FBLookAndFeel::drawTextEditorOutline(
+  Graphics& g, int width, int height, TextEditor& te)
+{
+  // todo the alerts
+  if (dynamic_cast<AlertWindow*> (te.getParentComponent()) == nullptr)
+  {
+    if (te.isEnabled())
+    {
+      if (te.hasKeyboardFocus(true) && !te.isReadOnly())
+      {
+        g.setColour(te.findColour(TextEditor::focusedOutlineColourId));
+        g.drawRect(0, 0, width, height, 2);
+      }
+      else
+      {
+        g.setColour(te.findColour(TextEditor::outlineColourId));
+        g.drawRect(0, 0, width, height);
+      }
+    }
+  }
+}
+
 void 
 FBLookAndFeel::drawPopupMenuBackgroundWithOptions(
   juce::Graphics& g,
