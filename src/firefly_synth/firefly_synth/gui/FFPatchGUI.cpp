@@ -16,7 +16,7 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto context = plugGUI->HostContext();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(false, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Patch"));
   
   auto name = plugGUI->StoreComponent<FBAutoSizeLabel2>(150);
@@ -60,8 +60,7 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
   preset->onClick = [plugGUI, preset]() { plugGUI->LoadPreset(preset); };
   grid->Add(0, 7, preset);
 
-  grid->Add(0, 8, plugGUI->StoreComponent<FBFillerComponent>(13, 1));
-  grid->MarkSection({ { 0, 0 }, { 1, 9 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0 }, { 1, 8 } }, FBGridSectionMark::BackgroundAndBorder);
 
   return plugGUI->StoreComponent<FBSectionComponent>(true, grid);
 }
