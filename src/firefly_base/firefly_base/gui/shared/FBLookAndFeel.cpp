@@ -791,6 +791,15 @@ FBLookAndFeel::drawTooltip(
   }
 }
 
+void 
+FBLookAndFeel::drawTabbedButtonBarBackground(
+  TabbedButtonBar& b, Graphics& g)
+{
+  auto const& scheme = FindColorSchemeFor(b);
+  g.setColour(scheme.paramBackground);
+  g.fillRoundedRectangle(b.getBounds().toFloat(), 3.0f);
+}
+
 void
 FBLookAndFeel::drawTabButton(
   TabBarButton& button, Graphics& g,

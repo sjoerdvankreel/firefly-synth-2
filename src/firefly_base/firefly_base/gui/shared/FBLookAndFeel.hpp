@@ -80,6 +80,9 @@ public:
     juce::Graphics& g, const juce::String& text,
     int width, int height) override;
 
+  void drawTabbedButtonBarBackground(
+    juce::TabbedButtonBar& b, juce::Graphics&) override;
+
   void drawTabButton(
     juce::TabBarButton& button, juce::Graphics& g,
     bool isMouseOver, bool isMouseDown) override;
