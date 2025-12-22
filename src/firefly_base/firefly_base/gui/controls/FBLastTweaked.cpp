@@ -91,6 +91,8 @@ _fixedWidth(fixedWidth), _plugGUI(plugGUI)
   plugGUI->AddParamListener(this);
   addListener(this);
   setFont(FBGUIGetFont());
+  setIndents(2, 8);
+  setColour(TextEditor::textColourId, Colours::green);
 }
 
 int
