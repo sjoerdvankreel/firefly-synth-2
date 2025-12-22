@@ -271,6 +271,8 @@ void
 FBLookAndFeel::fillTextEditorBackground(
   Graphics& g, int width, int height, TextEditor& te)
 {
+  FBColorScheme const& scheme = FindColorSchemeFor(te);
+
   // todo the alerts
   if (dynamic_cast<AlertWindow*>(te.getParentComponent()) != nullptr)
   {
@@ -281,31 +283,15 @@ FBLookAndFeel::fillTextEditorBackground(
   }
   else
   {
-    g.fillAll(te.findColour(TextEditor::backgroundColourId));
+    g.setColour(scheme.paramBackground);
+    g.fillRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f), 5.0f);
   }
 }
 
 void 
 FBLookAndFeel::drawTextEditorOutline(
-  Graphics& g, int width, int height, TextEditor& te)
+  Graphics&, int, int, TextEditor&)
 {
-  // todo the alerts
-  if (dynamic_cast<AlertWindow*> (te.getParentComponent()) == nullptr)
-  {
-    if (te.isEnabled())
-    {
-      if (te.hasKeyboardFocus(true) && !te.isReadOnly())
-      {
-        g.setColour(te.findColour(TextEditor::focusedOutlineColourId));
-        g.drawRect(0, 0, width, height, 2);
-      }
-      else
-      {
-        g.setColour(te.findColour(TextEditor::outlineColourId));
-        g.drawRect(0, 0, width, height);
-      }
-    }
-  }
 }
 
 void 
