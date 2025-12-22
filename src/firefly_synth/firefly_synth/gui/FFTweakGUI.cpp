@@ -14,7 +14,7 @@ FFMakeTweakGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Last Tweaked:"));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Last Tweaked"));
   grid->Add(0, 1, plugGUI->StoreComponent<FBLastTweakedLabel>(plugGUI));
   auto box = plugGUI->StoreComponent<FBLastTweakedTextBox>(plugGUI, 150);
   grid->Add(0, 2, plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, box));
