@@ -147,7 +147,7 @@ FBModuleGraphDisplayComponent::PaintClipBoundaries(
 
 void
 FBModuleGraphDisplayComponent::PaintSeries(
-  juce::Graphics& g, juce::Colour color,
+  juce::Graphics& g, bool primary,
   int graph, std::vector<float> const& points,
   bool stereo, bool left,
   int maxSizeAllSeries, float absMaxValueAllSeries)
@@ -155,14 +155,31 @@ FBModuleGraphDisplayComponent::PaintSeries(
   if (points.empty())
     return;
 
-  Path path;
-  path.startNewSubPath(PointLocation(graph, points, 0, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
+  auto const& graphData = _data->graphs[graph];
+  auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
+  auto color = primary ? scheme.primary : scheme.paramSecondary;
+
+  Path fillPath;
+  Path strokePath;
+  // todo bipolar
+  fillPath.startNewSubPath(PointXLocation(graph, 0.0f, true), PointYLocation(0.0f, stereo, left, absMaxValueAllSeries, true));
+  strokePath.startNewSubPath(PointLocation(graph, points, 0, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
   for (int i = 1; i < points.size(); i++)
-    path.lineTo(PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
+  {
+    fillPath.lineTo(PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
+    strokePath.lineTo(PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
+  }
+  fillPath.lineTo(PointXLocation(graph, 1.0f, true), PointYLocation(0.0f, stereo, left, absMaxValueAllSeries, true));
+  fillPath.closeSubPath();
   if (_data->paintAsDisabled)
     color = color.darker(0.67f);
+  if (primary)
+  {
+    g.setColour(color.withAlpha(0.25f));
+    g.fillPath(fillPath);
+  }
   g.setColour(color);
-  g.strokePath(path, PathStrokeType(1.0f));
+  g.strokePath(strokePath, PathStrokeType(1.0f));
 }
 
 void
@@ -176,7 +193,6 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     auto const& primarySeries = graphData.primarySeries;
     auto const& secondarySeries = graphData.secondarySeries;
     bool stereo = !primarySeries.r.empty();
-    auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
     graphData.GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
     FB_ASSERT(graphData.secondarySeries.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
 
@@ -224,10 +240,10 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       {
         int marker = secondarySeries[i].marker;
         auto const& points = secondarySeries[i].points;
-        PaintSeries(g, Colours::grey, graph, points.l,
+        PaintSeries(g, false, graph, points.l,
           stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
         if (stereo)
-          PaintSeries(g, Colours::grey, graph, points.r,
+          PaintSeries(g, false, graph, points.r,
             stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
 
         for (int j = 0; j < points.pointIndicators.size(); j++)
@@ -242,10 +258,10 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         }
       }
 
-      PaintSeries(g, scheme.primary, graph, primarySeries.l,
+      PaintSeries(g, true, graph, primarySeries.l,
         stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
       if (stereo)
-        PaintSeries(g, Colours::white, graph, primarySeries.r,
+        PaintSeries(g, true, graph, primarySeries.r,
           stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
 
       for (int i = 0; i < primarySeries.pointIndicators.size(); i++)

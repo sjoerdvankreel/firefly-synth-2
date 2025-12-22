@@ -50,7 +50,7 @@ private:
     bool left, int maxSizeAllSeries, float absMaxValueAllSeries);
 
   void PaintSeries(
-    juce::Graphics& g, juce::Colour color, 
+    juce::Graphics& g, bool primary, 
     int graph, std::vector<float> const& points,
     bool stereo, bool left,
     int maxSizeAllSeries, float absMaxValueAllSeries);
