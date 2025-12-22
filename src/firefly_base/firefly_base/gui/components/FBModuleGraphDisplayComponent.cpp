@@ -174,7 +174,7 @@ FBModuleGraphDisplayComponent::PaintSeries(
     color = color.darker(0.67f);
   if (primary)
   {
-    g.setColour(color.withAlpha(0.25f));
+    g.setColour(color.withAlpha(0.33f));
     g.fillPath(fillPath);
   }
   g.setColour(color);
@@ -229,7 +229,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
 
     if (graphData.subtext.size())
     {
-      g.setColour(scheme.graphGrid);
+      g.setColour(scheme.text.withAlpha(0.33f));
       g.setFont(FBGUIGetFont().withHeight(20.0f));
       g.drawText(graphData.subtext, graphBounds, Justification::centred, false);
     }
