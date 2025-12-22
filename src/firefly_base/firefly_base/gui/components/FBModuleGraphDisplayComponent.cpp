@@ -161,7 +161,6 @@ FBModuleGraphDisplayComponent::PaintSeries(
 
   Path fillPath;
   Path strokePath;
-  // todo bipolar
   fillPath.startNewSubPath(PointXLocation(graph, 0.0f, true), PointYLocation(0.0f, stereo, left, absMaxValueAllSeries, true));
   strokePath.startNewSubPath(PointLocation(graph, points, 0, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
   for (int i = 1; i < points.size(); i++)
