@@ -81,6 +81,19 @@ static void CreateTabTextLayout(
   textLayout.createLayout(s, length);
 }
 
+static void
+DrawCross(Graphics& g, Rectangle<float> const& bounds)
+{
+  Path p;
+  p.startNewSubPath(bounds.getTopLeft());
+  p.lineTo(bounds.getBottomRight());
+  g.strokePath(p, PathStrokeType(3.0f, PathStrokeType::JointStyle::beveled, PathStrokeType::EndCapStyle::rounded));
+  p = {};
+  p.startNewSubPath(bounds.getBottomLeft());
+  p.lineTo(bounds.getTopRight());
+  g.strokePath(p, PathStrokeType(3.0f, PathStrokeType::JointStyle::beveled, PathStrokeType::EndCapStyle::rounded));
+}
+
 FBColorScheme const& 
 FBLookAndFeel::FindColorSchemeFor(
   Component const& c) const
@@ -341,8 +354,9 @@ FBLookAndFeel::drawPopupMenuItem(
   auto iconArea = r.removeFromLeft(roundToInt(maxFontHeight)).toFloat();
   if (isTicked)
   {
-    auto tick = getTickShape(1.0f);
-    g.fillPath(tick, tick.getTransformToScaleToFit(iconArea.reduced(iconArea.getWidth() / 5, 0).toFloat(), true));
+    float h = 6.0f;
+    float y = (area.getHeight() - h) / 2.0f;
+    DrawCross(g, Rectangle<float>(iconArea.getX() + 3.0f, y, h, h));
   }
 
   if (hasSubMenu)
@@ -362,16 +376,6 @@ FBLookAndFeel::drawPopupMenuItem(
 
   r.removeFromRight(3);
   g.drawFittedText(text, r, Justification::centredLeft, 1);
-
-  if (shortcutKeyText.isNotEmpty())
-  {
-    auto f2 = font;
-    f2.setHeight(f2.getHeight() * 0.75f);
-    f2.setHorizontalScale(0.95f);
-    g.setFont(f2);
-
-    g.drawText(shortcutKeyText, r, Justification::centredRight, true);
-  }
 }
 
 void 
@@ -459,16 +463,8 @@ FBLookAndFeel::drawTickBox(
 
   if (ticked)
   {
-    auto pathBounds = tickBounds.reduced(6.0f, 6.0f);
     g.setColour(scheme.primary.darker(component.isEnabled()? 0.0f: scheme.dimDisabled));
-    Path p;
-    p.startNewSubPath(pathBounds.getTopLeft());
-    p.lineTo(pathBounds.getBottomRight());
-    g.strokePath(p, PathStrokeType(3.0f, PathStrokeType::JointStyle::beveled, PathStrokeType::EndCapStyle::rounded));
-    p = {};
-    p.startNewSubPath(pathBounds.getBottomLeft());
-    p.lineTo(pathBounds.getTopRight());
-    g.strokePath(p, PathStrokeType(3.0f, PathStrokeType::JointStyle::beveled, PathStrokeType::EndCapStyle::rounded));
+    DrawCross(g, tickBounds.reduced(6.0f, 6.0f));
   }
 }
 
