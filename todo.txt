@@ -16,7 +16,9 @@ TODOLIST for beta-2
 [x] theme the overlays
 [x] env stage nr when not synced
 [x] panic should not context menu
-[ ] tooltips
+[x] tooltips
+[ ] graph pick up the module style
+[ ] extend the tabbar
 [ ] check all the buttons
 [ ] the default scheme should be grayscale
 [ ] test lin and mac
