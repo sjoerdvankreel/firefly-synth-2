@@ -30,6 +30,6 @@ FFMakeHeaderGUI(FFPlugGUI* plugGUI)
 #endif
   grid->Add(1, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(formatName + " " + archName));
   grid->Add(1, 2, plugGUI->StoreComponent<FBFillerComponent>(5, 1));
-  grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::BackgroundAndBorder, 2);
+  grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::BackgroundAndBorder, 5.0f, 2);
   return plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
 };

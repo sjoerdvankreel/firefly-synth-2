@@ -53,12 +53,13 @@ FBGridComponent::Add(int row, int col, Component* child)
 }
 
 void
-FBGridComponent::MarkSection(FBGridSection const& section, FBGridSectionMark mark, int marginR)
+FBGridComponent::MarkSection(FBGridSection const& section, FBGridSectionMark mark, float cornerSize, int marginR)
 {
   FBGridSectionAndMark sectionAndMark = {};
   sectionAndMark.mark = mark;
   sectionAndMark.marginR = marginR;
   sectionAndMark.section = section;
+  sectionAndMark.cornerSize = cornerSize;
   _sectionsAndMarks.push_back(sectionAndMark);
 }
 
@@ -231,11 +232,10 @@ FBGridComponent::resized()
 void
 FBGridComponent::paint(Graphics& g)
 {
-  float cornerSize = 3.0f;
   float lineThickness = 2.0f;
-
   float x0, x1, y0, y1;
   x0 = x1 = y0 = y1 = -1.0f;
+
   for (int i = 0; i < _sectionsAndMarks.size(); i++)
   {      
     for (int j = 0; j < _grid.items.size(); j++)
@@ -256,25 +256,25 @@ FBGridComponent::paint(Graphics& g)
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndAlternate)
     {
       g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).sectionBackground);
-      g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, cornerSize);
+      g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize);
     }
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::AlternateAndAlternate)
     {
       g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).primary.darker(2.0f));
-      g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, cornerSize);
+      g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize);
     }
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::Alternate ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndAlternate ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::AlternateAndAlternate)
     {
       g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).primary.withAlpha(0.5f));
-      g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, cornerSize, lineThickness);
+      g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize, lineThickness);
     }
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::Border ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndBorder)
     {
       g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).sectionBorder);
-      g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, cornerSize, lineThickness);
+      g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize, lineThickness);
     }      
   }
 } 
