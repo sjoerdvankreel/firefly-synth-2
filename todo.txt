@@ -18,6 +18,7 @@ TODOLIST for beta-2
 [x] panic should not context menu
 [x] tooltips
 [x] extend the tabbar
+[ ] sectionborderalpha
 [ ] graph pick up the module style
 [ ] check all the buttons
 [ ] the default scheme should be grayscale
