@@ -290,8 +290,8 @@ FBLookAndFeel::drawPopupMenuItemWithOptions(
   const PopupMenu::Options& options)
 {
   FBColorScheme const* scheme = &Theme().defaultColorScheme;
-  if (options.getTargetComponent() != nullptr)
-    scheme = &FindColorSchemeFor(*options.getTargetComponent());
+  if (options.getTopLevelTargetComponent() != nullptr)
+    scheme = &FindColorSchemeFor(*options.getTopLevelTargetComponent());
 
   const auto colour = scheme->primary;
   const auto hasSubMenu = item.subMenu != nullptr
@@ -316,7 +316,7 @@ FBLookAndFeel::drawPopupMenuItem(
   const bool isSeparator, const bool isActive,
   const bool isHighlighted, const bool isTicked,
   const bool hasSubMenu, const juce::String& text,
-  const String& shortcutKeyText,
+  const String& /*shortcutKeyText*/,
   const Drawable* /*icon*/, const Colour* const textColourToUse)
 {
   auto const& scheme = Theme().defaultColorScheme;
