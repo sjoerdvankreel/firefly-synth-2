@@ -232,7 +232,7 @@ void
 FBGridComponent::paint(Graphics& g)
 {
   float cornerSize = 3.0f;
-  float lineThickness = 1.0f;
+  float lineThickness = 2.0f;
 
   float x0, x1, y0, y1;
   x0 = x1 = y0 = y1 = -1.0f;
