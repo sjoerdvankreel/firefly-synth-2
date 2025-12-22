@@ -201,13 +201,13 @@ FBLookAndFeel::DrawTabButtonPart(
     g.setColour(scheme.primary.darker(1.0f));
   else
     g.setColour(scheme.paramBackground);
-  g.fillRoundedRectangle(activeArea.toFloat(), 2.0f);
+  g.fillRoundedRectangle(activeArea.toFloat(), 3.0f);
 
   if(toggleState || isHeader || isMouseOver)
     g.setColour(scheme.primary);
   else
     g.setColour(scheme.sectionBorder);  
-  g.drawRoundedRectangle(activeArea.toFloat(), 2.0f, 1.0f);
+  g.drawRoundedRectangle(activeArea.toFloat(), 3.0f, 1.0f);
 
   TextLayout textLayout;
   const Rectangle<float> area(activeArea.toFloat());
@@ -386,7 +386,7 @@ FBLookAndFeel::drawLabel(
       dynamic_cast<FBLastTweakedLabel*>(&label))
   {
     g.setColour(Colour(0xFF333333));
-    g.fillRoundedRectangle(label.getLocalBounds().toFloat(), 2.0f);
+    g.fillRoundedRectangle(label.getLocalBounds().toFloat(), 3.0f);
   }
 
   auto const& scheme = FindColorSchemeFor(label);
@@ -422,7 +422,7 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   int	width, int height, bool	/*isButtonDown*/,
   int	/*buttonX*/, int /*buttonY*/, int	/*buttonW*/, int /*buttonH*/, ComboBox& box)
 {
-  auto cornerSize = 2.0f;
+  auto cornerSize = 3.0f;
   auto const& scheme = FindColorSchemeFor(box);
   Rectangle<int> boxBounds(2, 2, width - 4, height - 4);
 
@@ -557,7 +557,7 @@ FBLookAndFeel::drawButtonBackground(
   const juce::Colour& /*backgroundColour*/,
   bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
-  auto cornerSize = 6.0f;
+  auto cornerSize = 5.0f;
   auto bounds = button.getLocalBounds().toFloat().reduced(3.0f, 3.0f);
   auto const& scheme = FindColorSchemeFor(button);
 
@@ -758,7 +758,7 @@ FBLookAndFeel::drawTooltip(
     newCompIsParam |= dynamic_cast<FBGUIParamControl*>(newComp->findParentComponentOfClass<ComboBox>()) != nullptr;
   }
 
-  auto cornerSize = 5.0f;
+  auto cornerSize = 3.0f;
   Rectangle<int> bounds(width, height);
   g.setColour(scheme->background);
   g.fillRect(bounds.toFloat());
