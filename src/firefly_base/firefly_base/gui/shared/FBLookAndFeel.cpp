@@ -807,6 +807,9 @@ FBLookAndFeel::drawTabButton(
     separatorText = fbButton->GetSeparatorText();
   }
 
+  if (auto fbt = button.findParentComponentOfClass<FBAutoSizeTabComponent>())
+    centerText |= fbt->Big();
+
   bool toggleState = button.getToggleState();
   isMouseOver &= button.getTabbedButtonBar().getNumTabs() > 1;
   isMouseDown &= button.getTabbedButtonBar().getNumTabs() > 1;
