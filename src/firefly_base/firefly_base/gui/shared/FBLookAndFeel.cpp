@@ -382,14 +382,16 @@ void
 FBLookAndFeel::drawLabel(
   Graphics& g, Label& label)
 {
+  bool hasBackground = false;
+  auto const& scheme = FindColorSchemeFor(label);
   if (dynamic_cast<FBAutoSizeLabel2*>(&label) ||
       dynamic_cast<FBLastTweakedLabel*>(&label))
   {
-    g.setColour(Colour(0xFF333333));
-    g.fillRoundedRectangle(label.getLocalBounds().toFloat(), 3.0f);
+    hasBackground = true;
+    g.setColour(scheme.paramBackground);
+    g.fillRoundedRectangle(label.getLocalBounds().toFloat().reduced(5.0f), 5.0f);
   }
 
-  auto const& scheme = FindColorSchemeFor(label);
   auto colorText = scheme.text;
   if (auto b = label.findParentComponentOfClass<ComboBox>())
     colorText = scheme.primary.darker(b->isEnabled() ? 0.0f : scheme.dimDisabled);
@@ -397,6 +399,8 @@ FBLookAndFeel::drawLabel(
   g.setFont(getLabelFont(label));
   g.setColour(colorText);
   auto textArea = getLabelBorderSize(label).subtractedFrom(label.getLocalBounds());
+  if (hasBackground)
+    textArea = textArea.reduced(5);
   g.drawText(label.getText(), textArea, label.getJustificationType(), false);
 }
 
