@@ -68,6 +68,8 @@ TODOLIST for beta-next
 [ ] compare to ff1
 [ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
 
+document all the source code (pffft)
+make an architecture/developer document
 make Carla bug report for stuck notes (but verify its not me, first)
 arpeggiator
 keep profiling
