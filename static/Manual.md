@@ -290,6 +290,7 @@ For audio parameters:
 * Stored In: indicates if this parameter is saved within the patch or the DAW session only.
 * Current audio engine min/max values across all voices (they are equal for global parameters)
 * Modulated by: indicates if this parameter is currently modulated by direct-access controls, the matrix, or the global unison.
+* Disabled by: if a parameter is disabled, shows all possible other parameters that might have disabled it.
 * Edit type: indicates if a parameter is skewed in the UI only.<br/>
 For example envelope stage time is edited as skewed/logarithmic for more precise control,<br/>
 but automation to that parameter is linear from 0 to 10 seconds.
