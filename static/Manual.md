@@ -304,7 +304,7 @@ Right-click on some empty space to show the generic context menu.
 * Copy/paste patch: allows copy/paste across plugin instances.
 * Dump topology: save a description of the plugins internals to file.<br/>
 This is primarily meant to help in creating theme files which rely on internal identifiers which are printed in this document.<br/>
-Otherwise it's just a dynamically generated overview of the plug's modules and parameters.<br/>
+Other than that it's just a dynamically generated overview of the plug's modules and parameters.<br/>
 
 Right-click on a GUI parameter (f.e. "Show Modulation Bounds"):
 * Set to default.
