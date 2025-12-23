@@ -133,7 +133,7 @@ FBLookAndFeel::FindColorSchemeFor(
     tabBarButton = dynamic_cast<FBTabBarButton const*>(&c);
     if (tabBarButton == nullptr)
       tabBarButton = c.findParentComponentOfClass<FBTabBarButton>();
-    if (tabBarButton != nullptr)
+    if (tabBarButton != nullptr && tabBarButton->isModuleTab)
       rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at(tabBarButton->moduleIndices);
     else if (auto m = c.findParentComponentOfClass<FBModuleComponent>())
       rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at({ m->ModuleIndex(), m->ModuleSlot() });
