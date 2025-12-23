@@ -480,29 +480,31 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   auto& undoState = HostContext()->UndoState();
   PopupMenu menu;
   menu.addItem(1, "Show Manual");
+  menu.addItem(2, "Dump Topology");
   menu.addSeparator();
-  menu.addItem(2, "Copy Patch");
-  menu.addItem(3, "Paste Patch");
+  menu.addItem(3, "Copy Patch");
+  menu.addItem(4, "Paste Patch");
   menu.addSeparator();
   if (undoState.CanUndo())
-    menu.addItem(4, "Undo " + undoState.UndoAction());
+    menu.addItem(5, "Undo " + undoState.UndoAction());
   if (undoState.CanRedo())
-    menu.addItem(5, "Redo " + undoState.RedoAction());
+    menu.addItem(6, "Redo " + undoState.RedoAction());
 
   PopupMenu::Options options;
   options = options.withMousePosition();
   options = options.withParentComponent(this);
   options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
   menu.showMenuAsync(options, [this](int id) {
+    if (id == 2) DumpTopologyToFile();
     if (id == 1) HostContext()->ShowOnlineManual();
-    if (id == 4) HostContext()->UndoState().Undo();
-    if (id == 5) HostContext()->UndoState().Redo(); 
-    if (id == 2) {
+    if (id == 5) HostContext()->UndoState().Undo();
+    if (id == 6) HostContext()->UndoState().Redo(); 
+    if (id == 3) {
       FBScalarStateContainer editState(*HostContext()->Topo());
       editState.CopyFrom(HostContext(), true);
       SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveEditStateToString(editState, true));
     }
-    if (id == 3) {
+    if (id == 4) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
         AlertWindow::showMessageBoxAsync(
           MessageBoxIconType::InfoIcon,
@@ -698,4 +700,19 @@ FBPlugGUI::ShowOverlayComponent(
   _overlayContainer->SetModuleContent(moduleIndex, moduleSlot, _overlayGrid);
   _overlayContainer->resized();
   _overlayComponent = overlay;
+}
+
+void
+FBPlugGUI::DumpTopologyToFile()
+{
+  FB_LOG_ENTRY_EXIT();
+  int saveFlags = FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
+  FileChooser* chooser = new FileChooser("Save Topology", File(), String("*.txt"), true, false, this);
+  chooser->launchAsync(saveFlags, [this](FileChooser const& chooser) {
+    FB_LOG_ENTRY_EXIT();
+    auto file = chooser.getResult();
+    delete& chooser;
+    if (file.getFullPathName().length() == 0) return;
+    file.replaceWithText(HostContext()->Topo()->static_->PrintTopology());
+  });
 }

@@ -54,6 +54,7 @@ public IFBHostGUIContextListener
   FBModuleComponent* _overlayContainer = {};
   std::vector<IFBParamListener*> _paramListeners = {};
 
+  void DumpTopologyToFile();
   bool LoadPatchFromText(
     std::string const& undoAction, 
     std::string const& patchName,

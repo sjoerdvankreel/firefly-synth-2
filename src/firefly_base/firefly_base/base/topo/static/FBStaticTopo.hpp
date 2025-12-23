@@ -128,4 +128,5 @@ struct FBStaticTopo
 
   virtual ~FBStaticTopo() {}
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
+  std::string PrintTopology() const;
 };

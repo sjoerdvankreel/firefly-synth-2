@@ -433,6 +433,7 @@ FFMakeGlobalUniTopo()
   manualVoiceCoarse.slotFormatterOverrides = true;
   manualVoiceCoarse.slotCount = FFGlobalUniMaxCount;
   manualVoiceCoarse.id = "{0D24BD6A-DE67-4CE6-8272-BC290D5D7D2D}";
+  manualVoiceCoarse.name = "Manual Voice Coarse Pitch";
   manualVoiceCoarse.description = "Unison Manual Param Voice Coarse Pitch";
   manualVoiceCoarse.type = FBParamType::Linear;
   manualVoiceCoarse.Linear().min = -FFModCoarseSemis;
@@ -450,6 +451,7 @@ FFMakeGlobalUniTopo()
   manualVoiceFine.slotFormatterOverrides = true;
   manualVoiceFine.slotCount = FFGlobalUniMaxCount;
   manualVoiceFine.id = "{4A3335C3-9239-4D90-A53A-F73807FEC0B7}";
+  manualVoiceFine.name = "Manual Voice Fine Pitch";
   manualVoiceFine.description = "Unison Manual Param Voice Fine Pitch";
   manualVoiceFine.unit = "%";
   manualVoiceFine.type = FBParamType::Identity;
@@ -466,6 +468,7 @@ FFMakeGlobalUniTopo()
   manualVMixAmp.slotFormatterOverrides = true;
   manualVMixAmp.slotCount = FFGlobalUniMaxCount;
   manualVMixAmp.id = "{CA16FDA4-CB83-46F4-B236-5382DAA1CFD6}";
+  manualVMixAmp.name = "Manual VMix Amp";
   manualVMixAmp.description = "Unison Manual Param VMix Amp";
   manualVMixAmp.unit = "%";
   manualVMixAmp.type = FBParamType::Identity;
@@ -482,6 +485,7 @@ FFMakeGlobalUniTopo()
   manualVMixBal.slotFormatterOverrides = true;
   manualVMixBal.slotCount = FFGlobalUniMaxCount;
   manualVMixBal.id = "{A6AD53AB-3FBD-4579-9B2C-D97118B16E70}";
+  manualVMixBal.name = "Manual VMix Stereo Balance";
   manualVMixBal.description = "Unison Manual Param VMix Stereo Balance";
   manualVMixBal.unit = "%";
   manualVMixBal.type = FBParamType::Identity;
@@ -499,6 +503,7 @@ FFMakeGlobalUniTopo()
   manualOscGain.slotCount = FFGlobalUniMaxCount;
   manualOscGain.unit = "%";
   manualOscGain.id = "{847E5FD5-8DAC-43B1-BA0E-125FD916844C}";
+  manualOscGain.name = "Manual Osc Gain";
   manualOscGain.description = "Unison Manual Param Osc Gain";
   manualOscGain.type = FBParamType::Identity;
   auto selectManualOscGain = [](auto& module) { return &module.acc.manualOscGain; };
@@ -515,6 +520,7 @@ FFMakeGlobalUniTopo()
   manualOscPan.slotCount = FFGlobalUniMaxCount;
   manualOscPan.unit = "%";
   manualOscPan.id = "{9CACBCF5-9D85-431B-986B-E2B50DC3336A}";
+  manualOscPan.name = "Manual Osc Pan";
   manualOscPan.description = "Unison Manual Param Osc Pan";
   manualOscPan.type = FBParamType::Identity;
   auto selectManualOscPan = [](auto& module) { return &module.acc.manualOscPan; };
@@ -530,6 +536,7 @@ FFMakeGlobalUniTopo()
   manualOscCoarse.slotFormatterOverrides = true;
   manualOscCoarse.slotCount = FFGlobalUniMaxCount;
   manualOscCoarse.id = "{C16C50D5-00C0-4393-87F9-1A7C457F4483}";
+  manualOscCoarse.name = "Manual Osc Coarse Pitch";
   manualOscCoarse.description = "Unison Manual Param Osc Coarse Pitch";
   manualOscCoarse.type = FBParamType::Linear;
   manualOscCoarse.Linear().min = -FFModCoarseSemis;
@@ -547,6 +554,7 @@ FFMakeGlobalUniTopo()
   manualOscFine.slotFormatterOverrides = true;
   manualOscFine.slotCount = FFGlobalUniMaxCount;
   manualOscFine.id = "{D32C05E9-BE89-43CB-887F-AF7B1001518F}";
+  manualOscFine.name = "Manual Osc Fine Pitch";
   manualOscFine.description = "Unison Manual Param Osc Fine Pitch";
   manualOscFine.unit = "%";
   manualOscFine.type = FBParamType::Identity;
@@ -564,6 +572,7 @@ FFMakeGlobalUniTopo()
   manualOscPhaseOffset.slotCount = FFGlobalUniMaxCount;
   manualOscPhaseOffset.unit = "%";
   manualOscPhaseOffset.id = "{EC98E6C3-0BB3-4E19-A861-5CDDA8C0401F}";
+  manualOscPhaseOffset.name = "Manual Osc Phase Offset";
   manualOscPhaseOffset.description = "Unison Manual Param Osc Phase Offset";
   manualOscPhaseOffset.type = FBParamType::Identity;
   auto selectManualOscPhaseOffset = [](auto& module) { return &module.acc.manualOscPhaseOffset; };
@@ -580,6 +589,7 @@ FFMakeGlobalUniTopo()
   manualLFORate.slotCount = FFGlobalUniMaxCount;
   manualLFORate.unit = "%";
   manualLFORate.id = "{A14D92A7-0952-4DF9-98D6-194B1A763DDF}";
+  manualLFORate.name = "Manual LFO Rate";
   manualLFORate.description = "Unison Manual Param LFO Rate";
   manualLFORate.type = FBParamType::Identity;
   auto selectmanualLFORate = [](auto& module) { return &module.acc.manualLFORate; };
@@ -596,6 +606,7 @@ FFMakeGlobalUniTopo()
   manualLFOMin.slotCount = FFGlobalUniMaxCount;
   manualLFOMin.unit = "%";
   manualLFOMin.id = "{BC67CD56-29BF-491D-BA5F-43541B6E506D}";
+  manualLFOMin.name = "Manual LFO Min";
   manualLFOMin.description = "Unison Manual Param LFO Min";
   manualLFOMin.type = FBParamType::Identity;
   auto selectManualLFOMin = [](auto& module) { return &module.acc.manualLFOMin; };
@@ -612,6 +623,7 @@ FFMakeGlobalUniTopo()
   manualLFOMax.slotCount = FFGlobalUniMaxCount;
   manualLFOMax.unit = "%";
   manualLFOMax.id = "{D6A4D1B5-8961-4C5B-96CA-792F73227A0C}";
+  manualLFOMax.name = "Manual LFO Max";
   manualLFOMax.description = "Unison Manual Param LFO Max";
   manualLFOMax.type = FBParamType::Identity;
   auto selectManualLFOMax = [](auto& module) { return &module.acc.manualLFOMax; };
@@ -628,6 +640,7 @@ FFMakeGlobalUniTopo()
   manualLFOSkewAX.slotCount = FFGlobalUniMaxCount;
   manualLFOSkewAX.unit = "%";
   manualLFOSkewAX.id = "{5FABD18F-6F53-4532-AC77-7FC5882B2CD1}";
+  manualLFOSkewAX.name = "Manual LFO A Skew X";
   manualLFOSkewAX.description = "Unison Manual Param LFO A Skew X";
   manualLFOSkewAX.type = FBParamType::Identity;
   auto selectManualLFOSkewAX = [](auto& module) { return &module.acc.manualLFOSkewAX; };
@@ -644,6 +657,7 @@ FFMakeGlobalUniTopo()
   manualLFOSkewAY.slotCount = FFGlobalUniMaxCount;
   manualLFOSkewAY.unit = "%";
   manualLFOSkewAY.id = "{7C900D23-EC5F-483B-82A3-EB27E2DD9E66}";
+  manualLFOSkewAY.name = "Manual LFO A Skew Y";
   manualLFOSkewAY.description = "Unison Manual Param LFO A Skew Y";
   manualLFOSkewAY.type = FBParamType::Identity;
   auto selectManualLFOSkewAY = [](auto& module) { return &module.acc.manualLFOSkewAY; };
@@ -660,6 +674,7 @@ FFMakeGlobalUniTopo()
   manualLFOPhaseOffset.slotCount = FFGlobalUniMaxCount;
   manualLFOPhaseOffset.unit = "%";
   manualLFOPhaseOffset.id = "{00A68371-5419-4398-8B42-4AADF0955DAF}";
+  manualLFOPhaseOffset.name = "Manual LFO Phase Offset";
   manualLFOPhaseOffset.description = "Unison Manual Param LFO Phase Offset";
   manualLFOPhaseOffset.type = FBParamType::Identity;
   auto selectManualLFOPhaseOffset = [](auto& module) { return &module.acc.manualLFOPhaseOffset; };
@@ -676,6 +691,7 @@ FFMakeGlobalUniTopo()
   manualVFXParamA.slotCount = FFGlobalUniMaxCount;
   manualVFXParamA.unit = "%";
   manualVFXParamA.id = "{E383FFF3-6549-44A4-878B-9BE81EB4A69F}";
+  manualVFXParamA.name = "Manual VFX Control Param A";
   manualVFXParamA.description = "Unison Manual Param VFX Control Param A";
   manualVFXParamA.type = FBParamType::Identity;
   auto selectManualVFXParamA = [](auto& module) { return &module.acc.manualVFXParamA; };
@@ -692,6 +708,7 @@ FFMakeGlobalUniTopo()
   manualVFXParamB.slotCount = FFGlobalUniMaxCount;
   manualVFXParamB.unit = "%";
   manualVFXParamB.id = "{82D2D353-D454-496B-BB0E-F7B23D20D698}";
+  manualVFXParamB.name = "Manual VFX Control Param B";
   manualVFXParamB.description = "Unison Manual Param VFX Control Param B";
   manualVFXParamB.type = FBParamType::Identity;
   auto selectManualVFXParamB = [](auto& module) { return &module.acc.manualVFXParamB; };
@@ -708,6 +725,7 @@ FFMakeGlobalUniTopo()
   manualVFXParamC.slotCount = FFGlobalUniMaxCount;
   manualVFXParamC.unit = "%";
   manualVFXParamC.id = "{55539EFD-3561-4F1F-BDDC-FF0CEC2AA14B}";
+  manualVFXParamC.name = "Manual VFX Control Param C";
   manualVFXParamC.description = "Unison Manual Param VFX Control Param C";
   manualVFXParamC.type = FBParamType::Identity;
   auto selectManualVFXParamC = [](auto& module) { return &module.acc.manualVFXParamC; };
@@ -724,6 +742,7 @@ FFMakeGlobalUniTopo()
   manualVFXParamD.slotCount = FFGlobalUniMaxCount;
   manualVFXParamD.unit = "%";
   manualVFXParamD.id = "{9346FF6B-068F-4F36-A4CD-68A652CF1A2C}";
+  manualVFXParamD.name = "Manual VFX Control Param D";
   manualVFXParamD.description = "Unison Manual Param VFX Control Param D";
   manualVFXParamD.type = FBParamType::Identity;
   auto selectManualVFXParamD = [](auto& module) { return &module.acc.manualVFXParamD; };
@@ -740,6 +759,7 @@ FFMakeGlobalUniTopo()
   manualEnvSlope.slotCount = FFGlobalUniMaxCount;
   manualEnvSlope.unit = "%";
   manualEnvSlope.id = "{19A72E15-FC14-4F36-8CB9-C176FB09B78C}";
+  manualEnvSlope.name = "Manual Envelope Slope";
   manualEnvSlope.description = "Unison Manual Param Envelope Slope";
   manualEnvSlope.type = FBParamType::Identity;
   auto selectManualEnvSlope = [](auto& module) { return &module.acc.manualEnvSlope; };
@@ -756,6 +776,7 @@ FFMakeGlobalUniTopo()
   manualEnvStretch.slotCount = FFGlobalUniMaxCount;
   manualEnvStretch.unit = "%";
   manualEnvStretch.id = "{6155B06D-D928-4EBF-9A52-99EAA3341D26}";
+  manualEnvStretch.name = "Manual Envelope Stretch";
   manualEnvStretch.description = "Unison Manual Param Envelope Stretch";
   manualEnvStretch.type = FBParamType::Identity;
   auto selectManualEnvStretch = [](auto& module) { return &module.acc.manualEnvStretch; };
@@ -772,6 +793,7 @@ FFMakeGlobalUniTopo()
   manualEchoExtend.slotCount = FFGlobalUniMaxCount;
   manualEchoExtend.unit = "%";
   manualEchoExtend.id = "{B60645F1-F349-4911-AA11-218E188C0D1F}";
+  manualEchoExtend.name = "Manual VEcho Extend";
   manualEchoExtend.description = "Unison Manual Param VEcho Extend";
   manualEchoExtend.type = FBParamType::Identity;
   auto selectManualEchoExtend = [](auto& module) { return &module.acc.manualEchoExtend; };
@@ -788,6 +810,7 @@ FFMakeGlobalUniTopo()
   manualEchoFade.slotCount = FFGlobalUniMaxCount;
   manualEchoFade.unit = "%";
   manualEchoFade.id = "{A9F81A4A-1FB3-418B-86F5-8F49C77934B7}";
+  manualEchoFade.name = "Manual VEcho Fade";
   manualEchoFade.description = "Unison Manual Param VEcho Fade";
   manualEchoFade.type = FBParamType::Identity;
   auto selectManualEchoFade = [](auto& module) { return &module.acc.manualEchoFade; };
@@ -804,6 +827,7 @@ FFMakeGlobalUniTopo()
   manualEchoTapsMix.slotCount = FFGlobalUniMaxCount;
   manualEchoTapsMix.unit = "%";
   manualEchoTapsMix.id = "{A480C75C-3429-44A1-BAAF-44341E793F80}";
+  manualEchoTapsMix.name = "Manual VEcho Taps Dry/Wet Mix";
   manualEchoTapsMix.description = "Unison Manual Param VEcho Taps Dry/Wet Mix";
   manualEchoTapsMix.type = FBParamType::Identity;
   auto selectManualEchoTapsMix = [](auto& module) { return &module.acc.manualEchoTapsMix; };
@@ -820,6 +844,7 @@ FFMakeGlobalUniTopo()
   manualEchoTapDelay.slotCount = FFGlobalUniMaxCount;
   manualEchoTapDelay.unit = "%";
   manualEchoTapDelay.id = "{158E67F4-DD9C-4A2A-93B8-6914B8F9DCED}";
+  manualEchoTapDelay.name = "Manual VEcho Tap Delay Time";
   manualEchoTapDelay.description = "Unison Manual Param VEcho Tap Delay Time";
   manualEchoTapDelay.type = FBParamType::Identity;
   auto selectManualEchoTapDelay = [](auto& module) { return &module.acc.manualEchoTapDelay; };
@@ -836,6 +861,7 @@ FFMakeGlobalUniTopo()
   manualEchoTapBal.slotCount = FFGlobalUniMaxCount;
   manualEchoTapBal.unit = "%";
   manualEchoTapBal.id = "{1E8EDB12-2E07-47DE-BB0C-39AC596896E0}";
+  manualEchoTapBal.name = "Manual VEcho Tap Balance";
   manualEchoTapBal.description = "Unison Manual Param VEcho Tap Balance";
   manualEchoTapBal.type = FBParamType::Identity;
   auto selectManualEchoTapBal = [](auto& module) { return &module.acc.manualEchoTapBal; };
@@ -852,6 +878,7 @@ FFMakeGlobalUniTopo()
   manualEchoTapLPF.slotCount = FFGlobalUniMaxCount;
   manualEchoTapLPF.unit = "%";
   manualEchoTapLPF.id = "{47E81F03-58DC-4A04-9534-5E1A04E1C150}";
+  manualEchoTapLPF.name = "Manual VEcho Tap LP Frequency";
   manualEchoTapLPF.description = "Unison Manual Param VEcho Tap LP Frequency";
   manualEchoTapLPF.type = FBParamType::Identity;
   auto selectManualEchoTapLPF = [](auto& module) { return &module.acc.manualEchoTapLPF; };
@@ -868,6 +895,7 @@ FFMakeGlobalUniTopo()
   manualEchoTapHPF.slotCount = FFGlobalUniMaxCount;
   manualEchoTapHPF.unit = "%";
   manualEchoTapHPF.id = "{61C0E876-6480-421F-A5BB-EA9A616751FB}";
+  manualEchoTapHPF.name = "Manual VEcho Tap HP Frequency";
   manualEchoTapHPF.description = "Unison Manual Param VEcho Tap HP Frequency";
   manualEchoTapHPF.type = FBParamType::Identity;
   auto selectManualEchoTapHPF = [](auto& module) { return &module.acc.manualEchoTapHPF; };
@@ -884,6 +912,7 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkDelay.slotCount = FFGlobalUniMaxCount;
   manualEchoFdbkDelay.unit = "%";
   manualEchoFdbkDelay.id = "{6D51D872-4BFD-4F06-B202-BD971DB527FA}";
+  manualEchoFdbkDelay.name = "Manual VEcho Feedback Delay Time";
   manualEchoFdbkDelay.description = "Unison Manual Param VEcho Feedback Delay Time";
   manualEchoFdbkDelay.type = FBParamType::Identity;
   auto selectManualEchoFdbkDelay = [](auto& module) { return &module.acc.manualEchoFdbkDelay; };
@@ -900,6 +929,7 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkMix.slotCount = FFGlobalUniMaxCount;
   manualEchoFdbkMix.unit = "%";
   manualEchoFdbkMix.id = "{41E192B1-909D-41B6-93B5-9343460670A2}";
+  manualEchoFdbkMix.name = "Manual VEcho Feedback Dry/Wet Mix";
   manualEchoFdbkMix.description = "Unison Manual Param VEcho Feedback Dry/Wet Mix";
   manualEchoFdbkMix.type = FBParamType::Identity;
   auto selectManualEchoFdbkMix = [](auto& module) { return &module.acc.manualEchoFdbkMix; };
@@ -916,6 +946,7 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkAmt.slotCount = FFGlobalUniMaxCount;
   manualEchoFdbkAmt.unit = "%";
   manualEchoFdbkAmt.id = "{BF96F4F2-74C7-4BA8-8FE5-72320499849E}";
+  manualEchoFdbkAmt.name = "Manual VEcho Feedback Amount";
   manualEchoFdbkAmt.description = "Unison Manual Param VEcho Feedback Amount";
   manualEchoFdbkAmt.type = FBParamType::Identity;
   auto selectManualEchoFdbkAmt = [](auto& module) { return &module.acc.manualEchoFdbkAmt; };
@@ -932,6 +963,7 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkLPF.slotCount = FFGlobalUniMaxCount;
   manualEchoFdbkLPF.unit = "%";
   manualEchoFdbkLPF.id = "{7F92602A-61F7-42E8-AAE7-9C931B9200E2}";
+  manualEchoFdbkLPF.name = "Manual VEcho Feedback LP Frequency";
   manualEchoFdbkLPF.description = "Unison Manual Param VEcho Feedback LP Frequency";
   manualEchoFdbkLPF.type = FBParamType::Identity;
   auto selectManualEchoFdbkLPF = [](auto& module) { return &module.acc.manualEchoFdbkLPF; };
@@ -948,6 +980,7 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkHPF.slotCount = FFGlobalUniMaxCount;
   manualEchoFdbkHPF.unit = "%";
   manualEchoFdbkHPF.id = "{089575E1-8167-46F7-80C7-86BA739693A8}";
+  manualEchoFdbkHPF.name = "Manual VEcho Feedback HP Frequency";
   manualEchoFdbkHPF.description = "Unison Manual Param VEcho Feedback HP Frequency";
   manualEchoFdbkHPF.type = FBParamType::Identity;
   auto selectManualEchoFdbkHPF = [](auto& module) { return &module.acc.manualEchoFdbkHPF; };
@@ -964,6 +997,7 @@ FFMakeGlobalUniTopo()
   manualEchoReverbMix.slotCount = FFGlobalUniMaxCount;
   manualEchoReverbMix.unit = "%";
   manualEchoReverbMix.id = "{475A0982-1DEE-4636-B532-0D0FCD816DEC}";
+  manualEchoReverbMix.name = "Manual VEcho Reverb Dry/Wet Mix";
   manualEchoReverbMix.description = "Unison Manual Param VEcho Reverb Dry/Wet Mix";
   manualEchoReverbMix.type = FBParamType::Identity;
   auto selectManualEchoReverbMix = [](auto& module) { return &module.acc.manualEchoReverbMix; };
@@ -980,6 +1014,7 @@ FFMakeGlobalUniTopo()
   manualEchoReverbSize.slotCount = FFGlobalUniMaxCount;
   manualEchoReverbSize.unit = "%";
   manualEchoReverbSize.id = "{8E997A4E-BCF6-4599-9329-377E81F77B5F}";
+  manualEchoReverbSize.name = "Manual VEcho Reverb Room Size";
   manualEchoReverbSize.description = "Unison Manual Param VEcho Reverb Room Size";
   manualEchoReverbSize.type = FBParamType::Identity;
   auto selectManualEchoReverbSize = [](auto& module) { return &module.acc.manualEchoReverbSize; };
@@ -996,6 +1031,7 @@ FFMakeGlobalUniTopo()
   manualEchoReverbDamp.slotCount = FFGlobalUniMaxCount;
   manualEchoReverbDamp.unit = "%";
   manualEchoReverbDamp.id = "{6E27DACE-DEA9-4168-8752-6BFB0B09002E}";
+  manualEchoReverbDamp.name = "Manual VEcho Reverb Damping Factor";
   manualEchoReverbDamp.description = "Unison Manual Param VEcho Reverb Damping Factor";
   manualEchoReverbDamp.type = FBParamType::Identity;
   auto selectManualEchoReverbDamp = [](auto& module) { return &module.acc.manualEchoReverbDamp; };
@@ -1012,6 +1048,7 @@ FFMakeGlobalUniTopo()
   manualEchoReverbLPF.slotCount = FFGlobalUniMaxCount;
   manualEchoReverbLPF.unit = "%";
   manualEchoReverbLPF.id = "{64120E13-8778-42CF-8A7D-EB3EC175DA15}";
+  manualEchoReverbLPF.name = "Manual VEcho Reverb LP Frequency";
   manualEchoReverbLPF.description = "Unison Manual Param VEcho Reverb LP Frequency";
   manualEchoReverbLPF.type = FBParamType::Identity;
   auto selectManualEchoReverbLPF = [](auto& module) { return &module.acc.manualEchoReverbLPF; };
@@ -1028,6 +1065,7 @@ FFMakeGlobalUniTopo()
   manualEchoReverbHPF.slotCount = FFGlobalUniMaxCount;
   manualEchoReverbHPF.unit = "%";
   manualEchoReverbHPF.id = "{87EC2DB4-38C8-4EB3-9A1E-E2BABD327BF7}";
+  manualEchoReverbHPF.name = "Manual VEcho Reverb HP Frequency";
   manualEchoReverbHPF.description = "Unison Manual Param VEcho Reverb HP Frequency";
   manualEchoReverbHPF.type = FBParamType::Identity;
   auto selectManualEchoReverbHPF = [](auto& module) { return &module.acc.manualEchoReverbHPF; };

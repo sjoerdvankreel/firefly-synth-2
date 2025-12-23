@@ -23,6 +23,7 @@ TODOLIST for beta-2
 [x] check all the buttons
 [x] graph bipolar per slot for fx
 [x] "disabled by" tooltip
+[ ] dump topo + update docs
 [ ] osci/fx/cv/rest/global
 [ ] stuff crashes
 [ ] check the todos
@@ -40,7 +41,7 @@ TODOLIST for beta-2
 [ ] dump module/paramlist guid option?
 [ ] theme and prettify the gui
 [ ] theme the combo popouts (or all of them, filepicker etc)
-[ ] explain theme in manual
+[ ] explain theme in manual + dump topo option
 [ ] update docs for string HPF (see GitHub bug)
 
 TODOLIST for beta-next

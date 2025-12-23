@@ -58,6 +58,7 @@ id(FBMakeRuntimeId(staticModule.id, topoIndices.module.slot, staticParam.id, top
 staticModuleId(staticModule.id),
 tag(FBMakeStableHash(id))
 {
+  FB_ASSERT(staticParam.name.size());
   FB_ASSERT(staticParam.description.size());
   FB_ASSERT((staticParam.defaultText.size() == 0) != (staticParam.defaultTextSelector == nullptr));
 #ifndef NDEBUG
