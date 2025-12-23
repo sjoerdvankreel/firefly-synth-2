@@ -103,7 +103,7 @@ FFMakeEnvTopo()
   result->slotFormatter = [](FBStaticTopo const&, int s) { return s == FFAmpEnvSlot ? "Amp Env" : "Env " + std::to_string(s); };
   auto selectGuiModule = [](auto& state) { return &state.env; };
   auto selectModule = [](auto& state) { return &state.voice.env; };
-
+    
   auto& type = result->params[(int)FFEnvParam::Type];
   type.mode = FBParamMode::Block;
   type.name = "Type";

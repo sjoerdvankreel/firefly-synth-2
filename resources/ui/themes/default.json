@@ -4,7 +4,7 @@
     "graphAlpha": 0.6,
     "dimDisabled": 0.25,
     "text": "FFEEEEEE",
-    "primary": "FFF28C28",
+    "primary": "FFFFFFFF",
     "background": "FF000000",
     "graphGrid": "FF404040",
     "graphBackground": "FF181818",
@@ -15,25 +15,90 @@
     "paramBackground": "FF181818"
   },
   "colorSchemes": {
-    "CV": {
-      "primary": "FF288EF2",
+    "Top": {
+      "primary": "FF2D86FE",
+    },
+    "VoiceMasterSettings": {
+      "primary": "FFFBC401",
+    },
+    "Mix": {
+      "primary": "FFD4164F",
+    },
+    "Osc": {
+      "primary": "FF28BB40",
+    },
+    "FXAndEcho": {
+      "primary": "FFB422D9",
+    },
+    "LFOAndEnv": {
+      "primary": "FFFF9000",
     }
   },
   "moduleColors": [
     {
+      "moduleId": "AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8",
+      "moduleSlot": -1,
+      "colorScheme": "VoiceMasterSettings"
+    },
+    {
+      "moduleId": "83AA98D4-9D12-4D61-81A4-4FAA935EDF5D",
+      "moduleSlot": -1,
+      "colorScheme": "VoiceMasterSettings"
+    },
+    {
+      "moduleId": "3689411E-F31C-4F8C-BE3D-6F87938A1A1B",
+      "moduleSlot": -1,
+      "colorScheme": "VoiceMasterSettings"
+    },
+    {
+      "moduleId": "5C91D5A0-3EC1-4142-935A-3FE83B60C04E",
+      "moduleSlot": -1,
+      "colorScheme": "Mix"
+    },
+    {
+      "moduleId": "09ED2CCE-3AC5-455E-935C-A684BEBC154D",
+      "moduleSlot": -1,
+      "colorScheme": "Mix"
+    },
+    {
+      "moduleId": "73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6",
+      "moduleSlot": -1,
+      "colorScheme": "Osc"
+    },
+    {
+      "moduleId": "V154051CE-66D9-41C8-B479-C52D1111C962",
+      "moduleSlot": -1,
+      "colorScheme": "FXAndEcho"
+    },
+    {
+      "moduleId": "G154051CE-66D9-41C8-B479-C52D1111C962",
+      "moduleSlot": -1,
+      "colorScheme": "FXAndEcho"
+    },
+    {
+      "moduleId": "VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
+      "moduleSlot": -1,
+      "colorScheme": "FXAndEcho"
+    },
+    {
+      "moduleId": "GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
+      "moduleSlot": -1,
+      "colorScheme": "FXAndEcho"
+    },
+    {
       "moduleId": "G6E9EC930-5391-41BB-9EDA-C9B79F3BE745",
       "moduleSlot": -1,
-      "colorScheme": "CV"
+      "colorScheme": "LFOAndEnv"
     },
     {
       "moduleId": "V6E9EC930-5391-41BB-9EDA-C9B79F3BE745",
       "moduleSlot": -1,
-      "colorScheme": "CV"
+      "colorScheme": "LFOAndEnv"
     },
     {
       "moduleId": "FC1DC75A-200C-4465-8CBE-0100E2C8FAF2",
       "moduleSlot": -1,
-      "colorScheme": "CV"
+      "colorScheme": "LFOAndEnv"
     }
   ]
 }

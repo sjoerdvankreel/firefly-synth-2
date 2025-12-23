@@ -65,7 +65,7 @@ FFMakeOsciTopo()
   result->params.resize((int)FFOsciParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osci; });
   auto selectModule = [](auto& state) { return &state.voice.osci; };
-
+   
   auto& type = result->params[(int)FFOsciParam::Type];
   type.mode = FBParamMode::Block;
   type.name = "Type";

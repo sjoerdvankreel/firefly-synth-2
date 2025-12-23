@@ -55,7 +55,7 @@ FFMakeVMixTopo()
   result->params.resize((int)FFVMixParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.vMix; });
   auto selectModule = [](auto& state) { return &state.voice.vMix; };
-
+   
   auto& amp = result->params[(int)FFVMixParam::Amp];
   amp.mode = FBParamMode::Accurate;
   amp.defaultText = "100";

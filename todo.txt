@@ -26,6 +26,10 @@ TODOLIST for beta-2
 [x] dump topo + update docs
 [x] dump module/paramlist guid option?
 [x] stuff crashes
+[ ] todo maybe matrix in red?
+[ ] note to check the logs when borked
+[ ] add show logfile folder option
+[ ] document the scheme itself
 [ ] osci/fx/cv/rest/global
 [ ] check the todos
 [ ] check the findcolours
