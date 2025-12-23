@@ -25,6 +25,7 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBGraphRenderState.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/gui/components/FBThemedComponent.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
@@ -279,7 +280,7 @@ FFPlugGUI::SetupGUI()
   _container->Add(0, 0, _outputOtherAndPatch);
   _container->Add(1, 0, _guiSettingsAndTweak);
   _container->Add(2, 0, _headerAndGraph);
-  _container->Add(3, 0, _tabs);
+  _container->Add(3, 0, StoreComponent<FBThemedComponent>((int)FFThemedComponentId::MainSelector, _tabs));
 
   _osciParamListener = std::make_unique<FFOsciParamListener>(this);
   _vMixParamListener = std::make_unique<FFVMixParamListener>(this);

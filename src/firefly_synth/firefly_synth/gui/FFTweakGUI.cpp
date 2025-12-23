@@ -1,9 +1,11 @@
 #include <firefly_synth/gui/FFTweakGUI.hpp>
+#include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBThemedComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 
@@ -19,5 +21,6 @@ FFMakeTweakGUI(FBPlugGUI* plugGUI)
   auto box = plugGUI->StoreComponent<FBLastTweakedTextBox>(plugGUI, 150);
   grid->Add(0, 2, plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, box));
   grid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::BackgroundAndBorder);
-  return plugGUI->StoreComponent<FBSectionComponent>(true, grid);
+  auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
+  return plugGUI->StoreComponent<FBThemedComponent>((int)FFThemedComponentId::LastTweaked, section);
 }
