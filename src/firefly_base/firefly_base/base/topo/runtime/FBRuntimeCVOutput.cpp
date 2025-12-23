@@ -50,4 +50,7 @@ topoIndices(topoIndices),
 id(FBMakeRuntimeId(staticModule.id, topoIndices.cvOutput.slot, staticCVOutput.id, topoIndices.cvOutput.slot)),
 name(FBMakeRuntimeCVOutputName(topo, staticModule, staticCVOutput, topoIndices, false)),
 staticModuleId(staticModule.id),
-tag(FBMakeStableHash(id)) {}
+tag(FBMakeStableHash(id))
+{
+  FB_ASSERT(staticCVOutput.name.size());
+}

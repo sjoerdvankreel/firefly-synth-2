@@ -54,6 +54,7 @@ FBStaticTopo::PrintTopology() const
   std::ostringstream result = {};
   result << meta.name;
   result << "\nId: " << FBCleanTopoId(meta.id);
+  result << "\nVersion: " << meta.version.major << "." << meta.version.minor << "." << meta.version.patch;
   result << "\nModules:";
 
   for (int m = 0; m < modules.size(); m++)
@@ -106,6 +107,7 @@ FBStaticTopo::PrintTopology() const
         result << "\n\t\t\t" << param.name;
         result << "\n\t\t\t\tId: " << FBCleanTopoId(param.id);
         result << "\n\t\t\t\tSlot Count: " << param.slotCount;
+        result << "\n\t\t\t\tStored In Patch: " << (param.storeInPatch? "True": "False");
       }
     }
   }
