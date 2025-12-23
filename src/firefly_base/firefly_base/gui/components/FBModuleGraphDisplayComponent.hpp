@@ -26,7 +26,7 @@ private:
     int graph, float pointRelative, bool withPadding) const;
 
   float PointYLocation(
-    float pointYValue, bool stereo, bool left, 
+    int graph, float pointYValue, bool stereo, bool left, 
     float absMaxValueAllSeries, bool withPadding) const;
 
   juce::Point<float> PointLocation(

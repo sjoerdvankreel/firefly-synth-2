@@ -21,7 +21,8 @@ TODOLIST for beta-2
 [x] sectionborderalpha
 [x] graph pick up the module style
 [x] check all the buttons
-[ ] graph bipolar per slot for fx
+[x] graph bipolar per slot for fx
+[ ] osci/fx/cv/rest/global
 [ ] stuff crashes
 [ ] check the todos
 [ ] check the findcolours

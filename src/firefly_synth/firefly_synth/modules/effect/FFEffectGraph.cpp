@@ -161,8 +161,6 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   EffectGraphRenderData<Global> renderData = {};
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
 
-  graphData->bipolar = true;
-  graphData->drawClipBoundaries = true;
   graphData->skipDrawOnEqualsPrimary = false; // midi note dependent
   renderData.graphData = graphData;
   renderData.plotParamsSelector = [](auto graphData, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
@@ -192,6 +190,8 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
     {
       graphData->graphs[i].title = moduleName;
       graphData->graphs[i].subtext = on? "ON": "OFF";
+      graphData->graphs[i].bipolar = true;
+      graphData->graphs[i].drawClipBoundaries = true;
     }
     else
     {
@@ -199,6 +199,8 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
       auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
       graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
       graphData->graphs[i].subtext = FBAsciiToUpper(FFEffectKindToString(kind));
+      graphData->graphs[i].bipolar = kind == FFEffectKind::Clip || kind == FFEffectKind::Fold || kind == FFEffectKind::Skew;
+      graphData->graphs[i].drawClipBoundaries = graphData->graphs[i].bipolar;
     }
   }
 }
