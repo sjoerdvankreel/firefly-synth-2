@@ -23,7 +23,8 @@ TODOLIST for beta-2
 [x] check all the buttons
 [x] graph bipolar per slot for fx
 [x] "disabled by" tooltip
-[ ] dump topo + update docs
+[x] dump topo + update docs
+[x] dump module/paramlist guid option?
 [ ] osci/fx/cv/rest/global
 [ ] stuff crashes
 [ ] check the todos
@@ -38,11 +39,11 @@ TODOLIST for beta-2
 [ ] run a debug build
 [ ] hunt down all juce::colour and 0xFFBLA and colourid
 [ ] modulecomponent everywhere
-[ ] dump module/paramlist guid option?
 [ ] theme and prettify the gui
 [ ] theme the combo popouts (or all of them, filepicker etc)
 [ ] explain theme in manual + dump topo option
 [ ] update docs for string HPF (see GitHub bug)
+[ ] fix ardour save/load
 
 TODOLIST for beta-next
 [ ] not right-click-change horizontal sliders
