@@ -25,8 +25,8 @@ TODOLIST for beta-2
 [x] "disabled by" tooltip
 [x] dump topo + update docs
 [x] dump module/paramlist guid option?
+[x] stuff crashes
 [ ] osci/fx/cv/rest/global
-[ ] stuff crashes
 [ ] check the todos
 [ ] check the findcolours
 [ ] check the top rows margins

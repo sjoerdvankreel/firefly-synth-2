@@ -25,13 +25,14 @@ FBModuleGraphDisplayComponent::FindColorSchemeFor(
   int moduleIndex, int moduleSlot) const
 {
   auto const& theme = FBGetLookAndFeel()->Theme();
-  if (auto gui = findParentComponentOfClass<FBPlugGUI>())
-  {
-    int rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at({ moduleIndex, moduleSlot });
-    auto moduleIter = theme.moduleColors.find(rtModuleIndex);
-    if (moduleIter != theme.moduleColors.end())
-      return theme.colorSchemes.at(moduleIter->second.colorScheme);
-  }
+  if(moduleIndex != -1 && moduleSlot != -1)
+    if (auto gui = findParentComponentOfClass<FBPlugGUI>())
+    {
+      int rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at({ moduleIndex, moduleSlot });
+      auto moduleIter = theme.moduleColors.find(rtModuleIndex);
+      if (moduleIter != theme.moduleColors.end())
+        return theme.colorSchemes.at(moduleIter->second.colorScheme);
+    }
   return theme.defaultColorScheme;
 }
 
