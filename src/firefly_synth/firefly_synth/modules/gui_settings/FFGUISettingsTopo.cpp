@@ -14,7 +14,7 @@ FFMakeGUISettingsTopo()
   result->id = "{E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B}";
   result->guiParams.resize((int)FFGUISettingsGUIParam::Count);
   auto selectGuiModule = [](auto& state) { return &state.guiSettings; }; 
-   
+    
   auto& guiUserScale = result->guiParams[(int)FFGUISettingsGUIParam::UserScale];
   guiUserScale.unit = "%"; 
   guiUserScale.defaultText = "1";
