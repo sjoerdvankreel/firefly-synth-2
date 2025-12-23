@@ -110,8 +110,6 @@ EffectGraphRenderData<Global>::DoPostProcess(
   if (points.l.size() == 0)
     return;
   state->FFT(points.l);
-  for (int i = 0; i < points.l.size(); i++)
-    points.l[i] = FBToBipolar(points.l[i]);
 }
 
 template <bool Global>
