@@ -1,11 +1,15 @@
-#include <firefly_synth/gui/FFPatchGUI.hpp>
 #include <firefly_synth/gui/FFPlugGUI.hpp>
+#include <firefly_synth/gui/FFPatchGUI.hpp>
+#include <firefly_synth/shared/FFPlugTopo.hpp>
+
 #include <firefly_base/base/shared/FBLogging.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBThemedComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 
@@ -61,6 +65,6 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
   grid->Add(0, 7, preset);
 
   grid->MarkSection({ { 0, 0 }, { 1, 8 } }, FBGridSectionMark::BackgroundAndBorder);
-
-  return plugGUI->StoreComponent<FBSectionComponent>(true, grid);
+  auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
+  return plugGUI->StoreComponent<FBThemedComponent>((int)FFThemedComponentId::Patch, section);
 }

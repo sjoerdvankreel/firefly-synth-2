@@ -55,8 +55,15 @@ FBStaticTopo::PrintTopology() const
   result << meta.name;
   result << "\nId: " << FBCleanTopoId(meta.id);
   result << "\nVersion: " << meta.version.major << "." << meta.version.minor << "." << meta.version.patch;
-  result << "\nModules:";
 
+  result << "\nThemed Components:";
+  for (auto const& kv: themedComponents)
+  {
+    result << "\n\t" << kv.second.name;
+    result << "\n\t\tId: " << FBCleanTopoId(kv.second.id);
+  }
+
+  result << "\nModules:";
   for (int m = 0; m < modules.size(); m++)
   {
     auto const& module = modules[m];

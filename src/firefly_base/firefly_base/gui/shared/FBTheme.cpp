@@ -32,6 +32,7 @@ struct FBThemeJson
   FBColorScheme defaultColorScheme = {};
   std::vector<FBModuleColorsJson> moduleColors = {};
   std::map<std::string, FBColorScheme> colorSchemes = {};
+  std::map<std::string, std::string> componentColors = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBThemeJson);
 };
 
@@ -460,6 +461,20 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
   if (!ParseModuleColorsJson(obj->getProperty("moduleColors"), result.moduleColors))
     return false;
 
+  if (!RequireObjectProperty(obj, "componentColors"))
+    return false;
+  auto const& componentColors = obj->getProperty("componentColors");
+  auto const* componentColorsObj = componentColors.getDynamicObject();
+  for (auto i = componentColorsObj->getProperties().begin(); i != componentColorsObj->getProperties().end(); i++)
+    result.componentColors[i->name.toString().toStdString()] = i->value.toString().toStdString();
+
+  for (auto& kv : result.componentColors)
+    if (result.colorSchemes.find(kv.second) == result.colorSchemes.end())
+    {
+      FB_LOG_ERROR("Color scheme '" + kv.second + "' not found.");
+      return false;
+    }
+
   for(int i = 0; i < result.moduleColors.size(); i++)
   {
     auto const& moduleScheme = result.moduleColors[i].colorScheme;
@@ -484,7 +499,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
       {
         FB_LOG_ERROR("Color scheme '" + paramScheme + "' not found.");
         return false;
-      }
+      } 
     }
   }
   
@@ -604,7 +619,25 @@ MakeTheme(
   theme = {};
   theme.name = themeJson.name;
   theme.colorSchemes = themeJson.colorSchemes;
+  theme.componentColors = themeJson.componentColors;
   theme.defaultColorScheme = FBColorScheme(themeJson.defaultColorScheme);
+
+  for (auto const& kv : theme.componentColors)
+  {
+    bool found = false;
+    for (int i = 0; i < topo->static_->themedComponents.size(); i++)
+      if (FBCleanTopoId(topo->static_->themedComponents[i].id) == kv.first)
+      {
+        found = true;
+        break;
+      }
+    if (!found)
+    {
+      FB_LOG_ERROR("Cannot find themed component '" + kv.first + "'.");
+      return false;
+    }
+  }
+
   for (int i = 0; i < themeJson.moduleColors.size(); i++)
   {
     int foundIndex = -1;

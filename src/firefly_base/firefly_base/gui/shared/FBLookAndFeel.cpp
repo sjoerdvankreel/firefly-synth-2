@@ -7,8 +7,10 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
+#include <firefly_base/gui/components/FBThemedComponent.hpp>
 #include <firefly_base/gui/components/FBModuleComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 
 using namespace juce;
 
@@ -142,6 +144,17 @@ FBLookAndFeel::FindColorSchemeFor(
       auto moduleIter = Theme().moduleColors.find(rtModuleIndex);
       if (moduleIter != Theme().moduleColors.end())
         return Theme().colorSchemes.at(moduleIter->second.colorScheme);
+    }
+
+    if (auto tc = c.findParentComponentOfClass<FBThemedComponent>())
+    {
+      auto componentIter = gui->HostContext()->Topo()->static_->themedComponents.find(tc->ComponentId());
+      if (componentIter != gui->HostContext()->Topo()->static_->themedComponents.end())
+      {
+        auto schemeIter = Theme().componentColors.find(FBCleanTopoId(componentIter->second.id));
+        if (schemeIter != Theme().componentColors.end())
+          return Theme().colorSchemes.at(schemeIter->second);
+      }      
     }
   }
 

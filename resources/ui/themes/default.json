@@ -34,6 +34,9 @@
       "primary": "FFFF9000",
     }
   },
+  "componentColors": {
+    "878D9B5E-D11E-485D-8B57-5CAC8C8B612A": "Top"
+  },
   "moduleColors": [
     {
       "moduleId": "6BDA100B-8E99-4108-B38C-E5C6418EAF4B",

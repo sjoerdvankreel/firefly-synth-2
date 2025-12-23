@@ -41,6 +41,7 @@ struct FBTheme
   FBColorScheme defaultColorScheme = {};
   std::map<int, FBModuleColors> moduleColors = {}; // runtime module index
   std::map<std::string, FBColorScheme> colorSchemes = {};
+  std::map<std::string, std::string> componentColors = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBTheme);
 };
 

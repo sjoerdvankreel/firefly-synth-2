@@ -66,6 +66,13 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->deserializationConverterFactory = [](FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo) { 
     return std::make_unique<FFDeserializationConverter>(oldVersion, topo); };
 
+  result->themedComponents[(int)FFThemedComponentId::Patch].name = "Patch";
+  result->themedComponents[(int)FFThemedComponentId::Patch].id = "{878D9B5E-D11E-485D-8B57-5CAC8C8B612A}";
+  result->themedComponents[(int)FFThemedComponentId::LastTweaked].name = "Last Tweaked";
+  result->themedComponents[(int)FFThemedComponentId::LastTweaked].id = "{12937840-F39D-4041-986F-911005EC6C58}";
+  result->themedComponents[(int)FFThemedComponentId::MainSelector].name = "Main Selector";
+  result->themedComponents[(int)FFThemedComponentId::MainSelector].id = "{F81585F3-C753-4ED3-A0FC-5E517580EEF4}";
+
   result->exchangeStateSize = sizeof(FFExchangeState);
   result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };
   result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
