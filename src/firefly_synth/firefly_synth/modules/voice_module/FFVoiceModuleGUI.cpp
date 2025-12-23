@@ -142,5 +142,5 @@ FFMakeVoiceModuleGUI(FBPlugGUI* plugGUI)
   auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
   auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::VoiceModule].name;
   tabs->addTab(name, {}, MakeVoiceModuleTab(plugGUI), false);
-  return tabs;
+  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::VoiceModule, 0, tabs);
 }
