@@ -26,6 +26,7 @@ TODOLIST for beta-2
 [x] dump topo + update docs
 [x] dump module/paramlist guid option?
 [x] stuff crashes
+[ ] meters grayscale + red
 [ ] todo maybe matrix in red?
 [ ] note to check the logs when borked
 [ ] add show logfile folder option
@@ -48,6 +49,7 @@ TODOLIST for beta-2
 [ ] explain theme in manual + dump topo option
 [ ] update docs for string HPF (see GitHub bug)
 [ ] fix ardour save/load
+[ ] credit rusto
 ANDROMEDA SCHEME
 blue = 2D86FE
 yellow = FBC401
