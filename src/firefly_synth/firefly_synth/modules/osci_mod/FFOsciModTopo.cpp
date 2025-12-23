@@ -48,7 +48,7 @@ FFMakeOsciModTopo()
   result->params.resize((int)FFOsciModParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osciMod; });
   auto selectModule = [](auto& state) { return &state.voice.osciMod; };
-
+   
   auto& oversample = result->params[(int)FFOsciModParam::Oversample];
   oversample.mode = FBParamMode::Block;
   oversample.name = "4X Oversample";
