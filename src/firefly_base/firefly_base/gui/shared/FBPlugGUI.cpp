@@ -373,8 +373,9 @@ FBPlugGUI::GetTooltipForGUIParam(int index) const
 }
 
 std::string
-FBPlugGUI::GetTooltipForAudioParam(int index) const
+FBPlugGUI::GetTooltipForAudioParam(FBParamControl const* control) const
 {
+  int index = control->Param()->runtimeParamIndex;
   auto const& param = HostContext()->Topo()->audio.params[index];
   double normalized = HostContext()->GetAudioParamNormalized(index);
   auto paramActive = HostContext()->ExchangeFromDSPState()->GetParamActiveState(&param);
@@ -411,6 +412,22 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
     result += "\r\nAutomation: Per-Sample";
   if (param.static_.mode == FBParamMode::VoiceStart)
     result += "\r\nAutomation: At Voice Start";
+
+  auto controlComponent = &dynamic_cast<Component const&>(*control);
+  if (!controlComponent->isEnabled())
+  {
+    auto const& dependencies = control->RuntimeDependencies(true, false);
+    if (dependencies.size() > 0)
+    {
+      result += "\r\nDisabled By: ";
+      for (int i = 0; i < (int)dependencies.size(); i++)
+      {
+        result += HostContext()->Topo()->audio.params[dependencies[i]].displayName;
+        if (i < (int)dependencies.size() - 1)
+          result += ", ";
+      }
+    }
+  }
   result += "\r\nStored In: " + (param.static_.storeInPatch ? std::string("Session And Patch") : std::string("Session Only"));
 
   double modMin = 1.0;

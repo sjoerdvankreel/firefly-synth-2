@@ -117,7 +117,7 @@ FBParamSlider::SetValueNormalizedFromHost(double normalized)
 String
 FBParamSlider::getTooltip()
 {
-  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
+  return _plugGUI->GetTooltipForAudioParam(this);
 }
 
 void

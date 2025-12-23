@@ -96,7 +96,7 @@ public:
   void RemoveParamListener(IFBParamListener* listener);
 
   std::string GetTooltipForGUIParam(int index) const;
-  std::string GetTooltipForAudioParam(int index) const;
+  std::string GetTooltipForAudioParam(FBParamControl const* control) const;
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
   void OnPatchLoaded() override {}

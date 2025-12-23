@@ -583,12 +583,15 @@ MakeModuleColors(
     topo->audio.paramTopoToRuntime[staticModuleIndex][staticModuleSlot],
     result.audioParamColorSchemes))
     return false;
-  if (!MakeParamColors(
-    json.guiParamColorSchemes,
-    topo->static_->modules[staticModuleIndex].guiParams,
-    topo->gui.paramTopoToRuntime[staticModuleIndex][staticModuleSlot],
-    result.guiParamColorSchemes))
-    return false;
+  if (staticModuleIndex < topo->gui.paramTopoToRuntime.size())
+  {
+    if (!MakeParamColors(
+      json.guiParamColorSchemes,
+      topo->static_->modules[staticModuleIndex].guiParams,
+      topo->gui.paramTopoToRuntime[staticModuleIndex][staticModuleSlot],
+      result.guiParamColorSchemes))
+      return false;
+  }
   return true;
 }
 

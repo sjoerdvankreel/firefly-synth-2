@@ -22,6 +22,7 @@ TODOLIST for beta-2
 [x] graph pick up the module style
 [x] check all the buttons
 [x] graph bipolar per slot for fx
+[x] "disabled by" tooltip
 [ ] osci/fx/cv/rest/global
 [ ] stuff crashes
 [ ] check the todos
@@ -35,7 +36,6 @@ TODOLIST for beta-2
 [ ] longer comboboxes
 [ ] run a debug build
 [ ] hunt down all juce::colour and 0xFFBLA and colourid
-[ ] "disabled by" tooltip
 [ ] modulecomponent everywhere
 [ ] dump module/paramlist guid option?
 [ ] theme and prettify the gui

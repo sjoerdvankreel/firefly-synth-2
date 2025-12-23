@@ -113,7 +113,7 @@ FBParamComboBox::parentHierarchyChanged()
 String
 FBParamComboBox::getTooltip()
 {
-  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
+  return _plugGUI->GetTooltipForAudioParam(this);
 }
 
 void
