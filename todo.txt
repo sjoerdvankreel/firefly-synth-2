@@ -28,6 +28,7 @@ TODOLIST for beta-2
 [x] stuff crashes
 [x] header as component id
 [x] theme the panic
+[ ] NOT do greyscale default
 [ ] doc the json itself
 [ ] open logfolder option
 [ ] meters grayscale + red
