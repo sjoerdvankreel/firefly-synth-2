@@ -1,3 +1,5 @@
+#include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 
 static int const MarginX = 1;
@@ -6,12 +8,17 @@ static int const MarginY = 2;
 using namespace juce;
 
 FBMarginComponent::
-FBMarginComponent(bool l, bool r, bool t, bool b, Component* content):
+FBMarginComponent(bool l, bool r, bool t, bool b, Component* content) :
+FBMarginComponent(l, r, t, b, content, false) {}
+
+FBMarginComponent::
+FBMarginComponent(bool l, bool r, bool t, bool b, Component* content, bool opaque):
 Component(),
 _left(l),
 _right(r),
 _top(t),
-_bottom(b)
+_bottom(b),
+_opaque(opaque)
 {
   addAndMakeVisible(content);
 }
@@ -26,6 +33,16 @@ int
 FBMarginComponent::ExtraY() const
 {
   return (_top ? 1 : 0) * MarginY + (_bottom ? 1 : 0) * MarginY;
+}
+
+void 
+FBMarginComponent::paint(Graphics& g)
+{
+  if (_opaque)
+  {
+    g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).background);
+    g.fillAll();
+  }
 }
 
 void

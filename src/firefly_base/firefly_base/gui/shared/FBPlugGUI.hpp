@@ -49,9 +49,10 @@ public IFBHostGUIContextListener
   std::function<void()> _overlayInit = {};
   FBGridComponent* _overlayGrid = {};
   juce::Component* _overlayComponent = {};
-  FBMarginComponent* _overlayMargin = {};
+  FBModuleComponent* _overlayModule = {};
   FBContentComponent* _overlayContent = {};
-  FBModuleComponent* _overlayContainer = {};
+  FBMarginComponent* _overlayInnerMargin = {};
+  FBMarginComponent* _overlayOuterMargin = {};
   std::vector<IFBParamListener*> _paramListeners = {};
 
   void DumpTopologyToFile();

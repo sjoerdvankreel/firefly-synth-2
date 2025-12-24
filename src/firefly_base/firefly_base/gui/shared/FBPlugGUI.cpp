@@ -659,10 +659,11 @@ FBPlugGUI::SetupOverlayGUI()
 
   _overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::AlternateAndAlternate);
   _overlayContent = StoreComponent<FBContentComponent>();
-  _overlayMargin = StoreComponent<FBMarginComponent>(true, true, true, true, _overlayContent);
-  _overlayGrid->Add(1, 0, 1, 3, _overlayMargin);
+  _overlayInnerMargin = StoreComponent<FBMarginComponent>(true, true, true, true, _overlayContent);
+  _overlayGrid->Add(1, 0, 1, 3, _overlayInnerMargin);
   _overlayGrid->MarkSection({ { 1, 0 }, { 1, 3 } }, FBGridSectionMark::Alternate);
-  _overlayContainer = StoreComponent<FBModuleComponent>();
+  _overlayModule = StoreComponent<FBModuleComponent>();
+  _overlayOuterMargin = StoreComponent<FBMarginComponent>(true, true, true, true, _overlayModule, true);
 }
 
 void
@@ -673,10 +674,10 @@ FBPlugGUI::HideOverlayComponent()
   _overlayInit = {};
   _overlayComponent->setVisible(false);
   _overlayContent->SetContent(nullptr);
-  _overlayContainer->setVisible(false);
+  _overlayOuterMargin->setVisible(false);
   _overlayCaption->setText("", dontSendNotification);
-  removeChildComponent(_overlayContainer);
-}
+  removeChildComponent(_overlayOuterMargin);
+} 
 
 void
 FBPlugGUI::ShowOverlayComponent(
@@ -694,11 +695,11 @@ FBPlugGUI::ShowOverlayComponent(
     y = (int)((getHeight() - h) * 0.9);
   _overlayInit = init;
   _overlayContent->SetContent(overlay);
-  _overlayContainer->setBounds(x, y, w, h);
+  _overlayOuterMargin->setBounds(x, y, w, h);
   _overlayCaption->setText(title, dontSendNotification);
-  addAndMakeVisible(_overlayContainer, 1);
-  _overlayContainer->SetModuleContent(moduleIndex, moduleSlot, _overlayGrid);
-  _overlayContainer->resized();
+  addAndMakeVisible(_overlayOuterMargin, 1);
+  _overlayModule->SetModuleContent(moduleIndex, moduleSlot, _overlayGrid);
+  _overlayOuterMargin->resized();
   _overlayComponent = overlay;
 }
 
