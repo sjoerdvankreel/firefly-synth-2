@@ -68,6 +68,8 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
 
   result->themedComponents[(int)FFThemedComponentId::Patch].name = "Patch";
   result->themedComponents[(int)FFThemedComponentId::Patch].id = "{878D9B5E-D11E-485D-8B57-5CAC8C8B612A}";
+  result->themedComponents[(int)FFThemedComponentId::Header].name = "Header";
+  result->themedComponents[(int)FFThemedComponentId::Header].id = "{F2424A69-41E5-4554-BCC0-4CBA334C26D6}";
   result->themedComponents[(int)FFThemedComponentId::LastTweaked].name = "Last Tweaked";
   result->themedComponents[(int)FFThemedComponentId::LastTweaked].id = "{12937840-F39D-4041-986F-911005EC6C58}";
   result->themedComponents[(int)FFThemedComponentId::MainSelector].name = "Main Selector";

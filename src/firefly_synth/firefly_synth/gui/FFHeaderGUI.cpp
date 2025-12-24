@@ -8,6 +8,7 @@
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBImageComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
+#include <firefly_base/gui/components/FBThemedComponent.hpp>
 
 using namespace juce;
 
@@ -31,5 +32,6 @@ FFMakeHeaderGUI(FFPlugGUI* plugGUI)
   grid->Add(1, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(formatName + " " + archName));
   grid->Add(1, 2, plugGUI->StoreComponent<FBFillerComponent>(5, 1));
   grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::BackgroundAndBorder, 5.0f, 2);
-  return plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  return plugGUI->StoreComponent<FBThemedComponent>((int)FFThemedComponentId::Header, margin);
 };

@@ -26,9 +26,9 @@ TODOLIST for beta-2
 [x] dump topo + update docs
 [x] dump module/paramlist guid option?
 [x] stuff crashes
+[x] header as component id
+[x] theme the panic
 [ ] doc the json itself
-[ ] header as component id
-[ ] theme the panic
 [ ] open logfolder option
 [ ] meters grayscale + red
 [ ] todo maybe matrix in red?
