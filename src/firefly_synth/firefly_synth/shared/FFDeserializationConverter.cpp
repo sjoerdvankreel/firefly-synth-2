@@ -180,7 +180,7 @@ FFDeserializationConverter::PostProcess(
 
   // 2.0.8 - osci pan now displays as bipolar.
   if (OldVersion() < FBPlugVersion(2, 0, 8))
-  {
+  {   
     auto const& osciModule = Topo()->static_->modules[(int)FFModuleType::Osci];
     for (int ms = 0; ms < osciModule.slotCount; ms++)
     {
