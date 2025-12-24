@@ -69,6 +69,15 @@
       "moduleId": "AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8",
       "moduleSlot": -1,
       "colorScheme": "Yellow",
+      "audioParamColorSchemes_comment": "Override the module scheme per audio parameter. Slot can be -1 to apply to all parameter slots or gte 0 to apply to individual slots.",
+      "audioParamColorSchemes": [
+        {
+          "comment": "Coarse Pitch",
+          "paramId": "64019FB1-6EE2-4FF5-8D28-F6B692B25EFB",
+          "paramSlot": -1,
+          "colorScheme": "Yellow"
+        }
+      ]
     },
     {
       "comment": "Master",

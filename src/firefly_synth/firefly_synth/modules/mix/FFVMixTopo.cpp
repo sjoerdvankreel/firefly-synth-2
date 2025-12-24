@@ -61,7 +61,7 @@ FFMakeVMixTopo()
   amp.defaultText = "100";
   amp.name = "Amp";
   amp.slotCount = 1;
-  amp.unit = "%";
+  amp.unit = "%"; 
   amp.id = "{02B3BE49-9ECC-4289-9488-CAB4252B6E9D}";
   amp.description = "Voice Amplitude";
   amp.type = FBParamType::Linear;
