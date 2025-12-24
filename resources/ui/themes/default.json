@@ -16,22 +16,22 @@
   },
   "colorSchemes": {
     "Top": {
-      "primary": "FF2D86FE",
+      "primary": "FFFA5F55",
     },
     "VoiceMasterSettings": {
-      "primary": "FFFBC401",
+      "primary": "FFFAB255",
     },
     "Mix": {
-      "primary": "FFD4164F",
+      "primary": "FFac08f7",
     },
     "Osc": {
-      "primary": "FF28BB40",
+      "primary": "FFFA5F55",
     },
     "FXAndEcho": {
-      "primary": "FFB422D9",
+      "primary": "FFFA5F55",
     },
     "LFOAndEnv": {
-      "primary": "FFFF9000",
+      "primary": "FFFA5F55",
     }
   },
   "componentColors": {
