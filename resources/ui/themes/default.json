@@ -124,6 +124,12 @@
       "colorScheme": "Green"
     },
     {
+      "comment": "Osci - override a single module slot",
+      "moduleId": "73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6",
+      "moduleSlot": 1,
+      "colorScheme": "Green"
+    },
+    {
       "comment": "Osci Mod",
       "moduleId": "546F9D74-670A-463D-80B0-B4BBD061DA88",
       "moduleSlot": -1,
