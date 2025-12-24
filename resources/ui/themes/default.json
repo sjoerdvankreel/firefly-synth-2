@@ -30,11 +30,20 @@
       "primary": "FF55FAB2",
     }
   },
-  "componentColors": {
-    "878D9B5E-D11E-485D-8B57-5CAC8C8B612A": "Red",
-    "12937840-F39D-4041-986F-911005EC6C58": "Red",
-    "F81585F3-C753-4ED3-A0FC-5E517580EEF4": "Red",
-  },
+  "componentColors": [
+    {
+      "componentId": "878D9B5E-D11E-485D-8B57-5CAC8C8B612A",
+      "colorScheme": "Red"
+    },
+    {
+      "componentId": "12937840-F39D-4041-986F-911005EC6C58",
+      "colorScheme": "Red"
+    },
+    {
+      "componentId": "F81585F3-C753-4ED3-A0FC-5E517580EEF4",
+      "colorScheme": "Red"
+    }
+  ],
   "moduleColors_comment": "Override the default scheme per module. Slot can be -1 to apply to all module slots or gte 0 to apply to individual slots.",
   "moduleColors": [
     {

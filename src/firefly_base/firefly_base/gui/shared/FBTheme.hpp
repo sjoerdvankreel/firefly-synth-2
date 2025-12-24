@@ -27,6 +27,12 @@ struct FBColorScheme
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme);
 };
 
+// This is only a struct so we can add "comment" fields in the json.
+struct FBComponentColors
+{
+  std::string colorScheme = {};
+};
+
 struct FBModuleColors
 {
   std::string colorScheme = {};
@@ -41,7 +47,7 @@ struct FBTheme
   FBColorScheme defaultColorScheme = {};
   std::map<int, FBModuleColors> moduleColors = {}; // runtime module index
   std::map<std::string, FBColorScheme> colorSchemes = {};
-  std::map<std::string, std::string> componentColors = {};
+  std::map<std::string, FBComponentColors> componentColors = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBTheme);
 };
 

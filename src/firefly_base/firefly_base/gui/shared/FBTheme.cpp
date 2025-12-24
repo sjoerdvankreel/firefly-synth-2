@@ -32,7 +32,7 @@ struct FBThemeJson
   FBColorScheme defaultColorScheme = {};
   std::vector<FBModuleColorsJson> moduleColors = {};
   std::map<std::string, FBColorScheme> colorSchemes = {};
-  std::map<std::string, std::string> componentColors = {};
+  std::map<std::string, FBComponentColors> componentColors = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBThemeJson);
 };
 
@@ -461,19 +461,28 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
   if (!ParseModuleColorsJson(obj->getProperty("moduleColors"), result.moduleColors))
     return false;
 
-  if (!RequireObjectProperty(obj, "componentColors"))
+  if (!RequireArrayProperty(obj, "componentColors"))
     return false;
   auto const& componentColors = obj->getProperty("componentColors");
-  auto const* componentColorsObj = componentColors.getDynamicObject();
-  for (auto i = componentColorsObj->getProperties().begin(); i != componentColorsObj->getProperties().end(); i++)
-    result.componentColors[i->name.toString().toStdString()] = i->value.toString().toStdString();
+  for (int i = 0; i < componentColors.size(); i++)
+  {
+    auto componentColorObj = componentColors[i].getDynamicObject();
+    if (!RequireStringProperty(componentColorObj, "componentId"))
+      return false;
+    if (!RequireStringProperty(componentColorObj, "colorScheme"))
+      return false;
+    result.componentColors[componentColorObj->getProperty("componentId").toString().toStdString()].colorScheme =
+      componentColorObj->getProperty("colorScheme").toString().toStdString();
+  }
 
-  for (auto& kv : result.componentColors)
-    if (result.colorSchemes.find(kv.second) == result.colorSchemes.end())
+  for (auto const& kv: result.componentColors)
+  {
+    if (result.colorSchemes.find(kv.second.colorScheme) == result.colorSchemes.end())
     {
-      FB_LOG_ERROR("Color scheme '" + kv.second + "' not found.");
+      FB_LOG_ERROR("Color scheme '" + kv.second.colorScheme + "' not found.");
       return false;
     }
+  }
 
   for(int i = 0; i < result.moduleColors.size(); i++)
   {
@@ -637,7 +646,7 @@ MakeTheme(
       return false;
     }
   }
-
+      
   for (int i = 0; i < themeJson.moduleColors.size(); i++)
   {
     int foundIndex = -1;

@@ -153,7 +153,7 @@ FBLookAndFeel::FindColorSchemeFor(
       {
         auto schemeIter = Theme().componentColors.find(FBCleanTopoId(componentIter->second.id));
         if (schemeIter != Theme().componentColors.end())
-          return Theme().colorSchemes.at(schemeIter->second);
+          return Theme().colorSchemes.at(schemeIter->second.colorScheme);
       }      
     }
   }
