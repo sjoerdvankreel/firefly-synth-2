@@ -102,7 +102,7 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
     grid->Add(1 + t, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpFreq, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapHpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapHPRes, t } });
     grid->Add(1 + t, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpRes, Slider::SliderStyle::RotaryVerticalDrag));
-    grid->MarkSection({ { t + 1, 9 }, { 1, 3 } }, FBGridSectionMark::Background);
+    grid->MarkSection({ { t + 1, 9 }, { 1, 3 } }, FBGridSectionMark::Background, 3.0f, t == FFEchoTapCount - 1? 2: 0);
   }
 
   return grid;
