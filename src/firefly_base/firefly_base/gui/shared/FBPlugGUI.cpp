@@ -479,32 +479,34 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
 
   auto& undoState = HostContext()->UndoState();
   PopupMenu menu;
-  menu.addItem(1, "Show Manual");
-  menu.addItem(2, "Dump Topology");
+  menu.addItem(1, "Show Log");
+  menu.addItem(2, "Show Manual");
+  menu.addItem(3, "Dump Topology");
   menu.addSeparator();
-  menu.addItem(3, "Copy Patch");
-  menu.addItem(4, "Paste Patch");
+  menu.addItem(4, "Copy Patch");
+  menu.addItem(5, "Paste Patch");
   menu.addSeparator();
   if (undoState.CanUndo())
-    menu.addItem(5, "Undo " + undoState.UndoAction());
+    menu.addItem(6, "Undo " + undoState.UndoAction());
   if (undoState.CanRedo())
-    menu.addItem(6, "Redo " + undoState.RedoAction());
+    menu.addItem(7, "Redo " + undoState.RedoAction());
 
   PopupMenu::Options options;
   options = options.withMousePosition();
   options = options.withParentComponent(this);
   options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
   menu.showMenuAsync(options, [this](int id) {
-    if (id == 2) DumpTopologyToFile();
-    if (id == 1) HostContext()->ShowOnlineManual();
-    if (id == 5) HostContext()->UndoState().Undo();
-    if (id == 6) HostContext()->UndoState().Redo(); 
-    if (id == 3) {
+    if (id == 1) ShowLogFolder();
+    if (id == 3) DumpTopologyToFile();
+    if (id == 2) HostContext()->ShowOnlineManual();
+    if (id == 6) HostContext()->UndoState().Undo();
+    if (id == 7) HostContext()->UndoState().Redo(); 
+    if (id == 4) {
       FBScalarStateContainer editState(*HostContext()->Topo());
       editState.CopyFrom(HostContext(), true);
       SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveEditStateToString(editState, true));
     }
-    if (id == 4) {
+    if (id == 5) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
         AlertWindow::showMessageBoxAsync(
           MessageBoxIconType::InfoIcon,
@@ -701,6 +703,13 @@ FBPlugGUI::ShowOverlayComponent(
   _overlayModule->SetModuleContent(moduleIndex, moduleSlot, _overlayGrid);
   _overlayOuterMargin->resized();
   _overlayComponent = overlay;
+}
+
+void
+FBPlugGUI::ShowLogFolder()
+{
+  auto path = FBGetLogPath(HostContext()->Topo()->static_->meta);
+  File(path.string()).revealToUser();
 }
 
 void

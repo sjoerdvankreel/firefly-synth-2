@@ -28,9 +28,9 @@ TODOLIST for beta-2
 [x] stuff crashes
 [x] header as component id
 [x] theme the panic
+[x] open logfolder option
 [ ] NOT do greyscale default
 [ ] doc the json itself
-[ ] open logfolder option
 [ ] meters grayscale + red
 [ ] todo maybe matrix in red?
 [ ] note to check the logs when borked

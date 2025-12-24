@@ -55,6 +55,7 @@ public IFBHostGUIContextListener
   FBMarginComponent* _overlayOuterMargin = {};
   std::vector<IFBParamListener*> _paramListeners = {};
 
+  void ShowLogFolder();
   void DumpTopologyToFile();
   bool LoadPatchFromText(
     std::string const& undoAction, 
