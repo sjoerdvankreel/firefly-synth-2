@@ -152,13 +152,14 @@ FFMakeOsciTopo()
 
   auto& pan = result->params[(int)FFOsciParam::Pan];
   pan.mode = FBParamMode::Accurate;
-  pan.defaultText = "50";
+  pan.defaultText = "0";
   pan.name = "Pan";
   pan.slotCount = 1;
   pan.unit = "%";
   pan.id = "{DDB77A46-7D26-442C-8A37-2BD231C8F8D8}";
   pan.description = "Stereo Panning";
   pan.type = FBParamType::Identity;
+  pan.Identity().displayAsBipolar = true;
   auto selectPan = [](auto& module) { return &module.acc.pan; };
   pan.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPan);
   pan.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectPan);

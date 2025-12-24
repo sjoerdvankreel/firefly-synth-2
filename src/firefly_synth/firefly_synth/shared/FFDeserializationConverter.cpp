@@ -1,6 +1,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFDeserializationConverter.hpp>
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
+#include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 
@@ -175,6 +176,17 @@ FFDeserializationConverter::PostProcess(
         int rtParamIndex = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, ms }, { (int)FFEnvParam::StageSlope, ps } })->runtimeParamIndex;
         *paramValues[rtParamIndex] = FBToBipolar(*paramValues[rtParamIndex]);
       }
+  }
+
+  // 2.0.8 - osci pan now displays as bipolar.
+  if (OldVersion() < FBPlugVersion(2, 0, 8))
+  {
+    auto const& osciModule = Topo()->static_->modules[(int)FFModuleType::Osci];
+    for (int ms = 0; ms < osciModule.slotCount; ms++)
+    {
+      int rtParamIndex = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Osci, ms }, { (int)FFOsciParam::Pan, 0 } })->runtimeParamIndex;
+      *paramValues[rtParamIndex] = FBToBipolar(*paramValues[rtParamIndex]);
+    }
   }
 }
 

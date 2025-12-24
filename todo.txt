@@ -29,6 +29,7 @@ TODOLIST for beta-2
 [x] header as component id
 [x] theme the panic
 [x] open logfolder option
+[x] pan as bipolar 
 [ ] NOT do greyscale default
 [ ] doc the json itself
 [ ] meters grayscale + red
