@@ -37,7 +37,7 @@ FFMakeGUISettingsTopo()
   guiHilightMod.type = FBParamType::Boolean;
   auto selectGuiHilightMod = [](auto& module) { return &module.hilightMod; };
   guiHilightMod.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightMod);
-
+   
   auto& guiHilightTweakMode = result->guiParams[(int)FFGUISettingsGUIParam::HilightTweakMode];
   guiHilightTweakMode.name = "Show Tweaked From";
   guiHilightTweakMode.slotCount = 1;

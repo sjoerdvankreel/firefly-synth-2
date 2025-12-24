@@ -35,7 +35,7 @@
     "12937840-F39D-4041-986F-911005EC6C58": "Red",
     "F81585F3-C753-4ED3-A0FC-5E517580EEF4": "Red",
   },
-  "moduleColors_comment": "Slot can be -1 to apply to all module slots or gte 0 to apply to individual slots.",
+  "moduleColors_comment": "Override the default scheme per module. Slot can be -1 to apply to all module slots or gte 0 to apply to individual slots.",
   "moduleColors": [
     {
       "comment": "Output",
@@ -53,13 +53,22 @@
       "comment": "GUI Settings",
       "moduleId": "E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B",
       "moduleSlot": -1,
-      "colorScheme": "Red"
+      "colorScheme": "Red",
+      "guiParamColorSchemes_comment": "Override the module scheme per GUI parameter. Slot can be -1 to apply to all parameter slots or gte 0 to apply to individual slots.",
+      "guiParamColorSchemes": [
+        {
+          "comment": "Show mod bounds",
+          "paramId": "193F0F95-D4D2-46A5-A978-C8740E0C08B3",
+          "paramSlot": -1,
+          "colorScheme": "Red"
+        }
+      ]
     },
     {
       "comment": "Voice Module",
       "moduleId": "AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8",
       "moduleSlot": -1,
-      "colorScheme": "Yellow"
+      "colorScheme": "Yellow",
     },
     {
       "comment": "Master",

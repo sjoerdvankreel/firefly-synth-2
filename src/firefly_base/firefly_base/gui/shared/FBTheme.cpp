@@ -17,7 +17,7 @@ struct FBParamColorsJson
 };  
 
 struct FBModuleColorsJson
-{
+{  
   int moduleSlot = -1; // -1 = all
   std::string moduleId = {};
   std::string colorScheme = {};
