@@ -26,5 +26,6 @@ FFMakeOtherGUI(FBPlugGUI* plugGUI)
   panicButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushAudio(); };
   grid->Add(0, 0, panicButton);
   grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::BackgroundAndBorder);
-  return plugGUI->StoreComponent<FBSectionComponent>(true, grid);
+  auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Other, 0, section);
 }
