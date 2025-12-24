@@ -34,14 +34,11 @@ TODOLIST for beta-2
 [ ] meters grayscale + red
 [ ] todo maybe matrix in red?
 [ ] note to check the logs when borked
-[ ] add show logfile folder option
-[ ] document the scheme itself
 [ ] osci/fx/cv/rest/global
 [ ] check the todos
 [ ] check the findcolours
 [ ] check the top rows margins
 [ ] check the alert windows
-[ ] the default scheme should be grayscale
 [ ] test lin and mac
 [ ] recheck all the margins
 [ ] longer display names
