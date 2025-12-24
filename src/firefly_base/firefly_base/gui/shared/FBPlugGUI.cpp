@@ -662,7 +662,7 @@ FBPlugGUI::SetupOverlayGUI()
   _overlayMargin = StoreComponent<FBMarginComponent>(true, true, true, true, _overlayContent);
   _overlayGrid->Add(1, 0, 1, 3, _overlayMargin);
   _overlayGrid->MarkSection({ { 1, 0 }, { 1, 3 } }, FBGridSectionMark::Border);
-  _overlayContainer = StoreComponent<FBModuleComponent>(true);
+  _overlayContainer = StoreComponent<FBModuleComponent>();
 }
 
 void

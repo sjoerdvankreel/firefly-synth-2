@@ -12,7 +12,6 @@ public juce::Component,
 public IFBHorizontalAutoSize,
 public IFBVerticalAutoSize
 {
-  bool const _isOverlay;
   int _moduleSlot = -1;
   int _moduleIndex = -1;
   juce::Component* _content = nullptr;
@@ -27,7 +26,7 @@ public:
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
 
-  FBModuleComponent(bool isOverlay);
+  FBModuleComponent();
   FBModuleComponent(int moduleIndex, int moduleSlot, juce::Component* content);
   void SetModuleContent(int moduleIndex, int moduleSlot, juce::Component* content);
 };
