@@ -82,16 +82,7 @@
       "comment": "Voice Module",
       "moduleId": "AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8",
       "moduleSlot": -1,
-      "colorScheme": "Yellow",
-      "audioParamColorSchemes_comment": "Override the module scheme per audio parameter. Slot can be -1 to apply to all parameter slots or gte 0 to apply to individual slots.",
-      "audioParamColorSchemes": [
-        {
-          "comment": "Coarse Pitch",
-          "paramId": "64019FB1-6EE2-4FF5-8D28-F6B692B25EFB",
-          "paramSlot": -1,
-          "colorScheme": "Yellow"
-        }
-      ]
+      "colorScheme": "Yellow"
     },
     {
       "comment": "Master",
@@ -109,7 +100,22 @@
       "comment": "VMix",
       "moduleId": "5C91D5A0-3EC1-4142-935A-3FE83B60C04E",
       "moduleSlot": -1,
-      "colorScheme": "Yellow"
+      "colorScheme": "Yellow",
+      "audioParamColorSchemes_comment": "Override the module scheme per audio parameter. Slot can be -1 to apply to all parameter slots or gte 0 to apply to individual slots.",
+      "audioParamColorSchemes": [
+        {
+          "comment": "Osci To Osci Mix",
+          "paramId": "3EF9D095-1F5E-45BD-8B9E-55EEC321AA43",
+          "paramSlot": -1,
+          "colorScheme": "Yellow"
+        },
+        {
+          "comment": "Osci To Osci Mix - override a single param slot",
+          "paramId": "3EF9D095-1F5E-45BD-8B9E-55EEC321AA43",
+          "paramSlot": 1,
+          "colorScheme": "Yellow"
+        }
+      ]
     },
     {
       "comment": "GMix",

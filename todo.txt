@@ -30,11 +30,11 @@ TODOLIST for beta-2
 [x] theme the panic
 [x] open logfolder option
 [x] pan as bipolar 
+[x] do comments in the componentcolors
+[x] doc the json itself
 [ ] option track module colors in graphs or not
 [ ] option track module colors in unison or not
-[ ] do comments in the componentcolors
 [ ] NOT do greyscale default
-[ ] doc the json itself
 [ ] meters grayscale + red
 [ ] todo maybe matrix in red?
 [ ] note to check the logs when borked

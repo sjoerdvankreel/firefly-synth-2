@@ -147,7 +147,7 @@ FFMakeVMixTopo()
   osciToOsciMix.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
   osciToOsciMix.name = "Osc To Osc Mix";
   osciToOsciMix.slotCount = FFOsciCount;
-  osciToOsciMix.unit = "%";
+  osciToOsciMix.unit = "%";    
   osciToOsciMix.id = "{3EF9D095-1F5E-45BD-8B9E-55EEC321AA43}";
   osciToOsciMix.description = "Route Osc To Mix Stage";
   osciToOsciMix.slotFormatter = FormatOsciToOsciMixSlot;
