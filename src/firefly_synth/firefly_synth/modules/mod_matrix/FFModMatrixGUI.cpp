@@ -205,10 +205,10 @@ MakeModMatrixSlotControlGUI(FFPlugGUI* plugGUI)
 static Component*
 MakeModMatrixGraphGUI(FFPlugGUI* plugGUI, FFModMatrixGraphType type)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(false, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FFModMatrixGraph>(plugGUI, type));
-  grid->MarkSection({ { 0, 0 }, { 1, 1 } });
-  return plugGUI->StoreComponent<FBSectionComponent>(true, grid);
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::BackgroundAndAlternate);
+  return plugGUI->StoreComponent<FBMarginComponent>(false, false, false, true, grid);
 }
 
 static Component*
