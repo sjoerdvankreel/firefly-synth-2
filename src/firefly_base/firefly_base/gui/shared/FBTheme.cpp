@@ -621,13 +621,18 @@ MakeModuleColors(
 {
   result = {};
   result.colorScheme = json.colorScheme;
-  if (!MakeParamColors(
-    json.audioParamColorSchemes,
-    topo->static_->modules[staticModuleIndex].params,
-    topo->audio.paramTopoToRuntime[staticModuleIndex][staticModuleSlot],
-    result.audioParamColorSchemes))
-    return false;
-  if (staticModuleIndex < topo->gui.paramTopoToRuntime.size())
+  if (staticModuleIndex < (int)topo->audio.paramTopoToRuntime.size() &&
+    staticModuleSlot < (int)topo->audio.paramTopoToRuntime[staticModuleIndex].size())
+  {
+    if (!MakeParamColors(
+      json.audioParamColorSchemes,
+      topo->static_->modules[staticModuleIndex].params,
+      topo->audio.paramTopoToRuntime[staticModuleIndex][staticModuleSlot],
+      result.audioParamColorSchemes))
+      return false;
+  }
+  if (staticModuleIndex < (int)topo->gui.paramTopoToRuntime.size() &&
+    staticModuleSlot < (int)topo->gui.paramTopoToRuntime[staticModuleIndex].size())
   {
     if (!MakeParamColors(
       json.guiParamColorSchemes,
