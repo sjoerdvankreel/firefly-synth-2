@@ -172,6 +172,7 @@ FFModMatrixGraph::paint(Graphics& g)
     text = "Tgt Out";
     for (int i = 0; i < bounds.getWidth(); i++)
     {
+      graphIsBipolar = FFModulationOpTypeTargetIsBipolar(opType);
       float x = i / (float)bounds.getWidth();
       float target = GraphGetTarget(x);
       if (_trackingParam != nullptr)
@@ -184,7 +185,6 @@ FFModMatrixGraph::paint(Graphics& g)
           auto thisOpType = _plugGUI->HostContext()->GetAudioParamList<FFModulationOpType>({ module, { (int)FFModMatrixParam::OpType, s } });
           if (targetType == thisTargetType && targetType != 0 && thisOpType != FFModulationOpType::Off && thisSourceType != 0)
           {
-            graphIsBipolar |= FFModulationOpTypeTargetIsBipolar(thisOpType);
             int thisScaleType = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Scale, s } });
             bool thisSourceInv = (float)_plugGUI->HostContext()->GetAudioParamBool({ module, { (int)FFModMatrixParam::SourceInv, s } });
             float thisScaleMin = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMin, s } });
