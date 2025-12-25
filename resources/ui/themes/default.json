@@ -1,6 +1,6 @@
 {
   "name": "Default",
-  "graphSchemeFollowsModule": true,
+  "graphSchemeFollowsModule": false,
   "defaultColorScheme_comment": "Fallback scheme, any other scheme can override individual settings.",
   "defaultColorScheme": {
     "graphAlpha": 0.6,
@@ -37,6 +37,11 @@
     {
       "comment": "Patch",
       "componentId": "878D9B5E-D11E-485D-8B57-5CAC8C8B612A",
+      "colorScheme": "Red"
+    },
+    {
+      "comment": "Graphs when not graphSchemeFollowsModule",
+      "componentId": "8DFD2F0E-A796-4570-B319-DCE1F0931DC9",
       "colorScheme": "Red"
     },
     {

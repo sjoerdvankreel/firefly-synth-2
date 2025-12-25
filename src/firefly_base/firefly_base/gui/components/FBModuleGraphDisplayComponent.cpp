@@ -2,6 +2,8 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
+#include <firefly_base/gui/components/FBThemedComponent.hpp>
 #include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
 #include <firefly_base/gui/components/FBModuleGraphDisplayComponent.hpp>
 
@@ -25,14 +27,32 @@ FBModuleGraphDisplayComponent::FindColorSchemeFor(
   int moduleIndex, int moduleSlot) const
 {
   auto const& theme = FBGetLookAndFeel()->Theme();
-  if(moduleIndex != -1 && moduleSlot != -1)
-    if (auto gui = findParentComponentOfClass<FBPlugGUI>())
+  if (theme.graphSchemeFollowsModule)
+  {
+    if (moduleIndex != -1 && moduleSlot != -1)
+      if (auto gui = findParentComponentOfClass<FBPlugGUI>())
+      {
+        int rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at({ moduleIndex, moduleSlot });
+        auto moduleIter = theme.moduleColors.find(rtModuleIndex);
+        if (moduleIter != theme.moduleColors.end())
+          return theme.colorSchemes.at(moduleIter->second.colorScheme);
+      }
+  } 
+
+  if (auto gui = findParentComponentOfClass<FBPlugGUI>())
+  {
+    if (auto tc = findParentComponentOfClass<FBThemedComponent>())
     {
-      int rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at({ moduleIndex, moduleSlot });
-      auto moduleIter = theme.moduleColors.find(rtModuleIndex);
-      if (moduleIter != theme.moduleColors.end())
-        return theme.colorSchemes.at(moduleIter->second.colorScheme);
+      auto componentIter = gui->HostContext()->Topo()->static_->themedComponents.find(tc->ComponentId());
+      if (componentIter != gui->HostContext()->Topo()->static_->themedComponents.end())
+      {
+        auto schemeIter = theme.componentColors.find(FBCleanTopoId(componentIter->second.id));
+        if (schemeIter != theme.componentColors.end())
+          return theme.colorSchemes.at(schemeIter->second.colorScheme);
+      }
     }
+  }  
+
   return theme.defaultColorScheme;
 }
 

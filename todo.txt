@@ -56,6 +56,7 @@ TODOLIST for beta-2
 [ ] update docs for string HPF (see GitHub bug)
 [ ] fix ardour save/load
 [ ] credit rusto
+[ ] make the svg issue
 ANDROMEDA SCHEME
 blue = 2D86FE
 yellow = FBC401
