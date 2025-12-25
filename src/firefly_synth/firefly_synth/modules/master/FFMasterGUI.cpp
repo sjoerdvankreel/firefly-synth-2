@@ -81,6 +81,6 @@ FFMakeMasterGUI(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
   auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::Master].name;
-  tabs->addTab(name, {}, MakeMasterTab(plugGUI), false);
+  tabs->AddTab(name, true, MakeMasterTab(plugGUI));
   return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Master, 0, tabs);
 }

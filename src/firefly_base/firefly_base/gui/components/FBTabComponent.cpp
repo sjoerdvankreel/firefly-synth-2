@@ -72,6 +72,16 @@ FBAutoSizeTabComponent::createTabButton(const juce::String& tabName, int /*tabIn
   return new FBTabBarButton(tabName, *tabs);
 }
 
+void
+FBAutoSizeTabComponent::AddTab(
+  std::string const& header, bool centerText, Component* component)
+{
+  addTab(header, Colours::black, component, false);
+  auto button = getTabbedButtonBar().getTabButton(getTabbedButtonBar().getNumTabs() - 1);
+  auto& fbTabButton = dynamic_cast<FBTabBarButton&>(*button);
+  fbTabButton.centerText = centerText;
+}
+
 FBModuleTabComponent::
 FBModuleTabComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
 FBAutoSizeTabComponent(),

@@ -60,6 +60,7 @@ public:
 
   bool Big() const { return _big; }
   int FixedWidth(int height) const override;
+  void AddTab(std::string const& header, bool centerText, juce::Component* component);
 
   juce::TabBarButton* 
   createTabButton(const juce::String& tabName, int tabIndex) override;

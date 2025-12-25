@@ -853,12 +853,13 @@ FBLookAndFeel::drawTabButton(
   bool large = {};
   bool centerText = {};
   std::string separatorText = {};
-  FBModuleTabBarButton* fbButton = dynamic_cast<FBModuleTabBarButton*>(&button);
+  FBTabBarButton* fbButton = dynamic_cast<FBTabBarButton*>(&button);
   if (fbButton != nullptr)
   {
     large = fbButton->large;
     centerText = fbButton->centerText;
-    separatorText = fbButton->GetSeparatorText();
+    if(auto fbModuleButton = dynamic_cast<FBModuleTabBarButton*>(&button))
+      separatorText = fbModuleButton->GetSeparatorText();
   }
 
   if (auto fbt = button.findParentComponentOfClass<FBAutoSizeTabComponent>())
