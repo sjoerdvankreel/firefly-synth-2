@@ -215,20 +215,35 @@ FFModMatrixGraph::paint(Graphics& g)
   Path path;
   Path fillPath;
   if (graphIsBipolar)
-    fillPath.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight() * 0.5f);
+  {
+    if (_type == FFModMatrixGraphType::TargetIn || _type == FFModMatrixGraphType::TargetOut)
+    {
+      fillPath.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight() * 0.5f);
+      fillPath.lineTo(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
+    }
+    else
+      fillPath.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
+  }
   else
+  {
     fillPath.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight());
+    fillPath.lineTo(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
+  }
   path.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
-  fillPath.lineTo(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
   for (int i = 1; i < yNormalized.size(); i++)
   {
     path.lineTo(bounds.getX() + i, bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[i]));
     fillPath.lineTo(bounds.getX() + i, bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[i]));
   }
   if (graphIsBipolar)
-    fillPath.lineTo(bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight() * 0.5f);
+  {
+    if (_type == FFModMatrixGraphType::TargetIn || _type == FFModMatrixGraphType::TargetOut)
+      fillPath.lineTo(bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight() * 0.5f);
+  }
   else
+  {
     fillPath.lineTo(bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight());
+  }
   fillPath.closeSubPath();
 
   g.setColour(scheme.primary.withAlpha(0.33f));
