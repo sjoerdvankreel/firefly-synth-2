@@ -119,10 +119,12 @@ FFModMatrixGraph::paint(Graphics& g)
   g.setColour(scheme.sectionBorder.withAlpha(0.125f));
   g.drawRoundedRectangle(outerBounds.toFloat(), 3.0f, 2.0f);
 
+  bool graphIsBipolar = false;
   switch (_type)
   {
   case FFModMatrixGraphType::Source:
     text = "Src";
+    graphIsBipolar = FFModulationOpTypeSourceIsBipolar(opType);
     for (int i = 0; i < bounds.getWidth(); i++)
     {
       float sourceNorm = GraphGetSource(i / (float)bounds.getWidth(), sourceInv);
@@ -134,6 +136,7 @@ FFModMatrixGraph::paint(Graphics& g)
     break;
   case FFModMatrixGraphType::SourceOnOff:
     text = (sourceType == 0 || opType == FFModulationOpType::Off) ? "Src Off" : "Src On";
+    graphIsBipolar = FFModulationOpTypeSourceIsBipolar(opType);
     if (sourceType != 0 && opType != FFModulationOpType::Off)
       for (int i = 0; i < bounds.getWidth(); i++)
       {
@@ -161,6 +164,7 @@ FFModMatrixGraph::paint(Graphics& g)
     break;
   case FFModMatrixGraphType::TargetIn:
     text = "Tgt In";
+    graphIsBipolar = FFModulationOpTypeTargetIsBipolar(opType);
     for (int i = 0; i < bounds.getWidth(); i++)
       yNormalized.push_back(GraphGetTarget(i / (float)bounds.getWidth()));
     break;
@@ -180,6 +184,7 @@ FFModMatrixGraph::paint(Graphics& g)
           auto thisOpType = _plugGUI->HostContext()->GetAudioParamList<FFModulationOpType>({ module, { (int)FFModMatrixParam::OpType, s } });
           if (targetType == thisTargetType && targetType != 0 && thisOpType != FFModulationOpType::Off && thisSourceType != 0)
           {
+            graphIsBipolar |= FFModulationOpTypeTargetIsBipolar(thisOpType);
             int thisScaleType = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Scale, s } });
             bool thisSourceInv = (float)_plugGUI->HostContext()->GetAudioParamBool({ module, { (int)FFModMatrixParam::SourceInv, s } });
             float thisScaleMin = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMin, s } });
@@ -208,34 +213,26 @@ FFModMatrixGraph::paint(Graphics& g)
     return;
 
   Path path;
-  path.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
-  for (int i = 1; i < yNormalized.size(); i++)
-    path.lineTo(bounds.getX() + i, bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[i]));
-
-  bool fillGraph = false;
-  switch (_type)
-  {
-  case FFModMatrixGraphType::TargetIn:
-  case FFModMatrixGraphType::TargetOut:
-    fillGraph = true;
-    break;
-  default:
-    break;
-  }
-
-  if (!fillGraph)
-  {
-    g.setColour(scheme.primary);
-    g.strokePath(path, PathStrokeType(1.0f));
-  }
+  Path fillPath;
+  if (graphIsBipolar)
+    fillPath.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight() * 0.5f);
   else
+    fillPath.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight());
+  path.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
+  fillPath.lineTo(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
+  for (int i = 1; i < yNormalized.size(); i++)
   {
-    auto fillPath = path;
-    fillPath.lineTo(bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight());
-    fillPath.closeSubPath();
-    g.setColour(scheme.primary.withAlpha(0.33f));
-    g.fillPath(fillPath);
-    g.setColour(scheme.primary);
-    g.strokePath(path, PathStrokeType(1.0f));
+    path.lineTo(bounds.getX() + i, bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[i]));
+    fillPath.lineTo(bounds.getX() + i, bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[i]));
   }
+  if (graphIsBipolar)
+    fillPath.lineTo(bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight() * 0.5f);
+  else
+    fillPath.lineTo(bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight());
+  fillPath.closeSubPath();
+
+  g.setColour(scheme.primary.withAlpha(0.33f));
+  g.fillPath(fillPath);
+  g.setColour(scheme.primary);
+  g.strokePath(path, PathStrokeType(1.0f));
 }

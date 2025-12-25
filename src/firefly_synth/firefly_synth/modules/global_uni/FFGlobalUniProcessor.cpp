@@ -156,7 +156,7 @@ FFGlobalUniProcessor::ApplyToVoice(
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
       auto voicePos = xsimd::clip(voicePosBase + rand.Load(s) * randOffset, FBBatch<float>(0.0f), FBBatch<float>(1.0f));
-      if (FFModulationOpTypeIsBipolar(_opType[(int)targetParam]))
+      if (FFModulationOpTypeSourceIsBipolar(_opType[(int)targetParam]))
       {
         if (_voiceCount > 3 && _mode[(int)targetParam] == FFGlobalUniMode::AutoExp)
           voicePos = FFSkewExpBipolar(voicePos, skew.Load(s));

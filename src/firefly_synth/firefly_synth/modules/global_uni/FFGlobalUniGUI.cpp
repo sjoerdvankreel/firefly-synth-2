@@ -252,7 +252,7 @@ FFGlobalUniAdjustParamModulationGUIBounds(
   {
     for (int voicePos = 0; voicePos <= 1; voicePos++)
     {
-      if (FFModulationOpTypeIsBipolar(opType))
+      if (FFModulationOpTypeSourceIsBipolar(opType))
       {
         minModSource = std::min(minModSource, 0.5f + (voicePos - 0.5f) * spread);
         maxModSource = std::max(maxModSource, 0.5f + (voicePos - 0.5f) * spread);
