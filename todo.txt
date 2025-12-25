@@ -35,13 +35,13 @@ TODOLIST for beta-2
 [x] center voice/master/settings
 [x] option track module colors in graphs or not
 [x] border the tweak editor
-[ ] tweak editor clips
-[ ] red mark end of meters
+[x] red mark end of meters
+[x] meters grayscale + red
+[x] tweak editor clips
 [ ] option track module colors in unison or not
 [ ] featuretest scheme
 [ ] bg images in main tabs and header and maybe elsewhere
 [ ] NOT do greyscale default
-[ ] meters grayscale + red
 [ ] todo maybe matrix in red?
 [ ] note to check the logs when borked
 [ ] osci/fx/cv/rest/global
@@ -71,7 +71,6 @@ green = 28BB40
 purple = B422D9
 orange = FF9000
 red = D6433A
-
 
 TODOLIST for beta-next
 [ ] not right-click-change horizontal sliders

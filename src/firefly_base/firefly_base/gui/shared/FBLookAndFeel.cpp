@@ -297,9 +297,9 @@ FBLookAndFeel::fillTextEditorBackground(
   else
   {
     g.setColour(scheme.paramBackground);
-    g.fillRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f), 5.0f);
+    g.fillRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f);
     g.setColour(scheme.primary);
-    g.drawRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f), 5.0f, 1.0f);
+    g.drawRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f, 1.0f);
   }
 }
 
