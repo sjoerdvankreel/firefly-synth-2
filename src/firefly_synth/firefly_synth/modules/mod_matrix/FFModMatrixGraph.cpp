@@ -110,7 +110,7 @@ FFModMatrixGraph::paint(Graphics& g)
 
   std::string text = "Off";
   std::vector<float> yNormalized = {};
-  auto bounds = getBounds().toFloat().reduced(2.0f);
+  auto bounds = getBounds().toFloat().reduced(4.0f);
   switch (_type)
   {
   case FFModMatrixGraphType::Source:
