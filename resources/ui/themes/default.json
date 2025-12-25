@@ -53,6 +53,11 @@
       "comment": "Main Selector",
       "componentId": "F81585F3-C753-4ED3-A0FC-5E517580EEF4",
       "colorScheme": "Red"
+    },
+    {
+      "comment": "Matrix Graphs",
+      "componentId": "0A528CAB-69AC-40DC-914C-3919D10D1EA3",
+      "colorScheme": "Yellow"
     }
   ],
   "moduleColors_comment": "Override the default scheme per module. Slot can be -1 to apply to all module slots or gte 0 to apply to individual slots.",

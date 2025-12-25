@@ -32,7 +32,7 @@ FBThemedComponent::FixedHeight() const
   auto sizingChild = dynamic_cast<IFBVerticalAutoSize*>(getChildComponent(0));
   return sizingChild != nullptr ? sizingChild->FixedHeight() : 0;
 }
-
+ 
 int
 FBThemedComponent::FixedWidth(int height) const
 {

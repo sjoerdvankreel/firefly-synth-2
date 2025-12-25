@@ -38,7 +38,8 @@ enum class FFThemedComponentId {
   Graphs,
   Header,
   LastTweaked,
-  MainSelector
+  MainSelector,
+  MatrixGraphs
 };
 
 enum class FFModuleType {

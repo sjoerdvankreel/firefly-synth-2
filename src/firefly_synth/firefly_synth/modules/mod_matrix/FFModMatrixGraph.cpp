@@ -110,7 +110,13 @@ FFModMatrixGraph::paint(Graphics& g)
 
   std::string text = "Off";
   std::vector<float> yNormalized = {};
+
+  // todo just dont host it in a container
+  auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
+  g.setColour(scheme.graphBackground);
   auto bounds = getBounds().toFloat().reduced(4.0f);
+  g.fillRoundedRectangle(bounds, 2.0f);
+
   switch (_type)
   {
   case FFModMatrixGraphType::Source:
@@ -192,7 +198,6 @@ FFModMatrixGraph::paint(Graphics& g)
     break;
   }
 
-  auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
   g.setColour(scheme.text.withAlpha(0.33f));
   g.setFont(FBGUIGetFont().withHeight(16.0f));
   g.drawText(prefix + text, bounds, Justification::centred, false);

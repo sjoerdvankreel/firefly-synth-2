@@ -76,6 +76,8 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->themedComponents[(int)FFThemedComponentId::LastTweaked].id = "{12937840-F39D-4041-986F-911005EC6C58}";
   result->themedComponents[(int)FFThemedComponentId::MainSelector].name = "Main Selector";
   result->themedComponents[(int)FFThemedComponentId::MainSelector].id = "{F81585F3-C753-4ED3-A0FC-5E517580EEF4}";
+  result->themedComponents[(int)FFThemedComponentId::MatrixGraphs].name = "Matrix Graphs";
+  result->themedComponents[(int)FFThemedComponentId::MatrixGraphs].id = "{0A528CAB-69AC-40DC-914C-3919D10D1EA3}";
 
   result->exchangeStateSize = sizeof(FFExchangeState);
   result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };

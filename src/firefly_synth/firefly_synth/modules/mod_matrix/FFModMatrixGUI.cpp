@@ -19,6 +19,7 @@
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
+#include <firefly_base/gui/components/FBThemedComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBModuleComponent.hpp>
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
@@ -203,12 +204,13 @@ MakeModMatrixSlotControlGUI(FFPlugGUI* plugGUI)
 }
 
 static Component*
-MakeModMatrixGraphGUI(FFPlugGUI* plugGUI, FFModMatrixGraphType type)
+MakeModMatrixGraphGUI(FFPlugGUI* plugGUI, FFModMatrixGraphType type, bool last)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(false, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FFModMatrixGraph>(plugGUI, type));
-  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::BackgroundAndAlternate);
-  return plugGUI->StoreComponent<FBMarginComponent>(false, false, false, true, grid);
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::BackgroundAndBorder);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(false, last, false, true, grid);
+  return plugGUI->StoreComponent<FBThemedComponent>((int)FFThemedComponentId::MatrixGraphs, margin);
 }
 
 static Component*
@@ -217,7 +219,7 @@ MakeModMatrixTopGUI(FFPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1, 1, 1, 1, 1, 1 } });
   grid->Add(0, 0, MakeModMatrixSlotControlGUI(plugGUI));
   for(int i = 0; i < (int)FFModMatrixGraphType::Count; i++)
-    grid->Add(0, 1 + i, MakeModMatrixGraphGUI(plugGUI, (FFModMatrixGraphType)i));
+    grid->Add(0, 1 + i, MakeModMatrixGraphGUI(plugGUI, (FFModMatrixGraphType)i, i == (int)FFModMatrixGraphType::Count - 1));
   return grid;
 }
 
