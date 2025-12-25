@@ -4,6 +4,7 @@
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGraph.hpp>
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
@@ -191,7 +192,8 @@ FFModMatrixGraph::paint(Graphics& g)
     break;
   }
 
-  g.setColour(Colours::darkgrey);
+  auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
+  g.setColour(scheme.text.withAlpha(0.33f));
   g.setFont(FBGUIGetFont().withHeight(16.0f));
   g.drawText(prefix + text, bounds, Justification::centred, false);
 
@@ -208,16 +210,16 @@ FFModMatrixGraph::paint(Graphics& g)
   case FFModMatrixGraphType::Scale:
   case FFModMatrixGraphType::Source:
   case FFModMatrixGraphType::TargetIn:
-    g.setColour(Colours::grey);
+    g.setColour(scheme.primary); // todo
     break;
   case FFModMatrixGraphType::ScaleOn:
   case FFModMatrixGraphType::TargetOut:
   case FFModMatrixGraphType::SourceOnOff:
-    g.setColour(Colours::white);
+    g.setColour(scheme.primary); // todo
     break;
   default:
     FB_ASSERT(false);
     break;
   }
-  g.strokePath(path, PathStrokeType(1.0f));  
+  g.strokePath(path, PathStrokeType(1.0f));  // todo fill
 }
