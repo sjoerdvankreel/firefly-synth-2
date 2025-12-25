@@ -398,9 +398,9 @@ FFMakeModMatrixGUI(FFPlugGUI* plugGUI)
   auto leftGrid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   leftGrid->Add(0, 0, 1, 1, MakeModMatrixSlotsGUI(plugGUI, false, 0, 19));
   mainGrid->Add(1, 0, leftGrid);
-  auto rightGrid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 13, 7 } }, std::vector<int> { { 1 } });
-  rightGrid->Add(0, 0, MakeModMatrixSlotsGUI(plugGUI, true, 0, FFModMatrixGlobalMaxSlotCount));
-  rightGrid->Add(1, 0, MakeModMatrixSlotsGUI(plugGUI, false, 19, FFModMatrixVoiceMaxSlotCount - 19));
+  auto rightGrid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 7, 13 } }, std::vector<int> { { 1 } });
+  rightGrid->Add(0, 0, MakeModMatrixSlotsGUI(plugGUI, false, 19, FFModMatrixVoiceMaxSlotCount - 19));
+  rightGrid->Add(1, 0, MakeModMatrixSlotsGUI(plugGUI, true, 0, FFModMatrixGlobalMaxSlotCount));
   mainGrid->Add(1, 1, rightGrid);
   return mainGrid;
 }
