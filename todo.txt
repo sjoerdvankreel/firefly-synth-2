@@ -32,11 +32,11 @@ TODOLIST for beta-2
 [x] pan as bipolar 
 [x] do comments in the componentcolors
 [x] doc the json itself
+[x] center voice/master/settings
 [x] option track module colors in graphs or not
 [ ] option track module colors in unison or not
 [ ] featuretest scheme
 [ ] bg images in main tabs and header and maybe elsewhere
-[ ] center voice/master/settings
 [ ] NOT do greyscale default
 [ ] meters grayscale + red
 [ ] todo maybe matrix in red?
