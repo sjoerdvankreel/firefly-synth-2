@@ -34,6 +34,7 @@ TODOLIST for beta-2
 [x] doc the json itself
 [x] center voice/master/settings
 [x] option track module colors in graphs or not
+[ ] border the tweak editor
 [ ] red mark end of meters
 [ ] option track module colors in unison or not
 [ ] featuretest scheme
