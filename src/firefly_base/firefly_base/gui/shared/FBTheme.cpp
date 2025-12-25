@@ -29,6 +29,7 @@ struct FBModuleColorsJson
 struct FBThemeJson
 {
   std::string name = {};
+  bool graphSchemeFollowsModule = {};
   FBColorScheme defaultColorScheme = {};
   std::vector<FBModuleColorsJson> moduleColors = {};
   std::map<std::string, FBColorScheme> colorSchemes = {};
@@ -74,6 +75,21 @@ RequireDoubleProperty(
   if (!obj->getProperty(name).isDouble())
   {
     FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not a double.");
+    return false;
+  }
+  return true;
+}
+
+static bool
+RequireBoolProperty(
+  DynamicObject const* obj,
+  String const& name)
+{
+  if (!RequireProperty(obj, name))
+    return false;
+  if (!obj->getProperty(name).isBool())
+  {
+    FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not a boolean.");
     return false;
   }
   return true;
@@ -446,6 +462,10 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     return false;
   result.name = obj->getProperty("name").toString().toStdString();
 
+  if (!RequireBoolProperty(obj, "graphSchemeFollowsModule"))
+    return false;
+  result.graphSchemeFollowsModule = (bool)obj->getProperty("graphSchemeFollowsModule");
+
   if (!RequireObjectProperty(obj, "defaultColorScheme"))
     return false;
   if (!ParseDefaultColorScheme(obj->getProperty("defaultColorScheme").getDynamicObject(), result.defaultColorScheme))
@@ -625,11 +645,12 @@ MakeTheme(
   FBThemeJson const& themeJson,
   FBTheme& theme)
 {
-  theme = {};
+  theme = {};  
   theme.name = themeJson.name;
   theme.colorSchemes = themeJson.colorSchemes;
   theme.componentColors = themeJson.componentColors;
-  theme.defaultColorScheme = FBColorScheme(themeJson.defaultColorScheme);
+  theme.graphSchemeFollowsModule = themeJson.graphSchemeFollowsModule;
+  theme.defaultColorScheme = FBColorScheme(themeJson.defaultColorScheme);  
 
   for (auto const& kv : theme.componentColors)
   {
