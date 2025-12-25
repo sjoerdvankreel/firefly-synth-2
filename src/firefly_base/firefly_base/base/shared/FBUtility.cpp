@@ -146,7 +146,7 @@ FBParseJson(std::string const& text, var& json)
   DynamicObject* obj = json.getDynamicObject();
   if (!parsed.wasOk() || obj == nullptr)
   {
-    FB_LOG_ERROR("Failed to parse json.");
+    FB_LOG_ERROR("Failed to parse json: " + parsed.getErrorMessage().toStdString() + "."); 
     return false;
   }
   return true;

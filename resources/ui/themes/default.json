@@ -8,6 +8,9 @@
     "text": "FFEEEEEE",
     "primary": "FFFFFFFF",
     "background": "FF000000",
+    "meterFill": "FFA0A0A0",
+    "meterTrack": "FF505050",
+    "meterAlert": "FFFFFFFF",
     "graphGrid": "FF404040",
     "graphBackground": "FF181818",
     "sectionBorder": "80FFFFFF",
@@ -21,6 +24,7 @@
     "Red": {
       "comment": "Can override other stuff as well.",
       "primary": "FFFA5F55",
+      "meterAlert": "FFFA5F55"
     },
     "Yellow": {
       "primary": "FFFAB255",

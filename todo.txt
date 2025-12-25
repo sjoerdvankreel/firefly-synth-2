@@ -35,6 +35,7 @@ TODOLIST for beta-2
 [x] center voice/master/settings
 [x] option track module colors in graphs or not
 [x] border the tweak editor
+[ ] tweak editor clips
 [ ] red mark end of meters
 [ ] option track module colors in unison or not
 [ ] featuretest scheme

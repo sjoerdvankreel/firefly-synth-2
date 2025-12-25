@@ -80,10 +80,15 @@ FBParamDisplayMeter::paint(Graphics& g)
   float const barSize = (getLocalBounds().getWidth() - totalGapSize) / MeterBarCount;
 
   int i = 0;
-  g.setColour(scheme.primary);
+  g.setColour(scheme.meterFill);
   for (; i < _fillCount; i++)
     g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
-  g.setColour(scheme.paramSecondary);
+  g.setColour(scheme.meterTrack);
   for (; i < MeterBarCount; i++)
     g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
+  for (i = MeterBarCount - 3; i < _fillCount; i++)
+  {  
+    g.setColour(scheme.meterAlert.withAlpha(0.33f * (1 + i - (MeterBarCount - 3))));
+    g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
+  }
 }
