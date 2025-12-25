@@ -455,7 +455,6 @@ FBMSEGCanvas::paint(Graphics& g)
   auto const outerBounds = getLocalBounds().reduced(MSEGOuterPadding);
   auto const innerBounds = outerBounds.reduced(MSEGInnerPadding);
 
-  // todo all of mesg and graphs
   auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
   g.fillAll(scheme.background);
   g.setColour(scheme.graphBackground); 

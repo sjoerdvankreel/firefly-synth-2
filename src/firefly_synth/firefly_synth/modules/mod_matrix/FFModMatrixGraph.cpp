@@ -111,11 +111,13 @@ FFModMatrixGraph::paint(Graphics& g)
   std::string text = "Off";
   std::vector<float> yNormalized = {};
 
-  // todo just dont host it in a container
+  auto outerBounds = getBounds();
+  auto bounds = outerBounds.toFloat().reduced(4.0f);
   auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
   g.setColour(scheme.graphBackground);
-  auto bounds = getBounds().toFloat().reduced(4.0f);
-  g.fillRoundedRectangle(bounds, 2.0f);
+  g.fillRoundedRectangle(outerBounds.toFloat(), 3.0f);
+  g.setColour(scheme.sectionBorder.withAlpha(0.125f));
+  g.drawRoundedRectangle(outerBounds.toFloat(), 3.0f, 2.0f);
 
   switch (_type)
   {
@@ -210,21 +212,30 @@ FFModMatrixGraph::paint(Graphics& g)
   for (int i = 1; i < yNormalized.size(); i++)
     path.lineTo(bounds.getX() + i, bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[i]));
 
+  bool fillGraph = false;
   switch (_type)
   {
-  case FFModMatrixGraphType::Scale:
-  case FFModMatrixGraphType::Source:
   case FFModMatrixGraphType::TargetIn:
-    g.setColour(scheme.primary); // todo
-    break;
-  case FFModMatrixGraphType::ScaleOn:
   case FFModMatrixGraphType::TargetOut:
-  case FFModMatrixGraphType::SourceOnOff:
-    g.setColour(scheme.primary); // todo
+    fillGraph = true;
     break;
   default:
-    FB_ASSERT(false);
     break;
   }
-  g.strokePath(path, PathStrokeType(1.0f));  // todo fill
+
+  if (!fillGraph)
+  {
+    g.setColour(scheme.primary);
+    g.strokePath(path, PathStrokeType(1.0f));
+  }
+  else
+  {
+    auto fillPath = path;
+    fillPath.lineTo(bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight());
+    fillPath.closeSubPath();
+    g.setColour(scheme.primary.withAlpha(0.33f));
+    g.fillPath(fillPath);
+    g.setColour(scheme.primary);
+    g.strokePath(path, PathStrokeType(1.0f));
+  }
 }

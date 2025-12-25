@@ -208,7 +208,6 @@ MakeModMatrixGraphGUI(FFPlugGUI* plugGUI, FFModMatrixGraphType type, bool last)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(false, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FFModMatrixGraph>(plugGUI, type));
-  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::BackgroundAndBorder);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(false, last, false, true, grid);
   return plugGUI->StoreComponent<FBThemedComponent>((int)FFThemedComponentId::MatrixGraphs, margin);
 }
