@@ -189,20 +189,17 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
     plugGUI->HostContext()->ClearModuleAudioParams(moduleIndices);
   };
 
-  grid->MarkSection({ { 0, 0 }, { 1, 7 } });
-  return grid;
+  grid->MarkSection({ { 0, 0 }, { 1, 7 } }, FBGridSectionMark::BackgroundAndAlternate);
+  return plugGUI->StoreComponent<FBMarginComponent>(true, true, false, true, grid);
 }
 
 static Component*
 MakeModMatrixSlotControlGUI(FFPlugGUI* plugGUI)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 0, 0, 0 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(false, std::vector<int> { { 1 } }, std::vector<int> { { 0, 0, 0 } });
   grid->Add(0, 0, MakeModMatrixSlotControlGUI(false, plugGUI));
   grid->Add(0, 1, MakeModMatrixSlotControlGUI(true, plugGUI));
-  grid->Add(0, 2, plugGUI->StoreComponent<FBFillerComponent>(26, 1));
-  grid->MarkSection({ { 0, 0 }, { 1, 1 } });
-  grid->MarkSection({ { 0, 1 }, { 1, 2 } });
-  return plugGUI->StoreComponent<FBSectionComponent>(false, grid);
+  return grid;
 }
 
 static Component*
