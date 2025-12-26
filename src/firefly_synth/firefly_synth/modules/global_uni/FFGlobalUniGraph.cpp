@@ -110,13 +110,8 @@ GlobalUniGraphRenderData::DoPostProcess(
 void
 FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData)
 {
-  // TODO slots
-
   GlobalUniGraphRenderData renderData = {};
   graphData->pointIndicatorSize = 4;
-  // TODO
-  //graphData->bipolar = false;
-  //graphData->drawClipBoundaries = false;
   graphData->fillPointIndicators = true;
   graphData->skipDrawOnEqualsPrimary = true;
   graphData->drawMarkersSelector = [](int) { return false; };
