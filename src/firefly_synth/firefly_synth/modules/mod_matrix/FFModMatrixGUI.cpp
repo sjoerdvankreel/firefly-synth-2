@@ -191,7 +191,8 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
   };
 
   grid->MarkSection({ { 0, 0 }, { 1, 7 } }, FBGridSectionMark::BackgroundAndAlternate);
-  return plugGUI->StoreComponent<FBMarginComponent>(true, true, false, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, false, true, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, 0, margin);
 }
 
 static Component*
