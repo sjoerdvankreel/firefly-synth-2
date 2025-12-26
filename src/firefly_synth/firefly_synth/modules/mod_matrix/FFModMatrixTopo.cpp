@@ -93,7 +93,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   std::string prefix = global ? "G" : "V";
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
-  result->slotCount = 1;
+  result->slotCount = 1; 
   result->name = global ? "GMatrix" : "VMatrix";
   result->id = prefix + "{19758BF4-241B-4A59-A943-3AE7426C7CC9}";
   result->params.resize((int)FFModMatrixParam::Count);
