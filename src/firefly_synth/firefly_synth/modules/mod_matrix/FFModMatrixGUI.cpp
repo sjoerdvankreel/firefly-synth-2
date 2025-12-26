@@ -403,7 +403,7 @@ MakeModMatrixAllSlotsGUI(FFPlugGUI* plugGUI)
   auto innerMargin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, mainGrid);
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   grid->Add(0, 0, innerMargin);
-  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::Alternate); // todo
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::Border);
   return plugGUI->StoreComponent<FBMarginComponent>(true, true, false, true, grid);
 }
 
