@@ -411,7 +411,7 @@ Component*
 FFMakeModMatrixGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(false, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1 } });
   grid->Add(0, 0, MakeModMatrixTopGUI(plugGUI));
   grid->Add(1, 0, MakeModMatrixAllSlotsGUI(plugGUI));
   return grid;
