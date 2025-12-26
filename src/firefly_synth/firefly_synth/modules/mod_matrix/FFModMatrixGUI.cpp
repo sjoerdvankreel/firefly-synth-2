@@ -377,8 +377,7 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI, bool global, int offset, int count)
 
   for(int r = 0; r < rowCount; r++)
   {
-    grid->MarkSection({ { r, 0 }, { 1, 4 } }, FBGridSectionMark::Background);
-    grid->MarkSection({ { r, 4 }, { 1, 1 } }, FBGridSectionMark::Background);
+    grid->MarkSection({ { r, 0 }, { 1, 5 } }, FBGridSectionMark::Background);
     grid->MarkSection({ { r, 5 }, { 1, 4 } }, FBGridSectionMark::Background);
     grid->MarkSection({ { r, 9 }, { 1, 3 } }, FBGridSectionMark::Background);
     grid->MarkSection({ { r, 12 }, { 1, 2 } }, FBGridSectionMark::Background, 3.0f, r == rowCount - 1? 2: 0);
