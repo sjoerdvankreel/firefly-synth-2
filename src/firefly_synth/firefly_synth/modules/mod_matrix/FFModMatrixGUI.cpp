@@ -223,9 +223,9 @@ MakeModMatrixTopGUI(FFPlugGUI* plugGUI)
 }
 
 static void
-AddMatrixHeaderRow(FFPlugGUI* plugGUI, FBGridComponent* grid, int r)
+AddMatrixHeaderRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r)
 {
-  grid->Add(r, 0, 1, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Order"));
+  grid->Add(r, 0, 1, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(global? "Global": "Voice"));
   grid->Add(r, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Op"));
   grid->Add(r, 5, plugGUI->StoreComponent<FBAutoSizeLabel>("Source"));
   grid->Add(r, 6, plugGUI->StoreComponent<FBAutoSizeLabel>("Inv"));
@@ -371,7 +371,7 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI, bool global, int offset, int count)
   std::vector<int> autoSizeRowForCol = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, autoSizeRowForCol, autoSizeColForRow, rowSizes, columnSizes);
 
-  AddMatrixHeaderRow(plugGUI, grid, 0);
+  AddMatrixHeaderRow(plugGUI, grid, global, 0);
   for (int r = 0; r < count; r++)
     AddMatrixSlotRow(plugGUI, grid, global, 1 + r, r + offset);
 
