@@ -160,7 +160,11 @@ MakeGlobalUniContent(
     int guiRow = r + 1;
     int targetIndex = offset + r;
     auto targetName = FFGlobalUniTargetToString((FFGlobalUniTarget)targetIndex);
-    grid->Add(guiRow, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(targetName));
+    grid->Add(guiRow, 0, plugGUI->StoreComponent<FBModuleComponent>(
+      plugGUI->HostContext()->Topo(),
+      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+      [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+      plugGUI->StoreComponent<FBAutoSizeLabel>(targetName)));
     auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, targetIndex } });
     grid->Add(guiRow, 1, plugGUI->StoreComponent<FBModuleComponent>( 
       plugGUI->HostContext()->Topo(),  
@@ -175,7 +179,11 @@ MakeGlobalUniContent(
       plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType)));
     int moduleRuntimeIndex = topo->moduleTopoToRuntime.at({ (int)FFModuleType::GlobalUni, 0 });
     auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(graphRenderState, moduleRuntimeIndex, targetIndex, [plugGUI]() { return plugGUI->GetRenderType(true); });
-    grid->Add(guiRow, 3, uniGraph);
+    grid->Add(guiRow, 3, plugGUI->StoreComponent<FBModuleComponent>(
+      plugGUI->HostContext()->Topo(),
+      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+      [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+      uniGraph));
     fixedGraphs->push_back(uniGraph);
     grid->MarkSection({ { guiRow, 0 }, { 1, 4 } });
 
