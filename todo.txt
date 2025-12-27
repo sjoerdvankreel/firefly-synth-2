@@ -38,6 +38,7 @@ TODOLIST for beta-2
 [x] red mark end of meters
 [x] meters grayscale + red
 [x] tweak editor clips
+[ ] unison dropdowns popouts not good
 [ ] themes as folder
 [ ] option track module colors in unison or not
 [ ] NOT do greyscale default
