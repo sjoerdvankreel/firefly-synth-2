@@ -38,6 +38,7 @@ enum class FFThemedComponentId {
   Graphs,
   Header,
   LastTweaked,
+  GlobalUniTop,
   MainSelector,
   MatrixGraphs
 };

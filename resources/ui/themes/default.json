@@ -54,6 +54,11 @@
       "colorScheme": "Red"
     },
     {
+      "comment": "Unison Top",
+      "componentId": "6C2FD02F-F89C-491F-A7F8-4AD6EBB44A0E",
+      "colorScheme": "Yellow"
+    },
+    {
       "comment": "Main Selector",
       "componentId": "F81585F3-C753-4ED3-A0FC-5E517580EEF4",
       "colorScheme": "Red"

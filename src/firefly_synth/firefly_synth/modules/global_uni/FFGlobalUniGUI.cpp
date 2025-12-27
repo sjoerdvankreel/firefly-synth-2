@@ -17,6 +17,7 @@
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBThemedComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBModuleGraphComponent.hpp>
@@ -204,6 +205,7 @@ FFMakeGlobalUniGUI(
   auto topGrid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { { 0 } }, std::vector<int> { { 0, 1 } });
   topGrid->Add(0, 0, MakeGlobalUniVoices(plugGUI));
   topGrid->Add(0, 1, MakeGlobalUniInit(plugGUI));
+  auto topComponent = plugGUI->StoreComponent<FBThemedComponent>((int)FFThemedComponentId::GlobalUniTop, topGrid);
   auto bottomGrid = plugGUI->StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1 } });
   auto bottomGridLeft = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   bottomGridLeft->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, MakeGlobalUniContent(plugGUI, graphRenderState, 0, fixedGraphs)));
@@ -214,7 +216,7 @@ FFMakeGlobalUniGUI(
   bottomGridRight->MarkSection({ { 0, 0}, { 1, 1 } }, FBGridSectionMark::Border);
   bottomGrid->Add(0, 1, bottomGridRight);
   auto grid = plugGUI->StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(false, false, false, true, topGrid));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(false, false, false, true, topComponent));
   grid->Add(1, 0, bottomGrid);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, false, true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::GlobalUni, 0, margin);
