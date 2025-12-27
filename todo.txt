@@ -46,6 +46,7 @@ TODOLIST for beta-2
 [x] modulecomponent everywhere
 [x] unison dropdowns popouts not good
 [ ] themes as folder
+[ ] new screenshots
 [ ] option track module colors in unison or not
 [ ] NOT do greyscale default
 [ ] note to check the logs when borked
