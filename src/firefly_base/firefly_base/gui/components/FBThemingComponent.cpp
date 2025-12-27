@@ -92,13 +92,6 @@ _followModule(followModule)
   addAndMakeVisible(content);
 }
 
-void 
-FBModuleComponent::paint(Graphics& g)
-{
-  if(_followModule != nullptr && _followModule(FBGetLookAndFeel()->Theme()))
-    g.fillAll(FBGetLookAndFeel()->FindColorSchemeFor(*this).background);
-}
-
 void
 FBModuleComponent::resized()
 {
