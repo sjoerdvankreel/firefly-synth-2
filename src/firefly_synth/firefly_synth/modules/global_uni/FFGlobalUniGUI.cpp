@@ -139,13 +139,12 @@ MakeGlobalUniContent(
     int rowOffset = 0;
     int guiCol = c * (FFGlobalUniMaxCount + 8 + 1);
     grid->Add(rowOffset + 0, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
-    grid->MarkSection({ { rowOffset + 0, guiCol }, { 1, 1 } });
     auto mode0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, 0 } });
     grid->Add(rowOffset + 0, guiCol + 1, plugGUI->StoreComponent<FBAutoSizeLabel>(mode0->static_.display));
     auto opType0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, 0 } });
     grid->Add(rowOffset + 0, guiCol + 2, plugGUI->StoreComponent<FBAutoSizeLabel>(opType0->static_.name));
     grid->Add(rowOffset + 0, guiCol + 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Out"));
-    grid->MarkSection({ { rowOffset + 0, guiCol + 1 }, { 1, 3 } });
+    grid->MarkSection({ { rowOffset + 0, guiCol }, { 1, 4 } });
 
     auto spread0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, 0 } });
     grid->Add(rowOffset + 0, guiCol + 4, plugGUI->StoreComponent<FBAutoSizeLabel>(spread0->static_.display));
@@ -174,8 +173,6 @@ MakeGlobalUniContent(
 
       auto targetName = FFGlobalUniTargetToString((FFGlobalUniTarget)targetIndex);
       grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>(targetName));
-      grid->MarkSection({ { guiRow, guiCol }, { 1, 1 } });
-
       auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, targetIndex } });
       grid->Add(guiRow, guiCol + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
       auto opType = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, targetIndex } });
@@ -184,7 +181,7 @@ MakeGlobalUniContent(
       auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(graphRenderState, moduleRuntimeIndex, targetIndex, [plugGUI]() { return plugGUI->GetRenderType(true); });
       grid->Add(guiRow, guiCol + 3, uniGraph);
       fixedGraphs->push_back(uniGraph);
-      grid->MarkSection({ { guiRow, guiCol + 1 }, { 1, 3 } });
+      grid->MarkSection({ { guiRow, guiCol }, { 1, 4 } });
 
       auto spread = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, targetIndex } });
       grid->Add(guiRow, guiCol + 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, spread, Slider::SliderStyle::RotaryVerticalDrag));
