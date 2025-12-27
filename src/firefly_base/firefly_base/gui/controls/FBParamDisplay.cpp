@@ -14,9 +14,10 @@ FBParamDisplayLabel::
 FBParamDisplayLabel(
   FBPlugGUI* plugGUI, 
   FBRuntimeParam const* param, 
-  std::string const& maxWidthText):
+  std::string const& maxWidthText,
+  bool isThemed):
 Label(),
-FBParamControl(plugGUI, param),
+FBParamControl(plugGUI, param, isThemed),
 _maxTextWidth(FBGUIGetStringWidthCached(maxWidthText))
 {
   double normalized = plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
@@ -45,9 +46,10 @@ FBParamDisplayLabel::SetValueNormalizedFromHost(double normalized)
 FBParamDisplayMeter::
 FBParamDisplayMeter(
   FBPlugGUI* plugGUI, 
-  FBRuntimeParam const* param):
+  FBRuntimeParam const* param,
+  bool isThemed):
 Component(),
-FBParamControl(plugGUI, param) {}
+FBParamControl(plugGUI, param, isThemed) {}
 
 void
 FBParamDisplayMeter::parentHierarchyChanged()

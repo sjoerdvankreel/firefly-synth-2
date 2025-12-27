@@ -28,7 +28,8 @@ public:
   FBGUIParamSlider(
     FBPlugGUI* plugGUI,
     FBRuntimeGUIParam const* param,
-    juce::Slider::SliderStyle style);
+    juce::Slider::SliderStyle style,
+    bool isThemed = true);
 
   void valueChanged() override;
   juce::String getTooltip() override;
@@ -49,7 +50,8 @@ public:
   FBParamSlider(
     FBPlugGUI* plugGUI, 
     FBRuntimeParam const* param, 
-    juce::Slider::SliderStyle style);
+    juce::Slider::SliderStyle style,
+    bool isThemed = true);
 
   FBParamActiveExchangeState const&
   ParamActiveExchangeState() const { return _paramActive; }

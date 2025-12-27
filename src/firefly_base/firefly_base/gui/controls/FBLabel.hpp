@@ -40,7 +40,7 @@ public FBGUIParamComponent
 {
 public:
   void parentHierarchyChanged() override;
-  FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param);
+  FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed = true);
 };
 
 class FBParamLabel final:
@@ -49,7 +49,7 @@ public FBParamComponent
 {
 public:
   void parentHierarchyChanged() override;
-  FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
+  FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed = true);
 };
 
 class FBParamLinkedLabel final:

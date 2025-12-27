@@ -31,7 +31,7 @@ public:
   void mouseUp(const juce::MouseEvent& e) override;
 
   void SetValueNormalized(double normalized) override;
-  FBGUIParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param);
+  FBGUIParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed = true);
 };
 
 class FBParamToggleButton final:
@@ -47,5 +47,5 @@ public:
 
   void mouseUp(const juce::MouseEvent& e) override;
   void SetValueNormalizedFromHost(double normalized) override;
-  FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
+  FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed = true);
 };
