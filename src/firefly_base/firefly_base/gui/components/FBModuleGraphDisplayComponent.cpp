@@ -39,7 +39,7 @@ FBModuleGraphDisplayComponent::FindColorSchemeFor(
       }
   } 
   return FBGetLookAndFeel()->FindColorSchemeFor(*this);
-} 
+}  
 
 Point<float>
 FBModuleGraphDisplayComponent::PointLocation(

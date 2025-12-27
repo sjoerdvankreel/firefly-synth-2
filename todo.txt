@@ -44,7 +44,7 @@ TODOLIST for beta-2
 [x] longer display names
 [x] longer comboboxes
 [x] modulecomponent everywhere
-[ ] unison dropdowns popouts not good
+[x] unison dropdowns popouts not good
 [ ] themes as folder
 [ ] option track module colors in unison or not
 [ ] NOT do greyscale default
