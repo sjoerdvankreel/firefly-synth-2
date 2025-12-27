@@ -38,9 +38,8 @@ TODOLIST for beta-2
 [x] red mark end of meters
 [x] meters grayscale + red
 [x] tweak editor clips
+[ ] themes as folder
 [ ] option track module colors in unison or not
-[ ] featuretest scheme
-[ ] bg images in main tabs and header and maybe elsewhere
 [ ] NOT do greyscale default
 [ ] todo maybe matrix in red?
 [ ] note to check the logs when borked
@@ -53,7 +52,6 @@ TODOLIST for beta-2
 [ ] recheck all the margins
 [ ] longer display names
 [ ] longer comboboxes
-[ ] do more themes
 [ ] run a debug build
 [ ] hunt down all juce::colour and 0xFFBLA and colourid
 [ ] modulecomponent everywhere
@@ -61,9 +59,20 @@ TODOLIST for beta-2
 [ ] theme the combo popouts (or all of them, filepicker etc)
 [ ] explain theme in manual + dump topo option
 [ ] update docs for string HPF (see GitHub bug)
+
+TODOLIST for beta-next
+[ ] do more themes
 [ ] fix ardour save/load
 [ ] credit rusto
 [ ] make the svg issue
+[ ] featuretest scheme
+[ ] bg images in main tabs and header and maybe elsewhere
+[ ] not right-click-change horizontal sliders
+[ ] string low end bug?
+[ ] rename demo to feature test
+[ ] make some presets
+[ ] compare to ff1
+[ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
 ANDROMEDA SCHEME
 blue = 2D86FE
 yellow = FBC401
@@ -72,14 +81,6 @@ green = 28BB40
 purple = B422D9
 orange = FF9000
 red = D6433A
-
-TODOLIST for beta-next
-[ ] not right-click-change horizontal sliders
-[ ] string low end bug?
-[ ] rename demo to feature test
-[ ] make some presets
-[ ] compare to ff1
-[ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
 
 i want an arpeggiator and/or sequencer
 document all the source code (pffft)
