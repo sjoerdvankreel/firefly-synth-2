@@ -222,7 +222,11 @@ MakeGlobalUniContent(
     for (int p = 0; p < FFGlobalUniMaxCount; p++)
     {
       auto param = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::ManualFirst + targetIndex, p } });
-      grid->Add(guiRow, p + 1 + 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag));
+      grid->Add(guiRow, p + 1 + 8, plugGUI->StoreComponent<FBModuleComponent>(
+        plugGUI->HostContext()->Topo(),
+        (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+        [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+        plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag, false)));
     }
     grid->MarkSection({ { guiRow, 1 + 8 }, { 1, FFGlobalUniMaxCount } }, FBGridSectionMark::Background, 3.0f, r == uniTargetCount / 2 - 1? 2: 0);
   }
