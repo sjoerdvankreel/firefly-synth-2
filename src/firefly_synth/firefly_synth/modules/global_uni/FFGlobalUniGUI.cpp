@@ -168,7 +168,11 @@ MakeGlobalUniContent(
       [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
       plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode)));
     auto opType = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, targetIndex } });
-    grid->Add(guiRow, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
+    grid->Add(guiRow, 2, plugGUI->StoreComponent<FBModuleComponent>(
+      plugGUI->HostContext()->Topo(),
+      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+      [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+      plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType)));
     int moduleRuntimeIndex = topo->moduleTopoToRuntime.at({ (int)FFModuleType::GlobalUni, 0 });
     auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(graphRenderState, moduleRuntimeIndex, targetIndex, [plugGUI]() { return plugGUI->GetRenderType(true); });
     grid->Add(guiRow, 3, uniGraph);
