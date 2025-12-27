@@ -101,30 +101,16 @@ FBLookAndFeel::FindColorSchemeFor(
 {
   if (auto p = dynamic_cast<FBParamControl const*>(&c))
   {
-    int rtModuleIndex = p->Param()->runtimeModuleIndex;
-    auto moduleIter = Theme().moduleColors.find(rtModuleIndex);
-    if (moduleIter != Theme().moduleColors.end())
-    {
-      int rtParamIndex = p->Param()->runtimeParamIndex;
-      auto paramIter = moduleIter->second.audioParamColorSchemes.find(rtParamIndex);
-      if (paramIter == moduleIter->second.audioParamColorSchemes.end())
-        return Theme().colorSchemes.at(moduleIter->second.colorScheme);
-      return Theme().colorSchemes.at(paramIter->second);
-    }
+    auto scheme = p->GetScheme(Theme());
+    if (scheme != nullptr)
+      return *scheme;
   }
    
   if (auto p = dynamic_cast<FBGUIParamControl const*>(&c))
   {
-    int rtModuleIndex = p->Param()->runtimeModuleIndex;
-    auto moduleIter = Theme().moduleColors.find(rtModuleIndex);
-    if (moduleIter != Theme().moduleColors.end())
-    {
-      int rtParamIndex = p->Param()->runtimeParamIndex;
-      auto paramIter = moduleIter->second.guiParamColorSchemes.find(rtParamIndex);
-      if (paramIter == moduleIter->second.guiParamColorSchemes.end())
-        return Theme().colorSchemes.at(moduleIter->second.colorScheme);
-      return Theme().colorSchemes.at(paramIter->second);
-    }
+    auto scheme = p->GetScheme(Theme());
+    if (scheme != nullptr)
+      return *scheme;
   }
 
   if (auto gui = c.findParentComponentOfClass<FBPlugGUI>())
