@@ -201,7 +201,7 @@ FFMakeGlobalUniGUI(
   std::vector<FBModuleGraphComponent*>* fixedGraphs)
 {
   FB_LOG_ENTRY_EXIT();
-  auto topGrid = plugGUI->StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 0 } }, std::vector<int> { { 0, 1 } });
+  auto topGrid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { { 0 } }, std::vector<int> { { 0, 1 } });
   topGrid->Add(0, 0, MakeGlobalUniVoices(plugGUI));
   topGrid->Add(0, 1, MakeGlobalUniInit(plugGUI));
   auto bottomGrid = plugGUI->StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1 } });
