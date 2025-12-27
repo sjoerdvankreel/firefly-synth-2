@@ -94,7 +94,7 @@ MakeGlobalUniVoices(
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, voiceCount, std::to_string(FFGlobalUniMaxCount)));
-  grid->MarkSection({ { 0, 0, }, { 1, 3 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0, }, { 1, 3 } }, FBGridSectionMark::BackgroundAndAlternate);
   return grid;
 }
 
@@ -108,7 +108,7 @@ MakeGlobalUniInit(
   initButton->setTooltip("Set To Defaults");
   grid->Add(0, 1, initButton);
   initButton->onClick = [plugGUI]() { GlobalUniInit(plugGUI); };
-  grid->MarkSection({ { 0, 0, }, { 1, 2 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0, }, { 1, 2 } }, FBGridSectionMark::BackgroundAndAlternate);
   return grid;
 }
 
