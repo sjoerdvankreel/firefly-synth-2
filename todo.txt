@@ -38,30 +38,30 @@ TODOLIST for beta-2
 [x] red mark end of meters
 [x] meters grayscale + red
 [x] tweak editor clips
+[x] todo maybe matrix in red?
+[x] osci/fx/cv/rest/global
+[x] recheck all the margins
+[x] longer display names
+[x] longer comboboxes
+[x] modulecomponent everywhere
 [ ] unison dropdowns popouts not good
 [ ] themes as folder
 [ ] option track module colors in unison or not
 [ ] NOT do greyscale default
-[ ] todo maybe matrix in red?
 [ ] note to check the logs when borked
-[ ] osci/fx/cv/rest/global
 [ ] check the todos
 [ ] check the findcolours
 [ ] check the top rows margins
 [ ] check the alert windows
 [ ] test lin and mac
-[ ] recheck all the margins
-[ ] longer display names
-[ ] longer comboboxes
 [ ] run a debug build
 [ ] hunt down all juce::colour and 0xFFBLA and colourid
-[ ] modulecomponent everywhere
 [ ] theme and prettify the gui
 [ ] theme the combo popouts (or all of them, filepicker etc)
 [ ] explain theme in manual + dump topo option
-[ ] update docs for string HPF (see GitHub bug)
 
 TODOLIST for beta-next
+[ ] update docs for string HPF (see GitHub bug)
 [ ] do more themes
 [ ] fix ardour save/load
 [ ] credit rusto
