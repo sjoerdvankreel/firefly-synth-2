@@ -95,7 +95,7 @@ MakeGlobalUniVoices(
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, voiceCount, std::to_string(FFGlobalUniMaxCount)));
   grid->MarkSection({ { 0, 0, }, { 1, 3 } });
-  return plugGUI->StoreComponent<FBSectionComponent>(false, grid);
+  return grid;
 }
 
 static Component*
@@ -109,7 +109,7 @@ MakeGlobalUniInit(
   grid->Add(0, 1, initButton);
   initButton->onClick = [plugGUI]() { GlobalUniInit(plugGUI); };
   grid->MarkSection({ { 0, 0, }, { 1, 2 } });
-  return plugGUI->StoreComponent<FBSectionComponent>(true, grid);
+  return grid;
 }
 
 static Component* 
@@ -207,7 +207,7 @@ MakeGlobalUniContent(
       grid->MarkSection({ { guiRow, guiCol + 1 + 8 }, { 1, FFGlobalUniMaxCount } });
     }
   }
-  return plugGUI->StoreComponent<FBSectionComponent>(true, grid);
+  return grid;
 }
 
 Component*
@@ -221,8 +221,7 @@ FFMakeGlobalUniGUI(
   grid->Add(0, 0, MakeGlobalUniVoices(plugGUI));
   grid->Add(0, 1, MakeGlobalUniInit(plugGUI));
   grid->Add(1, 0, 1, 2, MakeGlobalUniContent(plugGUI, graphRenderState, fixedGraphs));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(false, false, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::GlobalUni, 0, margin);
+  return grid;
 }
 
 bool
