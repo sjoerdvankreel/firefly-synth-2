@@ -170,13 +170,13 @@ MakeGlobalUniContent(
       plugGUI->HostContext()->Topo(),  
       (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
       [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
-      plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode)));
+      plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode, false)));
     auto opType = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, targetIndex } });
     grid->Add(guiRow, 2, plugGUI->StoreComponent<FBModuleComponent>(
       plugGUI->HostContext()->Topo(),
       (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
       [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
-      plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType)));
+      plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType, false)));
     int moduleRuntimeIndex = topo->moduleTopoToRuntime.at({ (int)FFModuleType::GlobalUni, 0 });
     auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(graphRenderState, moduleRuntimeIndex, targetIndex, [plugGUI]() { return plugGUI->GetRenderType(true); });
     grid->Add(guiRow, 3, plugGUI->StoreComponent<FBModuleComponent>(
@@ -192,7 +192,7 @@ MakeGlobalUniContent(
       plugGUI->HostContext()->Topo(),
       (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
       [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
-      plugGUI->StoreComponent<FBParamSlider>(plugGUI, spread, Slider::SliderStyle::RotaryVerticalDrag)));
+      plugGUI->StoreComponent<FBParamSlider>(plugGUI, spread, Slider::SliderStyle::RotaryVerticalDrag, false)));
     auto skew = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSkew, targetIndex } });
     grid->Add(guiRow, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skew, Slider::SliderStyle::RotaryVerticalDrag));
     auto random = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRand, targetIndex } });

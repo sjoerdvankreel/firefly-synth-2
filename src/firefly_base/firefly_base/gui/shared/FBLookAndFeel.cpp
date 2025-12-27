@@ -389,19 +389,27 @@ void
 FBLookAndFeel::drawLabel(
   Graphics& g, Label& label)
 {
+  bool isCombo = false;
+  ComboBox* cb = nullptr;
   bool hasBackground = false;
-  auto const& scheme = FindColorSchemeFor(label);
+  auto const* scheme = &FindColorSchemeFor(label);
+  if ((cb = label.findParentComponentOfClass<ComboBox>()) != nullptr)
+  {
+    isCombo = true;
+    scheme = &FindColorSchemeFor(*cb);
+  }
+
   if (dynamic_cast<FBAutoSizeLabel2*>(&label) ||
       dynamic_cast<FBLastTweakedLabel*>(&label))
   {
     hasBackground = true;
-    g.setColour(scheme.paramBackground);
+    g.setColour(scheme->paramBackground);
     g.fillRoundedRectangle(label.getLocalBounds().toFloat().reduced(5.0f), 5.0f);
   }
 
-  auto colorText = scheme.text;
-  if (auto b = label.findParentComponentOfClass<ComboBox>())
-    colorText = scheme.primary.darker(b->isEnabled() ? 0.0f : scheme.dimDisabled);
+  auto colorText = scheme->text;
+  if (isCombo)
+    colorText = scheme->primary.darker(cb->isEnabled() ? 0.0f : scheme->dimDisabled);
 
   g.setFont(getLabelFont(label));
   g.setColour(colorText);
