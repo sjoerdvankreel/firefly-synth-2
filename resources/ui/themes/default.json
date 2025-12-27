@@ -1,6 +1,7 @@
 {
   "name": "Default",
   "graphSchemeFollowsModule": false,
+  "unisonSchemeFollowsModule": true,
   "defaultColorScheme_comment": "Fallback scheme, any other scheme can override individual settings.",
   "defaultColorScheme": {
     "graphAlpha": 0.6,
@@ -17,7 +18,7 @@
     "sectionBackground": "FF282828",
     "paramSecondary": "FF505050",
     "paramHighlight": "80FFFFFF",
-    "paramBackground": "FF181818"
+    "paramBackground": "FF181818"     
   },
   "colorSchemes_comment": "Define color schemes to be referenced by modules, parameters, and non-module related component colors.",
   "colorSchemes": {

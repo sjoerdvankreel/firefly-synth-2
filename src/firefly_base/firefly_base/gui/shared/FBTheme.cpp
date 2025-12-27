@@ -30,6 +30,7 @@ struct FBThemeJson
 {
   std::string name = {};
   bool graphSchemeFollowsModule = {};
+  bool unisonSchemeFollowsModule = {};
   FBColorScheme defaultColorScheme = {};
   std::vector<FBModuleColorsJson> moduleColors = {};
   std::map<std::string, FBColorScheme> colorSchemes = {};
@@ -490,6 +491,10 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     return false;
   result.graphSchemeFollowsModule = (bool)obj->getProperty("graphSchemeFollowsModule");
 
+  if (!RequireBoolProperty(obj, "unisonSchemeFollowsModule"))
+    return false;
+  result.unisonSchemeFollowsModule = (bool)obj->getProperty("unisonSchemeFollowsModule");
+
   if (!RequireObjectProperty(obj, "defaultColorScheme"))
     return false;
   if (!ParseDefaultColorScheme(obj->getProperty("defaultColorScheme").getDynamicObject(), result.defaultColorScheme))
@@ -679,6 +684,7 @@ MakeTheme(
   theme.colorSchemes = themeJson.colorSchemes;
   theme.componentColors = themeJson.componentColors;
   theme.graphSchemeFollowsModule = themeJson.graphSchemeFollowsModule;
+  theme.unisonSchemeFollowsModule = themeJson.unisonSchemeFollowsModule;
   theme.defaultColorScheme = FBColorScheme(themeJson.defaultColorScheme);  
 
   for (auto const& kv : theme.componentColors)

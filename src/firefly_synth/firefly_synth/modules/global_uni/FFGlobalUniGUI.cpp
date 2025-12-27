@@ -163,8 +163,9 @@ MakeGlobalUniContent(
     grid->Add(guiRow, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(targetName));
     auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, targetIndex } });
     grid->Add(guiRow, 1, plugGUI->StoreComponent<FBModuleComponent>( 
-      plugGUI->HostContext()->Topo(), 
+      plugGUI->HostContext()->Topo(),  
       (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+      [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
       plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode)));
     auto opType = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, targetIndex } });
     grid->Add(guiRow, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
