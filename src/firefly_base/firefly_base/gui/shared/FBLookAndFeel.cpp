@@ -129,12 +129,14 @@ FBLookAndFeel::FindColorSchemeFor(
 
   if (auto gui = c.findParentComponentOfClass<FBPlugGUI>())
   {
-    if (auto tc = dynamic_cast<IFBThemingComponent const*>(&c))
-      if (auto s = tc->GetScheme(_theme))
-        return *s;
-    if(auto tc = c.findParentComponentOfClass<IFBThemingComponent>())
-      if (auto s = tc->GetScheme(_theme))
-        return *s;
+    juce::Component const* cp = &c;
+    while (cp != nullptr)
+    {
+      if (auto tc = dynamic_cast<IFBThemingComponent const*>(cp))
+        if(auto s = tc->GetScheme(_theme))
+          return *s;
+      cp = cp->getParentComponent();
+    }
   }
 
   return Theme().defaultColorScheme;
