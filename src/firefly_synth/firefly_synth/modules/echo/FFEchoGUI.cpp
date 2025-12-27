@@ -316,7 +316,7 @@ MakeEchoTab(FBPlugGUI* plugGUI, bool global)
   tapsOnToggle->onStateChange = updateTapEditEnabled;
   echoTargetBox->onChange = updateTapEditEnabled;
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, 0, margin);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, 0, margin);
 }
 
 Component*

@@ -72,7 +72,7 @@ MakeMasterTab(FBPlugGUI* plugGUI)
   grid->Add(0, 0, MakeMasterSectionMain(plugGUI));
   grid->Add(0, 1, MakeMasterSectionAux(plugGUI));
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Master, 0, margin);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Master, 0, margin);
 }
 
 Component*
@@ -82,5 +82,5 @@ FFMakeMasterGUI(FBPlugGUI* plugGUI)
   auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
   auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::Master].name;
   tabs->AddTab(name, true, MakeMasterTab(plugGUI));
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Master, 0, tabs);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Master, 0, tabs);
 }

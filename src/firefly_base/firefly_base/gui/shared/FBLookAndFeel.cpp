@@ -129,32 +129,12 @@ FBLookAndFeel::FindColorSchemeFor(
 
   if (auto gui = c.findParentComponentOfClass<FBPlugGUI>())
   {
-    int rtModuleIndex = -1;
-    FBTabBarButton const* tabBarButton = nullptr;
-    tabBarButton = dynamic_cast<FBTabBarButton const*>(&c);
-    if (tabBarButton == nullptr)
-      tabBarButton = c.findParentComponentOfClass<FBTabBarButton>();
-    if (tabBarButton != nullptr && tabBarButton->isModuleTab)
-      rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at(tabBarButton->moduleIndices);
-    else if (auto m = c.findParentComponentOfClass<FBModuleComponent>())
-      rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at({ m->ModuleIndex(), m->ModuleSlot() });
-    if (rtModuleIndex != -1)
-    {
-      auto moduleIter = Theme().moduleColors.find(rtModuleIndex);
-      if (moduleIter != Theme().moduleColors.end())
-        return Theme().colorSchemes.at(moduleIter->second.colorScheme);
-    }
-
-    if (auto tc = c.findParentComponentOfClass<FBThemedComponent>())
-    {
-      auto componentIter = gui->HostContext()->Topo()->static_->themedComponents.find(tc->ComponentId());
-      if (componentIter != gui->HostContext()->Topo()->static_->themedComponents.end())
-      {
-        auto schemeIter = Theme().componentColors.find(FBCleanTopoId(componentIter->second.id));
-        if (schemeIter != Theme().componentColors.end())
-          return Theme().colorSchemes.at(schemeIter->second.colorScheme);
-      }      
-    }
+    if (auto tc = dynamic_cast<IFBThemingComponent const*>(&c))
+      if (auto s = tc->GetScheme(_theme))
+        return *s;
+    if(auto tc = c.findParentComponentOfClass<IFBThemingComponent>())
+      if (auto s = tc->GetScheme(_theme))
+        return *s;
   }
 
   return Theme().defaultColorScheme;

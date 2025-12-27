@@ -22,5 +22,5 @@ FFMakeTweakGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 2, plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, box));
   grid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::BackgroundAndBorder);
   auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
-  return plugGUI->StoreComponent<FBThemedComponent>((int)FFThemedComponentId::LastTweaked, section);
+  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI->HostContext()->Topo(), (int)FFThemedComponentId::LastTweaked, section);
 }

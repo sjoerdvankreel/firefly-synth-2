@@ -40,26 +40,9 @@ FBModuleGraphDisplayComponent::FindColorSchemeFor(
   } 
 
   if (auto gui = findParentComponentOfClass<FBPlugGUI>())
-  {
-    if (auto mc = findParentComponentOfClass<FBModuleComponent>())
-    {
-      int rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at({ mc->ModuleIndex(), mc->ModuleSlot() });
-      auto moduleIter = theme.moduleColors.find(rtModuleIndex);
-      if (moduleIter != theme.moduleColors.end())
-        return theme.colorSchemes.at(moduleIter->second.colorScheme);
-    }
-
-    if (auto tc = findParentComponentOfClass<FBThemedComponent>())
-    {
-      auto componentIter = gui->HostContext()->Topo()->static_->themedComponents.find(tc->ComponentId());
-      if (componentIter != gui->HostContext()->Topo()->static_->themedComponents.end())
-      {
-        auto schemeIter = theme.componentColors.find(FBCleanTopoId(componentIter->second.id));
-        if (schemeIter != theme.componentColors.end())
-          return theme.colorSchemes.at(schemeIter->second.colorScheme);
-      }
-    }
-  }  
+    if (auto tc = findParentComponentOfClass<IFBThemingComponent>())
+      if (auto scheme = tc->GetScheme(theme))
+        return *scheme;
 
   return theme.defaultColorScheme;
 }

@@ -242,7 +242,7 @@ MakeEnvTab(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor)
   grid->Add(0, 0, MakeEnvSectionMain(plugGUI, moduleSlot, msegEditor));
   grid->Add(0, 1, MakeEnvSectionStage(plugGUI, moduleSlot));
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Env, moduleSlot, margin);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Env, moduleSlot, margin);
 }
 
 Component*

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <firefly_base/gui/shared/FBAutoSize.hpp>
+#include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -8,6 +9,8 @@
 #include <map>
 
 class FBPlugGUI;
+struct FBTheme;
+struct FBColorScheme;  
 struct FBRuntimeGUIParam;
 
 inline int constexpr FBTabBarDepth = 20;
@@ -19,18 +22,18 @@ public juce::TabBarButton
 public:
   bool large = false;
   bool centerText = false;
-  bool isModuleTab = false;
-  FBTopoIndices moduleIndices = {};
 
   FBTabBarButton(
     const juce::String& name, 
     juce::TabbedButtonBar& bar);
 
+  virtual bool IsModuleTab() const { return false; }
   void clicked(const juce::ModifierKeys& modifiers) override;
 };
 
 class FBModuleTabBarButton:
-public FBTabBarButton
+public FBTabBarButton,
+public IFBThemingComponent
 {
   FBPlugGUI* const _plugGUI;
   std::string const _separatorText;
@@ -44,7 +47,9 @@ public:
     juce::TabbedButtonBar& bar,
     FBTopoIndices const& moduleIndices);
 
+  bool IsModuleTab() const override { return true; }
   void clicked(const juce::ModifierKeys& modifiers) override;
+  FBColorScheme const* GetScheme(FBTheme const& theme) const override;
   std::string const GetSeparatorText() const { return _separatorText; }
 };
 

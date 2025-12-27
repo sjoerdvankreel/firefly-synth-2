@@ -66,5 +66,5 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
 
   grid->MarkSection({ { 0, 0 }, { 1, 8 } }, FBGridSectionMark::BackgroundAndBorder);
   auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
-  return plugGUI->StoreComponent<FBThemedComponent>((int)FFThemedComponentId::Patch, section);
+  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI->HostContext()->Topo(), (int)FFThemedComponentId::Patch, section);
 }

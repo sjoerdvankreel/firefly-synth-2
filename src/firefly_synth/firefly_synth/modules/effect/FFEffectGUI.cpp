@@ -197,7 +197,7 @@ MakeEffectTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   for(int i = 0; i < FFEffectBlockCount; i++)
     grid->Add(0, 1 + i, MakeEffectSectionBlock(plugGUI, moduleType, moduleSlot, i));
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)moduleType, moduleSlot, margin);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, moduleSlot, margin);
 }
 
 Component*

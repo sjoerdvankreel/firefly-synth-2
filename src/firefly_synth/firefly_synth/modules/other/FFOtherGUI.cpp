@@ -27,5 +27,5 @@ FFMakeOtherGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 0, panicButton);
   grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::BackgroundAndBorder);
   auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Other, 0, section);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Other, 0, section);
 }

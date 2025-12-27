@@ -132,7 +132,7 @@ MakeVoiceModuleTab(FBPlugGUI* plugGUI)
   grid->Add(0, 0, MakeVoiceModuleSectionPitch(plugGUI));
   grid->Add(0, 1, MakeVoiceModuleSectionPorta(plugGUI));
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::VoiceModule, 0, margin);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::VoiceModule, 0, margin);
 }
 
 Component*
@@ -142,5 +142,5 @@ FFMakeVoiceModuleGUI(FBPlugGUI* plugGUI)
   auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
   auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::VoiceModule].name;
   tabs->AddTab(name, true, MakeVoiceModuleTab(plugGUI));
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::VoiceModule, 0, tabs);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::VoiceModule, 0, tabs);
 }

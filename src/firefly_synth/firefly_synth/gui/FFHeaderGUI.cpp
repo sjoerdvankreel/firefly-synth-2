@@ -33,5 +33,5 @@ FFMakeHeaderGUI(FFPlugGUI* plugGUI)
   grid->Add(1, 2, plugGUI->StoreComponent<FBFillerComponent>(5, 1));
   grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::BackgroundAndBorder, 5.0f, 2);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBThemedComponent>((int)FFThemedComponentId::Header, margin);
+  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI->HostContext()->Topo(), (int)FFThemedComponentId::Header, margin);
 };

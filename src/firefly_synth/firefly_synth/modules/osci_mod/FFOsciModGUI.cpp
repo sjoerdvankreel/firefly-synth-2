@@ -70,5 +70,5 @@ FFMakeOsciModTab(FBPlugGUI* plugGUI)
   grid->Add(0, 0, FFMakeOsciModGUISectionMain(plugGUI));
   grid->Add(0, 1, FFMakeOsciModGUISectionMod(plugGUI));
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::OsciMod, 0, margin);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::OsciMod, 0, margin);
 }

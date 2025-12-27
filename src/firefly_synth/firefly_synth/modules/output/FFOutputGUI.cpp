@@ -36,5 +36,5 @@ FFMakeOutputGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 7, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, mtsEspOn));
   grid->MarkSection({ { 0, 0 }, { 1, 8 } }, FBGridSectionMark::BackgroundAndBorder);
   auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Output, 0, section);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Output, 0, section);
 }

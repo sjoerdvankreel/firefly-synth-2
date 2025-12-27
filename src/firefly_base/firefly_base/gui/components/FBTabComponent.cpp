@@ -45,6 +45,17 @@ FBModuleTabBarButton::clicked(const ModifierKeys& modifiers)
   _plugGUI->ModuleSlotClicked(_moduleIndices.index, _moduleIndices.slot);
 }
 
+
+FBColorScheme const* 
+FBModuleTabBarButton::GetScheme(FBTheme const& theme) const
+{
+  int rtModuleIndex = _plugGUI->HostContext()->Topo()->moduleTopoToRuntime.at(_moduleIndices);
+  auto moduleIter = theme.moduleColors.find(rtModuleIndex);
+  if (moduleIter != theme.moduleColors.end())
+    return &theme.colorSchemes.at(moduleIter->second.colorScheme);
+  return nullptr;
+}
+
 FBAutoSizeTabComponent::
 FBAutoSizeTabComponent():
 FBAutoSizeTabComponent(false) {}
@@ -151,8 +162,6 @@ FBModuleTabComponent::AddModuleTab(
   auto& fbTabButton = dynamic_cast<FBTabBarButton&>(*button);
   fbTabButton.large = large;
   fbTabButton.centerText = centerText;
-  fbTabButton.isModuleTab = true;
-  fbTabButton.moduleIndices = moduleIndices;
 }
 
 void 

@@ -68,7 +68,7 @@ MakeSettingsTab(FBPlugGUI* plugGUI)
   grid->Add(0, 0, MakeSettingsSectionMain(plugGUI));
   grid->Add(0, 1, MakeSettingsSectionTuning(plugGUI));
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Settings, 0, margin);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Settings, 0, margin);
 }
 
 Component*
@@ -78,5 +78,5 @@ FFMakeSettingsGUI(FBPlugGUI* plugGUI)
   auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
   auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::Settings].name;
   tabs->AddTab(name, true, MakeSettingsTab(plugGUI));
-  return plugGUI->StoreComponent<FBModuleComponent>((int)FFModuleType::Settings, 0, tabs);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Settings, 0, tabs);
 }

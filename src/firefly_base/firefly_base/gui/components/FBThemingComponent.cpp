@@ -1,14 +1,17 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
 
 FBThemedComponent::
-FBThemedComponent(int componentId, Component* content):
+FBThemedComponent(FBRuntimeTopo const* topo, int componentId, Component* content):
 Component(),
 _componentId(componentId),
-_content(content)
+_content(content),
+_topo(topo)
 {
   addAndMakeVisible(content);
 }
@@ -40,16 +43,31 @@ FBThemedComponent::FixedWidth(int height) const
   return sizingChild != nullptr ? sizingChild->FixedWidth(height): 0;
 }
 
-FBModuleComponent::
-FBModuleComponent() :
-Component() {}
+FBColorScheme const*
+FBThemedComponent::GetScheme(FBTheme const& theme) const
+{
+  auto componentIter = _topo->static_->themedComponents.find(ComponentId());
+  if (componentIter != _topo->static_->themedComponents.end())
+  {
+    auto schemeIter = theme.componentColors.find(FBCleanTopoId(componentIter->second.id));
+    if (schemeIter != theme.componentColors.end())
+      return &theme.colorSchemes.at(schemeIter->second.colorScheme);
+  }
+  return nullptr;
+}
 
 FBModuleComponent::
-FBModuleComponent(int moduleIndex, int moduleSlot, Component* content):
+FBModuleComponent(FBRuntimeTopo const* topo) :
+Component(),
+_topo(topo) {}
+
+FBModuleComponent::
+FBModuleComponent(FBRuntimeTopo const* topo, int moduleIndex, int moduleSlot, Component* content):
 Component(),
 _moduleSlot(moduleSlot),
 _moduleIndex(moduleIndex),
-_content(content)
+_content(content),
+_topo(topo)
 {
   addAndMakeVisible(content);
 }
@@ -102,4 +120,14 @@ FBModuleComponent::FixedWidth(int height) const
     return 0;
   auto sizingChild = dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0));
   return sizingChild != nullptr ? sizingChild->FixedWidth(height) : 0;
+}
+
+FBColorScheme const*
+FBModuleComponent::GetScheme(FBTheme const& theme) const
+{
+  int rtModuleIndex = _topo->moduleTopoToRuntime.at({ ModuleIndex(), ModuleSlot() });
+  auto moduleIter = theme.moduleColors.find(rtModuleIndex);
+  if (moduleIter != theme.moduleColors.end())
+    return &theme.colorSchemes.at(moduleIter->second.colorScheme);
+  return nullptr;
 }
