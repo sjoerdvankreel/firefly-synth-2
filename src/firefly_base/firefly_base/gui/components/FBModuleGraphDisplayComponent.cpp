@@ -40,16 +40,9 @@ FBModuleGraphDisplayComponent::FindColorSchemeFor(
   } 
 
   if (auto gui = findParentComponentOfClass<FBPlugGUI>())
-  {
-    juce::Component const* cp = this;
-    while (cp != nullptr)
-    {
-      if (auto tc = dynamic_cast<IFBThemingComponent const*>(cp))
-        if (auto s = tc->GetScheme(theme))
-          return *s;
-      cp = cp->getParentComponent();
-    }
-  }
+    if (auto tc = findParentComponentOfClass<IFBThemingComponent>())
+      if (auto scheme = tc->GetScheme(theme))
+        return *scheme;
 
   return theme.defaultColorScheme;
 }
