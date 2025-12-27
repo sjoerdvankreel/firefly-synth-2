@@ -38,14 +38,8 @@ FBModuleGraphDisplayComponent::FindColorSchemeFor(
           return theme.colorSchemes.at(moduleIter->second.colorScheme);
       }
   } 
-
-  if (auto gui = findParentComponentOfClass<FBPlugGUI>())
-    if (auto tc = findParentComponentOfClass<IFBThemingComponent>())
-      if (auto scheme = tc->GetScheme(theme))
-        return *scheme;
-
-  return theme.defaultColorScheme;
-}
+  return FBGetLookAndFeel()->FindColorSchemeFor(*this);
+} 
 
 Point<float>
 FBModuleGraphDisplayComponent::PointLocation(

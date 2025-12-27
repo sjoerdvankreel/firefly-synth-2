@@ -97,32 +97,22 @@ DrawCross(Graphics& g, Rectangle<float> const& bounds)
 
 FBColorScheme const& 
 FBLookAndFeel::FindColorSchemeFor(
-  Component const& c) const
+  Component const& target) const
 {
-  if (auto p = dynamic_cast<FBParamControl const*>(&c))
+  Component const* current = &target;
+  while (current != nullptr)
   {
-    auto scheme = p->GetScheme(Theme());
-    if (scheme != nullptr)
-      return *scheme;
-  }
-   
-  if (auto p = dynamic_cast<FBGUIParamControl const*>(&c))
-  {
-    auto scheme = p->GetScheme(Theme());
-    if (scheme != nullptr)
-      return *scheme;
-  }
-
-  if (auto gui = c.findParentComponentOfClass<FBPlugGUI>())
-  {
-    if (auto tc = dynamic_cast<IFBThemingComponent const*>(&c))
+    if (auto pc = dynamic_cast<FBParamControl const*>(current))
+      if (auto s = pc->GetScheme(Theme()))
+        return *s;
+    if (auto gpc = dynamic_cast<FBGUIParamControl const*>(current))
+      if (auto s = gpc->GetScheme(Theme()))
+        return *s;
+    if (auto tc = dynamic_cast<IFBThemingComponent const*>(current))
       if (auto s = tc->GetScheme(_theme))
         return *s;
-    if(auto tc = c.findParentComponentOfClass<IFBThemingComponent>())
-      if (auto s = tc->GetScheme(_theme))
-        return *s;
+    current = current->getParentComponent();
   }
-
   return Theme().defaultColorScheme;
 }
 
