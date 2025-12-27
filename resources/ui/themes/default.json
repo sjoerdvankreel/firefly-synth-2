@@ -56,7 +56,7 @@
     {
       "comment": "Unison Top",
       "componentId": "6C2FD02F-F89C-491F-A7F8-4AD6EBB44A0E",
-      "colorScheme": "Yellow"
+      "colorScheme": "Red"
     },
     {
       "comment": "Main Selector",
@@ -219,7 +219,7 @@
       "comment": "Unison",
       "moduleId": "5A505AF6-4E05-4680-BAFE-B880CE4E1BC2",
       "moduleSlot": -1,
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     }
   ]
 }
