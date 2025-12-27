@@ -216,7 +216,7 @@ FFMakeGlobalUniGUI(
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1 } });
   grid->Add(0, 0, topGrid);
   grid->Add(1, 0, bottomGrid);
-  return plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  return plugGUI->StoreComponent<FBMarginComponent>(true, true, false, true, grid);
 }
 
 bool
