@@ -2,6 +2,7 @@
 
 #include <firefly_base/gui/shared/FBAutoSize.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
+#include <functional>
 
 class FBPlugGUI;
 struct FBTheme;
@@ -50,6 +51,7 @@ public IFBThemingComponent
   int _moduleIndex = -1;
   juce::Component* _content = nullptr;
   FBRuntimeTopo const* const _topo;
+  std::function<bool(FBTheme const&)> _followModule = {};
 
 public:
   int ModuleSlot() const { return _moduleSlot; }
@@ -64,5 +66,6 @@ public:
 
   FBModuleComponent(FBRuntimeTopo const* topo);
   FBModuleComponent(FBRuntimeTopo const* topo, int moduleIndex, int moduleSlot, juce::Component* content);
+  FBModuleComponent(FBRuntimeTopo const* topo, int moduleIndex, int moduleSlot, std::function<bool(FBTheme const&)> const& followModule, juce::Component* content);
   void SetModuleContent(int moduleIndex, int moduleSlot, juce::Component* content);
 };
