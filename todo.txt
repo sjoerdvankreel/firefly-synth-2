@@ -51,6 +51,7 @@ TODOLIST for beta-2
 [x] theme the combo popouts (or all of them, filepicker etc)
 [ ] the unison defaults are now borked, convert or accept breaking change
 [ ] themes as folder
+[ ] FF2 in the header
 [ ] new screenshots
 [ ] note to check the logs when borked
 [ ] check the todos
