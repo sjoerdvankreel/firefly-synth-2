@@ -238,7 +238,7 @@ FBLookAndFeel::positionComboBoxText(
 void
 FBLookAndFeel::fillTextEditorBackground(
   Graphics& g, int width, int /*height*/, TextEditor& te)
-{
+{ 
   FBColorScheme const& scheme = FindColorSchemeFor(te);
   g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f);
@@ -253,8 +253,27 @@ FBLookAndFeel::drawTextEditorOutline(
 }
 
 void 
+FBLookAndFeel::drawAlertBox(Graphics& g, AlertWindow& alert,
+  const Rectangle<int>& /*textArea*/, TextLayout& textLayout)
+{
+  auto cornerSize = 2.0f;
+  auto const& scheme = FindColorSchemeFor(alert);
+  g.setColour(Colours::red);
+  g.drawRoundedRectangle(alert.getLocalBounds().toFloat(), cornerSize, 2.0f);
+
+  auto bounds = alert.getLocalBounds().reduced(1);
+  g.reduceClipRegion(bounds);
+  g.setColour(scheme.alertWindowPrimary);
+  g.fillRoundedRectangle(bounds.toFloat(), cornerSize);
+  g.setColour(Colours::green);
+  Rectangle<int> alertBounds(bounds.getX(), 30,
+    bounds.getWidth(), bounds.getHeight() - getAlertWindowButtonHeight() - 20);
+  textLayout.draw(g, alertBounds.toFloat());
+}
+
+void 
 FBLookAndFeel::drawPopupMenuBackgroundWithOptions(
-  juce::Graphics& g,
+  Graphics& g,
   int width, int height,
   const PopupMenu::Options& options)
 {

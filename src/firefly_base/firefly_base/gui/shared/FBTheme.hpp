@@ -27,6 +27,7 @@ struct FBColorScheme
   juce::Colour paramSecondary = {};
   juce::Colour paramHighlight = {};
   juce::Colour paramBackground = {};
+  juce::Colour alertWindowPrimary = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme);
 };
 

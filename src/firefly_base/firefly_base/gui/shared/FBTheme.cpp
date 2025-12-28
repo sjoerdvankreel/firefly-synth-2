@@ -224,6 +224,10 @@ ParseDefaultColorScheme(
     return false;
   result.background = Colour::fromString(obj->getProperty("background").toString());
 
+  if (!RequireStringProperty(obj, "alertWindowPrimary"))
+    return false;
+  result.alertWindowPrimary = Colour::fromString(obj->getProperty("alertWindowPrimary").toString());
+
   if (!RequireStringProperty(obj, "meterFill"))
     return false;
   result.meterFill = Colour::fromString(obj->getProperty("meterFill").toString());
@@ -305,6 +309,10 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "background", present))
     return false;
   result.background = present ? Colour::fromString(obj->getProperty("background").toString()) : defaultScheme.background;
+
+  if (!OptionalStringProperty(obj, "alertWindowPrimary", present))
+    return false;
+  result.alertWindowPrimary = present ? Colour::fromString(obj->getProperty("alertWindowPrimary").toString()) : defaultScheme.alertWindowPrimary;
 
   if (!OptionalStringProperty(obj, "meterFill", present))
     return false;

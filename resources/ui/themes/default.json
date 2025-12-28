@@ -18,7 +18,8 @@
     "sectionBackground": "FF282828",
     "paramSecondary": "FF505050",
     "paramHighlight": "80FFFFFF",
-    "paramBackground": "FF181818"     
+    "paramBackground": "FF181818",
+    "alertWindowPrimary": "FFFA5F55"
   },
   "colorSchemes_comment": "Define color schemes to be referenced by modules, parameters, and non-module related component colors.",
   "colorSchemes": {

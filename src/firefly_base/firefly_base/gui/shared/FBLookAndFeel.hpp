@@ -58,6 +58,9 @@ public:
   void drawTextEditorOutline(
     juce::Graphics& g, int width, int height, juce::TextEditor& te) override;
 
+  void drawAlertBox(juce::Graphics& g, juce::AlertWindow& alert,
+    const juce::Rectangle<int>& textArea, juce::TextLayout& textLayout) override;
+
   void drawPopupMenuBackgroundWithOptions(
     juce::Graphics& g, 
     int width, int height, 
