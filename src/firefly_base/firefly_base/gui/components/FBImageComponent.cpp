@@ -14,9 +14,16 @@ _width(width),
 _resourceName(resourceName)
 {
   _image = std::make_unique<ImageComponent>();
-  String path((FBGetResourcesFolderPath() / "ui" / resourceName).string());
-  _image->setImage(ImageCache::getFromFile(path), placement);
+  _image->setImage(ImageCache::getFromFile(String(GetCurrentImagePath())), placement);
   addAndMakeVisible(_image.get());
+}
+
+std::string 
+FBImageComponent::GetCurrentImagePath() const
+{
+  auto folderName = FBGetLookAndFeel()->Theme().folderName;
+  String path((FBGetResourcesFolderPath() / "ui" / "themes" / folderName / _resourceName).string());
+  return path.toStdString();
 }
 
 void 

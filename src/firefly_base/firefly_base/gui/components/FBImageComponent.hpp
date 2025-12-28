@@ -16,6 +16,8 @@ public IFBHorizontalAutoSize
   std::string const _resourceName;
   std::unique_ptr<juce::ImageComponent> _image = {};
 
+  std::string GetCurrentImagePath() const;
+
 public:
   FBImageComponent(
     int width,
