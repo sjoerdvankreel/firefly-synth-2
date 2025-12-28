@@ -379,6 +379,10 @@ void
 FBLookAndFeel::drawLabel(
   Graphics& g, Label& label)
 {
+  // skip the accessible message label
+  if (label.findParentComponentOfClass<AlertWindow>())
+    return;
+
   bool isCombo = false;
   ComboBox* cb = nullptr;
   bool hasBackground = false;
