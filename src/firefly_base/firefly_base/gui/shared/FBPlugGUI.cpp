@@ -278,7 +278,7 @@ FBPlugGUI::ShowMenuForGUIParam(int index)
       GUIParamNormalizedChanged(index, normalized);
     }
   };
-  auto* control = &dynamic_cast<Component&>(*GetControlForAudioParamIndex(index, 0));
+  auto* control = &dynamic_cast<Component&>(*GetControlForGUIParamIndex(index));
   ShowPopupMenuFor(control, *menu, clicked);
 }
 
