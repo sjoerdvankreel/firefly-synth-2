@@ -1,6 +1,6 @@
 {
-  "name": "Default",
-  "graphSchemeFollowsModule": false,
+  "name": "Default2",
+  "graphSchemeFollowsModule": true,
   "unisonSchemeFollowsModule": true,
   "defaultColorScheme_comment": "Fallback scheme, any other scheme can override individual settings.",
   "defaultColorScheme": {

@@ -585,12 +585,16 @@ LoadThemeJsons()
     if (std::filesystem::is_directory(i.path()))
     {
       auto themeFile = i.path() / "theme.json";
-      if (std::filesystem::is_regular_file(themeFile))
+      if (!std::filesystem::is_regular_file(themeFile))
+      {
+        FB_LOG_ERROR(i.path().string() + " does not contain theme.json.");
+      }
+      else 
       {
         File file(themeFile.string());
         if (!file.exists())
-        {
-          FB_LOG_ERROR(i.path().string() + " does not contain theme.json");
+        { 
+          FB_LOG_ERROR(i.path().string() + " does not contain theme.json.");
         }
         else 
         { 
