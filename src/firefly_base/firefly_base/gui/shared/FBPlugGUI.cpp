@@ -512,7 +512,7 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
     if (id == 5) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
         AlertWindow::showMessageBoxAsync(
-          MessageBoxIconType::InfoIcon,
+          MessageBoxIconType::NoIcon,
           "Warning",
           "No valid patch data found on clipboard.");
     }  
@@ -601,9 +601,9 @@ FBPlugGUI::LoadPatchFromFile()
     auto text = file.loadFileAsString().toStdString();
     if(!LoadPatchFromText("Load Patch", file.getFileNameWithoutExtension().toStdString(), text))
       AlertWindow::showMessageBoxAsync(
-        MessageBoxIconType::WarningIcon,
+        MessageBoxIconType::NoIcon,
         "Error",
-        "Failed to load patch. See log for details: " + FBGetLogPath(HostContext()->Topo()->static_->meta).string() + ".");
+        "Failed to load patch. See log for details.");
   });
 }
 
@@ -635,9 +635,9 @@ FBPlugGUI::MakePresetMenu(
         auto text = juceFile.loadFileAsString().toStdString();
         if (!LoadPatchFromText("Load Preset", juceFile.getFileNameWithoutExtension().toStdString(), text))
           AlertWindow::showMessageBoxAsync(
-            MessageBoxIconType::WarningIcon,
+            MessageBoxIconType::NoIcon,
             "Error",
-            "Failed to load preset. See log for details: " + FBGetLogPath(HostContext()->Topo()->static_->meta).string() + ".");
+            "Failed to load preset. See log for details.");
       }
     });
   for (int i = 0; i < folder->folders.size(); i++)
