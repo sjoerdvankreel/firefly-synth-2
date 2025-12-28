@@ -97,7 +97,7 @@ MakeGlobalUniVoices(
   grid->MarkSection({ { 0, 0, }, { 1, 3 } }, FBGridSectionMark::BackgroundAndAlternate);
   return grid;
 }
-
+ 
 static Component*
 MakeGlobalUniInit(
   FBPlugGUI* plugGUI)

@@ -45,10 +45,11 @@ TODOLIST for beta-2
 [x] longer comboboxes
 [x] modulecomponent everywhere
 [x] unison dropdowns popouts not good
+[x] option track module colors in unison or not
+[x] NOT do greyscale default
+[ ] the unison defaults are now borked, convert or accept breaking change
 [ ] themes as folder
 [ ] new screenshots
-[ ] option track module colors in unison or not
-[ ] NOT do greyscale default
 [ ] note to check the logs when borked
 [ ] check the todos
 [ ] check the findcolours
