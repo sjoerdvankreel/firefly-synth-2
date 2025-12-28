@@ -237,25 +237,13 @@ FBLookAndFeel::positionComboBoxText(
 
 void
 FBLookAndFeel::fillTextEditorBackground(
-  Graphics& g, int width, int height, TextEditor& te)
+  Graphics& g, int width, int /*height*/, TextEditor& te)
 {
   FBColorScheme const& scheme = FindColorSchemeFor(te);
-
-  // todo the alerts
-  if (dynamic_cast<AlertWindow*>(te.getParentComponent()) != nullptr)
-  {
-    g.setColour(te.findColour(TextEditor::backgroundColourId));
-    g.fillRect(0, 0, width, height);
-    g.setColour(te.findColour(TextEditor::outlineColourId));
-    g.drawHorizontalLine(height - 1, 0.0f, static_cast<float> (width));
-  }
-  else
-  {
-    g.setColour(scheme.paramBackground);
-    g.fillRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f);
-    g.setColour(scheme.primary);
-    g.drawRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f, 1.0f);
-  }
+  g.setColour(scheme.paramBackground);
+  g.fillRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f);
+  g.setColour(scheme.primary);
+  g.drawRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f, 1.0f);
 }
 
 void 
