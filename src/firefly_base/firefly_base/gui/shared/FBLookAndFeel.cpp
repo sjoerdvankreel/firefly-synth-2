@@ -187,6 +187,14 @@ FBLookAndFeel::DrawTabButtonPart(
   textLayout.draw(g, Rectangle<float>(length, depth));
 }
 
+void 
+FBLookAndFeel::SetTheme(FBTheme const& theme) 
+{ 
+  _theme = FBTheme(theme); 
+  setColour(AlertWindow::ColourIds::textColourId, theme.defaultColorScheme.alertWindowPrimary);
+  setColour(AlertWindow::ColourIds::backgroundColourId, theme.defaultColorScheme.sectionBackground);
+}
+
 BorderSize<int> 
 FBLookAndFeel::getLabelBorderSize(
   Label&)
@@ -250,25 +258,6 @@ void
 FBLookAndFeel::drawTextEditorOutline(
   Graphics&, int, int, TextEditor&)
 {
-}
-
-void 
-FBLookAndFeel::drawAlertBox(Graphics& g, AlertWindow& alert,
-  const Rectangle<int>& /*textArea*/, TextLayout& textLayout)
-{
-  auto cornerSize = 2.0f;
-  auto const& scheme = FindColorSchemeFor(alert);
-  g.setColour(Colours::red);
-  g.drawRoundedRectangle(alert.getLocalBounds().toFloat(), cornerSize, 2.0f);
-
-  auto bounds = alert.getLocalBounds().reduced(1);
-  g.reduceClipRegion(bounds);
-  g.setColour(scheme.alertWindowPrimary);
-  g.fillRoundedRectangle(bounds.toFloat(), cornerSize);
-  g.setColour(Colours::green);
-  Rectangle<int> alertBounds(bounds.getX(), 30,
-    bounds.getWidth(), bounds.getHeight() - getAlertWindowButtonHeight() - 20);
-  textLayout.draw(g, alertBounds.toFloat());
 }
 
 void 

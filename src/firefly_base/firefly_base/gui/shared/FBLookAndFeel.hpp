@@ -34,8 +34,8 @@ public:
   FBColorScheme const& FindColorSchemeFor(
     juce::Component const& c) const;
 
+  void SetTheme(FBTheme const& theme);
   FBTheme const& Theme() const { return _theme; }
-  void SetTheme(FBTheme const& theme) { _theme = FBTheme(theme); }
 
   juce::BorderSize<int> getLabelBorderSize(
     juce::Label&) override;
@@ -57,9 +57,6 @@ public:
 
   void drawTextEditorOutline(
     juce::Graphics& g, int width, int height, juce::TextEditor& te) override;
-
-  void drawAlertBox(juce::Graphics& g, juce::AlertWindow& alert,
-    const juce::Rectangle<int>& textArea, juce::TextLayout& textLayout) override;
 
   void drawPopupMenuBackgroundWithOptions(
     juce::Graphics& g, 
