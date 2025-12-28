@@ -58,8 +58,9 @@ TODOLIST for beta-2
 [x] check the todos
 [x] hunt down all juce::colour and 0xFFBLA and colourid
 [x] FF2 in the header
-[ ] with-track-graph scheme
-[ ] themes as folder
+[x] with-track-graph scheme
+[x] themes as folder
+[ ] test alles
 [ ] run a debug build
 [ ] new screenshots
 [ ] note to check the logs when borked
