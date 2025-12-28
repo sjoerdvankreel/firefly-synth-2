@@ -29,6 +29,7 @@ struct FBModuleColorsJson
 struct FBThemeJson
 {
   std::string name = {};
+  std::string folderName = {};
   bool graphSchemeFollowsModule = {};
   bool unisonSchemeFollowsModule = {};
   FBColorScheme defaultColorScheme = {};
@@ -610,7 +611,10 @@ LoadThemeJsons()
                 break;
               }
             if (!foundName)
+            {
+              themeJson.folderName = file.getParentDirectory().getFileName().toStdString();
               result.push_back(themeJson);
+            }
           }
           FB_LOG_INFO("Loaded theme '" + themeFile.string() + "'.");
         }
@@ -702,6 +706,7 @@ MakeTheme(
 {
   theme = {};  
   theme.name = themeJson.name;
+  theme.folderName = themeJson.folderName;
   theme.colorSchemes = themeJson.colorSchemes;
   theme.componentColors = themeJson.componentColors;
   theme.graphSchemeFollowsModule = themeJson.graphSchemeFollowsModule;

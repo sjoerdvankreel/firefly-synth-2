@@ -1,4 +1,6 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBTheme.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBImageComponent.hpp>
 
 using namespace juce;
@@ -8,7 +10,8 @@ FBImageComponent(
   int width,
   std::string const& resourceName, 
   juce::RectanglePlacement placement):
-_width(width)
+_width(width),
+_resourceName(resourceName)
 {
   _image = std::make_unique<ImageComponent>();
   String path((FBGetResourcesFolderPath() / "ui" / resourceName).string());

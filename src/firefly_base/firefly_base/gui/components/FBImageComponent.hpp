@@ -13,6 +13,7 @@ public juce::Component,
 public IFBHorizontalAutoSize
 {
   int const _width;
+  std::string const _resourceName;
   std::unique_ptr<juce::ImageComponent> _image = {};
 
 public:
