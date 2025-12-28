@@ -12,10 +12,10 @@ enum class FFGlobalUniMode { Off, Manual, AutoLinear, AutoExp };
 
 enum class FFGlobalUniTarget {
   VoiceCoarse, VoiceFine, VMixAmp, VMixBal,
-  OscGain, OscPan, OscCoarse, OscFine, OscPhaseOffset,
   LFORate, LFOMin, LFOMax, LFOSkewAX, LFOSkewAY, LFOPhaseOffset,
-  VFXParamA, VFXParamB, VFXParamC, VFXParamD,
   EnvSlope, EnvStretch,
+  OscGain, OscPan, OscCoarse, OscFine, OscPhaseOffset,
+  VFXParamA, VFXParamB, VFXParamC, VFXParamD,
   EchoExtend, EchoFade, 
   EchoTapsMix, EchoTapDelay, EchoTapBal, EchoTapLPF, EchoTapHPF,
   EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt, EchoFdbkLPF, EchoFdbkHPF,
@@ -36,10 +36,10 @@ enum class FFGlobalUniParam {
   Mode, OpType, AutoSpread, AutoFirst = AutoSpread, AutoSkew, AutoRand, AutoRandSeed, AutoRandFree, AutoLast = AutoRandFree,
   // by voice dimension (need different control types per param like bipolar yes/no)
   ManualVoiceCoarse, ManualFirst = ManualVoiceCoarse, ManualVoiceFine, ManualVMixAmp, ManualVMixBal,
-  ManualOscGain, ManualOscPan, ManualOscCoarse, ManualOscFine, ManualOscPhaseOffset,
   ManualLFORate, ManualLFOMin, ManualLFOMax, ManualLFOSkewAX, ManualLFOSkewAY, ManualLFOPhaseOffset,
-  ManualVFXParamA, ManualVFXParamB, ManualVFXParamC, ManualVFXParamD,
   ManualEnvSlope, ManualEnvStretch,
+  ManualOscGain, ManualOscPan, ManualOscCoarse, ManualOscFine, ManualOscPhaseOffset,
+  ManualVFXParamA, ManualVFXParamB, ManualVFXParamC, ManualVFXParamD,
   ManualEchoExtend, ManualEchoFade,
   ManualEchoTapsMix, ManualEchoTapDelay, ManualEchoTapBal, ManualEchoTapLPF, ManualEchoTapHPF,
   ManualEchoFdbkDelay, ManualEchoFdbkMix, ManualEchoFdbkAmt, ManualEchoFdbkLPF, ManualEchoFdbkHPF,
