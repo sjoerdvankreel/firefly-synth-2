@@ -593,7 +593,7 @@ LoadThemeJsons()
       {
         File file(themeFile.string());
         if (!file.exists())
-        { 
+        {  
           FB_LOG_ERROR(i.path().string() + " does not contain theme.json.");
         }
         else 

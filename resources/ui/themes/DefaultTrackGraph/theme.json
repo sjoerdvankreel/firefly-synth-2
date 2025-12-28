@@ -1,5 +1,5 @@
 {
-  "name": "Default2",
+  "name": "DefaultTrackGraph",
   "graphSchemeFollowsModule": true,
   "unisonSchemeFollowsModule": true,
   "defaultColorScheme_comment": "Fallback scheme, any other scheme can override individual settings.",
