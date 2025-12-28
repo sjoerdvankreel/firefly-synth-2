@@ -52,18 +52,18 @@ TODOLIST for beta-2
 [x] the unison defaults are now borked, convert or accept breaking change
 [x] top level is borked => dropdowns for gui params had wrong target component
 [x] do the alert windows
+[x] check the alert windows
+[x] check the findcolours
+[x] check the top rows margins
+[x] check the todos
+[x] hunt down all juce::colour and 0xFFBLA and colourid
+[ ] run a debug build
 [ ] with-track-graph scheme
 [ ] themes as folder
 [ ] FF2 in the header
 [ ] new screenshots
 [ ] note to check the logs when borked
-[ ] check the todos
-[ ] check the findcolours
-[ ] check the top rows margins
-[ ] check the alert windows
 [ ] test lin and mac
-[ ] run a debug build
-[ ] hunt down all juce::colour and 0xFFBLA and colourid
 [ ] explain theme in manual + dump topo option
 
 TODOLIST for beta-next
