@@ -321,10 +321,10 @@ FBLookAndFeel::drawPopupMenuItem(
   Colour selectedColor = textColourToUse != nullptr ? *textColourToUse : scheme.text;
 
   if (isSeparator)
-  {
+  { 
     auto r = area.reduced(5, 0);
     r.removeFromTop(roundToInt(((float)r.getHeight() * 0.5f) - 0.5f));
-    g.setColour(selectedColor);
+    g.setColour(selectedColor.darker(1.0f));
     g.fillRect(r.removeFromTop(1));
     return;
   }

@@ -512,7 +512,7 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
           MessageBoxIconType::InfoIcon,
           "Warning",
           "No valid patch data found on clipboard.");
-    }
+    }  
   });
 }
 

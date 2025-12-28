@@ -50,6 +50,8 @@ TODOLIST for beta-2
 [x] theme and prettify the gui
 [x] theme the combo popouts (or all of them, filepicker etc)
 [x] the unison defaults are now borked, convert or accept breaking change
+[ ] do the alert windows
+[ ] top level is borked
 [ ] with-track-graph scheme
 [ ] themes as folder
 [ ] FF2 in the header
