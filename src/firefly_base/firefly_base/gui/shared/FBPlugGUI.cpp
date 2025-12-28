@@ -61,6 +61,8 @@ FBPlugGUI::SwitchTheme(std::string const& themeName)
 {
   HostContext()->SetThemeName(themeName);
   FBGetLookAndFeel()->SetTheme(GetTheme());
+  for (int i = 0; i < _themeListeners.size(); i++)
+    _themeListeners[i]->ThemeChanged();
   repaint();
 }
 
@@ -103,6 +105,22 @@ FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double value)
   AudioParamNormalizedChanged(index);
   for (int i = 0; i < _paramListeners.size(); i++)
     _paramListeners[i]->AudioParamChanged(index, value, true);
+}
+
+void
+FBPlugGUI::AddThemeListener(IFBThemeListener* listener)
+{
+  auto iter = std::find(_themeListeners.begin(), _themeListeners.end(), listener);
+  FB_ASSERT(iter == _themeListeners.end());
+  _themeListeners.push_back(listener);
+}
+
+void
+FBPlugGUI::RemoveThemeListener(IFBThemeListener* listener)
+{
+  auto iter = std::find(_themeListeners.begin(), _themeListeners.end(), listener);
+  FB_ASSERT(iter != _themeListeners.end());
+  _themeListeners.erase(iter);
 }
 
 void

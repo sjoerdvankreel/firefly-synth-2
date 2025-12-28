@@ -6,16 +6,44 @@
 using namespace juce;
 
 FBImageComponent::
-FBImageComponent(
-  int width,
-  std::string const& resourceName, 
-  juce::RectanglePlacement placement):
-_width(width),
-_resourceName(resourceName)
+~FBImageComponent()
 {
+  _plugGUI->RemoveThemeListener(this);
+}
+
+FBImageComponent::
+FBImageComponent(
+  FBPlugGUI* plugGUI, int width,
+  std::string const& resourceName, 
+  RectanglePlacement placement):
+_plugGUI(plugGUI),
+_width(width),
+_resourceName(resourceName),
+_placement(placement)
+{
+  _plugGUI->AddThemeListener(this);
   _image = std::make_unique<ImageComponent>();
   _image->setImage(ImageCache::getFromFile(String(GetCurrentImagePath())), placement);
   addAndMakeVisible(_image.get());
+}
+
+void
+FBImageComponent::resized()
+{
+  _image->setBounds(getLocalBounds());
+  _image->resized();
+}
+
+int
+FBImageComponent::FixedWidth(int) const
+{
+  return _width;
+}
+
+void 
+FBImageComponent::ThemeChanged()
+{
+  _image->setImage(ImageCache::getFromFile(String(GetCurrentImagePath())), _placement);
 }
 
 std::string 
@@ -25,17 +53,4 @@ FBImageComponent::GetCurrentImagePath() const
   String path((FBGetResourcesFolderPath() / "ui" / "themes" / folderName / _resourceName).string());
   FB_ASSERT(juce::File(String(path)).existsAsFile());
   return path.toStdString();
-}
-
-void 
-FBImageComponent::resized()
-{
-  _image->setBounds(getLocalBounds());
-  _image->resized();
-}
-
-int 
-FBImageComponent::FixedWidth(int) const
-{
-  return _width;
 }

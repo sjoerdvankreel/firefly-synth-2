@@ -33,6 +33,13 @@ enum FBParamModulationBoundsSource
   DirectAccess = 0x4
 };
 
+class IFBThemeListener
+{
+public:
+  virtual ~IFBThemeListener() {}
+  virtual void ThemeChanged() = 0;
+};
+
 class IFBParamListener
 {
 public:
@@ -53,6 +60,7 @@ public IFBHostGUIContextListener
   FBContentComponent* _overlayContent = {};
   FBMarginComponent* _overlayInnerMargin = {};
   FBMarginComponent* _overlayOuterMargin = {};
+  std::vector<IFBThemeListener*> _themeListeners = {};
   std::vector<IFBParamListener*> _paramListeners = {};
 
   void ShowLogFolder();
@@ -95,7 +103,9 @@ public:
     int w, int h, bool vCenter,
     std::function<void()> init);
 
+  void AddThemeListener(IFBThemeListener* listener);
   void AddParamListener(IFBParamListener* listener);
+  void RemoveThemeListener(IFBThemeListener* listener);
   void RemoveParamListener(IFBParamListener* listener);
 
   std::string GetTooltipForGUIParam(int index) const;

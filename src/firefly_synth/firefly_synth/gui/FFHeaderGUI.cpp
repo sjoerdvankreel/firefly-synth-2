@@ -15,9 +15,9 @@ using namespace juce;
 Component*
 FFMakeHeaderGUI(FFPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
+  FB_LOG_ENTRY_EXIT(); 
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1, 1 } }, std::vector<int> { { 0, 0, 0 } });
-  grid->Add(0, 0, 2, 1, plugGUI->StoreComponent<FBImageComponent>(56, "header.png", RectanglePlacement::Flags::centred));
+  grid->Add(0, 0, 2, 1, plugGUI->StoreComponent<FBImageComponent>(plugGUI, 56, "header.png", RectanglePlacement::Flags::centred));
   bool isFX = plugGUI->HostContext()->Topo()->static_->meta.isFx;
   grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(isFX? FFPlugNameFX: FFPlugNameInst));
   auto format = plugGUI->HostContext()->Topo()->static_->meta.format;
