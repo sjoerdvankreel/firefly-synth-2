@@ -587,11 +587,10 @@ FBLookAndFeel::drawButtonText(
   Graphics& g, TextButton& button,
   bool /*shouldDrawButtonAsHighlighted*/, bool /*shouldDrawButtonAsDown*/)
 {
+  auto const& scheme = FindColorSchemeFor(button);
   Font font(getTextButtonFont(button, button.getHeight()));
   g.setFont(font);
-  g.setColour(button.findColour(button.getToggleState() ? TextButton::textColourOnId
-    : TextButton::textColourOffId)
-    .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
+  g.setColour(button.isEnabled() ? scheme.text : scheme.text.darker(scheme.dimDisabled));
 
   const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
   const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
