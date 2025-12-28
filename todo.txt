@@ -57,10 +57,10 @@ TODOLIST for beta-2
 [x] check the top rows margins
 [x] check the todos
 [x] hunt down all juce::colour and 0xFFBLA and colourid
-[ ] run a debug build
+[x] FF2 in the header
 [ ] with-track-graph scheme
 [ ] themes as folder
-[ ] FF2 in the header
+[ ] run a debug build
 [ ] new screenshots
 [ ] note to check the logs when borked
 [ ] test lin and mac
