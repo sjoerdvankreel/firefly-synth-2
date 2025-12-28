@@ -60,12 +60,12 @@ TODOLIST for beta-2
 [x] FF2 in the header
 [x] with-track-graph scheme
 [x] themes as folder
-[ ] test alles
 [ ] run a debug build
+[ ] test alles
 [ ] new screenshots
 [ ] note to check the logs when borked
-[ ] test lin and mac
 [ ] explain theme in manual + dump topo option
+[ ] test lin and mac
 
 TODOLIST for beta-next
 [ ] update docs for string HPF (see GitHub bug)
