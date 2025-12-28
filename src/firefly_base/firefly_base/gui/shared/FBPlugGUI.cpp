@@ -456,6 +456,9 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
     return;
   }
 
+  // just dont want it
+  if (dynamic_cast<TextEditor*>(event.eventComponent))
+    return;
   if (dynamic_cast<Button*>(event.eventComponent))
     return;
 

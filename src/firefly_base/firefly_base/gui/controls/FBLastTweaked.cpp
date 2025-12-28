@@ -93,6 +93,7 @@ _fixedWidth(fixedWidth), _plugGUI(plugGUI)
   addListener(this);
   setFont(FBGUIGetFont());
   setIndents(2, 8);
+  setPopupMenuEnabled(false);
 }
 
 int
