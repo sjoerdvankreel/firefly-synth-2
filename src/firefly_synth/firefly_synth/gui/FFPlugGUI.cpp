@@ -52,9 +52,10 @@ FBPlugGUI(hostContext),
 _graphRenderState(std::make_unique<FBGraphRenderState>(this))
 {
   FB_LOG_ENTRY_EXIT();
+  // needs to be before SetupGUI()
+  SwitchTheme(HostContext()->ThemeName());
   SetupGUI();
   InitAllDependencies();
-  SwitchTheme(HostContext()->ThemeName());
   resized();
 }
 
