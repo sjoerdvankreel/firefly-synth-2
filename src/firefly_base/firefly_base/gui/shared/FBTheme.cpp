@@ -581,13 +581,20 @@ LoadThemeJsons()
 
   std::vector<FBThemeJson> result = {};
   for (auto const& i : std::filesystem::directory_iterator(themeRoot))
-    if (std::filesystem::is_regular_file(i.path()))
-      if (i.path().has_extension() && i.path().extension().string() == ".json")
+  {
+    if (std::filesystem::is_directory(i.path()))
+    {
+      auto themeFile = i.path() / "theme.json";
+      if (std::filesystem::is_regular_file(themeFile))
       {
-        File file(String(i.path().string()));
-        if (file.exists())
+        File file(themeFile.string());
+        if (!file.exists())
         {
-          FB_LOG_INFO("Loading theme file '" + i.path().string() + "'.");
+          FB_LOG_ERROR(i.path().string() + " does not contain theme.json");
+        }
+        else 
+        { 
+          FB_LOG_INFO("Loading theme '" + themeFile.string() + "'.");
           FBThemeJson themeJson = {};
           if (ParseThemeJson(file.loadFileAsString(), themeJson))
           {
@@ -601,9 +608,11 @@ LoadThemeJsons()
             if (!foundName)
               result.push_back(themeJson);
           }
-          FB_LOG_INFO("Load theme file '" + i.path().string() + "'.");
+          FB_LOG_INFO("Loaded theme '" + themeFile.string() + "'.");
         }
       }
+    }
+  }
   return result;
 }
 

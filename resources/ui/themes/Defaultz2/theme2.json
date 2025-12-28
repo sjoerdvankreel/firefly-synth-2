@@ -1,0 +1,227 @@
+{
+  "name": "Default",
+  "graphSchemeFollowsModule": false,
+  "unisonSchemeFollowsModule": true,
+  "defaultColorScheme_comment": "Fallback scheme, any other scheme can override individual settings.",
+  "defaultColorScheme": {
+    "graphAlpha": 0.6,
+    "dimDisabled": 0.25,
+    "text": "FFEEEEEE",
+    "primary": "FFEEEEEE",
+    "background": "FF000000",
+    "meterFill": "FFA0A0A0",
+    "meterTrack": "FF505050",
+    "meterAlert": "FFFFFFFF",
+    "graphGrid": "FF404040",
+    "graphBackground": "FF181818",
+    "sectionBorder": "80FFFFFF",
+    "sectionBackground": "FF282828",
+    "paramSecondary": "FF505050",
+    "paramHighlight": "80FFFFFF",
+    "paramBackground": "FF181818",
+    "alertWindowPrimary": "FFFA5F55"
+  },
+  "colorSchemes_comment": "Define color schemes to be referenced by modules, parameters, and non-module related component colors.",
+  "colorSchemes": {
+    "Red": {
+      "comment": "Can override other stuff as well.",
+      "primary": "FFFA5F55",
+      "meterAlert": "FFFA5F55"
+    },
+    "Yellow": {
+      "primary": "FFFAB255",
+    },
+    "Blue": {
+      "primary": "FF559DFA",
+    },
+    "Green": {
+      "primary": "FF55FAB2",
+    }
+  },
+  "componentColors_comment": "Overrides the default scheme for anything not related to a module.",
+  "componentColors": [
+    {
+      "comment": "Patch",
+      "componentId": "878D9B5E-D11E-485D-8B57-5CAC8C8B612A",
+      "colorScheme": "Red"
+    },
+    {
+      "comment": "Graphs when not graphSchemeFollowsModule",
+      "componentId": "8DFD2F0E-A796-4570-B319-DCE1F0931DC9",
+      "colorScheme": "Yellow"
+    },
+    {
+      "comment": "Last Tweaked",
+      "componentId": "12937840-F39D-4041-986F-911005EC6C58",
+      "colorScheme": "Red"
+    },
+    {
+      "comment": "Unison Top",
+      "componentId": "6C2FD02F-F89C-491F-A7F8-4AD6EBB44A0E",
+      "colorScheme": "Yellow"
+    },
+    {
+      "comment": "Main Selector",
+      "componentId": "F81585F3-C753-4ED3-A0FC-5E517580EEF4",
+      "colorScheme": "Red"
+    },
+    {
+      "comment": "Matrix Graphs",
+      "componentId": "0A528CAB-69AC-40DC-914C-3919D10D1EA3",
+      "colorScheme": "Yellow"
+    }
+  ],
+  "moduleColors_comment": "Override the default scheme per module. Slot can be -1 to apply to all module slots or gte 0 to apply to individual slots.",
+  "moduleColors": [
+    {
+      "comment": "Output",
+      "moduleId": "6BDA100B-8E99-4108-B38C-E5C6418EAF4B",
+      "moduleSlot": -1,
+      "colorScheme": "Red"
+    },
+    {
+      "comment": "Other (Panic)",
+      "moduleId": "FE23D5B0-D854-4A62-BF43-7D583C17AAD3",
+      "moduleSlot": -1,
+      "colorScheme": "Red"
+    },
+    {
+      "comment": "GUI Settings",
+      "moduleId": "E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B",
+      "moduleSlot": -1,
+      "colorScheme": "Red",
+      "guiParamColorSchemes_comment": "Override the module scheme per GUI parameter. Slot can be -1 to apply to all parameter slots or gte 0 to apply to individual slots.",
+      "guiParamColorSchemes": [
+        {
+          "comment": "Show mod bounds",
+          "paramId": "193F0F95-D4D2-46A5-A978-C8740E0C08B3",
+          "paramSlot": -1,
+          "colorScheme": "Red"
+        }
+      ]
+    },
+    {
+      "comment": "Voice Module",
+      "moduleId": "AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8",
+      "moduleSlot": -1,
+      "colorScheme": "Yellow"
+    },
+    {
+      "comment": "Master",
+      "moduleId": "83AA98D4-9D12-4D61-81A4-4FAA935EDF5D",
+      "moduleSlot": -1,
+      "colorScheme": "Yellow"
+    },
+    {
+      "comment": "Settings",
+      "moduleId": "3689411E-F31C-4F8C-BE3D-6F87938A1A1B",
+      "moduleSlot": -1,
+      "colorScheme": "Yellow"
+    },
+    {
+      "comment": "VMix",
+      "moduleId": "5C91D5A0-3EC1-4142-935A-3FE83B60C04E",
+      "moduleSlot": -1,
+      "colorScheme": "Yellow",
+      "audioParamColorSchemes_comment": "Override the module scheme per audio parameter. Slot can be -1 to apply to all parameter slots or gte 0 to apply to individual slots.",
+      "audioParamColorSchemes": [
+        {
+          "comment": "Osci To Osci Mix",
+          "paramId": "3EF9D095-1F5E-45BD-8B9E-55EEC321AA43",
+          "paramSlot": -1,
+          "colorScheme": "Yellow"
+        },
+        {
+          "comment": "Osci To Osci Mix - override a single param slot",
+          "paramId": "3EF9D095-1F5E-45BD-8B9E-55EEC321AA43",
+          "paramSlot": 1,
+          "colorScheme": "Yellow"
+        }
+      ]
+    },
+    {
+      "comment": "GMix",
+      "moduleId": "09ED2CCE-3AC5-455E-935C-A684BEBC154D",
+      "moduleSlot": -1,
+      "colorScheme": "Yellow"
+    },
+    {
+      "comment": "Osci",
+      "moduleId": "73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6",
+      "moduleSlot": -1,
+      "colorScheme": "Green"
+    },
+    {
+      "comment": "Osci - override a single module slot",
+      "moduleId": "73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6",
+      "moduleSlot": 1,
+      "colorScheme": "Green"
+    },
+    {
+      "comment": "Osci Mod",
+      "moduleId": "546F9D74-670A-463D-80B0-B4BBD061DA88",
+      "moduleSlot": -1,
+      "colorScheme": "Green"
+    },
+    {
+      "comment": "VFX",
+      "moduleId": "V154051CE-66D9-41C8-B479-C52D1111C962",
+      "moduleSlot": -1,
+      "colorScheme": "Green"
+    },
+    {
+      "comment": "GFX",
+      "moduleId": "G154051CE-66D9-41C8-B479-C52D1111C962",
+      "moduleSlot": -1,
+      "colorScheme": "Green"
+    },
+    {
+      "comment": "VEcho",
+      "moduleId": "VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
+      "moduleSlot": -1,
+      "colorScheme": "Green"
+    },
+    {
+      "comment": "GEcho",
+      "moduleId": "GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
+      "moduleSlot": -1,
+      "colorScheme": "Green"
+    },
+    {
+      "comment": "VLFO",
+      "moduleId": "V6E9EC930-5391-41BB-9EDA-C9B79F3BE745",
+      "moduleSlot": -1,
+      "colorScheme": "Blue"
+    },
+    {
+      "comment": "GLFO",
+      "moduleId": "G6E9EC930-5391-41BB-9EDA-C9B79F3BE745",
+      "moduleSlot": -1,
+      "colorScheme": "Blue"
+    },
+    {
+      "comment": "Env",
+      "moduleId": "FC1DC75A-200C-4465-8CBE-0100E2C8FAF2",
+      "moduleSlot": -1,
+      "colorScheme": "Blue"
+    },
+    {
+      "comment": "VMatrix",
+      "moduleId": "V19758BF4-241B-4A59-A943-3AE7426C7CC9",
+      "moduleSlot": -1,
+      "colorScheme": "Green"
+    },
+    {
+      "comment": "GMatrix",
+      "moduleId": "G19758BF4-241B-4A59-A943-3AE7426C7CC9",
+      "moduleSlot": -1,
+      "colorScheme": "Blue"
+    },
+    {
+      "comment": "Unison",
+      "moduleId": "5A505AF6-4E05-4680-BAFE-B880CE4E1BC2",
+      "moduleSlot": -1,
+      "colorScheme": "Yellow"
+    }
+  ]
+}
