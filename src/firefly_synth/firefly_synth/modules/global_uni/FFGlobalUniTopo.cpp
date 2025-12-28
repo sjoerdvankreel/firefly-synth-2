@@ -206,6 +206,53 @@ FFGlobalUniTargetToString(FFGlobalUniTarget target)
   }
 }
 
+FFGlobalUniTarget
+FFGlobalUniTargetByGUIOrder(FFGlobalUniTargetGUIOrder order)
+{
+  switch (order)
+  {
+  case FFGlobalUniTargetGUIOrder::VoiceCoarse: return FFGlobalUniTarget::VoiceCoarse;
+  case FFGlobalUniTargetGUIOrder::VoiceFine: return FFGlobalUniTarget::VoiceFine;
+  case FFGlobalUniTargetGUIOrder::VMixAmp: return FFGlobalUniTarget::VMixAmp;
+  case FFGlobalUniTargetGUIOrder::VMixBal: return FFGlobalUniTarget::VMixBal;
+  case FFGlobalUniTargetGUIOrder::OscGain: return FFGlobalUniTarget::OscGain;
+  case FFGlobalUniTargetGUIOrder::OscPan: return FFGlobalUniTarget::OscPan;
+  case FFGlobalUniTargetGUIOrder::OscCoarse: return FFGlobalUniTarget::OscCoarse;
+  case FFGlobalUniTargetGUIOrder::OscFine: return FFGlobalUniTarget::OscFine;
+  case FFGlobalUniTargetGUIOrder::OscPhaseOffset: return FFGlobalUniTarget::OscPhaseOffset;
+  case FFGlobalUniTargetGUIOrder::LFORate: return FFGlobalUniTarget::LFORate;
+  case FFGlobalUniTargetGUIOrder::LFOMin: return FFGlobalUniTarget::LFOMin;
+  case FFGlobalUniTargetGUIOrder::LFOMax: return FFGlobalUniTarget::LFOMax;
+  case FFGlobalUniTargetGUIOrder::LFOSkewAX: return FFGlobalUniTarget::LFOSkewAX;
+  case FFGlobalUniTargetGUIOrder::LFOSkewAY: return FFGlobalUniTarget::LFOSkewAY;
+  case FFGlobalUniTargetGUIOrder::LFOPhaseOffset: return FFGlobalUniTarget::LFOPhaseOffset;
+  case FFGlobalUniTargetGUIOrder::EnvSlope: return FFGlobalUniTarget::EnvSlope;
+  case FFGlobalUniTargetGUIOrder::EnvStretch: return FFGlobalUniTarget::EnvStretch;
+  case FFGlobalUniTargetGUIOrder::VFXParamA: return FFGlobalUniTarget::VFXParamA;
+  case FFGlobalUniTargetGUIOrder::VFXParamB: return FFGlobalUniTarget::VFXParamB;
+  case FFGlobalUniTargetGUIOrder::VFXParamC: return FFGlobalUniTarget::VFXParamC;
+  case FFGlobalUniTargetGUIOrder::VFXParamD: return FFGlobalUniTarget::VFXParamD;
+  case FFGlobalUniTargetGUIOrder::EchoExtend: return FFGlobalUniTarget::EchoExtend;
+  case FFGlobalUniTargetGUIOrder::EchoFade: return FFGlobalUniTarget::EchoFade;
+  case FFGlobalUniTargetGUIOrder::EchoTapsMix: return FFGlobalUniTarget::EchoTapsMix;
+  case FFGlobalUniTargetGUIOrder::EchoTapDelay: return FFGlobalUniTarget::EchoTapDelay;
+  case FFGlobalUniTargetGUIOrder::EchoTapBal: return FFGlobalUniTarget::EchoTapBal;
+  case FFGlobalUniTargetGUIOrder::EchoTapLPF: return FFGlobalUniTarget::EchoTapLPF;
+  case FFGlobalUniTargetGUIOrder::EchoTapHPF: return FFGlobalUniTarget::EchoTapHPF;
+  case FFGlobalUniTargetGUIOrder::EchoFdbkDelay: return FFGlobalUniTarget::EchoFdbkDelay;
+  case FFGlobalUniTargetGUIOrder::EchoFdbkMix: return FFGlobalUniTarget::EchoFdbkMix;
+  case FFGlobalUniTargetGUIOrder::EchoFdbkAmt: return FFGlobalUniTarget::EchoFdbkAmt;
+  case FFGlobalUniTargetGUIOrder::EchoFdbkLPF: return FFGlobalUniTarget::EchoFdbkLPF;
+  case FFGlobalUniTargetGUIOrder::EchoFdbkHPF: return FFGlobalUniTarget::EchoFdbkHPF;
+  case FFGlobalUniTargetGUIOrder::EchoReverbMix: return FFGlobalUniTarget::EchoReverbMix;
+  case FFGlobalUniTargetGUIOrder::EchoReverbSize: return FFGlobalUniTarget::EchoReverbSize;
+  case FFGlobalUniTargetGUIOrder::EchoReverbDamp: return FFGlobalUniTarget::EchoReverbDamp;
+  case FFGlobalUniTargetGUIOrder::EchoReverbLPF: return FFGlobalUniTarget::EchoReverbLPF;
+  case FFGlobalUniTargetGUIOrder::EchoReverbHPF: return FFGlobalUniTarget::EchoReverbHPF;
+  default: FB_ASSERT(false); return {};
+  }
+}
+
 static std::string
 ManualSlotFormatter(FFGlobalUniTarget target, int slot)
 {

@@ -158,7 +158,7 @@ MakeGlobalUniContent(
   for (int r = 0; r < uniTargetCount / 2; r++)
   {
     int guiRow = r + 1;
-    int targetIndex = offset + r;
+    int targetIndex = (int)FFGlobalUniTargetByGUIOrder((FFGlobalUniTargetGUIOrder)(offset + r));
     auto targetName = FFGlobalUniTargetToString((FFGlobalUniTarget)targetIndex);
     grid->Add(guiRow, 0, plugGUI->StoreComponent<FBModuleComponent>(
       plugGUI->HostContext()->Topo(),

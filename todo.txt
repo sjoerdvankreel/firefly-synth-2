@@ -49,7 +49,7 @@ TODOLIST for beta-2
 [x] NOT do greyscale default
 [x] theme and prettify the gui
 [x] theme the combo popouts (or all of them, filepicker etc)
-[ ] the unison defaults are now borked, convert or accept breaking change
+[x] the unison defaults are now borked, convert or accept breaking change
 [ ] themes as folder
 [ ] FF2 in the header
 [ ] new screenshots

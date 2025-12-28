@@ -10,6 +10,8 @@ inline int constexpr FFGlobalUniMaxSeed = 255;
 
 enum class FFGlobalUniMode { Off, Manual, AutoLinear, AutoExp };
 
+// Don't reorder, that's a breaking change.
+// Rely on below FFGlobalUniTargetGUIOrder instead.
 enum class FFGlobalUniTarget {
   VoiceCoarse, VoiceFine, VMixAmp, VMixBal,
   OscGain, OscPan, OscCoarse, OscFine, OscPhaseOffset,
@@ -21,8 +23,22 @@ enum class FFGlobalUniTarget {
   EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt, EchoFdbkLPF, EchoFdbkHPF,
   EchoReverbMix, EchoReverbSize, EchoReverbDamp, EchoReverbLPF, EchoReverbHPF, Count };
 
+enum class FFGlobalUniTargetGUIOrder {
+  VoiceCoarse, VoiceFine, VMixAmp, VMixBal,
+  LFORate, LFOMin, LFOMax, LFOSkewAX, LFOSkewAY, LFOPhaseOffset,
+  EnvSlope, EnvStretch,
+  OscGain, OscPan, OscCoarse, OscFine, OscPhaseOffset,
+  VFXParamA, VFXParamB, VFXParamC, VFXParamD,
+  EchoExtend, EchoFade,
+  EchoTapsMix, EchoTapDelay, EchoTapBal, EchoTapLPF, EchoTapHPF,
+  EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt, EchoFdbkLPF, EchoFdbkHPF,
+  EchoReverbMix, EchoReverbSize, EchoReverbDamp, EchoReverbLPF, EchoReverbHPF, Count
+};
+
 FFModuleType
 FFGlobalUniTargetToModule(FFGlobalUniTarget target);
+FFGlobalUniTarget
+FFGlobalUniTargetByGUIOrder(FFGlobalUniTargetGUIOrder order);
 std::string
 FFGlobalUniTargetToString(FFGlobalUniTarget target);
 float
