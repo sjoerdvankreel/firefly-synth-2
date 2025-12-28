@@ -47,6 +47,8 @@ TODOLIST for beta-2
 [x] unison dropdowns popouts not good
 [x] option track module colors in unison or not
 [x] NOT do greyscale default
+[x] theme and prettify the gui
+[x] theme the combo popouts (or all of them, filepicker etc)
 [ ] the unison defaults are now borked, convert or accept breaking change
 [ ] themes as folder
 [ ] new screenshots
@@ -58,8 +60,6 @@ TODOLIST for beta-2
 [ ] test lin and mac
 [ ] run a debug build
 [ ] hunt down all juce::colour and 0xFFBLA and colourid
-[ ] theme and prettify the gui
-[ ] theme the combo popouts (or all of them, filepicker etc)
 [ ] explain theme in manual + dump topo option
 
 TODOLIST for beta-next
