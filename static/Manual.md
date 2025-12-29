@@ -336,6 +336,11 @@ Right-click to show the generic context menu and click "show log folder" to view
 This of course assumes you didn't get the theming in such a bad state that the gui won't display correctly at all.<br/>
 Otherwise, revert to last-known-good and work from there.
 
+The default themefile is reasonably well documented.<br/>
+It contains the internal identifiers of all modules and not-module related themeable sections.<br/>
+It also contains some examples of how to override parameters within a module, but it does not contain all parameter identifiers.<br/>
+See [theme.json](/resources/ui/themes/Default/theme.json).
+
 ## Top section
 Contains everything that is not directly related to generating audio.
 
