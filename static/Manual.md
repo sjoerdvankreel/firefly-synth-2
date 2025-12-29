@@ -363,7 +363,9 @@ If false, according to Graphs component colors.
 * unisonSchemeFollowsModule:<br/>
 If true, global unison parameters are painted according to their module colors.<br/>
 If false, according to Unison module colors.
-* defaultColorScheme: this is the fallback/default scheme. All colors are specified as ARGB hex.
+* defaultColorScheme:<br/>
+This is the fallback/default scheme.<br/>
+All colors are specified as ARGB hex.
   * graphAlpha: transparancy for filled graphs.
   * dimDisabled: dim factor for disabled parameters and other stuff.
   * text: this is the text color for labels etc.
