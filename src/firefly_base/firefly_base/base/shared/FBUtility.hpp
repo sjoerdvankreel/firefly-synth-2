@@ -113,3 +113,5 @@ std::filesystem::path
 FBGetUserPluginDataFolder(FBStaticTopoMeta const& meta);
 std::filesystem::path 
 FBGetResourcesFolderPath();
+std::filesystem::path
+FBGetPluginContentsFolderPath();

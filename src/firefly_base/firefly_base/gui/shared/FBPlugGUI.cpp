@@ -500,34 +500,38 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
 
   auto& undoState = HostContext()->UndoState();
   PopupMenu menu;
-  menu.addItem(1, "Show Log");
-  menu.addItem(2, "Show Manual");
-  menu.addItem(3, "Dump Topology");
+  menu.addItem(1, "Show Manual");
+  menu.addItem(2, "Dump Topology");
   menu.addSeparator();
-  menu.addItem(4, "Copy Patch");
-  menu.addItem(5, "Paste Patch");
+  menu.addItem(3, "Show Log Folder");
+  menu.addItem(4, "Show Plugin Folder");
   menu.addSeparator();
+  menu.addItem(5, "Copy Patch");
+  menu.addItem(6, "Paste Patch");
+  if (undoState.CanUndo() || undoState.CanRedo())
+    menu.addSeparator();
   if (undoState.CanUndo())
-    menu.addItem(6, "Undo " + undoState.UndoAction());
+    menu.addItem(7, "Undo " + undoState.UndoAction());
   if (undoState.CanRedo())
-    menu.addItem(7, "Redo " + undoState.RedoAction());
+    menu.addItem(8, "Redo " + undoState.RedoAction());
 
   PopupMenu::Options options;
   options = options.withMousePosition();
   options = options.withParentComponent(this);
   options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
   menu.showMenuAsync(options, [this](int id) {
-    if (id == 1) ShowLogFolder();
-    if (id == 3) DumpTopologyToFile();
-    if (id == 2) HostContext()->ShowOnlineManual();
-    if (id == 6) HostContext()->UndoState().Undo();
-    if (id == 7) HostContext()->UndoState().Redo(); 
-    if (id == 4) {
+    if (id == 1) HostContext()->ShowOnlineManual();
+    if (id == 2) DumpTopologyToFile();
+    if (id == 3) ShowLogFolder();
+    if (id == 4) ShowPluginFolder();
+    if (id == 7) HostContext()->UndoState().Undo();
+    if (id == 8) HostContext()->UndoState().Redo();
+    if (id == 5) {
       FBScalarStateContainer editState(*HostContext()->Topo());
       editState.CopyFrom(HostContext(), true);
       SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveEditStateToString(editState, true));
     }
-    if (id == 5) {
+    if (id == 6) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
         AlertWindow::showMessageBoxAsync(
           MessageBoxIconType::NoIcon,
@@ -730,6 +734,13 @@ void
 FBPlugGUI::ShowLogFolder()
 {
   auto path = FBGetLogPath(HostContext()->Topo()->static_->meta);
+  File(path.string()).revealToUser();
+}
+
+void
+FBPlugGUI::ShowPluginFolder()
+{
+  auto path = FBGetPluginContentsFolderPath();
   File(path.string()).revealToUser();
 }
 

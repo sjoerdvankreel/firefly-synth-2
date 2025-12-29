@@ -119,11 +119,17 @@ FBGetUserDataFolder()
 }
 
 std::filesystem::path
-FBGetResourcesFolderPath()
+FBGetPluginContentsFolderPath()
 {
   File selfJuce(File::getSpecialLocation(File::currentExecutableFile));
   std::filesystem::path selfPath(selfJuce.getFullPathName().toStdString());
-  return selfPath.parent_path().parent_path() / "Resources";
+  return selfPath.parent_path().parent_path();
+}
+
+std::filesystem::path
+FBGetResourcesFolderPath()
+{
+  return FBGetPluginContentsFolderPath() / "Resources";
 }
 
 std::vector<std::uint8_t>

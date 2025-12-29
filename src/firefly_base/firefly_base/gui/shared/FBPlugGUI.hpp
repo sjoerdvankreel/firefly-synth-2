@@ -64,6 +64,7 @@ public IFBHostGUIContextListener
   std::vector<IFBParamListener*> _paramListeners = {};
 
   void ShowLogFolder();
+  void ShowPluginFolder();
   void DumpTopologyToFile();
   bool LoadPatchFromText(
     std::string const& undoAction, 

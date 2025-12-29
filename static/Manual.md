@@ -301,7 +301,8 @@ For example filter frequency ranges from 20 to 20000 Hz, but a host automation e
 Right-click on some empty space to show the generic context menu.
 * Undo/redo options.
 * Show manual: shows this document.
-* Show log: open the folder containing the logfile.
+* Show log folder: open the directory containing the logfile.
+* Show plugin folder: open the plugin root folder (stores themes and presets alongside the plugin binary itself).
 * Copy/paste patch: allows copy/paste across plugin instances.
 * Dump topology: save a description of the plugins internals to a text file.<br/>
 This is primarily meant to help in creating theme files which rely on internal identifiers which are printed in this document.<br/>
@@ -319,7 +320,8 @@ Right-click on an audio parameter:
 * Host menu options: DAW specific but typically contains stuff like "add automation lane".
 
 ## Theming
-bluh
+FF2 is customizable by an external theme file.<br/>
+
 
 ## Top section
 Contains everything that is not directly related to generating audio.
