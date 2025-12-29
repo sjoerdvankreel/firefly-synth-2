@@ -66,6 +66,10 @@ TODOLIST for beta-2
 [ ] explain theme in manual + dump topo option
 [ ] note to check the logs when borked
 [ ] new screenshots
+Ardour 6.9.0~ds0
+"After Bach"
+(rev 6.9.0~ds0-1build1)
+Intel 64-bit
 
 TODOLIST for beta-next
 [ ] copy-paste patch not work on linux
