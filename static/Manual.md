@@ -347,6 +347,10 @@ It contains the internal identifiers of all modules and not-module related theme
 It also contains some examples of how to override parameters within a module, but it does not contain all parameter identifiers.<br/>
 For that, use the "dump topology" menu. Default theme: [theme.json](/resources/ui/themes/Default/theme.json).
 
+### Theme JSON structure
+
+bluh
+
 ## Top section
 Contains everything that is not directly related to generating audio.
 
