@@ -68,6 +68,7 @@ TODOLIST for beta-2
 [ ] new screenshots
 
 TODOLIST for beta-next
+[ ] copy-paste patch not work on linux
 [ ] order the themes by path in the gui
 [ ] rename demo to featuretest
 [ ] also brag about its faster
