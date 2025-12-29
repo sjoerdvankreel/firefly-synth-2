@@ -730,6 +730,11 @@ In particular the voice amplitude envelope.
 * X/Y: freeze (sample and hold) the signal in either the time or amplitude dimension.<br/>
 With color to full-on white noise and damping to zero this pretty much replicates the noise osci from infernal synth.
 
+A note about string excitation and bowed-strings:<br/>
+This works well for mid-range pitch, but once you start to play real high notes,<br/>
+the feedback noise level basically takes over.<br/>
+You can combat this by applying a keyboard-tracking high-pass filter.
+
 Filter controls:<br/>
 The plugin is set up such that the filter controls affect all of the initial excitation, <br/>
 the damping factor, and on the feedback path, the feedback factor and the re-excite amount.<br/>
