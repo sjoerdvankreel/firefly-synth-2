@@ -360,17 +360,17 @@ And these are the field details:
 * graphSchemeFollowsModule: if true, main graphs are painted according to their module colors. If false, according to Graphs component colors.
 * unisonSchemeFollowsModule: if true, global unison parameters are painted according to their module colors. If false, according to Unison module colors.
 * defaultColorScheme: this is the fallback/default scheme. All colors are specified as ARGB hex.
-** graphAlpha: transparancy for filled graphs.
-** dimDisabled: dim factor for disabled parameters and other stuff.
-** text: this is the text color for labels etc.
-** primary: what makes it stand out. Used for various things like graphs, buttons, combo texts, sliders etc.
-** background: background for the GUI as a whole and pop-up windows.
-** meterFill/meterTrack/meterAlert: for the meters in the output section.
-** graphGrid/graphBackground: only used for painting graphs (any of them, main graphs, MSEG, matrix and unison graphs).
-** sectionBorder/sectionBackground: mainly used for module sections, but other stuff as well.
-** paramSecondary/paramBackground: used for menu separators, check/comboboxes, slider tracks, and more.
-** paramHighlight: anything that needs highlighting. "Show mod bounds", "Engine Knob Visual" etc.
-** alertWindowPrimary: when a messagebox pops up.
+  * graphAlpha: transparancy for filled graphs.
+  * dimDisabled: dim factor for disabled parameters and other stuff.
+  * text: this is the text color for labels etc.
+  * primary: what makes it stand out. Used for various things like graphs, buttons, combo texts, sliders etc.
+  * background: background for the GUI as a whole and pop-up windows.
+  * meterFill/meterTrack/meterAlert: for the meters in the output section.
+  * graphGrid/graphBackground: only used for painting graphs (any of them, main graphs, MSEG, matrix and unison graphs).
+  * sectionBorder/sectionBackground: mainly used for module sections, but other stuff as well.
+  * paramSecondary/paramBackground: used for menu separators, check/comboboxes, slider tracks, and more.
+  * paramHighlight: anything that needs highlighting. "Show mod bounds", "Engine Knob Visual" etc.
+  * alertWindowPrimary: when a messagebox pops up.
 
 ## Top section
 Contains everything that is not directly related to generating audio.
