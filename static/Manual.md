@@ -345,7 +345,7 @@ right-click to show the generic context menu and click "dump topology".
 The default themefile is reasonably well documented.<br/>
 It contains the internal identifiers of all modules and not-module related themeable sections.<br/>
 It also contains some examples of how to override parameters within a module, but it does not contain all parameter identifiers.<br/>
-See [theme.json](/resources/ui/themes/Default/theme.json).
+For that, use the "dump topology" menu. Default theme: [theme.json](/resources/ui/themes/Default/theme.json).
 
 ## Top section
 Contains everything that is not directly related to generating audio.
