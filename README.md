@@ -9,7 +9,7 @@
 </table>
 
 # Nearly ready for V2
-Only needs theming and some presets.
+Only needs some presets.
 
 Read the [Manual](/static/Manual.md).<br/>
 Note: github has this nice feature where it will make a table-of-contents, click the outline (3 dashes) menu.<br/>
