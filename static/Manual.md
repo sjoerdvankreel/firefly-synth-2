@@ -320,8 +320,10 @@ Right-click on an audio parameter:
 * Host menu options: DAW specific but typically contains stuff like "add automation lane".
 
 ## Theming
-FF2 is customizable by an external theme file.<br/>
-TODO
+This section is only of interest if you want to customize theming.<br/>
+FF2 themes are folders containing a json file named theme.json and an image file named header.png.<br/>
+Right-click to show the generic context menu and click "show plugin folder" to open the plugin directory.<br/>
+Themes are in Contents/Resources/ui/themes.
 
 ## Top section
 Contains everything that is not directly related to generating audio.
