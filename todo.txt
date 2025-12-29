@@ -69,6 +69,8 @@ TODOLIST for beta-2
 
 TODOLIST for beta-next
 [ ] brag about superior visualization and note when it not works (ardour everywhere, Linux only reaper is good, clap always good, vst3 win/lin mostly good)
+[ ] also brag about the tuning
+[ ] just do the comparison
 [ ] update docs for string HPF (see GitHub bug)
 [ ] do more themes
 [ ] fix ardour save/load
