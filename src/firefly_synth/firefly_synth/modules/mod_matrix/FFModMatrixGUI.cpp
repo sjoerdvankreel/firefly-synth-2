@@ -24,9 +24,6 @@
 
 using namespace juce;
 
-// +5 for "V"/"G"/+/-/up/down
-static int const MatrixControlCount = 15;
-
 FFModMatrixParamListener::
 ~FFModMatrixParamListener()
 {
