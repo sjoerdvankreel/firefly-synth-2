@@ -65,7 +65,8 @@ TODOLIST for beta-2
 [x] test lin and mac
 [x] explain theme in manual + dump topo option
 [x] note to check the logs when borked
-[ ] new screenshots
+[x] new screenshots
+[ ] do the manual string filter thing
 Ardour 6.9.0~ds0
 "After Bach"
 (rev 6.9.0~ds0-1build1)
