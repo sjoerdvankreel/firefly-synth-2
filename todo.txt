@@ -11,7 +11,6 @@ Intel 64-bit
 [ ] brag about superior visualization and note when it not works (ardour everywhere, Linux only reaper is good, clap always good, vst3 win/lin mostly good)
 [ ] also brag about the tuning
 [ ] just do the comparison
-[ ] update docs for string HPF (see GitHub bug)
 [ ] do more themes
 [ ] fix ardour save/load
 [ ] credit rusto
@@ -19,7 +18,6 @@ Intel 64-bit
 [ ] featuretest scheme
 [ ] bg images in main tabs and header and maybe elsewhere
 [ ] not right-click-change horizontal sliders
-[ ] string low end bug?
 [ ] rename demo to feature test
 [ ] make some presets
 [ ] compare to ff1
@@ -43,9 +41,6 @@ recheck known issues
 add qtractor to the list
 dedicated distortion module
 do sidechain tests on new hosts
-PatchFromScratch video
-write the manual + note about disable everything unused for performance including unused matrix slots
-routing / order diagram
 make a percussion demo
 make porta lead demo
 make a tune before release
@@ -54,12 +49,8 @@ per-module presets
 separate midi, bpm, automation smoothing, auto should be global + per-param override
 autosoftclip
 string timbre should not react to samplerate/oversample
-fix todos
-todo document the thing a bit
 vst3 note expr + midi mpe
-explain processing order and modulation order including auto/external/internal
 take a look at the string samplerate bug again
 guni voice not pick up guni voice-start automation right away (reaper)
-param menu: set sliders to 10/20/25/50/75/100/150/200 whatever makes sense for the param
 split large matrix dropdowns
 do display disabled/impossible items different in the mod matrix
