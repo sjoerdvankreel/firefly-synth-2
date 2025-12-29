@@ -301,6 +301,7 @@ For example filter frequency ranges from 20 to 20000 Hz, but a host automation e
 Right-click on some empty space to show the generic context menu.
 * Undo/redo options.
 * Show manual: shows this document.
+* Show log: open the folder containing the logfile.
 * Copy/paste patch: allows copy/paste across plugin instances.
 * Dump topology: save a description of the plugins internals to a text file.<br/>
 This is primarily meant to help in creating theme files which rely on internal identifiers which are printed in this document.<br/>
