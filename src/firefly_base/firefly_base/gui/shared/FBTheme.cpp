@@ -707,7 +707,8 @@ MakeTheme(
   theme = {};  
   theme.name = themeJson.name;
   theme.folderName = themeJson.folderName;
-  theme.colorSchemes = themeJson.colorSchemes;
+  for (auto const& kv : themeJson.colorSchemes)
+    theme.colorSchemes[kv.first] = FBColorScheme(kv.second);
   theme.componentColors = themeJson.componentColors;
   theme.graphSchemeFollowsModule = themeJson.graphSchemeFollowsModule;
   theme.unisonSchemeFollowsModule = themeJson.unisonSchemeFollowsModule;
