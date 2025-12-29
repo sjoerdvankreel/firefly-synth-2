@@ -347,8 +347,15 @@ It contains the internal identifiers of all modules and not-module related theme
 It also contains some examples of how to override parameters within a module, but it does not contain all parameter identifiers.<br/>
 For that, use the "dump topology" menu. Default theme: [theme.json](/resources/ui/themes/Default/theme.json).
 
-### Theme JSON structure
+### Theme JSON structure 
+The main structure is set up as follows:
+* 1 default color scheme
+* Any number of named color schemes which can selectively override fields from the default
+* Named "themed components" not related to a module (like top graph, last tweaked etc), which can select a color scheme
+* Modules which can selectively override a scheme, either for all slots or individual slots ("All Oscis" / "Osci 2")
+* Parameters (both audio and GUI-only) which can selectively override a scheme within a module ("All FM indices" / "FM Index 2")
 
+And these are the field details:
 bluh
 
 ## Top section
