@@ -385,6 +385,11 @@ All colors are specified as ARGB hex.
   * moduleId: module identifier, see topology.
   * colorScheme: module override scheme.
   * moduleSlot: -1 for all ("All oscis"), >= 0 for selective ("Osci 2").
+  * audioParamColorSchemes/guiParamColorSchemes:<br/>
+  Override scheme for parameters within a module.
+    * paramId: param identifier, see topology.
+    * colorScheme: parameter override scheme within a module.
+    * paramSlot: -1 for all ("All FM Indices"), >= 0 for selective ("FM Index 2").
 
 ## Top section
 Contains everything that is not directly related to generating audio.
