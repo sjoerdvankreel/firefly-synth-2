@@ -372,7 +372,7 @@ ParseColorSchemesJson(
   FBColorScheme const& defaultScheme,
   std::map<std::string, FBColorScheme>& result)
 {
-  result = {};
+  result.clear();
   for (auto i = obj->getProperties().begin(); i != obj->getProperties().end(); i++)
   {
     if (!RequireObjectProperty(obj, i->name.toString()))
