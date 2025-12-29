@@ -336,6 +336,12 @@ Right-click to show the generic context menu and click "show log folder" to view
 This of course assumes you didn't get the theming in such a bad state that the gui won't display correctly at all.<br/>
 Otherwise, revert to last-known-good and work from there.
 
+Theming is based on module/section/parameter identifiers (GUIDs) instead of names.<br/>
+Reason: i want to be able to switch out the display names for something else and not break the themes.<br/>
+This is actually the same way that patches work, too.<br/>
+For an overview of all internal identifiers (themeable sections, modules, parameters),<br/>
+right-click to show the generic context menu and click "dump topology".
+
 The default themefile is reasonably well documented.<br/>
 It contains the internal identifiers of all modules and not-module related themeable sections.<br/>
 It also contains some examples of how to override parameters within a module, but it does not contain all parameter identifiers.<br/>
