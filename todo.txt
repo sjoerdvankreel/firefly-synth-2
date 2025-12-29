@@ -68,6 +68,7 @@ TODOLIST for beta-2
 [ ] test lin and mac
 
 TODOLIST for beta-next
+[ ] rename demo to featuretest
 [ ] brag about superior visualization and note when it not works (ardour everywhere, Linux only reaper is good, clap always good, vst3 win/lin mostly good)
 [ ] also brag about the tuning
 [ ] just do the comparison
