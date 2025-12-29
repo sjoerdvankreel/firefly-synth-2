@@ -1,5 +1,9 @@
-#include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/dsp/shared/FBDSPUtility.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
+#include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
 #include <firefly_base/gui/components/FBModuleGraphDisplayComponent.hpp>
 
@@ -18,6 +22,25 @@ Component(),
 _withBorder(withBorder),
 _data(data) {}
 
+FBColorScheme const& 
+FBModuleGraphDisplayComponent::FindColorSchemeFor(
+  int moduleIndex, int moduleSlot) const
+{
+  auto const& theme = FBGetLookAndFeel()->Theme();
+  if (theme.graphSchemeFollowsModule)
+  {
+    if (moduleIndex != -1 && moduleSlot != -1)
+      if (auto gui = findParentComponentOfClass<FBPlugGUI>())
+      {
+        int rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at({ moduleIndex, moduleSlot });
+        auto moduleIter = theme.moduleColors.find(rtModuleIndex);
+        if (moduleIter != theme.moduleColors.end())
+          return theme.colorSchemes.at(moduleIter->second.colorScheme);
+      }
+  } 
+  return FBGetLookAndFeel()->FindColorSchemeFor(*this);
+}  
+
 Point<float>
 FBModuleGraphDisplayComponent::PointLocation(
   int graph, std::vector<float> const& points,
@@ -25,7 +48,7 @@ FBModuleGraphDisplayComponent::PointLocation(
   int maxSizeAllSeries, float absMaxValueAllSeries) const
 {
   point = std::clamp(point, 0, static_cast<int>(points.size()) - 1);
-  float y = PointYLocation(points[point], stereo, left, absMaxValueAllSeries, true);
+  float y = PointYLocation(graph, points[point], stereo, left, absMaxValueAllSeries, true);
   float x = PointXLocation(graph, static_cast<float>(point) / maxSizeAllSeries, true);
   return { x, y };
 }
@@ -49,12 +72,12 @@ FBModuleGraphDisplayComponent::PointXLocation(
 
 float 
 FBModuleGraphDisplayComponent::PointYLocation(
-  float pointYValue, bool stereo, 
+  int graph, float pointYValue, bool stereo, 
   bool left, float absMaxValueAllSeries, bool withPadding) const
 {
   FB_ASSERT(!std::isnan(pointYValue));
   float pointValue = pointYValue / absMaxValueAllSeries;
-  if (_data->bipolar)
+  if (_data->graphs[graph].bipolar)
     pointValue = FBToUnipolar(pointValue);
   if (stereo)
     pointValue = left ? 0.5f + pointValue * 0.5f: pointValue * 0.5f;
@@ -68,13 +91,16 @@ FBModuleGraphDisplayComponent::PaintVerticalIndicator(
   Graphics& g, int graph, int point, bool primary,
   int maxSizeAllSeries, float absMaxValueAllSeries)
 {
+  auto const& graphData = _data->graphs[graph];
+  auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
+
   float dashes[2] = { 4, 2 };
-  g.setColour(Colours::white.withAlpha(0.5f));
+  g.setColour(scheme.text.withAlpha(0.5f));
   if (!primary)
-    g.setColour(Colours::white.withAlpha(0.25f));
+    g.setColour(scheme.text.withAlpha(0.25f));
   float x = PointXLocation(graph, point / static_cast<float>(maxSizeAllSeries), true);
-  float y0 = PointYLocation(0.0f, false, false, absMaxValueAllSeries, true);
-  float y1 = PointYLocation(absMaxValueAllSeries, false, false, absMaxValueAllSeries, true);
+  float y0 = PointYLocation(graph, 0.0f, false, false, absMaxValueAllSeries, true);
+  float y1 = PointYLocation(graph, absMaxValueAllSeries, false, false, absMaxValueAllSeries, true);
   g.drawDashedLine(Line<float>(x, y0, x, y1), dashes, 2);
 }
 
@@ -90,7 +116,10 @@ FBModuleGraphDisplayComponent::PaintMarker(
   if (points.size() == 0)
     return;
 
-  auto color = Colours::white;
+  auto const& graphData = _data->graphs[graph];
+  auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
+
+  auto color = scheme.text;
   if (_data->paintAsDisabled)
     color = color.darker(0.67f);
   if (!primary)
@@ -118,19 +147,22 @@ FBModuleGraphDisplayComponent::PaintClipBoundaries(
   int graph, bool stereo, bool left,
   float absMaxValueAllSeries)
 {
+  auto const& graphData = _data->graphs[graph];
+  auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
+
   float dashes[2] = { 4.0, 2.0 };
   float x0 = PointXLocation(graph, 0.0f, true);
   float x1 = PointXLocation(graph, 1.0f, true);
-  float upperY = PointYLocation(1.0f, stereo, left, absMaxValueAllSeries, true);
-  float lowerY = PointYLocation(_data->bipolar? -1.0f: 0.0f, stereo, left, absMaxValueAllSeries, true);
-  g.setColour(Colours::white.withAlpha(0.25f));
+  float upperY = PointYLocation(graph, 1.0f, stereo, left, absMaxValueAllSeries, true);
+  float lowerY = PointYLocation(graph, _data->graphs[graph].bipolar? -1.0f: 0.0f, stereo, left, absMaxValueAllSeries, true);
+  g.setColour(scheme.text.withAlpha(0.25f));
   g.drawDashedLine(Line<float>(x0, upperY, x1, upperY), dashes, 2);
   g.drawDashedLine(Line<float>(x0, lowerY, x1, lowerY), dashes, 2);
 }
 
 void
 FBModuleGraphDisplayComponent::PaintSeries(
-  juce::Graphics& g, juce::Colour color,
+  juce::Graphics& g, bool primary,
   int graph, std::vector<float> const& points,
   bool stereo, bool left,
   int maxSizeAllSeries, float absMaxValueAllSeries)
@@ -138,14 +170,30 @@ FBModuleGraphDisplayComponent::PaintSeries(
   if (points.empty())
     return;
 
-  Path path;
-  path.startNewSubPath(PointLocation(graph, points, 0, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
+  auto const& graphData = _data->graphs[graph];
+  auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
+  auto color = primary ? scheme.primary : scheme.paramSecondary;
+
+  Path fillPath;
+  Path strokePath;
+  fillPath.startNewSubPath(PointXLocation(graph, 0.0f, true), PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true));
+  strokePath.startNewSubPath(PointLocation(graph, points, 0, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
   for (int i = 1; i < points.size(); i++)
-    path.lineTo(PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
+  {
+    fillPath.lineTo(PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
+    strokePath.lineTo(PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
+  }
+  fillPath.lineTo(PointXLocation(graph, 1.0f, true), PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true));
+  fillPath.closeSubPath();
   if (_data->paintAsDisabled)
     color = color.darker(0.67f);
+  if (primary)
+  {
+    g.setColour(color.withAlpha(0.33f));
+    g.fillPath(fillPath);
+  }
   g.setColour(color);
-  g.strokePath(path, PathStrokeType(1.0f));
+  g.strokePath(strokePath, PathStrokeType(1.0f));
 }
 
 void
@@ -158,6 +206,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     auto& graphData = _data->graphs[graph];
     auto const& primarySeries = graphData.primarySeries;
     auto const& secondarySeries = graphData.secondarySeries;
+    auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
     bool stereo = !primarySeries.r.empty();
     graphData.GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
     FB_ASSERT(graphData.secondarySeries.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
@@ -166,13 +215,13 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     auto x0 = static_cast<int>(PointXLocation(graph, 0.0f, false));
     auto x1 = static_cast<int>(PointXLocation(graph, 1.0f, false));
     auto graphBounds = Rectangle<int>(x0, bounds.getY(), x1 - x0, bounds.getHeight());
-    g.setColour(Colour(0xFF181818));
-    g.fillRoundedRectangle(graphBounds.toFloat(), 6.0f);
+    g.setColour(scheme.graphBackground);
+    g.fillRoundedRectangle(graphBounds.toFloat(), 5.0f);
 
     if (_withBorder)
     {
-      g.setColour(Colour(0xFFA0A0A0));
-      g.drawRoundedRectangle(graphBounds.toFloat(), 6.0f, 2.0f);
+      g.setColour(scheme.sectionBorder.withAlpha(0.125f));
+      g.drawRoundedRectangle(graphBounds.toFloat(), 5.0f, 2.0f);
     }
 
     if (maxSizeAllSeries != 0)
@@ -195,7 +244,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
 
     if (graphData.subtext.size())
     {
-      g.setColour(Colour(0xFF404040));
+      g.setColour(scheme.text.withAlpha(0.33f));
       g.setFont(FBGUIGetFont().withHeight(20.0f));
       g.drawText(graphData.subtext, graphBounds, Justification::centred, false);
     }
@@ -206,10 +255,10 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       {
         int marker = secondarySeries[i].marker;
         auto const& points = secondarySeries[i].points;
-        PaintSeries(g, Colours::grey, graph, points.l,
+        PaintSeries(g, false, graph, points.l,
           stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
         if (stereo)
-          PaintSeries(g, Colours::grey, graph, points.r,
+          PaintSeries(g, false, graph, points.r,
             stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
 
         for (int j = 0; j < points.pointIndicators.size(); j++)
@@ -224,10 +273,10 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         }
       }
 
-      PaintSeries(g, Colours::white, graph, primarySeries.l,
+      PaintSeries(g, true, graph, primarySeries.l,
         stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
       if (stereo)
-        PaintSeries(g, Colours::white, graph, primarySeries.r,
+        PaintSeries(g, true, graph, primarySeries.r,
           stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
 
       for (int i = 0; i < primarySeries.pointIndicators.size(); i++)
@@ -243,7 +292,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
             true, false, false, true, maxSizeAllSeries, absMaxValueAllSeries);
         }
 
-      if (_data->drawClipBoundaries)
+      if (graphData.drawClipBoundaries)
       {
         PaintClipBoundaries(g, graph, stereo, false, absMaxValueAllSeries);
         if (stereo)
@@ -261,9 +310,9 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         (float)graphBounds.getY() + labelPad,
         textSize.getWidth() + labelPad,
         textSize.getHeight() + labelPad);
-      g.setColour(Colour(0xE0333333));
+      g.setColour(scheme.sectionBackground.withAlpha(0.75f));
       g.fillRoundedRectangle(textBounds, 2.0f);
-      g.setColour(getLookAndFeel().findColour(Slider::ColourIds::thumbColourId));
+      g.setColour(scheme.text);
       g.setFont(newFont);
       g.drawText(graphData.title, textBounds, Justification::centred, false);
     }

@@ -14,19 +14,6 @@ using namespace juce;
 static std::string const 
 Magic = "{84A1EBED-4BE5-47F2-8E53-13B965628974}";
 
-static bool
-ParseJson(std::string const& text, var& json)
-{
-  auto parsed = JSON::parse(text, json);
-  DynamicObject* obj = json.getDynamicObject();
-  if (!parsed.wasOk() || obj == nullptr)
-  {
-    FB_LOG_ERROR("Failed to parse json.");
-    return false;
-  }
-  return true;
-}
-
 static std::map<FBTopoIndices, int>
 MakeModuleTopoToRuntime(
   std::vector<FBRuntimeModule> const& modules)
@@ -122,6 +109,7 @@ FBRuntimeTopo::SaveGUIStateToVar(
   DynamicObject* result = new DynamicObject;
   result->setProperty("params", SaveParamStateToVar(guiState, this->gui.params, false));
   result->setProperty("patchName", String(guiState.PatchName()));
+  result->setProperty("themeName", String(guiState.ThemeName()));
   return var(result);
 }
 
@@ -143,6 +131,8 @@ FBRuntimeTopo::LoadGUIStateFromVar(
       return false;
     if(json.hasProperty("patchName"))
       guiState.SetPatchName(json["patchName"].toString().toStdString());
+    if (json.hasProperty("themeName"))
+      guiState.SetThemeName(json["themeName"].toString().toStdString());
     return true;
   }
   return LoadParamStateFromVar(true, json, guiState, this->gui, false);
@@ -201,7 +191,7 @@ FBRuntimeTopo::LoadGUIStateFromString(
   std::string const& text, FBGUIStateContainer& guiState) const
 {
   var json;
-  if (!ParseJson(text, json))
+  if (!FBParseJson(text, json))
     return false;
   return LoadGUIStateFromVar(json, guiState);
 }
@@ -211,7 +201,7 @@ FBRuntimeTopo::LoadProcStateFromString(
   std::string const& text, FBProcStateContainer& procState, bool patchOnly) const
 {
   var json;
-  if (!ParseJson(text, json))
+  if (!FBParseJson(text, json))
     return false;
   return LoadProcStateFromVar(json, procState, patchOnly);
 }
@@ -221,7 +211,7 @@ FBRuntimeTopo::LoadEditStateFromString(
   std::string const& text, FBScalarStateContainer& editState, bool patchOnly) const
 {
   var json;
-  if (!ParseJson(text, json))
+  if (!FBParseJson(text, json))
     return false;
   return LoadEditStateFromVar(json, editState, patchOnly);
 }
@@ -232,7 +222,7 @@ FBRuntimeTopo::LoadEditAndGUIStateFromString(
   FBScalarStateContainer& editState, FBGUIStateContainer& guiState, bool patchOnly) const
 {
   var json;
-  if (!ParseJson(text, json))
+  if (!FBParseJson(text, json))
     return false;
   return LoadEditAndGUIStateFromVar(json, editState, guiState, patchOnly);
 }
@@ -246,6 +236,7 @@ FBRuntimeTopo::LoadGUIStateFromStringWithDryRun(
   {
     guiState.CopyFrom(dryGUIState);
     guiState.SetPatchName(dryGUIState.PatchName());
+    guiState.SetThemeName(dryGUIState.ThemeName());
   }
 }
 
@@ -280,6 +271,7 @@ FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
     return;
   guiState.CopyFrom(dryGUIState);
   guiState.SetPatchName(dryGUIState.PatchName());
+  guiState.SetThemeName(dryGUIState.ThemeName());
   editState.CopyFrom(this, dryEditState, patchOnly);
 }
 

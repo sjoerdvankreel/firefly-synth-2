@@ -4,6 +4,7 @@
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGraph.hpp>
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
@@ -109,11 +110,21 @@ FFModMatrixGraph::paint(Graphics& g)
 
   std::string text = "Off";
   std::vector<float> yNormalized = {};
-  auto bounds = getBounds().toFloat().reduced(2.0f);
+
+  auto outerBounds = getBounds();
+  auto bounds = outerBounds.toFloat().reduced(4.0f);
+  auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
+  g.setColour(scheme.graphBackground);
+  g.fillRoundedRectangle(outerBounds.toFloat(), 3.0f);
+  g.setColour(scheme.sectionBorder.withAlpha(0.125f));
+  g.drawRoundedRectangle(outerBounds.toFloat(), 3.0f, 2.0f);
+
+  bool graphIsBipolar = false;
   switch (_type)
   {
   case FFModMatrixGraphType::Source:
     text = "Src";
+    graphIsBipolar = FFModulationOpTypeSourceIsBipolar(opType);
     for (int i = 0; i < bounds.getWidth(); i++)
     {
       float sourceNorm = GraphGetSource(i / (float)bounds.getWidth(), sourceInv);
@@ -125,6 +136,7 @@ FFModMatrixGraph::paint(Graphics& g)
     break;
   case FFModMatrixGraphType::SourceOnOff:
     text = (sourceType == 0 || opType == FFModulationOpType::Off) ? "Src Off" : "Src On";
+    graphIsBipolar = FFModulationOpTypeSourceIsBipolar(opType);
     if (sourceType != 0 && opType != FFModulationOpType::Off)
       for (int i = 0; i < bounds.getWidth(); i++)
       {
@@ -152,6 +164,7 @@ FFModMatrixGraph::paint(Graphics& g)
     break;
   case FFModMatrixGraphType::TargetIn:
     text = "Tgt In";
+    graphIsBipolar = FFModulationOpTypeTargetIsBipolar(opType);
     for (int i = 0; i < bounds.getWidth(); i++)
       yNormalized.push_back(GraphGetTarget(i / (float)bounds.getWidth()));
     break;
@@ -159,6 +172,7 @@ FFModMatrixGraph::paint(Graphics& g)
     text = "Tgt Out";
     for (int i = 0; i < bounds.getWidth(); i++)
     {
+      graphIsBipolar = FFModulationOpTypeTargetIsBipolar(opType);
       float x = i / (float)bounds.getWidth();
       float target = GraphGetTarget(x);
       if (_trackingParam != nullptr)
@@ -191,7 +205,7 @@ FFModMatrixGraph::paint(Graphics& g)
     break;
   }
 
-  g.setColour(Colours::darkgrey);
+  g.setColour(scheme.text.withAlpha(0.33f));
   g.setFont(FBGUIGetFont().withHeight(16.0f));
   g.drawText(prefix + text, bounds, Justification::centred, false);
 
@@ -199,25 +213,41 @@ FFModMatrixGraph::paint(Graphics& g)
     return;
 
   Path path;
+  Path fillPath;
+  if (graphIsBipolar)
+  {
+    if (_type == FFModMatrixGraphType::TargetIn || _type == FFModMatrixGraphType::TargetOut)
+    {
+      fillPath.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight() * 0.5f);
+      fillPath.lineTo(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
+    }
+    else
+      fillPath.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
+  }
+  else
+  {
+    fillPath.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight());
+    fillPath.lineTo(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
+  }
   path.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
   for (int i = 1; i < yNormalized.size(); i++)
-    path.lineTo(bounds.getX() + i, bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[i]));
-
-  switch (_type)
   {
-  case FFModMatrixGraphType::Scale:
-  case FFModMatrixGraphType::Source:
-  case FFModMatrixGraphType::TargetIn:
-    g.setColour(Colours::grey);
-    break;
-  case FFModMatrixGraphType::ScaleOn:
-  case FFModMatrixGraphType::TargetOut:
-  case FFModMatrixGraphType::SourceOnOff:
-    g.setColour(Colours::white);
-    break;
-  default:
-    FB_ASSERT(false);
-    break;
+    path.lineTo(bounds.getX() + i, bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[i]));
+    fillPath.lineTo(bounds.getX() + i, bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[i]));
   }
-  g.strokePath(path, PathStrokeType(1.0f));  
+  if (graphIsBipolar)
+  {
+    if (_type == FFModMatrixGraphType::TargetIn || _type == FFModMatrixGraphType::TargetOut)
+      fillPath.lineTo(bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight() * 0.5f);
+  }
+  else
+  {
+    fillPath.lineTo(bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight());
+  }
+  fillPath.closeSubPath();
+
+  g.setColour(scheme.primary.withAlpha(0.33f));
+  g.fillPath(fillPath);
+  g.setColour(scheme.primary);
+  g.strokePath(path, PathStrokeType(1.0f));
 }

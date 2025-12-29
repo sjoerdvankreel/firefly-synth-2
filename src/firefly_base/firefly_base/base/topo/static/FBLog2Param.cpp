@@ -3,6 +3,7 @@
 
 bool FBLog2ParamNonRealTime::IsItems() const { return false; }
 bool FBLog2ParamNonRealTime::IsStepped() const { return false; }
+bool FBLog2ParamNonRealTime::DisplayAsBipolar() const { return false; }
 int FBLog2ParamNonRealTime::ValueCount() const { return 0; }
 int FBLog2ParamNonRealTime::ValueOffset() const { return 0; }
 FBEditType FBLog2ParamNonRealTime::GUIEditType() const { return FBEditType::Logarithmic; }

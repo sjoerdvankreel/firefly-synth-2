@@ -47,9 +47,9 @@ FBAutoSizeLabel2::FixedWidth(int /*height*/) const
 }
 
 FBGUIParamLabel::
-FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param) :
+FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed) :
 FBAutoSizeLabel(param->displayName),
-FBGUIParamComponent(plugGUI, param) {}
+FBGUIParamComponent(plugGUI, param, isThemed) {}
 
 void
 FBGUIParamLabel::parentHierarchyChanged()
@@ -58,9 +58,9 @@ FBGUIParamLabel::parentHierarchyChanged()
 }
 
 FBParamLabel::
-FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
+FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed):
 FBAutoSizeLabel(param->displayName),
-FBParamComponent(plugGUI, param) {}
+FBParamComponent(plugGUI, param, isThemed) {}
 
 void 
 FBParamLabel::parentHierarchyChanged()

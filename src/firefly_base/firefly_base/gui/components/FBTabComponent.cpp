@@ -1,5 +1,6 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
@@ -44,12 +45,29 @@ FBModuleTabBarButton::clicked(const ModifierKeys& modifiers)
   _plugGUI->ModuleSlotClicked(_moduleIndices.index, _moduleIndices.slot);
 }
 
+
+FBColorScheme const* 
+FBModuleTabBarButton::GetScheme(FBTheme const& theme) const
+{
+  int rtModuleIndex = _plugGUI->HostContext()->Topo()->moduleTopoToRuntime.at(_moduleIndices);
+  auto moduleIter = theme.moduleColors.find(rtModuleIndex);
+  if (moduleIter != theme.moduleColors.end())
+    return &theme.colorSchemes.at(moduleIter->second.colorScheme);
+  return nullptr;
+}
+
 FBAutoSizeTabComponent::
 FBAutoSizeTabComponent():
-TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop)
+FBAutoSizeTabComponent(false) {}
+
+FBAutoSizeTabComponent::
+FBAutoSizeTabComponent(bool big):
+TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop),
+_big(big)
 {
-  setTabBarDepth(FBTabBarDepth);
+  setOutline(0);
   setLookAndFeel(FBGetLookAndFeel());
+  setTabBarDepth(_big? FBTabBarDepthBig: FBTabBarDepth);
 }
 
 int
@@ -63,6 +81,16 @@ TabBarButton*
 FBAutoSizeTabComponent::createTabButton(const juce::String& tabName, int /*tabIndex*/)
 {
   return new FBTabBarButton(tabName, *tabs);
+}
+
+void
+FBAutoSizeTabComponent::AddTab(
+  std::string const& header, bool centerText, Component* component)
+{
+  addTab(header, Colours::black, component, false);
+  auto button = getTabbedButtonBar().getTabButton(getTabbedButtonBar().getNumTabs() - 1);
+  auto& fbTabButton = dynamic_cast<FBTabBarButton&>(*button);
+  fbTabButton.centerText = centerText;
 }
 
 FBModuleTabComponent::
@@ -131,8 +159,9 @@ FBModuleTabComponent::AddModuleTab(
 
   addTab(header, Colours::black, component, false);
   auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
-  dynamic_cast<FBTabBarButton&>(*button).large = large;
-  dynamic_cast<FBTabBarButton&>(*button).centerText = centerText;
+  auto& fbTabButton = dynamic_cast<FBTabBarButton&>(*button);
+  fbTabButton.large = large;
+  fbTabButton.centerText = centerText;
 }
 
 void 
@@ -165,6 +194,7 @@ FBModuleTabComponent::TabRightClicked(int tabIndex)
 
   PopupMenu::Options options;
   options = options.withParentComponent(_plugGUI);
+  options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
   options = options.withTargetComponent(getTabbedButtonBar().getTabButton(tabIndex));
   menu.showMenuAsync(options, [this, moduleIndices, slotCount = staticModule.slotCount](int id) {
     std::string name = _plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;

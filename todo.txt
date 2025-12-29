@@ -1,15 +1,41 @@
-TODOLIST for beta-2
-[ ] rename demo to feature test
-[ ] panic should not context menu
-[ ] string low end bug
-[ ] theme and prettify the gui
-[ ] not right-click-change horizontal sliders
-
 TODOLIST for beta-next
+Ardour 6.9.0~ds0
+"After Bach"
+(rev 6.9.0~ds0-1build1)
+Intel 64-bit
+[ ] do something with the dont-know-how-i-got-here-patch
+[ ] copy-paste patch not work on linux
+[ ] order the themes by path in the gui
+[ ] rename demo to featuretest
+[ ] also brag about its faster
+[ ] brag about superior visualization and note when it not works (ardour everywhere, Linux only reaper is good, clap always good, vst3 win/lin mostly good)
+[ ] also brag about the tuning
+[ ] just do the comparison
+[ ] update docs for string HPF (see GitHub bug)
+[ ] do more themes
+[ ] fix ardour save/load
+[ ] credit rusto
+[ ] make the svg issue
+[ ] featuretest scheme
+[ ] bg images in main tabs and header and maybe elsewhere
+[ ] not right-click-change horizontal sliders
+[ ] string low end bug?
+[ ] rename demo to feature test
 [ ] make some presets
 [ ] compare to ff1
 [ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
+ANDROMEDA SCHEME
+blue = 2D86FE
+yellow = FBC401
+pink = D4164F
+green = 28BB40
+purple = B422D9
+orange = FF9000
+red = D6433A
 
+i want an arpeggiator and/or sequencer
+document all the source code (pffft)
+make an architecture/developer document
 make Carla bug report for stuck notes (but verify its not me, first)
 arpeggiator
 keep profiling

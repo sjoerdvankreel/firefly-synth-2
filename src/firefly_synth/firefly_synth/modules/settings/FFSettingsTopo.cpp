@@ -14,7 +14,7 @@ FFMakeSettingsTopo(bool isFx)
   result->id = "{3689411E-F31C-4F8C-BE3D-6F87938A1A1B}";
   result->params.resize((int)FFSettingsParam::Count);
   auto selectModule = [](auto& state) { return &state.global.settings; };
-
+   
   auto& hostSmoothTime = result->params[(int)FFSettingsParam::HostSmoothTime];
   hostSmoothTime.storeInPatch = false;
   hostSmoothTime.mode = FBParamMode::Block;

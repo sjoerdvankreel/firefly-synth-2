@@ -15,6 +15,8 @@
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBThemingComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
 
@@ -75,7 +77,6 @@ FFOsciAdjustParamModulationGUIBounds(
 static Component*
 MakeOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> autoSizeColForRow = { -1, -1 };
   std::vector<int> autoSizeRowForCol = { 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 };
@@ -107,14 +108,13 @@ MakeOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto keyTrack = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::KeyTrack, 0 } });
   grid->Add(1, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, keyTrack));
   grid->Add(1, 9, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, keyTrack));
-  grid->MarkSection({ { 0, 0 }, { 2, 10 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  grid->MarkSection({ { 0, 0 }, { 2, 10 } }, FBGridSectionMark::BackgroundAndAlternate);
+  return grid;
 }
 
 static Component*
 MakeOsciSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   auto count = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::UniCount, 0 } });
@@ -135,14 +135,13 @@ MakeOsciSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
   auto random = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::UniRandom, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, random));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, random, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } }, FBGridSectionMark::BackgroundAndBorder);
+  return grid;
 }
 
 static Component*
 MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1 });
   for (int i = 0; i < FFOsciWaveBasicCount; i++)
@@ -198,19 +197,17 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(1, 19, plugGUI->StoreComponent<FBParamSlider>(plugGUI, decay, Slider::SliderStyle::RotaryVerticalDrag));
   }
 
-  grid->MarkSection({ { 0, 0 }, { 2, 20 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 20 } }, FBGridSectionMark::BackgroundAndAlternate);
 
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Off || vs[0] == (int)FFOsciType::Wave; });
-  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, section, 0, indices, dependencies);
+  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
 }
 
 static Component*
 MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 1, 1, 1, 1, 1, 1 });
   
@@ -256,19 +253,17 @@ MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
   auto fmIndex33 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 8 } });
   grid->Add(1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex33, Slider::SliderStyle::LinearHorizontal));
 
-  grid->MarkSection({ { 0, 0 }, { 2, 10 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 10 } }, FBGridSectionMark::BackgroundAndAlternate);
 
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
-  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, section, 0, indices, dependencies);
+  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
 }
 
 static Component*
 MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> columnSizes = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
@@ -297,7 +292,6 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
   auto y = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringY, 0 } });
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, y));
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, y, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 8 } });
 
   auto lpOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringLPOn, 0 } });
   grid->Add(0, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpOn));
@@ -335,19 +329,17 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
   auto feedbackKTrk = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringFeedbackKTrk, 0 } });
   grid->Add(1, 18, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackKTrk));
   grid->Add(1, 19, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedbackKTrk, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 8 }, { 2, 12 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 20 } }, FBGridSectionMark::BackgroundAndAlternate);
 
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
-  auto section =  plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, section, 0, indices, dependencies);
+  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
 }
 
 static Component*
 MakeOsciSectionExtAudio(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> columnSizes = { 0, 1, 0, 0, 0, 1, 0, 1 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
@@ -376,19 +368,17 @@ MakeOsciSectionExtAudio(FBPlugGUI* plugGUI, int moduleSlot)
   auto hpRes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::ExtAudioHPRes, 0 } });
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::LinearHorizontal));
-  grid->MarkSection({ { 0, 0 }, { 2, 8 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 8 } }, FBGridSectionMark::BackgroundAndAlternate);
 
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio; });
-  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, section, 0, indices, dependencies);
+  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
 }
 
 static Component*
 MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1 });
   grid->Add(0, 0, MakeOsciSectionMain(plugGUI, moduleSlot));
   grid->Add(0, 1, MakeOsciSectionUni(plugGUI, moduleSlot));
@@ -396,7 +386,8 @@ MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 2, MakeOsciSectionFM(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeOsciSectionString(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeOsciSectionExtAudio(plugGUI, moduleSlot));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, margin);
 }
 
 Component*

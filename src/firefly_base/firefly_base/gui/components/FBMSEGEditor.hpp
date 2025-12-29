@@ -25,7 +25,9 @@ public juce::Component
   std::unique_ptr<FBFillerComponent> _controlFiller = {};
 
   std::unique_ptr<FBAutoSizeLabel> _editXLabel = {};
+  std::unique_ptr<FBAutoSizeLabel> _editXGridLabel = {};
   std::unique_ptr<FBAutoSizeLabel> _editYLabel = {};
+  std::unique_ptr<FBAutoSizeLabel> _editYGridLabel = {};
   std::unique_ptr<FBAutoSizeComboBox> _xEditModeCombo = {};
   std::unique_ptr<FBAutoSizeComboBox> _yEditModeCombo = {};
   std::unique_ptr<FBAutoSizeComboBox> _snapXCountCombo = {};

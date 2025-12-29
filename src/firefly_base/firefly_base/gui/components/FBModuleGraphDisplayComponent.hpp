@@ -1,6 +1,8 @@
 #pragma once
 
+#include <firefly_base/gui/shared/FBTheme.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
+
 #include <juce_gui_basics/juce_gui_basics.h>
 
 struct FBModuleGraphComponentData;
@@ -10,6 +12,9 @@ public juce::Component
 {
   bool _withBorder;
   FBModuleGraphComponentData const* const _data;
+
+  FBColorScheme const& FindColorSchemeFor(
+    int moduleIndex, int moduleSlot) const;
 
 public:
   void paint(juce::Graphics& g) override;
@@ -21,7 +26,7 @@ private:
     int graph, float pointRelative, bool withPadding) const;
 
   float PointYLocation(
-    float pointYValue, bool stereo, bool left, 
+    int graph, float pointYValue, bool stereo, bool left, 
     float absMaxValueAllSeries, bool withPadding) const;
 
   juce::Point<float> PointLocation(
@@ -45,7 +50,7 @@ private:
     bool left, int maxSizeAllSeries, float absMaxValueAllSeries);
 
   void PaintSeries(
-    juce::Graphics& g, juce::Colour color, 
+    juce::Graphics& g, bool primary, 
     int graph, std::vector<float> const& points,
     bool stereo, bool left,
     int maxSizeAllSeries, float absMaxValueAllSeries);

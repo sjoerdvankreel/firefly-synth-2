@@ -1,3 +1,5 @@
+#include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 
 using namespace juce;
@@ -51,9 +53,14 @@ FBGridComponent::Add(int row, int col, Component* child)
 }
 
 void
-FBGridComponent::MarkSection(FBGridSection const& section)
+FBGridComponent::MarkSection(FBGridSection const& section, FBGridSectionMark mark, float cornerSize, int marginR)
 {
-  _sections.push_back(section);
+  FBGridSectionAndMark sectionAndMark = {};
+  sectionAndMark.mark = mark;
+  sectionAndMark.marginR = marginR;
+  sectionAndMark.section = section;
+  sectionAndMark.cornerSize = cornerSize;
+  _sectionsAndMarks.push_back(sectionAndMark);
 }
 
 int
@@ -193,8 +200,8 @@ FBGridComponent::resized()
 
   if (_rowColGap)
   {
-    _grid.rowGap = Grid::Px(2);
-    _grid.columnGap = Grid::Px(2);
+    _grid.rowGap = Grid::Px(1);
+    _grid.columnGap = Grid::Px(1);
   }
 
   for (auto const& e : _cells)
@@ -225,22 +232,49 @@ FBGridComponent::resized()
 void
 FBGridComponent::paint(Graphics& g)
 {
+  float lineThickness = 2.0f;
   float x0, x1, y0, y1;
   x0 = x1 = y0 = y1 = -1.0f;
-  g.setColour(Colour(0xFF181818));
-  for (int i = 0; i < _sections.size(); i++)
-  {
+
+  for (int i = 0; i < _sectionsAndMarks.size(); i++)
+  {      
     for (int j = 0; j < _grid.items.size(); j++)
     {
-      if (_grid.items[j].row.start.getNumber() == _sections[i].pos.row + 1)
+      if (_grid.items[j].row.start.getNumber() == _sectionsAndMarks[i].section.pos.row + 1)
         y0 = static_cast<float>(_grid.items[j].associatedComponent->getY());
-      if (_grid.items[j].column.start.getNumber() == _sections[i].pos.col + 1)
+      if (_grid.items[j].column.start.getNumber() == _sectionsAndMarks[i].section.pos.col + 1)
         x0 = static_cast<float>(_grid.items[j].associatedComponent->getX());
-      if (_grid.items[j].row.end.getNumber() == _sections[i].pos.row + _sections[i].span.row + 1)
+      if (_grid.items[j].row.end.getNumber() == _sectionsAndMarks[i].section.pos.row + _sectionsAndMarks[i].section.span.row + 1)
         y1 = static_cast<float>(_grid.items[j].associatedComponent->getBottom());
-      if (_grid.items[j].column.end.getNumber() == _sections[i].pos.col + _sections[i].span.col + 1)
+      if (_grid.items[j].column.end.getNumber() == _sectionsAndMarks[i].section.pos.col + _sectionsAndMarks[i].section.span.col + 1)
         x1 = static_cast<float>(_grid.items[j].associatedComponent->getRight());
     }
-    g.fillRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 6.0f);
+    float subtractR = i == _sectionsAndMarks.size() - 1 ? 0.0f : 2.0f;
+    subtractR += _sectionsAndMarks[i].marginR;
+    if (_sectionsAndMarks[i].mark == FBGridSectionMark::Background ||
+      _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndBorder ||
+      _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndAlternate)
+    {
+      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).sectionBackground);
+      g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize);
+    }
+    if (_sectionsAndMarks[i].mark == FBGridSectionMark::AlternateAndAlternate)
+    {
+      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).primary.darker(2.0f));
+      g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize);
+    }
+    if (_sectionsAndMarks[i].mark == FBGridSectionMark::Alternate ||
+      _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndAlternate ||
+      _sectionsAndMarks[i].mark == FBGridSectionMark::AlternateAndAlternate)
+    {
+      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).primary.withAlpha(0.25f));
+      g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize, lineThickness);
+    }
+    if (_sectionsAndMarks[i].mark == FBGridSectionMark::Border ||
+      _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndBorder)
+    {
+      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).sectionBorder.withAlpha(0.125f));
+      g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize, lineThickness);
+    }      
   }
-}
+} 

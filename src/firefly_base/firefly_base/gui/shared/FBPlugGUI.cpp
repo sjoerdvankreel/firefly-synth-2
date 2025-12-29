@@ -1,5 +1,6 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/shared/FBParamComponent.hpp>
 #include <firefly_base/gui/shared/FBParamsDependent.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
@@ -11,7 +12,7 @@
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
-#include <firefly_base/gui/components/FBSectionComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBContentComponent.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
@@ -32,11 +33,37 @@ FBPlugGUI::
 FBPlugGUI(FBHostGUIContext* hostContext) :
 _hostContext(hostContext)
 {
+  _themes = FBLoadThemes(hostContext->Topo());
+  if (_themes.empty())
+    FB_LOG_ERROR("No themes found.");
+
   _tooltipWindow = StoreComponent<TooltipWindow>();
   _hostContext->AddListener(this);
   addAndMakeVisible(_tooltipWindow);
   addMouseListener(this, true);
   SetupOverlayGUI();
+}
+
+FBTheme const& 
+FBPlugGUI::GetTheme() const
+{
+  static FBTheme fallback = {};
+  for (int i = 0; i < Themes().size(); i++)
+    if (Themes()[i].name == HostContext()->ThemeName())
+      return Themes()[i];
+  if (Themes().size() > 0)
+    return Themes()[0];
+  return fallback;
+}
+
+void 
+FBPlugGUI::SwitchTheme(std::string const& themeName)
+{
+  HostContext()->SetThemeName(themeName);
+  FBGetLookAndFeel()->SetTheme(GetTheme());
+  for (int i = 0; i < _themeListeners.size(); i++)
+    _themeListeners[i]->ThemeChanged();
+  repaint();
 }
 
 void
@@ -78,6 +105,22 @@ FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double value)
   AudioParamNormalizedChanged(index);
   for (int i = 0; i < _paramListeners.size(); i++)
     _paramListeners[i]->AudioParamChanged(index, value, true);
+}
+
+void
+FBPlugGUI::AddThemeListener(IFBThemeListener* listener)
+{
+  auto iter = std::find(_themeListeners.begin(), _themeListeners.end(), listener);
+  FB_ASSERT(iter == _themeListeners.end());
+  _themeListeners.push_back(listener);
+}
+
+void
+FBPlugGUI::RemoveThemeListener(IFBThemeListener* listener)
+{
+  auto iter = std::find(_themeListeners.begin(), _themeListeners.end(), listener);
+  FB_ASSERT(iter != _themeListeners.end());
+  _themeListeners.erase(iter);
 }
 
 void
@@ -211,6 +254,7 @@ FBPlugGUI::ShowPopupMenuFor(
   PopupMenu::Options options;
   options = options.withParentComponent(this);
   options = options.withTargetComponent(target);
+  options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
   options = options.withMousePosition();
   menu.showMenuAsync(options, callback);
 }
@@ -252,7 +296,8 @@ FBPlugGUI::ShowMenuForGUIParam(int index)
       GUIParamNormalizedChanged(index, normalized);
     }
   };
-  ShowPopupMenuFor(this, *menu, clicked);
+  auto* control = &dynamic_cast<Component&>(*GetControlForGUIParamIndex(index));
+  ShowPopupMenuFor(control, *menu, clicked);
 }
 
 void
@@ -301,7 +346,8 @@ FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
       HostContext()->AudioParamContextMenuClicked(index, tag - 1000);
     }
   };
-  ShowPopupMenuFor(this, *menu, clicked);
+  auto* control = &dynamic_cast<Component&>(*GetControlForAudioParamIndex(index, 0));
+  ShowPopupMenuFor(control, *menu, clicked);
 }
 
 Component*
@@ -345,8 +391,9 @@ FBPlugGUI::GetTooltipForGUIParam(int index) const
 }
 
 std::string
-FBPlugGUI::GetTooltipForAudioParam(int index) const
+FBPlugGUI::GetTooltipForAudioParam(FBParamControl const* control) const
 {
+  int index = control->Param()->runtimeParamIndex;
   auto const& param = HostContext()->Topo()->audio.params[index];
   double normalized = HostContext()->GetAudioParamNormalized(index);
   auto paramActive = HostContext()->ExchangeFromDSPState()->GetParamActiveState(&param);
@@ -383,6 +430,22 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
     result += "\r\nAutomation: Per-Sample";
   if (param.static_.mode == FBParamMode::VoiceStart)
     result += "\r\nAutomation: At Voice Start";
+
+  auto controlComponent = &dynamic_cast<Component const&>(*control);
+  if (!controlComponent->isEnabled())
+  {
+    auto const& dependencies = control->RuntimeDependencies(true, false);
+    if (dependencies.size() > 0)
+    {
+      result += "\r\nDisabled By: ";
+      for (int i = 0; i < (int)dependencies.size(); i++)
+      {
+        result += HostContext()->Topo()->audio.params[dependencies[i]].displayName;
+        if (i < (int)dependencies.size() - 1)
+          result += ", ";
+      }
+    }
+  }
   result += "\r\nStored In: " + (param.static_.storeInPatch ? std::string("Session And Patch") : std::string("Session Only"));
 
   double modMin = 1.0;
@@ -411,6 +474,12 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
     return;
   }
 
+  // just dont want it
+  if (dynamic_cast<TextEditor*>(event.eventComponent))
+    return;
+  if (dynamic_cast<Button*>(event.eventComponent))
+    return;
+
   // pops up host context menu
   if (dynamic_cast<FBParamControl*>(event.eventComponent))
     return;
@@ -432,34 +501,43 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   auto& undoState = HostContext()->UndoState();
   PopupMenu menu;
   menu.addItem(1, "Show Manual");
+  menu.addItem(2, "Dump Topology");
   menu.addSeparator();
-  menu.addItem(2, "Copy Patch");
-  menu.addItem(3, "Paste Patch");
+  menu.addItem(3, "Show Log Folder");
+  menu.addItem(4, "Show Plugin Folder");
   menu.addSeparator();
+  menu.addItem(5, "Copy Patch");
+  menu.addItem(6, "Paste Patch");
+  if (undoState.CanUndo() || undoState.CanRedo())
+    menu.addSeparator();
   if (undoState.CanUndo())
-    menu.addItem(4, "Undo " + undoState.UndoAction());
+    menu.addItem(7, "Undo " + undoState.UndoAction());
   if (undoState.CanRedo())
-    menu.addItem(5, "Redo " + undoState.RedoAction());
+    menu.addItem(8, "Redo " + undoState.RedoAction());
 
   PopupMenu::Options options;
-  options = options.withParentComponent(this);
   options = options.withMousePosition();
+  options = options.withParentComponent(this);
+  options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
   menu.showMenuAsync(options, [this](int id) {
     if (id == 1) HostContext()->ShowOnlineManual();
-    if (id == 4) HostContext()->UndoState().Undo();
-    if (id == 5) HostContext()->UndoState().Redo(); 
-    if (id == 2) {
+    if (id == 2) DumpTopologyToFile();
+    if (id == 3) ShowLogFolder();
+    if (id == 4) ShowPluginFolder();
+    if (id == 7) HostContext()->UndoState().Undo();
+    if (id == 8) HostContext()->UndoState().Redo();
+    if (id == 5) {
       FBScalarStateContainer editState(*HostContext()->Topo());
       editState.CopyFrom(HostContext(), true);
       SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveEditStateToString(editState, true));
     }
-    if (id == 3) {
+    if (id == 6) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
         AlertWindow::showMessageBoxAsync(
-          MessageBoxIconType::InfoIcon,
+          MessageBoxIconType::NoIcon,
           "Warning",
           "No valid patch data found on clipboard.");
-    }
+    }  
   });
 }
 
@@ -545,9 +623,9 @@ FBPlugGUI::LoadPatchFromFile()
     auto text = file.loadFileAsString().toStdString();
     if(!LoadPatchFromText("Load Patch", file.getFileNameWithoutExtension().toStdString(), text))
       AlertWindow::showMessageBoxAsync(
-        MessageBoxIconType::WarningIcon,
+        MessageBoxIconType::NoIcon,
         "Error",
-        "Failed to load patch. See log for details: " + FBGetLogPath(HostContext()->Topo()->static_->meta).string() + ".");
+        "Failed to load patch. See log for details.");
   });
 }
 
@@ -562,6 +640,7 @@ FBPlugGUI::LoadPreset(Component* clickedFrom)
   PopupMenu::Options options = {};
   options = options.withParentComponent(this);
   options = options.withTargetComponent(clickedFrom);
+  options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
   presetMenu.showMenuAsync(options);
 }
 
@@ -578,9 +657,9 @@ FBPlugGUI::MakePresetMenu(
         auto text = juceFile.loadFileAsString().toStdString();
         if (!LoadPatchFromText("Load Preset", juceFile.getFileNameWithoutExtension().toStdString(), text))
           AlertWindow::showMessageBoxAsync(
-            MessageBoxIconType::WarningIcon,
+            MessageBoxIconType::NoIcon,
             "Error",
-            "Failed to load preset. See log for details: " + FBGetLogPath(HostContext()->Topo()->static_->meta).string() + ".");
+            "Failed to load preset. See log for details.");
       }
     });
   for (int i = 0; i < folder->folders.size(); i++)
@@ -591,24 +670,27 @@ FBPlugGUI::MakePresetMenu(
 void
 FBPlugGUI::SetupOverlayGUI()
 {
-  auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 0, 0 } });
+  _overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 0, 0 } });
   _overlayCaption = StoreComponent<Label>();
-  overlayGrid->Add(0, 0, _overlayCaption);
+  _overlayGrid->Add(0, 0, _overlayCaption);
 
   auto overlayInit = StoreComponent<FBAutoSizeButton>("Init");
   overlayInit->onClick = [this] { _overlayInit(); };
-  auto overlayInitSection = StoreComponent<FBSectionComponent>(overlayInit);
-  overlayGrid->Add(0, 1, overlayInitSection);
+  auto overlayInitSection = StoreComponent<FBMarginComponent>(false, false, true, true, overlayInit);
+  _overlayGrid->Add(0, 1, overlayInitSection);
 
   auto overlayClose = StoreComponent<FBAutoSizeButton>("Close");
   overlayClose->onClick = [this] { HideOverlayComponent(); };
-  auto overlayCloseSection = StoreComponent<FBSectionComponent>(overlayClose);
-  overlayGrid->Add(0, 2, overlayCloseSection);
+  auto overlayCloseSection = StoreComponent<FBMarginComponent>(false, true, true, true, overlayClose);
+  _overlayGrid->Add(0, 2, overlayCloseSection);
 
-  overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } });
+  _overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::AlternateAndAlternate);
   _overlayContent = StoreComponent<FBContentComponent>();
-  overlayGrid->Add(1, 0, 1, 3, _overlayContent);
-  _overlayContainer = StoreComponent<FBSubSectionComponent>(overlayGrid, true);
+  _overlayInnerMargin = StoreComponent<FBMarginComponent>(true, true, true, true, _overlayContent);
+  _overlayGrid->Add(1, 0, 1, 3, _overlayInnerMargin);
+  _overlayGrid->MarkSection({ { 1, 0 }, { 1, 3 } }, FBGridSectionMark::Alternate);
+  _overlayModule = StoreComponent<FBModuleComponent>(HostContext()->Topo());
+  _overlayOuterMargin = StoreComponent<FBMarginComponent>(true, true, true, true, _overlayModule, true);
 }
 
 void
@@ -619,14 +701,15 @@ FBPlugGUI::HideOverlayComponent()
   _overlayInit = {};
   _overlayComponent->setVisible(false);
   _overlayContent->SetContent(nullptr);
-  _overlayContainer->setVisible(false);
+  _overlayOuterMargin->setVisible(false);
   _overlayCaption->setText("", dontSendNotification);
-  removeChildComponent(_overlayContainer);
-}
+  removeChildComponent(_overlayOuterMargin);
+} 
 
 void
 FBPlugGUI::ShowOverlayComponent(
   std::string const& title,
+  int moduleIndex, int moduleSlot,
   Component* overlay,
   int w, int h, bool vCenter,
   std::function<void()> init)
@@ -639,9 +722,39 @@ FBPlugGUI::ShowOverlayComponent(
     y = (int)((getHeight() - h) * 0.9);
   _overlayInit = init;
   _overlayContent->SetContent(overlay);
-  _overlayContainer->setBounds(x, y, w, h);
+  _overlayOuterMargin->setBounds(x, y, w, h);
   _overlayCaption->setText(title, dontSendNotification);
-  addAndMakeVisible(_overlayContainer, 1);
-  _overlayContainer->resized();
+  addAndMakeVisible(_overlayOuterMargin, 1);
+  _overlayModule->SetModuleContent(moduleIndex, moduleSlot, _overlayGrid);
+  _overlayOuterMargin->resized();
   _overlayComponent = overlay;
+}
+
+void
+FBPlugGUI::ShowLogFolder()
+{
+  auto path = FBGetLogPath(HostContext()->Topo()->static_->meta);
+  File(path.string()).revealToUser();
+}
+
+void
+FBPlugGUI::ShowPluginFolder()
+{
+  auto path = FBGetPluginContentsFolderPath();
+  File(path.string()).revealToUser();
+}
+
+void
+FBPlugGUI::DumpTopologyToFile()
+{
+  FB_LOG_ENTRY_EXIT();
+  int saveFlags = FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
+  FileChooser* chooser = new FileChooser("Save Topology", File(), String("*.txt"), true, false, this);
+  chooser->launchAsync(saveFlags, [this](FileChooser const& chooser) {
+    FB_LOG_ENTRY_EXIT();
+    auto file = chooser.getResult();
+    delete& chooser;
+    if (file.getFullPathName().length() == 0) return;
+    file.replaceWithText(HostContext()->Topo()->static_->PrintTopology());
+  });
 }

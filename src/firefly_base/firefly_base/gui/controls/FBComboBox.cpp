@@ -53,9 +53,9 @@ FBAutoSizeComboBox::FixedWidth(int /*height*/) const
 }
 
 FBGUIParamComboBox::
-FBGUIParamComboBox(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
+FBGUIParamComboBox(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed):
 FBAutoSizeComboBox(param->static_.ItemsNonRealTime().MakePopupMenu(param->topoIndices.module.index)),
-FBGUIParamControl(plugGUI, param)
+FBGUIParamControl(plugGUI, param, isThemed)
 {
   SetValueNormalized(plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex));
 }
@@ -97,9 +97,9 @@ FBGUIParamComboBox::valueChanged(Value& /*value*/)
 }
 
 FBParamComboBox::
-FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param) :
-  FBAutoSizeComboBox(param->static_.ItemsNonRealTime().MakePopupMenu(param->topoIndices.module.index)),
-  FBParamControl(plugGUI, param)
+FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed) :
+FBAutoSizeComboBox(param->static_.ItemsNonRealTime().MakePopupMenu(param->topoIndices.module.index)),
+FBParamControl(plugGUI, param, isThemed)
 {
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex));
 }
@@ -113,7 +113,7 @@ FBParamComboBox::parentHierarchyChanged()
 String
 FBParamComboBox::getTooltip()
 {
-  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
+  return _plugGUI->GetTooltipForAudioParam(this);
 }
 
 void

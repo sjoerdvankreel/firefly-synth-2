@@ -5,6 +5,7 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 #include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 
+#include <map>
 #include <vector>
 #include <functional>
 
@@ -21,6 +22,13 @@ class FBGlobalBlockParamState;
 enum class FBPlugFormat { VST3, CLAP };
 std::string 
 FBPlugFormatToString(FBPlugFormat format);
+
+// For theming non module related stuff.
+struct FBThemedComponentInfo final
+{
+  std::string id = {};
+  std::string name = {};
+};
 
 struct FBPlugVersion final
 {
@@ -121,6 +129,7 @@ struct FBStaticTopo
 
   std::vector<FBStaticModule> modules = {};
   std::vector<FBTopoIndices> moduleProcessOrder = {};
+  std::map<int, FBThemedComponentInfo> themedComponents = {};
 
   int exchangeStateSize = {};
   FBHostExchangeAddrSelector hostExchangeAddr = {};
@@ -128,4 +137,5 @@ struct FBStaticTopo
 
   virtual ~FBStaticTopo() {}
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
+  std::string PrintTopology() const;
 };

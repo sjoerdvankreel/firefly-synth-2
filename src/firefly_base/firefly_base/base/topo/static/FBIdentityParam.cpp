@@ -2,6 +2,7 @@
 
 bool FBIdentityParamNonRealTime::IsItems() const { return false; }
 bool FBIdentityParamNonRealTime::IsStepped() const { return false; }
+bool FBIdentityParamNonRealTime::DisplayAsBipolar() const { return displayAsBipolar; }
 int FBIdentityParamNonRealTime::ValueCount() const { return 0; }
 int FBIdentityParamNonRealTime::ValueOffset() const { return 0; }
 FBEditType FBIdentityParamNonRealTime::GUIEditType() const { return FBEditType::Linear; }

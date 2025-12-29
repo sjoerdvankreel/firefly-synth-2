@@ -101,7 +101,9 @@ public:
   void SetUserScalePlain(double scale);
 
   std::string const& PatchName() const;
+  std::string const& ThemeName() const;
   void SetPatchName(std::string const& name);
+  void SetThemeName(std::string const& name);
   bool IsPatchLoaded() const { return _isPatchLoaded; }
   
   void ShowOnlineManual() const;

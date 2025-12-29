@@ -15,7 +15,7 @@ std::vector<int> FFEnvMakeMSEGSnapXCounts();
 std::vector<int> FFEnvMakeMSEGSnapYCounts();
 std::vector<FBBarsItem> FFEnvMakeBarsItems();
 
-inline int constexpr FFEnvStageCount = 15;
+inline int constexpr FFEnvStageCount = 16;
 
 // Per-stage.
 inline int constexpr FFEnvMinBarsNum = 1;

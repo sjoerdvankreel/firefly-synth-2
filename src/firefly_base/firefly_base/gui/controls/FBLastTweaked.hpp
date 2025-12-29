@@ -37,6 +37,7 @@ public:
   ~FBLastTweakedTextBox();
   FBLastTweakedTextBox(FBPlugGUI* plugGUI, int fixedWidth);
 
+  void paint(juce::Graphics& g) override;
   void textEditorFocusLost(juce::TextEditor&) override;
   void textEditorTextChanged(juce::TextEditor&) override;
   void textEditorReturnKeyPressed(juce::TextEditor&) override {}

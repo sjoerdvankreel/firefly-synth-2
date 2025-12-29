@@ -5,21 +5,21 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBImageComponent.hpp>
-#include <firefly_base/gui/components/FBSectionComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
+#include <firefly_base/gui/components/FBThemingComponent.hpp>
 
 using namespace juce;
 
 Component*
 FFMakeHeaderGUI(FFPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1, 1 } }, std::vector<int> { { 0, 0 } });
-  grid->Add(0, 0, 2, 1, plugGUI->StoreComponent<FBImageComponent>(68, "header.png", RectanglePlacement::Flags::centred));
-  std::string versionAndType = FF_PLUG_VERSION;
-  if (plugGUI->HostContext()->Topo()->static_->meta.isFx)
-    versionAndType += " FX";
-  grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(versionAndType));
+  FB_LOG_ENTRY_EXIT();  
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1, 1 } }, std::vector<int> { { 0, 0, 0 } });
+  grid->Add(0, 0, 2, 1, plugGUI->StoreComponent<FBImageComponent>(plugGUI, 56, "header.png", RectanglePlacement::Flags::centred));
+  bool isFX = plugGUI->HostContext()->Topo()->static_->meta.isFx;
+  grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(isFX? FFPlugNameFX: FFPlugNameInst));
   auto format = plugGUI->HostContext()->Topo()->static_->meta.format;
   std::string formatName = format == FBPlugFormat::VST3 ? "VST3" : "CLAP";
 #if FB_APPLE_AARCH64
@@ -27,8 +27,9 @@ FFMakeHeaderGUI(FFPlugGUI* plugGUI)
 #else
   std::string archName = "X64";
 #endif
-  grid->Add(1, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(formatName + " " + archName));
-  grid->MarkSection({ { 0, 0 }, { 2, 2 } });
-  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBSectionComponent>(section);
+  grid->Add(1, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(formatName + " " + archName + " " + FF_PLUG_VERSION));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBFillerComponent>(5, 1));
+  grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::BackgroundAndBorder, 5.0f, 2);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI->HostContext()->Topo(), (int)FFThemedComponentId::Header, margin);
 };

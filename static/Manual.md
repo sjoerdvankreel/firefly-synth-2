@@ -157,17 +157,17 @@ UP-Add results in gain modulation from 100% to 200%, since the source is viewed 
 BP-Add results in gain modulation from 0% to 200%, since the source is viewed as [-100%..100%].
 
 Here's the list:
-* UP AdU: add unipolar source to unipolar target.
-* UP AdB: add unipolar source to bipolar target.
+* UP Add UP: add unipolar source to unipolar target.
+* UP Add BP: add unipolar source to bipolar target.
 * UP Mul: multiply source by target.
-* UP Stk: stack unipolar source to target. Takes headroom into account, so non-clipping.
-* UP Rmp: unipolar remap.
-* BP AdB: add bipolar source to bipolar target.
-* BP AdU: add bipolar source to unipolar target.
+* UP Stack: stack unipolar source to target. Takes headroom into account, so non-clipping.
+* UP Remap: unipolar remap.
+* BP Add BP: add bipolar source to bipolar target.
+* BP Add UP: add bipolar source to unipolar target.
 * BP Mul: bipolar-multiply source by target.
-* BP Stk: stack bipolar source to target. Takes headroom into account, so non-clipping.
-* BP Rmp: bipolar remap.
-* Ph Wrp: phase wrap.
+* BP Stack: stack bipolar source to target. Takes headroom into account, so non-clipping.
+* BP Remap: bipolar remap.
+* Phs Wrap: phase wrap.
 
 Now there's some values "missing" (f.e. unipolar-stack-to-bipolar), but i found i never missed those.<br/>
 Should these be needed, no problem in adding them later on.<br/>
@@ -290,6 +290,7 @@ For audio parameters:
 * Stored In: indicates if this parameter is saved within the patch or the DAW session only.
 * Current audio engine min/max values across all voices (they are equal for global parameters)
 * Modulated by: indicates if this parameter is currently modulated by direct-access controls, the matrix, or the global unison.
+* Disabled by: if a parameter is disabled, shows all possible other parameters that might have disabled it.
 * Edit type: indicates if a parameter is skewed in the UI only.<br/>
 For example envelope stage time is edited as skewed/logarithmic for more precise control,<br/>
 but automation to that parameter is linear from 0 to 10 seconds.
@@ -300,7 +301,12 @@ For example filter frequency ranges from 20 to 20000 Hz, but a host automation e
 Right-click on some empty space to show the generic context menu.
 * Undo/redo options.
 * Show manual: shows this document.
+* Show log folder: open the directory containing the logfile.
+* Show plugin folder: open the plugin root folder (stores themes and presets alongside the plugin binary itself).
 * Copy/paste patch: allows copy/paste across plugin instances.
+* Dump topology: save a description of the plugins internals to a text file.<br/>
+This is primarily meant to help in creating theme files which rely on internal identifiers which are printed in this document.<br/>
+Other than that it's just a dynamically generated overview of the plug's modules and parameters.<br/>
 
 Right-click on a GUI parameter (f.e. "Show Modulation Bounds"):
 * Set to default.
@@ -312,6 +318,78 @@ Right-click on an audio parameter:
 * Set to patch: set to value at the last time load/reload/init/load preset was used in the current session.
 * Show manual: shows this document at the relevant section.
 * Host menu options: DAW specific but typically contains stuff like "add automation lane".
+
+## Theming
+This section is only of interest if you want to customize theming.<br/>
+FF2 themes are folders containing a json file named theme.json and an image file named header.png.<br/>
+Right-click to show the generic context menu and click "show plugin folder" to open the plugin directory.<br/>
+Themes are in Contents/Resources/ui/themes.<br/>
+
+You can edit an existing theme or just copy-paste a folder and edit to your likings.<br/>
+FF2 will pick up whatever is in the themes folder.<br/>
+Theme folder names are NOT the unique identifier of a theme.<br/>
+That's the "name" field in theme.json. This field should be unique across all themes.
+
+When editing themes, the logfile provides reasonable feedback for when stuff's not working.<br/>
+Things like "failed to parse json at line x, column y", cannot find color scheme "abc", cannot find module "xyz" etc.<br/>
+Right-click to show the generic context menu and click "show log folder" to view it.<br/>
+This of course assumes you didn't get the theming in such a bad state that the gui won't display correctly at all.<br/>
+Otherwise, revert to last-known-good and work from there.
+
+Theming is based on module/section/parameter identifiers (GUIDs) instead of names.<br/>
+Reason: i want to be able to switch out the display names for something else and not break the themes.<br/>
+This is actually the same way that patches work, too.<br/>
+For an overview of all internal identifiers (themeable sections, modules, parameters),<br/>
+right-click to show the generic context menu and click "dump topology".
+
+The default themefile is reasonably well documented.<br/>
+It contains the internal identifiers of all modules and not-module related themeable sections.<br/>
+It also contains some examples of how to override parameters within a module, but it does not contain all parameter identifiers.<br/>
+For that, use the "dump topology" menu. Default theme: [theme.json](/resources/ui/themes/Default/theme.json).
+
+### Theme JSON structure 
+The main structure is set up as follows:
+* 1 default color scheme
+* Any number of named color schemes which can selectively override fields from the default
+* Named "themed components" not related to a module (like top graph, last tweaked etc), which can select a color scheme
+* Modules which can selectively override a scheme, either for all slots or individual slots ("All Oscis" / "Osci 2")
+* Parameters (both audio and GUI-only) which can selectively override a scheme within a module ("All FM indices" / "FM Index 2")
+
+And these are the field details:
+* name: unique id / gui display name
+* graphSchemeFollowsModule:<br/>
+If true, main graphs are painted according to their module colors.<br/>
+If false, according to Graphs component colors.
+* unisonSchemeFollowsModule:<br/>
+If true, global unison parameters are painted according to their module colors.<br/>
+If false, according to Unison module colors.
+* defaultColorScheme:<br/>
+This is the fallback/default scheme.<br/>
+All colors are specified as ARGB hex.
+  * graphAlpha: transparancy for filled graphs.
+  * dimDisabled: dim factor for disabled parameters and other stuff.
+  * text: this is the text color for labels etc.
+  * primary: what makes it stand out. Used for various things like graphs, buttons, combo texts, sliders etc.
+  * background: background for the GUI as a whole and pop-up windows.
+  * meterFill/meterTrack/meterAlert: for the meters in the output section.
+  * graphGrid/graphBackground: only used for painting graphs (any of them, main graphs, MSEG, matrix and unison graphs).
+  * sectionBorder/sectionBackground: mainly used for module sections, but other stuff as well.
+  * paramSecondary/paramBackground: used for menu separators, check/comboboxes, slider tracks, and more.
+  * paramHighlight: anything that needs highlighting. "Show mod bounds", "Engine Knob Visual" etc.
+  * alertWindowPrimary: when a messagebox pops up.
+* colorSchemes: named color schemes. Can override anything from the default.
+* componentColors: named components (top graphs, last tweaked etc). Can override default color scheme.
+  * componentId: component identifier, see topology.
+  * colorScheme: component override scheme.
+* moduleColors: named modules (osci, vfx, gfx, matrix, unison etc). Can override default color scheme.
+  * moduleId: module identifier, see topology.
+  * colorScheme: module override scheme.
+  * moduleSlot: -1 for all ("All oscis"), >= 0 for selective ("Osci 2").
+  * audioParamColorSchemes/guiParamColorSchemes:<br/>
+  Override scheme for parameters within a module.
+    * paramId: param identifier, see topology.
+    * colorScheme: parameter override scheme within a module.
+    * paramSlot: -1 for all ("All FM Indices"), >= 0 for selective ("FM Index 2").
 
 ## Top section
 Contains everything that is not directly related to generating audio.
@@ -652,6 +730,11 @@ In particular the voice amplitude envelope.
 * X/Y: freeze (sample and hold) the signal in either the time or amplitude dimension.<br/>
 With color to full-on white noise and damping to zero this pretty much replicates the noise osci from infernal synth.
 
+A note about string excitation and bowed-strings:<br/>
+This works well for mid-range pitch, but once you start to play real high notes,<br/>
+the feedback noise level basically takes over.<br/>
+You can combat this by applying a keyboard-tracking high-pass filter.
+
 Filter controls:<br/>
 The plugin is set up such that the filter controls affect all of the initial excitation, <br/>
 the damping factor, and on the feedback path, the feedback factor and the re-excite amount.<br/>
@@ -907,7 +990,7 @@ Bipolar preserves the vertical center point, unipolar does not.
 
 <a id="FC1DC75A-200C-4465-8CBE-0100E2C8FAF2"></a>
 ## Envelope
-15-stage per-voice envelope generator with customizable loop and release points.
+16-stage per-voice envelope generator with customizable loop and release points.
 
 ![image](screenshot_manual_env.png)
 

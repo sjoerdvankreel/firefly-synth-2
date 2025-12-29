@@ -5,7 +5,7 @@
 #include <firefly_base/base/state/main/FBGraphRenderState.hpp>
 
 #include <firefly_base/gui/components/FBGridComponent.hpp>
-#include <firefly_base/gui/components/FBSectionComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBModuleGraphComponent.hpp>
 #include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
 #include <firefly_base/gui/components/FBModuleGraphDisplayComponent.hpp>
@@ -36,8 +36,8 @@ _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get(), _fixedToRu
   {
     _grid = std::make_unique<FBGridComponent>(true, 1, 1);
     _grid->Add(0, 0, _display.get());
-    _section = std::make_unique<FBSectionComponent>(_grid.get());
-    addAndMakeVisible(_section.get());
+    _margin = std::make_unique<FBMarginComponent>(true, true, true, true, _grid.get());
+    addAndMakeVisible(_margin.get());
   }
   resized();
 }
@@ -45,10 +45,10 @@ _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get(), _fixedToRu
 void
 FBModuleGraphComponent::resized()
 {
-  if (_section)
+  if (_margin)
   {
-    _section->setBounds(getLocalBounds());
-    _section->resized();
+    _margin->setBounds(getLocalBounds());
+    _margin->resized();
   }
   else if (_display)
   {
@@ -119,9 +119,7 @@ FBModuleGraphComponent::paint(Graphics& /*g*/)
   int staticIndex = topo->modules[_tweakedModuleByUI].topoIndices.index;
   FB_ASSERT(topo->static_->modules[staticIndex].graphParticipatesInMain == (_fixedToRuntimeModuleIndex == -1));
 
-  _data->bipolar = false;
   _data->drawMarkersSelector = {};
-  _data->drawClipBoundaries = false;
   _data->skipDrawOnEqualsPrimary = true;
   _data->fixedGraphIndex = _fixedToGraphIndex;
   _data->guiRenderType = _getCurrentRenderType();

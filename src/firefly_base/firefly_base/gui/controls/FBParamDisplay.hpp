@@ -18,7 +18,8 @@ public:
   FBParamDisplayLabel(
     FBPlugGUI* plugGUI,
     FBRuntimeParam const* param,
-    std::string const& maxWidthText);
+    std::string const& maxWidthText,
+    bool isThemed = true);
 
   void parentHierarchyChanged() override;
   int FixedWidth(int height) const override;
@@ -34,7 +35,8 @@ public FBParamControl
 public:
   FBParamDisplayMeter(
     FBPlugGUI* plugGUI,
-    FBRuntimeParam const* param);
+    FBRuntimeParam const* param,
+    bool isThemed = true);
 
   void paint(juce::Graphics& g) override;
   void parentHierarchyChanged() override;

@@ -20,7 +20,7 @@ FFEnvTypeToString(FFEnvType type)
   switch (type)
   {
   case FFEnvType::Off: return "Off";
-  case FFEnvType::Exp: return "Exp";
+  case FFEnvType::Exp: return "Expo";
   case FFEnvType::Linear: return "Linear";
   default: FB_ASSERT(false); return "";
   }
@@ -92,7 +92,7 @@ FFMakeEnvTopo()
   result->name = "Env";
   result->slotCount = FFEnvCount;
   result->graphCount = FFEnvCount;
-  result->slotFormatterOverrides = true;
+  result->slotFormatterOverrides = true; 
   result->graphRenderer = FFEnvRenderGraph;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
@@ -103,7 +103,7 @@ FFMakeEnvTopo()
   result->slotFormatter = [](FBStaticTopo const&, int s) { return s == FFAmpEnvSlot ? "Amp Env" : "Env " + std::to_string(s); };
   auto selectGuiModule = [](auto& state) { return &state.env; };
   auto selectModule = [](auto& state) { return &state.voice.env; };
-
+    
   auto& type = result->params[(int)FFEnvParam::Type];
   type.mode = FBParamMode::Block;
   type.name = "Type";
@@ -114,7 +114,7 @@ FFMakeEnvTopo()
   type.List().items = {
     { "{6F0DA153-9544-4EFB-BC6D-88F761583F39}", "Off" },
     { "{BD01A08E-5639-4DB3-87CD-3276BCDB54E1}", "Linear" },
-    { "{30BF083A-81F1-477C-BC6B-5AA4DFB111A8}", "Exp" } };
+    { "{30BF083A-81F1-477C-BC6B-5AA4DFB111A8}", "Expo" } };
   type.defaultTextSelector = [](int /*mi*/, int ms, int /*ps*/) { return ms == FFAmpEnvSlot ? "Linear" : "Off"; }; 
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);

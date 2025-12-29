@@ -14,6 +14,8 @@
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBThemingComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
 
@@ -81,8 +83,6 @@ FFEffectAdjustParamModulationGUIBounds(
 static Component*
 MakeEffectSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
-
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 1 });
   auto on = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::On, 0 } });
@@ -97,15 +97,13 @@ MakeEffectSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlo
   auto lastKeySmoothTime = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::LastKeySmoothTime, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lastKeySmoothTime));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lastKeySmoothTime, Slider::SliderStyle::LinearHorizontal));
-  grid->MarkSection({ { 0, 0 }, { 2, 4 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  grid->MarkSection({ { 0, 0 }, { 2, 4 } }, FBGridSectionMark::BackgroundAndAlternate);
+  return grid;
 }
 
 static Component*
 MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot, int block)
 {
-  FB_LOG_ENTRY_EXIT();
-
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
   auto kind = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, block } });
@@ -183,14 +181,13 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lfoAmt));
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lfoAmt, Slider::SliderStyle::RotaryVerticalDrag));
 
-  grid->MarkSection({ { 0, 0 }, { 2, 8 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  grid->MarkSection({ { 0, 0 }, { 2, 8 } }, block % 2 != 0? FBGridSectionMark::BackgroundAndAlternate : FBGridSectionMark::BackgroundAndBorder);
+  return grid;
 }
 
 static Component*
 MakeEffectTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
-  FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
   columnSizes.push_back(1);
   for (int i = 0; i < FFEffectBlockCount; i++)
@@ -199,7 +196,8 @@ MakeEffectTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   grid->Add(0, 0, MakeEffectSectionMain(plugGUI, moduleType, moduleSlot));
   for(int i = 0; i < FFEffectBlockCount; i++)
     grid->Add(0, 1 + i, MakeEffectSectionBlock(plugGUI, moduleType, moduleSlot, i));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, moduleSlot, margin);
 }
 
 Component*

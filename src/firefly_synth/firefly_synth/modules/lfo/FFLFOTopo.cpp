@@ -193,7 +193,7 @@ FFMakeLFOTopo(bool global)
   opType.slotFormatter = FFFormatBlockSlot;
   opType.id = prefix + "{B60CF69F-B21F-4BB6-891A-9E1493D0E40E}";
   opType.description = "LFO Operator";
-  opType.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "UP AdU" : "Off"; };
+  opType.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "UP Add UP" : "Off"; };
   opType.type = FBParamType::List;
   opType.List().items = {
     { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", FFModulationOpTypeToString(FFModulationOpType::Off) },
@@ -399,8 +399,8 @@ FFMakeLFOTopo(bool global)
     { "{D057104A-C083-4BA4-9799-63307147B2E2}", "Off" },
     { "{D1FD1E7B-E20F-47DA-9FB8-F03DE80BB109}", "UP Scale" },
     { "{1556925C-34F8-44F7-A1C9-62E4C4A40265}", "BP Scale" },
-    { "{ECCADB9A-4735-4916-93B0-BB179C78247B}", "UP Exp" },
-    { "{E2E3B133-B375-4F83-BAE3-EEAD6FF10FF8}", "BP Exp" } };
+    { "{ECCADB9A-4735-4916-93B0-BB179C78247B}", "UP Expo" },
+    { "{E2E3B133-B375-4F83-BAE3-EEAD6FF10FF8}", "BP Expo" } };
   auto selectSkewAXMode = [](auto& module) { return &module.block.skewAXMode; };
   skewAXMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAXMode);
   skewAXMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAXMode);
@@ -437,8 +437,8 @@ FFMakeLFOTopo(bool global)
   skewAYMode.type = FBParamType::List;
   skewAYMode.List().items = {
     { "{ADE99968-98D3-4314-BDE4-09A440FADB45}", "Off" },
-    { "{077725EA-4293-48A3-8D1B-6EE452327255}", "UP Exp" },
-    { "{47B2CD10-27B4-40BE-AD54-053F4DCBCFA0}", "BP Exp" } };
+    { "{077725EA-4293-48A3-8D1B-6EE452327255}", "UP Expo" },
+    { "{47B2CD10-27B4-40BE-AD54-053F4DCBCFA0}", "BP Expo" } };
   auto selectSkewAYMode = [](auto& module) { return &module.block.skewAYMode; };
   skewAYMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAYMode);
   skewAYMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAYMode);
@@ -466,7 +466,7 @@ FFMakeLFOTopo(bool global)
 
   auto& outputAll = result->cvOutputs[(int)FFLFOCVOutput::All];
   outputAll.slotCount = 1;
-  outputAll.name = "";
+  outputAll.name = "All";
   outputAll.id = "{5A1F30AC-8B2C-47E2-88D2-92E16CA743A4}";
   outputAll.globalAddr = [](int ms, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gLFO[ms].outputAll; };
   outputAll.voiceAddr = [](int ms, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vLFO[ms].outputAll; };

@@ -65,7 +65,7 @@ FFMakeOsciTopo()
   result->params.resize((int)FFOsciParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osci; });
   auto selectModule = [](auto& state) { return &state.voice.osci; };
-
+   
   auto& type = result->params[(int)FFOsciParam::Type];
   type.mode = FBParamMode::Block;
   type.name = "Type";
@@ -152,13 +152,14 @@ FFMakeOsciTopo()
 
   auto& pan = result->params[(int)FFOsciParam::Pan];
   pan.mode = FBParamMode::Accurate;
-  pan.defaultText = "50";
+  pan.defaultText = "0";
   pan.name = "Pan";
   pan.slotCount = 1;
   pan.unit = "%";
   pan.id = "{DDB77A46-7D26-442C-8A37-2BD231C8F8D8}";
   pan.description = "Stereo Panning";
   pan.type = FBParamType::Identity;
+  pan.Identity().displayAsBipolar = true;
   auto selectPan = [](auto& module) { return &module.acc.pan; };
   pan.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPan);
   pan.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectPan);
@@ -220,8 +221,8 @@ FFMakeOsciTopo()
   auto& uniCount = result->params[(int)FFOsciParam::UniCount];
   uniCount.mode = FBParamMode::Block;
   uniCount.defaultText = "1";
-  uniCount.display = "Uni";
-  uniCount.name = "Uni Count";
+  uniCount.display = "Unison";
+  uniCount.name = "Unison Count";
   uniCount.slotCount = 1;
   uniCount.id = "{60313673-95FE-4B6D-99A6-B628ACDE6D56}";
   uniCount.description = "Osc Unison Voice Count";
@@ -237,7 +238,7 @@ FFMakeOsciTopo()
   auto& uniOffset = result->params[(int)FFOsciParam::UniOffset];
   uniOffset.mode = FBParamMode::VoiceStart;
   uniOffset.defaultText = "50";
-  uniOffset.display = "Phs";
+  uniOffset.display = "Phase";
   uniOffset.name = "Uni Phase";
   uniOffset.slotCount = 1;
   uniOffset.unit = "%";
@@ -269,7 +270,7 @@ FFMakeOsciTopo()
   auto& uniDetune = result->params[(int)FFOsciParam::UniDetune];
   uniDetune.mode = FBParamMode::Accurate;
   uniDetune.defaultText = "33";
-  uniDetune.display = "Dtn";
+  uniDetune.display = "Detune";
   uniDetune.name = "Uni Detune";
   uniDetune.slotCount = 1;
   uniDetune.unit = "%";
@@ -285,7 +286,7 @@ FFMakeOsciTopo()
   auto& uniSpread = result->params[(int)FFOsciParam::UniSpread];
   uniSpread.mode = FBParamMode::Accurate;
   uniSpread.defaultText = "50";
-  uniSpread.display = "Sprd";
+  uniSpread.display = "Spread";
   uniSpread.name = "Uni Spread";
   uniSpread.slotCount = 1;
   uniSpread.unit = "%";
@@ -301,7 +302,7 @@ FFMakeOsciTopo()
   auto& uniBlend = result->params[(int)FFOsciParam::UniBlend];
   uniBlend.mode = FBParamMode::Accurate;
   uniBlend.defaultText = "100";
-  uniBlend.display = "Blnd";
+  uniBlend.display = "Blend";
   uniBlend.name = "Uni Blend";
   uniBlend.slotCount = 1;
   uniBlend.unit = "%";
@@ -445,8 +446,8 @@ FFMakeOsciTopo()
   auto& waveHSMode = result->params[(int)FFOsciParam::WaveHSMode];
   waveHSMode.mode = FBParamMode::Block;
   waveHSMode.defaultText = "Off";
-  waveHSMode.name = "HardSync Mode";
-  waveHSMode.display = "H.Sync";
+  waveHSMode.name = "Hard Sync Mode";
+  waveHSMode.display = "HSync";
   waveHSMode.slotFormatDisplay = true;
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";
@@ -630,7 +631,7 @@ FFMakeOsciTopo()
   fmMode.type = FBParamType::List;
   fmMode.List().items = {
     { "{8DF1F983-F892-4B5A-B784-C4222563E5BC}", "Linear" },
-    { "{5DE278F5-21B2-4DD5-AB5A-BBF43BDFDD7F}", "Exp" } };
+    { "{5DE278F5-21B2-4DD5-AB5A-BBF43BDFDD7F}", "Exponential" } };
   auto selectFMMode = [](auto& module) { return &module.block.fmMode; };
   fmMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFMMode);
   fmMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFMMode);

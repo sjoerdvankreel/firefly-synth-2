@@ -55,13 +55,13 @@ FFMakeVMixTopo()
   result->params.resize((int)FFVMixParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.vMix; });
   auto selectModule = [](auto& state) { return &state.voice.vMix; };
-
+   
   auto& amp = result->params[(int)FFVMixParam::Amp];
   amp.mode = FBParamMode::Accurate;
   amp.defaultText = "100";
   amp.name = "Amp";
   amp.slotCount = 1;
-  amp.unit = "%";
+  amp.unit = "%"; 
   amp.id = "{02B3BE49-9ECC-4289-9488-CAB4252B6E9D}";
   amp.description = "Voice Amplitude";
   amp.type = FBParamType::Linear;
@@ -147,7 +147,7 @@ FFMakeVMixTopo()
   osciToOsciMix.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
   osciToOsciMix.name = "Osc To Osc Mix";
   osciToOsciMix.slotCount = FFOsciCount;
-  osciToOsciMix.unit = "%";
+  osciToOsciMix.unit = "%";    
   osciToOsciMix.id = "{3EF9D095-1F5E-45BD-8B9E-55EEC321AA43}";
   osciToOsciMix.description = "Route Osc To Mix Stage";
   osciToOsciMix.slotFormatter = FormatOsciToOsciMixSlot;

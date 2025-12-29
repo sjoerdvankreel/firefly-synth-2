@@ -118,8 +118,6 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   LFOGraphRenderData<Global> renderData = {};
   auto moduleType = Global ? FFModuleType::GLFO : FFModuleType::VLFO;
 
-  graphData->bipolar = false;
-  graphData->drawClipBoundaries = false;
   graphData->skipDrawOnEqualsPrimary = false; // need exchange state for all sub-lfos
   graphData->drawMarkersSelector = [](int) { return true; };
   renderData.graphData = graphData;
@@ -144,6 +142,10 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   for (int i = 0; i <= FFLFOBlockCount; i++)
   {
     FBRenderModuleGraph<Global, false>(renderData, i);
+    graphData->graphs[i].moduleSlot = moduleSlot;
+    graphData->graphs[i].moduleIndex = (int)moduleType;
+    graphData->graphs[i].bipolar = false;
+    graphData->graphs[i].drawClipBoundaries = false;
     if (i == FFLFOBlockCount)
     {
       graphData->graphs[i].title = moduleName;

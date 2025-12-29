@@ -142,8 +142,6 @@ void
 FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
 {
   EchoGraphRenderData<Global> renderData = {};
-  graphData->bipolar = true;
-  graphData->drawClipBoundaries = true;
   graphData->skipDrawOnEqualsPrimary = true;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = [](auto graphData, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
@@ -169,21 +167,37 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
 
   int tapsOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Taps);
   FBRenderModuleGraph<Global, true>(renderData, tapsOrder);
+  graphData->graphs[tapsOrder].moduleSlot = 0;
+  graphData->graphs[tapsOrder].moduleIndex = (int)moduleType;
+  graphData->graphs[tapsOrder].bipolar = true;
+  graphData->graphs[tapsOrder].drawClipBoundaries = true;
   graphData->graphs[tapsOrder].title = FBAsciiToUpper(moduleName + " Taps");
   graphData->graphs[tapsOrder].subtext = IsTapsOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   int feedbackOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Feedback);
   FBRenderModuleGraph<Global, true>(renderData, feedbackOrder);
+  graphData->graphs[feedbackOrder].moduleSlot = 0;
+  graphData->graphs[feedbackOrder].moduleIndex = (int)moduleType;
+  graphData->graphs[feedbackOrder].bipolar = true;
+  graphData->graphs[feedbackOrder].drawClipBoundaries = true;
   graphData->graphs[feedbackOrder].title = FBAsciiToUpper(moduleName + " Fdbk");
   graphData->graphs[feedbackOrder].subtext = IsFeedbackOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   int reverbOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Reverb);
   FBRenderModuleGraph<Global, true>(renderData, reverbOrder);
+  graphData->graphs[reverbOrder].moduleSlot = 0;
+  graphData->graphs[reverbOrder].moduleIndex = (int)moduleType;
+  graphData->graphs[reverbOrder].bipolar = true;
+  graphData->graphs[reverbOrder].drawClipBoundaries = true;
   graphData->graphs[reverbOrder].title = FBAsciiToUpper(moduleName + " Rvrb");
   graphData->graphs[reverbOrder].subtext = IsReverbOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   int allOrder = (int)FFEchoModule::Count;
   FBRenderModuleGraph<Global, true>(renderData, allOrder);
+  graphData->graphs[allOrder].moduleSlot = 0;
+  graphData->graphs[allOrder].moduleIndex = (int)moduleType;
+  graphData->graphs[allOrder].bipolar = true;
+  graphData->graphs[allOrder].drawClipBoundaries = true;
   graphData->graphs[allOrder].title = FBAsciiToUpper(moduleName);
   graphData->graphs[allOrder].subtext = FBAsciiToUpper(Global ? 
     FFGEchoTargetToString((FFGEchoTarget)target) : 

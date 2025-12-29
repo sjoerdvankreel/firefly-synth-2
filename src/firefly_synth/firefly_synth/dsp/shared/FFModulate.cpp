@@ -6,17 +6,17 @@ FFModulationOpTypeToString(FFModulationOpType opType)
   switch (opType)
   {
   case FFModulationOpType::Off: return "Off";
-  case FFModulationOpType::UPAddU: return "UP AdU";
-  case FFModulationOpType::UPAddB: return "UP AdB";
+  case FFModulationOpType::UPAddU: return "UP Add UP";
+  case FFModulationOpType::UPAddB: return "UP Add BP";
   case FFModulationOpType::UPMul: return "UP Mul";
-  case FFModulationOpType::UPStack: return "UP Stk";
-  case FFModulationOpType::UPRemap: return "UP Rmp";
-  case FFModulationOpType::BPAddB: return "BP AdB";
-  case FFModulationOpType::BPAddU: return "BP AdU";
+  case FFModulationOpType::UPStack: return "UP Stack";
+  case FFModulationOpType::UPRemap: return "UP Remap";
+  case FFModulationOpType::BPAddB: return "BP Add BP";
+  case FFModulationOpType::BPAddU: return "BP Add UP";
   case FFModulationOpType::BPMul: return "BP Mul";
-  case FFModulationOpType::BPStack: return "BP Stk";
-  case FFModulationOpType::BPRemap: return "BP Rmp";
-  case FFModulationOpType::PhaseWrap: return "Ph Wrp";
+  case FFModulationOpType::BPStack: return "BP Stack";
+  case FFModulationOpType::BPRemap: return "BP Remap";
+  case FFModulationOpType::PhaseWrap: return "Phs Wrap";
   default: FB_ASSERT(false); return "";
   }
 }

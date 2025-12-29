@@ -17,7 +17,7 @@ std::string
 FFModulationOpTypeToString(FFModulationOpType opType);
 
 inline bool 
-FFModulationOpTypeIsBipolar(FFModulationOpType opType)
+FFModulationOpTypeSourceIsBipolar(FFModulationOpType opType)
 {
   switch (opType)
   {
@@ -35,7 +35,36 @@ FFModulationOpTypeIsBipolar(FFModulationOpType opType)
   case FFModulationOpType::BPRemap:
     return true;
   case FFModulationOpType::Off:
-  default: FB_ASSERT(false); return false;
+    return false;
+  default: 
+    FB_ASSERT(false); 
+    return false;
+  }
+}
+
+inline bool
+FFModulationOpTypeTargetIsBipolar(FFModulationOpType opType)
+{
+  switch (opType)
+  {
+  case FFModulationOpType::UPAddU:
+  case FFModulationOpType::UPMul:
+  case FFModulationOpType::UPStack:
+  case FFModulationOpType::UPRemap:
+  case FFModulationOpType::PhaseWrap:
+  case FFModulationOpType::BPAddU:
+    return false;
+  case FFModulationOpType::UPAddB:
+  case FFModulationOpType::BPAddB:
+  case FFModulationOpType::BPMul:
+  case FFModulationOpType::BPStack:
+  case FFModulationOpType::BPRemap:
+    return true;
+  case FFModulationOpType::Off:
+    return false;
+  default: 
+    FB_ASSERT(false); 
+    return false;
   }
 }
 

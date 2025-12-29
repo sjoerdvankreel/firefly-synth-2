@@ -1,6 +1,7 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
@@ -91,7 +92,8 @@ _fixedWidth(fixedWidth), _plugGUI(plugGUI)
   plugGUI->AddParamListener(this);
   addListener(this);
   setFont(FBGUIGetFont());
-  setIndents(4, 6);
+  setIndents(2, 8);
+  setPopupMenuEnabled(false);
 }
 
 int
@@ -104,6 +106,15 @@ int
 FBLastTweakedTextBox::FixedWidth(int /*height*/) const
 {
   return _fixedWidth;
+}
+
+void 
+FBLastTweakedTextBox::paint(Graphics& g)
+{
+  auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
+  setColour(TextEditor::textColourId, scheme.primary);
+  applyFontToAllText(getFont());
+  TextEditor::paint(g);
 }
 
 void 

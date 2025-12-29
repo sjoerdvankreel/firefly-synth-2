@@ -7,6 +7,16 @@
 #include <map>
 #include <vector>
 
+enum class FBGridSectionMark
+{
+  Background,
+  Border,
+  Alternate,
+  BackgroundAndBorder,
+  BackgroundAndAlternate,
+  AlternateAndAlternate
+};
+
 struct FBGridCell final
 {
   int row = -1;
@@ -18,6 +28,14 @@ struct FBGridSection final
 {
   FBGridCell pos = {};
   FBGridCell span = {};
+};
+
+struct FBGridSectionAndMark final 
+{
+  int marginR = 0;
+  float cornerSize = 3.0f;
+  FBGridSection section = {};
+  FBGridSectionMark mark = {};
 };
 
 struct FBGridChildrenAndSpan final
@@ -39,8 +57,8 @@ public IFBHorizontalAutoSize
   std::vector<int> const _autoSizeColForRow;
 
   juce::Grid _grid = {};
-  std::vector<FBGridSection> _sections = {};
   std::map<FBGridCell, FBGridChildrenAndSpan> _cells = {};
+  std::vector<FBGridSectionAndMark> _sectionsAndMarks = {};
 
   int FixedRowHeight(int row) const;
   int FixedColWidth(int col, int height) const;
@@ -52,10 +70,10 @@ public:
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
 
-  void MarkSection(FBGridSection const& section);
   void Add(int row, int col, juce::Component* child);
   void Remove(int row, int col, juce::Component* child);
   void Add(int row, int col, int rowSpan, int colSpan, juce::Component* child);
+  void MarkSection(FBGridSection const& section, FBGridSectionMark mark = FBGridSectionMark::Background, float cornerSize = 3.0f, int marginR = 0);
 
   FBGridComponent() = delete;
   FBGridComponent(bool rowColGap, int rows, int cols);

@@ -4,22 +4,60 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 FBParamComponent::
-FBParamComponent(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
+FBParamComponent(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed):
 FBParamsDependent(plugGUI, param->topoIndices.param.slot, param->topoIndices.module, param->static_.dependencies),
+_isThemed(isThemed),
 _param(param) {}
+
+FBColorScheme const* 
+FBParamComponent::GetScheme(FBTheme const& theme) const
+{  
+  if (!_isThemed)
+    return nullptr;
+  int rtModuleIndex = Param()->runtimeModuleIndex;
+  auto moduleIter = theme.moduleColors.find(rtModuleIndex);
+  if (moduleIter != theme.moduleColors.end())
+  {
+    int rtParamIndex = Param()->runtimeParamIndex;
+    auto paramIter = moduleIter->second.audioParamColorSchemes.find(rtParamIndex);
+    if (paramIter == moduleIter->second.audioParamColorSchemes.end())
+      return &theme.colorSchemes.at(moduleIter->second.colorScheme);
+    return &theme.colorSchemes.at(paramIter->second);
+  }
+  return nullptr;
+}
 
 FBGUIParamComponent::
-FBGUIParamComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
+FBGUIParamComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed):
 FBParamsDependent(plugGUI, param->topoIndices.param.slot, param->topoIndices.module, param->static_.dependencies),
+_isThemed(isThemed),
 _param(param) {}
 
+FBColorScheme const*
+FBGUIParamComponent::GetScheme(FBTheme const& theme) const
+{
+  if (!_isThemed)
+    return nullptr;
+  int rtModuleIndex = Param()->runtimeModuleIndex;
+  auto moduleIter = theme.moduleColors.find(rtModuleIndex);
+  if (moduleIter != theme.moduleColors.end())
+  {
+    int rtParamIndex = Param()->runtimeParamIndex;
+    auto paramIter = moduleIter->second.guiParamColorSchemes.find(rtParamIndex);
+    if (paramIter == moduleIter->second.guiParamColorSchemes.end())
+      return &theme.colorSchemes.at(moduleIter->second.colorScheme);
+    return &theme.colorSchemes.at(paramIter->second);
+  }
+  return nullptr;
+}
+
 FBGUIParamControl::
-FBGUIParamControl(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
-FBGUIParamComponent(plugGUI, param) {}
+FBGUIParamControl(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed):
+FBGUIParamComponent(plugGUI, param, isThemed) {}
 
 FBParamControl::
-FBParamControl(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
-FBParamComponent(plugGUI, param) {}
+FBParamControl(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed):
+FBParamComponent(plugGUI, param, isThemed) {}
 
 bool 
 FBParamControl::IsHighlightTweaked() const

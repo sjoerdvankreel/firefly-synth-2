@@ -1,6 +1,7 @@
 #include <firefly_base/gui/components/FBMSEGCanvas.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
@@ -454,8 +455,9 @@ FBMSEGCanvas::paint(Graphics& g)
   auto const outerBounds = getLocalBounds().reduced(MSEGOuterPadding);
   auto const innerBounds = outerBounds.reduced(MSEGInnerPadding);
 
-  g.fillAll(Colours::black);
-  g.setColour(Colour(0xFF181818));
+  auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
+  g.fillAll(scheme.background);
+  g.setColour(scheme.graphBackground); 
   g.fillRoundedRectangle(outerBounds.toFloat(), 2.0f * MSEGInnerPadding);
 
   _totalLengthTime = 0.0;
@@ -478,28 +480,23 @@ FBMSEGCanvas::paint(Graphics& g)
   double w = innerBounds.getWidth();
   double h = innerBounds.getHeight();
 
-  g.setColour(Colours::darkgrey);
+  g.setColour(scheme.graphGrid);
   _currentSnapXScreen.clear();
-  if (_model.xEditMode == FBMSEGXEditMode::Snap)
+  for (int i = 0; i <= _model.snapXCount; i++)
   {
-    for (int i = 0; i <= _model.snapXCount; i++)
-    {
-      float xPosNorm = i / (float)_model.snapXCount;
-      float xPosScreen = xPosNorm * (float)w + MSEGInnerPadding + MSEGOuterPadding;
-      g.drawLine(xPosScreen, (float)y, xPosScreen, (float)(y + h), 1.0f);
-      _currentSnapXScreen.push_back(xPosScreen);
-    }
+    float xPosNorm = i / (float)_model.snapXCount;
+    float xPosScreen = xPosNorm * (float)w + MSEGInnerPadding + MSEGOuterPadding;
+    g.drawLine(xPosScreen, (float)y, xPosScreen, (float)(y + h), 1.0f);
+    _currentSnapXScreen.push_back(xPosScreen);
   }
+
   _currentSnapYScreen.clear();
-  if (_model.yEditMode == FBMSEGYEditMode::Snap)
+  for (int i = 0; i <= _model.snapYCount; i++)
   {
-    for (int i = 0; i <= _model.snapYCount; i++)
-    {
-      float yPosNorm = i / (float)_model.snapYCount;
-      float yPosScreen = yPosNorm * (float)h + MSEGInnerPadding + MSEGOuterPadding;
-      g.drawLine((float)x, yPosScreen, (float)(x + w), yPosScreen, 1.0f);
-      _currentSnapYScreen.push_back(yPosScreen);
-    }
+    float yPosNorm = i / (float)_model.snapYCount;
+    float yPosScreen = yPosNorm * (float)h + MSEGInnerPadding + MSEGOuterPadding;
+    g.drawLine((float)x, yPosScreen, (float)(x + w), yPosScreen, 1.0f);
+    _currentSnapYScreen.push_back(yPosScreen);
   }
 
   Path path = {};
@@ -555,7 +552,7 @@ FBMSEGCanvas::paint(Graphics& g)
 
   if (_currentPointsScreen.size() == 0)
   {
-    g.setColour(Colours::grey);
+    g.setColour(scheme.text.withAlpha(0.5f));
     g.setFont(FBGUIGetFont().withHeight(20.0f));
     g.drawText("OFF", innerBounds, Justification::centred, false);
     return;
@@ -563,11 +560,13 @@ FBMSEGCanvas::paint(Graphics& g)
 
   path.lineTo(_currentPointsScreen[_currentPointsScreen.size() - 1].getX(), zeroPointScreenY);
   path.closeSubPath();
-  g.setColour(_model.enabled ? Colours::grey : Colours::darkgrey);
-  g.strokePath(path, PathStrokeType(1.0f));
-  g.setColour((_model.enabled ? Colours::grey : Colours::darkgrey).withAlpha(0.67f));
+  
+  auto fillColor = scheme.primary.darker(_model.enabled ? 0.0f : scheme.dimDisabled);
+  g.setColour(fillColor.withAlpha(scheme.graphAlpha));
   g.fillPath(path);
-
+  g.setColour(fillColor);
+  g.strokePath(path, PathStrokeType(1.0f));
+   
   if (_model.looping && _currentPointsScreen.size() > 0)
   {
     float dashes[2] = { 4, 2 };

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBTheme.hpp>
+
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class FBParamSlider;
@@ -8,12 +10,14 @@ class FBParamSlider;
 class FBLookAndFeel:
 public juce::LookAndFeel_V4
 {
+  FBTheme _theme = {};
+
   void DrawLinearSliderExchangeThumb(
-    juce::Graphics& g, FBParamSlider& slider, 
-    int y, int height, float exchangeValue);
+    juce::Graphics& g, FBParamSlider& slider, FBColorScheme const& scheme,
+    float thumbW, float thumbH, float thumbY, float exchangeValue);
 
   void DrawRotarySliderExchangeThumb(
-    juce::Graphics& g, FBParamSlider& slider,
+    juce::Graphics& g, FBParamSlider& slider, FBColorScheme const& scheme,
     int x, int y, int width, int height,
     float rotaryStartAngle, float rotaryEndAngle, 
     float exchangeValue);
@@ -22,10 +26,17 @@ public juce::LookAndFeel_V4
     juce::TabBarButton& button, juce::Graphics& g,
     bool isMouseOver, bool isMouseDown,
     bool toggleState, bool centerText,
-    std::string const& text,
+    bool isSeparator, std::string const& text,
     juce::Rectangle<int> const& activeArea);
 
 public:  
+
+  FBColorScheme const& FindColorSchemeFor(
+    juce::Component const& c) const;
+
+  void SetTheme(FBTheme const& theme);
+  FBTheme const& Theme() const { return _theme; }
+
   juce::BorderSize<int> getLabelBorderSize(
     juce::Label&) override;
 
@@ -41,6 +52,31 @@ public:
   void drawLabel(
     juce::Graphics&, juce::Label&) override;
 
+  void fillTextEditorBackground(
+    juce::Graphics& g, int width, int height, juce::TextEditor& te) override;
+
+  void drawTextEditorOutline(
+    juce::Graphics& g, int width, int height, juce::TextEditor& te) override;
+
+  void drawPopupMenuBackgroundWithOptions(
+    juce::Graphics& g, 
+    int width, int height, 
+    const juce::PopupMenu::Options& options) override;
+
+  void drawPopupMenuItemWithOptions(
+    juce::Graphics& g, const juce::Rectangle<int>& area,
+    bool isHighlighted,
+    const juce::PopupMenu::Item& item,
+    const juce::PopupMenu::Options& options) override;
+
+  void drawPopupMenuItem(
+    juce::Graphics& g, const juce::Rectangle<int>& area,
+    const bool isSeparator, const bool isActive,
+    const bool isHighlighted, const bool isTicked,
+    const bool hasSubMenu, const juce::String& text,
+    const juce::String& shortcutKeyText,
+    const juce::Drawable* icon, const juce::Colour* const textColourToUse) override;
+
   juce::Rectangle<int> getTooltipBounds(
     const juce::String& tipText, 
     juce::Point<int> screenPos, 
@@ -49,6 +85,9 @@ public:
   void drawTooltip(
     juce::Graphics& g, const juce::String& text,
     int width, int height) override;
+
+  void drawTabbedButtonBarBackground(
+    juce::TabbedButtonBar& b, juce::Graphics&) override;
 
   void drawTabButton(
     juce::TabBarButton& button, juce::Graphics& g,

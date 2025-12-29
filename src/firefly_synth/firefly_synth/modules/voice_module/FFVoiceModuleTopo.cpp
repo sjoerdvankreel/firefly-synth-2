@@ -27,7 +27,7 @@ FFMakeVoiceModuleTopo()
   coarse.mode = FBParamMode::Accurate;
   coarse.defaultText = "0";
   coarse.name = "Coarse";
-  coarse.slotCount = 1;
+  coarse.slotCount = 1; 
   coarse.unit = "Semitones";
   coarse.description = "Coarse Pitch";
   coarse.id = "{64019FB1-6EE2-4FF5-8D28-F6B692B25EFB}";
@@ -177,7 +177,7 @@ FFMakeVoiceModuleTopo()
   portaSectionAmpAttack.mode = FBParamMode::VoiceStart;
   portaSectionAmpAttack.defaultText = "50";
   portaSectionAmpAttack.name = "Porta Sect Amp Att";
-  portaSectionAmpAttack.display = "Amp Att";
+  portaSectionAmpAttack.display = "Sect Att";
   portaSectionAmpAttack.slotCount = 1;
   portaSectionAmpAttack.unit = "%";
   portaSectionAmpAttack.id = "{C035EBA5-D5E6-4B3B-A40A-2BD5B500ACCA}";
@@ -193,7 +193,7 @@ FFMakeVoiceModuleTopo()
   portaSectionAmpRelease.mode = FBParamMode::VoiceStart;
   portaSectionAmpRelease.defaultText = "50";
   portaSectionAmpRelease.name = "Porta Sect Amp Rls";
-  portaSectionAmpRelease.display = "Amp Rls";
+  portaSectionAmpRelease.display = "Sect Rls";
   portaSectionAmpRelease.slotCount = 1;
   portaSectionAmpRelease.unit = "%";
   portaSectionAmpRelease.id = "{227ACA77-CD6E-488B-86BB-9802FDF2D2F2}";

@@ -33,8 +33,12 @@ private:
   mutable float _absMaxValueAllSeries = {};
 
 public:
+  int moduleSlot = -1;
+  int moduleIndex = -1;
   std::string title = {};
   std::string subtext = {};
+  bool bipolar = false;
+  bool drawClipBoundaries = false;
   std::vector<int> primaryMarkers = {};
   FBModuleGraphPoints primarySeries = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};
@@ -47,8 +51,6 @@ struct FBModuleGraphComponentData final
   int fixedGraphIndex = -1;
   int pointIndicatorSize = -1;
   bool paintAsDisabled = false;
-  bool bipolar = false;
-  bool drawClipBoundaries = false;
   bool fillPointIndicators = false;
   bool skipDrawOnEqualsPrimary = true;
   FBGraphRenderState* renderState = {};

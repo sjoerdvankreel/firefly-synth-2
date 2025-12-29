@@ -25,9 +25,10 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBGraphRenderState.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
-#include <firefly_base/gui/components/FBSectionComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBModuleGraphComponent.hpp>
 
 using namespace juce;
@@ -51,10 +52,12 @@ FBPlugGUI(hostContext),
 _graphRenderState(std::make_unique<FBGraphRenderState>(this))
 {
   FB_LOG_ENTRY_EXIT();
+  // needs to be before SetupGUI()
+  SwitchTheme(HostContext()->ThemeName());
   SetupGUI();
   InitAllDependencies();
   resized();
-}
+} 
 
 void
 FFPlugGUI::OnPatchChanged()
@@ -240,18 +243,18 @@ FFPlugGUI::SetupGUI()
   _mainGraph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
   _headerAndGraph = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
   _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
-  _headerAndGraph->Add(0, 1, _mainGraph);
+  _headerAndGraph->Add(0, 1, StoreComponent<FBThemedComponent>(HostContext()->Topo(), (int)FFThemedComponentId::Graphs, _mainGraph));
 
   _outputOtherAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
   _outputOtherAndPatch->Add(0, 0, FFMakeOutputGUI(this));
   _outputOtherAndPatch->Add(0, 1, FFMakeOtherGUI(this));
   _outputOtherAndPatch->Add(0, 2, FFMakePatchGUI(this));
 
-  _guiSettingsAndTweak = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
+  _guiSettingsAndTweak = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 2, 1 } });
   _guiSettingsAndTweak->Add(0, 0, FFMakeGUISettingsGUI(this));
   _guiSettingsAndTweak->Add(0, 1, FFMakeTweakGUI(this));
 
-  _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 0, 1 } });
+  _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1, 0 } });
   _topModules->Add(0, 0, FFMakeVoiceModuleGUI(this));
   _topModules->Add(0, 1, FFMakeMasterGUI(this));
   _topModules->Add(0, 2, FFMakeSettingsGUI(this));
@@ -267,10 +270,10 @@ FFPlugGUI::SetupGUI()
   _main->Add(5, 0, FFMakeLFOGUI(this));
   _main->Add(6, 0, FFMakeEnvGUI(this, _msegEditors));
 
-  _tabs = StoreComponent<FBAutoSizeTabComponent>();
-  _tabs->addTab("Main", Colours::black, _main, false);
-  _tabs->addTab("Matrix", Colours::black, _matrix, false);
-  _tabs->addTab("Unison", Colours::black, _globalUni, false);
+  _tabs = StoreComponent<FBAutoSizeTabComponent>(true);
+  _tabs->addTab("MAIN", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _main), false);
+  _tabs->addTab("MATRIX", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _matrix), false);
+  _tabs->addTab("UNISON", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _globalUni), false);
   _mainTabChangedListener = std::make_unique<FFMainTabChangedListener>(this);
   _tabs->getTabbedButtonBar().addChangeListener(_mainTabChangedListener.get());
 
@@ -278,7 +281,7 @@ FFPlugGUI::SetupGUI()
   _container->Add(0, 0, _outputOtherAndPatch);
   _container->Add(1, 0, _guiSettingsAndTweak);
   _container->Add(2, 0, _headerAndGraph);
-  _container->Add(3, 0, _tabs);
+  _container->Add(3, 0, StoreComponent<FBThemedComponent>(HostContext()->Topo(), (int)FFThemedComponentId::MainSelector, _tabs));
 
   _osciParamListener = std::make_unique<FFOsciParamListener>(this);
   _vMixParamListener = std::make_unique<FFVMixParamListener>(this);

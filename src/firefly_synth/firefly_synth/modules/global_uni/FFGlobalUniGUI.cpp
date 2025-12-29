@@ -16,6 +16,8 @@
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBThemingComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBModuleGraphComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -86,39 +88,36 @@ static Component*
 MakeGlobalUniVoices(
   FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0 });
   auto voiceCount = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, voiceCount, std::to_string(FFGlobalUniMaxCount)));
-  grid->MarkSection({ { 0, 0, }, { 1, 3 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  grid->MarkSection({ { 0, 0, }, { 1, 3 } }, FBGridSectionMark::BackgroundAndAlternate);
+  return grid;
 }
-
+ 
 static Component*
 MakeGlobalUniInit(
   FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 1, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBFillerComponent>(1, 1));
   auto initButton = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
   initButton->setTooltip("Set To Defaults");
   grid->Add(0, 1, initButton);
   initButton->onClick = [plugGUI]() { GlobalUniInit(plugGUI); };
-  grid->MarkSection({ { 0, 0, }, { 1, 2 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  grid->MarkSection({ { 0, 0, }, { 1, 2 } }, FBGridSectionMark::BackgroundAndAlternate);
+  return grid;
 }
 
 static Component* 
 MakeGlobalUniContent(
   FBPlugGUI* plugGUI,
-  FBGraphRenderState* graphRenderState,
+  FBGraphRenderState* graphRenderState, int offset,
   std::vector<FBModuleGraphComponent*>* fixedGraphs)
 {
-  FB_LOG_ENTRY_EXIT();
   auto rowSizes = std::vector<int>();
   rowSizes.push_back(1);
   int uniTargetCount = (int)FFGlobalUniTarget::Count;
@@ -129,86 +128,110 @@ MakeGlobalUniContent(
   columnSizes.push_back(1);
   for(int i = 0; i < FFGlobalUniMaxCount + 8; i++)
     columnSizes.push_back(0);
-  columnSizes.push_back(1);
-  for (int i = 0; i < FFGlobalUniMaxCount + 8; i++)
-    columnSizes.push_back(0);
 
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
-  for (int c = 0; c < 2; c++)
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
+  auto mode0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, 0 } });
+  grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(mode0->static_.display));
+  auto opType0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, 0 } });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(opType0->static_.name));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Out"));
+  grid->MarkSection({ { 0, 0 }, { 1, 4 } });
+
+  auto spread0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, 0 } });
+  grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(spread0->static_.display));
+  auto skew0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSkew, 0 } });
+  grid->Add(0, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(skew0->static_.display));
+  auto rand0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRand, 0 } });
+  grid->Add(0, 6, plugGUI->StoreComponent<FBAutoSizeLabel>(rand0->static_.display));
+  auto seed0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandSeed, 0 } });
+  grid->Add(0, 7, plugGUI->StoreComponent<FBAutoSizeLabel>(seed0->static_.display));
+  auto free0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandFree, 0 } });
+  grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>(free0->static_.display));
+  grid->MarkSection({ { 0, 4 }, { 1, 5 } });
+
+  for (int i = 0; i < FFGlobalUniMaxCount; i++)
+    grid->Add(0, i + 1 + 8, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1), true));
+  grid->MarkSection({ { 0, 1 + 8 }, { 1, FFGlobalUniMaxCount } });
+
+  for (int r = 0; r < uniTargetCount / 2; r++)
   {
-    int rowOffset = 0;
-    int guiCol = c * (FFGlobalUniMaxCount + 8 + 1);
-    grid->Add(rowOffset + 0, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
-    grid->MarkSection({ { rowOffset + 0, guiCol }, { 1, 1 } });
-    auto mode0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, 0 } });
-    grid->Add(rowOffset + 0, guiCol + 1, plugGUI->StoreComponent<FBAutoSizeLabel>(mode0->static_.display));
-    auto opType0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, 0 } });
-    grid->Add(rowOffset + 0, guiCol + 2, plugGUI->StoreComponent<FBAutoSizeLabel>(opType0->static_.name));
-    grid->Add(rowOffset + 0, guiCol + 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Out"));
-    grid->MarkSection({ { rowOffset + 0, guiCol + 1 }, { 1, 3 } });
+    int guiRow = r + 1;
+    int targetIndex = (int)FFGlobalUniTargetByGUIOrder((FFGlobalUniTargetGUIOrder)(offset + r));
+    auto targetName = FFGlobalUniTargetToString((FFGlobalUniTarget)targetIndex);
+    grid->Add(guiRow, 0, plugGUI->StoreComponent<FBModuleComponent>(
+      plugGUI->HostContext()->Topo(),
+      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+      [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+      plugGUI->StoreComponent<FBAutoSizeLabel>(targetName)));
+    auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, targetIndex } });
+    grid->Add(guiRow, 1, plugGUI->StoreComponent<FBModuleComponent>( 
+      plugGUI->HostContext()->Topo(),  
+      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+      [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+      plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode, false)));
+    auto opType = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, targetIndex } });
+    grid->Add(guiRow, 2, plugGUI->StoreComponent<FBModuleComponent>(
+      plugGUI->HostContext()->Topo(),
+      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+      [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+      plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType, false)));
+    int moduleRuntimeIndex = topo->moduleTopoToRuntime.at({ (int)FFModuleType::GlobalUni, 0 });
+    auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(graphRenderState, moduleRuntimeIndex, targetIndex, [plugGUI]() { return plugGUI->GetRenderType(true); });
+    grid->Add(guiRow, 3, plugGUI->StoreComponent<FBModuleComponent>(
+      plugGUI->HostContext()->Topo(),
+      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+      [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+      uniGraph));
+    fixedGraphs->push_back(uniGraph);
+    grid->MarkSection({ { guiRow, 0 }, { 1, 4 } });
 
-    auto spread0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, 0 } });
-    grid->Add(rowOffset + 0, guiCol + 4, plugGUI->StoreComponent<FBAutoSizeLabel>(spread0->static_.display));
-    auto skew0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSkew, 0 } });
-    grid->Add(rowOffset + 0, guiCol + 5, plugGUI->StoreComponent<FBAutoSizeLabel>(skew0->static_.display));
-    auto rand0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRand, 0 } });
-    grid->Add(rowOffset + 0, guiCol + 6, plugGUI->StoreComponent<FBAutoSizeLabel>(rand0->static_.display));
-    auto seed0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandSeed, 0 } });
-    grid->Add(rowOffset + 0, guiCol + 7, plugGUI->StoreComponent<FBAutoSizeLabel>(seed0->static_.display));
-    auto free0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandFree, 0 } });
-    grid->Add(rowOffset + 0, guiCol + 8, plugGUI->StoreComponent<FBAutoSizeLabel>(free0->static_.display));
-    grid->MarkSection({ { rowOffset + 0, guiCol + 4 }, { 1, 5 } });
+    auto spread = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, targetIndex } });
+    grid->Add(guiRow, 4, plugGUI->StoreComponent<FBModuleComponent>(
+      plugGUI->HostContext()->Topo(),
+      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+      [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+      plugGUI->StoreComponent<FBParamSlider>(plugGUI, spread, Slider::SliderStyle::RotaryVerticalDrag, false)));
+    auto skew = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSkew, targetIndex } });
+    grid->Add(guiRow, 5, plugGUI->StoreComponent<FBModuleComponent>(
+      plugGUI->HostContext()->Topo(),
+      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+      [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+      plugGUI->StoreComponent<FBParamSlider>(plugGUI, skew, Slider::SliderStyle::RotaryVerticalDrag, false)));
+    auto random = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRand, targetIndex } });
+    grid->Add(guiRow, 6, plugGUI->StoreComponent<FBModuleComponent>(
+      plugGUI->HostContext()->Topo(),
+      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+      [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+      plugGUI->StoreComponent<FBParamSlider>(plugGUI, random, Slider::SliderStyle::RotaryVerticalDrag, false)));
+    auto seed = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandSeed, targetIndex } });
+    grid->Add(guiRow, 7, plugGUI->StoreComponent<FBModuleComponent>(
+      plugGUI->HostContext()->Topo(),
+      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+      [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+      plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag, false)));
+    auto free = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandFree, targetIndex } });
+    grid->Add(guiRow, 8, plugGUI->StoreComponent<FBModuleComponent>(
+      plugGUI->HostContext()->Topo(),
+      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+      [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+      plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, free, false)));
+    grid->MarkSection({ { guiRow, 4 }, { 1, 5 } });
 
-    for (int i = 0; i < FFGlobalUniMaxCount; i++)
-      grid->Add(rowOffset + 0, guiCol + i + 1 + 8, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1), true));
-    grid->MarkSection({ { rowOffset + 0, guiCol + 1 + 8 }, { 1, FFGlobalUniMaxCount } });
-  }
-
-  for (int c = 0; c < 2; c++)
-  {
-    for (int r = 0; r < uniTargetCount / 2; r++)
+    for (int p = 0; p < FFGlobalUniMaxCount; p++)
     {
-      int guiRow = r + 1;
-      int guiCol = c * (FFGlobalUniMaxCount + 1 + 8);
-      int targetIndex = c * (uniTargetCount / 2) + r;
-
-      auto targetName = FFGlobalUniTargetToString((FFGlobalUniTarget)targetIndex);
-      grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>(targetName));
-      grid->MarkSection({ { guiRow, guiCol }, { 1, 1 } });
-
-      auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, targetIndex } });
-      grid->Add(guiRow, guiCol + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
-      auto opType = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, targetIndex } });
-      grid->Add(guiRow, guiCol + 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
-      int moduleRuntimeIndex = topo->moduleTopoToRuntime.at({ (int)FFModuleType::GlobalUni, 0 });
-      auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(graphRenderState, moduleRuntimeIndex, targetIndex, [plugGUI]() { return plugGUI->GetRenderType(true); });
-      grid->Add(guiRow, guiCol + 3, uniGraph);
-      fixedGraphs->push_back(uniGraph);
-      grid->MarkSection({ { guiRow, guiCol + 1 }, { 1, 3 } });
-
-      auto spread = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, targetIndex } });
-      grid->Add(guiRow, guiCol + 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, spread, Slider::SliderStyle::RotaryVerticalDrag));
-      auto skew = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSkew, targetIndex } });
-      grid->Add(guiRow, guiCol + 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skew, Slider::SliderStyle::RotaryVerticalDrag));
-      auto random = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRand, targetIndex } });
-      grid->Add(guiRow, guiCol + 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, random, Slider::SliderStyle::RotaryVerticalDrag));
-      auto seed = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandSeed, targetIndex } });
-      grid->Add(guiRow, guiCol + 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag));
-      auto free = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandFree, targetIndex } });
-      grid->Add(guiRow, guiCol + 8, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, free));
-      grid->MarkSection({ { guiRow, guiCol + 4 }, { 1, 5 } });
-
-      for (int p = 0; p < FFGlobalUniMaxCount; p++)
-      {
-        int manualParamOffset = c * uniTargetCount / 2 + r;
-        auto param = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::ManualFirst + manualParamOffset, p } });
-        grid->Add(guiRow, guiCol + p + 1 + 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag));
-      }
-      grid->MarkSection({ { guiRow, guiCol + 1 + 8 }, { 1, FFGlobalUniMaxCount } });
+      auto param = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::ManualFirst + targetIndex, p } });
+      grid->Add(guiRow, p + 1 + 8, plugGUI->StoreComponent<FBModuleComponent>(
+        plugGUI->HostContext()->Topo(),
+        (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
+        [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
+        plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag, false)));
     }
+    grid->MarkSection({ { guiRow, 1 + 8 }, { 1, FFGlobalUniMaxCount } }, FBGridSectionMark::Background, 3.0f, r == uniTargetCount / 2 - 1? 2: 0);
   }
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+ 
+  return grid;
 }
 
 Component*
@@ -216,13 +239,26 @@ FFMakeGlobalUniGUI(
   FBPlugGUI* plugGUI,
   FBGraphRenderState* graphRenderState,
   std::vector<FBModuleGraphComponent*>* fixedGraphs)
-{
+{  
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 0, 1 } });
-  grid->Add(0, 0, MakeGlobalUniVoices(plugGUI));
-  grid->Add(0, 1, MakeGlobalUniInit(plugGUI));
-  grid->Add(1, 0, 1, 2, MakeGlobalUniContent(plugGUI, graphRenderState, fixedGraphs));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto topGrid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { { 0 } }, std::vector<int> { { 0, 1 } });
+  topGrid->Add(0, 0, MakeGlobalUniVoices(plugGUI));
+  topGrid->Add(0, 1, MakeGlobalUniInit(plugGUI));
+  auto topComponent = plugGUI->StoreComponent<FBThemedComponent>(plugGUI->HostContext()->Topo(), (int)FFThemedComponentId::GlobalUniTop, topGrid);
+  auto bottomGrid = plugGUI->StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1 } });
+  auto bottomGridLeft = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
+  bottomGridLeft->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, MakeGlobalUniContent(plugGUI, graphRenderState, 0, fixedGraphs)));
+  bottomGridLeft->MarkSection({ { 0, 0}, { 1, 1 } }, FBGridSectionMark::Border);
+  bottomGrid->Add(0, 0, bottomGridLeft);
+  auto bottomGridRight = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
+  bottomGridRight->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, MakeGlobalUniContent(plugGUI, graphRenderState, (int)FFGlobalUniTarget::Count / 2, fixedGraphs)));
+  bottomGridRight->MarkSection({ { 0, 0}, { 1, 1 } }, FBGridSectionMark::Border);
+  bottomGrid->Add(0, 1, bottomGridRight);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(false, false, false, true, topComponent));
+  grid->Add(1, 0, bottomGrid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, false, true, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::GlobalUni, 0, margin);
 }
 
 bool
@@ -252,7 +288,7 @@ FFGlobalUniAdjustParamModulationGUIBounds(
   {
     for (int voicePos = 0; voicePos <= 1; voicePos++)
     {
-      if (FFModulationOpTypeIsBipolar(opType))
+      if (FFModulationOpTypeSourceIsBipolar(opType))
       {
         minModSource = std::min(minModSource, 0.5f + (voicePos - 0.5f) * spread);
         maxModSource = std::max(maxModSource, 0.5f + (voicePos - 0.5f) * spread);

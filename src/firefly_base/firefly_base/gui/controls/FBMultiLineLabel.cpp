@@ -1,4 +1,5 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/controls/FBMultiLineLabel.hpp>
 
 using namespace juce;
@@ -14,15 +15,16 @@ _textSize(FBGUIGetStringSizeCached(text)) {}
 int 
 FBAutoSizeMultiLineLabel::FixedWidth(int /*height*/) const
 {
-  return _textSize.x + 2;
+  return _textSize.x + 4;
 }
 
 void
 FBAutoSizeMultiLineLabel::paint(Graphics& g)
 {
   Label dummy;
+  auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
   g.setFont(getLookAndFeel().getLabelFont(dummy));
-  g.setColour(getLookAndFeel().findColour(Label::ColourIds::textColourId));
+  g.setColour(scheme.text);
   int y = static_cast<int>(std::ceil((getBounds().getHeight() - _textSize.y) * 0.5f) + _vOffset);
-  g.drawMultiLineText(_text, 1, y, _textSize.x, Justification::centred);
+  g.drawMultiLineText(_text, 3, y, _textSize.x, Justification::centredLeft);
 }

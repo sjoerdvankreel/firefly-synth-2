@@ -10,6 +10,8 @@
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/controls/FBMultiLineLabel.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
+#include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 
@@ -18,7 +20,6 @@ using namespace juce;
 static Component*
 FFMakeOsciModGUISectionMain(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0 });
   auto oversample = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::Oversample, 0 } });
@@ -27,16 +28,14 @@ FFMakeOsciModGUISectionMain(FBPlugGUI* plugGUI)
   auto expoFM = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::ExpoFM, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, expoFM));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, expoFM));
-  grid->MarkSection({ { 0, 0 }, { 2, 2 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, FBGridSectionMark::BackgroundAndAlternate);
+  return grid;
 }
 
 static Component*
 FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
-  columnSizes.push_back(0);
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     columnSizes.push_back(0);
@@ -45,30 +44,31 @@ FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI)
   }
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("AM"));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("FM"));
-  grid->MarkSection({ { 0, 0 }, { 2, 1 } });
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
-    grid->Add(0, 1 + i * 3, 2, 1, plugGUI->StoreComponent<FBAutoSizeMultiLineLabel>(FFOsciModFormatSlotVertical(i), -2));
+    grid->Add(0, i * 3, 2, 1, plugGUI->StoreComponent<FBAutoSizeMultiLineLabel>(FFOsciModFormatSlotVertical(i), -2));
     auto amMode = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::AMMode, i } });
-    grid->Add(0, 1 + i * 3 + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, amMode));
+    grid->Add(0, i * 3 + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, amMode));
     auto amMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::AMMix, i } });
-    grid->Add(0, 1 + i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amMix, Slider::SliderStyle::LinearHorizontal));
+    grid->Add(0, i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amMix, Slider::SliderStyle::LinearHorizontal));
     auto fmOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::FMOn, i } });
-    grid->Add(1, 1 + i * 3 + 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, fmOn));
+    grid->Add(1, i * 3 + 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, fmOn));
     auto fmIndex = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::FMIndex, i } });
-    grid->Add(1, 1 + i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::LinearHorizontal));
-    grid->MarkSection({ { 0, 1 + i * 3 }, { 2, 3 } });
+    grid->Add(1, i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::LinearHorizontal));
   }
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 3 }, { 2, 6 } }, FBGridSectionMark::BackgroundAndAlternate);
+  grid->MarkSection({ { 0, 9 }, { 2, 9 } }, FBGridSectionMark::BackgroundAndBorder);
+  return grid;
 }
 
 Component*
 FFMakeOsciModTab(FBPlugGUI* plugGUI)
 {
+  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   grid->Add(0, 0, FFMakeOsciModGUISectionMain(plugGUI));
   grid->Add(0, 1, FFMakeOsciModGUISectionMod(plugGUI));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::OsciMod, 0, margin);
 }

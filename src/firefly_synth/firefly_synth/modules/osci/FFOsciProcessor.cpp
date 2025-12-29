@@ -99,7 +99,7 @@ FFOsciProcessor::BeginVoice(
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(
     graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
-  _uniformPrng = FFParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
+  _unisonPrng = FFParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
   bool oversample = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversample, modOversampleNorm);
   _oversampleTimes = (!graph && oversample) ? FFOsciOversampleTimes : 1;
 
@@ -128,7 +128,7 @@ FFOsciProcessor::BeginVoice(
     else
     {
       float uniPhase = u * _uniOffsetPlain / _uniCount;
-      uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _uniformPrng.NextScalar()) * uniPhase);
+      uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _unisonPrng.NextScalar()) * uniPhase);
       uniPhaseInit.Set(u, FBPhaseWrap(uniPhaseInit.Get(u) + _voiceStartSnapshotNorm.phase[0]));
       if (!graph)
       {

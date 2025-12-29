@@ -25,9 +25,10 @@ FBGUIParamSlider::
 FBGUIParamSlider(
   FBPlugGUI* plugGUI,
   FBRuntimeGUIParam const* param, 
-  Slider::SliderStyle style):
+  Slider::SliderStyle style, 
+  bool isThemed):
 FBAutoSizeSlider(plugGUI, style),
-FBGUIParamControl(plugGUI, param)
+FBGUIParamControl(plugGUI, param, isThemed)
 {
   if (param->static_.NonRealTime().IsStepped())
     setRange(0.0, 1.0, 1.0 / (param->static_.NonRealTime().ValueCount() - 1.0));
@@ -88,9 +89,10 @@ FBParamSlider::
 FBParamSlider(
   FBPlugGUI* plugGUI,
   FBRuntimeParam const* param, 
-  Slider::SliderStyle style):
+  Slider::SliderStyle style, 
+  bool isThemed):
 FBAutoSizeSlider(plugGUI, style),
-FBParamControl(plugGUI, param)
+FBParamControl(plugGUI, param, isThemed)
 {
   if (param->static_.NonRealTime().IsStepped())
     setRange(0.0, 1.0, 1.0 / (param->static_.NonRealTime().ValueCount() - 1.0));
@@ -117,7 +119,7 @@ FBParamSlider::SetValueNormalizedFromHost(double normalized)
 String
 FBParamSlider::getTooltip()
 {
-  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
+  return _plugGUI->GetTooltipForAudioParam(this);
 }
 
 void

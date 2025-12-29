@@ -9,7 +9,9 @@
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
@@ -20,7 +22,6 @@ using namespace juce;
 static Component*
 MakeSettingsSectionMain(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0 });
   auto receiveNotes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::ReceiveNotes, 0 } });
@@ -29,14 +30,13 @@ MakeSettingsSectionMain(FBPlugGUI* plugGUI)
   auto smooth = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::HostSmoothTime, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smooth));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 2 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, FBGridSectionMark::BackgroundAndAlternate);
+  return grid;
 }
 
 static Component*
 MakeSettingsSectionTuning(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 1 });
   auto tuning = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::Tuning, 0 } });
@@ -57,18 +57,18 @@ MakeSettingsSectionTuning(FBPlugGUI* plugGUI)
   auto tuneVoiceMatrix = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneVoiceMatrix, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneVoiceMatrix));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneVoiceMatrix));
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } }, FBGridSectionMark::BackgroundAndBorder);
+  return grid;
 }
 
 static Component*
 MakeSettingsTab(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   grid->Add(0, 0, MakeSettingsSectionMain(plugGUI));
   grid->Add(0, 1, MakeSettingsSectionTuning(plugGUI));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Settings, 0, margin);
 }
 
 Component*
@@ -77,6 +77,6 @@ FFMakeSettingsGUI(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
   auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::Settings].name;
-  tabs->addTab(name, {}, MakeSettingsTab(plugGUI), false);
-  return tabs;
+  tabs->AddTab(name, true, MakeSettingsTab(plugGUI));
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Settings, 0, tabs);
 }

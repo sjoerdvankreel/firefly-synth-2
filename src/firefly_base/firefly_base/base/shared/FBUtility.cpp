@@ -9,6 +9,15 @@
 using namespace juce;
 
 std::string
+FBCleanTopoId(std::string const& topoId)
+{
+  auto result = topoId;
+  std::erase(result, '{');
+  std::erase(result, '}');
+  return result;
+}
+
+std::string
 FBFormatDouble(double val, int precision)
 {
   std::stringstream ss;
@@ -110,11 +119,17 @@ FBGetUserDataFolder()
 }
 
 std::filesystem::path
-FBGetResourcesFolderPath()
+FBGetPluginContentsFolderPath()
 {
   File selfJuce(File::getSpecialLocation(File::currentExecutableFile));
   std::filesystem::path selfPath(selfJuce.getFullPathName().toStdString());
-  return selfPath.parent_path().parent_path() / "Resources";
+  return selfPath.parent_path().parent_path();
+}
+
+std::filesystem::path
+FBGetResourcesFolderPath()
+{
+  return FBGetPluginContentsFolderPath() / "Resources";
 }
 
 std::vector<std::uint8_t>
@@ -128,4 +143,17 @@ FBReadFile(std::filesystem::path const& p)
   str.close();
   FB_LOG_INFO("Read file " + p.string());
   return buffer;
+}
+
+bool
+FBParseJson(std::string const& text, var& json)
+{
+  auto parsed = JSON::parse(text, json);
+  DynamicObject* obj = json.getDynamicObject();
+  if (!parsed.wasOk() || obj == nullptr)
+  {
+    FB_LOG_ERROR("Failed to parse json: " + parsed.getErrorMessage().toStdString() + "."); 
+    return false;
+  }
+  return true;
 }

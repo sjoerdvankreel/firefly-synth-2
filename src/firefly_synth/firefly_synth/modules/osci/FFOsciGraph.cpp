@@ -126,8 +126,6 @@ void
 FFOsciRenderGraph(FBModuleGraphComponentData* graphData)
 {
   OsciGraphRenderData renderData = {};
-  graphData->bipolar = true;
-  graphData->drawClipBoundaries = true;
   graphData->skipDrawOnEqualsPrimary = false; // midi note dependent
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
@@ -147,6 +145,10 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData)
     graphData->graphs[o].title = FBAsciiToUpper(graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name);
     auto osciType = graphData->renderState->AudioParamList<FFOsciType>(paramIndices, false, -1);
     graphData->graphs[o].subtext = FBAsciiToUpper(FFOsciTypeToString(osciType));
+    graphData->graphs[o].moduleSlot = o;
+    graphData->graphs[o].moduleIndex = (int)FFModuleType::Osci;
+    graphData->graphs[o].bipolar = true;
+    graphData->graphs[o].drawClipBoundaries = true;
   }
   graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;
 }

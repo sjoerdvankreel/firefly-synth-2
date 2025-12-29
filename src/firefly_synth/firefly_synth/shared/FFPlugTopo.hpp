@@ -33,6 +33,16 @@ inline constexpr char FFPlugControllerIdFX[] = "51E397E58B694A129208424AEF1C7A84
 inline constexpr char FFPlugControllerIdInst[] = "959E6302402B461A8C9AA5A6737BCAAD"; 
 inline constexpr char FFPlugOnlineManualLocation[] = "https://github.com/sjoerdvankreel/firefly-synth-2/blob/main/static/Manual.md";
 
+enum class FFThemedComponentId {
+  Patch,
+  Graphs,
+  Header,
+  LastTweaked,
+  GlobalUniTop,
+  MainSelector,
+  MatrixGraphs
+};
+
 enum class FFModuleType {
   GUISettings, Settings, MIDI, GNote, Master, GlobalUni, VoiceModule, Osci, OsciMod, VNote, Env, 
   VEffect, GEffect, VLFO, GLFO, VMix, GMix, VEcho, GEcho, VMatrix, GMatrix, Output, Other, Count };

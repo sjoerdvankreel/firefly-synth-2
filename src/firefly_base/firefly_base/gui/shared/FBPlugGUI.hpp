@@ -2,10 +2,15 @@
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/gui/shared/FBTheme.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBThemingComponent.hpp>
+#include <firefly_base/gui/components/FBSectionComponent.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
+#include <map>
 #include <chrono>
 #include <vector>
 #include <unordered_map>
@@ -15,6 +20,7 @@ class FBParamControl;
 class FBGUIParamControl;
 class FBParamsDependent;
 class FBHostGUIContext;
+class FBMarginComponent;
 class FBContentComponent;
 struct FBParamTopoIndices;
 
@@ -25,6 +31,13 @@ enum FBParamModulationBoundsSource
   Matrix = 0x1,
   Unison = 0x2,
   DirectAccess = 0x4
+};
+
+class IFBThemeListener
+{
+public:
+  virtual ~IFBThemeListener() {}
+  virtual void ThemeChanged() = 0;
 };
 
 class IFBParamListener
@@ -41,11 +54,18 @@ public IFBHostGUIContextListener
   double _scale = 1.0;
   juce::Label* _overlayCaption = {};
   std::function<void()> _overlayInit = {};
+  FBGridComponent* _overlayGrid = {};
   juce::Component* _overlayComponent = {};
-  juce::Component* _overlayContainer = {};
+  FBModuleComponent* _overlayModule = {};
   FBContentComponent* _overlayContent = {};
+  FBMarginComponent* _overlayInnerMargin = {};
+  FBMarginComponent* _overlayOuterMargin = {};
+  std::vector<IFBThemeListener*> _themeListeners = {};
   std::vector<IFBParamListener*> _paramListeners = {};
 
+  void ShowLogFolder();
+  void ShowPluginFolder();
+  void DumpTopologyToFile();
   bool LoadPatchFromText(
     std::string const& undoAction, 
     std::string const& patchName,
@@ -71,19 +91,26 @@ public:
   void SavePatchToFile();
   void LoadPatchFromFile();
   void LoadPreset(juce::Component* clickedFrom);
+  
+  FBTheme const& GetTheme() const;
+  void SwitchTheme(std::string const& themeName);
+  std::vector<FBTheme> const& Themes() const { return _themes; }
 
   void HideOverlayComponent();
   void ShowOverlayComponent(
     std::string const& title,
+    int moduleIndex, int moduleSlot,
     juce::Component* overlay,
     int w, int h, bool vCenter,
     std::function<void()> init);
 
+  void AddThemeListener(IFBThemeListener* listener);
   void AddParamListener(IFBParamListener* listener);
+  void RemoveThemeListener(IFBThemeListener* listener);
   void RemoveParamListener(IFBParamListener* listener);
 
   std::string GetTooltipForGUIParam(int index) const;
-  std::string GetTooltipForAudioParam(int index) const;
+  std::string GetTooltipForAudioParam(FBParamControl const* control) const;
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
   void OnPatchLoaded() override {}
@@ -128,6 +155,7 @@ private:
   void GUIParamNormalizedChanged(int index);
   void AudioParamNormalizedChanged(int index);
 
+  std::vector<FBTheme> _themes = {};
   FBHostGUIContext* const _hostContext;
   juce::TooltipWindow* _tooltipWindow = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};

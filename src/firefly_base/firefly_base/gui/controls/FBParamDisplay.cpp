@@ -1,5 +1,6 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/controls/FBParamDisplay.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -13,9 +14,10 @@ FBParamDisplayLabel::
 FBParamDisplayLabel(
   FBPlugGUI* plugGUI, 
   FBRuntimeParam const* param, 
-  std::string const& maxWidthText):
+  std::string const& maxWidthText,
+  bool isThemed):
 Label(),
-FBParamControl(plugGUI, param),
+FBParamControl(plugGUI, param, isThemed),
 _maxTextWidth(FBGUIGetStringWidthCached(maxWidthText))
 {
   double normalized = plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
@@ -44,9 +46,10 @@ FBParamDisplayLabel::SetValueNormalizedFromHost(double normalized)
 FBParamDisplayMeter::
 FBParamDisplayMeter(
   FBPlugGUI* plugGUI, 
-  FBRuntimeParam const* param):
+  FBRuntimeParam const* param,
+  bool isThemed):
 Component(),
-FBParamControl(plugGUI, param) {}
+FBParamControl(plugGUI, param, isThemed) {}
 
 void
 FBParamDisplayMeter::parentHierarchyChanged()
@@ -69,6 +72,8 @@ FBParamDisplayMeter::SetValueNormalizedFromHost(double normalized)
 void 
 FBParamDisplayMeter::paint(Graphics& g)
 {
+  auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
+
   float const gapSize = 2.0f;
   float const barHeight = 10.0f;
   int const gapCount = MeterBarCount - 1;
@@ -77,10 +82,15 @@ FBParamDisplayMeter::paint(Graphics& g)
   float const barSize = (getLocalBounds().getWidth() - totalGapSize) / MeterBarCount;
 
   int i = 0;
-  g.setColour(Colours::lightgrey);
+  g.setColour(scheme.meterFill);
   for (; i < _fillCount; i++)
     g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
-  g.setColour(Colours::darkgrey);
+  g.setColour(scheme.meterTrack);
   for (; i < MeterBarCount; i++)
     g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
+  for (i = MeterBarCount - 3; i < _fillCount; i++)
+  {  
+    g.setColour(scheme.meterAlert.withAlpha(0.33f * (1 + i - (MeterBarCount - 3))));
+    g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
+  }
 }

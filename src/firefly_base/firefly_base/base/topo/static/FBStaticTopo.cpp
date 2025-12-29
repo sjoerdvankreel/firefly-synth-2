@@ -1,4 +1,5 @@
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
+#include <sstream>
 
 FBDeserializationConverter::
 FBDeserializationConverter(
@@ -45,4 +46,79 @@ FBPlugVersion::operator<(FBPlugVersion const& rhs) const
   if (minor < rhs.minor) return true;
   if (minor > rhs.minor) return false;
   return patch < rhs.patch;
+}
+
+std::string
+FBStaticTopo::PrintTopology() const
+{
+  std::ostringstream result = {};
+  result << meta.name;
+  result << "\nId: " << FBCleanTopoId(meta.id);
+  result << "\nVersion: " << meta.version.major << "." << meta.version.minor << "." << meta.version.patch;
+
+  result << "\nThemed Components:";
+  for (auto const& kv: themedComponents)
+  {
+    FB_ASSERT(kv.second.name.size());
+    result << "\n\t" << kv.second.name;
+    result << "\n\t\tId: " << FBCleanTopoId(kv.second.id);
+  }
+
+  result << "\nModules:";
+  for (int m = 0; m < modules.size(); m++)
+  {
+    auto const& module = modules[m];
+    result << "\n\t" << module.name;
+    result << "\n\t\tId: " << FBCleanTopoId(module.id);
+    result << "\n\t\tPer-Voice: " << (module.voice? "True": "False");
+    result << "\n\t\tSlot Count: " << module.slotCount;
+
+    auto const& cvOutputs = modules[m].cvOutputs;
+    if (cvOutputs.size() == 0)
+      result << "\n\t\tCV Outputs: None";
+    else
+    {
+      result << "\n\t\tCV Outputs:";
+      for (int j = 0; j < cvOutputs.size(); j++)
+      {
+        auto const& cvOutput = cvOutputs[j];
+        result << "\n\t\t\t" << cvOutput.name;
+        result << "\n\t\t\t\tId: " << FBCleanTopoId(cvOutput.id);
+        result << "\n\t\t\t\tSlot Count: " << cvOutput.slotCount;
+      }
+    }
+
+    auto const& guiParams = modules[m].guiParams;
+    if (guiParams.size() == 0)
+      result << "\n\t\tGUI Params: None";
+    else
+    {
+      result << "\n\t\tGUI Params:";
+      for (int j = 0; j < guiParams.size(); j++)
+      {
+        auto const& guiParam = guiParams[j];
+        result << "\n\t\t\t" << guiParam.name;
+        result << "\n\t\t\t\tId: " << FBCleanTopoId(guiParam.id);
+        result << "\n\t\t\t\tSlot Count: " << guiParam.slotCount;
+      }
+    }
+
+    auto const& params = modules[m].params;
+    if (params.size() == 0)
+      result << "\n\t\tAudio Params: None";
+    else
+    {
+      result << "\n\t\tAudio Params:";
+      for (int j = 0; j < params.size(); j++)
+      {
+        auto const& param = params[j];
+        result << "\n\t\t\t" << param.name;
+        result << "\n\t\t\t\tId: " << FBCleanTopoId(param.id);
+        result << "\n\t\t\t\tSlot Count: " << param.slotCount;
+        result << "\n\t\t\t\tStored In Patch: " << (param.storeInPatch? "True": "False");
+      }
+    }
+  }
+
+  return result.str();
 }

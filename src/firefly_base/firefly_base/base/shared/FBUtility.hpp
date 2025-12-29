@@ -1,5 +1,7 @@
 #pragma once
 
+#include <juce_core/juce_core.h>
+
 #include <string>
 #include <vector>
 #include <cassert>
@@ -78,6 +80,10 @@ inline int const FBDefaultDisplayPrecision = 3;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(x); \
   x() = default
 
+// Remove { and } for use in json and urls.
+std::string
+FBCleanTopoId(std::string const& topoId);
+
 FBDenormalState
 FBDisableDenormal();
 void 
@@ -98,6 +104,8 @@ FBStringToDoubleOptCLocale(std::string const& text);
 
 std::vector<std::uint8_t>
 FBReadFile(std::filesystem::path const& p);
+bool
+FBParseJson(std::string const& text, juce::var& json);
 
 std::filesystem::path
 FBGetUserDataFolder();
@@ -105,3 +113,5 @@ std::filesystem::path
 FBGetUserPluginDataFolder(FBStaticTopoMeta const& meta);
 std::filesystem::path 
 FBGetResourcesFolderPath();
+std::filesystem::path
+FBGetPluginContentsFolderPath();

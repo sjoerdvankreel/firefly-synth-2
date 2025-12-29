@@ -1,11 +1,15 @@
-#include <firefly_synth/gui/FFPatchGUI.hpp>
 #include <firefly_synth/gui/FFPlugGUI.hpp>
+#include <firefly_synth/gui/FFPatchGUI.hpp>
+#include <firefly_synth/shared/FFPlugTopo.hpp>
+
 #include <firefly_base/base/shared/FBLogging.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 
@@ -16,8 +20,8 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto context = plugGUI->HostContext();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Patch:"));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(false, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Patch"));
   
   auto name = plugGUI->StoreComponent<FBAutoSizeLabel2>(150);
   name->setText(context->PatchName(), dontSendNotification);
@@ -60,9 +64,7 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
   preset->onClick = [plugGUI, preset]() { plugGUI->LoadPreset(preset); };
   grid->Add(0, 7, preset);
 
-  grid->Add(0, 8, plugGUI->StoreComponent<FBFillerComponent>(13, 1));
-  grid->MarkSection({ { 0, 0 }, { 1, 9 } });
-
-  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBSectionComponent>(section);
+  grid->MarkSection({ { 0, 0 }, { 1, 8 } }, FBGridSectionMark::BackgroundAndBorder);
+  auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
+  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI->HostContext()->Topo(), (int)FFThemedComponentId::Patch, section);
 }

@@ -24,12 +24,12 @@ FFOsciModFormatSlotVertical(int slot)
 {
   switch (slot)
   {
-  case 0: return "1\n\U00002193\n2";
-  case 1: return "1\n\U00002193\n3";
-  case 2: return "2\n\U00002193\n3";
-  case 3: return "1\n\U00002193\n4";
-  case 4: return "2\n\U00002193\n4";
-  case 5: return "3\n\U00002193\n4";
+  case 0: return "1 AM\n\U00002193\n2 FM";
+  case 1: return "1 AM\n\U00002193\n3 FM";
+  case 2: return "2 AM\n\U00002193\n3 FM";
+  case 3: return "1 AM\n\U00002193\n4 FM";
+  case 4: return "2 AM\n\U00002193\n4 FM";
+  case 5: return "3 AM\n\U00002193\n4 FM";
   default: FB_ASSERT(false); return "";
   }
 }
@@ -48,10 +48,10 @@ FFMakeOsciModTopo()
   result->params.resize((int)FFOsciModParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osciMod; });
   auto selectModule = [](auto& state) { return &state.voice.osciMod; };
-
+   
   auto& oversample = result->params[(int)FFOsciModParam::Oversample];
   oversample.mode = FBParamMode::Block;
-  oversample.name = "Oversample";
+  oversample.name = "4X Oversample";
   oversample.defaultText = "Off";
   oversample.slotCount = 1;
   oversample.id = "{2449CE02-EE0D-48E7-A716-E59633F279FB}";
@@ -64,7 +64,7 @@ FFMakeOsciModTopo()
 
   auto& expoFM = result->params[(int)FFOsciModParam::ExpoFM];
   expoFM.mode = FBParamMode::Block;
-  expoFM.name = "Exp FM";
+  expoFM.name = "Exponential FM";
   expoFM.defaultText = "Off";
   expoFM.slotCount = 1;
   expoFM.id = "{23FC415C-06AD-4ED3-8B29-08724D536096}";

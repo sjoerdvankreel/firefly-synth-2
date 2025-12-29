@@ -8,6 +8,7 @@
 inline int constexpr FBGUIFPS = 30;
 inline int constexpr FBGUIFontSize = 13;
 
+class FBLookAndFeel;
 enum class FBGUIRenderType { Basic, Full };
 enum class FBHighlightTweakMode { Off, Patch, Session, Default };
 
@@ -17,7 +18,9 @@ void FBGUITerminate();
 int FBGUIGetFontHeightInt();
 float FBGUIGetFontHeightFloat();
 juce::Font const& FBGUIGetFont();
-juce::LookAndFeel* FBGetLookAndFeel();
+FBLookAndFeel* FBGetLookAndFeel();
+float FBGUIGetPopupMenuFontHeightFloat();
+int FBGUIGetStandardPopupMenuItemHeight();
 
 int FBGUIGetStringWidthCached(std::string const& text);
 juce::Point<int> FBGUIGetStringSizeCached(std::string const& text);

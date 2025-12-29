@@ -53,6 +53,12 @@ FBHostGUIContext::PatchName() const
   return _guiState->PatchName(); 
 }
 
+std::string const&
+FBHostGUIContext::ThemeName() const
+{
+  return _guiState->ThemeName();
+}
+
 void
 FBHostGUIContext::OnPatchLoaded()
 {
@@ -72,6 +78,12 @@ FBHostGUIContext::SetPatchName(std::string const& name)
 {
   _guiState->SetPatchName(name);
   OnPatchNameChanged();
+}
+
+void
+FBHostGUIContext::SetThemeName(std::string const& name)
+{
+  _guiState->SetThemeName(name);
 }
 
 void 
@@ -333,9 +345,7 @@ FBHostGUIContext::ShowOnlineManualForModule(int index) const
 {
   int staticModuleIndex = Topo()->modules[index].topoIndices.index;
   auto const& moduleId = Topo()->static_->modules[staticModuleIndex].id;
-  auto cleanModuleId = moduleId;
-  std::erase(cleanModuleId, '{');
-  std::erase(cleanModuleId, '}');
+  auto cleanModuleId = FBCleanTopoId(moduleId);
   juce::URL(OnlineManualLocation()).withAnchor(cleanModuleId).launchInDefaultBrowser();
 }
 

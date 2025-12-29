@@ -34,7 +34,7 @@ public:
   void mouseUp(juce::MouseEvent const& event) override;
 
   void SetValueNormalized(double normalized) override;
-  FBGUIParamComboBox(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param);
+  FBGUIParamComboBox(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed = true);
 };
 
 class FBParamComboBox final:
@@ -57,5 +57,5 @@ public:
 
   void OnPopupMenuClosing(int itemResultId) override;
   void SetValueNormalizedFromHost(double normalized) override;
-  FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
+  FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed = true);
 };

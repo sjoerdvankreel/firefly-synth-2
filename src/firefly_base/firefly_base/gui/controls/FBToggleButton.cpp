@@ -18,9 +18,9 @@ FBAutoSizeToggleButton::FixedWidth(int /*height*/) const
 }
 
 FBGUIParamToggleButton::
-FBGUIParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
+FBGUIParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed):
 FBAutoSizeToggleButton(),
-FBGUIParamControl(plugGUI, param)
+FBGUIParamControl(plugGUI, param, isThemed)
 {
   auto* context = plugGUI->HostContext();
   double normalized = context->GetGUIParamNormalized(param->runtimeParamIndex);
@@ -71,9 +71,9 @@ FBGUIParamToggleButton::buttonStateChanged()
 }
 
 FBParamToggleButton::
-FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
+FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed):
 FBAutoSizeToggleButton(),
-FBParamControl(plugGUI, param)
+FBParamControl(plugGUI, param, isThemed)
 {
   auto* context = plugGUI->HostContext();
   SetValueNormalizedFromHost(context->GetAudioParamNormalized(param->runtimeParamIndex));
@@ -90,7 +90,7 @@ FBParamToggleButton::parentHierarchyChanged()
 String
 FBParamToggleButton::getTooltip()
 {
-  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
+  return _plugGUI->GetTooltipForAudioParam(this);
 }
 
 void
