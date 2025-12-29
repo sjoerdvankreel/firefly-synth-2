@@ -377,6 +377,7 @@ All colors are specified as ARGB hex.
   * paramSecondary/paramBackground: used for menu separators, check/comboboxes, slider tracks, and more.
   * paramHighlight: anything that needs highlighting. "Show mod bounds", "Engine Knob Visual" etc.
   * alertWindowPrimary: when a messagebox pops up.
+* colorSchemes: named color schemes. Can override anything from the default.
 
 ## Top section
 Contains everything that is not directly related to generating audio.
