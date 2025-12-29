@@ -378,8 +378,13 @@ All colors are specified as ARGB hex.
   * paramHighlight: anything that needs highlighting. "Show mod bounds", "Engine Knob Visual" etc.
   * alertWindowPrimary: when a messagebox pops up.
 * colorSchemes: named color schemes. Can override anything from the default.
-* componentColors: named components (top graphs, last tweaked etc). Can select a color scheme.
-* 
+* componentColors: named components (top graphs, last tweaked etc). Can override default color scheme.
+  * componentId: component identifier, see topology.
+  * colorScheme: component override scheme.
+* moduleColors: named modules (osci, vfx, gfx, matrix, unison etc). Can override default color scheme.
+  * moduleId: module identifier, see topology.
+  * colorScheme: module override scheme.
+  * moduleSlot: -1 for all ("All oscis"), >= 0 for selective ("Osci 2").
 
 ## Top section
 Contains everything that is not directly related to generating audio.
