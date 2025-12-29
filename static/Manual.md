@@ -323,7 +323,12 @@ Right-click on an audio parameter:
 This section is only of interest if you want to customize theming.<br/>
 FF2 themes are folders containing a json file named theme.json and an image file named header.png.<br/>
 Right-click to show the generic context menu and click "show plugin folder" to open the plugin directory.<br/>
-Themes are in Contents/Resources/ui/themes.
+Themes are in Contents/Resources/ui/themes.<br/>
+
+You can edit an existing theme or just copy-paste a folder and edit to your likings.<br/>
+FF2 will pick up whatever is in the themes folder.<br/>
+Theme folder names are NOT the unique identifier of a theme.<br/>
+That's the "name" field in theme.json. This field should be unique across all themes.
 
 ## Top section
 Contains everything that is not directly related to generating audio.
