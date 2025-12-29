@@ -731,7 +731,7 @@ In particular the voice amplitude envelope.
 With color to full-on white noise and damping to zero this pretty much replicates the noise osci from infernal synth.
 
 A note about string excitation and bowed-strings:<br/>
-This works well for mid-range pitch, but once you start to play real high notes,<br/>
+This works well for mid-range pitch, but once you start to play higher notes,<br/>
 the feedback noise level basically takes over.<br/>
 You can combat this by applying a keyboard-tracking high-pass filter.
 
