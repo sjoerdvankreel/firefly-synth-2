@@ -330,8 +330,11 @@ FF2 will pick up whatever is in the themes folder.<br/>
 Theme folder names are NOT the unique identifier of a theme.<br/>
 That's the "name" field in theme.json. This field should be unique across all themes.
 
-todo LOG
-todo DEFAULT
+When editing themes, the logfile provides reasonable feedback for when stuff's not working.<br/>
+Things like "failed to parse json at line x, column y", cannot find color scheme "abc", cannot find module "xyz" etc.<br/>
+Right-click to show the generic context menu and click "show log folder" to view it.<br/>
+This of course assumes you didn't get the theming in such a bad state that the gui won't display correctly at all.<br/>
+Otherwise, revert to last-known-good and work from there.
 
 ## Top section
 Contains everything that is not directly related to generating audio.
