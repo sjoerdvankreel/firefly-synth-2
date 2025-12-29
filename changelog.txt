@@ -1,3 +1,20 @@
+December 29, 2025 - Beta 2.
+
+- Cut down on the logging output.
+- Add theming support, see manual.
+- Add new disabled-by tooltip text.
+- Always show the grid for MSEG editor.
+- Osci panning now displays as bipolar.
+- Increased envelope stage count to 16.
+- Add new dump-topology context menu option.
+- Add new show log folder context menu option.
+- Add new show plugin folder context menu option.
+- Restore envelope stage nr in the GUI when not tempo-synced.
+
+- Bugfix: buttons should not pop up context menu.
+- Bugfix: String unison voices should not share random generator.
+- Bugfix: String random generator should not be shared between X and excite.
+
 December 10, 2025 - Beta 1.
 
 - Bugfix: tooltips in combos where not always updated.
