@@ -66,13 +66,13 @@ TODOLIST for beta-2
 [x] explain theme in manual + dump topo option
 [x] note to check the logs when borked
 [x] new screenshots
-[ ] do the manual string filter thing
+[x] do the manual string filter thing
+
+TODOLIST for beta-next
 Ardour 6.9.0~ds0
 "After Bach"
 (rev 6.9.0~ds0-1build1)
 Intel 64-bit
-
-TODOLIST for beta-next
 [ ] do something with the dont-know-how-i-got-here-patch
 [ ] copy-paste patch not work on linux
 [ ] order the themes by path in the gui
