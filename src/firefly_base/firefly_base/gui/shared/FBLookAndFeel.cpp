@@ -570,7 +570,6 @@ FBLookAndFeel::drawButtonBackground(
   auto bounds = button.getLocalBounds().toFloat().reduced(3.0f, 3.0f);
   auto const& scheme = FindColorSchemeFor(button);
 
-  auto color = scheme.primary;
   g.setColour(scheme.primary.darker(1.0f).brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
   g.fillRoundedRectangle(bounds, cornerSize);
   g.setColour(scheme.primary);

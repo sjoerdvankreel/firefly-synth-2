@@ -34,7 +34,7 @@ inline constexpr char FFPlugControllerIdInst[] = "959E6302402B461A8C9AA5A6737BCA
 inline constexpr char FFPlugOnlineManualLocation[] = "https://github.com/sjoerdvankreel/firefly-synth-2/blob/main/static/Manual.md";
 
 enum class FFThemedComponentId {
-  Patch = 1,
+  Patch,
   Graphs,
   Header,
   LastTweaked,

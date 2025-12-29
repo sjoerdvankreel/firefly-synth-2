@@ -59,6 +59,7 @@ FBStaticTopo::PrintTopology() const
   result << "\nThemed Components:";
   for (auto const& kv: themedComponents)
   {
+    FB_ASSERT(kv.second.name.size());
     result << "\n\t" << kv.second.name;
     result << "\n\t\tId: " << FBCleanTopoId(kv.second.id);
   }
