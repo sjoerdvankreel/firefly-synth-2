@@ -357,8 +357,12 @@ The main structure is set up as follows:
 
 And these are the field details:
 * name: unique id / gui display name
-* graphSchemeFollowsModule: if true, main graphs are painted according to their module colors. If false, according to Graphs component colors.
-* unisonSchemeFollowsModule: if true, global unison parameters are painted according to their module colors. If false, according to Unison module colors.
+* graphSchemeFollowsModule:<br/>
+If true, main graphs are painted according to their module colors.<br/>
+If false, according to Graphs component colors.
+* unisonSchemeFollowsModule:<br/>
+If true, global unison parameters are painted according to their module colors.<br/>
+If false, according to Unison module colors.
 * defaultColorScheme: this is the fallback/default scheme. All colors are specified as ARGB hex.
   * graphAlpha: transparancy for filled graphs.
   * dimDisabled: dim factor for disabled parameters and other stuff.
