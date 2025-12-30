@@ -5,10 +5,10 @@ TODOLIST for beta-next
 [x] fm index label is borked
 [x] tooltips on the matrix buttons
 [x] not tooltip disabled by self
-[ ] flash color in the theme
-[ ] also flash slider
+[x] flash color in the theme
+[x] also flash slider
+[x] highlight what disables something?
 [ ] dont disable the ordering controls in the matrix
-[ ] highlight what disables something?
 [ ] border around voice/master/settings
 [ ] copy-paste patch not work on linux
 [ ] do more themes
