@@ -3,8 +3,10 @@ TODOLIST for beta-next
 [x] vecho/gecho should align
 [x] order the themes by path in the gui
 [x] fm index label is borked
-[ ] highlight what disables something?
+[x] tooltips on the matrix buttons
+[x] not tooltip disabled by self
 [ ] dont disable the ordering controls in the matrix
+[ ] highlight what disables something?
 [ ] border around voice/master/settings
 [ ] copy-paste patch not work on linux
 [ ] do more themes

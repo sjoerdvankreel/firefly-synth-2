@@ -434,14 +434,17 @@ FBPlugGUI::GetTooltipForAudioParam(FBParamControl const* control) const
   auto controlComponent = &dynamic_cast<Component const&>(*control);
   if (!controlComponent->isEnabled())
   {
+    std::vector<int> filteredDependencies = {};
+    int rtParamIndex = control->Param()->runtimeParamIndex;
     auto const& dependencies = control->RuntimeDependencies(true, false);
-    if (dependencies.size() > 0)
+    std::copy_if(dependencies.begin(), dependencies.end(), back_inserter(filteredDependencies), [rtParamIndex](auto const& e) { return e != rtParamIndex;  });
+    if (filteredDependencies.size() > 0)
     {
       result += "\r\nDisabled By: ";
-      for (int i = 0; i < (int)dependencies.size(); i++)
+      for (int i = 0; i < (int)filteredDependencies.size(); i++)
       {
-        result += HostContext()->Topo()->audio.params[dependencies[i]].displayName;
-        if (i < (int)dependencies.size() - 1)
+        result += HostContext()->Topo()->audio.params[filteredDependencies[i]].displayName;
+        if (i < (int)filteredDependencies.size() - 1)
           result += ", ";
       }
     }
