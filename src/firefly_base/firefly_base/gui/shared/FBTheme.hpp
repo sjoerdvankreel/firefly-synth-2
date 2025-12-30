@@ -27,8 +27,9 @@ struct FBColorScheme
   juce::Colour paramSecondary = {};
   juce::Colour paramHighlight = {};
   juce::Colour paramBackground = {};
+  juce::Colour paramFlashDisabling = {};
   juce::Colour alertWindowPrimary = {};
-  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme);
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme); 
 };
 
 // This is only a struct so we can add "comment" fields in the json.

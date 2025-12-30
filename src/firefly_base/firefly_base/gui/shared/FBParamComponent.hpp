@@ -45,15 +45,15 @@ public:
 class FBParamControl:
 public FBParamComponent
 {
-  bool _isFlash = false;
+  bool _isFlashDisabling = false;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamControl);
   FBParamControl(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed);
   
-  void StartFlash();
+  void StartFlashDisabling();
   bool IsHighlightTweaked() const;
-  bool IsFlash() const { return _isFlash; }
+  bool IsFlashDisabling() const { return _isFlashDisabling; }
   virtual void SetValueNormalizedFromHost(double normalized) = 0;
 };
 

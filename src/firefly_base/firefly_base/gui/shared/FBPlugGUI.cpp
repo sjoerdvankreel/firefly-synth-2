@@ -100,11 +100,11 @@ FBPlugGUI::InitAllDependencies()
 }
 
 void 
-FBPlugGUI::FlashAudioParam(int index)
+FBPlugGUI::FlashAudioParamDisabling(int index)
 {
   int controlCount = GetControlCountForAudioParamIndex(index);
   for (int i = 0; i < controlCount; i++)
-    GetControlForAudioParamIndex(index, i)->StartFlash();
+    GetControlForAudioParamIndex(index, i)->StartFlashDisabling();
 }
 
 void
@@ -116,7 +116,7 @@ FBPlugGUI::FlashAudioParamsDisablingParam(int index)
     auto const* control = GetControlForAudioParamIndex(index, i);
     auto dependencies = GetAudioParamEnabledDependenciesExcludingSelf(control);
     for (int j = 0; j < dependencies.size(); j++)
-      FlashAudioParam(dependencies[j]);
+      FlashAudioParamDisabling(dependencies[j]);
   }
 }
 

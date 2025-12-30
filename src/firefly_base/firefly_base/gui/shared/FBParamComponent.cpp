@@ -60,14 +60,14 @@ FBParamControl(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed):
 FBParamComponent(plugGUI, param, isThemed) {}
 
 void
-FBParamControl::StartFlash()
+FBParamControl::StartFlashDisabling()
 {
-  if (_isFlash)
+  if (_isFlashDisabling)
     return;
-  _isFlash = true;
+  _isFlashDisabling = true;
   dynamic_cast<juce::Component*>(this)->repaint();
   juce::Timer::callAfterDelay(1000, [this]() {
-    _isFlash = false;
+    _isFlashDisabling = false;
     dynamic_cast<juce::Component*>(this)->repaint(); });
 }
 

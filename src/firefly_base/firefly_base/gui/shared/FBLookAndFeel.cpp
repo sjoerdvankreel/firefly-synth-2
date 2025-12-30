@@ -442,9 +442,9 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
   if (paramCombo != nullptr)
   {
-    if (paramCombo->IsFlash())
+    if (paramCombo->IsFlashDisabling())
     {
-      g.setColour(scheme.paramHighlight);
+      g.setColour(scheme.paramFlashDisabling);
       g.fillRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize);
     }
     if (paramCombo->IsHighlightTweaked())
@@ -474,9 +474,9 @@ FBLookAndFeel::drawTickBox(
   auto* paramToggle = dynamic_cast<FBParamToggleButton*>(&component);
   if (paramToggle != nullptr)
   {
-    if (paramToggle->IsFlash())
+    if (paramToggle->IsFlashDisabling())
     {
-      g.setColour(scheme.paramHighlight);
+      g.setColour(scheme.paramFlashDisabling);
       g.fillRoundedRectangle(tickBounds, 2.0f);
     }
     if (paramToggle->IsHighlightTweaked())
@@ -570,9 +570,9 @@ FBLookAndFeel::drawLinearSlider(
   g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
   if (paramSlider != nullptr)
   {
-    if (paramSlider->IsFlash())
+    if (paramSlider->IsFlashDisabling())
     {
-      g.setColour(scheme.paramHighlight);
+      g.setColour(scheme.paramFlashDisabling);
       g.fillRoundedRectangle((float)x, thumbY, (float)width, thumbH, 2.0f);
     }
     if (paramSlider->IsHighlightTweaked())
@@ -713,9 +713,9 @@ FBLookAndFeel::drawRotarySlider(
 
   if (paramSlider != nullptr)
   { 
-    if (paramSlider->IsFlash())
+    if (paramSlider->IsFlashDisabling())
     {
-      g.setColour(scheme.paramHighlight);
+      g.setColour(scheme.paramFlashDisabling);
       g.fillEllipse(bounds.toFloat().reduced(0.5f, 0.5f));
     }
     if (paramSlider->IsHighlightTweaked())

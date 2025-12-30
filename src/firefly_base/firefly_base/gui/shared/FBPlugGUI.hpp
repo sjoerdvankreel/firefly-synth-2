@@ -92,7 +92,7 @@ public:
   void LoadPatchFromFile();
   void LoadPreset(juce::Component* clickedFrom);
   
-  void FlashAudioParam(int index);
+  void FlashAudioParamDisabling(int index);
   void FlashAudioParamsDisablingParam(int index);
   std::vector<int> GetAudioParamEnabledDependenciesExcludingSelf(
     FBParamControl const* control) const;

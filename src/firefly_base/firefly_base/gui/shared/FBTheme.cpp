@@ -277,6 +277,10 @@ ParseDefaultColorScheme(
     return false;
   result.paramBackground = Colour::fromString(obj->getProperty("paramBackground").toString());
 
+  if (!RequireStringProperty(obj, "paramFlashDisabling"))
+    return false;
+  result.paramFlashDisabling = Colour::fromString(obj->getProperty("paramFlashDisabling").toString());
+
   return true;
 }
 
@@ -362,6 +366,10 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "paramBackground", present))
     return false;
   result.paramBackground = present ? Colour::fromString(obj->getProperty("paramBackground").toString()) : defaultScheme.paramBackground;
+
+  if (!OptionalStringProperty(obj, "paramFlashDisabling", present))
+    return false;
+  result.paramFlashDisabling = present ? Colour::fromString(obj->getProperty("paramFlashDisabling").toString()) : defaultScheme.paramFlashDisabling;
 
   return true;
 }
