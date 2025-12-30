@@ -105,7 +105,10 @@ void
 FBParamToggleButton::mouseUp(const MouseEvent& e)
 {
   if (!isEnabled())
+  {
+    _plugGUI->FlashAudioParamsDisablingParam(_param->runtimeParamIndex);
     return;
+  }
 
   if (e.mods.isRightButtonDown())
   {

@@ -92,6 +92,11 @@ public:
   void LoadPatchFromFile();
   void LoadPreset(juce::Component* clickedFrom);
   
+  void FlashAudioParam(int index);
+  void FlashAudioParamsDisablingParam(int index);
+  std::vector<int> GetAudioParamEnabledDependenciesExcludingSelf(
+    FBParamControl const* control) const;
+
   FBTheme const& GetTheme() const;
   void SwitchTheme(std::string const& themeName);
   std::vector<FBTheme> const& Themes() const { return _themes; }

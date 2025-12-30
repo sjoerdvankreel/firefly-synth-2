@@ -99,6 +99,38 @@ FBPlugGUI::InitAllDependencies()
     AudioParamNormalizedChanged(i);
 }
 
+void 
+FBPlugGUI::FlashAudioParam(int index)
+{
+  int controlCount = GetControlCountForAudioParamIndex(index);
+  for (int i = 0; i < controlCount; i++)
+    GetControlForAudioParamIndex(index, i)->StartFlash();
+}
+
+void
+FBPlugGUI::FlashAudioParamsDisablingParam(int index)
+{
+  int controlCount = GetControlCountForAudioParamIndex(index);
+  for (int i = 0; i < controlCount; i++)
+  {
+    auto const* control = GetControlForAudioParamIndex(index, i);
+    auto dependencies = GetAudioParamEnabledDependenciesExcludingSelf(control);
+    for (int j = 0; j < dependencies.size(); j++)
+      FlashAudioParam(dependencies[j]);
+  }
+}
+
+std::vector<int> 
+FBPlugGUI::GetAudioParamEnabledDependenciesExcludingSelf(
+  FBParamControl const* control) const
+{
+  std::vector<int> result = {};
+  int index = control->Param()->runtimeParamIndex;
+  auto const& dependencies = control->RuntimeDependencies(true, false);
+  std::copy_if(dependencies.begin(), dependencies.end(), std::back_inserter(result), [index](auto const& e) { return e != index;  });
+  return result;
+}
+
 void
 FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double value)
 {
@@ -434,10 +466,7 @@ FBPlugGUI::GetTooltipForAudioParam(FBParamControl const* control) const
   auto controlComponent = &dynamic_cast<Component const&>(*control);
   if (!controlComponent->isEnabled())
   {
-    std::vector<int> filteredDependencies = {};
-    int rtParamIndex = control->Param()->runtimeParamIndex;
-    auto const& dependencies = control->RuntimeDependencies(true, false);
-    std::copy_if(dependencies.begin(), dependencies.end(), back_inserter(filteredDependencies), [rtParamIndex](auto const& e) { return e != rtParamIndex;  });
+    std::vector<int> filteredDependencies = GetAudioParamEnabledDependenciesExcludingSelf(control);
     if (filteredDependencies.size() > 0)
     {
       result += "\r\nDisabled By: ";

@@ -440,10 +440,18 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   g.setColour(scheme.paramSecondary);
   g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
   auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
-  if (paramCombo != nullptr && paramCombo->IsHighlightTweaked())
+  if (paramCombo != nullptr)
   {
-    g.setColour(scheme.paramHighlight);
-    g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+    if (paramCombo->IsFlash())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.fillRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize);
+    }
+    if (paramCombo->IsHighlightTweaked())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+    }
   }
 }
 
@@ -464,10 +472,18 @@ FBLookAndFeel::drawTickBox(
   g.setColour(scheme.paramSecondary);
   g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
   auto* paramToggle = dynamic_cast<FBParamToggleButton*>(&component);
-  if (paramToggle != nullptr && paramToggle->IsHighlightTweaked())
+  if (paramToggle != nullptr)
   {
-    g.setColour(scheme.paramHighlight);
-    g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
+    if (paramToggle->IsFlash())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.fillRoundedRectangle(tickBounds, 2.0f);
+    }
+    if (paramToggle->IsHighlightTweaked())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
+    }
   }
 
   if (ticked)
@@ -687,10 +703,18 @@ FBLookAndFeel::drawRotarySlider(
   g.setColour(scheme.primary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 
-  if (paramSlider != nullptr && paramSlider->IsHighlightTweaked())
+  if (paramSlider != nullptr)
   { 
-    g.setColour(scheme.paramHighlight);
-    g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
+    if (paramSlider->IsFlash())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.fillEllipse(bounds.toFloat().reduced(0.5f, 0.5f));
+    }
+    if (paramSlider->IsHighlightTweaked())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
+    }
   } 
 }
 
