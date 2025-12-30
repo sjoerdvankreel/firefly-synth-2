@@ -13,6 +13,7 @@ TODOLIST for beta-next
 [ ] copy-paste patch not work on linux
 [ ] do more themes
 [ ] autofill the last tweaked => too complicated, is for later
+[ ] credit rusto
 
 [ ] do something with the dont-know-how-i-got-here-patch
 [ ] rename demo to featuretest
