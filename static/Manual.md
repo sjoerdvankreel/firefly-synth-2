@@ -376,6 +376,7 @@ All colors are specified as ARGB hex.
   * sectionBorder/sectionBackground: mainly used for module sections, but other stuff as well.
   * paramSecondary/paramBackground: used for menu separators, check/comboboxes, slider tracks, and more.
   * paramHighlight: anything that needs highlighting. "Show mod bounds", "Engine Knob Visual" etc.
+  * paramFlashDisabling: when a parameter is flashing because it's disabling another parameter.
   * alertWindowPrimary: when a messagebox pops up.
 * colorSchemes: named color schemes. Can override anything from the default.
 * componentColors: named components (top graphs, last tweaked etc). Can override default color scheme.
