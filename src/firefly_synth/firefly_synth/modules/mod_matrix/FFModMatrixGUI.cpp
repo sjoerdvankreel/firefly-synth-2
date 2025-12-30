@@ -253,7 +253,11 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
           if(i < maxSlotCount)
             plugGUI->HostContext()->CopyAudioParam({ { (int)moduleType, 0 }, { p, i - 1} }, { { (int)moduleType, 0 }, { p, i } });
           plugGUI->HostContext()->DefaultAudioParam({ { (int)moduleType, 0 }, { p, i - 1} });
-        }};
+        }
+    int activeSlotCount = plugGUI->HostContext()->GetAudioParamDiscrete({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Slots, 0 } });
+    if(activeSlotCount < maxSlotCount)
+      plugGUI->HostContext()->SetAudioParamDiscrete({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Slots, 0 } }, activeSlotCount + 1);
+  };
   grid->Add(r, 0, addButton);
 
   auto removeButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "-");
@@ -271,7 +275,11 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
             plugGUI->HostContext()->CopyAudioParam({ { (int)moduleType, 0 }, { p, i + 1 } }, { { (int)moduleType, 0 }, { p, i } });
             plugGUI->HostContext()->DefaultAudioParam({ { (int)moduleType, 0 }, { p, i + 1 } });
           }
-        }};
+        }
+    int activeSlotCount = plugGUI->HostContext()->GetAudioParamDiscrete({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Slots, 0 } });
+    if (activeSlotCount > 0)
+      plugGUI->HostContext()->SetAudioParamDiscrete({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Slots, 0 } }, activeSlotCount - 1);
+  };
   grid->Add(r, 1, removeButton);
 
   auto upButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "\U00002191");

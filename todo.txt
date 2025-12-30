@@ -8,7 +8,7 @@ TODOLIST for beta-next
 [x] flash color in the theme
 [x] also flash slider
 [x] highlight what disables something?
-[ ] dont disable the ordering controls in the matrix
+[x] dont disable the ordering controls in the matrix
 [ ] border around voice/master/settings
 [ ] copy-paste patch not work on linux
 [ ] do more themes
