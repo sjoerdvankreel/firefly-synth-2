@@ -3,12 +3,12 @@ TODOLIST for beta-next
 [x] vecho/gecho should align
 [x] order the themes by path in the gui
 [ ] fm index label is borked
-[ ] autofill the last tweaked
 [ ] highlight what disables something?
 [ ] dont disable the ordering controls in the matrix
 [ ] border around voice/master/settings
 [ ] copy-paste patch not work on linux
 [ ] do more themes
+[ ] autofill the last tweaked => too complicated, is for later
 
 [ ] do something with the dont-know-how-i-got-here-patch
 [ ] rename demo to featuretest
