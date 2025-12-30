@@ -1,8 +1,9 @@
 TODOLIST for beta-next
-Ardour 6.9.0~ds0
-"After Bach"
-(rev 6.9.0~ds0-1build1)
-Intel 64-bit
+[ ] autofill the last tweaked
+[ ] highlight what disables something?
+[ ] dont disable the ordering controls in the matrix
+[ ] vlfo/glfo should align
+
 [ ] do something with the dont-know-how-i-got-here-patch
 [ ] copy-paste patch not work on linux
 [ ] order the themes by path in the gui
