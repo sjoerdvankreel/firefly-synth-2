@@ -568,11 +568,19 @@ FBLookAndFeel::drawLinearSlider(
   g.setColour(scheme.primary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
   g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
   g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
-  if (paramSlider != nullptr && paramSlider->IsHighlightTweaked())
+  if (paramSlider != nullptr)
   {
-    g.setColour(scheme.paramHighlight);
-    g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
-    g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
+    if (paramSlider->IsFlash())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.fillRoundedRectangle((float)x, thumbY, (float)width, thumbH, 2.0f);
+    }
+    if (paramSlider->IsHighlightTweaked())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
+      g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
+    }
   }
 }
 
