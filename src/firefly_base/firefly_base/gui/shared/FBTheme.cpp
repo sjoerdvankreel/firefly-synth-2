@@ -775,5 +775,6 @@ FBLoadThemes(FBRuntimeTopo const* topo)
     if (MakeTheme(topo, themeJsons[i], theme))
       result.push_back(theme);
   }
+  std::sort(result.begin(), result.end(), [](auto const& l, auto const& r) { return l.name < r.name; });
   return result;
 }
