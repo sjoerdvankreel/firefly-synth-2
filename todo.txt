@@ -2,7 +2,7 @@ TODOLIST for beta-next
 [x] vlfo/glfo should align
 [x] vecho/gecho should align
 [x] order the themes by path in the gui
-[ ] fm index label is borked
+[x] fm index label is borked
 [ ] highlight what disables something?
 [ ] dont disable the ordering controls in the matrix
 [ ] border around voice/master/settings
