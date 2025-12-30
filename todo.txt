@@ -3,19 +3,19 @@ TODOLIST for beta-next
 [ ] highlight what disables something?
 [ ] dont disable the ordering controls in the matrix
 [ ] vlfo/glfo should align
-
-[ ] do something with the dont-know-how-i-got-here-patch
+[ ] border around voice/master/settings
 [ ] copy-paste patch not work on linux
 [ ] order the themes by path in the gui
+[ ] do more themes
+
+[ ] do something with the dont-know-how-i-got-here-patch
 [ ] rename demo to featuretest
 [ ] also brag about its faster
 [ ] brag about superior visualization and note when it not works (ardour everywhere, Linux only reaper is good, clap always good, vst3 win/lin mostly good)
 [ ] also brag about the tuning
 [ ] just do the comparison
-[ ] do more themes
 [ ] fix ardour save/load
 [ ] credit rusto
-[ ] make the svg issue
 [ ] featuretest scheme
 [ ] bg images in main tabs and header and maybe elsewhere
 [ ] not right-click-change horizontal sliders
