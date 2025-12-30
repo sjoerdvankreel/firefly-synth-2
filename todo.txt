@@ -1,5 +1,6 @@
 TODOLIST for beta-next
 [x] vlfo/glfo should align
+[x] vecho/gecho should align
 [ ] autofill the last tweaked
 [ ] highlight what disables something?
 [ ] dont disable the ordering controls in the matrix
