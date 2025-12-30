@@ -283,7 +283,7 @@ The plugin also reacts to system DPI settings.
 
 ## Flashing disabled parameters
 When you click an audio control that's disabled,<br/>
-the GUI shortly flashes any other parameters that might cause the clicked one to be disabled.
+the GUI shortly flashes any other parameters that might cause the clicked one to be disabled.<br/>
 Typically this is only 1 or 2 parameters, but might be as much as 3 or 4.<br/>
 This does not mean all of those parameters needs changing to enabled the clicked one, just at least one of them.
 
