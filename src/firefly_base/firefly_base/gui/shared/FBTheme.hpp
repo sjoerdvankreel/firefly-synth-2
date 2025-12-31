@@ -21,6 +21,9 @@ struct FBColorScheme
   juce::Colour meterAlert = {};
   juce::Colour graphGrid = {};
   juce::Colour graphBackground = {};
+  juce::Colour headerText = {};
+  juce::Colour headerBorder = {};
+  juce::Colour headerBackground = {};
   juce::Colour sectionBorder = {};
   juce::Colour sectionBackground = {};
   juce::Colour primary = {};

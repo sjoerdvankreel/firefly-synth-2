@@ -163,25 +163,29 @@ FBLookAndFeel::DrawTabButtonPart(
   bool isHeader = button.getTabbedButtonBar().getNumTabs() == 1;
 
   auto const& scheme = FindColorSchemeFor(button);
-  if (isSeparator)
+  if (isHeader)
+    g.setColour(scheme.headerBackground);
+  else  if (isSeparator)
     g.setColour(scheme.paramSecondary);
-  else if(toggleState)
+  else if (toggleState)
     g.setColour(scheme.primary.darker(1.0f));
   else
     g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(activeArea.toFloat(), 3.0f);
 
-  if(toggleState || isHeader || isMouseOver)
+  if (isHeader)
+    g.setColour(scheme.headerBorder);
+  else if(toggleState || isMouseOver)
     g.setColour(scheme.primary);
   else
     g.setColour(scheme.sectionBorder);  
   g.drawRoundedRectangle(activeArea.toFloat(), 3.0f, 1.0f);
-
+       
   TextLayout textLayout;
   const Rectangle<float> area(activeArea.toFloat());
   float length = area.getWidth();
   float depth = area.getHeight();
-  auto textColor = isHeader? scheme.primary: scheme.text.darker(isSeparator || isMouseOver || toggleState ? 0.0f : scheme.dimDisabled);
+  auto textColor = isHeader? scheme.headerText: scheme.text.darker(isSeparator || isMouseOver || toggleState ? 0.0f : scheme.dimDisabled);
   ::CreateTabTextLayout(button, length, textColor, FBGUIGetFont(), centerText, text, textLayout);
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));
   textLayout.draw(g, Rectangle<float>(length, depth));
