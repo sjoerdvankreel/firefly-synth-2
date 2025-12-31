@@ -131,8 +131,7 @@ MakeVoiceModuleTab(FBPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   grid->Add(0, 0, MakeVoiceModuleSectionPitch(plugGUI));
   grid->Add(0, 1, MakeVoiceModuleSectionPorta(plugGUI));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::VoiceModule, 0, margin);
+  return plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
 }
 
 Component*
