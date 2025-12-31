@@ -9,6 +9,7 @@ TODOLIST for beta-next
 [x] also flash slider
 [x] highlight what disables something?
 [x] dont disable the ordering controls in the matrix
+[ ] fix the dialogs
 [ ] border around voice/master/settings
 [ ] copy-paste patch not work on linux
 [ ] do more themes
