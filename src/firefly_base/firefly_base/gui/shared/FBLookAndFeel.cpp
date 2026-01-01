@@ -276,7 +276,7 @@ FBLookAndFeel::layoutFileBrowserComponent(
   auto buttonWidth = 50;
   auto b = browserComp.getLocalBounds();
   auto topSlice = b.removeFromTop(22);
-  auto bottomSlice = b.removeFromBottom(32);
+  auto bottomSlice = b.removeFromBottom(28);
   currentPathBox->setBounds(topSlice.removeFromLeft(topSlice.getWidth() - buttonWidth));
   topSlice.removeFromLeft(6);
   goUpButton->setBounds(topSlice);
