@@ -289,6 +289,7 @@ FBLookAndFeel::layoutFileBrowserComponent(
   topSlice.removeFromLeft(6);
   goUpButton->setBounds(topSlice);
   filenameBox->setBounds(bottomSlice.reduced(3, 0));
+  filenameBox->setIndents(4, 6);
   if (auto* listAsComp = dynamic_cast<Component*> (fileListComponent))
     listAsComp->setBounds(b.reduced(3, 10));
 }
