@@ -23,6 +23,9 @@
 
 using namespace juce;
 
+static int const FileBrowserWidth = 640;
+static int const FileBrowserHeight = 480;
+
 FBPlugGUI::
 ~FBPlugGUI()
 {
@@ -36,8 +39,10 @@ _hostContext(hostContext)
   _themes = FBLoadThemes(hostContext->Topo());
   if (_themes.empty())
     FB_LOG_ERROR("No themes found.");
-
   _tooltipWindow = StoreComponent<TooltipWindow>();
+  auto extension = hostContext->Topo()->static_->patchExtension;
+  auto filterName = hostContext->Topo()->static_->patchFilterName;
+  _patchFileFilter = std::make_unique<WildcardFileFilter>("*." + extension, "", filterName);
   _hostContext->AddListener(this);
   addAndMakeVisible(_tooltipWindow);
   addMouseListener(this, true);
@@ -645,8 +650,22 @@ void
 FBPlugGUI::LoadPatchFromFile()
 {
   FB_LOG_ENTRY_EXIT();
-  int loadFlags = FileBrowserComponent::openMode;
-  auto extension = HostContext()->Topo()->static_->patchExtension;
+  HideOverlayComponent();
+  if (_loadPatchBrowser == nullptr)
+  {
+    int browserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles | FileBrowserComponent::useTreeView | FileBrowserComponent::filenameBoxIsReadOnly;
+    _loadPatchBrowser = std::make_unique<FileBrowserComponent>(browserFlags, File(), _patchFileFilter.get(), nullptr);
+    _loadPatchMargin = std::make_unique<FBMarginComponent>(true, true, true, true, _loadPatchBrowser.get(), true);
+    _loadPatchMargin->setBounds(
+      (getBounds().getWidth() - FileBrowserWidth) / 2, 
+      (getBounds().getHeight() - FileBrowserHeight) / 3,
+      FileBrowserWidth, FileBrowserHeight);
+    _loadPatchMargin->resized();
+  }
+  addAndMakeVisible(_loadPatchMargin.get(), 1);
+
+#if 0
+  FileBrowserComponent x()
   FileChooser* chooser = new FileChooser("Load Patch", File(), String("*.") + extension, true, false, this);
   chooser->launchAsync(loadFlags, [this](FileChooser const& chooser) {
     auto file = chooser.getResult();
@@ -659,6 +678,7 @@ FBPlugGUI::LoadPatchFromFile()
         "Error",
         "Failed to load patch. See log for details.");
   });
+#endif
 }
 
 void

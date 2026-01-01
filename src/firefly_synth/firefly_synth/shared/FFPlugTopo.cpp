@@ -55,10 +55,11 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   auto result = std::make_unique<FFStaticTopo>();
   result->meta = FFPlugMeta(format, isFX);
   result->maxUndoSize = 15;
-  result->patchExtension = "ff2preset";
   result->guiWidth = 1280;
   result->guiAspectRatioWidth = 128;
   result->guiAspectRatioHeight = 69;
+  result->patchExtension = "ff2preset";
+  result->patchFilterName = "FF2 Presets";
   result->guiUserScaleModule = (int)FFModuleType::GUISettings;
   result->guiUserScaleParam = (int)FFGUISettingsGUIParam::UserScale;
   result->guiFactory = [](FBHostGUIContext* hostContext) { 

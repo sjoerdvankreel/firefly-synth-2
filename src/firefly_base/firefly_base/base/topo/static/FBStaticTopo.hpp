@@ -117,6 +117,7 @@ struct FBStaticTopo
   int maxUndoSize = {};
   FBStaticTopoMeta meta = {};
   std::string patchExtension = {};
+  std::string patchFilterName = {};
 
   void* (*allocRawGUIState)() = {};
   void* (*allocRawProcState)() = {};

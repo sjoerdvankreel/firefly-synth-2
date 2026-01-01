@@ -5,6 +5,7 @@
 #include <firefly_base/gui/shared/FBTheme.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 
@@ -62,6 +63,9 @@ public IFBHostGUIContextListener
   FBMarginComponent* _overlayOuterMargin = {};
   std::vector<IFBThemeListener*> _themeListeners = {};
   std::vector<IFBParamListener*> _paramListeners = {};
+  std::unique_ptr<FBMarginComponent> _loadPatchMargin = {};
+  std::unique_ptr<juce::WildcardFileFilter> _patchFileFilter = {};
+  std::unique_ptr<juce::FileBrowserComponent> _loadPatchBrowser = {};
 
   void ShowLogFolder();
   void ShowPluginFolder();
