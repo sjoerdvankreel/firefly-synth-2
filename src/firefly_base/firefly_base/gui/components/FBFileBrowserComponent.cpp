@@ -38,7 +38,7 @@ _onSelect(onSelect)
 void
 FBFileBrowserComponent::resized()
 {
-  _margin->setBounds(getBounds());
+  _margin->setBounds(getLocalBounds());
   _margin->resized();
 }
 
@@ -53,10 +53,10 @@ void
 FBFileBrowserComponent::Show()
 {
   _plugGUI->addChildComponent(this, 1);
-  setBounds(0, 0, 600, 600);
-    //(_plugGUI->getBounds().getWidth() - FileBrowserWidth) / 2,
-    //(_plugGUI->getBounds().getHeight() - FileBrowserHeight) / 3,
-    //FileBrowserWidth, FileBrowserHeight);
+  setBounds(
+    (_plugGUI->getBounds().getWidth() - FileBrowserWidth) / 2,
+    (_plugGUI->getBounds().getHeight() - FileBrowserHeight) / 3,
+    FileBrowserWidth, FileBrowserHeight);
   resized();
   setVisible(true);
 }
