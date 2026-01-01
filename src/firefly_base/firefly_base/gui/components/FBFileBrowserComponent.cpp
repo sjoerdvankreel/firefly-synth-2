@@ -28,10 +28,11 @@ _onSelect(onSelect)
     browserFlags |= FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
   _browser = std::make_unique<FileBrowserComponent>(browserFlags, File(), _filter.get(), nullptr);
   _grid = std::make_unique<FBGridComponent>(true, std::vector<int> { 1, 0, }, std::vector<int> { 1, 0, 0, });
-  _margin = std::make_unique<FBMarginComponent>(true, true, true, true, _grid.get(), true);
   _grid->Add(0, 0, 1, 3, _browser.get());
   _grid->Add(1, 1, 1, 1, _okButton.get());
   _grid->Add(1, 2, 1, 1, _cancelButton.get());
+  _margin = std::make_unique<FBMarginComponent>(true, true, true, true, _grid.get(), true);
+  addAndMakeVisible(_margin.get());
 }
 
 void
