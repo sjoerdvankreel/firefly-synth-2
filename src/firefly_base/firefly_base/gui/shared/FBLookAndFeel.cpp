@@ -198,11 +198,7 @@ FBLookAndFeel::SetTheme(FBTheme const& theme)
   setColour(DirectoryContentsDisplayComponent::highlightColourId, Colours::red);
   setColour(DirectoryContentsDisplayComponent::highlightedTextColourId, Colours::blue);
   setColour(DirectoryContentsDisplayComponent::textColourId, Colours::green);
-  setColour(FileBrowserComponent::filenameBoxTextColourId, Colours::green);
-  setColour(FileBrowserComponent::currentPathBoxTextColourId, Colours::red);
-  setColour(FileBrowserComponent::currentPathBoxArrowColourId, Colours::orange);
-  setColour(FileBrowserComponent::filenameBoxBackgroundColourId, Colours::yellow);
-  setColour(FileBrowserComponent::currentPathBoxBackgroundColourId, Colours::purple);
+  setColour(FileBrowserComponent::filenameBoxTextColourId, Colours::yellow);
   setColour(AlertWindow::ColourIds::textColourId, theme.defaultColorScheme.alertWindowPrimary);
   setColour(AlertWindow::ColourIds::backgroundColourId, theme.defaultColorScheme.sectionBackground);
 }
