@@ -12,6 +12,9 @@
     "meterFill": "FFA0A0A0",
     "meterTrack": "FF505050",
     "meterAlert": "FFFFFFFF",
+    "headerText": "FFFA5F55",
+    "headerBorder": "FFFA5F55",
+    "headerBackground": "FF282828",
     "graphGrid": "FF404040",
     "graphBackground": "FF181818",
     "sectionBorder": "80FFFFFF",
@@ -31,6 +34,8 @@
     },
     "Yellow": {
       "primary": "FFFAB255",
+      "headerText": "FFFAB255",
+      "headerBorder": "FFFAB255"
     },
     "Blue": {
       "primary": "FF559DFA",
