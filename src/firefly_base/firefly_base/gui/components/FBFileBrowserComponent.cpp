@@ -23,9 +23,9 @@ _onSelect(onSelect)
   _filter = std::make_unique<WildcardFileFilter>("*." + extension, "", filterName);
   int browserFlags = FileBrowserComponent::canSelectFiles | FileBrowserComponent::useTreeView;
   if (isSave)
-    browserFlags |= FileBrowserComponent::openMode | FileBrowserComponent::filenameBoxIsReadOnly;
-  else
     browserFlags |= FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
+  else
+    browserFlags |= FileBrowserComponent::openMode | FileBrowserComponent::filenameBoxIsReadOnly;
   _browser = std::make_unique<FileBrowserComponent>(browserFlags, File(), _filter.get(), nullptr);
   _grid = std::make_unique<FBGridComponent>(true, std::vector<int> { 1, 0, }, std::vector<int> { 1, 0, 0, });
   _grid->Add(0, 0, 1, 3, _browser.get());
@@ -53,10 +53,10 @@ void
 FBFileBrowserComponent::Show()
 {
   _plugGUI->addChildComponent(this, 1);
-  setBounds(
-    (_plugGUI->getBounds().getWidth() - FileBrowserWidth) / 2,
-    (_plugGUI->getBounds().getHeight() - FileBrowserHeight) / 3,
-    FileBrowserWidth, FileBrowserHeight);
+  setBounds(0, 0, 600, 600);
+    //(_plugGUI->getBounds().getWidth() - FileBrowserWidth) / 2,
+    //(_plugGUI->getBounds().getHeight() - FileBrowserHeight) / 3,
+    //FileBrowserWidth, FileBrowserHeight);
   resized();
   setVisible(true);
 }
