@@ -12,6 +12,7 @@ TODOLIST for beta-next
 [x] border around voice/master/settings
 [x] document the new scheme colors
 [ ] fix the dialogs
+[ ] close the dialogs on open overlay (CloseAllOverlaysAndDialogs)
 [ ] warnAboutOverwriting 
 [ ] copy-paste patch not work on linux
 [ ] do more themes
