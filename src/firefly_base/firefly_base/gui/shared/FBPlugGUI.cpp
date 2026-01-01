@@ -646,7 +646,7 @@ void
 FBPlugGUI::LoadPatchFromFile()
 {
   FB_LOG_ENTRY_EXIT();
-  HideOverlayComponent();
+  HideAllOverlaysAndFileBrowsers();
   _loadPatchBrowser->Show(); // todo not double show?
 
 #if 0
@@ -730,6 +730,14 @@ FBPlugGUI::SetupOverlayGUI()
   _overlayOuterMargin = StoreComponent<FBMarginComponent>(true, true, true, true, _overlayModule, true);
 }
 
+void 
+FBPlugGUI::HideAllOverlaysAndFileBrowsers()
+{
+  HideOverlayComponent();
+  _loadPatchBrowser->Hide();
+  // todo the rest
+}
+
 void
 FBPlugGUI::HideOverlayComponent()
 {
@@ -751,8 +759,7 @@ FBPlugGUI::ShowOverlayComponent(
   int w, int h, bool vCenter,
   std::function<void()> init)
 {
-  if (_overlayComponent != nullptr)
-    HideOverlayComponent();
+  HideAllOverlaysAndFileBrowsers();
   int x = (getWidth() - w) / 2;
   int y = (getHeight() - h) / 2;
   if (!vCenter)

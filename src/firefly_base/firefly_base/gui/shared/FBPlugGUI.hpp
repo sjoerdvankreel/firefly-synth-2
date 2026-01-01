@@ -105,6 +105,7 @@ public:
   std::vector<FBTheme> const& Themes() const { return _themes; }
 
   void HideOverlayComponent();
+  void HideAllOverlaysAndFileBrowsers();
   void ShowOverlayComponent(
     std::string const& title,
     int moduleIndex, int moduleSlot,

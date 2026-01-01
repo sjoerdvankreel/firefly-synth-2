@@ -24,8 +24,6 @@ public juce::Component
   std::unique_ptr<juce::WildcardFileFilter> _filter = {};
   std::unique_ptr<juce::FileBrowserComponent> _browser = {};
 
-  void Hide();
-
 public:
   ~FBFileBrowserComponent();
   FBFileBrowserComponent(
@@ -34,5 +32,6 @@ public:
     std::function<void(std::string const&)> onSelect);
   
   void Show();
+  void Hide();
   void resized() override;
 };
