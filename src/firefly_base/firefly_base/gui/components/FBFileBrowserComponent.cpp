@@ -26,6 +26,10 @@ _extension(extension),
 _onSelect(onSelect)
 {
   _okButton = std::make_unique<FBAutoSizeButton>("OK");
+  _okButton->onClick = [this]() { 
+    if(_browser->getNumSelectedFiles() == 1)
+      SelectFile(_browser->getSelectedFile(0)); 
+  };
   _cancelButton = std::make_unique<FBAutoSizeButton>("Cancel");
   _cancelButton->onClick = [this]() { Hide(); };
   _filter = std::make_unique<WildcardFileFilter>("*." + extension, "", filterName);
@@ -46,6 +50,12 @@ _onSelect(onSelect)
 }
 
 void
+FBFileBrowserComponent::fileDoubleClicked(const File& file)
+{
+  SelectFile(file);
+}
+
+void
 FBFileBrowserComponent::resized()
 {
   _margin->setBounds(getLocalBounds());
@@ -60,7 +70,7 @@ FBFileBrowserComponent::Hide()
 }
 
 void 
-FBFileBrowserComponent::fileDoubleClicked(const File& file)
+FBFileBrowserComponent::SelectFile(juce::File const& file)
 {
   if (!file.existsAsFile())
     return;

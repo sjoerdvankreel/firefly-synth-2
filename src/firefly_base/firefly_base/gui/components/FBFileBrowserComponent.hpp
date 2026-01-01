@@ -28,6 +28,8 @@ public juce::FileBrowserListener
   std::unique_ptr<juce::WildcardFileFilter> _filter = {};
   std::unique_ptr<juce::FileBrowserComponent> _browser = {};
 
+  void SelectFile(juce::File const& file);
+
 public:
   ~FBFileBrowserComponent();
   FBFileBrowserComponent(
@@ -39,7 +41,7 @@ public:
   void Hide();
   
   void resized() override;
-  void selectionChanged() override {};
+  void selectionChanged() override {}
   void fileDoubleClicked(const juce::File& /*file*/) override;
   void browserRootChanged(const juce::File& /*newRoot*/) override {};
   void fileClicked(const juce::File& /*file*/, const juce::MouseEvent& /*e*/) override {};
