@@ -280,10 +280,11 @@ FBLookAndFeel::layoutFileBrowserComponent(
   TextEditor* filenameBox,
   Button* goUpButton)
 {
-  auto buttonWidth = 50;
+  auto buttonWidth = 40;
   auto b = browserComp.getLocalBounds();
   auto topSlice = b.removeFromTop(32);
   auto bottomSlice = b.removeFromBottom(28);
+  currentPathBox->setEditableText(false);
   currentPathBox->setBounds(topSlice.removeFromLeft(topSlice.getWidth() - buttonWidth));
   topSlice.removeFromLeft(6);
   goUpButton->setBounds(topSlice);
