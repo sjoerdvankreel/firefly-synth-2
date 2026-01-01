@@ -23,7 +23,9 @@
     "paramHighlight": "80FFFFFF",
     "paramBackground": "FF181818",
     "paramFlashDisabling": "80FFFFFF",
-    "alertWindowPrimary": "FFFA5F55"
+    "alertWindowPrimary": "FFFA5F55",
+    "fileBrowserPrimary": "FFFA5F55",
+    "fileBrowserHighlight": "80FA5F55"
   },
   "colorSchemes_comment": "Define color schemes to be referenced by modules, parameters, and non-module related component colors.",
   "colorSchemes": {

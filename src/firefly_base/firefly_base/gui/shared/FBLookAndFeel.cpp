@@ -195,13 +195,13 @@ void
 FBLookAndFeel::SetTheme(FBTheme const& theme) 
 { 
   _theme = FBTheme(theme); 
-  setColour(DirectoryContentsDisplayComponent::highlightColourId, Colours::red);
-  setColour(DirectoryContentsDisplayComponent::highlightedTextColourId, Colours::blue);
-  setColour(DirectoryContentsDisplayComponent::textColourId, Colours::green);
-  setColour(FileBrowserComponent::filenameBoxTextColourId, Colours::yellow);
   setColour(AlertWindow::ColourIds::textColourId, theme.defaultColorScheme.alertWindowPrimary);
   setColour(AlertWindow::ColourIds::backgroundColourId, theme.defaultColorScheme.sectionBackground);
-}
+  setColour(FileBrowserComponent::filenameBoxTextColourId, theme.defaultColorScheme.fileBrowserPrimary);
+  setColour(DirectoryContentsDisplayComponent::textColourId, theme.defaultColorScheme.text);
+  setColour(DirectoryContentsDisplayComponent::highlightedTextColourId, theme.defaultColorScheme.text);
+  setColour(DirectoryContentsDisplayComponent::highlightColourId, theme.defaultColorScheme.fileBrowserHighlight);
+}  
 
 BorderSize<int> 
 FBLookAndFeel::getLabelBorderSize(
