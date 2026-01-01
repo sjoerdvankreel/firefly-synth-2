@@ -17,6 +17,8 @@ TODOLIST for beta-next
 [ ] copy-paste patch not work on linux
 [ ] do more themes
 [ ] credit rusto
+[ ] better credits
+[ ] run a debug build
 
 [ ] do something with the dont-know-how-i-got-here-patch
 [ ] autofill the last tweaked => too complicated, is for later
