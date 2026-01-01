@@ -23,6 +23,7 @@ _onSelect(onSelect)
 {
   _okButton = std::make_unique<FBAutoSizeButton>("OK");
   _cancelButton = std::make_unique<FBAutoSizeButton>("Cancel");
+  _cancelButton->onClick = [this]() { Hide(); };
   _filter = std::make_unique<WildcardFileFilter>("*." + extension, "", filterName);
   int browserFlags = FileBrowserComponent::canSelectFiles | FileBrowserComponent::useTreeView;
   if (isSave)
