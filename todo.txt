@@ -20,6 +20,7 @@ TODOLIST for beta-next
 [ ] better credits
 [ ] run a debug build
 [ ] retest all
+[ ] wrap up all the patch browser stuff into a single GH issue
 
 [ ] unify load patch/load preset
 [ ] single-click preview patch without actually loading it => this goes into the fancy patch browser
