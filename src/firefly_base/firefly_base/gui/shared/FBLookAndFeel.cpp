@@ -8,6 +8,7 @@
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
+#include <firefly_base/gui/components/FBFileBrowserComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 
@@ -622,9 +623,13 @@ FBLookAndFeel::drawButtonBackground(
   auto bounds = button.getLocalBounds().toFloat().reduced(3.0f, 3.0f);
   auto const& scheme = FindColorSchemeFor(button);
 
-  g.setColour(scheme.primary.darker(1.0f).brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
+  Colour primary = scheme.primary;
+  if (button.findParentComponentOfClass<FBFileBrowserComponent>())
+    primary = scheme.fileBrowserButton;
+
+  g.setColour(primary.darker(1.0f).brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
   g.fillRoundedRectangle(bounds, cornerSize);
-  g.setColour(scheme.primary);
+  g.setColour(primary);
   g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
   if (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted)
   {
