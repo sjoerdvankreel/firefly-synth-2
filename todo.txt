@@ -19,6 +19,7 @@ TODOLIST for beta-next
 [ ] credit rusto
 [ ] better credits
 [ ] run a debug build
+[ ] retest all
 
 [ ] do something with the dont-know-how-i-got-here-patch
 [ ] autofill the last tweaked => too complicated, is for later
@@ -27,8 +28,6 @@ TODOLIST for beta-next
 [ ] brag about superior visualization and note when it not works (ardour everywhere, Linux only reaper is good, clap always good, vst3 win/lin mostly good)
 [ ] also brag about the tuning
 [ ] just do the comparison
-[ ] fix ardour save/load
-[ ] credit rusto
 [ ] featuretest scheme
 [ ] bg images in main tabs and header and maybe elsewhere
 [ ] not right-click-change horizontal sliders
