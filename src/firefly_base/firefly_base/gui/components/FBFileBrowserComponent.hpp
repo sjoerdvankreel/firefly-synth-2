@@ -3,7 +3,9 @@
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 
+#include <juce_core/juce_core.h>
 #include <juce_gui_basics/juce_gui_basics.h>
+
 #include <string>
 #include <memory>
 #include <functional>
@@ -17,7 +19,7 @@ public juce::FileBrowserListener
 {
   FBPlugGUI* const _plugGUI;
   std::string const _extension;
-  std::function<void(juce::File&)> _onSelect;
+  std::function<void(juce::File const&)> _onSelect;
 
   std::unique_ptr<FBGridComponent> _grid = {};
   std::unique_ptr<FBMarginComponent> _margin = {};
@@ -31,7 +33,7 @@ public:
   FBFileBrowserComponent(
     FBPlugGUI* plugGUI, bool isSave, 
     std::string extension, std::string filterName, 
-    std::function<void(juce::File&)> onSelect);
+    std::function<void(juce::File const&)> onSelect);
   
   void Show();
   void Hide();

@@ -20,7 +20,7 @@ FBFileBrowserComponent::
 FBFileBrowserComponent(
   FBPlugGUI* plugGUI, bool isSave,
   std::string extension, std::string filterName,
-  std::function<void(std::string const&)> onSelect):
+  std::function<void(File const&)> onSelect):
 _plugGUI(plugGUI),
 _extension(extension),
 _onSelect(onSelect)
