@@ -55,6 +55,12 @@ FBFileBrowserComponent::Hide()
 }
 
 void 
+FBFileBrowserComponent::fileDoubleClicked(const File& file)
+{
+  (void)file;
+}
+
+void 
 FBFileBrowserComponent::Show()
 {
   _plugGUI->addChildComponent(this, 1);

@@ -12,7 +12,8 @@ class FBPlugGUI;
 class FBAutoSizeButton;
 
 class FBFileBrowserComponent:
-public juce::Component
+public juce::Component,
+public juce::FileBrowserListener
 {
   FBPlugGUI* const _plugGUI;
   std::function<void(std::string const&)> _onSelect;
@@ -33,5 +34,10 @@ public:
   
   void Show();
   void Hide();
+  
   void resized() override;
+  void selectionChanged() override {};
+  void fileDoubleClicked(const juce::File& /*file*/) override;
+  void browserRootChanged(const juce::File& /*newRoot*/) override {};
+  void fileClicked(const juce::File& /*file*/, const juce::MouseEvent& /*e*/) override {};
 };
