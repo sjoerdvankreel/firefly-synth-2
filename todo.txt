@@ -9,15 +9,15 @@ TODOLIST for beta-next
 [x] also flash slider
 [x] highlight what disables something?
 [x] dont disable the ordering controls in the matrix
-[ ] document the new scheme colors
+[x] border around voice/master/settings
+[x] document the new scheme colors
 [ ] fix the dialogs
-[ ] border around voice/master/settings
 [ ] copy-paste patch not work on linux
 [ ] do more themes
-[ ] autofill the last tweaked => too complicated, is for later
 [ ] credit rusto
 
 [ ] do something with the dont-know-how-i-got-here-patch
+[ ] autofill the last tweaked => too complicated, is for later
 [ ] rename demo to featuretest
 [ ] also brag about its faster
 [ ] brag about superior visualization and note when it not works (ardour everywhere, Linux only reaper is good, clap always good, vst3 win/lin mostly good)
