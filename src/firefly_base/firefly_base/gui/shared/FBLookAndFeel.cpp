@@ -180,7 +180,7 @@ FBLookAndFeel::DrawTabButtonPart(
   else
     g.setColour(scheme.sectionBorder);  
   g.drawRoundedRectangle(activeArea.toFloat(), 3.0f, 1.0f);
-       
+          
   TextLayout textLayout;
   const Rectangle<float> area(activeArea.toFloat());
   float length = area.getWidth();
