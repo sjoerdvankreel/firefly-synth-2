@@ -201,7 +201,7 @@ FBLookAndFeel::SetTheme(FBTheme const& theme)
   setColour(DirectoryContentsDisplayComponent::textColourId, theme.defaultColorScheme.text);
   setColour(DirectoryContentsDisplayComponent::highlightedTextColourId, theme.defaultColorScheme.text);
   setColour(DirectoryContentsDisplayComponent::highlightColourId, theme.defaultColorScheme.fileBrowserHighlight);
-}  
+}   
 
 BorderSize<int> 
 FBLookAndFeel::getLabelBorderSize(
