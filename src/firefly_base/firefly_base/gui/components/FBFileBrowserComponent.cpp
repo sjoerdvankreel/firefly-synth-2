@@ -23,9 +23,9 @@ _onSelect(onSelect)
   _filter = std::make_unique<WildcardFileFilter>("*." + extension, "", filterName);
   int browserFlags = FileBrowserComponent::canSelectFiles | FileBrowserComponent::useTreeView;
   if (isSave)
-    browserFlags = FileBrowserComponent::openMode | FileBrowserComponent::filenameBoxIsReadOnly;
+    browserFlags |= FileBrowserComponent::openMode | FileBrowserComponent::filenameBoxIsReadOnly;
   else
-    browserFlags = FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
+    browserFlags |= FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
   _browser = std::make_unique<FileBrowserComponent>(browserFlags, File(), _filter.get(), nullptr);
   _grid = std::make_unique<FBGridComponent>(true, std::vector<int> { 1, 0, }, std::vector<int> { 1, 0, 0, });
   _margin = std::make_unique<FBMarginComponent>(true, true, true, true, _grid.get(), true);
