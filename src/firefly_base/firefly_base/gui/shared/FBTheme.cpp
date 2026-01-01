@@ -229,10 +229,6 @@ ParseDefaultColorScheme(
     return false;
   result.alertWindowPrimary = Colour::fromString(obj->getProperty("alertWindowPrimary").toString());
 
-  if (!RequireStringProperty(obj, "fileBrowserPrimary"))
-    return false;
-  result.fileBrowserPrimary = Colour::fromString(obj->getProperty("fileBrowserPrimary").toString());
-
   if (!RequireStringProperty(obj, "fileBrowserHighlight"))
     return false;
   result.fileBrowserHighlight = Colour::fromString(obj->getProperty("fileBrowserHighlight").toString());
@@ -338,10 +334,6 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "alertWindowPrimary", present))
     return false;
   result.alertWindowPrimary = present ? Colour::fromString(obj->getProperty("alertWindowPrimary").toString()) : defaultScheme.alertWindowPrimary;
-
-  if (!OptionalStringProperty(obj, "fileBrowserPrimary", present))
-    return false;
-  result.fileBrowserPrimary = present ? Colour::fromString(obj->getProperty("fileBrowserPrimary").toString()) : defaultScheme.fileBrowserPrimary;
 
   if (!OptionalStringProperty(obj, "fileBrowserHighlight", present))
     return false;

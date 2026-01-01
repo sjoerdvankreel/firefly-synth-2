@@ -32,7 +32,6 @@ struct FBColorScheme
   juce::Colour paramBackground = {};
   juce::Colour paramFlashDisabling = {};
   juce::Colour alertWindowPrimary = {};
-  juce::Colour fileBrowserPrimary = {};
   juce::Colour fileBrowserHighlight = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme); 
 };
