@@ -21,6 +21,7 @@ TODOLIST for beta-next
 [ ] run a debug build
 [ ] retest all
 
+[ ] unify load patch/load preset
 [ ] single-click preview patch without actually loading it => this goes into the fancy patch browser
 [ ] do something with the dont-know-how-i-got-here-patch
 [ ] autofill the last tweaked => too complicated, is for later

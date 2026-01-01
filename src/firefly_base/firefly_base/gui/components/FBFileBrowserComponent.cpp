@@ -69,6 +69,7 @@ FBFileBrowserComponent::fileDoubleClicked(const File& file)
   if (file.getFileExtension() != String(".") + _extension)
     return;
   _onSelect(file);
+  Hide();
 }
 
 void 
