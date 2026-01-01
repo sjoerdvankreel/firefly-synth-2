@@ -385,7 +385,7 @@ All colors are specified as ARGB hex.
   * paramHighlight: anything that needs highlighting. "Show mod bounds", "Engine Knob Visual" etc.
   * paramFlashDisabling: when a parameter is flashing because it's disabling another parameter.
   * alertWindowPrimary: when a messagebox pops up.
-  * fileBrowserPrimary: file browser buttons and text editor.
+  * fileBrowserPrimary: file browser buttons and more.
   * fileBrowserHighlight: file browser treeview selection background.
 * colorSchemes: named color schemes. Can override anything from the default.
 * componentColors: named components (top graphs, last tweaked etc). Can override default color scheme.
