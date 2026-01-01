@@ -256,9 +256,12 @@ FBLookAndFeel::fillTextEditorBackground(
   Graphics& g, int width, int /*height*/, TextEditor& te)
 { 
   FBColorScheme const& scheme = FindColorSchemeFor(te);
+  Colour primary = scheme.primary;
+  if (te.findParentComponentOfClass<FBFileBrowserComponent>())
+    primary = scheme.fileBrowserButton;
   g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f);
-  g.setColour(scheme.primary);
+  g.setColour(primary);
   g.drawRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f, 1.0f);
 }
 
@@ -429,6 +432,8 @@ FBLookAndFeel::drawLabel(
   auto colorText = scheme->text;
   if (isCombo)
     colorText = scheme->primary.darker(cb->isEnabled() ? 0.0f : scheme->dimDisabled);
+  else if (label.findParentComponentOfClass<FBFileBrowserComponent>())
+    colorText = scheme->fileBrowserButton;
 
   g.setFont(getLabelFont(label));
   g.setColour(colorText);
