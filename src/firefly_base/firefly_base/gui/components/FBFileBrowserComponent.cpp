@@ -34,6 +34,7 @@ _onSelect(onSelect)
   _grid->Add(0, 0, 1, 3, _browser.get());
   _grid->Add(1, 1, 1, 1, _okButton.get());
   _grid->Add(1, 2, 1, 1, _cancelButton.get());
+  _grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::Border);
   _margin = std::make_unique<FBMarginComponent>(true, true, true, true, _grid.get(), true);
   addAndMakeVisible(_margin.get());
 }
