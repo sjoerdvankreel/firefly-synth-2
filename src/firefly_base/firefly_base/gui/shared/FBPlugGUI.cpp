@@ -39,7 +39,14 @@ _hostContext(hostContext)
   _tooltipWindow = StoreComponent<TooltipWindow>();
   auto extension = hostContext->Topo()->static_->patchExtension;
   auto filterName = hostContext->Topo()->static_->patchFilterName;
-  _loadPatchBrowser = std::make_unique<FBFileBrowserComponent>(this, false, extension, filterName, [](auto const&) {}); // todo
+  _loadPatchBrowser = std::make_unique<FBFileBrowserComponent>(this, false, extension, filterName, [this](juce::File const& file) {
+    auto text = file.loadFileAsString().toStdString();
+    if (!LoadPatchFromText("Load Patch", file.getFileNameWithoutExtension().toStdString(), text))
+      AlertWindow::showMessageBoxAsync(
+        MessageBoxIconType::NoIcon,
+        "Error",
+        "Failed to load patch. See log for details.");
+  });
   addAndMakeVisible(_tooltipWindow);
   addMouseListener(this, true);
   SetupOverlayGUI();
@@ -647,23 +654,7 @@ FBPlugGUI::LoadPatchFromFile()
 {
   FB_LOG_ENTRY_EXIT();
   HideAllOverlaysAndFileBrowsers();
-  _loadPatchBrowser->Show(); // todo not double show?
-
-#if 0
-  FileBrowserComponent x()
-  FileChooser* chooser = new FileChooser("Load Patch", File(), String("*.") + extension, true, false, this);
-  chooser->launchAsync(loadFlags, [this](FileChooser const& chooser) {
-    auto file = chooser.getResult();
-    delete& chooser;
-    if (file.getFullPathName().length() == 0) return;
-    auto text = file.loadFileAsString().toStdString();
-    if(!LoadPatchFromText("Load Patch", file.getFileNameWithoutExtension().toStdString(), text))
-      AlertWindow::showMessageBoxAsync(
-        MessageBoxIconType::NoIcon,
-        "Error",
-        "Failed to load patch. See log for details.");
-  });
-#endif
+  _loadPatchBrowser->Show(); 
 }
 
 void

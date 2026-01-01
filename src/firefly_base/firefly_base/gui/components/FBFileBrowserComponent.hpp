@@ -16,7 +16,8 @@ public juce::Component,
 public juce::FileBrowserListener
 {
   FBPlugGUI* const _plugGUI;
-  std::function<void(std::string const&)> _onSelect;
+  std::string const _extension;
+  std::function<void(juce::File&)> _onSelect;
 
   std::unique_ptr<FBGridComponent> _grid = {};
   std::unique_ptr<FBMarginComponent> _margin = {};
@@ -30,7 +31,7 @@ public:
   FBFileBrowserComponent(
     FBPlugGUI* plugGUI, bool isSave, 
     std::string extension, std::string filterName, 
-    std::function<void(std::string const&)> onSelect);
+    std::function<void(juce::File&)> onSelect);
   
   void Show();
   void Hide();

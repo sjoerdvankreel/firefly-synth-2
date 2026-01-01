@@ -11,7 +11,10 @@ static int const FileBrowserWidth = 640;
 static int const FileBrowserHeight = 480;
 
 FBFileBrowserComponent::
-~FBFileBrowserComponent() {}
+~FBFileBrowserComponent() 
+{
+  _browser->removeListener(this);
+}
 
 FBFileBrowserComponent::
 FBFileBrowserComponent(
@@ -19,6 +22,7 @@ FBFileBrowserComponent(
   std::string extension, std::string filterName,
   std::function<void(std::string const&)> onSelect):
 _plugGUI(plugGUI),
+_extension(extension),
 _onSelect(onSelect)
 {
   _okButton = std::make_unique<FBAutoSizeButton>("OK");
@@ -31,6 +35,7 @@ _onSelect(onSelect)
   else
     browserFlags |= FileBrowserComponent::openMode | FileBrowserComponent::filenameBoxIsReadOnly;
   _browser = std::make_unique<FileBrowserComponent>(browserFlags, File(), _filter.get(), nullptr);
+  _browser->addListener(this);
   _grid = std::make_unique<FBGridComponent>(true, std::vector<int> { 1, 0, }, std::vector<int> { 1, 0, 0, });
   _grid->Add(0, 0, 1, 3, _browser.get());
   _grid->Add(1, 1, 1, 1, _okButton.get());
@@ -57,7 +62,13 @@ FBFileBrowserComponent::Hide()
 void 
 FBFileBrowserComponent::fileDoubleClicked(const File& file)
 {
-  (void)file;
+  if (!file.existsAsFile())
+    return;
+  if (file.getFullPathName().length() == 0)
+    return;
+  if (file.getFileExtension() != String(".") + _extension)
+    return;
+  _onSelect(file);
 }
 
 void 
