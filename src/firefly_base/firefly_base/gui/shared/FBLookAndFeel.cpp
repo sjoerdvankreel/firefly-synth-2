@@ -288,9 +288,9 @@ FBLookAndFeel::layoutFileBrowserComponent(
   currentPathBox->setBounds(topSlice.removeFromLeft(topSlice.getWidth() - buttonWidth));
   topSlice.removeFromLeft(6);
   goUpButton->setBounds(topSlice);
-  filenameBox->setBounds(bottomSlice);
+  filenameBox->setBounds(bottomSlice.reduced(3, 0));
   if (auto* listAsComp = dynamic_cast<Component*> (fileListComponent))
-    listAsComp->setBounds(b.reduced(0, 10));
+    listAsComp->setBounds(b.reduced(3, 10));
 }
 
 void 
