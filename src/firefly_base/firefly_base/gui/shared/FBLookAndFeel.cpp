@@ -265,6 +265,27 @@ FBLookAndFeel::drawTextEditorOutline(
 }
 
 void 
+FBLookAndFeel::layoutFileBrowserComponent(
+  FileBrowserComponent& browserComp,
+  DirectoryContentsDisplayComponent* fileListComponent,
+  FilePreviewComponent* /*previewComp*/,
+  ComboBox* currentPathBox,
+  TextEditor* filenameBox,
+  Button* goUpButton)
+{
+  auto buttonWidth = 50;
+  auto b = browserComp.getLocalBounds();
+  auto topSlice = b.removeFromTop(22);
+  auto bottomSlice = b.removeFromBottom(32);
+  currentPathBox->setBounds(topSlice.removeFromLeft(topSlice.getWidth() - buttonWidth));
+  topSlice.removeFromLeft(6);
+  goUpButton->setBounds(topSlice);
+  filenameBox->setBounds(bottomSlice);
+  if (auto* listAsComp = dynamic_cast<Component*> (fileListComponent))
+    listAsComp->setBounds(b.reduced(0, 10));
+}
+
+void 
 FBLookAndFeel::drawPopupMenuBackgroundWithOptions(
   Graphics& g,
   int width, int height,

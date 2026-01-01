@@ -58,6 +58,14 @@ public:
   void drawTextEditorOutline(
     juce::Graphics& g, int width, int height, juce::TextEditor& te) override;
 
+  void layoutFileBrowserComponent(
+    juce::FileBrowserComponent& browserComp,
+    juce::DirectoryContentsDisplayComponent* fileListComponent,
+    juce::FilePreviewComponent* previewComp,
+    juce::ComboBox* currentPathBox,
+    juce::TextEditor* filenameBox,
+    juce::Button* goUpButton) override;
+
   void drawPopupMenuBackgroundWithOptions(
     juce::Graphics& g, 
     int width, int height, 
