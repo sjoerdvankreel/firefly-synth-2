@@ -12,16 +12,16 @@ TODOLIST for beta-next
 [x] border around voice/master/settings
 [x] document the new scheme colors
 [x] copy-paste patch not work on linux
-[ ] fix the dialogs
+[x] fix the dialogs
+[x] warnAboutOverwriting 
 [ ] close the dialogs on open overlay (CloseAllOverlaysAndDialogs)
-[ ] warnAboutOverwriting 
-[ ] do more themes
-[ ] credit rusto
-[ ] better credits
 [ ] run a debug build
 [ ] retest all
 [ ] wrap up all the patch browser stuff into a single GH issue
 
+[ ] better credits
+[ ] credit rusto
+[ ] do more themes
 [ ] unify load patch/load preset
 [ ] single-click preview patch without actually loading it => this goes into the fancy patch browser
 [ ] do something with the dont-know-how-i-got-here-patch
