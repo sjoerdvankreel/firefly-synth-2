@@ -19,13 +19,16 @@ FBFileBrowserComponent::
 FBFileBrowserComponent::
 FBFileBrowserComponent(
   FBPlugGUI* plugGUI, bool isSave,
-  std::string extension, std::string filterName,
+  std::string const& title,
+  std::string const& extension, 
+  std::string const& filterName,
   std::function<void(File const&)> onSelect):
 _plugGUI(plugGUI),
 _isSave(isSave),
 _extension(extension),
 _onSelect(onSelect)
 {
+  _title = std::make_unique<FBAutoSizeLabel>(title, true);
   _okButton = std::make_unique<FBAutoSizeButton>("OK");
   _okButton->onClick = [this]() { SelectFile(_browser->getSelectedFile(0)); };
   _cancelButton = std::make_unique<FBAutoSizeButton>("Cancel");
@@ -38,10 +41,11 @@ _onSelect(onSelect)
     browserFlags |= FileBrowserComponent::openMode | FileBrowserComponent::filenameBoxIsReadOnly;
   _browser = std::make_unique<FileBrowserComponent>(browserFlags, File(), _filter.get(), nullptr);
   _browser->addListener(this);
-  _grid = std::make_unique<FBGridComponent>(true, std::vector<int> { 1, 0, }, std::vector<int> { 1, 0, 0, });
-  _grid->Add(0, 0, 1, 3, _browser.get());
-  _grid->Add(1, 1, 1, 1, _okButton.get());
-  _grid->Add(1, 2, 1, 1, _cancelButton.get());
+  _grid = std::make_unique<FBGridComponent>(true, std::vector<int> { 0, 1, 0, }, std::vector<int> { 1, 0, 0, });
+  _grid->Add(0, 0, 1, 3, _title.get());
+  _grid->Add(1, 0, 1, 3, _browser.get());
+  _grid->Add(2, 1, 1, 1, _okButton.get());
+  _grid->Add(2, 2, 1, 1, _cancelButton.get());
   _grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::Border);
   _margin = std::make_unique<FBMarginComponent>(true, true, true, true, _grid.get(), true);
   addAndMakeVisible(_margin.get());

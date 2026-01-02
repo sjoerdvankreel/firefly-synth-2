@@ -40,7 +40,7 @@ _hostContext(hostContext)
 
   auto extension = hostContext->Topo()->static_->patchExtension;
   auto filterName = hostContext->Topo()->static_->patchFilterName;
-  _loadPatchBrowser = std::make_unique<FBFileBrowserComponent>(this, false, extension, filterName, [this](juce::File const& file) {
+  _loadPatchBrowser = std::make_unique<FBFileBrowserComponent>(this, false, "Load Patch", extension, filterName, [this](juce::File const& file) {
     auto text = file.loadFileAsString().toStdString();
     if (!LoadPatchFromText("Load Patch", file.getFileNameWithoutExtension().toStdString(), text))
       AlertWindow::showMessageBoxAsync(
@@ -48,12 +48,12 @@ _hostContext(hostContext)
         "Error",
         "Failed to load patch. See log for details.");
   });
-  _savePatchBrowser = std::make_unique<FBFileBrowserComponent>(this, true, extension, filterName, [this](juce::File const& file) {
+  _savePatchBrowser = std::make_unique<FBFileBrowserComponent>(this, true, "Save Patch", extension, filterName, [this](juce::File const& file) {
     FBScalarStateContainer editState(*HostContext()->Topo());
     editState.CopyFrom(HostContext(), true);
     file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState, true));
   });
-  _saveTopologyBrowser = std::make_unique<FBFileBrowserComponent>(this, true, "txt", "Text Files", [this](juce::File const& file) {
+  _saveTopologyBrowser = std::make_unique<FBFileBrowserComponent>(this, true, "Dump Topology", "txt", "Text Files", [this](juce::File const& file) {
     file.replaceWithText(HostContext()->Topo()->static_->PrintTopology());
   });
 

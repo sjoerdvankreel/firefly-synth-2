@@ -14,11 +14,12 @@ TODOLIST for beta-next
 [x] copy-paste patch not work on linux
 [x] fix the dialogs
 [x] warnAboutOverwriting 
-[ ] close the dialogs on open overlay (CloseAllOverlaysAndDialogs)
+[x] close the dialogs on open overlay (CloseAllOverlaysAndDialogs)
 [ ] run a debug build
 [ ] retest all
 [ ] wrap up all the patch browser stuff into a single GH issue
 
+TODOLIST for beta-next
 [ ] better credits
 [ ] credit rusto
 [ ] do more themes

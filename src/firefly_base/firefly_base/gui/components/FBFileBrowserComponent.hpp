@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 
@@ -23,6 +24,7 @@ public juce::FileBrowserListener
   std::function<void(juce::File const&)> _onSelect;
 
   std::unique_ptr<FBGridComponent> _grid = {};
+  std::unique_ptr<FBAutoSizeLabel> _title = {};
   std::unique_ptr<FBMarginComponent> _margin = {};
   std::unique_ptr<FBAutoSizeButton> _okButton = {};
   std::unique_ptr<FBAutoSizeButton> _cancelButton = {};
@@ -34,8 +36,8 @@ public juce::FileBrowserListener
 public:
   ~FBFileBrowserComponent();
   FBFileBrowserComponent(
-    FBPlugGUI* plugGUI, bool isSave, 
-    std::string extension, std::string filterName, 
+    FBPlugGUI* plugGUI, bool isSave, std::string const& title,
+    std::string const& extension, std::string const& filterName, 
     std::function<void(juce::File const&)> onSelect);
   
   void Show();
