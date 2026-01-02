@@ -53,6 +53,9 @@ _hostContext(hostContext)
     editState.CopyFrom(HostContext(), true);
     file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState, true));
   });
+  _saveTopologyBrowser = std::make_unique<FBFileBrowserComponent>(this, true, "txt", "Text Files", [this](juce::File const& file) {
+    file.replaceWithText(HostContext()->Topo()->static_->PrintTopology());
+  });
 
   addAndMakeVisible(_tooltipWindow);
   addMouseListener(this, true);
@@ -624,6 +627,37 @@ FBPlugGUI::SavePatchToFile()
   _savePatchBrowser->Show();
 }
 
+void
+FBPlugGUI::DumpTopologyToFile()
+{
+  FB_LOG_ENTRY_EXIT();
+  HideAllOverlaysAndFileBrowsers();
+  _saveTopologyBrowser->Show();
+}
+
+void
+FBPlugGUI::ShowLogFolder()
+{
+  auto path = FBGetLogPath(HostContext()->Topo()->static_->meta);
+  File(path.string()).revealToUser();
+}
+
+void
+FBPlugGUI::ShowPluginFolder()
+{
+  auto path = FBGetPluginContentsFolderPath();
+  File(path.string()).revealToUser();
+}
+
+void
+FBPlugGUI::HideAllOverlaysAndFileBrowsers()
+{
+  HideOverlayComponent();
+  _loadPatchBrowser->Hide();
+  _savePatchBrowser->Hide();
+  _saveTopologyBrowser->Hide();
+}
+
 void 
 FBPlugGUI::InitPatch()
 {
@@ -718,14 +752,6 @@ FBPlugGUI::SetupOverlayGUI()
   _overlayOuterMargin = StoreComponent<FBMarginComponent>(true, true, true, true, _overlayModule, true);
 }
 
-void 
-FBPlugGUI::HideAllOverlaysAndFileBrowsers()
-{
-  HideOverlayComponent();
-  _loadPatchBrowser->Hide();
-  // todo the rest
-}
-
 void
 FBPlugGUI::HideOverlayComponent()
 {
@@ -760,33 +786,4 @@ FBPlugGUI::ShowOverlayComponent(
   _overlayModule->SetModuleContent(moduleIndex, moduleSlot, _overlayGrid);
   _overlayOuterMargin->resized();
   _overlayComponent = overlay;
-}
-
-void
-FBPlugGUI::ShowLogFolder()
-{
-  auto path = FBGetLogPath(HostContext()->Topo()->static_->meta);
-  File(path.string()).revealToUser();
-}
-
-void
-FBPlugGUI::ShowPluginFolder()
-{
-  auto path = FBGetPluginContentsFolderPath();
-  File(path.string()).revealToUser();
-}
-
-void
-FBPlugGUI::DumpTopologyToFile()
-{
-  FB_LOG_ENTRY_EXIT();
-  int saveFlags = FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
-  FileChooser* chooser = new FileChooser("Save Topology", File(), String("*.txt"), true, false, this);
-  chooser->launchAsync(saveFlags, [this](FileChooser const& chooser) {
-    FB_LOG_ENTRY_EXIT();
-    auto file = chooser.getResult();
-    delete& chooser;
-    if (file.getFullPathName().length() == 0) return;
-    file.replaceWithText(HostContext()->Topo()->static_->PrintTopology());
-  });
 }

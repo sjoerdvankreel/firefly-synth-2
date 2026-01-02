@@ -66,6 +66,7 @@ public IFBHostGUIContextListener
   std::vector<IFBParamListener*> _paramListeners = {};
   std::unique_ptr<FBFileBrowserComponent> _loadPatchBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _savePatchBrowser = {};
+  std::unique_ptr<FBFileBrowserComponent> _saveTopologyBrowser = {};
 
   void ShowLogFolder();
   void ShowPluginFolder();
