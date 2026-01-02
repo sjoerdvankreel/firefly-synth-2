@@ -1,5 +1,3 @@
-juce json var Linux locale tostring
-
 TODOLIST for beta-next
 [ ] better credits
 [ ] wrap up all the patch browser stuff into a single GH issue
