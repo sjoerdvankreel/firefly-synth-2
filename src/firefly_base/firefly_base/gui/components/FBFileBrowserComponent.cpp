@@ -86,12 +86,11 @@ FBFileBrowserComponent::SelectFile(File const& file0)
     return;
   }
   AlertWindow::showAsync(MessageBoxOptions()
-    .withIconType(MessageBoxIconType::WarningIcon)
+    .withIconType(MessageBoxIconType::NoIcon)
     .withTitle("Warning")
     .withMessage("Overwite existing file?")
     .withButton("OK")
     .withButton("Cancel")
-    .withAssociatedComponent(this)
     .withParentComponent(_plugGUI),
     [this, newFile](int result) {
       if (result != 1)
