@@ -1,6 +1,7 @@
 #pragma once
 
 #include <firefly_base/gui/controls/FBLabel.hpp>
+#include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 
