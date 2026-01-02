@@ -19,6 +19,8 @@
 #include <unordered_set>
 
 class FBParamControl;
+class IFBThemeListener;
+class IFBParamListener;
 class FBGUIParamControl;
 class FBParamsDependent;
 class FBHostGUIContext;
@@ -33,20 +35,6 @@ enum FBParamModulationBoundsSource
   Matrix = 0x1,
   Unison = 0x2,
   DirectAccess = 0x4
-};
-
-class IFBThemeListener
-{
-public:
-  virtual ~IFBThemeListener() {}
-  virtual void ThemeChanged() = 0;
-};
-
-class IFBParamListener
-{
-public:
-  virtual ~IFBParamListener() {}
-  virtual void AudioParamChanged(int index, double normalized, bool changedFromUI) = 0;
 };
 
 class FBPlugGUI:
