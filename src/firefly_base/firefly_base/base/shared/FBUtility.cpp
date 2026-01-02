@@ -18,16 +18,6 @@ FBCleanTopoId(std::string const& topoId)
 }
 
 std::string
-FBFormatDouble(double val, int precision)
-{
-  std::stringstream ss;
-  ss << std::fixed;
-  ss.precision(precision);
-  ss << val;
-  return ss.str();
-}
-
-std::string
 FBAsciiToUpper(std::string const& in)
 {
   std::string result = {};
@@ -50,6 +40,17 @@ FBStringSplit(std::string str, std::string const& delim)
   }
   result.push_back(str);
   return result;
+}
+
+std::string
+FBFormatDoubleCLocale(double val, int precision)
+{
+  std::stringstream ss;
+  ss.imbue(std::locale("C"));
+  ss << std::fixed;
+  ss.precision(precision);
+  ss << val;
+  return ss.str();
 }
 
 std::optional<double>

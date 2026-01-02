@@ -95,10 +95,9 @@ FBAsciiToUpper(std::string const& in);
 std::vector<std::string>
 FBStringSplit(std::string str, std::string const& delim);
 
-std::string
-FBFormatDouble(double val, int precision);
-
 // Localization for std::strtod gave me issues on Linux.
+std::string
+FBFormatDoubleCLocale(double val, int precision);
 std::optional<double>
 FBStringToDoubleOptCLocale(std::string const& text);
 
