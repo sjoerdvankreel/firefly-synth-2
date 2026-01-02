@@ -68,24 +68,43 @@ FBFileBrowserComponent::Hide()
 }
 
 void 
-FBFileBrowserComponent::SelectFile(juce::File const& file)
+FBFileBrowserComponent::SelectFile(File const& file0)
 {
-  if (file.getFullPathName().length() == 0)
+  File newFile = file0;
+  if (newFile.getFullPathName().length() == 0)
     return;
-  if (!_isSave && !file.existsAsFile())
+  if (!_isSave && !newFile.existsAsFile())
     return;
-  if (!_isSave && file.getFileExtension() != String(".") + _extension)
+  if (!_isSave && newFile.getFileExtension() != String(".") + _extension)
     return;
-  if (_isSave && file.getFileExtension() != String(".") + _extension)
-    _onSelect(File(file.getFullPathName() + "." + _extension));
-  else
-    _onSelect(file);
-  Hide();
+  if (_isSave && newFile.getFileExtension() != String(".") + _extension)
+    newFile = File(newFile.getFullPathName() + "." + _extension);
+  if (!_isSave || !newFile.existsAsFile())
+  {
+    _onSelect(newFile);
+    Hide();
+    return;
+  }
+  AlertWindow::showAsync(MessageBoxOptions()
+    .withIconType(MessageBoxIconType::WarningIcon)
+    .withTitle("Warning")
+    .withMessage("Overwite existing file?")
+    .withButton("OK")
+    .withButton("Cancel")
+    .withAssociatedComponent(this)
+    .withParentComponent(_plugGUI),
+    [this, newFile](int result) {
+      if (result != 1)
+        return;
+      _onSelect(newFile);
+      Hide();
+    });
 }
 
 void 
 FBFileBrowserComponent::Show()
 {
+  _browser->refresh();
   _plugGUI->addChildComponent(this, 1);
   setBounds(
     (_plugGUI->getBounds().getWidth() - FileBrowserWidth) / 2,
