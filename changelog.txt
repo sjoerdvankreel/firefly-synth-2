@@ -7,7 +7,7 @@ January 2, 2026 - Beta 3.
 - Add tooltips on the matrix ordering buttons.
 - Added some new theme extension points for voice/master/settings headers.
 - Dropped the native file dialogs in favor of JUCE-provided file browsers.
-- Clicking a disabled parameter now flashed the other parameters that are disabling it.
+- Clicking a disabled parameter now flashes the other parameters that are disabling it.
 - Matrix slot count is now increased/decreased as you add/remove slots using the +/- buttons.
 
 December 29, 2025 - Beta 2.
