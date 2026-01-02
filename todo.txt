@@ -1,26 +1,6 @@
 TODOLIST for beta-next
-[x] vlfo/glfo should align
-[x] vecho/gecho should align
-[x] order the themes by path in the gui
-[x] fm index label is borked
-[x] tooltips on the matrix buttons
-[x] not tooltip disabled by self
-[x] flash color in the theme
-[x] also flash slider
-[x] highlight what disables something?
-[x] dont disable the ordering controls in the matrix
-[x] border around voice/master/settings
-[x] document the new scheme colors
-[x] copy-paste patch not work on linux
-[x] fix the dialogs
-[x] warnAboutOverwriting 
-[x] close the dialogs on open overlay (CloseAllOverlaysAndDialogs)
-[ ] run a debug build
-[ ] retest all
-[ ] wrap up all the patch browser stuff into a single GH issue
-
-TODOLIST for beta-next
 [ ] better credits
+[ ] wrap up all the patch browser stuff into a single GH issue
 [ ] credit rusto
 [ ] do more themes
 [ ] unify load patch/load preset
