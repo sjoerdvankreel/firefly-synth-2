@@ -22,14 +22,12 @@ FBFileBrowserComponent(
   std::string extension, std::string filterName,
   std::function<void(File const&)> onSelect):
 _plugGUI(plugGUI),
+_isSave(isSave),
 _extension(extension),
 _onSelect(onSelect)
 {
   _okButton = std::make_unique<FBAutoSizeButton>("OK");
-  _okButton->onClick = [this]() { 
-    if(_browser->getNumSelectedFiles() == 1)
-      SelectFile(_browser->getSelectedFile(0)); 
-  };
+  _okButton->onClick = [this]() { SelectFile(_browser->getSelectedFile(0)); };
   _cancelButton = std::make_unique<FBAutoSizeButton>("Cancel");
   _cancelButton->onClick = [this]() { Hide(); };
   _filter = std::make_unique<WildcardFileFilter>("*." + extension, "", filterName);
@@ -72,13 +70,16 @@ FBFileBrowserComponent::Hide()
 void 
 FBFileBrowserComponent::SelectFile(juce::File const& file)
 {
-  if (!file.existsAsFile())
-    return;
   if (file.getFullPathName().length() == 0)
     return;
-  if (file.getFileExtension() != String(".") + _extension)
+  if (!_isSave && !file.existsAsFile())
     return;
-  _onSelect(file);
+  if (!_isSave && file.getFileExtension() != String(".") + _extension)
+    return;
+  if (_isSave && file.getFileExtension() != String(".") + _extension)
+    _onSelect(File(file.getFullPathName() + "." + _extension));
+  else
+    _onSelect(file);
   Hide();
 }
 

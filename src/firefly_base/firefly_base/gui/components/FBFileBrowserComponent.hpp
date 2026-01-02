@@ -18,6 +18,7 @@ public juce::Component,
 public juce::FileBrowserListener
 {
   FBPlugGUI* const _plugGUI;
+  bool const _isSave;
   std::string const _extension;
   std::function<void(juce::File const&)> _onSelect;
 

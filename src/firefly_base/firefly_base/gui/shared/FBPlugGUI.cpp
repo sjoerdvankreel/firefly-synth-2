@@ -37,6 +37,7 @@ _hostContext(hostContext)
   if (_themes.empty())
     FB_LOG_ERROR("No themes found.");
   _tooltipWindow = StoreComponent<TooltipWindow>();
+
   auto extension = hostContext->Topo()->static_->patchExtension;
   auto filterName = hostContext->Topo()->static_->patchFilterName;
   _loadPatchBrowser = std::make_unique<FBFileBrowserComponent>(this, false, extension, filterName, [this](juce::File const& file) {
@@ -47,6 +48,12 @@ _hostContext(hostContext)
         "Error",
         "Failed to load patch. See log for details.");
   });
+  _savePatchBrowser = std::make_unique<FBFileBrowserComponent>(this, true, extension, filterName, [this](juce::File const& file) {
+    FBScalarStateContainer editState(*HostContext()->Topo());
+    editState.CopyFrom(HostContext(), true);
+    file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState, true));
+  });
+
   addAndMakeVisible(_tooltipWindow);
   addMouseListener(this, true);
   SetupOverlayGUI();
@@ -601,6 +608,22 @@ FBPlugGUI::ReloadSession()
   OnPatchChanged();
 }
 
+void
+FBPlugGUI::LoadPatchFromFile()
+{
+  FB_LOG_ENTRY_EXIT();
+  HideAllOverlaysAndFileBrowsers();
+  _loadPatchBrowser->Show();
+}
+
+void
+FBPlugGUI::SavePatchToFile()
+{
+  FB_LOG_ENTRY_EXIT();
+  HideAllOverlaysAndFileBrowsers();
+  _savePatchBrowser->Show();
+}
+
 void 
 FBPlugGUI::InitPatch()
 {
@@ -612,24 +635,6 @@ FBPlugGUI::InitPatch()
       HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
   HostContext()->MarkPatchAsPatchState("Init Patch");
   OnPatchChanged();
-}
-
-void 
-FBPlugGUI::SavePatchToFile()
-{
-  FB_LOG_ENTRY_EXIT();
-  int saveFlags = FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
-  auto extension = HostContext()->Topo()->static_->patchExtension;
-  FileChooser* chooser = new FileChooser("Save Patch", File(), String("*.") + extension, true, false, this);
-  chooser->launchAsync(saveFlags, [this](FileChooser const& chooser) {
-    FB_LOG_ENTRY_EXIT();
-    auto file = chooser.getResult();
-    delete &chooser;
-    if (file.getFullPathName().length() == 0) return;
-    FBScalarStateContainer editState(*HostContext()->Topo());
-    editState.CopyFrom(HostContext(), true);
-    file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState, true));
-  });
 }
 
 bool
@@ -647,14 +652,6 @@ FBPlugGUI::LoadPatchFromText(
   HostContext()->MarkPatchAsPatchState(patchName);
   OnPatchChanged();
   return true;
-}
-
-void 
-FBPlugGUI::LoadPatchFromFile()
-{
-  FB_LOG_ENTRY_EXIT();
-  HideAllOverlaysAndFileBrowsers();
-  _loadPatchBrowser->Show(); 
 }
 
 void
