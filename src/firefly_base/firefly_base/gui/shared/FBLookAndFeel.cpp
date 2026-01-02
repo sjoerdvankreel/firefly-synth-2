@@ -196,11 +196,12 @@ void
 FBLookAndFeel::SetTheme(FBTheme const& theme) 
 { 
   _theme = FBTheme(theme); 
+  setColour(ScrollBar::ColourIds::thumbColourId, theme.defaultColorScheme.fileBrowserHighlight);
   setColour(AlertWindow::ColourIds::textColourId, theme.defaultColorScheme.alertWindowPrimary);
   setColour(AlertWindow::ColourIds::backgroundColourId, theme.defaultColorScheme.sectionBackground);
-  setColour(DirectoryContentsDisplayComponent::textColourId, theme.defaultColorScheme.text);
-  setColour(DirectoryContentsDisplayComponent::highlightedTextColourId, theme.defaultColorScheme.text);
-  setColour(DirectoryContentsDisplayComponent::highlightColourId, theme.defaultColorScheme.fileBrowserHighlight);
+  setColour(DirectoryContentsDisplayComponent::ColourIds::textColourId, theme.defaultColorScheme.text);
+  setColour(DirectoryContentsDisplayComponent::ColourIds::highlightedTextColourId, theme.defaultColorScheme.text);
+  setColour(DirectoryContentsDisplayComponent::ColourIds::highlightColourId, theme.defaultColorScheme.fileBrowserHighlight);
 }   
 
 BorderSize<int> 
