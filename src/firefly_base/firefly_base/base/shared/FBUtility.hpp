@@ -97,6 +97,8 @@ FBStringSplit(std::string str, std::string const& delim);
 
 // Localization for std::strtod gave me issues on Linux.
 std::string
+FBFormatDoubleCLocale(double val);
+std::string
 FBFormatDoubleCLocale(double val, int precision);
 std::optional<double>
 FBStringToDoubleOptCLocale(std::string const& text);

@@ -43,6 +43,16 @@ FBStringSplit(std::string str, std::string const& delim)
 }
 
 std::string
+FBFormatDoubleCLocale(double val)
+{
+  std::stringstream ss;
+  ss.imbue(std::locale("C"));
+  ss << std::fixed;
+  ss << val;
+  return ss.str();
+}
+
+std::string
 FBFormatDoubleCLocale(double val, int precision)
 {
   std::stringstream ss;
