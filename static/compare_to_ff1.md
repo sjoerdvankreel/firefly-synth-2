@@ -49,7 +49,7 @@ If-ever, i prefer separate controls for individual automatable parameters and ma
 Just linear and unipolar exponential, I just didn't see the need for the other ones anymore (might reconsider, convince me).
 * No monophonic mode, period.<br/>
 I also do not intend to build it back, because too complicated.<br/>
-FF2 does contain new section-attack/section-release shortening controls to emulate those short transitions for leads etc.<br/>
+FF2 does contain new portamento section-attack/section-release shortening controls to emulate those short transitions for leads etc.<br/>
 If you want a monosynth, get a proper monosynth. By now I feel they are different enough to not try and force one into a polysynth.
 
 # The Good
