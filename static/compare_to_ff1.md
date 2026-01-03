@@ -61,6 +61,9 @@ Stuff that FF1 can do, but FF2 does better.
 Both have one, but FF2's comes with more options.
 * CLAP support.<br/>
 FF1 does global modulators only, FF2 does per-voice modulators as well.
+* Multi-tap delay.<br/>
+FF1 contains a couple of control parameters for creating the delay lines.<br/>
+FF2 allows full control over all 8 individual taps.
 * Performance.<br/>
 YMMV, but ballpark twice as fast.<br/>
 Varies per-feature of course, f.e. FF2's hardsync is actually slower (but way better, audio-wise).
@@ -76,6 +79,8 @@ FF1 needs loads of check-the-box and select-the menu for setting up f.e. the mat
 FF2 tries to cut down on that by using the VMix/GMix sections and providing readily-available mod sources on the main screen like "LFO to Fine Pitch".
 Of course, FF2 is a fully-featured synth just like FF1 so there's bound to be some point-and-click, especially when you need the mod matrix and/or the global unison.
 
+mod bounds/hilite
+extaudio
 vecho
 env loop
 filter tuning
