@@ -38,6 +38,7 @@ _hostContext(hostContext)
   if (_themes.empty())
     FB_LOG_ERROR("No themes found.");
   _tooltipWindow = StoreComponent<TooltipWindow>();
+  _hostContext->AddListener(this);
 
   auto extension = hostContext->Topo()->static_->patchExtension;
   auto filterName = hostContext->Topo()->static_->patchFilterName;
