@@ -80,6 +80,10 @@ FF1 needs loads of check-the-box and select-the menu for setting up f.e. the mat
 FF2 tries to cut down on that by using the VMix/GMix sections and providing readily-available mod sources on the main screen like "LFO to Fine Pitch".
 Of course, FF2 is a fully-featured synth just like FF1 so there's bound to be some point-and-click, especially when you need the mod matrix and/or the global unison.
 
+# The Brand-New
+
+fubar!
+
 lfo min/max
 filters on the echo
 mod bounds/hilite
