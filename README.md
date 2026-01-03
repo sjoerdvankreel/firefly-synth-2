@@ -1,6 +1,4 @@
 # Nearly ready for V2
-Only needs some presets.
-
 Read the [Manual](/static/Manual.md). Click the outline (3 dashes) menu for table-of-contents.<br/>
 See [host_test](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test) for host compatibility tests.<br/>
 See [demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for feature tests, and some nice demos along the way.
