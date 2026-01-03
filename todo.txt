@@ -1,5 +1,7 @@
 TODOLIST for beta-next
 [ ] better credits
+[ ] dump topo should include the tags and indices, for debugging renoise
+[ ] note renoise is very dangerous
 [ ] wrap up all the patch browser stuff into a single GH issue
 [ ] credit rusto
 [ ] do more themes
