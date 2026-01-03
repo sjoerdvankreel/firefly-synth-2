@@ -69,7 +69,10 @@ FF2 contains dozens of per-voice targets with a bunch of controls per target for
 FF1 tries to infer graph plots from a minimal dataset, and does a bad job at doing so.<br/>
 FF2 dumps the entire per-voice parameter state (and more) from audio to UI, so does not need to infer anything.<br/>
 It just re-uses the existing audio algorithms, and renders them directly to screen.<br/>
-
+* Less point-and-click, more drag-the-slider
+FF1 needs loads of check-the-box and select-the menu for setting up f.e. the matrices.<br/>
+FF2 tries to cut down on that by using the VMix/GMix sections and providing readily-available mod sources on the main screen like "LFO to Fine Pitch".<br/>
+Of course, FF2 is a fully-featured synth just like FF1 so there's bound to be some point-and-click, especially when you need the mod matrix and/or the global unison.
 
 vecho
 filter tuning
