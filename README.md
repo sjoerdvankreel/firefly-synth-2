@@ -18,12 +18,6 @@ Read the [Manual](/static/Manual.md). Click the outline (3 dashes) menu for tabl
 * Build scripts are in /scripts: build_windows.bat/build_linux.sh/build_mac.bat
 * build_xyz Debug|RelWithDebInfo|Release (0|1):(warn as error) (0|1):(enable asan)
 
-# Special Thanks
-* [RustoMCSpit](https://github.com/RustoMCSpit)<br/>
-For being an early adopter, and helping out with various things on the UI and theming side.
-* [Surge Synth Team](https://surge-synth-team.org)<br/>
-For help with loads of stuff, from low-level technical details to CLAP support to microtuning and probably more.
-
 # Host Support
 Tested on Carla, Bitwig, Ardour, FLStudio, Reaper and Renoise.<br/>
 It should work ok on others as well (f.e. known to work on QTractor).<br/>
@@ -32,6 +26,12 @@ Unfortunately Renoise is not officially supported because of<br/>
 [https://forum.renoise.com/t/saved-automation-data-does-not-respect-vst3s-parameter-id/68461](https://forum.renoise.com/t/saved-automation-data-does-not-respect-vst3s-parameter-id/68461).<br/>
 You can use it as long as you don't update the plugin (read: install once, and never again).<br/>
 Updating the plugin might or might not work, but in any case, it's dangerous.<br/>
+
+# Special Thanks
+* [RustoMCSpit](https://github.com/RustoMCSpit)<br/>
+For being an early adopter, and helping out with various things on the UI and theming side.
+* [Surge Synth Team](https://surge-synth-team.org)<br/>
+For help with loads of stuff, from low-level technical details to CLAP support to microtuning and probably more.
 
 # Known Issues
 * String oscillator responds to sample rate, but it shouldn't.<br/>
