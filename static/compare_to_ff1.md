@@ -18,7 +18,8 @@ FF2 only has 1 global option for all 3 together.<br/>
 If-ever, i prefer separate controls for individual automatable parameters and maybe even MIDI CC's.
 * No monophonic mode, period.<br/>
 I also do not intend to build it back, because too complicated.<br/>
-FF2 does contain new section-attack/section-release shortening controls to emulate those short transitions for leads etc.
+FF2 does contain new section-attack/section-release shortening controls to emulate those short transitions for leads etc.<br/>
+If you want a monosynth, get a proper monosynth. By now I feel they are different enough to not try and force one into a polysynth.
 * FF2 cannot do bipolar and/or split envelope segments.<br/>
 Just linear and unipolar exponential, I just didn't see the need for the other ones anymore (might reconsider, convince me).
 * The audio mixers (VMix/GMix) are gain-only and cannot do balance anymore.<br/>
