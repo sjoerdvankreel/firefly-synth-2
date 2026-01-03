@@ -4,9 +4,9 @@ Nevertheless, both are different enough that I felt a new version was warranted,
 # The Bad
 Let's just start with the stuff that FF1 can do, and FF2 can NOT do.
 
-* No arpeggiator as of now.<br/>
-This actually feels like a miss, is on the radar.
-* Multi-EQ module:<br/>
+* No arpeggiator as of now<br/>
+This actually feels like a real miss, is on the radar.
+* No multi-EQ module<br/>
 Didn't rebuild it.<br/>
 Also pretty sure it does not belong in a general-purpose synth.<br/>
 You can still stack multiple BPF/shelving filters, but more tedious.
