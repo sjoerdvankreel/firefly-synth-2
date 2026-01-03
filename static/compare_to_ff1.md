@@ -86,6 +86,8 @@ Of course, FF2 is a fully-featured synth just like FF1 so there's bound to be so
 
 * LFO min/max.<br/>
 LFO's gained new min/max options.
+* External audio as osci.<br/>
+To allow for FM (etc) from the outside world.
 * Highlight mod bounds.<br/>
 Shows parameter modulation bounds in the GUI.
 * Engine knob visuals.<br/>
@@ -94,8 +96,6 @@ Per-parameter visualization of what the engine is doing.
 All echo modules (feedback delay, multi-tap delay, reverb) gained LPF/HPF options.<br/>
 Nothing you couldn't do before, except for the feedback delay filters, which are placed INSIDE the feedback path.<br/>
 Allows for some neat effects.
-* External audio as osci.<br/>
-To allow for FM (etc) from the outside world.
 * Looping envelopes.<br/>
 All envelopes now have loop start/length controls, representing the sustain section.
 * Filter tuning.<br/>
