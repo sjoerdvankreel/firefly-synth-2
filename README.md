@@ -33,6 +33,9 @@ Unfortunately Renoise is not officially supported because of<br/>
 You can use it as long as you don't update the plugin (read: install once, and never again).<br/>
 Updating the plugin might or might not work, but in any case, it's dangerous.<br/>
 
+# Known Issues
+bluuuh
+
 # Dependencies
 - CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
 - JUCE: [https://github.com/juce-framework/JUCE](https://github.com/juce-framework/JUCE)
