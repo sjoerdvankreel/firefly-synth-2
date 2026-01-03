@@ -65,6 +65,10 @@ Varies per-feature of course, f.e. FF2's hardsync is actually slower (but way be
 * Global unison.<br/>
 FF1 does a handful of controls for osci/lfo detune and envelope spreading.<br/>
 FF2 contains dozens of per-voice targets with a bunch of controls per target for either automatic or manual voice-spectrum creation.
+* Realtime visualization.<br/>
+FF1 tries to infer graph plots from a minimal dataset, and does a bad job at doing so.<br/>
+FF2 dumps the entire per-voice parameter state (and more) from audio to UI, so does not need to infer anything.<br/>
+It just re-uses the existing audio algorithms, and renders them directly to screen.<br/>
 
 
 vecho
