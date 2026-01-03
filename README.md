@@ -80,8 +80,10 @@ See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://g
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_global_uni_lfo_echo.rpp)
 
 # Special thanks
-* [RustoMCSpit](https://github.com/RustoMCSpit): for being an early adopter, and helping out with various things on the UI and theming side.
-* [Surge Synth Team](https://surge-synth-team.org): for help with loads of stuff, from low-level technical details to CLAP support to microtuning and probably more.
+* [RustoMCSpit](https://github.com/RustoMCSpit):<br/>
+For being an early adopter, and helping out with various things on the UI and theming side.
+* [Surge Synth Team](https://surge-synth-team.org):<br/>
+For help with loads of stuff, from low-level technical details to CLAP support to microtuning and probably more.
 
 # Dependencies
 - CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
