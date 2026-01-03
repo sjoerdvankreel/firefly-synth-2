@@ -12,17 +12,17 @@ Stuff that both can do, just in different ways.
 
 * Microtuning.<br/>
 FF1 allows for before/after modulation tuning, FF2 allows for more options on what to retune.
+FF2 uses a single matrix for CV-to-anything, and separates out the audio-to-audio matrices into dedicated mixer sections.
+* Echo targeting.<br/>
+FF1 allows reverb/delay per global effect slot.<br/>
+FF2 has a single dedicated echo module with both, providing a custom target in the processing pipeline<br/>
+(and a per-voice echo module as well).
 * CLAP threadpool.<br/>
 FF1 uses it, FF2 does not.<br/>
 Rationale: FF1 adapts to the host block size, FF2 uses fixed internal block size. This also means FF2 needs PDC.<br/>
 In the end, FF1 will scale better within a single plugin instance, FF2 will scale better in general.
 * Mod matrix.<br/>
 FF1 uses separate matrices for audio-to-audio, CV-to-audio and CV-to-CV.<br/>
-FF2 uses a single matrix for CV-to-anything, and separates out the audio-to-audio matrices into dedicated mixer sections.
-* Echo targeting.<br/>
-FF1 allows reverb/delay per global effect slot.<br/>
-FF2 has a single dedicated echo module with both, providing a custom target in the processing pipeline<br/>
-(and a per-voice echo module as well).
 * Module slot handling.<br/>
 FF1 generally has more slots for osci/fx/lfo/envelope.<br/>
 FF2 cuts down on those but provides sub-slots within each module, providing more options, but reducing on routing possibilities.<br/>
