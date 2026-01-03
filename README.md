@@ -36,7 +36,8 @@ Updating the plugin might or might not work, but in any case, it's dangerous.<br
 # Known Issues
 * Some hosts do not paint the realtime visualization (graphs and knobs) for VST3.<br/>
 This affects mostly Linux hosts, but some Windows/Mac as well.<br/>
-Maybe related: https://forums.steinberg.net/t/dataexchange-on-linux/917660/4.
+Maybe related: https://forums.steinberg.net/t/dataexchange-on-linux/917660/4.<br/>
+CLAP should be OK everywhere, and even for VST3 it's not a big deal, just means you don't get realtime visual feedback.
 
 * Open logfolder/plugfolder/show manual is broken on at least Ardour on some Linux distros.
 * String osci responds to samplerate/oversampling. Pitch is good, timbre is not.
