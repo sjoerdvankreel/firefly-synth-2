@@ -9,8 +9,7 @@ January 3, 2026 - Beta 3.
 - Dropped the native file dialogs in favor of JUCE-provided file browsers.
 - Clicking a disabled parameter now flashes the other parameters that are disabling it.
 - Matrix slot count is now increased/decreased as you add/remove slots using the +/- buttons.
-
-- Bugfix: patch load/save problems on Linux caused by locale issues.
+- Bugfix: patch load/save problems on Linux caused by locale issues (was using default for save, but c-locale for load).
 
 December 29, 2025 - Beta 2.
 

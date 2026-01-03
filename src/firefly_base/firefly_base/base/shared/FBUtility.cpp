@@ -46,7 +46,7 @@ std::string
 FBFormatDoubleCLocale(double val)
 {
   std::stringstream ss;
-  ss.imbue(std::locale("C"));
+  ss.imbue(std::locale("C")); 
   ss << std::fixed;
   ss << val;
   return ss.str();
