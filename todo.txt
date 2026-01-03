@@ -1,13 +1,7 @@
-[ ] unify load patch/load preset
-[ ] autofill the last tweaked => too complicated, is for later
-[ ] wrap up all the patch browser stuff into a single GH issue
-[ ] single-click preview patch without actually loading it => this goes into the fancy patch browser
-
 TODOLIST for beta-next
 [ ] list the relevant folders in the GH page
 [ ] do more themes
 [ ] dump topo should include the tags and indices, for debugging renoise
-[ ] just do the comparison to FF1
 [ ] bg images in main tabs and header and maybe elsewhere
 [ ] not right-click-change horizontal sliders
 [ ] make some presets
