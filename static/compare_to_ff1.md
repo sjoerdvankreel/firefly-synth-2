@@ -13,6 +13,10 @@ In the end, FF1 will scale better within a single plugin instance, FF2 will scal
 * Mod matrix.<br/>
 FF1 uses separate matrices for audio-to-audio, CV-to-audio and CV-to-CV.<br/>
 FF2 uses a single matrix for CV-to-anything, and separates out the audio-to-audio matrices into dedicated mixer sections.
+* Module slot handling.<br/>
+FF1 generally has more slots for osci/fx/lfo/envelope.<br/>
+FF2 cuts down on those but provides sub-slots within each module, providing more options, but reducing on routing possibilities.<br/>
+For example all sub-slots within an FX slot are oversampled together, and sub-slots within an LFO are accessible as individual mod sources.
 
 # The Bad
 Stuff that FF1 can do, and FF2 can NOT do.
