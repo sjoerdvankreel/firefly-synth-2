@@ -92,12 +92,12 @@ To allow for FM (etc) from the outside world.
 Shows parameter modulation bounds in the GUI.
 * Engine knob visuals.<br/>
 Per-parameter visualization of what the engine is doing.
+* Looping envelopes.<br/>
+All envelopes now have loop start/length controls, representing the sustain section.
 * Filters on echo.<br/>
 All echo modules (feedback delay, multi-tap delay, reverb) gained LPF/HPF options.<br/>
 Nothing you couldn't do before, except for the feedback delay filters, which are placed INSIDE the feedback path.<br/>
 Allows for some neat effects.
-* Looping envelopes.<br/>
-All envelopes now have loop start/length controls, representing the sustain section.
 * Filter tuning.<br/>
 All SVF and comb filters now can be expressed in pitch as well as frequency, optionally following microtuning.<br/>
 Additionally, the comb filters are now specified in Hz instead of microseconds, and they can be keytracked just like the SVF's.
