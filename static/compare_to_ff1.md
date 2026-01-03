@@ -31,6 +31,8 @@ For example all sub-slots within an FX slot are oversampled together, and sub-sl
 # The Bad
 Stuff that FF1 can do, and FF2 can NOT do.
 
+* No drag-and-drop.<br/>
+Too complicated with the new multi-tab setup.
 * No arpeggiator.<br/>
 This actually feels like a real miss, might rebuild.
 * No stereo balance for audio mixers (VMix/GMix).<br/>
