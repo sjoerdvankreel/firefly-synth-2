@@ -13,9 +13,9 @@ See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://g
 * build_xyz Debug|RelWithDebInfo|Release (0|1):(warn as error) (0|1):(enable asan)
 
 # Special Thanks
-* [RustoMCSpit](https://github.com/RustoMCSpit):<br/>
+* [RustoMCSpit](https://github.com/RustoMCSpit)<br/>
 For being an early adopter, and helping out with various things on the UI and theming side.
-* [Surge Synth Team](https://surge-synth-team.org):<br/>
+* [Surge Synth Team](https://surge-synth-team.org)<br/>
 For help with loads of stuff, from low-level technical details to CLAP support to microtuning and probably more.
 
 # Host Support
