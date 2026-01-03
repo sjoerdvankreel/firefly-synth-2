@@ -3,3 +3,8 @@ Nevertheless, both are different enough that I felt a new version was warranted,
 
 # The Bad
 Let's just start with the stuff that FF1 can do, and FF2 can NOT do.
+
+* Separate smoothing controls for MIDI, BPM, and automation.<br/>
+This is on the radar, but i don't know how important it is.<br/>
+FF2 only has 1 global option for all 3 together.<br/>
+If-ever, i prefer separate controls for individual automatable parameters and maybe even MIDI CC's.
