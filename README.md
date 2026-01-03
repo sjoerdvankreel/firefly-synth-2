@@ -79,8 +79,11 @@ See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://g
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_global_uni_lfo_echo.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_global_uni_lfo_echo.rpp)
 
+# Special thanks
+* [RustoMCSpit](https://github.com/RustoMCSpit): for being an early adopter, and helping out with various things on the UI and theming side.
+* [Surge Synth Team](https://surge-synth-team.org): for help with loads of stuff, from low-level technical details to CLAP support to microtuning and probably more.
+
 # Credits
-* Special thanks to Surge Synth Team as always.
 * Same soft clippers: https://dafx.de/paper-archive/2012/papers/dafx12_submission_45.pdf.
 * Same DSF algorithm: https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html.
 * Same state variable filter: https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf.
