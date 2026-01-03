@@ -47,6 +47,14 @@ I also do not intend to build it back, because too complicated.<br/>
 FF2 does contain new section-attack/section-release shortening controls to emulate those short transitions for leads etc.<br/>
 If you want a monosynth, get a proper monosynth. By now I feel they are different enough to not try and force one into a polysynth.
 
+# The Good
+Stuff that FF1 can do, but FF2 does better.
+
+* Global unison.<br/>
+FF1 does a handful of controls for osci/lfo detune and envelope spreading.<br/>
+FF2 contains dozens of per-voice targets with a bunch of controls per target for either automatic or manual voice-spectrum creation.
+
+vecho
 totally new features
 filter tuning
 comb filter by hz + ktrk
