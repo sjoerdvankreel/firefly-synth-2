@@ -57,6 +57,8 @@ If you want a monosynth, get a proper monosynth. By now I feel they are differen
 # The Good
 Stuff that FF1 can do, but FF2 does better.
 
+* CLAP support.<br/>
+FF1 does global modulators only, FF2 does per-voice modulators as well.
 * Performance.<br/>
 YMMV, but ballpark twice as fast.<br/>
 Varies per-feature of course, f.e. FF2's hardsync is actually slower (but way better, audio-wise).
