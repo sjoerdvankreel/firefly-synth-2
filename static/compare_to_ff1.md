@@ -71,7 +71,7 @@ FF2 dumps the entire per-voice parameter state (and more) from audio to UI, so d
 It just re-uses the existing audio algorithms, and renders them directly to screen.<br/>
 * Less point-and-click, more drag-the-slider
 FF1 needs loads of check-the-box and select-the menu for setting up f.e. the matrices.<br/>
-FF2 tries to cut down on that by using the VMix/GMix sections and providing readily-available mod sources on the main screen like "LFO to Fine Pitch".<br/>
+FF2 tries to cut down on that by using the VMix/GMix sections and providing readily-available mod sources on the main screen like "LFO to Fine Pitch".
 Of course, FF2 is a fully-featured synth just like FF1 so there's bound to be some point-and-click, especially when you need the mod matrix and/or the global unison.
 
 vecho
