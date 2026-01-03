@@ -3,6 +3,16 @@ See [host_test](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host
 See [demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for feature tests, and some nice demos along the way.<br/>
 Read the [Manual](/static/Manual.md). Click the outline (3 dashes) menu for table-of-contents.<br/>
 
+# Legal
+<table>
+  <tr>
+    <td><img alt="CLAP logo" src="static/clap_logo.png"/></td>
+    <td><a href="https://github.com/free-audio/clap">https://github.com/free-audio/clap</a></td>
+    <td><img alt="VST logo" src="static/vst_logo.png"/></td>
+    <td>VST is a trademark of Steinberg Media Technologies GmbH, registered in Europe and other countries.</td>
+  </tr>
+</table>
+
 # How To Build
 * Git clone recursive
 * Build scripts are in /scripts: build_windows.bat/build_linux.sh/build_mac.bat
@@ -97,16 +107,6 @@ You have to download the zip to get at the PolyBLEP source for all waveforms.
 * Global unison with different per-voice settings for coarse pitch, voice lfo to voice filter, and echo
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_global_uni_lfo_echo.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_global_uni_lfo_echo.rpp)
-
-# Legal
-<table>
-  <tr>
-    <td><img alt="CLAP logo" src="static/clap_logo.png"/></td>
-    <td><a href="https://github.com/free-audio/clap">https://github.com/free-audio/clap</a></td>
-    <td><img alt="VST logo" src="static/vst_logo.png"/></td>
-    <td>VST is a trademark of Steinberg Media Technologies GmbH, registered in Europe and other countries.</td>
-  </tr>
-</table>
 
 # Screenshots
 <img alt="Screenshot Main" src="static/screenshot_main.png"/>
