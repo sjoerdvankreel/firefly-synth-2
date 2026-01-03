@@ -43,12 +43,9 @@ TODO: list the relevant folder locations (user data / plugin binary) for all OSe
 This affects mostly Linux hosts, but some Windows/Mac as well.
 CLAP should be OK everywhere, and even for VST3 it's not a big deal, just means you don't get realtime visual feedback.<br/>
 Maybe related: https://forums.steinberg.net/t/dataexchange-on-linux/917660/4.<br/>
-
-
-* String osci responds to samplerate/oversampling. Pitch is good, timbre is not.
-* FLStudio clicks when midi modwheel is enabled in FF2 (probably it uses a default other than 0.5 and FF2 cant handle that). It's enabled by default in the
-global mod matrix, clicking goes away when you turn it off. I havent tested yet what actually happens when you really do use MIDI modwheel through FLStudio.
-
+* Looks like FLStudio and FF2 disagree on what the default value for MIDI modwheel should be.
+This causes clicking which you can get rid off by disabled MIDI modwheel in the global mod matrix.
+If you actually do need and use it, let me know how it fares.
 
 # Dependencies
 - CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
