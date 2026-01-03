@@ -6,6 +6,8 @@ Let's just start with the stuff that FF1 can do, and FF2 can NOT do.
 
 * No arpeggiator.<br/>
 This actually feels like a real miss, might rebuild.
+* No stereo balance for audio mixers (VMix/GMix).<br/>
+Just gain only, didn't see the need for balancing.
 * No multi-EQ module.<br/>
 Pretty sure it does not belong in a general-purpose synth, won't rebuild.<br/>
 You can still stack multiple BPF/shelving filters, but more tedious.
@@ -22,8 +24,6 @@ Just linear and unipolar exponential, I just didn't see the need for the other o
 I also do not intend to build it back, because too complicated.<br/>
 FF2 does contain new section-attack/section-release shortening controls to emulate those short transitions for leads etc.<br/>
 If you want a monosynth, get a proper monosynth. By now I feel they are different enough to not try and force one into a polysynth.
-* The audio mixers (VMix/GMix) are gain-only and cannot do balance anymore.<br/>
-Again, just didn't see the need for it.
 
 less point and click more drag the slider
 different:
