@@ -62,6 +62,8 @@ Stuff that FF1 can do, but FF2 does better.
 Both have one, but FF2's comes with more options.
 * CLAP support.<br/>
 FF1 does global modulators only, FF2 does per-voice modulators as well.
+* String oscillator.<br/>
+FF2's combined string/noise osci can do color-morphing and pitch-shifting.
 * Multi-tap delay.<br/>
 FF1 contains a couple of control parameters for creating the delay lines.<br/>
 FF2 allows full control over all 8 individual taps.
@@ -84,40 +86,26 @@ Of course, FF2 is a fully-featured synth just like FF1 so there's bound to be so
 
 * LFO min/max.<br/>
 LFO's gained new min/max options.
+* Highlight mod bounds.<br/>
+Shows parameter modulation bounds in the GUI.
+* Engine knob visuals.<br/>
+Per-parameter visualization of what the engine is doing.
 * Filters on echo.<br/>
- All echo modules (feedback delay, multi-tap delay, reverb) gained LPF/HPF options.<br/>
+All echo modules (feedback delay, multi-tap delay, reverb) gained LPF/HPF options.<br/>
 Nothing you couldn't do before, except for the feedback delay filters, which are placed INSIDE the feedback path.<br/>
 Allows for some neat effects.
-
-
-
-fubar!
-
-lfo min/max
-filters on the echo
-mod bounds/hilite
-extaudio
-vecho
-env loop
-filter tuning
-echo targeting
-totally new features
-filter tuning
-comb filter by hz + ktrk
-easy access
-less point and click more drag the slider
-different:
-clap threadpool
-microtuning
-10 slots vs 4x4
-oversampling 124 vs 14
-more osci and global uni
-exp bipo/split envelopes
-loads more mod sources/targets
-more osci types
-faster
-better ui realtime
-better clap
-exponential fm
-dedicated fm osci
-mod-any-to-any/no audio/cv-split
+* External audio as osci.<br/>
+To allow for FM (etc) from the outside world.
+* Looping envelopes.<br/>
+All envelopes now have loop start/length controls, representing the sustain section.
+* Filter tuning.<br/>
+All SVF and comb filters now can be expressed in pitch as well as frequency, optionally following microtuning.<br/>
+Additionally, the comb filters are now specified in Hz instead of microseconds, and they can be keytracked just like the SVF's.
+* Basic oscillator algorithms.<br/>
+FF2 gained lots of them.
+* Dedicated FM oscillator.
+3-op FM osci with 3x3 matrix, unit delay on the feedback path.
+* Exponential FM.
+For both the dedicated FM-osci as well as the inter-osci modulation section.
+* Per-voice echo
+Super-cool, super-expensive, and super-complicated. Refer to the manual for details.
