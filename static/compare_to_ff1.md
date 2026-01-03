@@ -57,6 +57,8 @@ If you want a monosynth, get a proper monosynth. By now I feel they are differen
 # The Good
 Stuff that FF1 can do, but FF2 does better.
 
+* MSEG editor.<br/>
+Both have one, but FF2's comes with more options.
 * CLAP support.<br/>
 FF1 does global modulators only, FF2 does per-voice modulators as well.
 * Performance.<br/>
@@ -75,6 +77,7 @@ FF2 tries to cut down on that by using the VMix/GMix sections and providing read
 Of course, FF2 is a fully-featured synth just like FF1 so there's bound to be some point-and-click, especially when you need the mod matrix and/or the global unison.
 
 vecho
+env loop
 filter tuning
 echo targeting
 totally new features
