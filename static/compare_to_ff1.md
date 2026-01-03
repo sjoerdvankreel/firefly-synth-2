@@ -51,6 +51,9 @@ If you want a monosynth, get a proper monosynth. By now I feel they are differen
 # The Good
 Stuff that FF1 can do, but FF2 does better.
 
+* Performance.<br/>
+YMMV, but ballpark twice as fast.<br/>
+Varies per-feature of course, f.e. FF2's hardsync is actually slower (but way better, audio-wise).
 * Global unison.<br/>
 FF1 does a handful of controls for osci/lfo detune and envelope spreading.<br/>
 FF2 contains dozens of per-voice targets with a bunch of controls per target for either automatic or manual voice-spectrum creation.
