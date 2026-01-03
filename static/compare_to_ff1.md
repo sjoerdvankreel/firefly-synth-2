@@ -12,7 +12,7 @@ You can still stack multiple BPF/shelving filters, but more tedious.
 * No dedicated distortion module.<br/>
 Would like to have it, might rebuild.<br/>
 The new multi-slot effect modules allow to build something like it manually, but more tedious.
-* Separate smoothing controls for MIDI, BPM, and automation:<br/>
+* No separate smoothing controls for MIDI, BPM, and automation.<br/>
 Also on the radar, but i don't know how important it is.<br/>
 FF2 only has 1 global option for all 3 together.<br/>
 If-ever, i prefer separate controls for individual automatable parameters and maybe even MIDI CC's.
