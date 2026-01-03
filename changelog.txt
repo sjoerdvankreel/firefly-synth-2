@@ -4,6 +4,7 @@ January 3, 2026 - Beta 3.
 - Align VEcho/GEcho UI.
 - FM Index label was clipping.
 - Order theme combobox by path.
+- Add some more theming extension points.
 - Add tooltips on the matrix ordering buttons.
 - Added some new theme extension points for voice/master/settings headers.
 - Dropped the native file dialogs in favor of JUCE-provided file browsers.
