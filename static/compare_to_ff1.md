@@ -103,9 +103,9 @@ Allows for some neat effects.
 * Filter tuning.<br/>
 All SVF and comb filters now can be expressed in pitch as well as frequency, optionally following microtuning.<br/>
 Additionally, the comb filters are now specified in Hz instead of microseconds, and they can be keytracked just like the SVF's.
-* Dedicated FM oscillator.
+* Dedicated FM oscillator.<br/>
 3-op FM osci with 3x3 matrix, unit delay on the feedback path.
-* Exponential FM.
+* Exponential FM.<br/>
 For both the dedicated FM-osci as well as the inter-osci modulation section.
-* Per-voice echo
+* Per-voice echo.<br/>
 Super-cool, super-expensive, and super-complicated. Refer to the manual for details.
