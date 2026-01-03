@@ -18,7 +18,8 @@ FF2 has a single dedicated echo module with both, providing a custom target in t
 (and a per-voice echo module as well).
 * Mod matrix.<br/>
 FF1 uses separate matrices for audio-to-audio, CV-to-audio and CV-to-CV.<br/>
-FF2 uses a single matrix for CV-to-anything, and separates out the audio-to-audio matrices into dedicated mixer sections.
+FF2 uses a single matrix for CV-to-anything, and separates out the audio-to-audio matrices into dedicated mixer sections.<br/>
+FF2 provides boatloads more modulation sources and targets. Whether that's good or bad is up to you.
 * CLAP threadpool.<br/>
 FF1 uses it, FF2 does not.<br/>
 Rationale: FF1 adapts to the host block size, FF2 uses fixed internal block size. This also means FF2 needs PDC.<br/>
@@ -79,6 +80,8 @@ FF1 needs loads of check-the-box and select-the menu for setting up f.e. the mat
 FF2 tries to cut down on that by using the VMix/GMix sections and providing readily-available mod sources on the main screen like "LFO to Fine Pitch".
 Of course, FF2 is a fully-featured synth just like FF1 so there's bound to be some point-and-click, especially when you need the mod matrix and/or the global unison.
 
+lfo min/max
+filters on the echo
 mod bounds/hilite
 extaudio
 vecho
