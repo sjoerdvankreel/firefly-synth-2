@@ -16,7 +16,7 @@ The new multi-slot effect modules allow to build something like it manually, but
 On the radar, but i don't know how important it is.<br/>
 FF2 only has 1 global option for all 3 together.<br/>
 If-ever, i prefer separate controls for individual automatable parameters and maybe even MIDI CC's.
-* FF2 has no real monophonic mode, period.<br/>
+* No monophonic mode, period.<br/>
 I also do not intend to build it back, because too complicated.<br/>
 FF2 does contain new section-attack/section-release shortening controls to emulate those short transitions for leads etc.
 * FF2 cannot do bipolar and/or split envelope segments.<br/>
