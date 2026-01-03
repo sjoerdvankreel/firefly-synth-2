@@ -96,6 +96,12 @@ Shows parameter modulation bounds in the GUI.
 Per-parameter visualization of what the engine is doing.
 * Looping envelopes.<br/>
 All envelopes now have loop start/length controls, representing the sustain section.
+* Dedicated FM oscillator.<br/>
+3-op FM osci with 3x3 matrix, unit delay on the feedback path.
+* Exponential FM.<br/>
+For both the dedicated FM-osci as well as the inter-osci modulation section.
+* Per-voice echo.<br/>
+Super-cool, super-expensive, and super-complicated. Refer to the manual for details.
 * Filters on echo.<br/>
 All echo modules (feedback delay, multi-tap delay, reverb) gained LPF/HPF options.<br/>
 Nothing you couldn't do before, except for the feedback delay filters, which are placed INSIDE the feedback path.<br/>
@@ -103,9 +109,3 @@ Allows for some neat effects.
 * Filter tuning.<br/>
 All SVF and comb filters now can be expressed in pitch as well as frequency, optionally following microtuning.<br/>
 Additionally, the comb filters are now specified in Hz instead of microseconds, and they can be keytracked just like the SVF's.
-* Dedicated FM oscillator.<br/>
-3-op FM osci with 3x3 matrix, unit delay on the feedback path.
-* Exponential FM.<br/>
-For both the dedicated FM-osci as well as the inter-osci modulation section.
-* Per-voice echo.<br/>
-Super-cool, super-expensive, and super-complicated. Refer to the manual for details.
