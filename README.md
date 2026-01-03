@@ -33,20 +33,6 @@ Unfortunately Renoise is not officially supported because of<br/>
 You can use it as long as you don't update the plugin (read: install once, and never again).<br/>
 Updating the plugin might or might not work, but in any case, it's dangerous.<br/>
 
-# Known Issues
-* String oscillator responds to sample rate, but it shouldn't.<br/>
-Pitch is good, timbre is not. Long-standing issue, might prove difficult.
-* Looks like FLStudio and FF2 disagree on what the default value for MIDI modwheel/pitchbend should be.
-This causes clicking which you can get rid off by disabling MIDI modwheel/pitchbend sources in the global mod matrix (PB is on by default).
-If you actually do need and use it, let me know how it fares.
-* "Show Manual"/"Show Log Folder"/"Show Plugin Folder" context menu options are broken on some Linux hosts.<br/>
-Workaround: go find those folders yourself, and the manual is over [here](/static/Manual.md).<br/>
-TODO: list the relevant folder locations (user data / plugin binary) for all OSes right here in this document.
-* Some hosts do not paint the realtime visualization (graphs and knobs) for VST3.
-This affects mostly Linux hosts, but some Windows/Mac as well.
-CLAP should be OK everywhere, and even for VST3 it's not a big deal, just means you don't get realtime visual feedback.<br/>
-Maybe related: https://forums.steinberg.net/t/dataexchange-on-linux/917660/4.<br/>
-
 # Dependencies
 - CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
 - JUCE: [https://github.com/juce-framework/JUCE](https://github.com/juce-framework/JUCE)
@@ -111,6 +97,20 @@ You have to download the zip to get at the PolyBLEP source for all waveforms.
 * Global unison with different per-voice settings for coarse pitch, voice lfo to voice filter, and echo
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_global_uni_lfo_echo.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_global_uni_lfo_echo.rpp)
+
+# Known Issues
+* String oscillator responds to sample rate, but it shouldn't.<br/>
+Pitch is good, timbre is not. Long-standing issue, might prove difficult.
+* Looks like FLStudio and FF2 disagree on what the default value for MIDI modwheel/pitchbend should be.
+This causes clicking which you can get rid off by disabling MIDI modwheel/pitchbend sources in the global mod matrix (PB is on by default).
+If you actually do need and use it, let me know how it fares.
+* "Show Manual"/"Show Log Folder"/"Show Plugin Folder" context menu options are broken on some Linux hosts.<br/>
+Workaround: go find those folders yourself, and the manual is over [here](/static/Manual.md).<br/>
+TODO: list the relevant folder locations (user data / plugin binary) for all OSes right here in this document.
+* Some hosts do not paint the realtime visualization (graphs and knobs) for VST3.
+This affects mostly Linux hosts, but some Windows/Mac as well.
+CLAP should be OK everywhere, and even for VST3 it's not a big deal, just means you don't get realtime visual feedback.<br/>
+Maybe related: https://forums.steinberg.net/t/dataexchange-on-linux/917660/4.<br/>
 
 # Screenshots
 <img alt="Screenshot Main" src="static/screenshot_main.png"/>
