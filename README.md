@@ -3,16 +3,16 @@ See [host_test](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host
 See [demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for feature tests, and some nice demos along the way.<br/>
 Read the [Manual](/static/Manual.md). Click the outline (3 dashes) menu for table-of-contents.<br/>
 
+# How To Build
+* Git clone recursive
+* Build scripts are in /scripts: build_windows.bat/build_linux.sh/build_mac.bat
+* build_xyz Debug|RelWithDebInfo|Release (0|1):(warn as error) (0|1):(enable asan)
+
 # Special Thanks
 * [RustoMCSpit](https://github.com/RustoMCSpit)<br/>
 For being an early adopter, and helping out with various things on the UI and theming side.
 * [Surge Synth Team](https://surge-synth-team.org)<br/>
 For help with loads of stuff, from low-level technical details to CLAP support to microtuning and probably more.
-
-# How To Build
-* Git clone recursive
-* Build scripts are in /scripts: build_windows.bat/build_linux.sh/build_mac.bat
-* build_xyz Debug|RelWithDebInfo|Release (0|1):(warn as error) (0|1):(enable asan)
 
 # Host Support
 Tested on Carla, Bitwig, Ardour, FLStudio, Reaper and Renoise.<br/>
