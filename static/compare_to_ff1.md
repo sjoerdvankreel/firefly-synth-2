@@ -21,7 +21,7 @@ FF1 uses separate matrices for audio-to-audio, CV-to-audio and CV-to-CV.<br/>
 FF2 uses a single matrix for CV-to-anything, and separates out the audio-to-audio matrices into dedicated mixer sections.
 * Echo targeting.<br/>
 FF1 allows reverb/delay per global effect slot.<br/>
-FF2 has a dedicated echo module with both, providing a custom target in the processing pipeline (and a per-voice echo module as well).
+FF2 has a single dedicated echo module with both, providing a custom target in the processing pipeline (and a per-voice echo module as well).
 * Module slot handling.<br/>
 FF1 generally has more slots for osci/fx/lfo/envelope.<br/>
 FF2 cuts down on those but provides sub-slots within each module, providing more options, but reducing on routing possibilities.<br/>
