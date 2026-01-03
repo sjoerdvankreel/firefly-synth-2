@@ -4,6 +4,13 @@ Nevertheless, both are different enough that I felt a new version was warranted,
 # The Just-Different
 Stuff that both can do, just in different ways.
 
+* Microtuning.<br/>
+FF1 allows for before/after modulation tuning, FF2 allows for more options on what to retune.
+* CLAP threadpool.<br/>
+FF1 uses it, FF2 does not.<br/>
+Rationale: FF1 adapts to the host block size, FF2 uses fixed internal block size. This also means FF2 needs PDC.<br/>
+In the end, FF1 will scale better *within a single plugin instance*, FF2 will scale better in general.
+
 # The Bad
 Stuff that FF1 can do, and FF2 can NOT do.
 
@@ -28,6 +35,7 @@ I also do not intend to build it back, because too complicated.<br/>
 FF2 does contain new section-attack/section-release shortening controls to emulate those short transitions for leads etc.<br/>
 If you want a monosynth, get a proper monosynth. By now I feel they are different enough to not try and force one into a polysynth.
 
+easy access
 less point and click more drag the slider
 different:
 clap threadpool
