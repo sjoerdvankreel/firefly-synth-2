@@ -82,6 +82,8 @@ Of course, FF2 is a fully-featured synth just like FF1 so there's bound to be so
 
 # The Brand-New
 
+* LFO min/max.<br/>
+LFO's gained new min/max options.
 * Filters on echo.<br/>
  All echo modules (feedback delay, multi-tap delay, reverb) gained LPF/HPF options.<br/>
 Nothing you couldn't do before, except for the feedback delay filters, which are placed INSIDE the feedback path.<br/>
