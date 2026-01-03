@@ -25,9 +25,9 @@ Updating the plugin might or might not work, but in any case, it's dangerous.<br
 
 # Dependencies
 - CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
-- MTS-ESP: [https://github.com/ODDSound/MTS-ESP](https://github.com/ODDSound/MTS-ESP)
 - JUCE: [https://github.com/juce-framework/JUCE](https://github.com/juce-framework/JUCE)
 - Xsimd: [https://github.com/xtensor-stack/xsimd](https://github.com/xtensor-stack/xsimd)
+- MTS-ESP: [https://github.com/ODDSound/MTS-ESP](https://github.com/ODDSound/MTS-ESP)
 - Steinberg VST3 SDK: [https://github.com/steinbergmedia/vst3sdk](https://github.com/steinbergmedia/vst3sdk)
 - Readerwriterqueue: [https://github.com/cameron314/readerwriterqueue](https://github.com/cameron314/readerwriterqueue)
 
