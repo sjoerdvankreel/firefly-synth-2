@@ -83,6 +83,14 @@ See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://g
 * [RustoMCSpit](https://github.com/RustoMCSpit): for being an early adopter, and helping out with various things on the UI and theming side.
 * [Surge Synth Team](https://surge-synth-team.org): for help with loads of stuff, from low-level technical details to CLAP support to microtuning and probably more.
 
+# Dependencies
+- CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
+- MTS-ESP: [https://github.com/ODDSound/MTS-ESP](https://github.com/ODDSound/MTS-ESP)
+- JUCE: [https://github.com/juce-framework/JUCE](https://github.com/juce-framework/JUCE)
+- Xsimd: [https://github.com/xtensor-stack/xsimd](https://github.com/xtensor-stack/xsimd)
+- Steinberg VST3 SDK: [https://github.com/steinbergmedia/vst3sdk](https://github.com/steinbergmedia/vst3sdk)
+- Readerwriterqueue: [https://github.com/cameron314/readerwriterqueue](https://github.com/cameron314/readerwriterqueue)
+
 # Credits
 * Same soft clippers: https://dafx.de/paper-archive/2012/papers/dafx12_submission_45.pdf.
 * Same DSF algorithm: https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html.
@@ -91,14 +99,6 @@ See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://g
 * Stole the color-morphing noise algo from here: https://sampo.kapsi.fi/PinkNoise/.
 * Stole the new osci algos from here: https://www.taletn.com/reaper/mono_synth/. You have to download the zip to get at the PolyBLEP source for all waveforms.
 * Smooth noise: https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html
-
-# Dependencies
-- CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
-- MTS-ESP: [https://github.com/ODDSound/MTS-ESP](https://github.com/ODDSound/MTS-ESP)
-- JUCE: [https://github.com/juce-framework/JUCE](https://github.com/juce-framework/JUCE)
-- Xsimd: [https://github.com/xtensor-stack/xsimd](https://github.com/xtensor-stack/xsimd)
-- Steinberg VST3 SDK: [https://github.com/steinbergmedia/vst3sdk](https://github.com/steinbergmedia/vst3sdk)
-- Readerwriterqueue: [https://github.com/cameron314/readerwriterqueue](https://github.com/cameron314/readerwriterqueue)
 
 # Screenshots
 <img alt="Screenshot Main" src="static/screenshot_main.png"/>
