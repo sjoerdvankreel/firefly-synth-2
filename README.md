@@ -20,7 +20,7 @@ Read the [Manual](/static/Manual.md). Click the outline (3 dashes) menu for tabl
 
 # Special Thanks
 * [RustoMCSpit](https://github.com/RustoMCSpit)<br/>
-For being an early adopter, and helping out with various things on the UI and theming side.
+For being an early adopter and helping out with various things on the UI and theming side.
 * [Surge Synth Team](https://surge-synth-team.org)<br/>
 For help with loads of stuff, from low-level technical details to CLAP support to microtuning and probably more.
 
