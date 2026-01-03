@@ -10,7 +10,7 @@ Also doubting if it even belongs in a general-purpose synth.<br/>
 You can still stack multiple BPF/shelving filters, but more tedious.
 * Dedicated distortion module:<br/>
 FF2 doesn't have one, but it's on the radar.<br/>
-The new multi-slot effect modules allow to build something like it manually, but it's more tedious.
+The new multi-slot effect modules allow to build something like it manually, but again more tedious.
 * Separate smoothing controls for MIDI, BPM, and automation:<br/>
 Also on the radar, but i don't know how important it is.<br/>
 FF2 only has 1 global option for all 3 together.<br/>
