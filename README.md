@@ -34,7 +34,15 @@ You can use it as long as you don't update the plugin (read: install once, and n
 Updating the plugin might or might not work, but in any case, it's dangerous.<br/>
 
 # Known Issues
-bluuuh
+* Some hosts do not paint the realtime visualization (graphs and knobs) for VST3.<br/>
+This affects mostly Linux hosts, but some Windows/Mac as well.<br/>
+Maybe related: https://forums.steinberg.net/t/dataexchange-on-linux/917660/4.
+
+* Open logfolder/plugfolder/show manual is broken on at least Ardour on some Linux distros.
+* String osci responds to samplerate/oversampling. Pitch is good, timbre is not.
+* FLStudio clicks when midi modwheel is enabled in FF2 (probably it uses a default other than 0.5 and FF2 cant handle that). It's enabled by default in the
+global mod matrix, clicking goes away when you turn it off. I havent tested yet what actually happens when you really do use MIDI modwheel through FLStudio.
+
 
 # Dependencies
 - CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
