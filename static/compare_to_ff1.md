@@ -94,12 +94,12 @@ To allow for FM (etc) from the outside world.
 Shows parameter modulation bounds in the GUI.
 * Engine knob visuals.<br/>
 Per-parameter visualization of what the engine is doing.
-* Looping envelopes.<br/>
-All envelopes now have loop start/length controls, representing the sustain section.
 * Dedicated FM oscillator.<br/>
 3-op FM osci with 3x3 matrix, unit delay on the feedback path.
 * Exponential FM.<br/>
 For both the dedicated FM-osci as well as the inter-osci modulation section.
+* Looping envelopes.<br/>
+All envelopes now have loop start/length controls, representing the sustain section.
 * Per-voice echo.<br/>
 Super-cool, super-expensive, and super-complicated. Refer to the manual for details.
 * Filters on echo.<br/>
