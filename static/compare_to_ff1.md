@@ -10,7 +10,8 @@ Long story short, main reasons for the rebuild are:
 * Provide direct-from-audio-engine data from realtime to UI, allowing for superior realtime visualization.
 
 # The Bad
-Stuff that FF1 can do, and FF2 can NOT do.
+Stuff that FF1 can do, and FF2 can NOT do.<br/>
+Because sure, let's start with the bad news.
 
 * No drag-and-drop.<br/>
 Too complicated with the new multi-tab setup.
