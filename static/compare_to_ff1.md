@@ -10,15 +10,15 @@ Long story short, main reasons for the rebuild are:
 # The Just-Different
 Stuff that both can do, just in different ways.
 
-* Mod matrix.<br/>
-FF1 uses separate matrices for audio-to-audio, CV-to-audio and CV-to-CV.<br/>
 * Microtuning.<br/>
 FF1 allows for before/after modulation tuning, FF2 allows for more options on what to retune.<br/>
-FF2 uses a single matrix for CV-to-anything, and separates out the audio-to-audio matrices into dedicated mixer sections.
 * Echo targeting.<br/>
 FF1 allows reverb/delay per global effect slot.<br/>
 FF2 has a single dedicated echo module with both, providing a custom target in the processing pipeline<br/>
 (and a per-voice echo module as well).
+* Mod matrix.<br/>
+FF1 uses separate matrices for audio-to-audio, CV-to-audio and CV-to-CV.<br/>
+FF2 uses a single matrix for CV-to-anything, and separates out the audio-to-audio matrices into dedicated mixer sections.
 * CLAP threadpool.<br/>
 FF1 uses it, FF2 does not.<br/>
 Rationale: FF1 adapts to the host block size, FF2 uses fixed internal block size. This also means FF2 needs PDC.<br/>
