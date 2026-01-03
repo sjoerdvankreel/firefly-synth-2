@@ -11,7 +11,7 @@ Long story short, main reasons for the rebuild are:
 Stuff that both can do, just in different ways.
 
 * Microtuning.<br/>
-FF1 allows for before/after modulation tuning, FF2 allows for more options on what to retune.
+FF1 allows for before/after modulation tuning, FF2 allows for more options on what to retune.<br/>
 FF2 uses a single matrix for CV-to-anything, and separates out the audio-to-audio matrices into dedicated mixer sections.
 * Echo targeting.<br/>
 FF1 allows reverb/delay per global effect slot.<br/>
