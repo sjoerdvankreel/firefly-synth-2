@@ -36,8 +36,8 @@ Updating the plugin might or might not work, but in any case, it's dangerous.<br
 # Known Issues
 * String oscillator responds to sample rate, but it shouldn't.<br/>
 Pitch is good, timbre is not. Long-standing issue, might prove difficult.
-* Looks like FLStudio and FF2 disagree on what the default value for MIDI modwheel should be.
-This causes clicking which you can get rid off by disabled MIDI modwheel in the global mod matrix.
+* Looks like FLStudio and FF2 disagree on what the default value for MIDI modwheel/pitchbend should be.
+This causes clicking which you can get rid off by disabling MIDI modwheel/pitchbend sources in the global mod matrix (PB is on by default).
 If you actually do need and use it, let me know how it fares.
 * "Show Manual"/"Show Log Folder"/"Show Plugin Folder" context menu options are broken on some Linux hosts.<br/>
 Workaround: go find those folders yourself, and the manual is over [here](/static/Manual.md).<br/>
