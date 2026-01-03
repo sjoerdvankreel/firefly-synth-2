@@ -125,6 +125,8 @@ FBParamSlider::getTooltip()
 void
 FBParamSlider::mouseUp(MouseEvent const& event)
 {
+  if (!isEnabled())
+    _plugGUI->FlashAudioParamsDisablingParam(_param->runtimeParamIndex);
   if (isEnabled() && event.mods.isRightButtonDown())
     _plugGUI->ShowMenuForAudioParam(_param->runtimeParamIndex, true);
 }

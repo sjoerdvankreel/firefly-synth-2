@@ -281,6 +281,12 @@ This is not entirely accurate as you can position the echo modules to just about
 Drag the bottom-right corner of the plugin window to resize.<br/>
 The plugin also reacts to system DPI settings.
 
+## Flashing disabled parameters
+When you click an audio control that's disabled,<br/>
+the GUI shortly flashes any other parameters that might cause the clicked one to be disabled.<br/>
+Typically this is only 1 or 2 parameters, but might be as much as 3 or 4.<br/>
+This does not mean all of those parameters need changing to enable the clicked one, but at least one of them.
+
 ## Tooltips
 Hover over a parameter to show details.<br/>
 For GUI-only parameters, this doesn't show a whole lot.<br/>
@@ -373,10 +379,14 @@ All colors are specified as ARGB hex.
   * background: background for the GUI as a whole and pop-up windows.
   * meterFill/meterTrack/meterAlert: for the meters in the output section.
   * graphGrid/graphBackground: only used for painting graphs (any of them, main graphs, MSEG, matrix and unison graphs).
+  * headerText/headerBorder/headerBackground: for tab headers when there is only 1 tab.
   * sectionBorder/sectionBackground: mainly used for module sections, but other stuff as well.
   * paramSecondary/paramBackground: used for menu separators, check/comboboxes, slider tracks, and more.
   * paramHighlight: anything that needs highlighting. "Show mod bounds", "Engine Knob Visual" etc.
+  * paramFlashDisabling: when a parameter is flashing because it's disabling another parameter.
   * alertWindowPrimary: when a messagebox pops up.
+  * fileBrowserPrimary: file browser buttons and more.
+  * fileBrowserHighlight: file browser treeview selection background.
 * colorSchemes: named color schemes. Can override anything from the default.
 * componentColors: named components (top graphs, last tweaked etc). Can override default color scheme.
   * componentId: component identifier, see topology.

@@ -193,7 +193,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
 static Component*
 MakeModMatrixSlotControlGUI(FFPlugGUI* plugGUI)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(false, std::vector<int> { { 1 } }, std::vector<int> { { 0, 0, 0 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(false, std::vector<int> { { 1 } }, std::vector<int> { { 0, 0 } });
   grid->Add(0, 0, MakeModMatrixSlotControlGUI(false, plugGUI));
   grid->Add(0, 1, MakeModMatrixSlotControlGUI(true, plugGUI));
   return grid;
@@ -243,8 +243,9 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
   auto opType = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::OpType, slot } });
   
   auto addButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "+");
+  addButton->setTooltip("Insert Slot");
   addButton->onClick = [plugGUI, slot, moduleType, maxSlotCount]() {
-    plugGUI->HostContext()->UndoState().Snapshot("Add Matrix Row");
+    plugGUI->HostContext()->UndoState().Snapshot("Insert Matrix Slot");
     for(int i = maxSlotCount; i > slot; i--)
       for(int p = 0; p < (int)FFModMatrixParam::Count; p++)
         if (plugGUI->HostContext()->Topo()->static_->modules[(int)moduleType].params[p].slotCount == maxSlotCount)
@@ -252,12 +253,17 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
           if(i < maxSlotCount)
             plugGUI->HostContext()->CopyAudioParam({ { (int)moduleType, 0 }, { p, i - 1} }, { { (int)moduleType, 0 }, { p, i } });
           plugGUI->HostContext()->DefaultAudioParam({ { (int)moduleType, 0 }, { p, i - 1} });
-        }};
+        }
+    int activeSlotCount = plugGUI->HostContext()->GetAudioParamDiscrete({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Slots, 0 } });
+    if(activeSlotCount < maxSlotCount)
+      plugGUI->HostContext()->SetAudioParamDiscrete({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Slots, 0 } }, activeSlotCount + 1);
+  };
   grid->Add(r, 0, addButton);
 
   auto removeButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "-");
+  removeButton->setTooltip("Remove Slot");
   removeButton->onClick = [plugGUI, slot, moduleType, maxSlotCount]() {
-    plugGUI->HostContext()->UndoState().Snapshot("Remove Matrix Row");
+    plugGUI->HostContext()->UndoState().Snapshot("Remove Matrix Slot");
     for (int i = slot; i < maxSlotCount; i++)
       for (int p = 0; p < (int)FFModMatrixParam::Count; p++)
         if (plugGUI->HostContext()->Topo()->static_->modules[(int)moduleType].params[p].slotCount == maxSlotCount)
@@ -269,12 +275,17 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
             plugGUI->HostContext()->CopyAudioParam({ { (int)moduleType, 0 }, { p, i + 1 } }, { { (int)moduleType, 0 }, { p, i } });
             plugGUI->HostContext()->DefaultAudioParam({ { (int)moduleType, 0 }, { p, i + 1 } });
           }
-        }};
+        }
+    int activeSlotCount = plugGUI->HostContext()->GetAudioParamDiscrete({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Slots, 0 } });
+    if (activeSlotCount > 0)
+      plugGUI->HostContext()->SetAudioParamDiscrete({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Slots, 0 } }, activeSlotCount - 1);
+  };
   grid->Add(r, 1, removeButton);
 
   auto upButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "\U00002191");
+  upButton->setTooltip("Move Slot Up");
   upButton->onClick = [plugGUI, slot, moduleType, maxSlotCount]() {
-    plugGUI->HostContext()->UndoState().Snapshot("Move Matrix Row Up");
+    plugGUI->HostContext()->UndoState().Snapshot("Move Matrix Slot Up");
     for (int p = 0; p < (int)FFModMatrixParam::Count; p++)
       if (plugGUI->HostContext()->Topo()->static_->modules[(int)moduleType].params[p].slotCount == maxSlotCount)
       {
@@ -291,8 +302,9 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
   grid->Add(r, 2, upButton);
 
   auto downButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "\U00002193");
+  downButton->setTooltip("Move Slot Down");
   downButton->onClick = [plugGUI, slot, moduleType, maxSlotCount]() {
-    plugGUI->HostContext()->UndoState().Snapshot("Move Matrix Row Down");
+    plugGUI->HostContext()->UndoState().Snapshot("Move Matrix Slot Down");
     for (int p = 0; p < (int)FFModMatrixParam::Count; p++)
       if (plugGUI->HostContext()->Topo()->static_->modules[(int)moduleType].params[p].slotCount == maxSlotCount)
       {

@@ -20,7 +20,7 @@ public:
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
   virtual void OnPopupMenuClosing(int /*itemResultId*/) {}
-  FBAutoSizeComboBox(juce::PopupMenu const& rootMenu);
+  FBAutoSizeComboBox(juce::PopupMenu const& rootMenu, std::string minimumWidthText = {});
 };
 
 class FBGUIParamComboBox final:
@@ -34,7 +34,7 @@ public:
   void mouseUp(juce::MouseEvent const& event) override;
 
   void SetValueNormalized(double normalized) override;
-  FBGUIParamComboBox(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed = true);
+  FBGUIParamComboBox(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, std::string minimumWidthText = {}, bool isThemed = true);
 };
 
 class FBParamComboBox final:
@@ -57,5 +57,5 @@ public:
 
   void OnPopupMenuClosing(int itemResultId) override;
   void SetValueNormalizedFromHost(double normalized) override;
-  FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed = true);
+  FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string minimumWidthText = {}, bool isThemed = true);
 };

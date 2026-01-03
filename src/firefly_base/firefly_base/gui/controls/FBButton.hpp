@@ -1,8 +1,8 @@
 #pragma once
 
-#include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBAutoSize.hpp>
 #include <firefly_base/gui/shared/FBParamsDependent.hpp>
+#include <firefly_base/gui/shared/FBPlugGUIListeners.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <string>

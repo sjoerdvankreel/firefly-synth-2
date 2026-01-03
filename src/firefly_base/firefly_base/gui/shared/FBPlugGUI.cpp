@@ -1,5 +1,6 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBPlugGUIListeners.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/shared/FBParamComponent.hpp>
 #include <firefly_base/gui/shared/FBParamsDependent.hpp>
@@ -36,9 +37,28 @@ _hostContext(hostContext)
   _themes = FBLoadThemes(hostContext->Topo());
   if (_themes.empty())
     FB_LOG_ERROR("No themes found.");
-
   _tooltipWindow = StoreComponent<TooltipWindow>();
   _hostContext->AddListener(this);
+
+  auto extension = hostContext->Topo()->static_->patchExtension;
+  auto filterName = hostContext->Topo()->static_->patchFilterName;
+  _loadPatchBrowser = std::make_unique<FBFileBrowserComponent>(this, false, "Load Patch", extension, filterName, [this](juce::File const& file) {
+    auto text = file.loadFileAsString().toStdString();
+    if (!LoadPatchFromText("Load Patch", file.getFileNameWithoutExtension().toStdString(), text))
+      AlertWindow::showMessageBoxAsync(
+        MessageBoxIconType::NoIcon,
+        "Error",
+        "Failed to load patch. See log for details.");
+  });
+  _savePatchBrowser = std::make_unique<FBFileBrowserComponent>(this, true, "Save Patch", extension, filterName, [this](juce::File const& file) {
+    FBScalarStateContainer editState(*HostContext()->Topo());
+    editState.CopyFrom(HostContext(), true);
+    file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState, true));
+  });
+  _saveTopologyBrowser = std::make_unique<FBFileBrowserComponent>(this, true, "Dump Topology", "txt", "Text Files", [this](juce::File const& file) {
+    file.replaceWithText(HostContext()->Topo()->static_->PrintTopology());
+  });
+
   addAndMakeVisible(_tooltipWindow);
   addMouseListener(this, true);
   SetupOverlayGUI();
@@ -97,6 +117,38 @@ FBPlugGUI::InitAllDependencies()
   auto const& audioParams = HostContext()->Topo()->audio.params;
   for (int i = 0; i < audioParams.size(); i++)
     AudioParamNormalizedChanged(i);
+}
+
+void 
+FBPlugGUI::FlashAudioParamDisabling(int index)
+{
+  int controlCount = GetControlCountForAudioParamIndex(index);
+  for (int i = 0; i < controlCount; i++)
+    GetControlForAudioParamIndex(index, i)->StartFlashDisabling();
+}
+
+void
+FBPlugGUI::FlashAudioParamsDisablingParam(int index)
+{
+  int controlCount = GetControlCountForAudioParamIndex(index);
+  for (int i = 0; i < controlCount; i++)
+  {
+    auto const* control = GetControlForAudioParamIndex(index, i);
+    auto dependencies = GetAudioParamEnabledDependenciesExcludingSelf(control);
+    for (int j = 0; j < dependencies.size(); j++)
+      FlashAudioParamDisabling(dependencies[j]);
+  }
+}
+
+std::vector<int> 
+FBPlugGUI::GetAudioParamEnabledDependenciesExcludingSelf(
+  FBParamControl const* control) const
+{
+  std::vector<int> result = {};
+  int index = control->Param()->runtimeParamIndex;
+  auto const& dependencies = control->RuntimeDependencies(true, false);
+  std::copy_if(dependencies.begin(), dependencies.end(), std::back_inserter(result), [index](auto const& e) { return e != index;  });
+  return result;
 }
 
 void
@@ -434,14 +486,14 @@ FBPlugGUI::GetTooltipForAudioParam(FBParamControl const* control) const
   auto controlComponent = &dynamic_cast<Component const&>(*control);
   if (!controlComponent->isEnabled())
   {
-    auto const& dependencies = control->RuntimeDependencies(true, false);
-    if (dependencies.size() > 0)
+    std::vector<int> filteredDependencies = GetAudioParamEnabledDependenciesExcludingSelf(control);
+    if (filteredDependencies.size() > 0)
     {
       result += "\r\nDisabled By: ";
-      for (int i = 0; i < (int)dependencies.size(); i++)
+      for (int i = 0; i < (int)filteredDependencies.size(); i++)
       {
-        result += HostContext()->Topo()->audio.params[dependencies[i]].displayName;
-        if (i < (int)dependencies.size() - 1)
+        result += HostContext()->Topo()->audio.params[filteredDependencies[i]].displayName;
+        if (i < (int)filteredDependencies.size() - 1)
           result += ", ";
       }
     }
@@ -561,6 +613,53 @@ FBPlugGUI::ReloadSession()
   OnPatchChanged();
 }
 
+void
+FBPlugGUI::LoadPatchFromFile()
+{
+  FB_LOG_ENTRY_EXIT();
+  HideAllOverlaysAndFileBrowsers();
+  _loadPatchBrowser->Show();
+}
+
+void
+FBPlugGUI::SavePatchToFile()
+{
+  FB_LOG_ENTRY_EXIT();
+  HideAllOverlaysAndFileBrowsers();
+  _savePatchBrowser->Show();
+}
+
+void
+FBPlugGUI::DumpTopologyToFile()
+{
+  FB_LOG_ENTRY_EXIT();
+  HideAllOverlaysAndFileBrowsers();
+  _saveTopologyBrowser->Show();
+}
+
+void
+FBPlugGUI::ShowLogFolder()
+{
+  auto path = FBGetLogPath(HostContext()->Topo()->static_->meta);
+  File(path.string()).revealToUser();
+}
+
+void
+FBPlugGUI::ShowPluginFolder()
+{
+  auto path = FBGetPluginContentsFolderPath();
+  File(path.string()).revealToUser();
+}
+
+void
+FBPlugGUI::HideAllOverlaysAndFileBrowsers()
+{
+  HideOverlayComponent();
+  _loadPatchBrowser->Hide();
+  _savePatchBrowser->Hide();
+  _saveTopologyBrowser->Hide();
+}
+
 void 
 FBPlugGUI::InitPatch()
 {
@@ -572,24 +671,6 @@ FBPlugGUI::InitPatch()
       HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
   HostContext()->MarkPatchAsPatchState("Init Patch");
   OnPatchChanged();
-}
-
-void 
-FBPlugGUI::SavePatchToFile()
-{
-  FB_LOG_ENTRY_EXIT();
-  int saveFlags = FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
-  auto extension = HostContext()->Topo()->static_->patchExtension;
-  FileChooser* chooser = new FileChooser("Save Patch", File(), String("*.") + extension, true, false, this);
-  chooser->launchAsync(saveFlags, [this](FileChooser const& chooser) {
-    FB_LOG_ENTRY_EXIT();
-    auto file = chooser.getResult();
-    delete &chooser;
-    if (file.getFullPathName().length() == 0) return;
-    FBScalarStateContainer editState(*HostContext()->Topo());
-    editState.CopyFrom(HostContext(), true);
-    file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState, true));
-  });
 }
 
 bool
@@ -607,26 +688,6 @@ FBPlugGUI::LoadPatchFromText(
   HostContext()->MarkPatchAsPatchState(patchName);
   OnPatchChanged();
   return true;
-}
-
-void 
-FBPlugGUI::LoadPatchFromFile()
-{
-  FB_LOG_ENTRY_EXIT();
-  int loadFlags = FileBrowserComponent::openMode;
-  auto extension = HostContext()->Topo()->static_->patchExtension;
-  FileChooser* chooser = new FileChooser("Load Patch", File(), String("*.") + extension, true, false, this);
-  chooser->launchAsync(loadFlags, [this](FileChooser const& chooser) {
-    auto file = chooser.getResult();
-    delete& chooser;
-    if (file.getFullPathName().length() == 0) return;
-    auto text = file.loadFileAsString().toStdString();
-    if(!LoadPatchFromText("Load Patch", file.getFileNameWithoutExtension().toStdString(), text))
-      AlertWindow::showMessageBoxAsync(
-        MessageBoxIconType::NoIcon,
-        "Error",
-        "Failed to load patch. See log for details.");
-  });
 }
 
 void
@@ -714,8 +775,7 @@ FBPlugGUI::ShowOverlayComponent(
   int w, int h, bool vCenter,
   std::function<void()> init)
 {
-  if (_overlayComponent != nullptr)
-    HideOverlayComponent();
+  HideAllOverlaysAndFileBrowsers();
   int x = (getWidth() - w) / 2;
   int y = (getHeight() - h) / 2;
   if (!vCenter)
@@ -728,33 +788,4 @@ FBPlugGUI::ShowOverlayComponent(
   _overlayModule->SetModuleContent(moduleIndex, moduleSlot, _overlayGrid);
   _overlayOuterMargin->resized();
   _overlayComponent = overlay;
-}
-
-void
-FBPlugGUI::ShowLogFolder()
-{
-  auto path = FBGetLogPath(HostContext()->Topo()->static_->meta);
-  File(path.string()).revealToUser();
-}
-
-void
-FBPlugGUI::ShowPluginFolder()
-{
-  auto path = FBGetPluginContentsFolderPath();
-  File(path.string()).revealToUser();
-}
-
-void
-FBPlugGUI::DumpTopologyToFile()
-{
-  FB_LOG_ENTRY_EXIT();
-  int saveFlags = FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
-  FileChooser* chooser = new FileChooser("Save Topology", File(), String("*.txt"), true, false, this);
-  chooser->launchAsync(saveFlags, [this](FileChooser const& chooser) {
-    FB_LOG_ENTRY_EXIT();
-    auto file = chooser.getResult();
-    delete& chooser;
-    if (file.getFullPathName().length() == 0) return;
-    file.replaceWithText(HostContext()->Topo()->static_->PrintTopology());
-  });
 }

@@ -8,7 +8,7 @@ FBParamsDependency::WhenSlots(
   evaluate = evaluate_;
   staticParamIndices = staticParamIndices_;
 }
-
+ 
 void
 FBParamsDependency::WhenSimple(
   std::vector<int> const& staticParamIndices_,

@@ -5,8 +5,10 @@
 #include <firefly_base/gui/shared/FBTheme.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
+#include <firefly_base/gui/components/FBFileBrowserComponent.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -17,6 +19,8 @@
 #include <unordered_set>
 
 class FBParamControl;
+class IFBThemeListener;
+class IFBParamListener;
 class FBGUIParamControl;
 class FBParamsDependent;
 class FBHostGUIContext;
@@ -31,20 +35,6 @@ enum FBParamModulationBoundsSource
   Matrix = 0x1,
   Unison = 0x2,
   DirectAccess = 0x4
-};
-
-class IFBThemeListener
-{
-public:
-  virtual ~IFBThemeListener() {}
-  virtual void ThemeChanged() = 0;
-};
-
-class IFBParamListener
-{
-public:
-  virtual ~IFBParamListener() {}
-  virtual void AudioParamChanged(int index, double normalized, bool changedFromUI) = 0;
 };
 
 class FBPlugGUI:
@@ -62,6 +52,9 @@ public IFBHostGUIContextListener
   FBMarginComponent* _overlayOuterMargin = {};
   std::vector<IFBThemeListener*> _themeListeners = {};
   std::vector<IFBParamListener*> _paramListeners = {};
+  std::unique_ptr<FBFileBrowserComponent> _loadPatchBrowser = {};
+  std::unique_ptr<FBFileBrowserComponent> _savePatchBrowser = {};
+  std::unique_ptr<FBFileBrowserComponent> _saveTopologyBrowser = {};
 
   void ShowLogFolder();
   void ShowPluginFolder();
@@ -92,11 +85,17 @@ public:
   void LoadPatchFromFile();
   void LoadPreset(juce::Component* clickedFrom);
   
+  void FlashAudioParamDisabling(int index);
+  void FlashAudioParamsDisablingParam(int index);
+  std::vector<int> GetAudioParamEnabledDependenciesExcludingSelf(
+    FBParamControl const* control) const;
+
   FBTheme const& GetTheme() const;
   void SwitchTheme(std::string const& themeName);
   std::vector<FBTheme> const& Themes() const { return _themes; }
 
   void HideOverlayComponent();
+  void HideAllOverlaysAndFileBrowsers();
   void ShowOverlayComponent(
     std::string const& title,
     int moduleIndex, int moduleSlot,

@@ -118,7 +118,7 @@ MakeEchoSectionMain(
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 1, 0, 1, 0 });
   auto vTargetOrGTarget = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, vTargetOrGTarget));
-  auto targetBox = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, vTargetOrGTarget);
+  auto targetBox = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, vTargetOrGTarget, "Osc 4 PostMix");
   grid->Add(0, 1, targetBox);
   *targetBoxOut = targetBox;
   auto order = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Order, 0 } });

@@ -229,6 +229,14 @@ ParseDefaultColorScheme(
     return false;
   result.alertWindowPrimary = Colour::fromString(obj->getProperty("alertWindowPrimary").toString());
 
+  if (!RequireStringProperty(obj, "fileBrowserPrimary"))
+    return false;
+  result.fileBrowserPrimary = Colour::fromString(obj->getProperty("fileBrowserPrimary").toString());
+
+  if (!RequireStringProperty(obj, "fileBrowserHighlight"))
+    return false;
+  result.fileBrowserHighlight = Colour::fromString(obj->getProperty("fileBrowserHighlight").toString());
+
   if (!RequireStringProperty(obj, "meterFill"))
     return false;
   result.meterFill = Colour::fromString(obj->getProperty("meterFill").toString());
@@ -248,6 +256,18 @@ ParseDefaultColorScheme(
   if (!RequireStringProperty(obj, "graphBackground"))
     return false;
   result.graphBackground = Colour::fromString(obj->getProperty("graphBackground").toString());
+
+  if (!RequireStringProperty(obj, "headerText"))
+    return false;
+  result.headerText = Colour::fromString(obj->getProperty("headerText").toString());
+
+  if (!RequireStringProperty(obj, "headerBorder"))
+    return false;
+  result.headerBorder = Colour::fromString(obj->getProperty("headerBorder").toString());
+
+  if (!RequireStringProperty(obj, "headerBackground"))
+    return false;
+  result.headerBackground = Colour::fromString(obj->getProperty("headerBackground").toString());
 
   if (!RequireStringProperty(obj, "sectionBorder"))
     return false;
@@ -276,6 +296,10 @@ ParseDefaultColorScheme(
   if (!RequireStringProperty(obj, "paramBackground"))
     return false;
   result.paramBackground = Colour::fromString(obj->getProperty("paramBackground").toString());
+
+  if (!RequireStringProperty(obj, "paramFlashDisabling"))
+    return false;
+  result.paramFlashDisabling = Colour::fromString(obj->getProperty("paramFlashDisabling").toString());
 
   return true;
 }
@@ -315,6 +339,14 @@ ParseColorScheme(
     return false;
   result.alertWindowPrimary = present ? Colour::fromString(obj->getProperty("alertWindowPrimary").toString()) : defaultScheme.alertWindowPrimary;
 
+  if (!OptionalStringProperty(obj, "fileBrowserPrimary", present))
+    return false;
+  result.fileBrowserPrimary = present ? Colour::fromString(obj->getProperty("fileBrowserPrimary").toString()) : defaultScheme.fileBrowserPrimary;
+
+  if (!OptionalStringProperty(obj, "fileBrowserHighlight", present))
+    return false;
+  result.fileBrowserHighlight = present ? Colour::fromString(obj->getProperty("fileBrowserHighlight").toString()) : defaultScheme.fileBrowserHighlight;
+
   if (!OptionalStringProperty(obj, "meterFill", present))
     return false;
   result.meterFill = present ? Colour::fromString(obj->getProperty("meterFill").toString()) : defaultScheme.meterFill;
@@ -334,6 +366,18 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "graphBackground", present))
     return false;
   result.graphBackground = present ? Colour::fromString(obj->getProperty("graphBackground").toString()) : defaultScheme.graphBackground;
+
+  if (!OptionalStringProperty(obj, "headerText", present))
+    return false;
+  result.headerText = present ? Colour::fromString(obj->getProperty("headerText").toString()) : defaultScheme.headerText;
+   
+  if (!OptionalStringProperty(obj, "headerBorder", present))
+    return false;
+  result.headerBorder = present ? Colour::fromString(obj->getProperty("headerBorder").toString()) : defaultScheme.headerBorder;
+
+  if (!OptionalStringProperty(obj, "headerBackground", present))
+    return false;
+  result.headerBackground = present ? Colour::fromString(obj->getProperty("headerBackground").toString()) : defaultScheme.headerBackground;
 
   if (!OptionalStringProperty(obj, "sectionBorder", present))
     return false;
@@ -362,6 +406,10 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "paramBackground", present))
     return false;
   result.paramBackground = present ? Colour::fromString(obj->getProperty("paramBackground").toString()) : defaultScheme.paramBackground;
+
+  if (!OptionalStringProperty(obj, "paramFlashDisabling", present))
+    return false;
+  result.paramFlashDisabling = present ? Colour::fromString(obj->getProperty("paramFlashDisabling").toString()) : defaultScheme.paramFlashDisabling;
 
   return true;
 }
@@ -775,5 +823,6 @@ FBLoadThemes(FBRuntimeTopo const* topo)
     if (MakeTheme(topo, themeJsons[i], theme))
       result.push_back(theme);
   }
+  std::sort(result.begin(), result.end(), [](auto const& l, auto const& r) { return l.name < r.name; });
   return result;
 }

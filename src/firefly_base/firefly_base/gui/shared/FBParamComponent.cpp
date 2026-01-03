@@ -59,6 +59,18 @@ FBParamControl::
 FBParamControl(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed):
 FBParamComponent(plugGUI, param, isThemed) {}
 
+void
+FBParamControl::StartFlashDisabling()
+{
+  if (_isFlashDisabling)
+    return;
+  _isFlashDisabling = true;
+  dynamic_cast<juce::Component*>(this)->repaint();
+  juce::Timer::callAfterDelay(1000, [this]() {
+    _isFlashDisabling = false;
+    dynamic_cast<juce::Component*>(this)->repaint(); });
+}
+
 bool 
 FBParamControl::IsHighlightTweaked() const
 {

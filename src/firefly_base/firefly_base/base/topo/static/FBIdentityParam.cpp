@@ -28,8 +28,8 @@ FBIdentityParamNonRealTime::PlainToText(bool io, int /*moduleIndex*/, double pla
     displayPlain = FBToBipolar(displayPlain);
   displayPlain *= displayMultiplier;
   if (io)
-    return std::to_string(displayPlain);
-  return FBFormatDouble(displayPlain, FBDefaultDisplayPrecision);
+    return FBFormatDoubleCLocale(displayPlain);
+  return FBFormatDoubleCLocale(displayPlain, FBDefaultDisplayPrecision);
 }
 
 std::optional<double>

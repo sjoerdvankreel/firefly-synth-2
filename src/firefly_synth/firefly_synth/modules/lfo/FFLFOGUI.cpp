@@ -27,7 +27,7 @@ MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
   auto type = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Type, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type, "One Shot"));
   auto smoothTime = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SmoothTime, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothTime));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::LinearHorizontal));

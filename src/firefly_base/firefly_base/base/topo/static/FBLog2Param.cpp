@@ -38,8 +38,8 @@ FBLog2ParamNonRealTime::PlainToText(bool io, int /*moduleIndex*/, double plain) 
 {
   double displayPlain = plain * displayMultiplier;
   if (io)
-    return std::to_string(displayPlain);
-  return FBFormatDouble(displayPlain, FBDefaultDisplayPrecision);
+    return FBFormatDoubleCLocale(displayPlain);
+  return FBFormatDoubleCLocale(displayPlain, FBDefaultDisplayPrecision);
 }
 
 std::optional<double>

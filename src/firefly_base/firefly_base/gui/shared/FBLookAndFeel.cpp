@@ -8,6 +8,7 @@
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
+#include <firefly_base/gui/components/FBFileBrowserComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 
@@ -163,25 +164,29 @@ FBLookAndFeel::DrawTabButtonPart(
   bool isHeader = button.getTabbedButtonBar().getNumTabs() == 1;
 
   auto const& scheme = FindColorSchemeFor(button);
-  if (isSeparator)
+  if (isHeader)
+    g.setColour(scheme.headerBackground);
+  else  if (isSeparator)
     g.setColour(scheme.paramSecondary);
-  else if(toggleState)
+  else if (toggleState)
     g.setColour(scheme.primary.darker(1.0f));
   else
     g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(activeArea.toFloat(), 3.0f);
 
-  if(toggleState || isHeader || isMouseOver)
+  if (isHeader)
+    g.setColour(scheme.headerBorder);
+  else if(toggleState || isMouseOver)
     g.setColour(scheme.primary);
   else
     g.setColour(scheme.sectionBorder);  
   g.drawRoundedRectangle(activeArea.toFloat(), 3.0f, 1.0f);
-
+           
   TextLayout textLayout;
   const Rectangle<float> area(activeArea.toFloat());
   float length = area.getWidth();
   float depth = area.getHeight();
-  auto textColor = isHeader? scheme.primary: scheme.text.darker(isSeparator || isMouseOver || toggleState ? 0.0f : scheme.dimDisabled);
+  auto textColor = isHeader? scheme.headerText: scheme.text.darker(isSeparator || isMouseOver || toggleState ? 0.0f : scheme.dimDisabled);
   ::CreateTabTextLayout(button, length, textColor, FBGUIGetFont(), centerText, text, textLayout);
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));
   textLayout.draw(g, Rectangle<float>(length, depth));
@@ -191,9 +196,13 @@ void
 FBLookAndFeel::SetTheme(FBTheme const& theme) 
 { 
   _theme = FBTheme(theme); 
+  setColour(ScrollBar::ColourIds::thumbColourId, theme.defaultColorScheme.fileBrowserHighlight);
   setColour(AlertWindow::ColourIds::textColourId, theme.defaultColorScheme.alertWindowPrimary);
   setColour(AlertWindow::ColourIds::backgroundColourId, theme.defaultColorScheme.sectionBackground);
-}
+  setColour(DirectoryContentsDisplayComponent::ColourIds::textColourId, theme.defaultColorScheme.text);
+  setColour(DirectoryContentsDisplayComponent::ColourIds::highlightedTextColourId, theme.defaultColorScheme.text);
+  setColour(DirectoryContentsDisplayComponent::ColourIds::highlightColourId, theme.defaultColorScheme.fileBrowserHighlight);
+}   
 
 BorderSize<int> 
 FBLookAndFeel::getLabelBorderSize(
@@ -248,9 +257,12 @@ FBLookAndFeel::fillTextEditorBackground(
   Graphics& g, int width, int /*height*/, TextEditor& te)
 { 
   FBColorScheme const& scheme = FindColorSchemeFor(te);
+  Colour primary = scheme.primary;
+  if (te.findParentComponentOfClass<FBFileBrowserComponent>())
+    primary = scheme.fileBrowserPrimary;
   g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f);
-  g.setColour(scheme.primary);
+  g.setColour(primary);
   g.drawRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f, 1.0f);
 }
 
@@ -258,6 +270,29 @@ void
 FBLookAndFeel::drawTextEditorOutline(
   Graphics&, int, int, TextEditor&)
 {
+}
+
+void 
+FBLookAndFeel::layoutFileBrowserComponent(
+  FileBrowserComponent& browserComp,
+  DirectoryContentsDisplayComponent* fileListComponent,
+  FilePreviewComponent* /*previewComp*/,
+  ComboBox* currentPathBox,
+  TextEditor* filenameBox,
+  Button* goUpButton)
+{
+  auto buttonWidth = 40;
+  auto b = browserComp.getLocalBounds();
+  auto topSlice = b.removeFromTop(32);
+  auto bottomSlice = b.removeFromBottom(28);
+  currentPathBox->setEditableText(false);
+  currentPathBox->setBounds(topSlice.removeFromLeft(topSlice.getWidth() - buttonWidth));
+  topSlice.removeFromLeft(6);
+  goUpButton->setBounds(topSlice);
+  filenameBox->setBounds(bottomSlice.reduced(3, 0));
+  filenameBox->setIndents(4, 6);
+  if (auto* listAsComp = dynamic_cast<Component*> (fileListComponent))
+    listAsComp->setBounds(b.reduced(3, 10));
 }
 
 void 
@@ -400,6 +435,8 @@ FBLookAndFeel::drawLabel(
   auto colorText = scheme->text;
   if (isCombo)
     colorText = scheme->primary.darker(cb->isEnabled() ? 0.0f : scheme->dimDisabled);
+  else if (label.findParentComponentOfClass<FBFileBrowserComponent>())
+    colorText = scheme->fileBrowserPrimary;
 
   g.setFont(getLabelFont(label));
   g.setColour(colorText);
@@ -440,10 +477,18 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   g.setColour(scheme.paramSecondary);
   g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
   auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
-  if (paramCombo != nullptr && paramCombo->IsHighlightTweaked())
+  if (paramCombo != nullptr)
   {
-    g.setColour(scheme.paramHighlight);
-    g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+    if (paramCombo->IsFlashDisabling())
+    {
+      g.setColour(scheme.paramFlashDisabling);
+      g.fillRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize);
+    }
+    if (paramCombo->IsHighlightTweaked())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+    }
   }
 }
 
@@ -464,10 +509,18 @@ FBLookAndFeel::drawTickBox(
   g.setColour(scheme.paramSecondary);
   g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
   auto* paramToggle = dynamic_cast<FBParamToggleButton*>(&component);
-  if (paramToggle != nullptr && paramToggle->IsHighlightTweaked())
+  if (paramToggle != nullptr)
   {
-    g.setColour(scheme.paramHighlight);
-    g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
+    if (paramToggle->IsFlashDisabling())
+    {
+      g.setColour(scheme.paramFlashDisabling);
+      g.fillRoundedRectangle(tickBounds, 2.0f);
+    }
+    if (paramToggle->IsHighlightTweaked())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
+    }
   }
 
   if (ticked)
@@ -552,11 +605,19 @@ FBLookAndFeel::drawLinearSlider(
   g.setColour(scheme.primary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
   g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
   g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
-  if (paramSlider != nullptr && paramSlider->IsHighlightTweaked())
+  if (paramSlider != nullptr)
   {
-    g.setColour(scheme.paramHighlight);
-    g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
-    g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
+    if (paramSlider->IsFlashDisabling())
+    {
+      g.setColour(scheme.paramFlashDisabling);
+      g.fillRoundedRectangle((float)x, thumbY, (float)width, thumbH, 2.0f);
+    }
+    if (paramSlider->IsHighlightTweaked())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
+      g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
+    }
   }
 }
 
@@ -570,9 +631,13 @@ FBLookAndFeel::drawButtonBackground(
   auto bounds = button.getLocalBounds().toFloat().reduced(3.0f, 3.0f);
   auto const& scheme = FindColorSchemeFor(button);
 
-  g.setColour(scheme.primary.darker(1.0f).brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
+  Colour primary = scheme.primary;
+  if (button.findParentComponentOfClass<FBFileBrowserComponent>())
+    primary = scheme.fileBrowserPrimary;
+
+  g.setColour(primary.darker(1.0f).brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
   g.fillRoundedRectangle(bounds, cornerSize);
-  g.setColour(scheme.primary);
+  g.setColour(primary);
   g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
   if (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted)
   {
@@ -687,10 +752,18 @@ FBLookAndFeel::drawRotarySlider(
   g.setColour(scheme.primary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 
-  if (paramSlider != nullptr && paramSlider->IsHighlightTweaked())
+  if (paramSlider != nullptr)
   { 
-    g.setColour(scheme.paramHighlight);
-    g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
+    if (paramSlider->IsFlashDisabling())
+    {
+      g.setColour(scheme.paramFlashDisabling);
+      g.fillEllipse(bounds.toFloat().reduced(0.5f, 0.5f));
+    }
+    if (paramSlider->IsHighlightTweaked())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
+    }
   } 
 }
 
