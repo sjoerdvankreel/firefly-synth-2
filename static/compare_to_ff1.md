@@ -4,6 +4,8 @@ Nevertheless, both are different enough that I felt a new version was warranted,
 # The Bad
 Let's just start with the stuff that FF1 can do, and FF2 can NOT do.
 
+* No arpeggiator as of now.<br/>
+This actually feels like a miss, is on the radar.
 * Multi-EQ module:<br/>
 Didn't rebuild it.<br/>
 Also pretty sure it does not belong in a general-purpose synth.<br/>
@@ -18,8 +20,24 @@ If-ever, i prefer separate controls for individual automatable parameters and ma
 * FF2 has no real monophonic mode, period.<br/>
 I also do not intend to build it back, because too complicated.<br/>
 FF2 does contain new section-attack/section-release shortening controls to emulate those short transitions for leads etc.
+* FF2 cannot do bipolar and/or split envelope segments.<br/>
+Just linear and unipolar exponential, I just didn't see the need for the other ones anymore (might reconsider, convince me).
+* The audio mixers (VMix/GMix) are gain-only and cannot do balance anymore.<br/>
+Again, just didn't see the need for it.
 
+less point and click more drag the slider
 different:
 clap threadpool
 microtuning
 10 slots vs 4x4
+oversampling 124 vs 14
+more osci and global uni
+exp bipo/split envelopes
+loads more mod sources/targets
+more osci types
+faster
+better ui realtime
+better clap
+exponential fm
+dedicated fm osci
+mod-any-to-any/no audio/cv-split
