@@ -36,6 +36,9 @@ Updating the plugin might or might not work, but in any case, it's dangerous.<br
 # Known Issues
 * String oscillator responds to sample rate, but it shouldn't.<br/>
 Pitch is good, timbre is not. Long-standing issue, might prove difficult.
+* Looks like FLStudio and FF2 disagree on what the default value for MIDI modwheel should be.
+This causes clicking which you can get rid off by disabled MIDI modwheel in the global mod matrix.
+If you actually do need and use it, let me know how it fares.
 * "Show Manual"/"Show Log Folder"/"Show Plugin Folder" context menu options are broken on some Linux hosts.<br/>
 Workaround: go find those folders yourself, and the manual is over [here](/static/Manual.md).<br/>
 TODO: list the relevant folder locations (user data / plugin binary) for all OSes right here in this document.
@@ -43,9 +46,6 @@ TODO: list the relevant folder locations (user data / plugin binary) for all OSe
 This affects mostly Linux hosts, but some Windows/Mac as well.
 CLAP should be OK everywhere, and even for VST3 it's not a big deal, just means you don't get realtime visual feedback.<br/>
 Maybe related: https://forums.steinberg.net/t/dataexchange-on-linux/917660/4.<br/>
-* Looks like FLStudio and FF2 disagree on what the default value for MIDI modwheel should be.
-This causes clicking which you can get rid off by disabled MIDI modwheel in the global mod matrix.
-If you actually do need and use it, let me know how it fares.
 
 # Dependencies
 - CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
