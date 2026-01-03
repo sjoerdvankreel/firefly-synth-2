@@ -6,7 +6,7 @@ Let's just start with the stuff that FF1 can do, and FF2 can NOT do.
 
 * Multi-EQ module:<br/>
 Didn't rebuild it.<br/>
-Also doubting if it even belongs in a general-purpose synth.<br/>
+Also pretty sure it does not belong in a general-purpose synth.<br/>
 You can still stack multiple BPF/shelving filters, but more tedious.
 * Dedicated distortion module:<br/>
 FF2 doesn't have one, but it's on the radar.<br/>
