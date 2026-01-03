@@ -4,7 +4,18 @@ Nevertheless, both are different enough that I felt a new version was warranted,
 # The Bad
 Let's just start with the stuff that FF1 can do, and FF2 can NOT do.
 
-* Separate smoothing controls for MIDI, BPM, and automation.<br/>
+* Multi-EQ module:<br/>
+Didn't rebuild it.<br/>
+Also doubting if it even belongs in a general-purpose synth.<br/>
+You can still stack multiple BPF/shelving filters, but more tedious.
+* Separate smoothing controls for MIDI, BPM, and automation:<br/>
 This is on the radar, but i don't know how important it is.<br/>
 FF2 only has 1 global option for all 3 together.<br/>
 If-ever, i prefer separate controls for individual automatable parameters and maybe even MIDI CC's.
+* Dedicated distortion module:<br/>
+FF2 doesn't have one, and also on the radar.<br/>
+The new multi-slot effect modules allow to build something like it manually, but it's more tedious.
+
+different:
+clap threadpool
+microtuning
