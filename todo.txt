@@ -1,10 +1,9 @@
 TODOLIST for beta-next
-[ ] better credits
-[ ] dump topo should include the tags and indices, for debugging renoise
 [ ] note renoise is very dangerous
-[ ] wrap up all the patch browser stuff into a single GH issue
-[ ] credit rusto
+
 [ ] do more themes
+[ ] dump topo should include the tags and indices, for debugging renoise
+[ ] wrap up all the patch browser stuff into a single GH issue
 [ ] unify load patch/load preset
 [ ] single-click preview patch without actually loading it => this goes into the fancy patch browser
 [ ] do something with the dont-know-how-i-got-here-patch
@@ -21,6 +20,7 @@ TODOLIST for beta-next
 [ ] make some presets
 [ ] compare to ff1
 [ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
+[ ] credit thoth-amon
 ANDROMEDA SCHEME
 blue = 2D86FE
 yellow = FBC401

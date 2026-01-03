@@ -17,6 +17,14 @@ See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test](http
 See [https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for feature tests<br/>
 (and some nice demos along the way).
 
+# Host support
+Tested on Carla, Bitwig, Ardour, FLStudio, Reaper and Renoise.<br/>
+It should work ok on others as well (f.e. known to work on QTractor).<br/>
+
+Unfortunately Renoise is not officially supported because of [https://forum.renoise.com/t/saved-automation-data-does-not-respect-vst3s-parameter-id/68461](https://forum.renoise.com/t/saved-automation-data-does-not-respect-vst3s-parameter-id/68461).<br/>
+You can use it as long as you don't update the plugin (read: install once, and never again).<br/>
+Updating the plugin might or might not work, but in any case, it's dangerous.<br/>
+
 # Build it
 * Git clone recursive
 * Build scripts are in /scripts: build_windows.bat/build_linux.sh/build_mac.bat
