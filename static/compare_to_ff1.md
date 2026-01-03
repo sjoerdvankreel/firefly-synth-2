@@ -38,6 +38,9 @@ I also do not intend to build it back, because too complicated.<br/>
 FF2 does contain new section-attack/section-release shortening controls to emulate those short transitions for leads etc.<br/>
 If you want a monosynth, get a proper monosynth. By now I feel they are different enough to not try and force one into a polysynth.
 
+totally new features
+filter tuning
+comb filter by hz + ktrk
 easy access
 less point and click more drag the slider
 different:
