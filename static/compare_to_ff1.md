@@ -1,6 +1,11 @@
 FF1 and FF2 are pretty much the same in spirit, and they share a lot of algorithms on the DSP side.<br/>
 Nevertheless, both are different enough that I felt a new version was warranted, and they cannot share patches either.
 
+Long story short, main reasons for the rebuild are:
+* Full CLAP support including polyphonic modulation
+* Write SIMD-vectorized friendly code, enhancing the plugin performance
+* Provide direct-from-audio-engine data from realtime to UI, allowing for superior realtime visualization
+
 # The Just-Different
 Stuff that both can do, just in different ways.
 
