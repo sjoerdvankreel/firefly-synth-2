@@ -15,7 +15,11 @@ The new multi-slot effect modules allow to build something like it manually, but
 Also on the radar, but i don't know how important it is.<br/>
 FF2 only has 1 global option for all 3 together.<br/>
 If-ever, i prefer separate controls for individual automatable parameters and maybe even MIDI CC's.
+* FF2 has no real monophonic mode, period.<br/>
+I also do not intend to build it back, because too complicated.<br/>
+FF2 does contain new section-attack/section-release shortening controls to emulate those short transitions for leads etc.
 
 different:
 clap threadpool
 microtuning
+10 slots vs 4x4
