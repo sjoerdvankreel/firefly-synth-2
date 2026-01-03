@@ -2,9 +2,10 @@ FF1 and FF2 are pretty much the same in spirit, and they share a lot of algorith
 Nevertheless, both are different enough that I felt a new version was warranted, and they cannot share patches either.
 
 Long story short, main reasons for the rebuild are:
-* Full CLAP support including polyphonic modulation
-* Write SIMD-vectorized friendly code, enhancing the plugin performance
-* Provide direct-from-audio-engine data from realtime to UI, allowing for superior realtime visualization
+* Full CLAP support including polyphonic modulation.
+* Less point-and-click GUI, and more direct-access drag-the-sliders.
+* Write SIMD-vectorized friendly code, enhancing the plugin performance.
+* Provide direct-from-audio-engine data from realtime to UI, allowing for superior realtime visualization.
 
 # The Just-Different
 Stuff that both can do, just in different ways.
@@ -53,6 +54,7 @@ Stuff that FF1 can do, but FF2 does better.
 * Global unison.<br/>
 FF1 does a handful of controls for osci/lfo detune and envelope spreading.<br/>
 FF2 contains dozens of per-voice targets with a bunch of controls per target for either automatic or manual voice-spectrum creation.
+
 
 vecho
 totally new features
