@@ -237,6 +237,18 @@ ParseDefaultColorScheme(
     return false;
   result.fileBrowserHighlight = Colour::fromString(obj->getProperty("fileBrowserHighlight").toString());
 
+  if (!RequireStringProperty(obj, "buttonBackground"))
+    return false;
+  result.buttonBackground = Colour::fromString(obj->getProperty("buttonBackground").toString());
+
+  if (!RequireStringProperty(obj, "activeTabBackground"))
+    return false;
+  result.activeTabBackground = Colour::fromString(obj->getProperty("activeTabBackground").toString());
+
+  if (!RequireStringProperty(obj, "gridAlternateBackground"))
+    return false;
+  result.gridAlternateBackground = Colour::fromString(obj->getProperty("gridAlternateBackground").toString());
+
   if (!RequireStringProperty(obj, "meterFill"))
     return false;
   result.meterFill = Colour::fromString(obj->getProperty("meterFill").toString());
@@ -346,6 +358,18 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "fileBrowserHighlight", present))
     return false;
   result.fileBrowserHighlight = present ? Colour::fromString(obj->getProperty("fileBrowserHighlight").toString()) : defaultScheme.fileBrowserHighlight;
+
+  if (!OptionalStringProperty(obj, "buttonBackground", present))
+    return false;         
+  result.buttonBackground = present ? Colour::fromString(obj->getProperty("buttonBackground").toString()) : defaultScheme.buttonBackground;
+
+  if (!OptionalStringProperty(obj, "activeTabBackground", present))
+    return false;
+  result.activeTabBackground = present ? Colour::fromString(obj->getProperty("activeTabBackground").toString()) : defaultScheme.activeTabBackground;
+    
+  if (!OptionalStringProperty(obj, "gridAlternateBackground", present))
+    return false;
+  result.gridAlternateBackground = present ? Colour::fromString(obj->getProperty("gridAlternateBackground").toString()) : defaultScheme.gridAlternateBackground;
 
   if (!OptionalStringProperty(obj, "meterFill", present))
     return false;

@@ -7,7 +7,7 @@
     "graphAlpha": 0.6,
     "dimDisabled": 0.25,
     "text": "FFEEEEEE",
-    "primary": "FFEEEEEE",
+    "primary": "FFFA5F55",
     "background": "FF000000",
     "meterFill": "FFA0A0A0",
     "meterTrack": "FF505050",
@@ -25,25 +25,40 @@
     "paramFlashDisabling": "80FFFFFF",
     "alertWindowPrimary": "FFFA5F55",
     "fileBrowserPrimary": "FFFA5F55",
-    "fileBrowserHighlight": "80FA5F55"
+    "fileBrowserHighlight": "80FA5F55",
+    "buttonBackground": "FF7D2F2A",
+    "activeTabBackground": "FF7D2F2A",
+    "gridAlternateBackground": "FF531F1C"
   },
   "colorSchemes_comment": "Define color schemes to be referenced by modules, parameters, and non-module related component colors.",
   "colorSchemes": {
     "Red": {
       "comment": "Can override other stuff as well.",
       "primary": "FFFA5F55",
-      "meterAlert": "FFFA5F55"
+      "meterAlert": "FFFA5F55",
+      "buttonBackground": "FF7D2F2A",
+      "activeTabBackground": "FF7D2F2A",
+      "gridAlternateBackground": "FF531F1C"
     },
     "Yellow": {
       "primary": "FFFAB255",
       "headerText": "FFFAB255",
-      "headerBorder": "FFFAB255"
+      "headerBorder": "FFFAB255",
+      "buttonBackground": "FF7D592A",
+      "activeTabBackground": "FF7D592A",
+      "gridAlternateBackground": "FF533B1C"
     },
     "Blue": {
       "primary": "FF559DFA",
+      "buttonBackground": "FF2A4E7D",
+      "activeTabBackground": "FF2A4E7D",
+      "gridAlternateBackground": "FF1C3453"
     },
     "Green": {
       "primary": "FF55FAB2",
+      "buttonBackground": "FF2A7D59",
+      "activeTabBackground": "FF2A7D59",
+      "gridAlternateBackground": "FF1C533B"
     }
   },
   "componentColors_comment": "Overrides the default scheme for anything not related to a module.",

@@ -169,7 +169,7 @@ FBLookAndFeel::DrawTabButtonPart(
   else  if (isSeparator)
     g.setColour(scheme.paramSecondary);
   else if (toggleState)
-    g.setColour(scheme.primary.darker(1.0f));
+    g.setColour(scheme.activeTabBackground);
   else
     g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(activeArea.toFloat(), 3.0f);
@@ -630,14 +630,9 @@ FBLookAndFeel::drawButtonBackground(
   auto cornerSize = 5.0f;
   auto bounds = button.getLocalBounds().toFloat().reduced(3.0f, 3.0f);
   auto const& scheme = FindColorSchemeFor(button);
-
-  Colour primary = scheme.primary;
-  if (button.findParentComponentOfClass<FBFileBrowserComponent>())
-    primary = scheme.fileBrowserPrimary;
-
-  g.setColour(primary.darker(1.0f).brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
+  g.setColour(scheme.buttonBackground.brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
   g.fillRoundedRectangle(bounds, cornerSize);
-  g.setColour(primary);
+  g.setColour(scheme.primary);
   g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
   if (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted)
   {

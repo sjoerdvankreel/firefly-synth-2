@@ -34,7 +34,10 @@ struct FBColorScheme
   juce::Colour alertWindowPrimary = {};
   juce::Colour fileBrowserPrimary = {};
   juce::Colour fileBrowserHighlight = {};
-  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme); 
+  juce::Colour buttonBackground = {};
+  juce::Colour activeTabBackground = {};
+  juce::Colour gridAlternateBackground = {};
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme);
 };
 
 // This is only a struct so we can add "comment" fields in the json.
