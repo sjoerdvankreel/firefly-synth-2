@@ -41,12 +41,12 @@
       "gridAlternateBackground": "FF550015"
     },
     "Yellow": {
-      "primary": "FFFAB255",
-      "headerText": "FFFAB255",
-      "headerBorder": "FFFAB255",
-      "buttonBackground": "FF7D592A",
-      "activeTabBackground": "FF7D592A",
-      "gridAlternateBackground": "FF533B1C"
+      "primary": "FFFFB040",
+      "headerText": "FFFFB040",
+      "headerBorder": "FFFFB040",
+      "buttonBackground": "FF7F5820",
+      "activeTabBackground": "FF7F5820",
+      "gridAlternateBackground": "FF553A15"
     },
     "Blue": {
       "primary": "FF559DFA",
