@@ -360,7 +360,7 @@ ParseColorScheme(
   result.fileBrowserHighlight = present ? Colour::fromString(obj->getProperty("fileBrowserHighlight").toString()) : defaultScheme.fileBrowserHighlight;
 
   if (!OptionalStringProperty(obj, "buttonBackground", present))
-    return false;               
+    return false;                
   result.buttonBackground = present ? Colour::fromString(obj->getProperty("buttonBackground").toString()) : defaultScheme.buttonBackground;
 
   if (!OptionalStringProperty(obj, "activeTabBackground", present))
