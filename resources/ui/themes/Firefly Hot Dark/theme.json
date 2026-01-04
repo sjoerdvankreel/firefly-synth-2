@@ -1,7 +1,7 @@
 {
   "name": "Firefly Hot Dark",
   "graphSchemeFollowsModule": false,
-  "unisonSchemeFollowsModule": true,
+  "unisonSchemeFollowsModule": false,
   "defaultColorScheme": {
     "graphAlpha": 0.6,
     "dimDisabled": 0.25,
