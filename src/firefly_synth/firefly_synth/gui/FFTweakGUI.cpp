@@ -14,7 +14,7 @@ using namespace juce;
 Component*
 FFMakeTweakGUI(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT(); 
+  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Tweak"));
   grid->Add(0, 1, plugGUI->StoreComponent<FBLastTweakedLabel>(plugGUI));
