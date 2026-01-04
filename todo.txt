@@ -1,5 +1,7 @@
 TODOLIST for beta-next
-[ ] make all the "darker" themeable
+[x] make all the "darker" themeable
+[ ] soft/hard - default/hot/cold - dark/light, all combos
+[ ] the default themefile location changed, update the docs to just show the folder
 [ ] make a note about how to "install" it
 [ ] dump changed paramids option for renoise (or log it)
 [ ] document the new theming stuff
