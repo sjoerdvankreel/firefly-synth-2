@@ -6,13 +6,13 @@
     "graphAlpha": 0.6,
     "dimDisabled": 0.25,
     "text": "FFEEEEEE",
-    "primary": "FF40A0FF",
+    "primary": "FF00A0FF",
     "background": "FF000000",
     "meterFill": "FFA0A0A0",
     "meterTrack": "FF505050",
     "meterAlert": "FFFFFFFF",
-    "headerText": "FF40A0FF",
-    "headerBorder": "FF40A0FF",
+    "headerText": "FF00A0FF",
+    "headerBorder": "FF00A0FF",
     "headerBackground": "FF181818",
     "graphGrid": "FF404040",
     "graphBackground": "FF181818",
@@ -22,28 +22,28 @@
     "paramHighlight": "80FFFFFF",
     "paramBackground": "FF181818",
     "paramFlashDisabling": "80FFFFFF",
-    "alertWindowPrimary": "FF40A0FF",
-    "fileBrowserPrimary": "FF40A0FF",
-    "fileBrowserHighlight": "8040A0FF",
-    "buttonBackground": "FF20507F",
-    "activeTabBackground": "FF20507F",
-    "gridAlternateBackground": "FF153555"
+    "alertWindowPrimary": "FF00A0FF",
+    "fileBrowserPrimary": "FF00A0FF",
+    "fileBrowserHighlight": "8000A0FF",
+    "buttonBackground": "FF005F98",
+    "activeTabBackground": "FF005F98",
+    "gridAlternateBackground": "FF00446D"
   },
   "colorSchemes": {
     "Blue": {
-      "primary": "FF40A0FF",
-      "meterAlert": "FF40A0FF",
-      "buttonBackground": "FF20507F",
-      "activeTabBackground": "FF20507F",
-      "gridAlternateBackground": "FF153555"
+      "primary": "FF00A0FF",
+      "meterAlert": "FF00A0FF",
+      "buttonBackground": "FF005F98",
+      "activeTabBackground": "FF005F98",
+      "gridAlternateBackground": "FF00446D"
     },
     "Green": {
-      "primary": "FF40FFA0",
-      "headerText": "FF40FFA0",
-      "headerBorder": "FF40FFA0",
-      "buttonBackground": "FF207F50",
-      "activeTabBackground": "FF207F50",
-      "gridAlternateBackground": "FF155535"
+      "primary": "FF00FFA0",
+      "headerText": "FF00FFA0",
+      "headerBorder": "FF00FFA0",
+      "buttonBackground": "FF00985F",
+      "activeTabBackground": "FF00985F",
+      "gridAlternateBackground": "FF006D44"
     }
   },
   "componentColors": [
