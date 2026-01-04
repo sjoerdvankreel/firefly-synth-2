@@ -255,7 +255,15 @@
       "comment": "Unison",
       "moduleId": "5A505AF6-4E05-4680-BAFE-B880CE4E1BC2",
       "moduleSlot": -1,
-      "colorScheme": "Yellow"
+      "colorScheme": "Yellow",
+      "audioParamColorSchemes": [
+        {
+          "comment": "Voice Count",
+          "paramId": "617F995E-38CC-40BE-899E-AEAE37852092",
+          "paramSlot": -1,
+          "colorScheme": "Yellow"
+        }
+      ]
     }
   ]
 }

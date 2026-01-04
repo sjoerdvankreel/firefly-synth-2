@@ -105,7 +105,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   auto& slots = result->params[(int)FFModMatrixParam::Slots];
   slots.mode = FBParamMode::Block;
   slots.defaultText = global? "2": "1"; // global: modulate PB/ModWheel default, voice: velocity to voice amp
-  slots.name = "Slots";  
+  slots.name = "Slots";   
   slots.slotCount = 1;
   slots.id = prefix + "{511B2721-2733-4BB4-BA75-C55AB8B6C54D}";
   slots.description = "Matrix Max Active Slot Count";
