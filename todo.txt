@@ -1,4 +1,5 @@
 TODOLIST for beta-next
+[ ] make all the "darker" themeable
 [ ] make a note about how to "install" it
 [ ] dump changed paramids option for renoise (or log it)
 [ ] document the new theming stuff
