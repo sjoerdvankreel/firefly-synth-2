@@ -1,7 +1,8 @@
 TODOLIST for beta-next
+[ ] dump changed paramids option for renoise (or log it)
 [ ] document the new theming stuff
 [ ] say the folder name should match the theme neme
-[ ] allow default theme name customizable
+[x] allow default theme name customizable
 [ ] list the relevant folders in the GH page
 [ ] do more themes
 [ ] dump topo should include the tags and indices, for debugging renoise
