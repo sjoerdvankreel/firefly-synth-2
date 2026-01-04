@@ -11,8 +11,8 @@
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 
 using namespace juce;
-
-Component*
+  
+Component*     
 FFMakeHeaderGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();  
