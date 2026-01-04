@@ -32,9 +32,9 @@
       "meterAlert": "FFFF0040"
     },
     "Yellow": {
-      "primary": "FFFFC040",
-      "headerText": "FFFFC040",
-      "headerBorder": "FFFFC040"
+      "primary": "FFFFB040",
+      "headerText": "FFFFB040",
+      "headerBorder": "FFFFB040"
     }
   },
   "componentColors": [

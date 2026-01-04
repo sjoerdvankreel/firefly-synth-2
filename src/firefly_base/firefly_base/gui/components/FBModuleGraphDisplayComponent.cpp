@@ -122,7 +122,7 @@ FBModuleGraphDisplayComponent::PaintMarker(
   auto color = scheme.text;
   if (_data->paintAsDisabled)
     color = color.darker(0.67f);
-  if (!primary) 
+  if (!primary)  
     color = color.withAlpha(0.5f);
   g.setColour(color);
   auto xy = PointLocation(graph, points, marker, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
