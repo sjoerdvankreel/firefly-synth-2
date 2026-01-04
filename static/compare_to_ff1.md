@@ -97,14 +97,14 @@ To allow for FM (etc) from the outside world.
 Shows parameter modulation bounds in the GUI.
 * Engine knob visuals.<br/>
 Per-parameter visualization of what the engine is doing.
+* Per-voice echo.<br/>
+Same as global including feedback/multitap delay and reverb.
 * Dedicated FM oscillator.<br/>
 3-op FM osci with 3x3 matrix, unit delay on the feedback path.
 * Exponential FM.<br/>
 For both the dedicated FM-osci as well as the inter-osci modulation section.
 * Looping envelopes.<br/>
 All envelopes now have loop start/length controls, representing the sustain section.
-* Per-voice echo.<br/>
-Super-cool, super-expensive, and super-complicated. Refer to the manual for details.
 * Filters on echo.<br/>
 All echo modules (feedback delay, multi-tap delay, reverb) gained LPF/HPF options.<br/>
 Nothing you couldn't do before, except for the feedback delay filters, which are placed INSIDE the feedback path.<br/>
