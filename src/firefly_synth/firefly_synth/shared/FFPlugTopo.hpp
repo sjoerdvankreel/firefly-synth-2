@@ -40,7 +40,9 @@ enum class FFThemedComponentId {
   LastTweaked,
   GlobalUniTop,
   MainSelector,
-  MatrixGraphs
+  MatrixGraphs,
+  MatrixTopVoice,
+  MatrixTopGlobal
 };
 
 enum class FFModuleType {

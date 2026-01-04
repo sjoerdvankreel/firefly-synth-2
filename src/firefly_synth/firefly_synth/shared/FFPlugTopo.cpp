@@ -81,6 +81,10 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->themedComponents[(int)FFThemedComponentId::MainSelector].id = "{F81585F3-C753-4ED3-A0FC-5E517580EEF4}";
   result->themedComponents[(int)FFThemedComponentId::MatrixGraphs].name = "Matrix Graphs";
   result->themedComponents[(int)FFThemedComponentId::MatrixGraphs].id = "{0A528CAB-69AC-40DC-914C-3919D10D1EA3}";
+  result->themedComponents[(int)FFThemedComponentId::MatrixTopVoice].name = "Matrix Top Voice";
+  result->themedComponents[(int)FFThemedComponentId::MatrixTopVoice].id = "{4982334C-FFE3-4335-9584-5E1EA167A0DC}";
+  result->themedComponents[(int)FFThemedComponentId::MatrixTopGlobal].name = "Matrix Top Global";
+  result->themedComponents[(int)FFThemedComponentId::MatrixTopGlobal].id = "{BE80B21E-B18E-4D47-8C81-BF58A5497DF6}";
    
   result->exchangeStateSize = sizeof(FFExchangeState);
   result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };

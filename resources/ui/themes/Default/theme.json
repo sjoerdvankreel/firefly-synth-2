@@ -77,6 +77,16 @@
       "comment": "Matrix Graphs",
       "componentId": "0A528CAB-69AC-40DC-914C-3919D10D1EA3",
       "colorScheme": "Yellow"
+    },
+    {
+      "comment": "Matrix Top Global",
+      "componentId": "BE80B21E-B18E-4D47-8C81-BF58A5497DF6",
+      "colorScheme": "Blue"
+    },
+    {
+      "comment": "Matrix Top Voice",
+      "componentId": "4982334C-FFE3-4335-9584-5E1EA167A0DC",
+      "colorScheme": "Green"
     }
   ],
   "moduleColors_comment": "Override the default scheme per module. Slot can be -1 to apply to all module slots or gte 0 to apply to individual slots.",
@@ -217,13 +227,29 @@
       "comment": "VMatrix",
       "moduleId": "V19758BF4-241B-4A59-A943-3AE7426C7CC9",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Green",
+      "audioParamColorSchemes": [
+        {
+          "comment": "Slot Count",
+          "paramId": "V511B2721-2733-4BB4-BA75-C55AB8B6C54D",
+          "paramSlot": -1,
+          "colorScheme": "Green"
+        }
+      ]
     },
     {
       "comment": "GMatrix",
       "moduleId": "G19758BF4-241B-4A59-A943-3AE7426C7CC9",
       "moduleSlot": -1,
-      "colorScheme": "Blue"
+      "colorScheme": "Blue",
+      "audioParamColorSchemes": [
+        {
+          "comment": "Slot Count",
+          "paramId": "G511B2721-2733-4BB4-BA75-C55AB8B6C54D",
+          "paramSlot": -1,
+          "colorScheme": "Blue"
+        }
+      ]
     },
     {
       "comment": "Unison",

@@ -187,7 +187,9 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
 
   grid->MarkSection({ { 0, 0 }, { 1, 7 } }, FBGridSectionMark::BackgroundAndAlternate);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, false, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, 0, margin);
+  int componentId = global ? (int)FFThemedComponentId::MatrixTopGlobal : (int)FFThemedComponentId::MatrixTopVoice;
+  auto themed = plugGUI->StoreComponent<FBThemedComponent>(plugGUI->HostContext()->Topo(), componentId, margin);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, 0, themed);
 }
 
 static Component*
