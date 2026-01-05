@@ -321,6 +321,14 @@ ParseDefaultColorScheme(
     return false;
   result.paramFlashDisabling = Colour::fromString(obj->getProperty("paramFlashDisabling").toString());
 
+  if (!RequireStringProperty(obj, "sliderModBounds"))
+    return false;
+  result.sliderModBounds = Colour::fromString(obj->getProperty("sliderModBounds").toString());
+
+  if (!RequireStringProperty(obj, "sliderEngineThumb"))
+    return false;
+  result.sliderEngineThumb = Colour::fromString(obj->getProperty("sliderEngineThumb").toString());
+
   return true;
 }
 
@@ -450,6 +458,14 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "paramFlashDisabling", present))
     return false;
   result.paramFlashDisabling = present ? Colour::fromString(obj->getProperty("paramFlashDisabling").toString()) : defaultScheme.paramFlashDisabling;
+
+  if (!OptionalStringProperty(obj, "sliderModBounds", present))
+    return false;
+  result.sliderModBounds = present ? Colour::fromString(obj->getProperty("sliderModBounds").toString()) : defaultScheme.sliderModBounds;
+
+  if (!OptionalStringProperty(obj, "sliderEngineThumb", present))
+    return false;
+  result.sliderEngineThumb = present ? Colour::fromString(obj->getProperty("sliderEngineThumb").toString()) : defaultScheme.sliderEngineThumb;
 
   return true;
 }

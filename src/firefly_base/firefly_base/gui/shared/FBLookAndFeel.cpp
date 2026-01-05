@@ -127,7 +127,7 @@ FBLookAndFeel::DrawLinearSliderExchangeThumb(
   int sliderRegionSize = layout.sliderBounds.getWidth();
   float skewed = (float)ConvertValueFromSkewed(slider.Param()->static_, exchangeValue);
   float kx = static_cast<float>(sliderRegionStart + skewed * sliderRegionSize);
-  g.setColour(scheme.paramHighlight);
+  g.setColour(scheme.sliderEngineThumb);
   g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
   g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
 }
@@ -149,7 +149,7 @@ FBLookAndFeel::DrawRotarySliderExchangeThumb(
   Point<float> thumbPoint(
     bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(scheme.paramHighlight);
+  g.setColour(scheme.sliderEngineThumb);
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 }
 
@@ -585,7 +585,7 @@ FBLookAndFeel::drawLinearSlider(
     Point<float> endPointMod((float)(width * modMax + x), startPointMod.y);
     backgroundTrackMod.startNewSubPath(startPointMod);
     backgroundTrackMod.lineTo(endPointMod);
-    g.setColour(scheme.paramHighlight);
+    g.setColour(scheme.sliderModBounds);
     g.strokePath(backgroundTrackMod, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
   }
 
@@ -726,7 +726,7 @@ FBLookAndFeel::drawRotarySlider(
     modArc.addCentredArc(
       bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
       0.0f, (float)minAngle, (float)maxAngle, true);
-    g.setColour(scheme.paramHighlight);
+    g.setColour(scheme.sliderModBounds); 
     g.strokePath(modArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
   }
 

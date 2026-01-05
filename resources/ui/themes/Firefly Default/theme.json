@@ -25,6 +25,8 @@
     "paramHighlight": "80FFFFFF",
     "paramBackground": "FF181818",
     "paramFlashDisabling": "80FFFFFF",
+    "sliderModBounds": "FF7D2F2A",
+    "sliderEngineThumb": "80FFFFFF",
     "alertWindowPrimary": "FFFA5F55",
     "fileBrowserPrimary": "FFFA5F55",
     "fileBrowserHighlight": "80FA5F55",
@@ -38,6 +40,7 @@
       "comment": "Can override other stuff as well.",
       "primary": "FFFA5F55",
       "meterAlert": "FFFA5F55",
+      "sliderModBounds": "FF7D2F2A",
       "buttonBackground": "FF7D2F2A",
       "activeTabBackground": "FF7D2F2A",
       "gridAlternateBackground": "FF531F1C"
@@ -46,18 +49,21 @@
       "primary": "FFFAB255",
       "headerText": "FFFAB255",
       "headerBorder": "FFFAB255",
+      "sliderModBounds": "FF7D592A",
       "buttonBackground": "FF7D592A",
       "activeTabBackground": "FF7D592A",
       "gridAlternateBackground": "FF533B1C"
     },
     "Blue": {
       "primary": "FF559DFA",
+      "sliderModBounds": "FF2A4E7D",
       "buttonBackground": "FF2A4E7D",
       "activeTabBackground": "FF2A4E7D",
       "gridAlternateBackground": "FF1C3453"
     },
     "Green": {
       "primary": "FF55FAB2",
+      "sliderModBounds": "FF2A7D59",
       "buttonBackground": "FF2A7D59",
       "activeTabBackground": "FF2A7D59",
       "gridAlternateBackground": "FF1C533B"

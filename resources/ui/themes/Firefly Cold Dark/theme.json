@@ -24,6 +24,8 @@
     "paramHighlight": "80FFFFFF",
     "paramBackground": "FF181818",
     "paramFlashDisabling": "80FFFFFF",
+    "sliderEngineThumb": "80FFFFFF",
+    "sliderModBounds": "FF005F98",
     "alertWindowPrimary": "FF00A0FF",
     "fileBrowserPrimary": "FF00A0FF",
     "fileBrowserHighlight": "8000A0FF",
@@ -35,6 +37,7 @@
     "Blue": {
       "primary": "FF00A0FF",
       "meterAlert": "FF00A0FF",
+      "sliderModBounds": "FF005F98",
       "buttonBackground": "FF005F98",
       "activeTabBackground": "FF005F98",
       "gridAlternateBackground": "FF00446D"
@@ -43,6 +46,7 @@
       "primary": "FF00FFA0",
       "headerText": "FF00FFA0",
       "headerBorder": "FF00FFA0",
+      "sliderModBounds": "FF00985F",
       "buttonBackground": "FF00985F",
       "activeTabBackground": "FF00985F",
       "gridAlternateBackground": "FF006D44"
