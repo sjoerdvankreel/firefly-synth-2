@@ -15,6 +15,7 @@ struct FBColorScheme
   float graphAlpha = {};
   float dimDisabled = {};
   juce::Colour text = {};
+  juce::Colour text2 = {};
   juce::Colour background = {};
   juce::Colour meterFill = {};
   juce::Colour meterTrack = {};

@@ -293,6 +293,10 @@ ParseDefaultColorScheme(
     return false;
   result.text = Colour::fromString(obj->getProperty("text").toString());
 
+  if (!RequireStringProperty(obj, "text2"))
+    return false;
+  result.text2 = Colour::fromString(obj->getProperty("text2").toString());
+
   if (!RequireStringProperty(obj, "paramSecondary"))
     return false;
   result.paramSecondary = Colour::fromString(obj->getProperty("paramSecondary").toString());
@@ -414,6 +418,10 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "text", present))
     return false;
   result.text = present ? Colour::fromString(obj->getProperty("text").toString()) : defaultScheme.text;
+
+  if (!OptionalStringProperty(obj, "text2", present))
+    return false;
+  result.text2 = present ? Colour::fromString(obj->getProperty("text2").toString()) : defaultScheme.text2;
 
   if (!OptionalStringProperty(obj, "paramSecondary", present))
     return false;

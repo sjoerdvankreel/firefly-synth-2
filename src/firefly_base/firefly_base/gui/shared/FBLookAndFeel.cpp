@@ -649,7 +649,7 @@ FBLookAndFeel::drawButtonText(
   auto const& scheme = FindColorSchemeFor(button);
   Font font(getTextButtonFont(button, button.getHeight()));
   g.setFont(font);
-  g.setColour(button.isEnabled() ? scheme.text : scheme.text.darker(scheme.dimDisabled));
+  g.setColour(button.isEnabled() ? scheme.text2 : scheme.text2.darker(scheme.dimDisabled));
 
   const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
   const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
@@ -658,7 +658,7 @@ FBLookAndFeel::drawButtonText(
   const int leftIndent = jmin(fontHeight, 1 + cornerSize / (button.isConnectedOnLeft() ? 4 : 2));
   const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
   const int textWidth = button.getWidth() - leftIndent - rightIndent;
-
+    
   if (textWidth > 0)
     g.drawText(button.getButtonText(),
       leftIndent, yIndent, textWidth, button.getHeight() - yIndent * 2,

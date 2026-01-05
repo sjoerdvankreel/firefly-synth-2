@@ -5,7 +5,8 @@
   "defaultColorScheme": {
     "graphAlpha": 0.6,
     "dimDisabled": 0.25,
-    "text": "FF333333",
+    "text": "FF222222",
+    "text2": "FFEEEEEE",
     "primary": "FFFF0040",
     "background": "FF000000",
     "meterFill": "FFA0A0A0",
