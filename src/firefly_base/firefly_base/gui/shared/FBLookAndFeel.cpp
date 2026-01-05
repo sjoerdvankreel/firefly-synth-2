@@ -424,15 +424,16 @@ FBLookAndFeel::drawLabel(
     scheme = &FindColorSchemeFor(*cb);
   }
 
+  auto colorText = scheme->text;
   if (dynamic_cast<FBAutoSizeLabel2*>(&label) ||
       dynamic_cast<FBLastTweakedLabel*>(&label))
   {
     hasBackground = true;
     g.setColour(scheme->paramBackground);
     g.fillRoundedRectangle(label.getLocalBounds().toFloat().reduced(5.0f), 5.0f);
+    colorText = scheme->text2;
   }
 
-  auto colorText = scheme->text;
   if (isCombo)
     colorText = scheme->primary.darker(cb->isEnabled() ? 0.0f : scheme->dimDisabled);
   else if (label.findParentComponentOfClass<FBFileBrowserComponent>())
@@ -658,7 +659,7 @@ FBLookAndFeel::drawButtonText(
   const int leftIndent = jmin(fontHeight, 1 + cornerSize / (button.isConnectedOnLeft() ? 4 : 2));
   const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
   const int textWidth = button.getWidth() - leftIndent - rightIndent;
-    
+     
   if (textWidth > 0)
     g.drawText(button.getButtonText(),
       leftIndent, yIndent, textWidth, button.getHeight() - yIndent * 2,
