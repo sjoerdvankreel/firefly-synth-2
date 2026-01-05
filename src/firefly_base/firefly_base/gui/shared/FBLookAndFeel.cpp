@@ -166,7 +166,7 @@ FBLookAndFeel::DrawTabButtonPart(
   auto const& scheme = FindColorSchemeFor(button);
   if (isHeader)
     g.setColour(scheme.headerBackground);
-  else  if (isSeparator)
+  else if (isSeparator)
     g.setColour(scheme.paramSecondary);
   else if (toggleState)
     g.setColour(scheme.activeTabBackground);
@@ -186,7 +186,7 @@ FBLookAndFeel::DrawTabButtonPart(
   const Rectangle<float> area(activeArea.toFloat());
   float length = area.getWidth();
   float depth = area.getHeight();   
-  auto textColor = isHeader? scheme.headerText: scheme.text.darker(isSeparator || isMouseOver || toggleState ? 0.0f : scheme.dimDisabled);
+  auto textColor = isHeader? scheme.headerText: scheme.text2.darker(isSeparator || isMouseOver || toggleState ? 0.0f : scheme.dimDisabled);
   ::CreateTabTextLayout(button, length, textColor, FBGUIGetFont(), centerText, text, textLayout);
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));
   textLayout.draw(g, Rectangle<float>(length, depth));
