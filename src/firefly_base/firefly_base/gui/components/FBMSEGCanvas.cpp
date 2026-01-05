@@ -552,7 +552,7 @@ FBMSEGCanvas::paint(Graphics& g)
 
   if (_currentPointsScreen.size() == 0)
   {
-    g.setColour(scheme.text.withAlpha(0.5f));
+    g.setColour(scheme.text2.withAlpha(0.5f));
     g.setFont(FBGUIGetFont().withHeight(20.0f));
     g.drawText("OFF", innerBounds, Justification::centred, false);
     return;

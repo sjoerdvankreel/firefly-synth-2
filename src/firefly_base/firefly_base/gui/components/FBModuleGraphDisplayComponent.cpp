@@ -95,9 +95,9 @@ FBModuleGraphDisplayComponent::PaintVerticalIndicator(
   auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
 
   float dashes[2] = { 4, 2 };
-  g.setColour(scheme.text.withAlpha(0.5f));
+  g.setColour(scheme.text2.withAlpha(0.5f));
   if (!primary)
-    g.setColour(scheme.text.withAlpha(0.25f));
+    g.setColour(scheme.text2.withAlpha(0.25f));
   float x = PointXLocation(graph, point / static_cast<float>(maxSizeAllSeries), true);
   float y0 = PointYLocation(graph, 0.0f, false, false, absMaxValueAllSeries, true);
   float y1 = PointYLocation(graph, absMaxValueAllSeries, false, false, absMaxValueAllSeries, true);
@@ -119,7 +119,7 @@ FBModuleGraphDisplayComponent::PaintMarker(
   auto const& graphData = _data->graphs[graph];
   auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
 
-  auto color = scheme.text;
+  auto color = scheme.text2;
   if (_data->paintAsDisabled)
     color = color.darker(0.67f);
   if (!primary)  
@@ -155,7 +155,7 @@ FBModuleGraphDisplayComponent::PaintClipBoundaries(
   float x1 = PointXLocation(graph, 1.0f, true);
   float upperY = PointYLocation(graph, 1.0f, stereo, left, absMaxValueAllSeries, true);
   float lowerY = PointYLocation(graph, _data->graphs[graph].bipolar? -1.0f: 0.0f, stereo, left, absMaxValueAllSeries, true);
-  g.setColour(scheme.text.withAlpha(0.25f));
+  g.setColour(scheme.text2.withAlpha(0.25f));
   g.drawDashedLine(Line<float>(x0, upperY, x1, upperY), dashes, 2);
   g.drawDashedLine(Line<float>(x0, lowerY, x1, lowerY), dashes, 2);
 }
@@ -244,7 +244,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
 
     if (graphData.subtext.size())
     {
-      g.setColour(scheme.text.withAlpha(0.33f));
+      g.setColour(scheme.text2.withAlpha(0.33f));
       g.setFont(FBGUIGetFont().withHeight(20.0f));
       g.drawText(graphData.subtext, graphBounds, Justification::centred, false);
     }
@@ -312,7 +312,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         textSize.getHeight() + labelPad);
       g.setColour(scheme.sectionBackground.withAlpha(0.75f));
       g.fillRoundedRectangle(textBounds, 2.0f);
-      g.setColour(scheme.text);
+      g.setColour(scheme.text2);
       g.setFont(newFont);
       g.drawText(graphData.title, textBounds, Justification::centred, false);
     }
