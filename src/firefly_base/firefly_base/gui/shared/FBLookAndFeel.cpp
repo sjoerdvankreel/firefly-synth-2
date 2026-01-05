@@ -433,7 +433,7 @@ FBLookAndFeel::drawLabel(
     g.fillRoundedRectangle(label.getLocalBounds().toFloat().reduced(5.0f), 5.0f);
     colorText = scheme->text2;
   }
-
+      
   if (isCombo)
     colorText = scheme->primary.darker(cb->isEnabled() ? 0.0f : scheme->dimDisabled);
   else if (label.findParentComponentOfClass<FBFileBrowserComponent>())
