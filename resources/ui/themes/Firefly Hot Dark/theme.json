@@ -16,6 +16,7 @@
     "headerBorder": "FFFF0040",
     "headerBackground": "FF181818",
     "graphGrid": "FF404040",
+    "graphBorder": "20FFFFFF",
     "graphBackground": "FF181818",
     "sectionBorder": "80FFFFFF",
     "sectionBackground": "FF282828",

@@ -220,7 +220,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
 
     if (_withBorder)
     {
-      g.setColour(scheme.sectionBorder.withAlpha(0.125f));
+      g.setColour(scheme.graphBorder);
       g.drawRoundedRectangle(graphBounds.toFloat(), 5.0f, 2.0f);
     }
 

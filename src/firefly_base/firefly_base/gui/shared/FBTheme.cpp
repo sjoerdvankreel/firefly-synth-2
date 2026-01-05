@@ -265,6 +265,10 @@ ParseDefaultColorScheme(
     return false;
   result.graphGrid = Colour::fromString(obj->getProperty("graphGrid").toString());
   
+  if (!RequireStringProperty(obj, "graphBorder"))
+    return false;
+  result.graphBorder = Colour::fromString(obj->getProperty("graphBorder").toString());
+
   if (!RequireStringProperty(obj, "graphBackground"))
     return false;
   result.graphBackground = Colour::fromString(obj->getProperty("graphBackground").toString());
@@ -390,6 +394,10 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "graphGrid", present))
     return false;
   result.graphGrid = present ? Colour::fromString(obj->getProperty("graphGrid").toString()) : defaultScheme.graphGrid;
+
+  if (!OptionalStringProperty(obj, "graphBorder", present))
+    return false;
+  result.graphBorder = present ? Colour::fromString(obj->getProperty("graphBorder").toString()) : defaultScheme.graphBorder;
 
   if (!OptionalStringProperty(obj, "graphBackground", present))
     return false;
