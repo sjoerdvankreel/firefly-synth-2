@@ -26,7 +26,7 @@
     "paramFlashDisabling": "80FFFFFF",
     "alertWindowPrimary": "FFFF0040",
     "fileBrowserPrimary": "FFFF0040",
-    "fileBrowserHighlight": "80FF0040",
+    "fileBrowserHighlight": "FF7F0020",
     "buttonBackground": "FF7F0020",
     "activeTabBackground": "FF7F0020",
     "gridAlternateBackground": "FF550015"
