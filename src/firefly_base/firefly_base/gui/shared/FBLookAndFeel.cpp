@@ -348,8 +348,8 @@ FBLookAndFeel::drawPopupMenuItem(
   const Drawable* /*icon*/, const Colour* const textColourToUse)
 {
   auto const& scheme = Theme().defaultColorScheme;
-  Colour textColor = scheme.text;
-  Colour selectedColor = textColourToUse != nullptr ? *textColourToUse : scheme.text;
+  Colour textColor = scheme.text2;
+  Colour selectedColor = textColourToUse != nullptr ? *textColourToUse : scheme.text2;
 
   if (isSeparator)
   { 
