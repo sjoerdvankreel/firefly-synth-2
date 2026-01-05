@@ -858,7 +858,7 @@ FBLookAndFeel::drawTooltip(
       if(i == 0 && newCompIsParam)
         g.setColour(scheme->primary);
       else
-        g.setColour(scheme->text);
+        g.setColour(scheme->text2);
       g.drawText(lines[0], textBounds, Justification::left, false);
     }
     lines.erase(lines.begin());
