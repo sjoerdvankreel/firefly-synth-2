@@ -1,18 +1,18 @@
 TODOLIST for beta-next
 [x] make all the "darker" themeable
-[ ] different flashdisable => primary something
-[ ] different highlightthumb => prob not
-[ ] slider modbounds => button bg
-[ ] slider engine thumb => dark for light
+[x] different flashdisable => primary something
+[x] different highlightthumb => prob not
+[x] slider modbounds => button bg
+[x] slider engine thumb => dark for light
+[x] allow default theme name customizable
+[ ] do more themes
+[ ] document the new theming stuff
+[ ] say the folder name should match the theme neme
 [ ] soft/hard - default/hot/cold - dark/light, all combos
 [ ] the default themefile location changed, update the docs to just show the folder
 [ ] make a note about how to "install" it
 [ ] dump changed paramids option for renoise (or log it)
-[ ] document the new theming stuff
-[ ] say the folder name should match the theme neme
-[x] allow default theme name customizable
 [ ] list the relevant folders in the GH page
-[ ] do more themes
 [ ] dump topo should include the tags and indices, for debugging renoise
 [ ] bg images in main tabs and header and maybe elsewhere
 [ ] not right-click-change horizontal sliders

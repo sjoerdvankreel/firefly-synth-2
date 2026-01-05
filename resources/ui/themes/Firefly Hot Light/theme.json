@@ -23,7 +23,6 @@
     "paramSecondary": "FF505050",
     "paramHighlight": "40FFFFFF",
     "paramBackground": "FF181818",
-    "paramFlashDisabling": "80FFFFFF",
     "sliderModBounds": "FF7F0020",
     "sliderEngineThumb": "80000000",
     "alertWindowPrimary": "FFFF0040",

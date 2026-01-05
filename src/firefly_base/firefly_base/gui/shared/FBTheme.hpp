@@ -32,7 +32,6 @@ struct FBColorScheme
   juce::Colour paramSecondary = {};
   juce::Colour paramHighlight = {};
   juce::Colour paramBackground = {};
-  juce::Colour paramFlashDisabling = {};
   juce::Colour sliderModBounds = {};
   juce::Colour sliderEngineThumb = {};
   juce::Colour alertWindowPrimary = {};

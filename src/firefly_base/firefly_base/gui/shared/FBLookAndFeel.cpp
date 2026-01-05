@@ -482,7 +482,7 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   {
     if (paramCombo->IsFlashDisabling())
     {
-      g.setColour(scheme.paramFlashDisabling);
+      g.setColour(scheme.primary.withMultipliedAlpha(0.5f));
       g.fillRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize);
     }
     if (paramCombo->IsHighlightTweaked())
@@ -514,7 +514,7 @@ FBLookAndFeel::drawTickBox(
   {
     if (paramToggle->IsFlashDisabling())
     {
-      g.setColour(scheme.paramFlashDisabling);
+      g.setColour(scheme.primary.withMultipliedAlpha(0.5f));
       g.fillRoundedRectangle(tickBounds, 2.0f);
     }
     if (paramToggle->IsHighlightTweaked())
@@ -610,7 +610,7 @@ FBLookAndFeel::drawLinearSlider(
   {
     if (paramSlider->IsFlashDisabling())
     {
-      g.setColour(scheme.paramFlashDisabling);
+      g.setColour(scheme.primary.withMultipliedAlpha(0.5f));
       g.fillRoundedRectangle((float)x, thumbY, (float)width, thumbH, 2.0f);
     }
     if (paramSlider->IsHighlightTweaked())
@@ -752,7 +752,7 @@ FBLookAndFeel::drawRotarySlider(
   { 
     if (paramSlider->IsFlashDisabling())
     {
-      g.setColour(scheme.paramFlashDisabling);
+      g.setColour(scheme.primary.withMultipliedAlpha(0.5f));
       g.fillEllipse(bounds.toFloat().reduced(0.5f, 0.5f));
     }
     if (paramSlider->IsHighlightTweaked())
