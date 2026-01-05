@@ -21,7 +21,7 @@
     "sectionBorder": "E0FFFFFF",
     "sectionBackground": "FFBBBBBB",
     "paramSecondary": "FF505050",
-    "paramHighlight": "80FFFFFF",
+    "paramHighlight": "40FFFFFF",
     "paramBackground": "FF181818",
     "paramFlashDisabling": "80FFFFFF",
     "alertWindowPrimary": "FFFF0040",

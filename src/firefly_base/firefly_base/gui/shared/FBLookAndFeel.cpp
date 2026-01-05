@@ -684,7 +684,7 @@ FBLookAndFeel::drawRotarySlider(
   auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
   auto lineW = jmin(8.0f, radius * 0.5f);
   auto arcRadius = radius - lineW * 0.5f;
-
+    
   Path backgroundArc;
   backgroundArc.addCentredArc(
     bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
