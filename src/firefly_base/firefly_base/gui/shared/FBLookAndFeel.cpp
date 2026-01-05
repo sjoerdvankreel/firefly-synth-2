@@ -363,9 +363,9 @@ FBLookAndFeel::drawPopupMenuItem(
   auto r = area.reduced(1);
   if (isHighlighted && isActive)
   {
-    g.setColour(scheme.sectionBackground);
+    g.setColour(selectedColor.withAlpha(0.5f));
     g.fillRect(r);
-    g.setColour(selectedColor);
+    g.setColour(textColor);
   }
   else
   {
