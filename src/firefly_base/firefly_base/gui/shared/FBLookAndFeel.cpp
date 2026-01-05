@@ -185,7 +185,7 @@ FBLookAndFeel::DrawTabButtonPart(
   TextLayout textLayout;
   const Rectangle<float> area(activeArea.toFloat());
   float length = area.getWidth();
-  float depth = area.getHeight();
+  float depth = area.getHeight();   
   auto textColor = isHeader? scheme.headerText: scheme.text.darker(isSeparator || isMouseOver || toggleState ? 0.0f : scheme.dimDisabled);
   ::CreateTabTextLayout(button, length, textColor, FBGUIGetFont(), centerText, text, textLayout);
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));

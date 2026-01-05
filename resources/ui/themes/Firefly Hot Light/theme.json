@@ -8,7 +8,7 @@
     "text": "FF222222",
     "text2": "FFEEEEEE",
     "primary": "FFFF0040",
-    "background": "FF000000",
+    "background": "FF111111",
     "meterFill": "FF505050",
     "meterTrack": "FFA0A0A0",
     "meterAlert": "FFFFFFFF",
