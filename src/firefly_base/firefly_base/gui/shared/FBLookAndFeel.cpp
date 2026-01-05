@@ -437,7 +437,7 @@ FBLookAndFeel::drawLabel(
   if (isCombo)
     colorText = scheme->primary.darker(cb->isEnabled() ? 0.0f : scheme->dimDisabled);
   else if (label.findParentComponentOfClass<FBFileBrowserComponent>())
-    colorText = scheme->fileBrowserPrimary;
+    colorText = scheme->text;
 
   g.setFont(getLabelFont(label));
   g.setColour(colorText);
