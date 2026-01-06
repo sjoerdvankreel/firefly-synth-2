@@ -312,7 +312,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         textSize.getHeight() + labelPad);
       g.setColour(scheme.sectionBackground.withAlpha(0.75f));
       g.fillRoundedRectangle(textBounds, 2.0f);
-      g.setColour(scheme.text2);
+      g.setColour(scheme.text); 
       g.setFont(newFont);
       g.drawText(graphData.title, textBounds, Justification::centred, false);
     }
