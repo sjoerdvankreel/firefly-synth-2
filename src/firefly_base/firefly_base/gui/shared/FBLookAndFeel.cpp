@@ -166,7 +166,7 @@ FBLookAndFeel::DrawTabButtonPart(
   auto const& scheme = FindColorSchemeFor(button);
   if (isHeader)
     g.setColour(scheme.headerBackground);
-  else if (isSeparator)
+  else if (isSeparator)  
     g.setColour(scheme.paramSecondary);
   else if (toggleState)
     g.setColour(scheme.activeTabBackground);
