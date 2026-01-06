@@ -27,11 +27,15 @@ public juce::Label,
 public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
+  bool const _hasBackground;
   int const _fixedWidth;
+
 public:
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
-  FBAutoSizeLabel2(int fixedWidth);
+
+  FBAutoSizeLabel2(bool hasBackground, int fixedWidth);
+  bool HasBackground() const { return _hasBackground; }
 };
 
 class FBGUIParamLabel final:

@@ -425,12 +425,16 @@ FBLookAndFeel::drawLabel(
   }
 
   auto colorText = scheme->text;
-  if (dynamic_cast<FBAutoSizeLabel2*>(&label) ||
-      dynamic_cast<FBLastTweakedLabel*>(&label))
+  auto tweakLabel = dynamic_cast<FBLastTweakedLabel*>(&label);
+  auto autoSizeLabel2 = dynamic_cast<FBAutoSizeLabel2*>(&label);
+  if (tweakLabel || autoSizeLabel2)
   {
-    hasBackground = true;
-    g.setColour(scheme->paramBackground);
-    g.fillRoundedRectangle(label.getLocalBounds().toFloat().reduced(5.0f), 5.0f);
+    if (tweakLabel || autoSizeLabel2 && autoSizeLabel2->HasBackground())
+    {
+      hasBackground = true;
+      g.setColour(scheme->paramBackground);
+      g.fillRoundedRectangle(label.getLocalBounds().toFloat().reduced(5.0f), 5.0f);
+    }
     colorText = scheme->text2;
   }
       
