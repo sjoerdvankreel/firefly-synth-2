@@ -54,11 +54,11 @@
       "gridAlternateBackground": "FF6D3606"
     },
     "Blue": {
-      "primary": "FFC080FF",
-      "sliderModBounds": "FF2A4E7D",
-      "buttonBackground": "FF724C98",
-      "activeTabBackground": "FF724C98",
-      "gridAlternateBackground": "FF52366D"
+      "primary": "FFE040FF",
+      "sliderModBounds": "FF862698",
+      "buttonBackground": "FF862698",
+      "activeTabBackground": "FF862698",
+      "gridAlternateBackground": "FF601B6D"
     },
     "Green": {
       "primary": "FF10FF80",
