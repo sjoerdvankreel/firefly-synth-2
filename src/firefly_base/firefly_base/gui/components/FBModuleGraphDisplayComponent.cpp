@@ -12,7 +12,7 @@
 
 using namespace juce;
 
-static float constexpr Padding = 3.0f;
+static float constexpr Padding = 3.0f; 
 static float constexpr DefaultMarkerSize = 8.0f;
 static float constexpr HalfDefaultMarkerSize = 4.0f;
 
