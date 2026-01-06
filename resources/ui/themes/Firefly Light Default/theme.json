@@ -47,7 +47,7 @@
     "Orange": {
       "primary": "FFFF8010",
       "headerText": "FFFF8010",
-      "headerBorder": "FFFF8010",
+      "headerBorder": "FFFF8010",    
       "headerBackground": "FF552A05",
       "sliderModBounds": "FF984C09",
       "buttonBackground": "FF984C09",
@@ -63,10 +63,10 @@
     },
     "Green": {
       "primary": "FF60C030",
-      "sliderModBounds": "FF39721C",
-      "buttonBackground": "FF39721C",
-      "activeTabBackground": "FF39721C",
-      "gridAlternateBackground": "FF295214"
+      "sliderModBounds": "FF2A7D59",
+      "buttonBackground": "FF2A7D59",
+      "activeTabBackground": "FF2A7D59",
+      "gridAlternateBackground": "FF1C533B"
     }
   },
   "componentColors_comment": "Overrides the default scheme for anything not related to a module.",
@@ -89,7 +89,7 @@
     {
       "comment": "Unison Top",
       "componentId": "6C2FD02F-F89C-491F-A7F8-4AD6EBB44A0E",
-      "colorScheme": "Orange"
+      "colorScheme": "Purple"
     },
     {
       "comment": "Main Selector",
@@ -99,17 +99,17 @@
     {
       "comment": "Matrix Graphs",
       "componentId": "0A528CAB-69AC-40DC-914C-3919D10D1EA3",
-      "colorScheme": "Orange"
+      "colorScheme": "Purple"
     },
     {
       "comment": "Matrix Top Global",
       "componentId": "BE80B21E-B18E-4D47-8C81-BF58A5497DF6",
-      "colorScheme": "Purple"
+      "colorScheme": "Green"
     },
     {
       "comment": "Matrix Top Voice",
       "componentId": "4982334C-FFE3-4335-9584-5E1EA167A0DC",
-      "colorScheme": "Green"
+      "colorScheme": "Orange"
     }
   ],
   "moduleColors_comment": "Override the default scheme per module. Slot can be -1 to apply to all module slots or gte 0 to apply to individual slots.",
@@ -145,38 +145,38 @@
       "comment": "Voice Module",
       "moduleId": "AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8",
       "moduleSlot": -1,
-      "colorScheme": "Orange"
+      "colorScheme": "Purple"
     },
     {
       "comment": "Master",
       "moduleId": "83AA98D4-9D12-4D61-81A4-4FAA935EDF5D",
       "moduleSlot": -1,
-      "colorScheme": "Orange"
+      "colorScheme": "Purple"
     },
     {
       "comment": "Settings",
       "moduleId": "3689411E-F31C-4F8C-BE3D-6F87938A1A1B",
       "moduleSlot": -1,
-      "colorScheme": "Orange"
+      "colorScheme": "Purple"
     },
     {
       "comment": "VMix",
       "moduleId": "5C91D5A0-3EC1-4142-935A-3FE83B60C04E",
       "moduleSlot": -1,
-      "colorScheme": "Orange",
+      "colorScheme": "Purple",
       "audioParamColorSchemes_comment": "Override the module scheme per audio parameter. Slot can be -1 to apply to all parameter slots or gte 0 to apply to individual slots.",
       "audioParamColorSchemes": [
         {
           "comment": "Osci To Osci Mix",
           "paramId": "3EF9D095-1F5E-45BD-8B9E-55EEC321AA43",
           "paramSlot": -1,
-          "colorScheme": "Orange"
+          "colorScheme": "Purple"
         },
         {
           "comment": "Osci To Osci Mix - override a single param slot",
           "paramId": "3EF9D095-1F5E-45BD-8B9E-55EEC321AA43",
           "paramSlot": 1,
-          "colorScheme": "Orange"
+          "colorScheme": "Purple"
         }
       ]
     },
@@ -184,79 +184,79 @@
       "comment": "GMix",
       "moduleId": "09ED2CCE-3AC5-455E-935C-A684BEBC154D",
       "moduleSlot": -1,
-      "colorScheme": "Orange"
+      "colorScheme": "Purple"
     },
     {
       "comment": "Osci",
       "moduleId": "73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Orange"
     },
     {
       "comment": "Osci - override a single module slot",
       "moduleId": "73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6",
       "moduleSlot": 1,
-      "colorScheme": "Green"
+      "colorScheme": "Orange"
     },
     {
       "comment": "Osci Mod",
       "moduleId": "546F9D74-670A-463D-80B0-B4BBD061DA88",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Orange"
     },
     {
       "comment": "VFX",
       "moduleId": "V154051CE-66D9-41C8-B479-C52D1111C962",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Orange"
     },
     {
       "comment": "GFX",
       "moduleId": "G154051CE-66D9-41C8-B479-C52D1111C962",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Orange"
     },
     {
       "comment": "VEcho",
       "moduleId": "VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Orange"
     },
     {
       "comment": "GEcho",
       "moduleId": "GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Orange"
     },
     {
       "comment": "VLFO",
       "moduleId": "V6E9EC930-5391-41BB-9EDA-C9B79F3BE745",
       "moduleSlot": -1,
-      "colorScheme": "Purple"
+      "colorScheme": "Green"
     },
     {
       "comment": "GLFO",
       "moduleId": "G6E9EC930-5391-41BB-9EDA-C9B79F3BE745",
       "moduleSlot": -1,
-      "colorScheme": "Purple"
+      "colorScheme": "Green"
     },
     {
       "comment": "Env",
       "moduleId": "FC1DC75A-200C-4465-8CBE-0100E2C8FAF2",
       "moduleSlot": -1,
-      "colorScheme": "Purple"
+      "colorScheme": "Green"
     },
     {
       "comment": "VMatrix",
       "moduleId": "V19758BF4-241B-4A59-A943-3AE7426C7CC9",
       "moduleSlot": -1,
-      "colorScheme": "Green",
+      "colorScheme": "Orange",
       "audioParamColorSchemes": [
         {
           "comment": "Slot Count",
           "paramId": "V511B2721-2733-4BB4-BA75-C55AB8B6C54D",
           "paramSlot": -1,
-          "colorScheme": "Green"
+          "colorScheme": "Orange"
         }
       ]
     },
@@ -264,13 +264,13 @@
       "comment": "GMatrix",
       "moduleId": "G19758BF4-241B-4A59-A943-3AE7426C7CC9",
       "moduleSlot": -1,
-      "colorScheme": "Purple",
+      "colorScheme": "Green",
       "audioParamColorSchemes": [
         {
           "comment": "Slot Count",
           "paramId": "G511B2721-2733-4BB4-BA75-C55AB8B6C54D",
           "paramSlot": -1,
-          "colorScheme": "Purple"
+          "colorScheme": "Green"
         }
       ]
     },
@@ -278,13 +278,13 @@
       "comment": "Unison",
       "moduleId": "5A505AF6-4E05-4680-BAFE-B880CE4E1BC2",
       "moduleSlot": -1,
-      "colorScheme": "Orange",
+      "colorScheme": "Purple",
       "audioParamColorSchemes": [
         {
           "comment": "Voice Count",
           "paramId": "617F995E-38CC-40BE-899E-AEAE37852092",
           "paramSlot": -1,
-          "colorScheme": "Orange"
+          "colorScheme": "Purple"
         }
       ]
     }
