@@ -42,13 +42,13 @@
       "gridAlternateBackground": "FF550015"
     },
     "Yellow": {
-      "primary": "FFFFB840",
-      "headerText": "FFFFB840",
-      "headerBorder": "FFFFB840",
-      "sliderModBounds": "FF986E26",
-      "buttonBackground": "FF986E26",
-      "activeTabBackground": "FF986E26",
-      "gridAlternateBackground": "FF6D4E1B"
+      "primary": "FFFF8010",
+      "headerText": "FFFF8010",
+      "headerBorder": "FFFF8010",
+      "sliderModBounds": "FF984C09",
+      "buttonBackground": "FF984C09",
+      "activeTabBackground": "FF984C09",
+      "gridAlternateBackground": "FF6D3606"
     }
   },
   "componentColors": [
