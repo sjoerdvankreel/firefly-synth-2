@@ -48,6 +48,7 @@
       "primary": "FFFF8010",
       "headerText": "FFFF8010",
       "headerBorder": "FFFF8010",
+      "headerBackground": "FF552A05",
       "sliderModBounds": "FF984C09",
       "buttonBackground": "FF984C09",
       "activeTabBackground": "FF984C09",
