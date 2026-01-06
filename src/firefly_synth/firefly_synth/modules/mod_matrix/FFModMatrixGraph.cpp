@@ -116,7 +116,7 @@ FFModMatrixGraph::paint(Graphics& g)
   auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
   g.setColour(scheme.graphBackground);
   g.fillRoundedRectangle(outerBounds.toFloat(), 3.0f);
-  g.setColour(scheme.sectionBorder.withAlpha(0.125f));
+  g.setColour(scheme.graphBorder);
   g.drawRoundedRectangle(outerBounds.toFloat(), 3.0f, 2.0f);
 
   bool graphIsBipolar = false;
@@ -205,7 +205,7 @@ FFModMatrixGraph::paint(Graphics& g)
     break;
   }
 
-  g.setColour(scheme.text.withAlpha(0.33f));
+  g.setColour(scheme.text2.withAlpha(0.33f));
   g.setFont(FBGUIGetFont().withHeight(16.0f));
   g.drawText(prefix + text, bounds, Justification::centred, false);
 
