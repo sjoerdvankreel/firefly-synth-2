@@ -38,6 +38,9 @@
     "Red": {
       "comment": "Can override other stuff as well.",
       "primary": "FFFF0040",
+      "headerText": "FFEEEEEE",
+      "headerBorder": "FFFF0040",
+      "headerBackground": "FF550015",
       "meterAlert": "FFFF0040",
       "sliderModBounds": "FF7F0020",
       "buttonBackground": "FF7F0020",
@@ -46,9 +49,9 @@
     },
     "Orange": {
       "primary": "FFFF8010",
-      "headerText": "FFFF8010",
-      "headerBorder": "FFFF8010",    
-      "headerBackground": "FF552A05",
+      "headerText": "FFEEEEEE",
+      "headerBorder": "FFFF8010",
+      "headerBackground": "FF6D3606",
       "sliderModBounds": "FF984C09",
       "buttonBackground": "FF984C09",
       "activeTabBackground": "FF984C09",
@@ -56,6 +59,9 @@
     },
     "Purple": {
       "primary": "FFE040FF",
+      "headerText": "FFEEEEEE",
+      "headerBorder": "FFE040FF",
+      "headerBackground": "FF601B6D",
       "sliderModBounds": "FF862698",
       "buttonBackground": "FF862698",
       "activeTabBackground": "FF862698",
@@ -63,6 +69,9 @@
     },
     "Green": {
       "primary": "FF60C030",
+      "headerText": "FFEEEEEE",
+      "headerBorder": "FF60C030",
+      "headerBackground": "FF1C533B",
       "sliderModBounds": "FF2A7D59",
       "buttonBackground": "FF2A7D59",
       "activeTabBackground": "FF2A7D59",
