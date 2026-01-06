@@ -1,5 +1,5 @@
 {
-  "name": "Firefly Cold Dark",
+  "name": "Firefly Dark Hot",
   "graphSchemeFollowsModule": false,
   "unisonSchemeFollowsModule": false,
   "defaultColorScheme": {
@@ -7,13 +7,13 @@
     "dimDisabled": 0.25,
     "text": "FFEEEEEE",
     "text2": "FFEEEEEE",
-    "primary": "FF00A0FF",
+    "primary": "FFFF0040",
     "background": "FF000000",
     "meterFill": "FFA0A0A0",
     "meterTrack": "FF505050",
     "meterAlert": "FFFFFFFF",
-    "headerText": "FF00A0FF",
-    "headerBorder": "FF00A0FF",
+    "headerText": "FFFF0040",
+    "headerBorder": "FFFF0040",
     "headerBackground": "FF181818",
     "graphGrid": "FF404040",
     "graphBorder": "20FFFFFF",
@@ -23,74 +23,74 @@
     "paramSecondary": "FF505050",
     "paramHighlight": "80FFFFFF",
     "paramBackground": "FF181818",
+    "sliderModBounds": "FF7F0020",
     "sliderEngineThumb": "80FFFFFF",
-    "sliderModBounds": "FF005F98",
-    "alertWindowPrimary": "FF00A0FF",
-    "fileBrowserPrimary": "FF00A0FF",
-    "fileBrowserHighlight": "8000A0FF",
-    "buttonBackground": "FF005F98",
-    "activeTabBackground": "FF005F98",
-    "gridAlternateBackground": "FF00446D"
+    "alertWindowPrimary": "FFFF0040",
+    "fileBrowserPrimary": "FFFF0040",
+    "fileBrowserHighlight": "80FF0040",
+    "buttonBackground": "FF7F0020",
+    "activeTabBackground": "FF7F0020",
+    "gridAlternateBackground": "FF550015"
   },
   "colorSchemes": {
-    "Blue": {
-      "primary": "FF00A0FF",
-      "meterAlert": "FF00A0FF",
-      "sliderModBounds": "FF005F98",
-      "buttonBackground": "FF005F98",
-      "activeTabBackground": "FF005F98",
-      "gridAlternateBackground": "FF00446D"
+    "Red": {
+      "primary": "FFFF0040",
+      "meterAlert": "FFFF0040",
+      "sliderModBounds": "FF7F0020",
+      "buttonBackground": "FF7F0020",
+      "activeTabBackground": "FF7F0020",
+      "gridAlternateBackground": "FF550015"
     },
-    "Green": {
-      "primary": "FF00FFA0",
-      "headerText": "FF00FFA0",
-      "headerBorder": "FF00FFA0",
-      "sliderModBounds": "FF00985F",
-      "buttonBackground": "FF00985F",
-      "activeTabBackground": "FF00985F",
-      "gridAlternateBackground": "FF006D44"
+    "Yellow": {
+      "primary": "FFFF8010",
+      "headerText": "FFFF8010",
+      "headerBorder": "FFFF8010",
+      "sliderModBounds": "FF984C09",
+      "buttonBackground": "FF984C09",
+      "activeTabBackground": "FF984C09",
+      "gridAlternateBackground": "FF6D3606"
     }
   },
   "componentColors": [
     {
       "comment": "Patch",
       "componentId": "878D9B5E-D11E-485D-8B57-5CAC8C8B612A",
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "Graphs when not graphSchemeFollowsModule",
       "componentId": "8DFD2F0E-A796-4570-B319-DCE1F0931DC9",
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "Last Tweaked",
       "componentId": "12937840-F39D-4041-986F-911005EC6C58",
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "Unison Top",
       "componentId": "6C2FD02F-F89C-491F-A7F8-4AD6EBB44A0E",
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "Main Selector",
       "componentId": "F81585F3-C753-4ED3-A0FC-5E517580EEF4",
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "Matrix Graphs",
       "componentId": "0A528CAB-69AC-40DC-914C-3919D10D1EA3",
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "Matrix Top Global",
       "componentId": "BE80B21E-B18E-4D47-8C81-BF58A5497DF6",
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "Matrix Top Voice",
       "componentId": "4982334C-FFE3-4335-9584-5E1EA167A0DC",
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     }
   ],
   "moduleColors": [
@@ -98,115 +98,115 @@
       "comment": "Output",
       "moduleId": "6BDA100B-8E99-4108-B38C-E5C6418EAF4B",
       "moduleSlot": -1,
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "Other (Panic)",
       "moduleId": "FE23D5B0-D854-4A62-BF43-7D583C17AAD3",
       "moduleSlot": -1,
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "GUI Settings",
       "moduleId": "E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B",
       "moduleSlot": -1,
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "Voice Module",
       "moduleId": "AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8",
       "moduleSlot": -1,
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "Master",
       "moduleId": "83AA98D4-9D12-4D61-81A4-4FAA935EDF5D",
       "moduleSlot": -1,
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "Settings",
       "moduleId": "3689411E-F31C-4F8C-BE3D-6F87938A1A1B",
       "moduleSlot": -1,
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "VMix",
       "moduleId": "5C91D5A0-3EC1-4142-935A-3FE83B60C04E",
       "moduleSlot": -1,
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "GMix",
       "moduleId": "09ED2CCE-3AC5-455E-935C-A684BEBC154D",
       "moduleSlot": -1,
-      "colorScheme": "Blue"
+      "colorScheme": "Red"
     },
     {
       "comment": "Osci",
       "moduleId": "73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Yellow"
     },
     {
       "comment": "Osci Mod",
       "moduleId": "546F9D74-670A-463D-80B0-B4BBD061DA88",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Yellow"
     },
     {
       "comment": "VFX",
       "moduleId": "V154051CE-66D9-41C8-B479-C52D1111C962",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Yellow"
     },
     {
       "comment": "GFX",
       "moduleId": "G154051CE-66D9-41C8-B479-C52D1111C962",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Yellow"
     },
     {
       "comment": "VEcho",
       "moduleId": "VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Yellow"
     },
     {
       "comment": "GEcho",
       "moduleId": "GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Yellow"
     },
     {
       "comment": "VLFO",
       "moduleId": "V6E9EC930-5391-41BB-9EDA-C9B79F3BE745",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Yellow"
     },
     {
       "comment": "GLFO",
       "moduleId": "G6E9EC930-5391-41BB-9EDA-C9B79F3BE745",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Yellow"
     },
     {
       "comment": "Env",
       "moduleId": "FC1DC75A-200C-4465-8CBE-0100E2C8FAF2",
       "moduleSlot": -1,
-      "colorScheme": "Green"
+      "colorScheme": "Yellow"
     },
     {
       "comment": "VMatrix",
       "moduleId": "V19758BF4-241B-4A59-A943-3AE7426C7CC9",
       "moduleSlot": -1,
-      "colorScheme": "Green",
+      "colorScheme": "Yellow",
       "audioParamColorSchemes": [
         {
           "comment": "Slot Count",
           "paramId": "V511B2721-2733-4BB4-BA75-C55AB8B6C54D",
           "paramSlot": -1,
-          "colorScheme": "Blue"
+          "colorScheme": "Red"
         }
       ]
     },
@@ -214,13 +214,13 @@
       "comment": "GMatrix",
       "moduleId": "G19758BF4-241B-4A59-A943-3AE7426C7CC9",
       "moduleSlot": -1,
-      "colorScheme": "Green",
+      "colorScheme": "Yellow",
       "audioParamColorSchemes": [
         {
           "comment": "Slot Count",
           "paramId": "G511B2721-2733-4BB4-BA75-C55AB8B6C54D",
           "paramSlot": -1,
-          "colorScheme": "Blue"
+          "colorScheme": "Red"
         }
       ]
     },
@@ -228,13 +228,13 @@
       "comment": "Unison",
       "moduleId": "5A505AF6-4E05-4680-BAFE-B880CE4E1BC2",
       "moduleSlot": -1,
-      "colorScheme": "Green",
+      "colorScheme": "Yellow",
       "audioParamColorSchemes": [
         {
           "comment": "Voice Count",
           "paramId": "617F995E-38CC-40BE-899E-AEAE37852092",
           "paramSlot": -1,
-          "colorScheme": "Blue"
+          "colorScheme": "Red"
         }
       ]
     }

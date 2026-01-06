@@ -186,7 +186,7 @@ MakeGlobalUniContent(
       [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
       uniGraph));
     fixedGraphs->push_back(uniGraph);
-    grid->Add(guiRow, 4, plugGUI->StoreComponent<FBFillerComponent>(2, 2));
+    grid->Add(guiRow, 4, plugGUI->StoreComponent<FBFillerComponent>(2, 2)); 
     grid->MarkSection({ { guiRow, 0 }, { 1, 5 } });
 
     auto spread = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, targetIndex } });

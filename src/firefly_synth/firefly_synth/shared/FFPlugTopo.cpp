@@ -60,7 +60,7 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->guiAspectRatioHeight = 69;
   result->patchExtension = "ff2preset";
   result->patchFilterName = "FF2 Presets";
-  result->defaultThemeName = "Firefly Default";          
+  result->defaultThemeName = "Firefly Dark Default";          
   result->guiUserScaleModule = (int)FFModuleType::GUISettings;
   result->guiUserScaleParam = (int)FFGUISettingsGUIParam::UserScale;
   result->guiFactory = [](FBHostGUIContext* hostContext) { 
