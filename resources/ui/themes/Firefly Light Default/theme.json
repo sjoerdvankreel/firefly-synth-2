@@ -63,10 +63,10 @@
     },
     "Green": {
       "primary": "FF60C030",
-      "sliderModBounds": "FF2A7D59",
-      "buttonBackground": "FF2A7D59",
-      "activeTabBackground": "FF2A7D59",
-      "gridAlternateBackground": "FF1C533B"
+      "sliderModBounds": "FF39721C",
+      "buttonBackground": "FF39721C",
+      "activeTabBackground": "FF39721C",
+      "gridAlternateBackground": "FF295214"
     }
   },
   "componentColors_comment": "Overrides the default scheme for anything not related to a module.",
