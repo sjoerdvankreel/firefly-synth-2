@@ -352,7 +352,7 @@ right-click to show the generic context menu and click "dump topology".
 The default themefile is reasonably well documented.<br/>
 It contains the internal identifiers of all modules and not-module related themeable sections.<br/>
 It also contains some examples of how to override parameters within a module, but it does not contain all parameter identifiers.<br/>
-For that, use the "dump topology" menu. Default theme: [theme.json](/resources/ui/themes/Default/theme.json).
+For that, use the "dump topology" menu.
 
 ### Theme JSON structure 
 The main structure is set up as follows:
