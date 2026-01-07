@@ -1,4 +1,3 @@
-# Nearly ready for V2
 Read the [Comparison to FF1](/static/compare_to_ff1.md).<br/>
 Read the [Manual](/static/Manual.md). Click the outline (3 dashes) menu for table-of-contents.<br/>
 See [host_test](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test) for host compatibility tests.<br/>
