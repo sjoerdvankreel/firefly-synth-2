@@ -44,9 +44,9 @@ You can use the menu option "Dump ParamList" to compare what params are on old a
 
 # Relevant Directories
 ## Plugin Folder
-  * Mac: /Library/Audio/Plug-ins/VST3, /Library/Audio/Plug-ins/CLAP (global)
-  * Linux: /usr/lib/vst3, /usr/lib/clap (global), $HOME/.vst3, $HOME/.clap (user)
-  * Windows: Program Files/Common Files/VST3, Program Files/Common Files/CLAP (global)
+* Mac: /Library/Audio/Plug-ins/VST3, /Library/Audio/Plug-ins/CLAP (global)
+* Linux: /usr/lib/vst3, /usr/lib/clap (global), $HOME/.vst3, $HOME/.clap (user)
+* Windows: Program Files/Common Files/VST3, Program Files/Common Files/CLAP (global)
 
 The exact rules are laid out [here](https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Locations+Format/Plugin+Locations.html) for VST3.<br/>
 I haven't checked for CLAP, but I would be surprised if they are any different.
@@ -55,6 +55,11 @@ I haven't checked for CLAP, but I would be surprised if they are any different.
 Currently only stores the logfile.<br/>
 This is whatever JUCE decides it should be, adjusted for XDG_CONFIG_HOME on Linux.<br/>
 See [https://docs.juce.com/master/classjuce_1_1File.html](https://docs.juce.com/master/classjuce_1_1File.html) and search for "userApplicationDataDirectory".
+
+For me, it is:
+* Mac: TODO
+* Linux: ~/.config/Sjoerd van Kreel/Firefly Synth 2
+* Windows: C:\Users\[name]\AppData\Roaming\Sjoerd van Kreel\Firefly Synth 2
 
 # Known Issues
 * String oscillator responds to sample rate, but it shouldn't.<br/>
