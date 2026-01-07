@@ -33,7 +33,7 @@ Unfortunately Renoise is not officially supported because of<br/>
 [https://forum.renoise.com/t/saved-automation-data-does-not-respect-vst3s-parameter-id/68461](https://forum.renoise.com/t/saved-automation-data-does-not-respect-vst3s-parameter-id/68461).<br/>
 You can use it as long as you don't update the plugin (read: install once, and never again).<br/>
 Updating the plugin might or might not work, but in any case, it's dangerous.<br/>
-
+<br/>
 If your dead-set on using Renoise, after installing a new version of the plugin, check the logfile.<br/>
 If it says "Parameter indices are stable" (everywhere), all good.<br/>
 If it says "PARAMETER INDICES HAVE CHANGED" (anywhere), need to re-check your automation lanes.<br/>
