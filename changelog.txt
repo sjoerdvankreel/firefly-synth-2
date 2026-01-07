@@ -1,3 +1,11 @@
+January 7, 2026 - Beta 4.
+
+- Brushed up the default theme a bit.
+- Add additional themes based on FF1's color schemes.
+- Add new "dump raw parameter list" option to context menu, see manual.
+- Add a couple new theming extension points in the json file, see manual.
+- Bugfix: revert to default theme if the one in the daw session is not found.
+
 January 3, 2026 - Beta 3.
 
 - Align VLFO/GLFO UI.

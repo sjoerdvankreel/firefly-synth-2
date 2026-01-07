@@ -1,27 +1,7 @@
 TODOLIST for beta-next
-[x] make all the "darker" themeable
-[x] different flashdisable => primary something
-[x] different highlightthumb => prob not
-[x] slider modbounds => button bg
-[x] slider engine thumb => dark for light
-[x] allow default theme name customizable
-[x] do more themes
-[x] document the new theming stuff
-[x] say the folder name should match the theme neme
-[x] soft/hard - default/hot/cold - dark/light, all combos
-[x] the default themefile location changed, update the docs to just show the folder
-[x] never must the theme combo be empty
-[x] document paramlist dump
-[x] dump changed paramids option for renoise (or log it)
-[x] document paramswap log
-[x] make a note about how to "install" it
-[x] list the relevant folders in the GH page
-[x ] mention supported OSes / libc
 [ ] credit tot
-[ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
-
-TODOLIST for beta-next
 [ ] make some presets
+[ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
 
 pck support
 autosoftclip
