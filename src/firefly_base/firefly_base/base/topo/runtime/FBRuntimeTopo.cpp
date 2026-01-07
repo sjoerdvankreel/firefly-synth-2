@@ -8,6 +8,7 @@
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 
 #include <juce_core/juce_core.h>
+#include <sstream>
 
 using namespace juce;
 
@@ -98,7 +99,16 @@ FBRuntimeTopo::ModuleAtTopo(
 std::string 
 FBRuntimeTopo::PrintParamList() const
 {
-  return {};
+  std::ostringstream result = {};
+  for (int i = 0; i < audio.params.size(); i++)
+  {
+    auto const& param = audio.params[i];
+    result << "Index: " << i << "\n";
+    result << "\tTag: " << param.tag << "\n";
+    result << "\tName: " << param.longName << "\n";
+    result << "\tId: " << param.id << "\n";
+  }
+  return result.str();
 }
 
 var
