@@ -15,7 +15,7 @@ See [demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for
 </table>
 
 # Download
-* See the [Releases](https://github.com/sjoerdvankreel/firefly-synth-2/releases) section.
+See the [Releases](https://github.com/sjoerdvankreel/firefly-synth-2/releases) section.
 
 # Build
 * Git clone recursive
