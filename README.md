@@ -14,7 +14,10 @@ See [demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for
   </tr>
 </table>
 
-# How To Build
+# Download
+* See the [Releases](https://github.com/sjoerdvankreel/firefly-synth-2/releases) section.
+
+# Build
 * Git clone recursive
 * Build scripts are in /scripts: build_windows.bat/build_linux.sh/build_mac.bat
 * build_xyz Debug|RelWithDebInfo|Release (0|1):(warn as error) (0|1):(enable asan)
