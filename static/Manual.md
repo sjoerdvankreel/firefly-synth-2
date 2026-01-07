@@ -379,7 +379,7 @@ All colors are specified as ARGB hex.
   * primary: what makes it stand out. Used for various things like graphs, buttons, combo texts, sliders etc.
   * background: background for the GUI as a whole and pop-up windows.
   * meterFill/meterTrack/meterAlert: for the meters in the output section.
-  * graphGrid/graphBackground/graphBorder: only used for painting graphs (any of them, main graphs, MSEG, matrix and unison graphs).
+  * graphGrid/graphBackground/graphBorder: only used for painting graphs (all of them)
   * headerText/headerBorder/headerBackground: for tab headers when there is only 1 tab.
   * sectionBorder/sectionBackground: mainly used for module sections, but other stuff as well.
   * paramSecondary/paramBackground: used for menu separators, check/comboboxes, slider tracks, and more.
