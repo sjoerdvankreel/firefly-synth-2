@@ -95,6 +95,12 @@ FBRuntimeTopo::ModuleAtTopo(
   return &modules[moduleTopoToRuntime.at(topoIndices)];
 }
 
+std::string 
+FBRuntimeTopo::PrintParamList() const
+{
+  return {};
+}
+
 var
 FBRuntimeTopo::SaveEditStateToVar(
   FBScalarStateContainer const& editState, bool patchOnly) const

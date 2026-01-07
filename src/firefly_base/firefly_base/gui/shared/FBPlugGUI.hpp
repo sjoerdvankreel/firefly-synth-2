@@ -55,10 +55,13 @@ public IFBHostGUIContextListener
   std::unique_ptr<FBFileBrowserComponent> _loadPatchBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _savePatchBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _saveTopologyBrowser = {};
+  std::unique_ptr<FBFileBrowserComponent> _saveParamListBrowser = {};
 
   void ShowLogFolder();
   void ShowPluginFolder();
   void DumpTopologyToFile();
+  void DumpParamListToFile();
+
   bool LoadPatchFromText(
     std::string const& undoAction, 
     std::string const& patchName,

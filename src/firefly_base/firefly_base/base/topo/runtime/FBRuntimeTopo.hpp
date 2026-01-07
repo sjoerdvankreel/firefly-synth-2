@@ -31,6 +31,8 @@ public:
 
   FB_NOCOPY_MOVE_NODEFCTOR(FBRuntimeTopo);
   FBRuntimeTopo(std::unique_ptr<FBStaticTopo>&& topo);
+
+  std::string PrintParamList() const;
   FBRuntimeModule const* ModuleAtTopo(FBTopoIndices const& topoIndices) const;
 
   juce::var SaveGUIStateToVar(FBGUIStateContainer const& guiState) const;

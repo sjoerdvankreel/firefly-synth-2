@@ -58,6 +58,9 @@ _hostContext(hostContext)
   _saveTopologyBrowser = std::make_unique<FBFileBrowserComponent>(this, true, "Dump Topology", "txt", "Text Files", [this](juce::File const& file) {
     file.replaceWithText(HostContext()->Topo()->static_->PrintTopology());
   });
+  _saveParamListBrowser = std::make_unique<FBFileBrowserComponent>(this, true, "Dump Param List", "txt", "Text Files", [this](juce::File const& file) {
+    file.replaceWithText(HostContext()->Topo()->PrintParamList());
+  });
 
   addAndMakeVisible(_tooltipWindow);
   addMouseListener(this, true);
@@ -554,18 +557,19 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   PopupMenu menu;
   menu.addItem(1, "Show Manual");
   menu.addItem(2, "Dump Topology");
+  menu.addItem(3, "Dump Param List");
   menu.addSeparator();
-  menu.addItem(3, "Show Log Folder");
-  menu.addItem(4, "Show Plugin Folder");
+  menu.addItem(4, "Show Log Folder");
+  menu.addItem(5, "Show Plugin Folder");
   menu.addSeparator();
-  menu.addItem(5, "Copy Patch");
-  menu.addItem(6, "Paste Patch");
+  menu.addItem(6, "Copy Patch");
+  menu.addItem(7, "Paste Patch");
   if (undoState.CanUndo() || undoState.CanRedo())
     menu.addSeparator();
   if (undoState.CanUndo())
-    menu.addItem(7, "Undo " + undoState.UndoAction());
+    menu.addItem(8, "Undo " + undoState.UndoAction());
   if (undoState.CanRedo())
-    menu.addItem(8, "Redo " + undoState.RedoAction());
+    menu.addItem(9, "Redo " + undoState.RedoAction());
 
   PopupMenu::Options options;
   options = options.withMousePosition();
@@ -574,16 +578,17 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   menu.showMenuAsync(options, [this](int id) {
     if (id == 1) HostContext()->ShowOnlineManual();
     if (id == 2) DumpTopologyToFile();
-    if (id == 3) ShowLogFolder();
-    if (id == 4) ShowPluginFolder();
-    if (id == 7) HostContext()->UndoState().Undo();
-    if (id == 8) HostContext()->UndoState().Redo();
-    if (id == 5) {
+    if (id == 3) DumpParamListToFile();
+    if (id == 4) ShowLogFolder();
+    if (id == 5) ShowPluginFolder();
+    if (id == 8) HostContext()->UndoState().Undo();
+    if (id == 9) HostContext()->UndoState().Redo();
+    if (id == 6) {
       FBScalarStateContainer editState(*HostContext()->Topo());
       editState.CopyFrom(HostContext(), true);
       SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveEditStateToString(editState, true));
     }
-    if (id == 6) {
+    if (id == 7) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
         AlertWindow::showMessageBoxAsync(
           MessageBoxIconType::NoIcon,
@@ -638,6 +643,14 @@ FBPlugGUI::DumpTopologyToFile()
 }
 
 void
+FBPlugGUI::DumpParamListToFile()
+{
+  FB_LOG_ENTRY_EXIT();
+  HideAllOverlaysAndFileBrowsers();
+  _saveParamListBrowser->Show();
+}
+
+void
 FBPlugGUI::ShowLogFolder()
 {
   auto path = FBGetLogPath(HostContext()->Topo()->static_->meta);
@@ -658,6 +671,7 @@ FBPlugGUI::HideAllOverlaysAndFileBrowsers()
   _loadPatchBrowser->Hide();
   _savePatchBrowser->Hide();
   _saveTopologyBrowser->Hide();
+  _saveParamListBrowser->Hide();
 }
 
 void 
