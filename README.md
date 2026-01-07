@@ -29,7 +29,7 @@ The entire folder, not just the binary.
 
 # Relevant Directories
 * Plugin folder
-  * Mac: /Library/Audio/Plug-ins/VST3/, /Library/Audio/Plug-ins/CLAP (global)
+  * Mac: /Library/Audio/Plug-ins/VST3, /Library/Audio/Plug-ins/CLAP (global)
   * Linux: /usr/lib/vst3, /usr/lib/clap (global), $HOME/.vst3, $HOME/.clap (user)
   * Windows: Program Files/Common Files/VST3, Program Files/Common Files/CLAP (global)
 
