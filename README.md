@@ -17,8 +17,10 @@ See [demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for
 See the [Releases](https://github.com/sjoerdvankreel/firefly-synth-2/releases) section.
 
 # Install
-* Remove the previous version (if any) (all of it, entire folder, not just the binary) from your VST3/CLAP plugin folder
-* Copy the new version folder (the entire thing, not just the binary) to your VST3/CLAP plugin folder
+* Remove the previous version (if any) from your VST3/CLAP plugin folder.<br/>
+All of it, entire folder, not just the binary.
+* Copy the new version folder to your VST3/CLAP plugin folder.<br/>
+The entire folder, not just the binary.
 
 # Build from source
 * Git clone recursive
