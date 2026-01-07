@@ -33,10 +33,11 @@ Unfortunately Renoise is not officially supported because of<br/>
 [https://forum.renoise.com/t/saved-automation-data-does-not-respect-vst3s-parameter-id/68461](https://forum.renoise.com/t/saved-automation-data-does-not-respect-vst3s-parameter-id/68461).<br/>
 You can use it as long as you don't update the plugin (read: install once, and never again).<br/>
 Updating the plugin might or might not work, but in any case, it's dangerous.<br/>
+
 If your dead-set on using Renoise, after installing a new version of the plugin, check the logfile.<br/>
 If it says "Parameter indices are stable" (everywhere), all good.<br/>
 If it says "PARAMETER INDICES HAVE CHANGED" (anywhere), need to re-check your automation lanes.<br/>
-You can use the menu option "Dump ParamList" to figure out which old index corresponds to which new index, but it's tedious.<br/>
+You can use the menu option "Dump ParamList" to compare what params are on old and new indices.
 
 # Known Issues
 * String oscillator responds to sample rate, but it shouldn't.<br/>
