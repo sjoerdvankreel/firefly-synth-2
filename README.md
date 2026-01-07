@@ -16,7 +16,11 @@ See [demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for
 # Download
 See the [Releases](https://github.com/sjoerdvankreel/firefly-synth-2/releases) section.
 
-# Build
+# Install
+* Remove the previous version (if any) (all of it, entire folder, not just the binary) from your VST3/CLAP plugin folder
+* Copy the new version folder (the entire thing, not just the binary) to your VST3/CLAP plugin folder
+
+# Build from source
 * Git clone recursive
 * Build scripts are in /scripts: build_windows.bat/build_linux.sh/build_mac.bat
 * build_xyz Debug|RelWithDebInfo|Release (0|1):(warn as error) (0|1):(enable asan)
