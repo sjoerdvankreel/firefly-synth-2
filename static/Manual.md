@@ -313,6 +313,9 @@ Right-click on some empty space to show the generic context menu.
 * Dump topology: save a description of the plugins internals to a text file.<br/>
 This is primarily meant to help in creating theme files which rely on internal identifiers which are printed in this document.<br/>
 Other than that it's just a dynamically generated overview of the plug's modules and parameters.<br/>
+* Dump parameter list: save the raw parameter list to a text file.<br/>
+This is primarily meant as a debugging tool to see all parameter's internal identifiers and tags.<br/>
+Parameter tags are the things that should be used by the host to identify automation lanes.
 
 Right-click on a GUI parameter (f.e. "Show Modulation Bounds"):
 * Set to default.
