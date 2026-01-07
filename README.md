@@ -151,8 +151,13 @@ You have to download the zip to get at the PolyBLEP source for all waveforms.
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_global_uni_lfo_echo.rpp)
 
 # Screenshots
+## Main
 <img alt="Screenshot Main" src="static/screenshot_main.png"/>
+## Matrix
 <img alt="Screenshot Matrix" src="static/screenshot_matrix.png"/>
+## Unison
 <img alt="Screenshot Unison" src="static/screenshot_unison.png"/>
+## Multi-Tap Delay
 <img alt="Screenshot Multitap" src="static/screenshot_multitap.png"/>
+## MSEG
 <img alt="Screenshot MSEG" src="static/screenshot_mseg.png"/>
