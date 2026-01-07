@@ -73,8 +73,7 @@ Pitch is good, timbre is not. Long-standing issue, might prove difficult.
 This causes clicking which you can get rid of by disabling MIDI modwheel/pitchbend sources in the global mod matrix (PB is on by default).
 If you actually do need and use it, let me know how it fares.
 * "Show Manual"/"Show Log Folder"/"Show Plugin Folder" context menu options are broken on some Linux hosts.<br/>
-Workaround: go find those folders yourself, and the manual is over [here](/static/Manual.md).<br/>
-TODO: list the relevant folder locations (user data / plugin binary) for all OSes right here in this document.
+Workaround: go find those folders yourself (see above), and the manual is over [here](/static/Manual.md).
 * Some hosts do not paint the realtime visualization (graphs and knobs) for VST3.
 This affects mostly Linux hosts, but some Windows/Mac as well.
 CLAP should be OK everywhere, and even for VST3 it's not a big deal, just means you don't get realtime visual feedback.<br/>
