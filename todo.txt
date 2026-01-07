@@ -11,12 +11,11 @@ TODOLIST for beta-next
 [x] soft/hard - default/hot/cold - dark/light, all combos
 [x] the default themefile location changed, update the docs to just show the folder
 [x] never must the theme combo be empty
-[ ] document paramlist dump
+[x] document paramlist dump
+[ ] dump changed paramids option for renoise (or log it)
 [ ] document paramswap log
 [ ] make a note about how to "install" it
-[ ] dump changed paramids option for renoise (or log it)
 [ ] list the relevant folders in the GH page
-[ ] dump topo should include the tags and indices, for debugging renoise
 [ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
 [ ] mention supported OSes / libc
 
