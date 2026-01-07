@@ -42,12 +42,6 @@ Currently only stores the logfile.<br/>
 This is whatever JUCE decides it should be, adjusted for XDG_CONFIG_HOME on Linux.<br/>
 See [https://docs.juce.com/master/classjuce_1_1File.html](https://docs.juce.com/master/classjuce_1_1File.html) and search for "userApplicationDataDirectory".
 
-# Special Thanks
-* [RustoMCSpit](https://github.com/RustoMCSpit)<br/>
-For being an early adopter and helping out with various things on the UI and theming side.
-* [Surge Synth Team](https://surge-synth-team.org)<br/>
-For help with loads of stuff, from low-level technical details to CLAP support to microtuning and probably more.
-
 # Host Support
 Tested on Carla, Bitwig, Ardour, FLStudio, Reaper and Renoise.<br/>
 It should work ok on others as well (f.e. known to work on QTractor).<br/>
@@ -76,6 +70,12 @@ TODO: list the relevant folder locations (user data / plugin binary) for all OSe
 This affects mostly Linux hosts, but some Windows/Mac as well.
 CLAP should be OK everywhere, and even for VST3 it's not a big deal, just means you don't get realtime visual feedback.<br/>
 Maybe related: https://forums.steinberg.net/t/dataexchange-on-linux/917660/4.<br/>
+
+# Special Thanks
+* [RustoMCSpit](https://github.com/RustoMCSpit)<br/>
+For being an early adopter and helping out with various things on the UI and theming side.
+* [Surge Synth Team](https://surge-synth-team.org)<br/>
+For help with loads of stuff, from low-level technical details to CLAP support to microtuning and probably more.
 
 # Dependencies
 - CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
