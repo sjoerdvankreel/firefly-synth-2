@@ -62,8 +62,8 @@ This is whatever JUCE decides it should be, adjusted for XDG_CONFIG_HOME on Linu
 See [https://docs.juce.com/master/classjuce_1_1File.html](https://docs.juce.com/master/classjuce_1_1File.html) and search for "userApplicationDataDirectory".
 
 For me, it is:
-* Mac: TODO
 * Linux: ~/.config/Sjoerd van Kreel/Firefly Synth 2
+* Mac: /users/USERNAME/Library/Sjoerd van Kreel/Firefly Synth 2
 * Windows: C:\Users\USERNAME\AppData\Roaming\Sjoerd van Kreel\Firefly Synth 2
 
 # Known Issues
