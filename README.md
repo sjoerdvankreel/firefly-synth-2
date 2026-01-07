@@ -59,7 +59,7 @@ See [https://docs.juce.com/master/classjuce_1_1File.html](https://docs.juce.com/
 For me, it is:
 * Mac: TODO
 * Linux: ~/.config/Sjoerd van Kreel/Firefly Synth 2
-* Windows: C:\Users\[name]\AppData\Roaming\Sjoerd van Kreel\Firefly Synth 2
+* Windows: C:\Users\USERNAME\AppData\Roaming\Sjoerd van Kreel\Firefly Synth 2
 
 # Known Issues
 * String oscillator responds to sample rate, but it shouldn't.<br/>
