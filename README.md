@@ -32,9 +32,9 @@ The entire folder, not just the binary.
   * Mac: /Library/Audio/Plug-ins/VST3/, /Library/Audio/Plug-ins/CLAP (global)
   * Linux: /usr/lib/vst3, /usr/lib/clap (global), $HOME/.vst3, $HOME/.clap (user)
   * Windows: Program Files/Common Files/VST3, Program Files/Common Files/CLAP (global)
-  
-The exact rules are laid out [here](https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Locations+Format/Plugin+Locations.html)
-for VST3. I haven't checked for CLAP, but I would be surprised if they are any different.
+
+The exact rules are laid out [here](https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Locations+Format/Plugin+Locations.html) for VST3.<br/>
+I haven't checked for CLAP, but I would be surprised if they are any different.
 
 # Special Thanks
 * [RustoMCSpit](https://github.com/RustoMCSpit)<br/>
