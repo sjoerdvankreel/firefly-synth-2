@@ -17,7 +17,6 @@ TODOLIST for beta-next
 [x] make a note about how to "install" it
 [x] list the relevant folders in the GH page
 [x ] mention supported OSes / libc
-/users/USERNAME/Library/Sjoerd van Kreel
 [ ] credit tot
 [ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
 
