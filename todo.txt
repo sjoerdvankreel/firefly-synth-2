@@ -10,7 +10,7 @@ TODOLIST for beta-next
 [x] say the folder name should match the theme neme
 [x] soft/hard - default/hot/cold - dark/light, all combos
 [x] the default themefile location changed, update the docs to just show the folder
-[ ] never must the theme combo be empty
+[x] never must the theme combo be empty
 [ ] make a note about how to "install" it
 [ ] dump changed paramids option for renoise (or log it)
 [ ] list the relevant folders in the GH page

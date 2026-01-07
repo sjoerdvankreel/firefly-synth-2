@@ -53,7 +53,16 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
 {
   FB_LOG_ENTRY_EXIT();
   // needs to be before SetupGUI()
-  SwitchTheme(HostContext()->ThemeName());
+  bool found = false;
+  for(int i = 0; i < Themes().size(); i++)
+    if (Themes()[i].name == HostContext()->ThemeName())
+    {
+      SwitchTheme(HostContext()->ThemeName());
+      found = true;
+      break;
+    }
+  if (!found)
+    SwitchTheme(HostContext()->Topo()->static_->defaultThemeName);
   SetupGUI();
   InitAllDependencies();
   resized();
