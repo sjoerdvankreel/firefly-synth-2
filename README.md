@@ -22,7 +22,7 @@ All of it, entire folder, not just the binary.
 * Copy the new version folder to your VST3/CLAP plugin folder.<br/>
 The entire folder, not just the binary.
 
-# Build from source
+# Build From Source
 * Git clone recursive
 * Build scripts are in /scripts: build_windows.bat/build_linux.sh/build_mac.bat
 * build_xyz Debug|RelWithDebInfo|Release (0|1):(warn as error) (0|1):(enable asan)
