@@ -27,6 +27,11 @@ The entire folder, not just the binary.
 * Build scripts are in /scripts: build_windows.bat/build_linux.sh/build_mac.bat
 * build_xyz Debug|RelWithDebInfo|Release (0|1):(warn as error) (0|1):(enable asan)
 
+# Platform Support
+* Windows 10+, X64
+* MacOS 10.15+, X64/ARM
+* Linux X64, glibc 2.35+
+
 # Host Support
 Tested on Carla, Bitwig, Ardour, FLStudio, Reaper and Renoise.<br/>
 It should work ok on others as well (f.e. known to work on QTractor).<br/>
