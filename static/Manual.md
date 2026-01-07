@@ -374,19 +374,24 @@ This is the fallback/default scheme.<br/>
 All colors are specified as ARGB hex.
   * graphAlpha: transparancy for filled graphs.
   * dimDisabled: dim factor for disabled parameters and other stuff.
-  * text: this is the text color for labels etc.
+  * text, text2: mainly used for labels and graph texts.
   * primary: what makes it stand out. Used for various things like graphs, buttons, combo texts, sliders etc.
   * background: background for the GUI as a whole and pop-up windows.
   * meterFill/meterTrack/meterAlert: for the meters in the output section.
-  * graphGrid/graphBackground: only used for painting graphs (any of them, main graphs, MSEG, matrix and unison graphs).
+  * graphGrid/graphBackground/graphBorder: only used for painting graphs (any of them, main graphs, MSEG, matrix and unison graphs).
   * headerText/headerBorder/headerBackground: for tab headers when there is only 1 tab.
   * sectionBorder/sectionBackground: mainly used for module sections, but other stuff as well.
   * paramSecondary/paramBackground: used for menu separators, check/comboboxes, slider tracks, and more.
-  * paramHighlight: anything that needs highlighting. "Show mod bounds", "Engine Knob Visual" etc.
+  * paramHighlight: "show tweaked from" option and more.
   * paramFlashDisabling: when a parameter is flashing because it's disabling another parameter.
+  * sliderModBounds: highlight for "Show mod bounds" option.
+  * sliderEngineThumb: highlight for "Engine Knob Visuals" option.
   * alertWindowPrimary: when a messagebox pops up.
   * fileBrowserPrimary: file browser buttons and more.
-  * fileBrowserHighlight: file browser treeview selection background.
+  * fileBrowserHighlight: file browser treeview selection and scrollbar.
+  * buttonBackground: it's for buttons.
+  * activeTabBackground: selected tab background.
+  * gridAlternateBackground: used for various things f.e. overlay headers.
 * colorSchemes: named color schemes. Can override anything from the default.
 * componentColors: named components (top graphs, last tweaked etc). Can override default color scheme.
   * componentId: component identifier, see topology.
