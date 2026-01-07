@@ -334,7 +334,8 @@ Themes are in Contents/Resources/ui/themes.<br/>
 You can edit an existing theme or just copy-paste a folder and edit to your likings.<br/>
 FF2 will pick up whatever is in the themes folder.<br/>
 Theme folder names are NOT the unique identifier of a theme.<br/>
-That's the "name" field in theme.json. This field should be unique across all themes.
+That's the "name" field in theme.json (but just keep 'em the same, I haven't tested what happens if they divert).<br/>
+This field should be unique across all themes.
 
 When editing themes, the logfile provides reasonable feedback for when stuff's not working.<br/>
 Things like "failed to parse json at line x, column y", cannot find color scheme "abc", cannot find module "xyz" etc.<br/>
