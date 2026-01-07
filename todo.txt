@@ -6,26 +6,25 @@ TODOLIST for beta-next
 [x] slider engine thumb => dark for light
 [x] allow default theme name customizable
 [x] do more themes
+[x] document the new theming stuff
+[x] say the folder name should match the theme neme
+[x] soft/hard - default/hot/cold - dark/light, all combos
+[x] the default themefile location changed, update the docs to just show the folder
 [ ] never must the theme combo be empty
-[ ] document the new theming stuff
-[ ] say the folder name should match the theme neme
-[ ] soft/hard - default/hot/cold - dark/light, all combos
-[ ] the default themefile location changed, update the docs to just show the folder
 [ ] make a note about how to "install" it
 [ ] dump changed paramids option for renoise (or log it)
 [ ] list the relevant folders in the GH page
 [ ] dump topo should include the tags and indices, for debugging renoise
-[ ] bg images in main tabs and header and maybe elsewhere
-[ ] not right-click-change horizontal sliders
-[ ] make some presets
 [ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
-[ ] credit thoth-amon
-[ ] checkout https://linuxmusicians.com/viewtopic.php?p=178455#p178455
 [ ] mention supported OSes / libc
+
+TODOLIST for beta-next
+[ ] make some presets
 
 pck support
 autosoftclip
 fancy patch browser
+check into AV Linux
 arpeggiator/sequencer
 vst3 note expr + midi mpe
 dedicated distortion module
