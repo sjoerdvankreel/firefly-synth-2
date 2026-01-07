@@ -5,7 +5,8 @@ TODOLIST for beta-next
 [x] slider modbounds => button bg
 [x] slider engine thumb => dark for light
 [x] allow default theme name customizable
-[ ] do more themes
+[x] do more themes
+[ ] never must the theme combo be empty
 [ ] document the new theming stuff
 [ ] say the folder name should match the theme neme
 [ ] soft/hard - default/hot/cold - dark/light, all combos
