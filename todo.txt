@@ -12,8 +12,8 @@ TODOLIST for beta-next
 [x] the default themefile location changed, update the docs to just show the folder
 [x] never must the theme combo be empty
 [x] document paramlist dump
-[ ] dump changed paramids option for renoise (or log it)
-[ ] document paramswap log
+[x] dump changed paramids option for renoise (or log it)
+[x] document paramswap log
 [ ] make a note about how to "install" it
 [ ] list the relevant folders in the GH page
 [ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
