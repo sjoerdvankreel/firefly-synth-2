@@ -29,8 +29,8 @@ The entire folder, not just the binary.
 
 # Platform Support
 * Windows 10+, X64
-* MacOS 10.15+, X64/ARM
 * Linux X64, glibc 2.35+
+* MacOS 10.15+, X64/ARM
 
 # Host Support
 Tested on Carla, Bitwig, Ardour, FLStudio, Reaper and Renoise.<br/>
