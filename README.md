@@ -39,7 +39,7 @@ I haven't checked for CLAP, but I would be surprised if they are any different.
 
 ## User App Data Folder
 Currently only stores the logfile.<br/>
-This is whatever JUCE decides it should be.<br/>
+This is whatever JUCE decides it should be, adjusted for XDG_CONFIG_HOME on Linux.<br/>
 See [https://docs.juce.com/master/classjuce_1_1File.html](https://docs.juce.com/master/classjuce_1_1File.html) and search for "userApplicationDataDirectory".
 
 # Special Thanks
