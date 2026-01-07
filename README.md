@@ -171,3 +171,29 @@ You have to download the zip to get at the PolyBLEP source for all waveforms.
 ## MSEG
 
 <img alt="Screenshot MSEG" src="static/screenshot_mseg.png"/>
+
+## Themes
+
+### Dark Default
+
+<img alt="Screenshot Theme Dark Default" src="static/screenshot_theme_dark_default.png"/>
+
+### Dark Hot
+
+<img alt="Screenshot Theme Dark Hot" src="static/screenshot_theme_dark_hot.png"/>
+
+### Dark Cold
+
+<img alt="Screenshot Theme Dark Cold" src="static/screenshot_theme_dark_cold.png"/>
+
+### Light Default
+
+<img alt="Screenshot Theme Light Default" src="static/screenshot_theme_light_default.png"/>
+
+### Light Hot
+
+<img alt="Screenshot Theme Light Hot" src="static/screenshot_theme_light_hot.png"/>
+
+### Light Cold
+
+<img alt="Screenshot Theme Light Cold" src="static/screenshot_theme_light_cold.png"/>
