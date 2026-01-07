@@ -1,8 +1,7 @@
-# Nearly ready for V2
 Read the [Comparison to FF1](/static/compare_to_ff1.md).<br/>
-Read the [Manual](/static/Manual.md). Click the outline (3 dashes) menu for table-of-contents.<br/>
 See [host_test](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test) for host compatibility tests.<br/>
 See [demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for feature tests, and some nice demos along the way.<br/>
+Read the [Manual](/static/Manual.md). Click the outline (3 dashes) menu for table-of-contents.<br/>
 
 # Legal
 <table>
@@ -14,16 +13,24 @@ See [demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for
   </tr>
 </table>
 
-# How To Build
+# Download
+See the [Releases](https://github.com/sjoerdvankreel/firefly-synth-2/releases) section.
+
+# Install
+* Remove the previous version (if any) from your VST3/CLAP plugin folder.<br/>
+All of it, entire folder, not just the binary.
+* Copy the new version folder to your VST3/CLAP plugin folder.<br/>
+The entire folder, not just the binary.
+
+# Build From Source
 * Git clone recursive
 * Build scripts are in /scripts: build_windows.bat/build_linux.sh/build_mac.bat
 * build_xyz Debug|RelWithDebInfo|Release (0|1):(warn as error) (0|1):(enable asan)
 
-# Special Thanks
-* [RustoMCSpit](https://github.com/RustoMCSpit)<br/>
-For being an early adopter and helping out with various things on the UI and theming side.
-* [Surge Synth Team](https://surge-synth-team.org)<br/>
-For help with loads of stuff, from low-level technical details to CLAP support to microtuning and probably more.
+# Platform Support
+* Windows 10+, X64
+* Linux X64, glibc 2.35+
+* MacOS 10.15+, X64/ARM
 
 # Host Support
 Tested on Carla, Bitwig, Ardour, FLStudio, Reaper and Renoise.<br/>
@@ -33,6 +40,31 @@ Unfortunately Renoise is not officially supported because of<br/>
 [https://forum.renoise.com/t/saved-automation-data-does-not-respect-vst3s-parameter-id/68461](https://forum.renoise.com/t/saved-automation-data-does-not-respect-vst3s-parameter-id/68461).<br/>
 You can use it as long as you don't update the plugin (read: install once, and never again).<br/>
 Updating the plugin might or might not work, but in any case, it's dangerous.<br/>
+<br/>
+If your dead-set on using Renoise, after installing a new version of the plugin,<br/>
+load an existing project and check the logfile.<br/>
+If it says "Parameter indices are stable" (everywhere), all good.<br/>
+If it says "PARAMETER INDICES HAVE CHANGED" (anywhere), need to re-check your automation lanes.<br/>
+You can use the menu option "Dump ParamList" to compare what params are on old and new indices.
+
+# Relevant Directories
+## Plugin Folder
+* Mac: /Library/Audio/Plug-ins/VST3, /Library/Audio/Plug-ins/CLAP (global)
+* Linux: /usr/lib/vst3, /usr/lib/clap (global), $HOME/.vst3, $HOME/.clap (user)
+* Windows: Program Files/Common Files/VST3, Program Files/Common Files/CLAP (global)
+
+The exact rules are laid out [here](https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Locations+Format/Plugin+Locations.html) for VST3.<br/>
+I haven't checked for CLAP, but I would be surprised if they are any different.
+
+## User App Data Folder
+Currently only stores the logfile.<br/>
+This is whatever JUCE decides it should be, adjusted for XDG_CONFIG_HOME on Linux.<br/>
+See [https://docs.juce.com/master/classjuce_1_1File.html](https://docs.juce.com/master/classjuce_1_1File.html) and search for "userApplicationDataDirectory".
+
+For me, it is:
+* Linux: ~/.config/Sjoerd van Kreel/Firefly Synth 2
+* Mac: /users/USERNAME/Library/Sjoerd van Kreel/Firefly Synth 2
+* Windows: C:\Users\USERNAME\AppData\Roaming\Sjoerd van Kreel\Firefly Synth 2
 
 # Known Issues
 * String oscillator responds to sample rate, but it shouldn't.<br/>
@@ -41,12 +73,17 @@ Pitch is good, timbre is not. Long-standing issue, might prove difficult.
 This causes clicking which you can get rid of by disabling MIDI modwheel/pitchbend sources in the global mod matrix (PB is on by default).
 If you actually do need and use it, let me know how it fares.
 * "Show Manual"/"Show Log Folder"/"Show Plugin Folder" context menu options are broken on some Linux hosts.<br/>
-Workaround: go find those folders yourself, and the manual is over [here](/static/Manual.md).<br/>
-TODO: list the relevant folder locations (user data / plugin binary) for all OSes right here in this document.
+Workaround: go find those folders yourself (see above), and the manual is over [here](/static/Manual.md).
 * Some hosts do not paint the realtime visualization (graphs and knobs) for VST3.
 This affects mostly Linux hosts, but some Windows/Mac as well.
 CLAP should be OK everywhere, and even for VST3 it's not a big deal, just means you don't get realtime visual feedback.<br/>
 Maybe related: https://forums.steinberg.net/t/dataexchange-on-linux/917660/4.<br/>
+
+# Special Thanks
+* [RustoMCSpit](https://github.com/RustoMCSpit)<br/>
+For being an early adopter and helping out with various things on the UI and theming side.
+* [Surge Synth Team](https://surge-synth-team.org)<br/>
+For help with loads of stuff, from low-level technical details to CLAP support to microtuning and probably more.
 
 # Dependencies
 - CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
@@ -114,8 +151,49 @@ You have to download the zip to get at the PolyBLEP source for all waveforms.
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_global_uni_lfo_echo.rpp)
 
 # Screenshots
+
+## Main
+
 <img alt="Screenshot Main" src="static/screenshot_main.png"/>
+
+## Matrix
+
 <img alt="Screenshot Matrix" src="static/screenshot_matrix.png"/>
+
+## Unison
+
 <img alt="Screenshot Unison" src="static/screenshot_unison.png"/>
+
+## Multi-Tap Delay
+
 <img alt="Screenshot Multitap" src="static/screenshot_multitap.png"/>
+
+## MSEG
+
 <img alt="Screenshot MSEG" src="static/screenshot_mseg.png"/>
+
+## Themes
+
+### Dark Default
+
+<img alt="Screenshot Theme Dark Default" src="static/screenshot_theme_dark_default.png"/>
+
+### Dark Hot
+
+<img alt="Screenshot Theme Dark Hot" src="static/screenshot_theme_dark_hot.png"/>
+
+### Dark Cold
+
+<img alt="Screenshot Theme Dark Cold" src="static/screenshot_theme_dark_cold.png"/>
+
+### Light Default
+
+<img alt="Screenshot Theme Light Default" src="static/screenshot_theme_light_default.png"/>
+
+### Light Hot
+
+<img alt="Screenshot Theme Light Hot" src="static/screenshot_theme_light_hot.png"/>
+
+### Light Cold
+
+<img alt="Screenshot Theme Light Cold" src="static/screenshot_theme_light_cold.png"/>

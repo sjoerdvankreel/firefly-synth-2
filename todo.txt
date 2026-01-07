@@ -1,16 +1,12 @@
 TODOLIST for beta-next
-[ ] list the relevant folders in the GH page
-[ ] do more themes
-[ ] dump topo should include the tags and indices, for debugging renoise
-[ ] bg images in main tabs and header and maybe elsewhere
-[ ] not right-click-change horizontal sliders
+[ ] credit tot
 [ ] make some presets
 [ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
-[ ] credit thoth-amon
 
 pck support
 autosoftclip
 fancy patch browser
+check into AV Linux
 arpeggiator/sequencer
 vst3 note expr + midi mpe
 dedicated distortion module

@@ -7,7 +7,7 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 
 #include <algorithm>
-
+   
 struct OsciGraphRenderData final:
 public FBModuleGraphRenderData<OsciGraphRenderData>
 {

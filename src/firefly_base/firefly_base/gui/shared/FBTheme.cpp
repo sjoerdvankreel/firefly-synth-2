@@ -237,6 +237,18 @@ ParseDefaultColorScheme(
     return false;
   result.fileBrowserHighlight = Colour::fromString(obj->getProperty("fileBrowserHighlight").toString());
 
+  if (!RequireStringProperty(obj, "buttonBackground"))
+    return false;
+  result.buttonBackground = Colour::fromString(obj->getProperty("buttonBackground").toString());
+
+  if (!RequireStringProperty(obj, "activeTabBackground"))
+    return false;
+  result.activeTabBackground = Colour::fromString(obj->getProperty("activeTabBackground").toString());
+
+  if (!RequireStringProperty(obj, "gridAlternateBackground"))
+    return false;
+  result.gridAlternateBackground = Colour::fromString(obj->getProperty("gridAlternateBackground").toString());
+
   if (!RequireStringProperty(obj, "meterFill"))
     return false;
   result.meterFill = Colour::fromString(obj->getProperty("meterFill").toString());
@@ -253,6 +265,10 @@ ParseDefaultColorScheme(
     return false;
   result.graphGrid = Colour::fromString(obj->getProperty("graphGrid").toString());
   
+  if (!RequireStringProperty(obj, "graphBorder"))
+    return false;
+  result.graphBorder = Colour::fromString(obj->getProperty("graphBorder").toString());
+
   if (!RequireStringProperty(obj, "graphBackground"))
     return false;
   result.graphBackground = Colour::fromString(obj->getProperty("graphBackground").toString());
@@ -281,6 +297,10 @@ ParseDefaultColorScheme(
     return false;
   result.text = Colour::fromString(obj->getProperty("text").toString());
 
+  if (!RequireStringProperty(obj, "text2"))
+    return false;
+  result.text2 = Colour::fromString(obj->getProperty("text2").toString());
+
   if (!RequireStringProperty(obj, "paramSecondary"))
     return false;
   result.paramSecondary = Colour::fromString(obj->getProperty("paramSecondary").toString());
@@ -297,9 +317,13 @@ ParseDefaultColorScheme(
     return false;
   result.paramBackground = Colour::fromString(obj->getProperty("paramBackground").toString());
 
-  if (!RequireStringProperty(obj, "paramFlashDisabling"))
+  if (!RequireStringProperty(obj, "sliderModBounds"))
     return false;
-  result.paramFlashDisabling = Colour::fromString(obj->getProperty("paramFlashDisabling").toString());
+  result.sliderModBounds = Colour::fromString(obj->getProperty("sliderModBounds").toString());
+
+  if (!RequireStringProperty(obj, "sliderEngineThumb"))
+    return false;
+  result.sliderEngineThumb = Colour::fromString(obj->getProperty("sliderEngineThumb").toString());
 
   return true;
 }
@@ -347,6 +371,18 @@ ParseColorScheme(
     return false;
   result.fileBrowserHighlight = present ? Colour::fromString(obj->getProperty("fileBrowserHighlight").toString()) : defaultScheme.fileBrowserHighlight;
 
+  if (!OptionalStringProperty(obj, "buttonBackground", present))
+    return false;                    
+  result.buttonBackground = present ? Colour::fromString(obj->getProperty("buttonBackground").toString()) : defaultScheme.buttonBackground;
+
+  if (!OptionalStringProperty(obj, "activeTabBackground", present))
+    return false;
+  result.activeTabBackground = present ? Colour::fromString(obj->getProperty("activeTabBackground").toString()) : defaultScheme.activeTabBackground;
+    
+  if (!OptionalStringProperty(obj, "gridAlternateBackground", present))
+    return false;
+  result.gridAlternateBackground = present ? Colour::fromString(obj->getProperty("gridAlternateBackground").toString()) : defaultScheme.gridAlternateBackground;
+
   if (!OptionalStringProperty(obj, "meterFill", present))
     return false;
   result.meterFill = present ? Colour::fromString(obj->getProperty("meterFill").toString()) : defaultScheme.meterFill;
@@ -362,6 +398,10 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "graphGrid", present))
     return false;
   result.graphGrid = present ? Colour::fromString(obj->getProperty("graphGrid").toString()) : defaultScheme.graphGrid;
+
+  if (!OptionalStringProperty(obj, "graphBorder", present))
+    return false;
+  result.graphBorder = present ? Colour::fromString(obj->getProperty("graphBorder").toString()) : defaultScheme.graphBorder;
 
   if (!OptionalStringProperty(obj, "graphBackground", present))
     return false;
@@ -391,6 +431,10 @@ ParseColorScheme(
     return false;
   result.text = present ? Colour::fromString(obj->getProperty("text").toString()) : defaultScheme.text;
 
+  if (!OptionalStringProperty(obj, "text2", present))
+    return false;
+  result.text2 = present ? Colour::fromString(obj->getProperty("text2").toString()) : defaultScheme.text2;
+
   if (!OptionalStringProperty(obj, "paramSecondary", present))
     return false;
   result.paramSecondary = present ? Colour::fromString(obj->getProperty("paramSecondary").toString()) : defaultScheme.paramSecondary;
@@ -407,9 +451,13 @@ ParseColorScheme(
     return false;
   result.paramBackground = present ? Colour::fromString(obj->getProperty("paramBackground").toString()) : defaultScheme.paramBackground;
 
-  if (!OptionalStringProperty(obj, "paramFlashDisabling", present))
+  if (!OptionalStringProperty(obj, "sliderModBounds", present))
     return false;
-  result.paramFlashDisabling = present ? Colour::fromString(obj->getProperty("paramFlashDisabling").toString()) : defaultScheme.paramFlashDisabling;
+  result.sliderModBounds = present ? Colour::fromString(obj->getProperty("sliderModBounds").toString()) : defaultScheme.sliderModBounds;
+
+  if (!OptionalStringProperty(obj, "sliderEngineThumb", present))
+    return false;
+  result.sliderEngineThumb = present ? Colour::fromString(obj->getProperty("sliderEngineThumb").toString()) : defaultScheme.sliderEngineThumb;
 
   return true;
 }

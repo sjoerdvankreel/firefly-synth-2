@@ -290,7 +290,7 @@ FFMakeGlobalUniTopo()
   auto& voiceCount = result->params[(int)FFGlobalUniParam::VoiceCount];
   voiceCount.mode = FBParamMode::Block;
   voiceCount.defaultText = "1";
-  voiceCount.name = "Voices";
+  voiceCount.name = "Voices";  
   voiceCount.slotCount = 1;
   voiceCount.id = "{617F995E-38CC-40BE-899E-AEAE37852092}";
   voiceCount.description = "Unison Voice Count";

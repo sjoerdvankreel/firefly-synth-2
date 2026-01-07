@@ -15,11 +15,13 @@ struct FBColorScheme
   float graphAlpha = {};
   float dimDisabled = {};
   juce::Colour text = {};
+  juce::Colour text2 = {};
   juce::Colour background = {};
   juce::Colour meterFill = {};
   juce::Colour meterTrack = {};
   juce::Colour meterAlert = {};
   juce::Colour graphGrid = {};
+  juce::Colour graphBorder = {};
   juce::Colour graphBackground = {};
   juce::Colour headerText = {};
   juce::Colour headerBorder = {};
@@ -30,11 +32,15 @@ struct FBColorScheme
   juce::Colour paramSecondary = {};
   juce::Colour paramHighlight = {};
   juce::Colour paramBackground = {};
-  juce::Colour paramFlashDisabling = {};
+  juce::Colour sliderModBounds = {};
+  juce::Colour sliderEngineThumb = {};
   juce::Colour alertWindowPrimary = {};
   juce::Colour fileBrowserPrimary = {};
   juce::Colour fileBrowserHighlight = {};
-  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme); 
+  juce::Colour buttonBackground = {};
+  juce::Colour activeTabBackground = {};
+  juce::Colour gridAlternateBackground = {};
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme);
 };
 
 // This is only a struct so we can add "comment" fields in the json.

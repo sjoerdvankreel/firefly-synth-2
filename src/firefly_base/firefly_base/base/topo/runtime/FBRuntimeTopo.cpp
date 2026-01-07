@@ -8,8 +8,17 @@
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 
 #include <juce_core/juce_core.h>
+#include <sstream>
 
 using namespace juce;
+
+struct OldParamInfo
+{
+  int tag = {};
+  int index = {};
+  std::string id = {};
+  std::string name = {};
+};
 
 static std::string const 
 Magic = "{84A1EBED-4BE5-47F2-8E53-13B965628974}";
@@ -93,6 +102,21 @@ FBRuntimeTopo::ModuleAtTopo(
   FBTopoIndices const& topoIndices) const
 {
   return &modules[moduleTopoToRuntime.at(topoIndices)];
+}
+
+std::string 
+FBRuntimeTopo::PrintParamList() const
+{
+  std::ostringstream result = {};
+  for (int i = 0; i < audio.params.size(); i++)
+  {
+    auto const& param = audio.params[i];
+    result << "Index: " << i << "\n";
+    result << "\tTag: " << param.tag << "\n";
+    result << "\tName: " << param.longName << "\n";
+    result << "\tId: " << param.id << "\n";
+  }
+  return result.str();
 }
 
 var
@@ -470,6 +494,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
       *container.Params()[p] = static_cast<float>(defaultNormalized);
   }
 
+  std::vector<OldParamInfo> oldParamInfos = {};
   auto converter = static_->deserializationConverterFactory(loadingVersion, this);
   for (int sp = 0; sp < state.size(); sp++)
   {
@@ -499,8 +524,27 @@ FBRuntimeTopo::LoadParamStateFromVar(
       return false;
     }
 
+    if (!param->hasProperty("name"))
+    {
+      FB_LOG_ERROR("Plugin param state is missing name.");
+      return false;
+    }
+    var paramName = param->getProperty("name");
+    if (!paramName.isString())
+    {
+      FB_LOG_ERROR("Plugin param state name is not a string.");
+      return false;
+    }
+
     std::unordered_map<int, int>::const_iterator iter;
     int oldTag = FBMakeStableHash(id.toString().toStdString());
+    OldParamInfo oldParamInfo = {};
+    oldParamInfo.index = sp;
+    oldParamInfo.tag = oldTag;
+    oldParamInfo.id = id.toString().toStdString();
+    oldParamInfo.name = paramName.toString().toStdString();
+    oldParamInfos.push_back(oldParamInfo);
+
     if ((iter = params.paramTagToIndex.find(oldTag)) == params.paramTagToIndex.end())
     {
       FB_LOG_WARN("Unknown plugin parameter: '" + id.toString().toStdString() + "', trying to map old to new.");
@@ -608,5 +652,18 @@ FBRuntimeTopo::LoadParamStateFromVar(
   converter->PostProcess(isGuiState, container.Params());
   FB_LOG_INFO("End deserialization post-processing.");
 
-  return true;
+  bool found = false;
+  FB_LOG_INFO("Checking parameter indices...");
+  for (int i = 0; i < oldParamInfos.size() && i < params.params.size(); i++)
+    if (oldParamInfos[i].tag != params.params[i].tag)
+    {
+      found = true;
+      FB_LOG_WARN("PARAMETER INDICES HAVE CHANGED.");
+      FB_LOG_WARN("If your host does not support this, you need to re-setup automation lanes.");
+      break;
+    }
+  if (!found)
+    FB_LOG_INFO("Parameter indices are stable.");
+
+  return true; 
 }

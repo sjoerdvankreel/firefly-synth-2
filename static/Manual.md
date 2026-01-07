@@ -313,6 +313,9 @@ Right-click on some empty space to show the generic context menu.
 * Dump topology: save a description of the plugins internals to a text file.<br/>
 This is primarily meant to help in creating theme files which rely on internal identifiers which are printed in this document.<br/>
 Other than that it's just a dynamically generated overview of the plug's modules and parameters.<br/>
+* Dump parameter list: save the raw parameter list to a text file.<br/>
+This is primarily meant as a debugging tool to see all parameter's internal identifiers and tags.<br/>
+Parameter tags are the things that should be used by the host to identify automation lanes.
 
 Right-click on a GUI parameter (f.e. "Show Modulation Bounds"):
 * Set to default.
@@ -334,7 +337,8 @@ Themes are in Contents/Resources/ui/themes.<br/>
 You can edit an existing theme or just copy-paste a folder and edit to your likings.<br/>
 FF2 will pick up whatever is in the themes folder.<br/>
 Theme folder names are NOT the unique identifier of a theme.<br/>
-That's the "name" field in theme.json. This field should be unique across all themes.
+That's the "name" field in theme.json (but just keep 'em the same, I haven't tested what happens if they divert).<br/>
+This field should be unique across all themes.
 
 When editing themes, the logfile provides reasonable feedback for when stuff's not working.<br/>
 Things like "failed to parse json at line x, column y", cannot find color scheme "abc", cannot find module "xyz" etc.<br/>
@@ -351,7 +355,7 @@ right-click to show the generic context menu and click "dump topology".
 The default themefile is reasonably well documented.<br/>
 It contains the internal identifiers of all modules and not-module related themeable sections.<br/>
 It also contains some examples of how to override parameters within a module, but it does not contain all parameter identifiers.<br/>
-For that, use the "dump topology" menu. Default theme: [theme.json](/resources/ui/themes/Default/theme.json).
+For that, use the "dump topology" menu.
 
 ### Theme JSON structure 
 The main structure is set up as follows:
@@ -374,19 +378,24 @@ This is the fallback/default scheme.<br/>
 All colors are specified as ARGB hex.
   * graphAlpha: transparancy for filled graphs.
   * dimDisabled: dim factor for disabled parameters and other stuff.
-  * text: this is the text color for labels etc.
+  * text, text2: mainly used for labels and graph texts.
   * primary: what makes it stand out. Used for various things like graphs, buttons, combo texts, sliders etc.
   * background: background for the GUI as a whole and pop-up windows.
   * meterFill/meterTrack/meterAlert: for the meters in the output section.
-  * graphGrid/graphBackground: only used for painting graphs (any of them, main graphs, MSEG, matrix and unison graphs).
+  * graphGrid/graphBackground/graphBorder: only used for painting graphs (all of them)
   * headerText/headerBorder/headerBackground: for tab headers when there is only 1 tab.
   * sectionBorder/sectionBackground: mainly used for module sections, but other stuff as well.
   * paramSecondary/paramBackground: used for menu separators, check/comboboxes, slider tracks, and more.
-  * paramHighlight: anything that needs highlighting. "Show mod bounds", "Engine Knob Visual" etc.
+  * paramHighlight: "show tweaked from" option and more.
   * paramFlashDisabling: when a parameter is flashing because it's disabling another parameter.
+  * sliderModBounds: highlight for "Show mod bounds" option.
+  * sliderEngineThumb: highlight for "Engine Knob Visuals" option.
   * alertWindowPrimary: when a messagebox pops up.
   * fileBrowserPrimary: file browser buttons and more.
-  * fileBrowserHighlight: file browser treeview selection background.
+  * fileBrowserHighlight: file browser treeview selection and scrollbar.
+  * buttonBackground: it's for buttons.
+  * activeTabBackground: selected tab background.
+  * gridAlternateBackground: used for various things f.e. overlay headers.
 * colorSchemes: named color schemes. Can override anything from the default.
 * componentColors: named components (top graphs, last tweaked etc). Can override default color scheme.
   * componentId: component identifier, see topology.

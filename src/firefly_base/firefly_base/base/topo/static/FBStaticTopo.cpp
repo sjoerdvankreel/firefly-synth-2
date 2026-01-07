@@ -52,9 +52,11 @@ std::string
 FBStaticTopo::PrintTopology() const
 {
   std::ostringstream result = {};
-  result << meta.name;
-  result << "\nId: " << FBCleanTopoId(meta.id);
+  result << "Name: " + meta.name;
+  result << "\nFX: " << (meta.isFx ? "True" : "False");
+  result << "\nFormat: " << FBPlugFormatToString(meta.format);
   result << "\nVersion: " << meta.version.major << "." << meta.version.minor << "." << meta.version.patch;
+  result << "\nId: " << FBCleanTopoId(meta.id);
 
   result << "\nThemed Components:";
   for (auto const& kv: themedComponents)

@@ -6,6 +6,7 @@
 
 FBGUIStateContainer::
 FBGUIStateContainer(FBRuntimeTopo const& topo):
+_themeName(topo.static_->defaultThemeName),
 _params(),
 _rawState(topo.static_->allocRawGUIState()),
 _freeRawState(topo.static_->freeRawGUIState)

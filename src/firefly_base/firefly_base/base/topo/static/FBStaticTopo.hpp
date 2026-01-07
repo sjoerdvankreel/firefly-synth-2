@@ -112,6 +112,7 @@ struct FBStaticTopo
   int guiUserScaleParam = -1;
   int guiUserScaleModule = -1;
   FBPlugGUIFactory guiFactory = {};
+  std::string defaultThemeName = "Default";
   FBDeserializationConverterFactory deserializationConverterFactory = {};
 
   int maxUndoSize = {};
