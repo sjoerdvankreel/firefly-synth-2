@@ -16,6 +16,7 @@
 * Optional oversampling
 
 # 4x Per-voice and 4x global effects
+* 4 subslots for each
 * Comb filter
 * State variable filter
 * Various waveshapers
