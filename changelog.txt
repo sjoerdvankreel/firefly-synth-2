@@ -1,3 +1,7 @@
+January 8, 2026 - v2.0.9.
+
+- Add some presets. Just init and demo stuff, not actual factory patches.
+
 January 7, 2026 - Beta 4.
 
 - Brushed up the default theme a bit.
