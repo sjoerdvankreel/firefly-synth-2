@@ -3,6 +3,7 @@ TODOLIST for beta-next
 [ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
 
 pck support
+more presets
 autosoftclip
 fancy patch browser
 check into AV Linux
