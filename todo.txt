@@ -1,9 +1,9 @@
-TODOLIST for beta-next
-[ ] credit tot
-[ ] make some presets
-[ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
+sort presets by path
+Does the vecho really get flushed?
+all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
 
 pck support
+more presets
 autosoftclip
 fancy patch browser
 check into AV Linux
