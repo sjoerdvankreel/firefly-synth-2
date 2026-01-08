@@ -1,5 +1,4 @@
 TODOLIST for beta-next
-[ ] credit tot
 [ ] make some presets
 [ ] all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
 
