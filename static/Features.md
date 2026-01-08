@@ -5,6 +5,8 @@
 * Detailed audio routing options without having to set up a matrix
 
 # 4x Oscillator
+* DSF (additive) generator
+* Dedicated hardsync generator
 * Various basic waveforms
 * Dedicated FM oscillator
 * Combined string/noise algorithm
