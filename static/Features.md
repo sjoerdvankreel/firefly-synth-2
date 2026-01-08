@@ -1,4 +1,5 @@
 # High level overview
+* Customizable theming
 * Microtuning support by means of MTS-ESP
 * Per-voice realtime visuals for graphs and knobs
 * Some ready-to-use modulators without having to set up the matrix
