@@ -1,7 +1,7 @@
 # High level overview
 * Microtuning support by means of MTS-ESP
 * Per-voice realtime visuals for graphs and knobs
-* Some read-to-use modulators without having to set up the matrix
+* Some ready-to-use modulators without having to set up the matrix
 * Detailed audio routing options without having to set up a matrix
 
 # 4x Oscillator
