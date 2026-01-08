@@ -71,7 +71,7 @@ FF2's combined string/noise osci can do color-morphing and pitch-shifting.
 FF1 contains a couple of control parameters for creating the delay lines.<br/>
 FF2 allows full control over all 8 individual taps.
 * Performance.<br/>
-It generally faster. YMMV, and varies per-feature.<br/>
+It's generally faster. YMMV, and varies per-feature.<br/>
 F.e. FF2's hardsync is actually slower (but way better, audio-wise).
 * Global unison.<br/>
 FF1 does a handful of controls for osci/lfo detune and envelope spreading.<br/>
