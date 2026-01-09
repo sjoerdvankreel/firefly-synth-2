@@ -4,6 +4,7 @@ Does the vecho really get flushed?
 all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
 
 pck support
+allow more stuff on the feedback delay path, like, try to get an entire fx block in there somehow => just put one in a popup window?
 built-in compressor (can actually do that now with side-chain in, so nice)
 more presets
 autosoftclip
