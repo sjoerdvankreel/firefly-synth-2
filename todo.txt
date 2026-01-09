@@ -4,6 +4,7 @@ Does the vecho really get flushed?
 all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
 
 pck support
+built-in compressor (can actually do that now with side-chain in, so nice)
 more presets
 autosoftclip
 fancy patch browser
