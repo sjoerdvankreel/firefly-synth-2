@@ -1,9 +1,9 @@
 [x] theme per instance
 [x] sort presets by path
-[ ] Does the vecho really get flushed?
+[ ] flush audio on patch change is broken
+[ ] close the overlay on tab change
 
 arpeggiator
-close the overlay on tab change
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo
 VDist/GDist - bitcrush, downsample, filter, eq, shape, oversample, more?
