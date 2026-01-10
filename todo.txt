@@ -6,7 +6,7 @@ Does the vecho really get flushed?
 close the overlay on tab change
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo
-VDist/GDist
+VDist/GDist - bitcrush, downsample, filter, eq, shape, oversample, more?
 VComp/GComp - ext audio in, but can be other stuff as well
 
 pck support
