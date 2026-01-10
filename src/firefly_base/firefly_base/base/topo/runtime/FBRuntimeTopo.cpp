@@ -490,7 +490,10 @@ FBRuntimeTopo::LoadParamStateFromVar(
     auto defaultText = params.params[p].GetDefaultText();
     if(defaultText.size())
       defaultNormalized = params.params[p].TextToNormalized(false, defaultText).value();
-    if(!patchOnly || params.params[p].static_.StoreInPatch())
+
+    if (!params.params[p].static_.IsOutput() &&
+      !params.params[p].static_.IsFakeParam() &&
+      (!patchOnly || params.params[p].static_.StoreInPatch()))
       *container.Params()[p] = static_cast<float>(defaultNormalized);
   }
 
