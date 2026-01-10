@@ -23,7 +23,6 @@ _placement(placement)
 {
   _plugGUI->AddThemeListener(this);
   _image = std::make_unique<ImageComponent>();
-  _image->setImage(ImageCache::getFromFile(String(GetCurrentImagePath())), placement);
   addAndMakeVisible(_image.get());
 }
 

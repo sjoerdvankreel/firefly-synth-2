@@ -1,3 +1,5 @@
+[x] theme per instance
+
 arpeggiator
 the theme cannot be static, it should not share across plug instances
 do the kvr replaced by thing

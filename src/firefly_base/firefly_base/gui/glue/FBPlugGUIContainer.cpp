@@ -42,7 +42,7 @@ _gui(hostContext->Topo()->static_->guiFactory(hostContext))
 void 
 FBPlugGUIContainer::paint(Graphics& g)
 {
-  g.fillAll(FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this).background);
+  g.fillAll(Colours::black);
 }
 
 void
