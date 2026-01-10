@@ -66,7 +66,6 @@ TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop),
 _big(big)
 {
   setOutline(0);
-  setLookAndFeel(FBGetLookAndFeel());
   setTabBarDepth(_big? FBTabBarDepthBig: FBTabBarDepth);
 }
 

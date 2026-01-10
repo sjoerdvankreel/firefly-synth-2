@@ -236,6 +236,7 @@ FBGridComponent::paint(Graphics& g)
   float x0, x1, y0, y1;
   x0 = x1 = y0 = y1 = -1.0f;
 
+  auto fbLookAndFeel = FBGetLookAndFeelFor(this);
   for (int i = 0; i < _sectionsAndMarks.size(); i++)
   {      
     for (int j = 0; j < _grid.items.size(); j++)
@@ -255,25 +256,25 @@ FBGridComponent::paint(Graphics& g)
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndBorder ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndAlternate)
     {
-      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).sectionBackground);
+      g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).sectionBackground);
       g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize);
     }
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::AlternateAndAlternate)
     {
-      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).gridAlternateBackground);
+      g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).gridAlternateBackground);
       g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize);
     }
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::Alternate ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndAlternate ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::AlternateAndAlternate)
     {
-      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).primary.withAlpha(0.25f));
+      g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).primary.withAlpha(0.25f));
       g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize, lineThickness);
     }
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::Border ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndBorder)
     {
-      g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).sectionBorder.withAlpha(0.125f));
+      g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).sectionBorder.withAlpha(0.125f));
       g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize, lineThickness);
     }      
   }

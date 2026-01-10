@@ -32,11 +32,13 @@ FBPlugGUI::
 
 FBPlugGUI::
 FBPlugGUI(FBHostGUIContext* hostContext) :
-_hostContext(hostContext)
+_hostContext(hostContext),
+_lookAndFeel(std::make_unique<FBLookAndFeel>())
 {
   _themes = FBLoadThemes(hostContext->Topo());
   if (_themes.empty())
     FB_LOG_ERROR("No themes found.");
+  setLookAndFeel(_lookAndFeel.get());
   _tooltipWindow = StoreComponent<TooltipWindow>();
   _hostContext->AddListener(this);
 
@@ -83,7 +85,7 @@ void
 FBPlugGUI::SwitchTheme(std::string const& themeName)
 {
   HostContext()->SetThemeName(themeName);
-  FBGetLookAndFeel()->SetTheme(GetTheme());
+  FBGetLookAndFeelFor(this)->SetTheme(GetTheme());
   for (int i = 0; i < _themeListeners.size(); i++)
     _themeListeners[i]->ThemeChanged();
   repaint();

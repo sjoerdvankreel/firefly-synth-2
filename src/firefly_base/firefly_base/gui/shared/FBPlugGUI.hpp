@@ -41,35 +41,6 @@ class FBPlugGUI:
 public juce::Component,
 public IFBHostGUIContextListener
 {
-  double _scale = 1.0;
-  juce::Label* _overlayCaption = {};
-  std::function<void()> _overlayInit = {};
-  FBGridComponent* _overlayGrid = {};
-  juce::Component* _overlayComponent = {};
-  FBModuleComponent* _overlayModule = {};
-  FBContentComponent* _overlayContent = {};
-  FBMarginComponent* _overlayInnerMargin = {};
-  FBMarginComponent* _overlayOuterMargin = {};
-  std::vector<IFBThemeListener*> _themeListeners = {};
-  std::vector<IFBParamListener*> _paramListeners = {};
-  std::unique_ptr<FBFileBrowserComponent> _loadPatchBrowser = {};
-  std::unique_ptr<FBFileBrowserComponent> _savePatchBrowser = {};
-  std::unique_ptr<FBFileBrowserComponent> _saveTopologyBrowser = {};
-  std::unique_ptr<FBFileBrowserComponent> _saveParamListBrowser = {};
-
-  void ShowLogFolder();
-  void ShowPluginFolder();
-  void DumpTopologyToFile();
-  void DumpParamListToFile();
-
-  bool LoadPatchFromText(
-    std::string const& undoAction, 
-    std::string const& patchName,
-    std::string const& text);
-
-  juce::PopupMenu MakePresetMenu(
-    std::shared_ptr<FBPresetFolder> folder);
-
 public:
   virtual ~FBPlugGUI();
 
@@ -94,6 +65,8 @@ public:
     FBParamControl const* control) const;
 
   FBTheme const& GetTheme() const;
+  FBLookAndFeel* LookAndFeel() const { return _lookAndFeel.get(); }
+
   void SwitchTheme(std::string const& themeName);
   std::vector<FBTheme> const& Themes() const { return _themes; }
 
@@ -153,21 +126,54 @@ protected:
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
-  void SetupOverlayGUI();
-  void GUIParamNormalizedChanged(int index);
-  void AudioParamNormalizedChanged(int index);
+  double _scale = 1.0;
+  FBHostGUIContext* const _hostContext;
+  std::unique_ptr<FBLookAndFeel> _lookAndFeel;
+
+  juce::Label* _overlayCaption = {};
+  std::function<void()> _overlayInit = {};
+  FBGridComponent* _overlayGrid = {};
+  juce::Component* _overlayComponent = {};
+  FBModuleComponent* _overlayModule = {};
+  FBContentComponent* _overlayContent = {};
+  FBMarginComponent* _overlayInnerMargin = {};
+  FBMarginComponent* _overlayOuterMargin = {};
 
   std::vector<FBTheme> _themes = {};
-  FBHostGUIContext* const _hostContext;
+  std::vector<IFBThemeListener*> _themeListeners = {};
+  std::vector<IFBParamListener*> _paramListeners = {};
+
+  std::unique_ptr<FBFileBrowserComponent> _loadPatchBrowser = {};
+  std::unique_ptr<FBFileBrowserComponent> _savePatchBrowser = {};
+  std::unique_ptr<FBFileBrowserComponent> _saveTopologyBrowser = {};
+  std::unique_ptr<FBFileBrowserComponent> _saveParamListBrowser = {};
+
   juce::TooltipWindow* _tooltipWindow = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
   std::unordered_map<int, int> _guiParamIndexToComponent = {};
-  std::unordered_map<int, std::vector<int>> _audioParamIndexToComponents = {};
   std::chrono::high_resolution_clock::time_point _exchangeUpdated = {};
+  std::unordered_map<int, std::vector<int>> _audioParamIndexToComponents = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _guiParamsVisibleDependents = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _guiParamsEnabledDependents = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsVisibleDependents = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsEnabledDependents = {};
+
+  void ShowLogFolder();
+  void ShowPluginFolder();
+  void DumpTopologyToFile();
+  void DumpParamListToFile();
+
+  void SetupOverlayGUI();
+  void GUIParamNormalizedChanged(int index);
+  void AudioParamNormalizedChanged(int index);
+
+  bool LoadPatchFromText(
+    std::string const& undoAction,
+    std::string const& patchName,
+    std::string const& text);
+
+  juce::PopupMenu MakePresetMenu(
+    std::shared_ptr<FBPresetFolder> folder);
 };
 
 template <class TComponent, class... Args>

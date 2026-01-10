@@ -18,9 +18,9 @@ void FBGUITerminate();
 int FBGUIGetFontHeightInt();
 float FBGUIGetFontHeightFloat();
 juce::Font const& FBGUIGetFont();
-FBLookAndFeel* FBGetLookAndFeel();
 float FBGUIGetPopupMenuFontHeightFloat();
 int FBGUIGetStandardPopupMenuItemHeight();
+FBLookAndFeel* FBGetLookAndFeelFor(juce::Component const* c);
 
 int FBGUIGetStringWidthCached(std::string const& text);
 juce::Point<int> FBGUIGetStringSizeCached(std::string const& text);

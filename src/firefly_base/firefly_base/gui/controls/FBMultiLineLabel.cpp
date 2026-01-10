@@ -22,7 +22,7 @@ void
 FBAutoSizeMultiLineLabel::paint(Graphics& g)
 {
   Label dummy;
-  auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
+  auto const& scheme = FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this);
   g.setFont(getLookAndFeel().getLabelFont(dummy));
   g.setColour(scheme.text);
   int y = static_cast<int>(std::ceil((getBounds().getHeight() - _textSize.y) * 0.5f) + _vOffset);

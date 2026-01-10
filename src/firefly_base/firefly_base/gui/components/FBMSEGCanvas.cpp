@@ -455,7 +455,7 @@ FBMSEGCanvas::paint(Graphics& g)
   auto const outerBounds = getLocalBounds().reduced(MSEGOuterPadding);
   auto const innerBounds = outerBounds.reduced(MSEGInnerPadding);
 
-  auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
+  auto const& scheme = FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this);
   g.fillAll(scheme.background);
   g.setColour(scheme.graphBackground); 
   g.fillRoundedRectangle(outerBounds.toFloat(), 2.0f * MSEGInnerPadding);
