@@ -1,7 +1,11 @@
+arpeggiator
 do the kvr replaced by thing
 sort presets by path
 Does the vecho really get flushed?
-all the GitHub preview stuff and archive the old repos and do the website and the kvr stuff and whatnot
+close the overlay on tab change
+allow full fx module inside the feedback delay
+dedicated distortion with routing like the echo
+
 
 pck support
 allow more stuff on the feedback delay path, like, try to get an entire fx block in there somehow => just put one in a popup window?
