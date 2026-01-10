@@ -374,6 +374,9 @@ FBHostGUIContext::LoadPresetList(std::filesystem::path const& p) const
     if (std::filesystem::is_directory(i.path()))
       result->folders.push_back(LoadPresetList(i.path()));
   }
+
+  std::sort(result->files.begin(), result->files.end(), [](auto const& a, auto const& b) { return a.name < b.name;  });
+  std::sort(result->folders.begin(), result->folders.end(), [](auto const& a, auto const& b) { return a->name < b->name; });
   return result;
 }
 
