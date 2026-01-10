@@ -1,4 +1,5 @@
 arpeggiator
+the theme cannot be static, it should not share across plug instances
 do the kvr replaced by thing
 sort presets by path
 Does the vecho really get flushed?
