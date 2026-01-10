@@ -1,8 +1,8 @@
 [x] theme per instance
 [x] sort presets by path
+[ ] Does the vecho really get flushed?
 
 arpeggiator
-Does the vecho really get flushed?
 close the overlay on tab change
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo
