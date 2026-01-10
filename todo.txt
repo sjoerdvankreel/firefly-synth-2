@@ -6,7 +6,8 @@ Does the vecho really get flushed?
 close the overlay on tab change
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo
-
+VDist/GDist
+VComp/GComp - ext audio in, but can be other stuff as well
 
 pck support
 allow more stuff on the feedback delay path, like, try to get an entire fx block in there somehow => just put one in a popup window?
