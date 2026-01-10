@@ -1,7 +1,7 @@
 Read the [Comparison to FF1](/static/compare_to_ff1.md).<br/>
 Read the [Manual](/static/Manual.md). Click the outline (3 dashes) menu for table-of-contents.<br/>
 <br/>
-See [FF2 on KVR](https://www.kvraudio.com/product/firefly-synth-2-by-sjoerdvankreel).
+See [FF2 on KVR](https://www.kvraudio.com/product/firefly-synth-2-by-sjoerdvankreel).<br/>
 See [Quick feature overview](/static/Features.md).<br/>
 See [host_test](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/host_test) for host compatibility tests.<br/>
 See [demo](https://github.com/sjoerdvankreel/firefly-synth-2/tree/main/demo) for feature tests, and some nice demos along the way.<br/>
