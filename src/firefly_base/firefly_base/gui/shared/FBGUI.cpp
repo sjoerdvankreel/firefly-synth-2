@@ -13,6 +13,7 @@ using namespace juce;
 
 static Typeface::Ptr _typeface = {};
 static Font _font = Font(FontOptions());
+static std::unique_ptr<FBLookAndFeel> _defaultLookAndFeel = {};
 
 Font const& FBGUIGetFont() { return _font; }
 float FBGUIGetPopupMenuFontHeightFloat() { return 13.0f; }
@@ -37,6 +38,7 @@ FBGUITerminate()
 {
   FB_LOG_INFO("Terminating GUI.");
   LookAndFeel::setDefaultLookAndFeel(nullptr);
+  _defaultLookAndFeel.reset();
   _font = Font(FontOptions());
   _typeface.reset();
   FB_LOG_INFO("Terminating JUCE GUI.");
@@ -56,6 +58,12 @@ FBGUIInit()
   auto fontBytes = FBReadFile(fontPath);
   _typeface = Typeface::createSystemTypefaceFor(fontBytes.data(), fontBytes.size());
   _font = Font(FontOptions(_typeface)).withHeight(FBGUIFontSize);
+
+  // We still need this even with per-pluggui look and feel.
+  // It controls some stuff during setting up the gui like createComboBoxTextBox
+  // which is fortunately not theme-dependent.
+  _defaultLookAndFeel = std::make_unique<FBLookAndFeel>();
+  LookAndFeel::setDefaultLookAndFeel(_defaultLookAndFeel.get());
   FB_LOG_INFO("Initialized GUI.");
 }
 
