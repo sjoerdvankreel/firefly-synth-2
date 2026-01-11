@@ -57,24 +57,25 @@ class FBAutoSizeTabComponent:
 public juce::TabbedComponent,
 public IFBHorizontalAutoSize
 {
+protected:
+  FBPlugGUI* const _plugGUI;
   bool const _big;
 
 public:
-  FBAutoSizeTabComponent();
-  FBAutoSizeTabComponent(bool big);
+  FBAutoSizeTabComponent(FBPlugGUI* plugGUI);
+  FBAutoSizeTabComponent(FBPlugGUI* plugGUI, bool big);
 
   bool Big() const { return _big; }
   int FixedWidth(int height) const override;
   void AddTab(std::string const& header, bool centerText, juce::Component* component);
-
-  juce::TabBarButton* 
-  createTabButton(const juce::String& tabName, int tabIndex) override;
+  
+  juce::TabBarButton* createTabButton(const juce::String& tabName, int tabIndex) override;
+  void currentTabChanged(int newCurrentTabIndex, const juce::String& newCurrentTabName) override;
 };
 
 class FBModuleTabComponent:
 public FBAutoSizeTabComponent
 {
-  FBPlugGUI* const _plugGUI;
   FBRuntimeGUIParam const* const _param;
   int _storedSelectedTab = -1;
   std::vector<FBTopoIndices> _moduleIndices = {};

@@ -1,7 +1,8 @@
 [x] theme per instance
 [x] sort presets by path
 [x] flush audio on patch change is broken
-[ ] close the overlay on tab change
+[x] close the overlay on tab change
+[ ] autosoftclip
 
 arpeggiator
 allow full fx module inside the feedback delay
@@ -13,7 +14,6 @@ pck support
 allow more stuff on the feedback delay path, like, try to get an entire fx block in there somehow => just put one in a popup window?
 built-in compressor (can actually do that now with side-chain in, so nice)
 more presets
-autosoftclip
 fancy patch browser
 check into AV Linux
 arpeggiator/sequencer

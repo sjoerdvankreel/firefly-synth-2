@@ -40,7 +40,7 @@ _plugGUI(plugGUI) {}
 void 
 FFMainTabChangedListener::changeListenerCallback(ChangeBroadcaster*)
 {
-  _plugGUI->HideOverlayComponent();
+  _plugGUI->HideAllOverlaysAndFileBrowsers();
 }
 
 FFPlugGUI::
@@ -289,7 +289,7 @@ FFPlugGUI::SetupGUI()
   _main->Add(5, 0, FFMakeLFOGUI(this));
   _main->Add(6, 0, FFMakeEnvGUI(this, _msegEditors));
 
-  _tabs = StoreComponent<FBAutoSizeTabComponent>(true);
+  _tabs = StoreComponent<FBAutoSizeTabComponent>(this, true);
   _tabs->addTab("MAIN", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _main), false);
   _tabs->addTab("MATRIX", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _matrix), false);
   _tabs->addTab("UNISON", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _globalUni), false);

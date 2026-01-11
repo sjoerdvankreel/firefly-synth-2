@@ -57,13 +57,13 @@ FBModuleTabBarButton::GetScheme(FBTheme const& theme) const
 }
 
 FBAutoSizeTabComponent::
-FBAutoSizeTabComponent():
-FBAutoSizeTabComponent(false) {}
+FBAutoSizeTabComponent(FBPlugGUI* plugGUI):
+FBAutoSizeTabComponent(plugGUI, false) {}
 
 FBAutoSizeTabComponent::
-FBAutoSizeTabComponent(bool big):
+FBAutoSizeTabComponent(FBPlugGUI* plugGUI, bool big):
 TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop),
-_big(big)
+_plugGUI(plugGUI), _big(big)
 {
   setOutline(0);
   setTabBarDepth(_big? FBTabBarDepthBig: FBTabBarDepth);
@@ -83,6 +83,12 @@ FBAutoSizeTabComponent::createTabButton(const juce::String& tabName, int /*tabIn
 }
 
 void
+FBAutoSizeTabComponent::currentTabChanged(int /*newCurrentTabIndex*/, const String& /*newCurrentTabName*/)
+{
+  _plugGUI->HideAllOverlaysAndFileBrowsers();
+}
+
+void
 FBAutoSizeTabComponent::AddTab(
   std::string const& header, bool centerText, Component* component)
 {
@@ -94,8 +100,7 @@ FBAutoSizeTabComponent::AddTab(
 
 FBModuleTabComponent::
 FBModuleTabComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
-FBAutoSizeTabComponent(),
-_plugGUI(plugGUI),
+FBAutoSizeTabComponent(plugGUI),
 _param(param)
 {
   assert(param != nullptr);
@@ -125,8 +130,9 @@ FBModuleTabComponent::ActivateStoredSelectedTab()
 
 void
 FBModuleTabComponent::currentTabChanged(
-  int newCurrentTabIndex, juce::String const& /*newCurrentTabName*/)
+  int newCurrentTabIndex, juce::String const& newCurrentTabName)
 {
+  FBAutoSizeTabComponent::currentTabChanged(newCurrentTabIndex, newCurrentTabName);
   if (newCurrentTabIndex < 0 || newCurrentTabIndex >= _moduleIndices.size())
     return;
   auto const& indices = _moduleIndices[newCurrentTabIndex];
