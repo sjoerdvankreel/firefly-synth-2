@@ -4,7 +4,7 @@
 [x] close the overlay on tab change
 [x] tooltip combo is broken
 [x] autosoftclip
-[ ] make the subslots stand out a bit for lfo/fx
+[ ] make the subslots stand out a bit for lfo/fx, not forget the fx
 [ ] instance name
 [ ] switch the default theme
 [ ] do display disabled/impossible items different in the mod matrix
