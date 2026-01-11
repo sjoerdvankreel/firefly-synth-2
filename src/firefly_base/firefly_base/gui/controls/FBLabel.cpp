@@ -5,11 +5,12 @@
 using namespace juce;
 
 FBAutoSizeLabel::
-FBAutoSizeLabel(std::string const& text, bool centred, bool isPrimary):
+FBAutoSizeLabel(std::string const& text, bool centred, bool isPrimary, bool small):
 Label(),
 IFBHorizontalAutoSize(),
 _textWidth(FBGUIGetStringWidthCached(text)),
-_isPrimary(isPrimary)
+_isPrimary(isPrimary),
+_small(small)
 {
   setText(text, dontSendNotification);
   setBorderSize({ 1, 2, 1, 2 });

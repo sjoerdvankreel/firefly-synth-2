@@ -17,11 +17,13 @@ public IFBHorizontalAutoSize
 {
   int const _textWidth;
   bool const _isPrimary;
+  bool const _small;
 public:
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
+  bool Small() const { return _small; }
   bool IsPrimary() const { return _isPrimary; }
-  FBAutoSizeLabel(std::string const& text, bool centred = false, bool isPrimary = false);
+  FBAutoSizeLabel(std::string const& text, bool centred = false, bool isPrimary = false, bool small = false);
 };
 
 class FBAutoSizeLabel2:
