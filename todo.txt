@@ -11,6 +11,7 @@
 [ ] update all the screenshots
 
 arpeggiator
+programmatic dump screenshot?
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo
 do display disabled/impossible items different in the mod matrix
