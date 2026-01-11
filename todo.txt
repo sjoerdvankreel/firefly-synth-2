@@ -2,7 +2,11 @@
 [x] sort presets by path
 [x] flush audio on patch change is broken
 [x] close the overlay on tab change
+[ ] make the subslots stand out a bit for lfo/fx
+[ ] tooltip combo is broken
 [ ] autosoftclip
+[ ] instance name
+[ ] do display disabled/impossible items different in the mod matrix
 
 arpeggiator
 allow full fx module inside the feedback delay
@@ -23,5 +27,4 @@ split large matrix dropdowns
 architecture/developer document
 percussion/porta lead demo patches
 string timbre should not react to samplerate/oversample
-do display disabled/impossible items different in the mod matrix
 separate midi, bpm, automation smoothing, auto should be global + per-param override

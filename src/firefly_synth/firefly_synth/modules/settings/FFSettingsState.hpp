@@ -39,6 +39,7 @@ class alignas(alignof(TBlock)) FFSettingsBlockParamState final
   std::array<TBlock, 1> tuneVoiceMatrix = {};
   std::array<TBlock, 1> receiveNotes = {};
   std::array<TBlock, 1> hostSmoothTime = {};
+  std::array<TBlock, 1> autoSoftClip = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFSettingsBlockParamState);
 };

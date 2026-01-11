@@ -319,6 +319,11 @@ FFPlugProcessor::ProcessPostVoice(
   if (gEchoTarget == FFGEchoTarget::MixOut)
     ProcessGEcho(state, output.audio);
 
+  // Soft clip at 300%.
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+    for (int c = 0; c < 2; c++)
+      output.audio[c].Set(s, FFSoftClip3(output.audio[c].Get(s)));
+
   state.moduleSlot = 0;
   state.outputParamsNormalized = &output.outputParamsNormalized;
   _procState->dsp.global.output.processor->Process(state, output);

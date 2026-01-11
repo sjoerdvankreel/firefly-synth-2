@@ -48,6 +48,26 @@ FFMakeSettingsTopo(bool isFx)
   receiveNotes.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReceiveNotes);
   receiveNotes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReceiveNotes);
 
+  auto& autoSoftClip = result->params[(int)FFSettingsParam::AutoSoftClip];
+  autoSoftClip.storeInPatch = false;
+  autoSoftClip.mode = FBParamMode::Block;
+  autoSoftClip.name = "Soft Clip";
+  autoSoftClip.slotCount = 1;
+  autoSoftClip.id = "{45AA6AD5-0B48-4942-913B-D6FB08BDA4FF}";
+  autoSoftClip.description = "Auto Soft Clip";
+  autoSoftClip.defaultText = "24 dB";
+  autoSoftClip.description = "Clip Output Above 0dB";
+  autoSoftClip.type = FBParamType::List;
+  autoSoftClip.List().items = {
+    { "{387A7CC5-C1E1-44FB-B797-01933A379D6B}", "Off" },
+    { "{F357EA33-CF2A-4563-A06F-5EA83AAA54F5}", "0 dB" },
+    { "{024B99D2-42E2-4126-A6D9-40E664D19CAB}", "12 dB" },
+    { "{E0CECF8C-9CCC-42D7-8DFF-D44B62507625}", "24 dB" } };
+  auto selectAutoSoftClip = [](auto& module) { return &module.block.autoSoftClip; };
+  autoSoftClip.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAutoSoftClip);
+  autoSoftClip.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectAutoSoftClip);
+  autoSoftClip.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAutoSoftClip);
+
   auto& tuning = result->params[(int)FFSettingsParam::Tuning];
   tuning.storeInPatch = false;
   tuning.mode = FBParamMode::Block;

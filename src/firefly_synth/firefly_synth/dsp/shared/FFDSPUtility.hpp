@@ -15,6 +15,14 @@ FFSoftClip10(float val)
 }
 
 inline float
+FFSoftClip3(float val)
+{
+  if (val > 1.0f || val < -1.0f)
+    val = 3.0f * std::tanh(val / 3.0f);
+  return val;
+}
+
+inline float
 FFMultiplyClamp(
   float val, float mul, float min, float max)
 {
