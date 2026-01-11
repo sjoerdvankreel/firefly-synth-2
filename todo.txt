@@ -12,6 +12,7 @@
 
 arpeggiator
 programmatic dump screenshot?
+allow more margin/padding, the borders clip
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo
 do display disabled/impossible items different in the mod matrix
