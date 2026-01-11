@@ -544,7 +544,12 @@ The plugin receives any note the host sends to it.<br/>
 In the global matrix source, Last/Low/High Key etc will just work, even with Receive Notes disabled.<br/>
 
 The MIDI and automation smoothing control parameter can be used to smooth sudden changes in incoming MIDI and automation events.<br/>
-This parameter affects CLAP modulation events as well.
+This parameter affects CLAP modulation events as well.<br/>
+
+Soft clip: this clips the master output if it's over 0/12/24 dB.<br/>
+When enabled, the plug won't produce audio outside of that range (which causes distortion if it would have done so with this option disabled).<br/>
+By default it's set to +12dB (so clip at 400%). <br/>
+The whole reason it's there is to prevent your host-of-choice from automuting the plugin, but obviously you should not rely on it.
 
 Microtuning controls:<br/>
 These allow some control over what settings that make up the pitch are applied in the tuned or untuned parts of pitch calculation.<br/>

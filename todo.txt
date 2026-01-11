@@ -6,9 +6,10 @@
 [x] autosoftclip
 [x] make the subslots stand out a bit for lfo/fx, not forget the fx
 [x] switch the default theme
+[x] instance name
 [ ] doc autoclip
-[ ] instance name
-
+[ ] update the settings screenshot
+[ ] update the main screenshots except manual
 
 arpeggiator
 allow full fx module inside the feedback delay
