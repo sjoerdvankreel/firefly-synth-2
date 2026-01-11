@@ -184,10 +184,6 @@ You have to download the zip to get at the PolyBLEP source for all waveforms.
 
 ## Themes
 
-### Dark Default
-
-<img alt="Screenshot Theme Dark Default" src="static/screenshot_theme_dark_default.png"/>
-
 ### Dark Hot
 
 <img alt="Screenshot Theme Dark Hot" src="static/screenshot_theme_dark_hot.png"/>
@@ -196,9 +192,9 @@ You have to download the zip to get at the PolyBLEP source for all waveforms.
 
 <img alt="Screenshot Theme Dark Cold" src="static/screenshot_theme_dark_cold.png"/>
 
-### Light Default
+### Dark Both
 
-<img alt="Screenshot Theme Light Default" src="static/screenshot_theme_light_default.png"/>
+<img alt="Screenshot Theme Dark Both" src="static/screenshot_theme_dark_both.png"/>
 
 ### Light Hot
 
@@ -207,3 +203,7 @@ You have to download the zip to get at the PolyBLEP source for all waveforms.
 ### Light Cold
 
 <img alt="Screenshot Theme Light Cold" src="static/screenshot_theme_light_cold.png"/>
+
+### Light Both
+
+<img alt="Screenshot Theme Light Both" src="static/screenshot_theme_light_both.png"/>
