@@ -65,5 +65,5 @@ public FBParamsDependent
   std::string const _text;
 public:
   void parentHierarchyChanged() override;
-  FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string text);
+  FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isPrimary, std::string text);
 };

@@ -71,8 +71,8 @@ FBParamLabel::parentHierarchyChanged()
 }
 
 FBParamLinkedLabel::
-FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string text):
-FBAutoSizeLabel(text),
+FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isPrimary, std::string text):
+FBAutoSizeLabel(text, false, isPrimary),
 FBParamsDependent(plugGUI, param->topoIndices.param.slot, param->topoIndices.module, param->static_.dependencies) {}
 
 void 
