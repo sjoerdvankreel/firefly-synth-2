@@ -76,6 +76,7 @@ protected:
 public:
   std::function<void()> onPatchLoaded = {};
   std::function<void(std::string const&)> onPatchNameChanged = {};
+  std::function<void(std::string const&)> onInstanceNameChanged = {};
 
   ~FFPlugGUI();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
@@ -88,6 +89,7 @@ public:
   void resized() override;
   void OnPatchLoaded() override;
   void OnPatchNameChanged(std::string const& name) override;
+  void OnInstanceNameChanged(std::string const& name) override;
 
   void ModuleSlotClicked(int index, int slot) override;
   void ActiveModuleSlotChanged(int index, int slot) override;

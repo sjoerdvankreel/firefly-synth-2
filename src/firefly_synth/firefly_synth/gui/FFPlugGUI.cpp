@@ -104,6 +104,14 @@ FFPlugGUI::OnPatchNameChanged(std::string const& name)
     onPatchNameChanged(name);
 }
 
+void
+FFPlugGUI::OnInstanceNameChanged(std::string const& name)
+{
+  FBPlugGUI::OnInstanceNameChanged(name);
+  if (onInstanceNameChanged)
+    onInstanceNameChanged(name);
+}
+
 void 
 FFPlugGUI::RequestFixedGraphsRerender(int moduleIndex)
 {

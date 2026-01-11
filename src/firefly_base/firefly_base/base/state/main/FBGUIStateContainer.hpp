@@ -12,6 +12,7 @@ class FBGUIStateContainer final
   friend class FBPlugGUIContext;
 
   std::string _themeName;
+  std::string _instanceName = "New";
   std::string _patchName = "Init Patch";
 
   std::vector<double*> _params;
@@ -27,8 +28,10 @@ public:
   std::vector<double*> const& Params() const { return _params; }
   std::string const& ThemeName() const { return _themeName; }
   std::string const& PatchName() const { return _patchName; }
+  std::string const& InstanceName() const { return _instanceName; }
   void SetThemeName(std::string const& name) { _themeName = name; }
   void SetPatchName(std::string const& name) { _patchName = name; }
+  void SetInstanceName(std::string const& name) { _instanceName = name; }
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }

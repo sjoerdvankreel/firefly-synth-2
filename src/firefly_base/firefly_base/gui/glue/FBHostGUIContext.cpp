@@ -59,6 +59,12 @@ FBHostGUIContext::ThemeName() const
   return _guiState->ThemeName();
 }
 
+std::string const&
+FBHostGUIContext::InstanceName() const
+{
+  return _guiState->InstanceName();
+}
+
 void
 FBHostGUIContext::OnPatchLoaded()
 {
@@ -73,11 +79,25 @@ FBHostGUIContext::OnPatchNameChanged()
     _listeners[i]->OnPatchNameChanged(PatchName());
 }
 
+void
+FBHostGUIContext::OnInstanceNameChanged()
+{
+  for (int i = 0; i < _listeners.size(); i++)
+    _listeners[i]->OnInstanceNameChanged(InstanceName());
+}
+
 void 
 FBHostGUIContext::SetPatchName(std::string const& name)
 {
   _guiState->SetPatchName(name);
   OnPatchNameChanged();
+}
+
+void
+FBHostGUIContext::SetInstanceName(std::string const& name)
+{
+  _guiState->SetInstanceName(name);
+  OnInstanceNameChanged();
 }
 
 void

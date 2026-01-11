@@ -90,6 +90,7 @@ public:
 
   void OnPatchLoaded() override {}
   void OnPatchNameChanged(std::string const& /*name*/) override {}
+  void OnInstanceNameChanged(std::string const& /*name*/) override {}
   void mouseUp(const juce::MouseEvent& event) override;
 
   void HideTooltip();
