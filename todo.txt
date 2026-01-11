@@ -4,14 +4,16 @@
 [x] close the overlay on tab change
 [x] tooltip combo is broken
 [x] autosoftclip
-[ ] make the subslots stand out a bit for lfo/fx, not forget the fx
+[x] make the subslots stand out a bit for lfo/fx, not forget the fx
+[x] switch the default theme
+[ ] doc autoclip
 [ ] instance name
-[ ] switch the default theme
-[ ] do display disabled/impossible items different in the mod matrix
+
 
 arpeggiator
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo
+do display disabled/impossible items different in the mod matrix
 VDist/GDist - bitcrush, downsample, filter, eq, shape, oversample, more?
 VComp/GComp - ext audio in, but can be other stuff as well
 
