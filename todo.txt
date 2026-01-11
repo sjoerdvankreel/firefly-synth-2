@@ -1,16 +1,3 @@
-[x] theme per instance
-[x] sort presets by path
-[x] flush audio on patch change is broken
-[x] close the overlay on tab change
-[x] tooltip combo is broken
-[x] autosoftclip
-[x] make the subslots stand out a bit for lfo/fx, not forget the fx
-[x] switch the default theme
-[x] instance name
-[x] doc autoclip
-[ ] update all the screenshots
-
-arpeggiator
 programmatic dump screenshot?
 allow more margin/padding, the borders clip
 allow full fx module inside the feedback delay
@@ -20,6 +7,7 @@ VDist/GDist - bitcrush, downsample, filter, eq, shape, oversample, more?
 VComp/GComp - ext audio in, but can be other stuff as well
 
 pck support
+arpeggiator
 allow more stuff on the feedback delay path, like, try to get an entire fx block in there somehow => just put one in a popup window?
 built-in compressor (can actually do that now with side-chain in, so nice)
 more presets
