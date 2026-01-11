@@ -1,4 +1,5 @@
 drop screenshot_theme_light_default (for the website) once fix the auto-screenshot
+also probably make the images on the website bigger somehow
 programmatic dump screenshot?
 allow more margin/padding, the borders clip
 allow full fx module inside the feedback delay
