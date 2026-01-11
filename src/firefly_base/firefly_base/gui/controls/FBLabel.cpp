@@ -5,10 +5,11 @@
 using namespace juce;
 
 FBAutoSizeLabel::
-FBAutoSizeLabel(std::string const& text, bool centred):
+FBAutoSizeLabel(std::string const& text, bool centred, bool isPrimary):
 Label(),
 IFBHorizontalAutoSize(),
-_textWidth(FBGUIGetStringWidthCached(text))
+_textWidth(FBGUIGetStringWidthCached(text)),
+_isPrimary(isPrimary)
 {
   setText(text, dontSendNotification);
   setBorderSize({ 1, 2, 1, 2 });
@@ -48,8 +49,8 @@ FBAutoSizeLabel2::FixedWidth(int /*height*/) const
 }
 
 FBGUIParamLabel::
-FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed) :
-FBAutoSizeLabel(param->displayName),
+FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed, bool isPrimary) :
+FBAutoSizeLabel(param->displayName, false, isPrimary),
 FBGUIParamComponent(plugGUI, param, isThemed) {}
 
 void
@@ -59,8 +60,8 @@ FBGUIParamLabel::parentHierarchyChanged()
 }
 
 FBParamLabel::
-FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed):
-FBAutoSizeLabel(param->displayName),
+FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed, bool isPrimary):
+FBAutoSizeLabel(param->displayName, false, isPrimary),
 FBParamComponent(plugGUI, param, isThemed) {}
 
 void 

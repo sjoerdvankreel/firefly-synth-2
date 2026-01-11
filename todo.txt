@@ -3,7 +3,7 @@
 [x] flush audio on patch change is broken
 [x] close the overlay on tab change
 [x] tooltip combo is broken
-[ ] autosoftclip
+[x] autosoftclip
 [ ] make the subslots stand out a bit for lfo/fx
 [ ] instance name
 [ ] switch the default theme
