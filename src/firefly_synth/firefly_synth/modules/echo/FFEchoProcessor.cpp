@@ -526,7 +526,7 @@ FFEchoProcessor<Global>::ProcessFeedback(
         out = _feedbackDelayState.hpFilter.Next(c, out);
        float feedbackVal = output[c].Get(s) + amountPlain * 0.99f * (float)out;
       // because resonant filter inside feedback path
-      feedbackVal = FFSoftClip10(feedbackVal);
+      feedbackVal = FFSoftClip(10.0f, feedbackVal);
       _feedbackDelayLine[c].Push(feedbackVal);
       output[c].Set(s, (1.0f - mixPlain) * output[c].Get(s) + mixPlain * (float)out);
     }

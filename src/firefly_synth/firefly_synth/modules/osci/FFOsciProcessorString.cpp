@@ -327,7 +327,7 @@ FFOsciProcessor::ProcessString(
         _stringUniState[u].delayLine.Push(newVal);
 
         // dont go out of bounds unlimited
-        outVal = FFSoftClip10(outVal);
+        outVal = FFSoftClip(10.0f, outVal);
         uniOutputOversampled[u].Set(s, outVal);
       }
     }

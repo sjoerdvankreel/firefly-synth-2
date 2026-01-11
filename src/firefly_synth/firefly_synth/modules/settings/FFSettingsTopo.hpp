@@ -4,7 +4,7 @@
 
 struct FBStaticModule;
 
-enum class FFSettingsSoftClipType { Off, Db0, Db12, Db24 };
+enum class FFSettingsSoftClipType { Off, Db0, Db6, Db12 };
 
 enum class FFSettingsParam { 
   HostSmoothTime, ReceiveNotes, AutoSoftClip,

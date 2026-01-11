@@ -191,7 +191,7 @@ FFDeserializationConverter::PostProcess(
   }
 
   // 2.1.0 - add new soft clip param.
-  // The default is 24dB but the old "default" was off because not exist.
+  // The default is 12dB but the old "default" was off because not exist.
   if (OldVersion() < FBPlugVersion(2, 1, 0))
   {
     auto const& settingsModule = Topo()->static_->modules[(int)FFModuleType::Settings];
