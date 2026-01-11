@@ -422,6 +422,10 @@ Shows the name of the last tweaked parameter as well as a textbox that allows fo
 Shows CPU usage relative to single core, voice usage and output gain with a maximum of 0dB.<br/>
 The MTS-ESP indicator shows whether an MTS-ESP master is connected.
 
+### Session name
+Free-form text input.<br/>
+Comes in handy when you have multiple plugin windows open and are wondering which one is kick/bass/synth etc.
+
 ### Panic button
 Kills all active voices and flushes delay lines.<br/>
 Comes in handy for stuck notes or when you managed to fill the delay lines with garbage.
