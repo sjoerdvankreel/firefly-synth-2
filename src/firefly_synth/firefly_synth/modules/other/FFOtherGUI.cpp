@@ -21,8 +21,8 @@ Component*
 FFMakeOtherGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0 } );
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Name"));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0 } );
+  grid->Add(0, 0, plugGUI->StoreComponent<FBFillerComponent>(1, 1));
   auto instanceNameEditor = plugGUI->StoreComponent<FBInstanceNameEditor>(plugGUI, 150);
   plugGUI->onInstanceNameChanged = [instanceNameEditor](auto const& name) { instanceNameEditor->setText(name, false); };
   grid->Add(0, 1, instanceNameEditor);
@@ -30,7 +30,8 @@ FFMakeOtherGUI(FFPlugGUI* plugGUI)
   panicButton->setTooltip("Reset Voices And Delay Lines"); 
   panicButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushAudio(); };
   grid->Add(0, 2, panicButton);
-  grid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->Add(0, 3, plugGUI->StoreComponent<FBFillerComponent>(1, 1));
+  grid->MarkSection({ { 0, 0 }, { 1, 4 } }, FBGridSectionMark::BackgroundAndBorder);
   auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Other, 0, section);
 }
