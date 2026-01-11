@@ -12,8 +12,8 @@ class FBGUIStateContainer final
   friend class FBPlugGUIContext;
 
   std::string _themeName;
-  std::string _instanceName = "New";
   std::string _patchName = "Init Patch";
+  std::string _instanceName = "New Session";
 
   std::vector<double*> _params;
   void* _rawState;

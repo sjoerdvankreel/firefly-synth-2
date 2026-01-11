@@ -2,6 +2,7 @@
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
+#include <firefly_base/gui/controls/FBInstanceNameEditor.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
@@ -256,14 +257,16 @@ void
 FBLookAndFeel::fillTextEditorBackground(
   Graphics& g, int width, int /*height*/, TextEditor& te)
 { 
+  bool isInstance = dynamic_cast<FBInstanceNameEditor*>(&te) != nullptr;
   FBColorScheme const& scheme = FindColorSchemeFor(te);
   Colour primary = scheme.primary;
   if (te.findParentComponentOfClass<FBFileBrowserComponent>())
     primary = scheme.fileBrowserPrimary;
   g.setColour(scheme.paramBackground);
-  g.fillRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f);
+  float y = isInstance ? 5.0f : 3.0f;
+  g.fillRoundedRectangle(te.getBounds().toFloat().withY(y).withHeight(24.0f).withWidth(width - 3.0f), 5.0f);
   g.setColour(primary);
-  g.drawRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f, 1.0f);
+  g.drawRoundedRectangle(te.getBounds().toFloat().withY(y).withHeight(24.0f).withWidth(width - 3.0f), 5.0f, 1.0f);
 }
 
 void 

@@ -15,7 +15,7 @@ _fixedWidth(fixedWidth), _plugGUI(plugGUI)
   setText(_plugGUI->HostContext()->InstanceName(), dontSendNotification);
   addListener(this);
   setFont(FBGUIGetFont());
-  setIndents(2, 8);
+  setIndents(3, 10);
   setPopupMenuEnabled(false);
 }
 
