@@ -2,10 +2,11 @@
 [x] sort presets by path
 [x] flush audio on patch change is broken
 [x] close the overlay on tab change
-[ ] make the subslots stand out a bit for lfo/fx
-[ ] tooltip combo is broken
+[x] tooltip combo is broken
 [ ] autosoftclip
+[ ] make the subslots stand out a bit for lfo/fx
 [ ] instance name
+[ ] switch the default theme
 [ ] do display disabled/impossible items different in the mod matrix
 
 arpeggiator
