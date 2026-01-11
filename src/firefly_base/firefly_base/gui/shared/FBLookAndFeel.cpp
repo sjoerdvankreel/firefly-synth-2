@@ -2,6 +2,7 @@
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
+#include <firefly_base/gui/controls/FBInstanceNameEditor.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
@@ -256,14 +257,16 @@ void
 FBLookAndFeel::fillTextEditorBackground(
   Graphics& g, int width, int /*height*/, TextEditor& te)
 { 
+  bool isInstance = dynamic_cast<FBInstanceNameEditor*>(&te) != nullptr;
   FBColorScheme const& scheme = FindColorSchemeFor(te);
   Colour primary = scheme.primary;
   if (te.findParentComponentOfClass<FBFileBrowserComponent>())
     primary = scheme.fileBrowserPrimary;
   g.setColour(scheme.paramBackground);
-  g.fillRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f);
+  float y = isInstance ? 5.0f : 3.0f;
+  g.fillRoundedRectangle(te.getBounds().toFloat().withY(y).withHeight(24.0f).withWidth(width - 3.0f), 5.0f);
   g.setColour(primary);
-  g.drawRoundedRectangle(te.getBounds().toFloat().withY(3.0f).withHeight(24.0f).withWidth(width - 3.0f), 5.0f, 1.0f);
+  g.drawRoundedRectangle(te.getBounds().toFloat().withY(y).withHeight(24.0f).withWidth(width - 3.0f), 5.0f, 1.0f);
 }
 
 void 
@@ -416,7 +419,9 @@ FBLookAndFeel::drawLabel(
 
   bool isCombo = false;
   ComboBox* cb = nullptr;
+  bool small = false;
   bool hasBackground = false;
+  bool hasBackground2 = false;
   auto const* scheme = &FindColorSchemeFor(label);
   if ((cb = label.findParentComponentOfClass<ComboBox>()) != nullptr)
   {
@@ -437,6 +442,23 @@ FBLookAndFeel::drawLabel(
     }
     colorText = scheme->text2;
   }
+  else
+  {
+    auto autoSizeLabel = dynamic_cast<FBAutoSizeLabel*>(&label);
+    if (autoSizeLabel && autoSizeLabel->IsPrimary())
+    {
+      hasBackground2 = true;
+      small = autoSizeLabel->Small();
+      g.setColour(scheme->primary.darker(1.0f));
+      auto newRect = Rectangle<int>(
+        label.getLocalBounds().getX() + 2,
+        label.getLocalBounds().getY() + 2,
+        label.getLocalBounds().getWidth() - 2 - (small? 4: 0),
+        label.getLocalBounds().getHeight() - 4);
+      g.fillRoundedRectangle(newRect.toFloat(), 2.0f);
+      colorText = scheme->text2;
+    }
+  }
       
   if (isCombo)
     colorText = scheme->primary.darker(cb->isEnabled() ? 0.0f : scheme->dimDisabled);
@@ -448,6 +470,14 @@ FBLookAndFeel::drawLabel(
   auto textArea = getLabelBorderSize(label).subtractedFrom(label.getLocalBounds());
   if (hasBackground)
     textArea = textArea.reduced(5);
+  else if (hasBackground2)
+  {
+    textArea = Rectangle<int>(
+      textArea.getX() + 2,
+      textArea.getY() + 2,
+      textArea.getWidth() - 2 - (small? 4: 0),
+      textArea.getHeight() - 4);
+  }
   g.drawText(label.getText(), textArea, label.getJustificationType(), false);
 }
 

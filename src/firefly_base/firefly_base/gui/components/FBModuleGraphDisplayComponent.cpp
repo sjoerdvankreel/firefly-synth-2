@@ -26,7 +26,8 @@ FBColorScheme const&
 FBModuleGraphDisplayComponent::FindColorSchemeFor(
   int moduleIndex, int moduleSlot) const
 {
-  auto const& theme = FBGetLookAndFeel()->Theme();
+  auto fbLookAndFeel = FBGetLookAndFeelFor(this);
+  auto const& theme = fbLookAndFeel->Theme();
   if (theme.graphSchemeFollowsModule)
   {
     if (moduleIndex != -1 && moduleSlot != -1)
@@ -38,7 +39,7 @@ FBModuleGraphDisplayComponent::FindColorSchemeFor(
           return theme.colorSchemes.at(moduleIter->second.colorScheme);
       }
   } 
-  return FBGetLookAndFeel()->FindColorSchemeFor(*this);
+  return fbLookAndFeel->FindColorSchemeFor(*this);
 }  
 
 Point<float>

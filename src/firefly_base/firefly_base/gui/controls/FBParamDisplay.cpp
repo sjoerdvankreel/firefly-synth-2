@@ -72,7 +72,7 @@ FBParamDisplayMeter::SetValueNormalizedFromHost(double normalized)
 void 
 FBParamDisplayMeter::paint(Graphics& g)
 {
-  auto const& scheme = FBGetLookAndFeel()->FindColorSchemeFor(*this);
+  auto const& scheme = FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this);
 
   float const gapSize = 2.0f;
   float const barHeight = 10.0f;

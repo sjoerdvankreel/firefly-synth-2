@@ -1,5 +1,5 @@
 {
-  "name": "Firefly Light Default",
+  "name": "Firefly Light Both",
   "graphSchemeFollowsModule": true,
   "unisonSchemeFollowsModule": true,
   "defaultColorScheme_comment": "Fallback scheme, any other scheme can override individual settings.",

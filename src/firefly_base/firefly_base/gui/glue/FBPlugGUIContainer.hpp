@@ -1,6 +1,7 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>

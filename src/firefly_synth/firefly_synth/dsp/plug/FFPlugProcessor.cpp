@@ -229,17 +229,21 @@ FFPlugProcessor::ProcessPostVoice(
   auto& globalDSP = _procState->dsp.global;
   auto const& gMix = _procState->param.global.gMix[0];
   auto const& gEcho = _procState->param.global.gEcho[0];
+  auto const& settings = _procState->param.global.settings[0];
   auto const& balNormIn = gMix.acc.bal[0].Global();
   auto const& ampNormIn = gMix.acc.amp[0].Global();
   auto const& lfo5ToAmpNorm = gMix.acc.lfo5ToAmp[0].Global();
   auto const& lfo6ToBalNorm = gMix.acc.lfo6ToBal[0].Global();
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::GMix];
   auto& gEchoModuleTopo = state.topo->static_->modules[(int)FFModuleType::GEcho];
+  auto& settingsModuleTopo = state.topo->static_->modules[(int)FFModuleType::Settings];
 
   FBSArray<float, FBFixedBlockSamples> ampNormModulated = {};
   FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
+  float softClipNorm = settings.block.autoSoftClip[0].Value();
   float gEchoTargetNorm = gEcho.block.vTargetOrGTarget[0].Value();
   auto gEchoTarget = gEchoModuleTopo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VTargetOrGTarget, gEchoTargetNorm);
+  auto softClip = settingsModuleTopo.NormalizedToListFast<FFSettingsSoftClipType>(FFSettingsParam::AutoSoftClip, softClipNorm);
 
   // Get out pops/clicks from voices we killed halfway.
   if(_flushThisRound)
@@ -318,6 +322,20 @@ FFPlugProcessor::ProcessPostVoice(
 
   if (gEchoTarget == FFGEchoTarget::MixOut)
     ProcessGEcho(state, output.audio);
+
+  // Soft clip if requested.
+  float clipAt = 1.0f;
+  switch (softClip)
+  {
+  case FFSettingsSoftClipType::Db0: clipAt = 1.0f; break;
+  case FFSettingsSoftClipType::Db6: clipAt = 2.0f; break;
+  case FFSettingsSoftClipType::Db12: clipAt = 4.0f; break;
+  default: break;
+  }
+  if(softClip != FFSettingsSoftClipType::Off)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      for (int c = 0; c < 2; c++)
+        output.audio[c].Set(s, FFSoftClip(clipAt, output.audio[c].Get(s)));
 
   state.moduleSlot = 0;
   state.outputParamsNormalized = &output.outputParamsNormalized;

@@ -1,5 +1,6 @@
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -12,22 +13,32 @@ using namespace juce;
 
 static Typeface::Ptr _typeface = {};
 static Font _font = Font(FontOptions());
-static std::unique_ptr<FBLookAndFeel> _lookAndFeel = {};
+static std::unique_ptr<FBLookAndFeel> _defaultLookAndFeel = {};
 
 Font const& FBGUIGetFont() { return _font; }
 float FBGUIGetPopupMenuFontHeightFloat() { return 13.0f; }
-FBLookAndFeel* FBGetLookAndFeel() { return _lookAndFeel.get(); }
 float FBGUIGetFontHeightFloat() { return FBGUIGetFont().getHeight(); }
 int FBGUIGetStandardPopupMenuItemHeight() { return FBGUIGetFontHeightInt() + 10; }
 int FBGUIGetFontHeightInt() { return static_cast<int>(std::ceil(FBGUIGetFontHeightFloat())); }
 int FBGUIGetStringWidthCached(std::string const& text) { return FBGUIGetStringSizeCached(text).x; }
+
+FBLookAndFeel* 
+FBGetLookAndFeelFor(Component const* c)
+{
+  if (auto container = dynamic_cast<FBPlugGUI const*>(c))
+    return container->LookAndFeel();
+  if (auto container = c->findParentComponentOfClass<FBPlugGUI>())
+    return container->LookAndFeel();
+  FB_ASSERT(false);
+  return nullptr;
+}
 
 void
 FBGUITerminate()
 {
   FB_LOG_INFO("Terminating GUI.");
   LookAndFeel::setDefaultLookAndFeel(nullptr);
-  _lookAndFeel.reset();
+  _defaultLookAndFeel.reset();
   _font = Font(FontOptions());
   _typeface.reset();
   FB_LOG_INFO("Terminating JUCE GUI.");
@@ -47,8 +58,12 @@ FBGUIInit()
   auto fontBytes = FBReadFile(fontPath);
   _typeface = Typeface::createSystemTypefaceFor(fontBytes.data(), fontBytes.size());
   _font = Font(FontOptions(_typeface)).withHeight(FBGUIFontSize);
-  _lookAndFeel = std::make_unique<FBLookAndFeel>();
-  LookAndFeel::setDefaultLookAndFeel(_lookAndFeel.get());
+
+  // We still need this even with per-pluggui look and feel.
+  // It controls some stuff during setting up the gui like createComboBoxTextBox
+  // which is fortunately not theme-dependent.
+  _defaultLookAndFeel = std::make_unique<FBLookAndFeel>();
+  LookAndFeel::setDefaultLookAndFeel(_defaultLookAndFeel.get());
   FB_LOG_INFO("Initialized GUI.");
 }
 

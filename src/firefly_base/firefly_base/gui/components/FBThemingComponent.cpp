@@ -19,7 +19,7 @@ _topo(topo)
 void 
 FBThemedComponent::paint(Graphics& g)
 {
-  g.fillAll(FBGetLookAndFeel()->FindColorSchemeFor(*this).background);
+  g.fillAll(FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this).background);
 }
 
 void

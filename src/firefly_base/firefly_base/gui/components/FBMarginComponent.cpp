@@ -40,7 +40,7 @@ FBMarginComponent::paint(Graphics& g)
 {
   if (_opaque)
   {
-    g.setColour(FBGetLookAndFeel()->FindColorSchemeFor(*this).background);
+    g.setColour(FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this).background);
     g.fillAll();
   }
 }

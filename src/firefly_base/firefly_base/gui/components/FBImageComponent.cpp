@@ -23,7 +23,6 @@ _placement(placement)
 {
   _plugGUI->AddThemeListener(this);
   _image = std::make_unique<ImageComponent>();
-  _image->setImage(ImageCache::getFromFile(String(GetCurrentImagePath())), placement);
   addAndMakeVisible(_image.get());
 }
 
@@ -49,7 +48,7 @@ FBImageComponent::ThemeChanged()
 std::string 
 FBImageComponent::GetCurrentImagePath() const
 {
-  auto folderName = FBGetLookAndFeel()->Theme().folderName;
+  auto folderName = FBGetLookAndFeelFor(this)->Theme().folderName;
   String path((FBGetResourcesFolderPath() / "ui" / "themes" / folderName / _resourceName).string());
   FB_ASSERT(juce::File(String(path)).existsAsFile());
   return path.toStdString();

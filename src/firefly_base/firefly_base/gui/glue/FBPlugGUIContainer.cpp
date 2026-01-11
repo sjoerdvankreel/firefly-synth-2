@@ -20,7 +20,7 @@ _gui(hostContext->Topo()->static_->guiFactory(hostContext))
   FB_LOG_ENTRY_EXIT();
   setOpaque(true);
   setVisible(true);
-  
+
   FB_LOG_INFO("Calculating GUI size.");
   int plugWidth = hostContext->Topo()->static_->guiWidth;
   int plugHeight = GetHeightForAspectRatio(plugWidth);
@@ -42,7 +42,7 @@ _gui(hostContext->Topo()->static_->guiFactory(hostContext))
 void 
 FBPlugGUIContainer::paint(Graphics& g)
 {
-  g.fillAll(FBGetLookAndFeel()->FindColorSchemeFor(*this).background);
+  g.fillAll(Colours::black);
 }
 
 void

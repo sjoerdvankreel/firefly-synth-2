@@ -59,6 +59,12 @@ FBHostGUIContext::ThemeName() const
   return _guiState->ThemeName();
 }
 
+std::string const&
+FBHostGUIContext::InstanceName() const
+{
+  return _guiState->InstanceName();
+}
+
 void
 FBHostGUIContext::OnPatchLoaded()
 {
@@ -73,11 +79,25 @@ FBHostGUIContext::OnPatchNameChanged()
     _listeners[i]->OnPatchNameChanged(PatchName());
 }
 
+void
+FBHostGUIContext::OnInstanceNameChanged()
+{
+  for (int i = 0; i < _listeners.size(); i++)
+    _listeners[i]->OnInstanceNameChanged(InstanceName());
+}
+
 void 
 FBHostGUIContext::SetPatchName(std::string const& name)
 {
   _guiState->SetPatchName(name);
   OnPatchNameChanged();
+}
+
+void
+FBHostGUIContext::SetInstanceName(std::string const& name)
+{
+  _guiState->SetInstanceName(name);
+  OnInstanceNameChanged();
 }
 
 void
@@ -253,6 +273,14 @@ FBHostGUIContext::GetAudioParamBool(FBParamTopoIndices const& indices) const
   return param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(normalized));
 }
 
+void
+FBHostGUIContext::SetAudioParamBool(FBParamTopoIndices const& indices, bool val)
+{
+  auto param = Topo()->audio.ParamAtTopo(indices);
+  double normalized = param->static_.BooleanNonRealTime().PlainToNormalized(val);
+  PerformImmediateAudioParamEdit(indices, normalized);
+}
+
 bool
 FBHostGUIContext::GetGUIParamBool(FBParamTopoIndices const& indices) const
 {
@@ -374,6 +402,9 @@ FBHostGUIContext::LoadPresetList(std::filesystem::path const& p) const
     if (std::filesystem::is_directory(i.path()))
       result->folders.push_back(LoadPresetList(i.path()));
   }
+
+  std::sort(result->files.begin(), result->files.end(), [](auto const& a, auto const& b) { return a.name < b.name;  });
+  std::sort(result->folders.begin(), result->folders.end(), [](auto const& a, auto const& b) { return a->name < b->name; });
   return result;
 }
 

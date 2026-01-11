@@ -1,3 +1,14 @@
+January 11, 2026 - v2.1.0.
+
+- Bugfix: flush-audio on patch change was broken.
+- Bugfix: switching theme in one instance would switch themes in all instances.
+- Bugfix: preset list is now sorted by path instead of whatever the OS comes up with.
+- Audio: add (optional) master soft clip parameter so the DAW won't auto-mute the plug.
+- UI: changing tabs now closes the overlay editors and file pickers.
+- UI: switched default theme to "dark hot" (old default is still available).
+- UI: made primary parameters such as on/off or off/type controls stand out a bit.
+- UI: add free-form text field for custom instance/session name (so you know which is which when multiple UI windows are open).
+
 January 8, 2026 - v2.0.9.
 
 - Add some presets. Just init and demo stuff, not actual factory patches.

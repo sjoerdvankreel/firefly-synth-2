@@ -134,6 +134,7 @@ FBRuntimeTopo::SaveGUIStateToVar(
   result->setProperty("params", SaveParamStateToVar(guiState, this->gui.params, false));
   result->setProperty("patchName", String(guiState.PatchName()));
   result->setProperty("themeName", String(guiState.ThemeName()));
+  result->setProperty("instanceName", String(guiState.InstanceName()));
   return var(result);
 }
 
@@ -157,6 +158,8 @@ FBRuntimeTopo::LoadGUIStateFromVar(
       guiState.SetPatchName(json["patchName"].toString().toStdString());
     if (json.hasProperty("themeName"))
       guiState.SetThemeName(json["themeName"].toString().toStdString());
+    if (json.hasProperty("instanceName"))
+      guiState.SetInstanceName(json["instanceName"].toString().toStdString());
     return true;
   }
   return LoadParamStateFromVar(true, json, guiState, this->gui, false);
@@ -261,6 +264,7 @@ FBRuntimeTopo::LoadGUIStateFromStringWithDryRun(
     guiState.CopyFrom(dryGUIState);
     guiState.SetPatchName(dryGUIState.PatchName());
     guiState.SetThemeName(dryGUIState.ThemeName());
+    guiState.SetInstanceName(dryGUIState.InstanceName());
   }
 }
 
@@ -296,6 +300,7 @@ FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
   guiState.CopyFrom(dryGUIState);
   guiState.SetPatchName(dryGUIState.PatchName());
   guiState.SetThemeName(dryGUIState.ThemeName());
+  guiState.SetInstanceName(dryGUIState.InstanceName());
   editState.CopyFrom(this, dryEditState, patchOnly);
 }
 
@@ -490,7 +495,10 @@ FBRuntimeTopo::LoadParamStateFromVar(
     auto defaultText = params.params[p].GetDefaultText();
     if(defaultText.size())
       defaultNormalized = params.params[p].TextToNormalized(false, defaultText).value();
-    if(!patchOnly || params.params[p].static_.StoreInPatch())
+
+    if (!params.params[p].static_.IsOutput() &&
+      !params.params[p].static_.IsFakeParam() &&
+      (!patchOnly || params.params[p].static_.StoreInPatch()))
       *container.Params()[p] = static_cast<float>(defaultNormalized);
   }
 

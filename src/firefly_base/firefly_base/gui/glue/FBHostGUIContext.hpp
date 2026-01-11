@@ -55,6 +55,7 @@ public:
   virtual ~IFBHostGUIContextListener() {}
   virtual void OnPatchLoaded() = 0;
   virtual void OnPatchNameChanged(std::string const& name) = 0;
+  virtual void OnInstanceNameChanged(std::string const& name) = 0;
 };
 
 class FBHostGUIContext
@@ -85,6 +86,7 @@ protected:
 
   void OnPatchLoaded();
   void OnPatchNameChanged();
+  void OnInstanceNameChanged();
   virtual void DoEndAudioParamChange(int index) = 0;
   virtual void DoBeginAudioParamChange(int index) = 0;
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
@@ -102,8 +104,10 @@ public:
 
   std::string const& PatchName() const;
   std::string const& ThemeName() const;
+  std::string const& InstanceName() const;
   void SetPatchName(std::string const& name);
   void SetThemeName(std::string const& name);
+  void SetInstanceName(std::string const& name);
   bool IsPatchLoaded() const { return _isPatchLoaded; }
   
   void ShowOnlineManual() const;
@@ -123,10 +127,13 @@ public:
   void SetGUIParamBool(FBParamTopoIndices const& indices, bool val);
   void SetGUIParamDiscrete(FBParamTopoIndices const& indices, int val);
 
-  std::string GetAudioParamText(FBParamTopoIndices const& indices) const;
   bool GetAudioParamBool(FBParamTopoIndices const& indices) const;
+  void SetAudioParamBool(FBParamTopoIndices const& indices, bool value);
+
   int GetAudioParamDiscrete(FBParamTopoIndices const& indices) const;
   void SetAudioParamDiscrete(FBParamTopoIndices const& indices, int value);
+
+  std::string GetAudioParamText(FBParamTopoIndices const& indices) const;
   double GetAudioParamLinear(FBParamTopoIndices const& indices) const;
   double GetAudioParamIdentity(FBParamTopoIndices const& indices) const;
   double GetAudioParamNormalized(FBParamTopoIndices const& indices) const;

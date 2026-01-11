@@ -1,19 +1,16 @@
-arpeggiator
-the theme cannot be static, it should not share across plug instances
-do the kvr replaced by thing
-sort presets by path
-Does the vecho really get flushed?
-close the overlay on tab change
+programmatic dump screenshot?
+allow more margin/padding, the borders clip
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo
-VDist/GDist
+do display disabled/impossible items different in the mod matrix
+VDist/GDist - bitcrush, downsample, filter, eq, shape, oversample, more?
 VComp/GComp - ext audio in, but can be other stuff as well
 
 pck support
+arpeggiator
 allow more stuff on the feedback delay path, like, try to get an entire fx block in there somehow => just put one in a popup window?
 built-in compressor (can actually do that now with side-chain in, so nice)
 more presets
-autosoftclip
 fancy patch browser
 check into AV Linux
 arpeggiator/sequencer
@@ -23,5 +20,4 @@ split large matrix dropdowns
 architecture/developer document
 percussion/porta lead demo patches
 string timbre should not react to samplerate/oversample
-do display disabled/impossible items different in the mod matrix
 separate midi, bpm, automation smoothing, auto should be global + per-param override

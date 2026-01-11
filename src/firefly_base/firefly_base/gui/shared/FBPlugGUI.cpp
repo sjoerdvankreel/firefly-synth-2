@@ -32,11 +32,13 @@ FBPlugGUI::
 
 FBPlugGUI::
 FBPlugGUI(FBHostGUIContext* hostContext) :
-_hostContext(hostContext)
+_hostContext(hostContext),
+_lookAndFeel(std::make_unique<FBLookAndFeel>())
 {
   _themes = FBLoadThemes(hostContext->Topo());
   if (_themes.empty())
     FB_LOG_ERROR("No themes found.");
+  setLookAndFeel(_lookAndFeel.get());
   _tooltipWindow = StoreComponent<TooltipWindow>();
   _hostContext->AddListener(this);
 
@@ -83,7 +85,7 @@ void
 FBPlugGUI::SwitchTheme(std::string const& themeName)
 {
   HostContext()->SetThemeName(themeName);
-  FBGetLookAndFeel()->SetTheme(GetTheme());
+  FBGetLookAndFeelFor(this)->SetTheme(GetTheme());
   for (int i = 0; i < _themeListeners.size(); i++)
     _themeListeners[i]->ThemeChanged();
   repaint();
@@ -602,20 +604,22 @@ void
 FBPlugGUI::ReloadPatch()
 {
   FB_LOG_ENTRY_EXIT();
+  BeforePatchChanged();
   std::string oldName = HostContext()->PatchName();
   HostContext()->UndoState().Snapshot("Reload Patch");
   HostContext()->RevertPatchToPatchState();
   HostContext()->MarkPatchAsPatchState(oldName);
-  OnPatchChanged();
+  AfterPatchChanged();
 }
 
 void
 FBPlugGUI::ReloadSession()
 {
   FB_LOG_ENTRY_EXIT();
+  BeforePatchChanged();
   HostContext()->UndoState().Snapshot("Reload Session");
   HostContext()->RevertPatchToSessionState();
-  OnPatchChanged();
+  AfterPatchChanged();
 }
 
 void
@@ -678,13 +682,14 @@ void
 FBPlugGUI::InitPatch()
 {
   FB_LOG_ENTRY_EXIT();
+  BeforePatchChanged();
   HostContext()->UndoState().Snapshot("Init Patch");
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
     if(HostContext()->Topo()->audio.params[i].static_.storeInPatch)
       HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
   HostContext()->MarkPatchAsPatchState("Init Patch");
-  OnPatchChanged();
+  AfterPatchChanged();
 }
 
 bool
@@ -697,10 +702,11 @@ FBPlugGUI::LoadPatchFromText(
   FBScalarStateContainer editState(*HostContext()->Topo());
   if (!HostContext()->Topo()->LoadEditStateFromString(text, editState, true))
     return false;
+  BeforePatchChanged();
   HostContext()->UndoState().Snapshot(undoAction);
   editState.CopyTo(HostContext(), true);
   HostContext()->MarkPatchAsPatchState(patchName);
-  OnPatchChanged();
+  AfterPatchChanged();
   return true;
 }
 

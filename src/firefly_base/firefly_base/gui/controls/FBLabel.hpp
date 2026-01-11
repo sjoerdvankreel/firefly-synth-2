@@ -16,10 +16,14 @@ public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
   int const _textWidth;
+  bool const _isPrimary;
+  bool const _small;
 public:
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
-  FBAutoSizeLabel(std::string const& text, bool centred = false);
+  bool Small() const { return _small; }
+  bool IsPrimary() const { return _isPrimary; }
+  FBAutoSizeLabel(std::string const& text, bool centred = false, bool isPrimary = false, bool small = false);
 };
 
 class FBAutoSizeLabel2:
@@ -44,7 +48,7 @@ public FBGUIParamComponent
 {
 public:
   void parentHierarchyChanged() override;
-  FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed = true);
+  FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed = true, bool isPrimary = false);
 };
 
 class FBParamLabel final:
@@ -53,7 +57,7 @@ public FBParamComponent
 {
 public:
   void parentHierarchyChanged() override;
-  FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed = true);
+  FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed = true, bool isPrimary = false);
 };
 
 class FBParamLinkedLabel final:
@@ -63,5 +67,5 @@ public FBParamsDependent
   std::string const _text;
 public:
   void parentHierarchyChanged() override;
-  FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string text);
+  FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isPrimary, std::string text);
 };

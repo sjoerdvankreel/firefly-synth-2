@@ -40,7 +40,7 @@ _plugGUI(plugGUI) {}
 void 
 FFMainTabChangedListener::changeListenerCallback(ChangeBroadcaster*)
 {
-  _plugGUI->HideOverlayComponent();
+  _plugGUI->HideAllOverlaysAndFileBrowsers();
 }
 
 FFPlugGUI::
@@ -66,12 +66,22 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
   SetupGUI();
   InitAllDependencies();
   resized();
-} 
+}
 
 void
-FFPlugGUI::OnPatchChanged()
+FFPlugGUI::BeforePatchChanged()
+{
+  FBParamTopoIndices indices = { { (int)FFModuleType::Other, 0 }, { (int)FFOtherParam::FlushAudioToggle, 0 } };
+  double flushNorm = HostContext()->GetAudioParamNormalized(indices);
+  _prevFlushAudioToggle = flushNorm >= 0.5;
+}
+
+void
+FFPlugGUI::AfterPatchChanged()
 {
   // Get old stuff out of the delay lines.
+  FBParamTopoIndices indices = { { (int)FFModuleType::Other, 0 }, { (int)FFOtherParam::FlushAudioToggle, 0 } };
+  HostContext()->SetAudioParamBool(indices, _prevFlushAudioToggle);
   FlushAudio();
 
   // Update show tweaked from session/patch/default.
@@ -92,6 +102,14 @@ FFPlugGUI::OnPatchNameChanged(std::string const& name)
   FBPlugGUI::OnPatchNameChanged(name);
   if (onPatchNameChanged)
     onPatchNameChanged(name);
+}
+
+void
+FFPlugGUI::OnInstanceNameChanged(std::string const& name)
+{
+  FBPlugGUI::OnInstanceNameChanged(name);
+  if (onInstanceNameChanged)
+    onInstanceNameChanged(name);
 }
 
 void 
@@ -279,7 +297,7 @@ FFPlugGUI::SetupGUI()
   _main->Add(5, 0, FFMakeLFOGUI(this));
   _main->Add(6, 0, FFMakeEnvGUI(this, _msegEditors));
 
-  _tabs = StoreComponent<FBAutoSizeTabComponent>(true);
+  _tabs = StoreComponent<FBAutoSizeTabComponent>(this, true);
   _tabs->addTab("MAIN", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _main), false);
   _tabs->addTab("MATRIX", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _matrix), false);
   _tabs->addTab("UNISON", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _globalUni), false);

@@ -7,10 +7,10 @@
 #include <cmath>
 
 inline float
-FFSoftClip10(float val)
+FFSoftClip(float above, float val)
 {
   if (val > 1.0f || val < -1.0f)
-    val = 10.0f * std::tanh(val * 0.1f);
+    val = above * std::tanh(val / above);
   return val;
 }
 

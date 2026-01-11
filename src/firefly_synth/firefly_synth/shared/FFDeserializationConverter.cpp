@@ -3,6 +3,7 @@
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/echo/FFEchoTopo.hpp>
+#include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -187,6 +188,17 @@ FFDeserializationConverter::PostProcess(
       int rtParamIndex = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Osci, ms }, { (int)FFOsciParam::Pan, 0 } })->runtimeParamIndex;
       *paramValues[rtParamIndex] = FBToBipolar(*paramValues[rtParamIndex]);
     }
+  }
+
+  // 2.1.0 - add new soft clip param.
+  // The default is 12dB but the old "default" was off because not exist.
+  if (OldVersion() < FBPlugVersion(2, 1, 0))
+  {
+    auto const& settingsModule = Topo()->static_->modules[(int)FFModuleType::Settings];
+    int rtParamIndex = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::AutoSoftClip, 0 } })->runtimeParamIndex;
+    auto offVal = settingsModule.params[(int)FFSettingsParam::AutoSoftClip].TextToNormalized(false, (int)FFModuleType::Settings, "Off");
+    if (offVal.has_value())
+      *paramValues[rtParamIndex] = offVal.value();
   }
 }
 

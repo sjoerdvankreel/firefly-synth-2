@@ -36,6 +36,7 @@ public:
 class FFPlugGUI final:
 public FBPlugGUI
 {
+  bool _prevFlushAudioToggle = {};
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   FBGridComponent* _main = {};
@@ -68,12 +69,14 @@ public FBPlugGUI
   FBParamModulationBoundsSource GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const override;
 
 protected:
-  void OnPatchChanged() override;
+  void AfterPatchChanged() override;
+  void BeforePatchChanged() override;
   void UpdateExchangeStateTick() override;
 
 public:
   std::function<void()> onPatchLoaded = {};
   std::function<void(std::string const&)> onPatchNameChanged = {};
+  std::function<void(std::string const&)> onInstanceNameChanged = {};
 
   ~FFPlugGUI();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
@@ -86,6 +89,7 @@ public:
   void resized() override;
   void OnPatchLoaded() override;
   void OnPatchNameChanged(std::string const& name) override;
+  void OnInstanceNameChanged(std::string const& name) override;
 
   void ModuleSlotClicked(int index, int slot) override;
   void ActiveModuleSlotChanged(int index, int slot) override;
