@@ -253,6 +253,14 @@ FBHostGUIContext::GetAudioParamBool(FBParamTopoIndices const& indices) const
   return param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(normalized));
 }
 
+void
+FBHostGUIContext::SetAudioParamBool(FBParamTopoIndices const& indices, bool val)
+{
+  auto param = Topo()->audio.ParamAtTopo(indices);
+  double normalized = param->static_.BooleanNonRealTime().PlainToNormalized(val);
+  PerformImmediateAudioParamEdit(indices, normalized);
+}
+
 bool
 FBHostGUIContext::GetGUIParamBool(FBParamTopoIndices const& indices) const
 {

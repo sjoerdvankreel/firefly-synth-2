@@ -66,12 +66,22 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
   SetupGUI();
   InitAllDependencies();
   resized();
-} 
+}
 
 void
-FFPlugGUI::OnPatchChanged()
+FFPlugGUI::BeforePatchChanged()
+{
+  FBParamTopoIndices indices = { { (int)FFModuleType::Other, 0 }, { (int)FFOtherParam::FlushAudioToggle, 0 } };
+  double flushNorm = HostContext()->GetAudioParamNormalized(indices);
+  _prevFlushAudioToggle = flushNorm >= 0.5;
+}
+
+void
+FFPlugGUI::AfterPatchChanged()
 {
   // Get old stuff out of the delay lines.
+  FBParamTopoIndices indices = { { (int)FFModuleType::Other, 0 }, { (int)FFOtherParam::FlushAudioToggle, 0 } };
+  HostContext()->SetAudioParamBool(indices, _prevFlushAudioToggle);
   FlushAudio();
 
   // Update show tweaked from session/patch/default.

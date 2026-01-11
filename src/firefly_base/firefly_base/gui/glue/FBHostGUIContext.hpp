@@ -123,10 +123,13 @@ public:
   void SetGUIParamBool(FBParamTopoIndices const& indices, bool val);
   void SetGUIParamDiscrete(FBParamTopoIndices const& indices, int val);
 
-  std::string GetAudioParamText(FBParamTopoIndices const& indices) const;
   bool GetAudioParamBool(FBParamTopoIndices const& indices) const;
+  void SetAudioParamBool(FBParamTopoIndices const& indices, bool value);
+
   int GetAudioParamDiscrete(FBParamTopoIndices const& indices) const;
   void SetAudioParamDiscrete(FBParamTopoIndices const& indices, int value);
+
+  std::string GetAudioParamText(FBParamTopoIndices const& indices) const;
   double GetAudioParamLinear(FBParamTopoIndices const& indices) const;
   double GetAudioParamIdentity(FBParamTopoIndices const& indices) const;
   double GetAudioParamNormalized(FBParamTopoIndices const& indices) const;

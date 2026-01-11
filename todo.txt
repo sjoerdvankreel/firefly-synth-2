@@ -1,6 +1,6 @@
 [x] theme per instance
 [x] sort presets by path
-[ ] flush audio on patch change is broken
+[x] flush audio on patch change is broken
 [ ] close the overlay on tab change
 
 arpeggiator

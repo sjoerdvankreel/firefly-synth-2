@@ -36,6 +36,7 @@ public:
 class FFPlugGUI final:
 public FBPlugGUI
 {
+  bool _prevFlushAudioToggle = {};
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   FBGridComponent* _main = {};
@@ -68,7 +69,8 @@ public FBPlugGUI
   FBParamModulationBoundsSource GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const override;
 
 protected:
-  void OnPatchChanged() override;
+  void AfterPatchChanged() override;
+  void BeforePatchChanged() override;
   void UpdateExchangeStateTick() override;
 
 public:

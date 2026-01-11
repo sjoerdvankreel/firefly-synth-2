@@ -604,20 +604,22 @@ void
 FBPlugGUI::ReloadPatch()
 {
   FB_LOG_ENTRY_EXIT();
+  BeforePatchChanged();
   std::string oldName = HostContext()->PatchName();
   HostContext()->UndoState().Snapshot("Reload Patch");
   HostContext()->RevertPatchToPatchState();
   HostContext()->MarkPatchAsPatchState(oldName);
-  OnPatchChanged();
+  AfterPatchChanged();
 }
 
 void
 FBPlugGUI::ReloadSession()
 {
   FB_LOG_ENTRY_EXIT();
+  BeforePatchChanged();
   HostContext()->UndoState().Snapshot("Reload Session");
   HostContext()->RevertPatchToSessionState();
-  OnPatchChanged();
+  AfterPatchChanged();
 }
 
 void
@@ -680,13 +682,14 @@ void
 FBPlugGUI::InitPatch()
 {
   FB_LOG_ENTRY_EXIT();
+  BeforePatchChanged();
   HostContext()->UndoState().Snapshot("Init Patch");
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
     if(HostContext()->Topo()->audio.params[i].static_.storeInPatch)
       HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
   HostContext()->MarkPatchAsPatchState("Init Patch");
-  OnPatchChanged();
+  AfterPatchChanged();
 }
 
 bool
@@ -699,10 +702,11 @@ FBPlugGUI::LoadPatchFromText(
   FBScalarStateContainer editState(*HostContext()->Topo());
   if (!HostContext()->Topo()->LoadEditStateFromString(text, editState, true))
     return false;
+  BeforePatchChanged();
   HostContext()->UndoState().Snapshot(undoAction);
   editState.CopyTo(HostContext(), true);
   HostContext()->MarkPatchAsPatchState(patchName);
-  OnPatchChanged();
+  AfterPatchChanged();
   return true;
 }
 
