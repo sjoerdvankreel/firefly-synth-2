@@ -26,7 +26,7 @@ FBAutoSizeLabel::FixedHeight() const
 int 
 FBAutoSizeLabel::FixedWidth(int /*height*/) const
 {
-  return getBorderSize().getLeftAndRight() + _textWidth;
+  return getBorderSize().getLeftAndRight() + _textWidth + (_isPrimary? 2: 0);
 }
 
 FBAutoSizeLabel2::

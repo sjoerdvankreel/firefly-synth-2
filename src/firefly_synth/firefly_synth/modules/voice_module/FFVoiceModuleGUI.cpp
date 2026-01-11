@@ -101,7 +101,7 @@ MakeVoiceModuleSectionPorta(FBPlugGUI* plugGUI)
   std::vector<int> columnSizes = { 0, 0, 0, 1, 0, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
   auto type = topo->audio.ParamAtTopo({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::PortaType, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type, true, true));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
   auto sync = topo->audio.ParamAtTopo({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::PortaSync, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
