@@ -83,6 +83,8 @@ CLAP should be OK everywhere, and even for VST3 it's not a big deal, just means 
 Maybe related: https://forums.steinberg.net/t/dataexchange-on-linux/917660/4.<br/>
 
 # Special Thanks
+* [thoth-amon](https://github.com/thoth-amon)<br/>
+For being an early adopter and finding all sorts of corner-case bugs.
 * [RustoMCSpit](https://github.com/RustoMCSpit)<br/>
 For being an early adopter and helping out with various things on the UI and theming side.
 * [Surge Synth Team](https://surge-synth-team.org)<br/>
