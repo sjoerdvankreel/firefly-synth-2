@@ -99,7 +99,10 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
     if (graph)
       _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize());
     else
-      _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() * _oversampleTimes / FFOsciOversampleTimes);
+      _stringUniState[u].delayLine.Reset(
+        std::min(
+          _stringUniState[u].delayLine.MaxBufferSize(),
+          (int)std::ceil(_stringUniState[u].delayLine.MaxBufferSize() * (float)_oversampleTimes / FFOsciOversampleTimes)));
     for (int p = 0; p < _stringPoles; p++)
       _stringUniState[u].colorFilterBuffer.Set(p, StringDraw(u));
   }
