@@ -1,3 +1,6 @@
+v2.1.1
+[x] limit string osci from 20->8hz low + clamp
+
 drop screenshot_theme_light_default (for the website) once fix the auto-screenshot
 also probably make the images on the website bigger somehow
 programmatic dump screenshot?
