@@ -14,5 +14,3 @@ enum class FBHighlightTweakMode { Off, Patch, Session, Default };
 void FBGUIInit();
 void FBGUITerminate();
 FBLookAndFeel* FBGetLookAndFeelFor(juce::Component const* c);
-int FBGUIGetStringWidthCached(std::string const& text);
-juce::Point<int> FBGUIGetStringSizeCached(std::string const& text);

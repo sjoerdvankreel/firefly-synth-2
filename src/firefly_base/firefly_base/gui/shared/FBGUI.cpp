@@ -5,26 +5,9 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-#include <cmath>
-#include <filesystem>
-#include <unordered_map>
-
 using namespace juce;
 
 static std::unique_ptr<FBLookAndFeel> _defaultLookAndFeel = {};
-
-int FBGUIGetStringWidthCached(std::string const& text) { return FBGUIGetStringSizeCached(text).x; }
-
-FBLookAndFeel* 
-FBGetLookAndFeelFor(Component const* c)
-{
-  if (auto container = dynamic_cast<FBPlugGUI const*>(c))
-    return container->LookAndFeel();
-  if (auto container = c->findParentComponentOfClass<FBPlugGUI>())
-    return container->LookAndFeel();
-  FB_ASSERT(false);
-  return nullptr;
-}
 
 void
 FBGUITerminate()
@@ -54,20 +37,13 @@ FBGUIInit()
   FB_LOG_INFO("Initialized GUI.");
 }
 
-juce::Point<int>
-FBGUIGetStringSizeCached(std::string const& text)
+FBLookAndFeel*
+FBGetLookAndFeelFor(Component const* c)
 {
-  // TODO
-#if 0
-  static std::unordered_map<std::string, juce::Point<int>> cache = {};
-  auto iter = cache.find(text);
-  if (iter != cache.end())
-    return iter->second;
-  auto bounds = TextLayout::getStringBounds(_font, text);
-  auto result = juce::Point<int>(
-    static_cast<int>(std::ceil(bounds.getWidth())), 
-    static_cast<int>(std::ceil(bounds.getHeight())));
-  cache[text] = result;
-  return result;
-#endif 
+  if (auto container = dynamic_cast<FBPlugGUI const*>(c))
+    return container->LookAndFeel();
+  if (auto container = c->findParentComponentOfClass<FBPlugGUI>())
+    return container->LookAndFeel();
+  FB_ASSERT(false);
+  return nullptr;
 }
