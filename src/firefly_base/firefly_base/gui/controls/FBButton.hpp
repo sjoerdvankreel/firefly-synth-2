@@ -15,7 +15,7 @@ public juce::TextButton,
 public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
-  int const _textWidth;
+  std::string const _text;
 public:
   FBAutoSizeButton(std::string const& text);
   int FixedHeight() const override;

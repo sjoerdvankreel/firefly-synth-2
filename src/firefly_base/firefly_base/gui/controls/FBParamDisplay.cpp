@@ -18,7 +18,7 @@ FBParamDisplayLabel(
   bool isThemed):
 Label(),
 FBParamControl(plugGUI, param, isThemed),
-_maxTextWidth(FBGUIGetStringWidthCached(maxWidthText))
+_maxWidthText(maxWidthText)
 {
   double normalized = plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
   auto text = plugGUI->HostContext()->Topo()->audio.params[param->runtimeParamIndex].NormalizedToTextWithUnit(false, normalized);
@@ -34,7 +34,7 @@ FBParamDisplayLabel::parentHierarchyChanged()
 int
 FBParamDisplayLabel::FixedWidth(int /*height*/) const
 {
-  return _maxTextWidth + getBorderSize().getLeftAndRight();
+  return FBGetLookAndFeelFor(this)->GetStringWidthCached(_maxWidthText) + getBorderSize().getLeftAndRight();
 }
 
 void

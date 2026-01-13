@@ -1,4 +1,5 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
@@ -8,7 +9,7 @@ FBAutoSizeLabel::
 FBAutoSizeLabel(std::string const& text, bool centred, bool isPrimary, bool small):
 Label(),
 IFBHorizontalAutoSize(),
-_textWidth(FBGUIGetStringWidthCached(text)),
+_text(text),
 _isPrimary(isPrimary),
 _small(small)
 {
@@ -27,7 +28,7 @@ FBAutoSizeLabel::FixedHeight() const
 int 
 FBAutoSizeLabel::FixedWidth(int /*height*/) const
 {
-  return getBorderSize().getLeftAndRight() + _textWidth + (_isPrimary? 2: 0);
+  return getBorderSize().getLeftAndRight() + FBGetLookAndFeelFor(this)->GetStringWidthCached(_text) + (_isPrimary ? 2 : 0);
 }
 
 FBAutoSizeLabel2::

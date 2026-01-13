@@ -1,5 +1,6 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
@@ -10,7 +11,7 @@ FBAutoSizeButton::
 FBAutoSizeButton(std::string const& text):
 TextButton(),
 IFBHorizontalAutoSize(),
-_textWidth(FBGUIGetStringWidthCached(text))
+_text(text)
 {
   setButtonText(text);
 }
@@ -24,7 +25,7 @@ FBAutoSizeButton::FixedHeight() const
 int 
 FBAutoSizeButton::FixedWidth(int /*height*/) const
 {
-  return _textWidth + 16;
+  return FBGetLookAndFeelFor(this)->GetStringWidthCached(_text) + 16;
 }
 
 FBParamLinkedButton::

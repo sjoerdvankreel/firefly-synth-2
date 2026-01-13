@@ -15,7 +15,7 @@ public juce::Label,
 public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
-  int const _textWidth;
+  std::string const _text;
   bool const _isPrimary;
   bool const _small;
 public:

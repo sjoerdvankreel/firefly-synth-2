@@ -61,6 +61,7 @@ FBLastTweakedLabel::AudioParamChanged(int index, double /*normalized*/, bool cha
   if (!IsTweakableParam(topo, index))
     return;
 
+  auto lnf = FBGetLookAndFeelFor(this);
   auto const& param = topo->audio.params[index];
   auto const& module = topo->modules[param.runtimeModuleIndex];
   auto const& staticModule = topo->static_->modules[module.topoIndices.index];
@@ -69,11 +70,11 @@ FBLastTweakedLabel::AudioParamChanged(int index, double /*normalized*/, bool cha
   std::string const& moduleDisplay = staticModule.matrixName.size() ? staticModule.matrixName : module.name;
   std::string modulePlusFull = moduleDisplay + " " + fullName;
   std::string modulePlusTweak = moduleDisplay + " " + tweakName;
-  if(FBGUIGetStringWidthCached(modulePlusFull) <= _maxWidth)
+  if(lnf->GetStringWidthCached(modulePlusFull) <= _maxWidth)
     setText(modulePlusFull, dontSendNotification);
-  else if (FBGUIGetStringWidthCached(fullName) <= _maxWidth)
+  else if (lnf->GetStringWidthCached(fullName) <= _maxWidth)
     setText(fullName, dontSendNotification);
-  else if (FBGUIGetStringWidthCached(modulePlusTweak) <= _maxWidth)
+  else if (lnf->GetStringWidthCached(modulePlusTweak) <= _maxWidth)
     setText(modulePlusTweak, dontSendNotification);
   else
     setText(tweakName, dontSendNotification);

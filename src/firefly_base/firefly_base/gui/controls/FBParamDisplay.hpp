@@ -12,7 +12,7 @@ public juce::Label,
 public FBParamControl,
 public IFBHorizontalAutoSize
 {
-  int const _maxTextWidth;
+  std::string const _maxWidthText;
 
 public:
   FBParamDisplayLabel(
