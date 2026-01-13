@@ -16,7 +16,7 @@ Component*
 FFMakeHeaderGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();  
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1, 1 } }, std::vector<int> { { 0, 0, 0, 0 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { { 1, 1 } }, std::vector<int> { { 0, 0, 0, 0 } });
   bool isFX = plugGUI->HostContext()->Topo()->static_->meta.isFx;
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, isFX? FFPlugNameFX: FFPlugNameInst));
   auto format = plugGUI->HostContext()->Topo()->static_->meta.format;

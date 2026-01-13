@@ -755,7 +755,7 @@ FBPlugGUI::MakePresetMenu(
 void
 FBPlugGUI::SetupOverlayGUI()
 {
-  _overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 0, 0 } });
+  _overlayGrid = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 0, 0 } });
   _overlayCaption = StoreComponent<FBAutoSizeLabel2>(false, 200);
   _overlayGrid->Add(0, 0, _overlayCaption);
 

@@ -25,7 +25,7 @@ MakeMasterSectionMain(FBPlugGUI* plugGUI)
 {
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> columnSizes = { 0, 0, 0, 1 };
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, columnSizes);
   auto bend = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::PitchBend, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bend));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, bend, Slider::SliderStyle::RotaryVerticalDrag));
@@ -52,7 +52,7 @@ MakeMasterSectionAux(FBPlugGUI* plugGUI)
     columnSizes.push_back(0);
     columnSizes.push_back(0);
   }
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, columnSizes);
   for (int i = 0; i < FFMasterAuxCount; i++)
   {
     int row = i / (FFMasterAuxCount / 2);
@@ -68,7 +68,7 @@ MakeMasterSectionAux(FBPlugGUI* plugGUI)
 static Component*
 MakeMasterTab(FBPlugGUI* plugGUI)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
   grid->Add(0, 0, MakeMasterSectionMain(plugGUI));
   grid->Add(0, 1, MakeMasterSectionAux(plugGUI));
   return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);

@@ -23,7 +23,7 @@ FFMakeMixGUISectionFXToFX(FBPlugGUI* plugGUI, int moduleType, int fxToFXParam)
   int controlSize = moduleType == (int)FFModuleType::GMix ? 1 : 0;
   auto sliderStyle = moduleType == (int)FFModuleType::GMix ? Slider::SliderStyle::LinearHorizontal : Slider::SliderStyle::RotaryVerticalDrag;
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, controlSize, 0, controlSize, 0, controlSize });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, controlSize, 0, controlSize, 0, controlSize });
   for (int s = 0; s < FFMixFXToFXCount; s++)
   {
     int row = s / (FFMixFXToFXCount / 2);

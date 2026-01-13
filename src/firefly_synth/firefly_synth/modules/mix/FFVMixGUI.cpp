@@ -81,7 +81,7 @@ MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
     for (int j = 0; j < FFEffectCount; j++)
       columnSizes.push_back(0);
   }
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, columnSizes);
   for (int o = 0; o < FFOsciCount; o++)
   {
     int row = o / 2;
@@ -108,7 +108,7 @@ MakeVMixSectionOsciAndVFXToOut(FBPlugGUI* plugGUI)
   assert(FFOsciCount == FFEffectCount);
   for (int i = 0; i < FFOsciCount; i++)
     columnSizes.push_back(0);
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, columnSizes);
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Osc\U00002192Out"));
   for (int o = 0; o < FFOsciCount; o++)
   {
@@ -134,7 +134,7 @@ MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(FBPlugGUI* plugGUI)
   assert(FFOsciCount == FFEffectCount);
   for (int i = 0; i < FFOsciCount; i++)
     columnSizes.push_back(0);
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, columnSizes);
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Osc\U00002192Osc Mix"));
   for (int o = 0; o < FFOsciCount; o++)
   {
@@ -155,7 +155,7 @@ static Component*
 MakeVMixGUISectionAmpBalAndOsciMixToOut(FBPlugGUI* plugGUI)
 {
   auto topo = plugGUI->HostContext()->Topo(); 
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0 });
   auto amp = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0}, { (int)FFVMixParam::Amp, 0} });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, amp));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amp, Slider::SliderStyle::LinearHorizontal));
@@ -168,12 +168,12 @@ MakeVMixGUISectionAmpBalAndOsciMixToOut(FBPlugGUI* plugGUI)
   auto lfo6ToBal = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::LFO6ToBal, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lfo6ToBal));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lfo6ToBal, Slider::SliderStyle::RotaryVerticalDrag));
-  auto ampEnvTargetGrid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
+  auto ampEnvTargetGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   auto ampEnvTarget = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::AmpEnvTarget, 0 } });
   ampEnvTargetGrid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, ampEnvTarget, true, true));
   ampEnvTargetGrid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, ampEnvTarget));
   grid->Add(0, 4, ampEnvTargetGrid);
-  auto oscMixToOutGrid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
+  auto oscMixToOutGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   auto oscMixToOut = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::OsciMixToOut, 0 } });
   oscMixToOutGrid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Osc Mix\U00002192Out"));
   oscMixToOutGrid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, oscMixToOut, Slider::SliderStyle::RotaryVerticalDrag));
@@ -186,7 +186,7 @@ Component*
 FFMakeVMixGUITab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 1 });
   grid->Add(0, 0, MakeVMixSectionOsciToVFX(plugGUI));
   grid->Add(0, 1, FFMakeMixGUISectionFXToFX(plugGUI, (int)FFModuleType::VMix, (int)FFVMixParam::VFXToVFX));
   grid->Add(0, 2, MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(plugGUI));

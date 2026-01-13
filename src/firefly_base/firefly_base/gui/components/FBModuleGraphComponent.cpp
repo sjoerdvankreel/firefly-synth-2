@@ -17,11 +17,13 @@ FBModuleGraphComponent::
 
 FBModuleGraphComponent::
 FBModuleGraphComponent(
+  FBPlugGUI* plugGUI,
   FBGraphRenderState* renderState,
   int fixedToRuntimeModuleIndex,
   int fixedToGraphIndex,
   std::function<FBGUIRenderType()> getCurrentRenderType) :
 Component(),
+_plugGUI(plugGUI),
 _getCurrentRenderType(getCurrentRenderType),
 _fixedToRuntimeModuleIndex(fixedToRuntimeModuleIndex),
 _fixedToGraphIndex(fixedToGraphIndex),
@@ -34,7 +36,7 @@ _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get(), _fixedToRu
     addAndMakeVisible(_display.get());
   } else 
   {
-    _grid = std::make_unique<FBGridComponent>(true, 1, 1);
+    _grid = std::make_unique<FBGridComponent>(plugGUI, true, 1, 1);
     _grid->Add(0, 0, _display.get());
     _margin = std::make_unique<FBMarginComponent>(plugGUI, true, true, true, true, _grid.get());
     addAndMakeVisible(_margin.get());

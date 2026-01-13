@@ -84,7 +84,7 @@ static Component*
 MakeEffectSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
   auto on = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::On, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on, true, true));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
@@ -105,14 +105,14 @@ static Component*
 MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot, int block)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0, 0, 0, 0, 0, 0 });
   auto kind = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, block } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, kind));
   auto filterMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::FilterMode, block } });
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, filterMode));
 
   auto combKeyTrk = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombKeyTrk, block } });
-  auto combKeyTrkGrid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
+  auto combKeyTrkGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   combKeyTrkGrid->Add(0, 0, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, kind, true, std::string(1, static_cast<char>('A' + block))));
   combKeyTrkGrid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combKeyTrk));
   grid->Add(1, 0, combKeyTrkGrid);
@@ -138,7 +138,7 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combPitchCoarseMin, Slider::SliderStyle::RotaryVerticalDrag));
 
   auto stVarMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarMode, block } });
-  auto stVarModeGrid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
+  auto stVarModeGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   stVarModeGrid->Add(0, 0, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, kind, true, std::string(1, static_cast<char>('A' + block))));
   stVarModeGrid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarMode));
   grid->Add(1, 0, stVarModeGrid);
@@ -161,21 +161,21 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarKeyTrak, Slider::SliderStyle::RotaryVerticalDrag));
 
   auto clipMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::ClipMode, block } });
-  auto clipModeGrid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
+  auto clipModeGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   clipModeGrid->Add(0, 0, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, kind, true, std::string(1, static_cast<char>('A' + block))));
   clipModeGrid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, clipMode));
   grid->Add(1, 0, clipModeGrid);
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, clipMode));
 
   auto foldMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::FoldMode, block } });
-  auto foldModeGrid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
+  auto foldModeGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   foldModeGrid->Add(0, 0, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, kind, true, std::string(1, static_cast<char>('A' + block))));
   foldModeGrid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, foldMode));
   grid->Add(1, 0, foldModeGrid);
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, foldMode));
 
   auto skewMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::SkewMode, block } });
-  auto skewModeGrid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
+  auto skewModeGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   skewModeGrid->Add(0, 0, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, kind, true, std::string(1, static_cast<char>('A' + block))));
   skewModeGrid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewMode));
   grid->Add(1, 0, skewModeGrid);
@@ -212,7 +212,7 @@ MakeEffectTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   columnSizes.push_back(0);
   for (int i = 0; i < FFEffectBlockCount; i++)
     columnSizes.push_back(1);
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, columnSizes);
   grid->Add(0, 0, MakeEffectSectionMain(plugGUI, moduleType, moduleSlot));
   for(int i = 0; i < FFEffectBlockCount; i++)
     grid->Add(0, 1 + i, MakeEffectSectionBlock(plugGUI, moduleType, moduleSlot, i));

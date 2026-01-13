@@ -21,7 +21,7 @@ Component*
 FFMakeOtherGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0 } );
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0 } );
   grid->Add(0, 0, plugGUI->StoreComponent<FBFillerComponent>(1, 1));
   auto instanceNameEditor = plugGUI->StoreComponent<FBInstanceNameEditor>(plugGUI, 100);
   plugGUI->onInstanceNameChanged = [instanceNameEditor](auto const& name) { instanceNameEditor->setText(name, false); };

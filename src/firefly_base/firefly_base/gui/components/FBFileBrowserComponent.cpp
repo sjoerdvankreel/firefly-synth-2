@@ -41,7 +41,7 @@ _onSelect(onSelect)
     browserFlags |= FileBrowserComponent::openMode | FileBrowserComponent::filenameBoxIsReadOnly;
   _browser = std::make_unique<FileBrowserComponent>(browserFlags, File(), _filter.get(), nullptr);
   _browser->addListener(this);
-  _grid = std::make_unique<FBGridComponent>(true, std::vector<int> { 0, 1, 0, }, std::vector<int> { 1, 0, 0, });
+  _grid = std::make_unique<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1, 0, }, std::vector<int> { 1, 0, 0, });
   _grid->Add(0, 0, 1, 3, _title.get());
   _grid->Add(1, 0, 1, 3, _browser.get());
   _grid->Add(2, 1, 1, 1, _okButton.get());

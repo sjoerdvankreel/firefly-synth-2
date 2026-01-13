@@ -55,7 +55,7 @@ _snapYCounts(snapYCounts)
   _snapYCountCombo = std::make_unique<FBAutoSizeComboBox>(plugGUI, snapYCountMenu);
   _snapYCountCombo->onChange = [this] { ModelUpdated(); };
   _controlFiller = std::make_unique<FBFillerComponent>(1, 1);
-  _controlGrid = std::make_unique<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 1 });
+  _controlGrid = std::make_unique<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 1 });
   _controlGrid->Add(0, 0, _editXLabel.get());
   _controlGrid->Add(0, 1, _xEditModeCombo.get());
   _controlGrid->Add(0, 2, _editXGridLabel.get());
@@ -67,7 +67,7 @@ _snapYCounts(snapYCounts)
   _controlGrid->Add(0, 8, _controlFiller.get());
   _controlGrid->MarkSection({ { 0, 0 }, { 1, 9 } });
   
-  _grid = std::make_unique<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 0 }, std::vector<int> { 1 });
+  _grid = std::make_unique<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1, 0 }, std::vector<int> { 1 });
   _grid->Add(0, 0, _canvas.get());
   _grid->Add(1, 0, _controlGrid.get());
   addAndMakeVisible(_grid.get());
