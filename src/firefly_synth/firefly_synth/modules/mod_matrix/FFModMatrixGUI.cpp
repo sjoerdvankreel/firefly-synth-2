@@ -111,7 +111,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, 6, rowSizes, columnSizes);
   auto slots = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Slots, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(global ? "Global" : "Voice"));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, global ? "Global" : "Voice"));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, slots, true, true));
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slots, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, slots, std::to_string(global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount)));
@@ -186,7 +186,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
   };
 
   grid->MarkSection({ { 0, 0 }, { 1, 7 } }, FBGridSectionMark::BackgroundAndAlternate);
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, false, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, grid);
   int componentId = global ? (int)FFThemedComponentId::MatrixTopGlobal : (int)FFThemedComponentId::MatrixTopVoice;
   auto themed = plugGUI->StoreComponent<FBThemedComponent>(plugGUI->HostContext()->Topo(), componentId, margin);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, 0, themed);
@@ -206,7 +206,7 @@ MakeModMatrixGraphGUI(FFPlugGUI* plugGUI, FFModMatrixGraphType type, bool last)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(false, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FFModMatrixGraph>(plugGUI, type));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(false, last, false, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, last, false, true, grid);
   return plugGUI->StoreComponent<FBThemedComponent>(plugGUI->HostContext()->Topo(), (int)FFThemedComponentId::MatrixGraphs, margin);
 }
 
@@ -223,17 +223,17 @@ MakeModMatrixTopGUI(FFPlugGUI* plugGUI)
 static void
 AddMatrixHeaderRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r)
 {
-  grid->Add(r, 0, 1, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(global? "Global": "Voice"));
-  grid->Add(r, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Op", false, true, true));
-  grid->Add(r, 5, plugGUI->StoreComponent<FBAutoSizeLabel>("Source", false, true, true));
-  grid->Add(r, 6, plugGUI->StoreComponent<FBAutoSizeLabel>("Inv"));
-  grid->Add(r, 7, plugGUI->StoreComponent<FBAutoSizeLabel>("Lo"));
-  grid->Add(r, 8, plugGUI->StoreComponent<FBAutoSizeLabel>("Hi"));
-  grid->Add(r, 9, plugGUI->StoreComponent<FBAutoSizeLabel>("Scale", false, true, true));
-  grid->Add(r, 10, plugGUI->StoreComponent<FBAutoSizeLabel>("Min"));
-  grid->Add(r, 11, plugGUI->StoreComponent<FBAutoSizeLabel>("Max"));
-  grid->Add(r, 12, plugGUI->StoreComponent<FBAutoSizeLabel>("Target", false, true, true));
-  grid->Add(r, 13, plugGUI->StoreComponent<FBAutoSizeLabel>("Amt"));;
+  grid->Add(r, 0, 1, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, global? "Global": "Voice"));
+  grid->Add(r, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Op", false, true, true));
+  grid->Add(r, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Source", false, true, true));
+  grid->Add(r, 6, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Inv"));
+  grid->Add(r, 7, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Lo"));
+  grid->Add(r, 8, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Hi"));
+  grid->Add(r, 9, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Scale", false, true, true));
+  grid->Add(r, 10, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Min"));
+  grid->Add(r, 11, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Max"));
+  grid->Add(r, 12, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Target", false, true, true));
+  grid->Add(r, 13, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Amt"));
 }
 
 static void
@@ -404,7 +404,7 @@ MakeModMatrixAllSlotsGUI(FFPlugGUI* plugGUI)
   leftGrid->Add(0, 0, 1, 1, plugGUI->StoreComponent<FBModuleComponent>(
     plugGUI->HostContext()->Topo(),
     (int)FFModuleType::VMatrix, 0, MakeModMatrixSlotsGUI(plugGUI, false, 0, 19)));
-  auto innerLeftMargin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, leftGrid);
+  auto innerLeftMargin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, leftGrid);
   auto outerLeftGrid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   outerLeftGrid->Add(0, 0, innerLeftMargin);
   outerLeftGrid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::Border);
@@ -416,12 +416,12 @@ MakeModMatrixAllSlotsGUI(FFPlugGUI* plugGUI)
   rightGrid->Add(1, 0, plugGUI->StoreComponent<FBModuleComponent>(
     plugGUI->HostContext()->Topo(),
     (int)FFModuleType::GMatrix, 0, MakeModMatrixSlotsGUI(plugGUI, true, 0, FFModMatrixGlobalMaxSlotCount)));
-  auto innerRightMargin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, rightGrid);
+  auto innerRightMargin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, rightGrid);
   auto outerRightGrid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   outerRightGrid->Add(0, 0, innerRightMargin);
   outerRightGrid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::Border);
   mainGrid->Add(0, 1, outerRightGrid);
-  return plugGUI->StoreComponent<FBMarginComponent>(true, true, false, true, mainGrid);
+  return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, mainGrid);
 }
 
 Component*

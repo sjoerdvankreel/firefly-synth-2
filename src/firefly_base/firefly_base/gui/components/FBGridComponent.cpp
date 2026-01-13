@@ -13,29 +13,31 @@ FBGridCell::operator<(FBGridCell const& rhs) const
 }
 
 FBGridComponent::
-FBGridComponent(bool rowColGap, int rows, int cols):
-FBGridComponent(rowColGap, -1, -1, std::vector<int>(rows, 1), std::vector<int>(cols, 1)) {}
+FBGridComponent(FBPlugGUI* plugGUI, bool rowColGap, int rows, int cols):
+FBGridComponent(plugGUI, rowColGap, -1, -1, std::vector<int>(rows, 1), std::vector<int>(cols, 1)) {}
 
 FBGridComponent::
-FBGridComponent(bool rowColGap, std::vector<int> const& rows, std::vector<int> const& cols):
-FBGridComponent(rowColGap, -1, -1, rows, cols) {}
+FBGridComponent(FBPlugGUI* plugGUI, bool rowColGap, std::vector<int> const& rows, std::vector<int> const& cols):
+FBGridComponent(plugGUI, rowColGap, -1, -1, rows, cols) {}
 
 FBGridComponent::
-FBGridComponent(bool rowColGap, int autoSizeRow, int autoSizeCol, int rows, int cols):
-FBGridComponent(rowColGap, autoSizeRow, autoSizeCol, std::vector<int>(rows, 1), std::vector<int>(cols, 1)) {}
+FBGridComponent(FBPlugGUI* plugGUI, bool rowColGap, int autoSizeRow, int autoSizeCol, int rows, int cols):
+FBGridComponent(plugGUI, rowColGap, autoSizeRow, autoSizeCol, std::vector<int>(rows, 1), std::vector<int>(cols, 1)) {}
 
 FBGridComponent::
-FBGridComponent(bool rowColGap, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols):
-FBGridComponent(rowColGap, std::vector<int>(cols.size(), autoSizeRow), std::vector<int>(rows.size(), autoSizeCol), rows, cols) {}
+FBGridComponent(FBPlugGUI* plugGUI, bool rowColGap, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols):
+FBGridComponent(plugGUI, rowColGap, std::vector<int>(cols.size(), autoSizeRow), std::vector<int>(rows.size(), autoSizeCol), rows, cols) {}
 
 FBGridComponent::
 FBGridComponent(
+  FBPlugGUI* plugGUI,
   bool rowColGap, 
   std::vector<int> const& autoSizeRowForCol, 
   std::vector<int> const& autoSizeColForRow, 
   std::vector<int> const& rows, 
   std::vector<int> const& cols):
 Component(), 
+_plugGUI(plugGUI),
 _rowColGap(rowColGap),
 _rows(rows),
 _cols(cols),
@@ -236,7 +238,7 @@ FBGridComponent::paint(Graphics& g)
   float x0, x1, y0, y1;
   x0 = x1 = y0 = y1 = -1.0f;
 
-  auto fbLookAndFeel = FBGetLookAndFeelFor(this);
+  auto fbLookAndFeel = FBGetLookAndFeelFor(_plugGUI);
   for (int i = 0; i < _sectionsAndMarks.size(); i++)
   {      
     for (int j = 0; j < _grid.items.size(); j++)

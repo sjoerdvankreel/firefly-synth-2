@@ -34,7 +34,7 @@ FBParamDisplayLabel::parentHierarchyChanged()
 int
 FBParamDisplayLabel::FixedWidth(int /*height*/) const
 {
-  return FBGetLookAndFeelFor(this)->GetStringWidthCached(_maxWidthText) + getBorderSize().getLeftAndRight();
+  return FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_maxWidthText) + getBorderSize().getLeftAndRight();
 }
 
 void
@@ -72,7 +72,7 @@ FBParamDisplayMeter::SetValueNormalizedFromHost(double normalized)
 void 
 FBParamDisplayMeter::paint(Graphics& g)
 {
-  auto const& scheme = FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this);
+  auto const& scheme = FBGetLookAndFeelFor(_plugGUI)->FindColorSchemeFor(*this);
 
   float const gapSize = 2.0f;
   float const barHeight = 10.0f;

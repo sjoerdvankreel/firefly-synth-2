@@ -8,9 +8,10 @@
 using namespace juce;
 
 FBAutoSizeButton::
-FBAutoSizeButton(std::string const& text):
+FBAutoSizeButton(FBPlugGUI* plugGUI, std::string const& text):
 TextButton(),
 IFBHorizontalAutoSize(),
+_plugGUI(plugGUI),
 _text(text)
 {
   setButtonText(text);
@@ -25,7 +26,7 @@ FBAutoSizeButton::FixedHeight() const
 int 
 FBAutoSizeButton::FixedWidth(int /*height*/) const
 {
-  return FBGetLookAndFeelFor(this)->GetStringWidthCached(_text) + 16;
+  return FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text) + 16;
 }
 
 FBParamLinkedButton::

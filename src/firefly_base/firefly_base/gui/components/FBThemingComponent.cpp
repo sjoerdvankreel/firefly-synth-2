@@ -7,8 +7,9 @@
 using namespace juce;
 
 FBThemedComponent::
-FBThemedComponent(FBRuntimeTopo const* topo, int componentId, Component* content):
+FBThemedComponent(FBPlugGUI* plugGUI, FBRuntimeTopo const* topo, int componentId, Component* content):
 Component(),
+_plugGUI(plugGUI),
 _componentId(componentId),
 _content(content),
 _topo(topo)
@@ -19,7 +20,7 @@ _topo(topo)
 void 
 FBThemedComponent::paint(Graphics& g)
 {
-  g.fillAll(FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this).background);
+  g.fillAll(FBGetLookAndFeelFor(_plugGUI)->FindColorSchemeFor(*this).background);
 }
 
 void

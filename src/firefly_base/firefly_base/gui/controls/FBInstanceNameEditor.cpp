@@ -35,7 +35,7 @@ FBInstanceNameEditor::FixedWidth(int /*height*/) const
 void 
 FBInstanceNameEditor::paint(Graphics& g)
 {
-  auto const& scheme = FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this);
+  auto const& scheme = FBGetLookAndFeelFor(_plugGUI)->FindColorSchemeFor(*this);
   setColour(TextEditor::textColourId, scheme.primary);
   applyFontToAllText(getFont());
   TextEditor::paint(g);

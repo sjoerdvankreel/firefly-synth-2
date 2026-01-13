@@ -5,23 +5,24 @@
 using namespace juce;
 
 FBAutoSizeMultiLineLabel::
-FBAutoSizeMultiLineLabel(std::string const& text, int vOffset):
+FBAutoSizeMultiLineLabel(FBPlugGUI* plugGUI, std::string const& text, int vOffset):
 Component(),
 IFBHorizontalAutoSize(),
+_plugGUI(plugGUI),
 _vOffset(vOffset),
 _text(text) {}
 
 int 
 FBAutoSizeMultiLineLabel::FixedWidth(int /*height*/) const
 {
-  return FBGetLookAndFeelFor(this)->GetStringWidthCached(_text) + 4;
+  return FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text) + 4;
 }
 
 void
 FBAutoSizeMultiLineLabel::paint(Graphics& g)
 {
   Label dummy;
-  auto lnf = FBGetLookAndFeelFor(this);
+  auto lnf = FBGetLookAndFeelFor(_plugGUI);
   auto textSize = lnf->GetStringSizeCached(_text);
   auto const& scheme = lnf->FindColorSchemeFor(*this);
   g.setFont(getLookAndFeel().getLabelFont(dummy));

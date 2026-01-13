@@ -36,7 +36,7 @@ _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get(), _fixedToRu
   {
     _grid = std::make_unique<FBGridComponent>(true, 1, 1);
     _grid->Add(0, 0, _display.get());
-    _margin = std::make_unique<FBMarginComponent>(true, true, true, true, _grid.get());
+    _margin = std::make_unique<FBMarginComponent>(plugGUI, true, true, true, true, _grid.get());
     addAndMakeVisible(_margin.get());
   }
   resized();

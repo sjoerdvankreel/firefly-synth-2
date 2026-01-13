@@ -46,7 +46,7 @@ FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
-    grid->Add(0, i * 3, 2, 1, plugGUI->StoreComponent<FBAutoSizeMultiLineLabel>(FFOsciModFormatSlotVertical(i), -2));
+    grid->Add(0, i * 3, 2, 1, plugGUI->StoreComponent<FBAutoSizeMultiLineLabel>(plugGUI, FFOsciModFormatSlotVertical(i), -2));
     auto amMode = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::AMMode, i } });
     grid->Add(0, i * 3 + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, amMode));
     auto amMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::AMMix, i } });
@@ -69,6 +69,6 @@ FFMakeOsciModTab(FBPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   grid->Add(0, 0, FFMakeOsciModGUISectionMain(plugGUI));
   grid->Add(0, 1, FFMakeOsciModGUISectionMod(plugGUI));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::OsciMod, 0, margin);
 }

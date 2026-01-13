@@ -42,14 +42,14 @@ _snapYCounts(snapYCounts)
   for (int i = 0; i < _snapYCounts.size(); i++)
     snapYCountMenu.addItem(i + 1, std::to_string(_snapYCounts[i]));
 
-  _editXLabel = std::make_unique<FBAutoSizeLabel>("X Mode");
-  _editXGridLabel = std::make_unique<FBAutoSizeLabel>("Grid");
+  _editXLabel = std::make_unique<FBAutoSizeLabel>(plugGUI, "X Mode");
+  _editXGridLabel = std::make_unique<FBAutoSizeLabel>(plugGUI, "Grid");
   _xEditModeCombo = std::make_unique<FBAutoSizeComboBox>(plugGUI, xEditMenu);
   _xEditModeCombo->onChange = [this] { ModelUpdated(); };
   _snapXCountCombo = std::make_unique<FBAutoSizeComboBox>(plugGUI, snapXCountMenu);
   _snapXCountCombo->onChange = [this] { ModelUpdated(); };
-  _editYLabel = std::make_unique<FBAutoSizeLabel>("Y Mode");
-  _editYGridLabel = std::make_unique<FBAutoSizeLabel>("Grid");
+  _editYLabel = std::make_unique<FBAutoSizeLabel>(plugGUI, "Y Mode");
+  _editYGridLabel = std::make_unique<FBAutoSizeLabel>(plugGUI, "Grid");
   _yEditModeCombo = std::make_unique<FBAutoSizeComboBox>(plugGUI, yEditMenu);
   _yEditModeCombo->onChange = [this] { ModelUpdated(); };
   _snapYCountCombo = std::make_unique<FBAutoSizeComboBox>(plugGUI, snapYCountMenu);

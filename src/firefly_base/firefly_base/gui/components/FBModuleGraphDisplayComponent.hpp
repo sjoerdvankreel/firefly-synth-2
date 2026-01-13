@@ -5,11 +5,13 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
+class FBPlugGUI;
 struct FBModuleGraphComponentData;
 
 class FBModuleGraphDisplayComponent final:
 public juce::Component
 {
+  FBPlugGUI* const _plugGUI;
   bool _withBorder;
   FBModuleGraphComponentData const* const _data;
 
@@ -19,7 +21,7 @@ public juce::Component
 public:
   void paint(juce::Graphics& g) override;
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBModuleGraphDisplayComponent);
-  FBModuleGraphDisplayComponent(FBModuleGraphComponentData const* data, bool withBorder);
+  FBModuleGraphDisplayComponent(FBPlugGUI* plugGUI, FBModuleGraphComponentData const* data, bool withBorder);
 
 private:
   float PointXLocation(

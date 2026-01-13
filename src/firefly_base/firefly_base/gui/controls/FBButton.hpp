@@ -15,9 +15,10 @@ public juce::TextButton,
 public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
+  FBPlugGUI* const _plugGUI;
   std::string const _text;
 public:
-  FBAutoSizeButton(std::string const& text);
+  FBAutoSizeButton(FBPlugGUI* plugGUI, std::string const& text);
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
 };

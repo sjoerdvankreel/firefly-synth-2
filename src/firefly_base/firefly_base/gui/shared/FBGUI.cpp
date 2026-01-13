@@ -37,6 +37,12 @@ FBGUIInit()
   FB_LOG_INFO("Initialized GUI.");
 }
 
+FBLookAndFeel* 
+FBGetLookAndFeelFor(FBPlugGUI const* c)
+{
+  return c->LookAndFeel();
+}
+
 FBLookAndFeel*
 FBGetLookAndFeelFor(Component const* c)
 {

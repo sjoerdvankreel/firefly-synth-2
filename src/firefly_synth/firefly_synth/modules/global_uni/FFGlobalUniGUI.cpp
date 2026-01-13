@@ -131,29 +131,29 @@ MakeGlobalUniContent(
 
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Target"));
   auto mode0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, 0 } });
-  grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(mode0->static_.display, false, true, true));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, mode0->static_.display, false, true, true));
   auto opType0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(opType0->static_.name));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Out"));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, opType0->static_.name));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Out"));
   grid->Add(0, 4, plugGUI->StoreComponent<FBFillerComponent>(2, 2));
   grid->MarkSection({ { 0, 0 }, { 1, 5 } });
 
   auto spread0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, 0 } });
-  grid->Add(0, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(spread0->static_.display, false, true, true));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, spread0->static_.display, false, true, true));
   auto skew0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSkew, 0 } });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBAutoSizeLabel>(skew0->static_.display));
+  grid->Add(0, 6, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, skew0->static_.display));
   auto rand0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRand, 0 } });
-  grid->Add(0, 7, plugGUI->StoreComponent<FBAutoSizeLabel>(rand0->static_.display));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, rand0->static_.display));
   auto seed0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandSeed, 0 } });
-  grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>(seed0->static_.display));
+  grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, seed0->static_.display));
   auto free0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandFree, 0 } });
-  grid->Add(0, 9, plugGUI->StoreComponent<FBAutoSizeLabel>(free0->static_.display));
+  grid->Add(0, 9, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, free0->static_.display));
   grid->MarkSection({ { 0, 5 }, { 1, 5 } });
 
   for (int i = 0; i < FFGlobalUniMaxCount; i++)
-    grid->Add(0, i + 1 + 9, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1), true, true, true));
+    grid->Add(0, i + 1 + 9, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, std::to_string(i + 1), true, true, true));
   grid->MarkSection({ { 0, 1 + 9 }, { 1, FFGlobalUniMaxCount } });
 
   for (int r = 0; r < uniTargetCount / 2; r++)
@@ -165,7 +165,7 @@ MakeGlobalUniContent(
       plugGUI->HostContext()->Topo(),
       (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
       [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
-      plugGUI->StoreComponent<FBAutoSizeLabel>(targetName)));
+      plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, targetName)));
     auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, targetIndex } });
     grid->Add(guiRow, 1, plugGUI->StoreComponent<FBModuleComponent>( 
       plugGUI->HostContext()->Topo(),  
@@ -249,17 +249,17 @@ FFMakeGlobalUniGUI(
   auto topComponent = plugGUI->StoreComponent<FBThemedComponent>(plugGUI->HostContext()->Topo(), (int)FFThemedComponentId::GlobalUniTop, topGrid);
   auto bottomGrid = plugGUI->StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1 } });
   auto bottomGridLeft = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
-  bottomGridLeft->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, MakeGlobalUniContent(plugGUI, graphRenderState, 0, fixedGraphs)));
+  bottomGridLeft->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, MakeGlobalUniContent(plugGUI, graphRenderState, 0, fixedGraphs)));
   bottomGridLeft->MarkSection({ { 0, 0}, { 1, 1 } }, FBGridSectionMark::Border);
   bottomGrid->Add(0, 0, bottomGridLeft);
   auto bottomGridRight = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
-  bottomGridRight->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, MakeGlobalUniContent(plugGUI, graphRenderState, (int)FFGlobalUniTarget::Count / 2, fixedGraphs)));
+  bottomGridRight->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, MakeGlobalUniContent(plugGUI, graphRenderState, (int)FFGlobalUniTarget::Count / 2, fixedGraphs)));
   bottomGridRight->MarkSection({ { 0, 0}, { 1, 1 } }, FBGridSectionMark::Border);
   bottomGrid->Add(0, 1, bottomGridRight);
   auto grid = plugGUI->StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(false, false, false, true, topComponent));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, false, true, topComponent));
   grid->Add(1, 0, bottomGrid);
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, false, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::GlobalUni, 0, margin);
 }
 

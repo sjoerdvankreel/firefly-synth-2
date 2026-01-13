@@ -17,8 +17,9 @@ static float constexpr DefaultMarkerSize = 8.0f;
 static float constexpr HalfDefaultMarkerSize = 4.0f;
 
 FBModuleGraphDisplayComponent::
-FBModuleGraphDisplayComponent(FBModuleGraphComponentData const* data, bool withBorder):
+FBModuleGraphDisplayComponent(FBPlugGUI* plugGUI, FBModuleGraphComponentData const* data, bool withBorder):
 Component(),
+_plugGUI(plugGUI),
 _withBorder(withBorder),
 _data(data) {}
 
@@ -26,7 +27,7 @@ FBColorScheme const&
 FBModuleGraphDisplayComponent::FindColorSchemeFor(
   int moduleIndex, int moduleSlot) const
 {
-  auto fbLookAndFeel = FBGetLookAndFeelFor(this);
+  auto fbLookAndFeel = FBGetLookAndFeelFor(_plugGUI);
   auto const& theme = fbLookAndFeel->Theme();
   if (theme.graphSchemeFollowsModule)
   {
@@ -200,7 +201,7 @@ FBModuleGraphDisplayComponent::PaintSeries(
 void
 FBModuleGraphDisplayComponent::paint(Graphics& g)
 {  
-  auto lnf = FBGetLookAndFeelFor(this);
+  auto lnf = FBGetLookAndFeelFor(_plugGUI);
   for (int graph = 0; graph < _data->graphs.size(); graph++)
   {
     int maxSizeAllSeries;

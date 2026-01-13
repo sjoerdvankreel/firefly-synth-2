@@ -74,8 +74,8 @@ MakeGMixSectionVoiceToGFXAndExtAudioToGFX(FBPlugGUI* plugGUI)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 1, 1, 1 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("VMix\U00002192GFX"));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Ext Audio\U00002192GFX"));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "VMix\U00002192GFX"));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Ext Audio\U00002192GFX"));
   for (int e = 0; e < FFEffectCount; e++)
   {
     auto voiceToGFX = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::VoiceToGFX, e } });
@@ -97,7 +97,7 @@ MakeGMixSectionGFXToOut(FBPlugGUI* plugGUI)
     FB_ASSERT(FFEffectCount % 2 == 0);
     int r = e / (FFEffectCount / 2);
     int c = e % (FFEffectCount / 2);
-    grid->Add(r, c * 2 + 0, plugGUI->StoreComponent<FBAutoSizeLabel>("GFX " + std::to_string(e + 1) + "\U00002192Out"));
+    grid->Add(r, c * 2 + 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "GFX " + std::to_string(e + 1) + "\U00002192Out"));
     auto gfxToOut = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::GFXToOut, e } });
     grid->Add(r, c * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gfxToOut, Slider::SliderStyle::RotaryVerticalDrag));
   }
@@ -151,6 +151,6 @@ FFMakeGMixGUITab(FBPlugGUI* plugGUI)
   grid->Add(0, 2, MakeGMixSectionGFXToOut(plugGUI));
   grid->Add(0, 3, MakeGMixGUISectionVoiceAndExtAudioToOut(plugGUI));
   grid->Add(0, 4, MakeGMixGUISectionAmpBal(plugGUI));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::GMix, 0, margin);
 }

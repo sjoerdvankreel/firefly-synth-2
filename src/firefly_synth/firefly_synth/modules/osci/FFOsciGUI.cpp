@@ -219,8 +219,8 @@ MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, fmRatioMode));
 
   auto fmRatioRatio0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMRatioRatio, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(fmRatioRatio0->static_.slotFormatter(*topo->static_, moduleSlot, 0)));
-  grid->Add(1, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(fmRatioRatio0->static_.slotFormatter(*topo->static_, moduleSlot, 1)));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, fmRatioRatio0->static_.slotFormatter(*topo->static_, moduleSlot, 0)));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, fmRatioRatio0->static_.slotFormatter(*topo->static_, moduleSlot, 1)));
   for (int i = 0; i < 2; i++)
   {
     auto fmRatioRatio = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMRatioRatio, i } });
@@ -229,7 +229,7 @@ MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(0 + i, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmRatioFree, Slider::SliderStyle::RotaryVerticalDrag));
   }
 
-  grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Idx 1\U000021921/2/3"));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Idx 1\U000021921/2/3"));
   auto fmIndex11 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 0 } });
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex11, Slider::SliderStyle::LinearHorizontal));
   auto fmIndex12 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 1 } });
@@ -237,7 +237,7 @@ MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
   auto fmIndex13 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 2 } });
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex13, Slider::SliderStyle::LinearHorizontal));
 
-  grid->Add(0, 6, plugGUI->StoreComponent<FBAutoSizeLabel>("Idx 2\U000021921/2/3"));
+  grid->Add(0, 6, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Idx 2\U000021921/2/3"));
   auto fmIndex21 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 3 } });
   grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex21, Slider::SliderStyle::LinearHorizontal));
   auto fmIndex22 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 4 } });
@@ -245,7 +245,7 @@ MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
   auto fmIndex23 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 5 } });
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex23, Slider::SliderStyle::LinearHorizontal));
 
-  grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>("Idx 3\U000021921/2/3"));
+  grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Idx 3\U000021921/2/3"));
   auto fmIndex31 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 6 } });
   grid->Add(0, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex31, Slider::SliderStyle::LinearHorizontal));
   auto fmIndex32 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 7 } });
@@ -386,7 +386,7 @@ MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 2, MakeOsciSectionFM(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeOsciSectionString(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeOsciSectionExtAudio(plugGUI, moduleSlot));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, margin);
 }
 

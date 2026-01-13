@@ -72,7 +72,7 @@ _plugGUI(plugGUI), _big(big)
 int
 FBAutoSizeTabComponent::FixedWidth(int height) const
 {
-  int fontSize = FBGetLookAndFeelFor(this)->Theme().fontSize;
+  int fontSize = FBGetLookAndFeelFor(_plugGUI)->Theme().fontSize;
   auto& content = dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0));
   return content.FixedWidth(height - fontSize + 2) + 2;
 }
@@ -176,7 +176,7 @@ FBModuleTabComponent::TabRightClicked(int tabIndex)
   if (tabIndex < 0 || tabIndex >= _moduleIndices.size())
     return;
   
-  auto lnf = FBGetLookAndFeelFor(this);
+  auto lnf = FBGetLookAndFeelFor(_plugGUI);
   auto moduleIndices = _moduleIndices[tabIndex];
   auto const& staticTopo = *_plugGUI->HostContext()->Topo()->static_;
   auto const& staticModule = staticTopo.modules[moduleIndices.index];

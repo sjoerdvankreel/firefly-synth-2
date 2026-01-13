@@ -113,7 +113,7 @@ FFModMatrixGraph::paint(Graphics& g)
 
   auto outerBounds = getBounds();
   auto bounds = outerBounds.toFloat().reduced(4.0f);
-  auto lnf = FBGetLookAndFeelFor(this);
+  auto lnf = FBGetLookAndFeelFor(_plugGUI);
   auto const& scheme = lnf->FindColorSchemeFor(*this);
   g.setColour(scheme.graphBackground);
   g.fillRoundedRectangle(outerBounds.toFloat(), 3.0f);

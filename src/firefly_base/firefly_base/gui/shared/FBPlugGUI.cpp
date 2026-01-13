@@ -761,21 +761,21 @@ FBPlugGUI::SetupOverlayGUI()
 
   auto overlayInit = StoreComponent<FBAutoSizeButton>("Init");
   overlayInit->onClick = [this] { _overlayInit(); };
-  auto overlayInitSection = StoreComponent<FBMarginComponent>(false, false, true, true, overlayInit);
+  auto overlayInitSection = StoreComponent<FBMarginComponent>(this, false, false, true, true, overlayInit);
   _overlayGrid->Add(0, 1, overlayInitSection);
 
   auto overlayClose = StoreComponent<FBAutoSizeButton>("Close");
   overlayClose->onClick = [this] { HideOverlayComponent(); };
-  auto overlayCloseSection = StoreComponent<FBMarginComponent>(false, true, true, true, overlayClose);
+  auto overlayCloseSection = StoreComponent<FBMarginComponent>(this, false, true, true, true, overlayClose);
   _overlayGrid->Add(0, 2, overlayCloseSection);
 
   _overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::AlternateAndAlternate);
   _overlayContent = StoreComponent<FBContentComponent>();
-  _overlayInnerMargin = StoreComponent<FBMarginComponent>(true, true, true, true, _overlayContent);
+  _overlayInnerMargin = StoreComponent<FBMarginComponent>(this, true, true, true, true, _overlayContent);
   _overlayGrid->Add(1, 0, 1, 3, _overlayInnerMargin);
   _overlayGrid->MarkSection({ { 1, 0 }, { 1, 3 } }, FBGridSectionMark::Alternate);
   _overlayModule = StoreComponent<FBModuleComponent>(HostContext()->Topo());
-  _overlayOuterMargin = StoreComponent<FBMarginComponent>(true, true, true, true, _overlayModule, true);
+  _overlayOuterMargin = StoreComponent<FBMarginComponent>(this, true, true, true, true, _overlayModule, true);
 }
 
 void

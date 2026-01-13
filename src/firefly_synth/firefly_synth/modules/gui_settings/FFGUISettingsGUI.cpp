@@ -37,7 +37,7 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   auto graphVisualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::GraphVisualsMode, 0 } });
   grid->Add(0, 6, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, graphVisualsMode));
   grid->Add(0, 7, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, graphVisualsMode));
-  grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>("Theme"));
+  grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Theme"));
   auto themeCombo = plugGUI->StoreComponent<ComboBox>();
   for (int i = 0; i < plugGUI->Themes().size(); i++)
     themeCombo->addItem(plugGUI->Themes()[i].name, i + 1);

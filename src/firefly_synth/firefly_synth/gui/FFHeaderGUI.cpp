@@ -18,7 +18,7 @@ FFMakeHeaderGUI(FFPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();  
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1, 1 } }, std::vector<int> { { 0, 0, 0, 0 } });
   bool isFX = plugGUI->HostContext()->Topo()->static_->meta.isFx;
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(isFX? FFPlugNameFX: FFPlugNameInst));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, isFX? FFPlugNameFX: FFPlugNameInst));
   auto format = plugGUI->HostContext()->Topo()->static_->meta.format;
   std::string formatName = format == FBPlugFormat::VST3 ? "VST3" : "CLAP";
 #if FB_APPLE_AARCH64      
@@ -26,10 +26,10 @@ FFMakeHeaderGUI(FFPlugGUI* plugGUI)
 #else
   std::string archName = "X64";
 #endif
-  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(formatName + " " + archName + " " + FF_PLUG_VERSION));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, formatName + " " + archName + " " + FF_PLUG_VERSION));
   grid->Add(0, 1, 2, 1, plugGUI->StoreComponent<FBImageComponent>(plugGUI, 56, "header.png", RectanglePlacement::Flags::centred));
   grid->Add(0, 2, plugGUI->StoreComponent<FBFillerComponent>(2, 1));
   grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::BackgroundAndBorder, 5.0f, 2);
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
   return plugGUI->StoreComponent<FBThemedComponent>(plugGUI->HostContext()->Topo(), (int)FFThemedComponentId::Header, margin);
 };

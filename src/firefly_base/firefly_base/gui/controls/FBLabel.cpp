@@ -6,9 +6,10 @@
 using namespace juce;
 
 FBAutoSizeLabel::
-FBAutoSizeLabel(std::string const& text, bool centred, bool isPrimary, bool small):
+FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, bool centred, bool isPrimary, bool small):
 Label(),
 IFBHorizontalAutoSize(),
+_plugGUI(plugGUI),
 _text(text),
 _isPrimary(isPrimary),
 _small(small)
@@ -28,7 +29,7 @@ FBAutoSizeLabel::FixedHeight() const
 int 
 FBAutoSizeLabel::FixedWidth(int /*height*/) const
 {
-  return getBorderSize().getLeftAndRight() + FBGetLookAndFeelFor(this)->GetStringWidthCached(_text) + (_isPrimary ? 2 : 0);
+  return getBorderSize().getLeftAndRight() + FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text) + (_isPrimary ? 2 : 0);
 }
 
 FBAutoSizeLabel2::

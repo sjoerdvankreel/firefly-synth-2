@@ -28,7 +28,7 @@ _isSave(isSave),
 _extension(extension),
 _onSelect(onSelect)
 {
-  _title = std::make_unique<FBAutoSizeLabel>(title, true);
+  _title = std::make_unique<FBAutoSizeLabel>(plugGUI, title, true);
   _okButton = std::make_unique<FBAutoSizeButton>("OK");
   _okButton->onClick = [this]() { SelectFile(_browser->getSelectedFile(0)); };
   _cancelButton = std::make_unique<FBAutoSizeButton>("Cancel");
@@ -47,7 +47,7 @@ _onSelect(onSelect)
   _grid->Add(2, 1, 1, 1, _okButton.get());
   _grid->Add(2, 2, 1, 1, _cancelButton.get());
   _grid->MarkSection({ { 0, 0 }, { 3, 3 } }, FBGridSectionMark::BackgroundAndBorder);
-  _margin = std::make_unique<FBMarginComponent>(true, true, true, true, _grid.get(), true);
+  _margin = std::make_unique<FBMarginComponent>(plugGUI, true, true, true, true, _grid.get(), true);
   addAndMakeVisible(_margin.get());
 }
 

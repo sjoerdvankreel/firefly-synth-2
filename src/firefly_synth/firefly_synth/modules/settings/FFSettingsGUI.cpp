@@ -70,7 +70,7 @@ MakeSettingsTab(FBPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   grid->Add(0, 0, MakeSettingsSectionMain(plugGUI));
   grid->Add(0, 1, MakeSettingsSectionTuning(plugGUI));
-  return plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
 }
 
 Component*

@@ -10,6 +10,7 @@ public juce::Component,
 public IFBHorizontalAutoSize,
 public IFBVerticalAutoSize
 {
+  FBPlugGUI* const _plugGUI;
   bool const _left;
   bool const _right;
   bool const _top;
@@ -25,6 +26,6 @@ public:
 
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
-  FBMarginComponent(bool l, bool r, bool t, bool b, juce::Component* content);
-  FBMarginComponent(bool l, bool r, bool t, bool b, juce::Component* content, bool opaque);
+  FBMarginComponent(FBPlugGUI* plugGUI, bool l, bool r, bool t, bool b, juce::Component* content);
+  FBMarginComponent(FBPlugGUI* plugGUI, bool l, bool r, bool t, bool b, juce::Component* content, bool opaque);
 };
