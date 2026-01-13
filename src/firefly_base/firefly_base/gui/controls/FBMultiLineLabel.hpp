@@ -10,7 +10,6 @@ public IFBHorizontalAutoSize
 {
   int const _vOffset;
   std::string const _text;
-  juce::Point<int> const _textSize;
 public:
   void paint(juce::Graphics& g) override;
   int FixedWidth(int height) const override;

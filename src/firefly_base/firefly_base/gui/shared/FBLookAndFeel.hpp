@@ -45,7 +45,7 @@ public:
   juce::Font const& GetFont() const { return _font; }
   int GetFontHeight() const { return Theme().fontSize; }
   int GetStandardPopupMenuItemHeight() const { return GetFontHeight() + 10; }
-  int GetStringWidthCached(std::string const& text) const { GetStringSizeCached(text).x; }
+  int GetStringWidthCached(std::string const& text) const { return GetStringSizeCached(text).x; }
 
   juce::Font getPopupMenuFont() override { return GetFont(); }
   juce::Font getLabelFont(juce::Label&) override { return GetFont(); }
