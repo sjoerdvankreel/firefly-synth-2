@@ -1,5 +1,7 @@
 {
   "name": "Firefly Dark Cold",
+  "fontSize": 16,
+  "fontFileName": "Satoshi-Bold.ttf",
   "graphSchemeFollowsModule": false,
   "unisonSchemeFollowsModule": false,
   "defaultColorScheme_comment": "Fallback scheme, any other scheme can override individual settings.",
