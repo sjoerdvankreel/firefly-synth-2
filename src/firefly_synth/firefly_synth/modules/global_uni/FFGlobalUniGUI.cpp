@@ -246,7 +246,7 @@ FFMakeGlobalUniGUI(
   auto topGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, 0, -1, std::vector<int> { { 0 } }, std::vector<int> { { 0, 1 } });
   topGrid->Add(0, 0, MakeGlobalUniVoices(plugGUI));
   topGrid->Add(0, 1, MakeGlobalUniInit(plugGUI));
-  auto topComponent = plugGUI->StoreComponent<FBThemedComponent>(plugGUI->HostContext()->Topo(), (int)FFThemedComponentId::GlobalUniTop, topGrid);
+  auto topComponent = plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::GlobalUniTop, topGrid);
   auto bottomGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1 } });
   auto bottomGridLeft = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   bottomGridLeft->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, MakeGlobalUniContent(plugGUI, graphRenderState, 0, fixedGraphs)));

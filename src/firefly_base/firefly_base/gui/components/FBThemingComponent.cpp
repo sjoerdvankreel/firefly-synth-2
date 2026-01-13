@@ -1,4 +1,5 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
@@ -7,12 +8,11 @@
 using namespace juce;
 
 FBThemedComponent::
-FBThemedComponent(FBPlugGUI* plugGUI, FBRuntimeTopo const* topo, int componentId, Component* content):
+FBThemedComponent(FBPlugGUI* plugGUI, int componentId, Component* content):
 Component(),
 _plugGUI(plugGUI),
 _componentId(componentId),
-_content(content),
-_topo(topo)
+_content(content)
 {
   addAndMakeVisible(content);
 }
@@ -47,8 +47,9 @@ FBThemedComponent::FixedWidth(int height) const
 FBColorScheme const*
 FBThemedComponent::GetScheme(FBTheme const& theme) const
 {
-  auto componentIter = _topo->static_->themedComponents.find(ComponentId());
-  if (componentIter != _topo->static_->themedComponents.end())
+  auto topo = _plugGUI->HostContext()->Topo();
+  auto componentIter = topo->static_->themedComponents.find(ComponentId());
+  if (componentIter != topo->static_->themedComponents.end())
   {
     auto schemeIter = theme.componentColors.find(FBCleanTopoId(componentIter->second.id));
     if (schemeIter != theme.componentColors.end())

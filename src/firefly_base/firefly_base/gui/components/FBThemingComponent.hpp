@@ -26,7 +26,6 @@ public IFBThemingComponent
   FBPlugGUI* const _plugGUI;
   int _componentId;
   juce::Component* _content;
-  FBRuntimeTopo const* const _topo;
 
 public:
   void resized() override;
@@ -37,7 +36,7 @@ public:
   FBColorScheme const* GetScheme(FBTheme const& theme) const override;
 
   int ComponentId() const { return _componentId; }
-  FBThemedComponent(FBPlugGUI* plugGUI, FBRuntimeTopo const* topo, int componentId, juce::Component* content);
+  FBThemedComponent(FBPlugGUI* plugGUI, int componentId, juce::Component* content);
 };
 
 // Tags another component with module topo.
