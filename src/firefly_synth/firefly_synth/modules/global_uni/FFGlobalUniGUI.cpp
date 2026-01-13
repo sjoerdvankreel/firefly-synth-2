@@ -179,7 +179,7 @@ MakeGlobalUniContent(
       [](FBTheme const& t) { return t.unisonSchemeFollowsModule; },
       plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType, "", false)));
     int moduleRuntimeIndex = topo->moduleTopoToRuntime.at({ (int)FFModuleType::GlobalUni, 0 });
-    auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(graphRenderState, moduleRuntimeIndex, targetIndex, [plugGUI]() { return plugGUI->GetRenderType(true); });
+    auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(plugGUI, graphRenderState, moduleRuntimeIndex, targetIndex, [plugGUI]() { return plugGUI->GetRenderType(true); });
     grid->Add(guiRow, 3, plugGUI->StoreComponent<FBModuleComponent>(
       plugGUI->HostContext()->Topo(),
       (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
