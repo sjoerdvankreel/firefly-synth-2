@@ -76,7 +76,7 @@ FBLastTweakedLabel::AudioParamChanged(int index, double /*normalized*/, bool cha
   if (!IsTweakableParam(topo, index))
     return;
 
-  auto lnf = FBGetLookAndFeelFor(this);
+  auto lnf = FBGetLookAndFeelFor(_plugGUI);
   auto const& param = topo->audio.params[index];
   auto const& module = topo->modules[param.runtimeModuleIndex];
   auto const& staticModule = topo->static_->modules[module.topoIndices.index];
