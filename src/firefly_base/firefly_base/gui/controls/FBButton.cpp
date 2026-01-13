@@ -31,7 +31,7 @@ FBAutoSizeButton::FixedWidth(int /*height*/) const
 
 FBParamLinkedButton::
 FBParamLinkedButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string const& text):
-FBAutoSizeButton(text),
+FBAutoSizeButton(plugGUI, text),
 FBParamsDependent(plugGUI, param->topoIndices.param.slot, param->topoIndices.module, param->static_.dependencies) {}
 
 void
@@ -50,7 +50,7 @@ FBParamValueLinkedButton::
 FBParamValueLinkedButton(
   FBPlugGUI* plugGUI, FBRuntimeParam const* param,
   std::string const& text, std::function<bool(int)> enabledIf):
-FBAutoSizeButton(text),
+FBAutoSizeButton(plugGUI, text),
 _plugGUI(plugGUI),
 _param(param),
 _enabledIf(enabledIf)
