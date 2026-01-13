@@ -59,8 +59,10 @@ struct FBModuleColors
 
 struct FBTheme
 {
+  int fontSize = {};
   std::string name = {};
   std::string folderName = {};
+  std::string fontFileName = {};
   bool graphSchemeFollowsModule = {};
   bool unisonSchemeFollowsModule = {};
   FBColorScheme defaultColorScheme = {};

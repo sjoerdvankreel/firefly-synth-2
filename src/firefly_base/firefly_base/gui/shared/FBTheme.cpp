@@ -28,8 +28,10 @@ struct FBModuleColorsJson
 
 struct FBThemeJson
 {
+  int fontSize = {};
   std::string name = {};
   std::string folderName = {};
+  std::string fontFileName = {};
   bool graphSchemeFollowsModule = {};
   bool unisonSchemeFollowsModule = {};
   FBColorScheme defaultColorScheme = {};
@@ -588,9 +590,17 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     return false;
   DynamicObject const* obj = json.getDynamicObject();
 
+  if (!RequireIntProperty(obj, "fontSize"))
+    return false;
+  result.fontSize = (int)obj->getProperty("fontSize");
+
   if (!RequireStringProperty(obj, "name"))
     return false;
   result.name = obj->getProperty("name").toString().toStdString();
+
+  if (!RequireStringProperty(obj, "fontFileName"))
+    return false;
+  result.fontFileName = obj->getProperty("fontFileName").toString().toStdString();
 
   if (!RequireBoolProperty(obj, "graphSchemeFollowsModule"))
     return false;
@@ -672,7 +682,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
 static std::vector<FBThemeJson>
 LoadThemeJsons()
 {
-  std::filesystem::path themeRoot(FBGetResourcesFolderPath() / "ui" / "themes");
+  std::filesystem::path themeRoot(FBGetThemesFolderPath());
   if (!std::filesystem::exists(themeRoot))
     return {};
 
@@ -802,13 +812,25 @@ MakeTheme(
 {
   theme = {};  
   theme.name = themeJson.name;
+  theme.fontSize = themeJson.fontSize;
   theme.folderName = themeJson.folderName;
+  theme.fontFileName = themeJson.fontFileName;
   for (auto const& kv : themeJson.colorSchemes)
     theme.colorSchemes[kv.first] = FBColorScheme(kv.second);
   theme.componentColors = themeJson.componentColors;
   theme.graphSchemeFollowsModule = themeJson.graphSchemeFollowsModule;
   theme.unisonSchemeFollowsModule = themeJson.unisonSchemeFollowsModule;
   theme.defaultColorScheme = FBColorScheme(themeJson.defaultColorScheme);  
+
+  auto fontFile = File((
+    FBGetThemesFolderPath() / 
+    std::filesystem::path(theme.folderName) / 
+    std::filesystem::path(theme.fontFileName)).string());
+  if(!fontFile.existsAsFile())
+  {
+    FB_LOG_ERROR("Cannot find font file '" + fontFile.getFullPathName().toStdString() + "'.");
+    return false;
+  }
 
   for (auto const& kv : theme.componentColors)
   {

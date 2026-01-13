@@ -54,7 +54,7 @@ FBGUIInit()
   FB_LOG_INFO("Initializing JUCE GUI.");
   initialiseJuce_GUI();
   FB_LOG_INFO("Initialized JUCE GUI.");
-  auto fontPath = FBGetResourcesFolderPath() / "ui" / "JetBrainsMono-Medium.ttf";
+  auto fontPath = FBGetPluginContentsFolderPath() / "Resources" / "ui" / "JetBrainsMono-Medium.ttf"; // TODO
   auto fontBytes = FBReadFile(fontPath);
   _typeface = Typeface::createSystemTypefaceFor(fontBytes.data(), fontBytes.size());
   _font = Font(FontOptions(_typeface)).withHeight(FBGUIFontSize);

@@ -138,9 +138,15 @@ FBGetPluginContentsFolderPath()
 }
 
 std::filesystem::path
-FBGetResourcesFolderPath()
+FBGetThemesFolderPath()
 {
-  return FBGetPluginContentsFolderPath() / "Resources";
+  return FBGetPluginContentsFolderPath() / "Resources" / "ui" / "themes";
+}
+
+std::filesystem::path
+FBGetPresetsFolderPath()
+{
+  return FBGetPluginContentsFolderPath() / "Resources" / "presets";
 }
 
 std::vector<std::uint8_t>

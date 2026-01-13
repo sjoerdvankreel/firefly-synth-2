@@ -412,7 +412,7 @@ std::shared_ptr<FBPresetFolder>
 FBHostGUIContext::LoadPresetList() const
 {
   std::string subPath = Topo()->static_->meta.isFx ? "fx" : "instrument";
-  std::filesystem::path presetRoot(FBGetResourcesFolderPath() / "presets" / subPath);
+  std::filesystem::path presetRoot(FBGetPresetsFolderPath() / subPath);
   if (std::filesystem::exists(presetRoot))
     return LoadPresetList(presetRoot);
   return {};

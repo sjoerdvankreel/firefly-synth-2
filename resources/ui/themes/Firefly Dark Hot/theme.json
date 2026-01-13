@@ -1,5 +1,7 @@
 {
   "name": "Firefly Dark Hot",
+  "fontSize": 13,
+  "fontFileName": "JetBrainsMono-Medium.ttf",
   "graphSchemeFollowsModule": false,
   "unisonSchemeFollowsModule": false,
   "defaultColorScheme_comment": "Fallback scheme, any other scheme can override individual settings.",

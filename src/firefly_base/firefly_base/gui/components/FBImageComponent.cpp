@@ -49,7 +49,7 @@ std::string
 FBImageComponent::GetCurrentImagePath() const
 {
   auto folderName = FBGetLookAndFeelFor(this)->Theme().folderName;
-  String path((FBGetResourcesFolderPath() / "ui" / "themes" / folderName / _resourceName).string());
+  String path((FBGetThemesFolderPath() / folderName / _resourceName).string());
   FB_ASSERT(juce::File(String(path)).existsAsFile());
   return path.toStdString();
 }
