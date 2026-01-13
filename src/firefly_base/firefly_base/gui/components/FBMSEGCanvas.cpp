@@ -455,7 +455,8 @@ FBMSEGCanvas::paint(Graphics& g)
   auto const outerBounds = getLocalBounds().reduced(MSEGOuterPadding);
   auto const innerBounds = outerBounds.reduced(MSEGInnerPadding);
 
-  auto const& scheme = FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this);
+  auto lnf = FBGetLookAndFeelFor(this);
+  auto const& scheme = lnf->FindColorSchemeFor(*this);
   g.fillAll(scheme.background);
   g.setColour(scheme.graphBackground); 
   g.fillRoundedRectangle(outerBounds.toFloat(), 2.0f * MSEGInnerPadding);
@@ -553,7 +554,7 @@ FBMSEGCanvas::paint(Graphics& g)
   if (_currentPointsScreen.size() == 0)
   {
     g.setColour(scheme.text2.withAlpha(0.5f));
-    g.setFont(FBGUIGetFont().withHeight(20.0f));
+    g.setFont(lnf->GetFont().withHeight(20.0f));
     g.drawText("OFF", innerBounds, Justification::centred, false);
     return;
   }

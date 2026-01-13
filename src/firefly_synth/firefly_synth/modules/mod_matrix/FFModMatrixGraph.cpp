@@ -113,7 +113,8 @@ FFModMatrixGraph::paint(Graphics& g)
 
   auto outerBounds = getBounds();
   auto bounds = outerBounds.toFloat().reduced(4.0f);
-  auto const& scheme = FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this);
+  auto lnf = FBGetLookAndFeelFor(this);
+  auto const& scheme = lnf->FindColorSchemeFor(*this);
   g.setColour(scheme.graphBackground);
   g.fillRoundedRectangle(outerBounds.toFloat(), 3.0f);
   g.setColour(scheme.graphBorder);
@@ -206,7 +207,7 @@ FFModMatrixGraph::paint(Graphics& g)
   }
 
   g.setColour(scheme.text2.withAlpha(0.33f));
-  g.setFont(FBGUIGetFont().withHeight(16.0f));
+  g.setFont(lnf->GetFont().withHeight(16.0f));
   g.drawText(prefix + text, bounds, Justification::centred, false);
 
   if (yNormalized.empty())

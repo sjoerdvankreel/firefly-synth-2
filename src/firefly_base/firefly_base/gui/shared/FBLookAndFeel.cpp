@@ -188,7 +188,7 @@ FBLookAndFeel::DrawTabButtonPart(
   float length = area.getWidth();
   float depth = area.getHeight();   
   auto textColor = isHeader? scheme.headerText: scheme.text2.darker(isSeparator || isMouseOver || toggleState ? 0.0f : scheme.dimDisabled);
-  ::CreateTabTextLayout(button, length, textColor, FBGUIGetFont(), centerText, text, textLayout);
+  ::CreateTabTextLayout(button, length, textColor, GetFont(), centerText, text, textLayout);
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));
   textLayout.draw(g, Rectangle<float>(length, depth));
 }
@@ -196,7 +196,11 @@ FBLookAndFeel::DrawTabButtonPart(
 void 
 FBLookAndFeel::SetTheme(FBTheme const& theme) 
 { 
-  _theme = FBTheme(theme); 
+  _theme = FBTheme(theme);
+  auto fontPath = FBGetThemesFolderPath() / theme.folderName / theme.fontFileName;
+  auto fontBytes = FBReadFile(fontPath);
+  _typeface = Typeface::createSystemTypefaceFor(fontBytes.data(), fontBytes.size());
+  _font = Font(FontOptions(_typeface)).withHeight((float)_theme.fontSize);
   setColour(ScrollBar::ColourIds::thumbColourId, theme.defaultColorScheme.fileBrowserHighlight);
   setColour(AlertWindow::ColourIds::textColourId, theme.defaultColorScheme.alertWindowPrimary);
   setColour(AlertWindow::ColourIds::backgroundColourId, theme.defaultColorScheme.sectionBackground);
@@ -808,7 +812,7 @@ FBLookAndFeel::getTooltipBounds(
   float th = 0.0f;
   float tw = 0.0f;
   float fontSize = 13.0f;
-  float textHeight = FBGUIGetFontHeightFloat() + 2.0f;
+  float textHeight = GetFontHeight() + 2.0f;
   auto lines = FBStringSplit(trimmed.toStdString(), "\r\n");
   auto font = Font(FontOptions(fontSize, Font::bold).withMetricsKind(getDefaultMetricsKind()));
   for (int i = 0; i < lines.size(); i++)
@@ -881,7 +885,7 @@ FBLookAndFeel::drawTooltip(
   float pad = 3.0f;
   float fontSize = 13.0f;
   auto trimmed = text.trim();
-  float textHeight = FBGUIGetFontHeightFloat() + 2.0f;
+  float textHeight = GetFontHeight() + 2.0f;
   auto lines = FBStringSplit(trimmed.toStdString(), "\r\n");
   auto textBounds = Rectangle<float>(pad, pad, width - 2.0f * pad, textHeight);
   g.setFont(Font(FontOptions(fontSize, Font::bold).withMetricsKind(getDefaultMetricsKind())));

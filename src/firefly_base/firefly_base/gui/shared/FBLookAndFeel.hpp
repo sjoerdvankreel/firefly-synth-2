@@ -11,6 +11,8 @@ class FBLookAndFeel:
 public juce::LookAndFeel_V4
 {
   FBTheme _theme = {};
+  juce::Typeface::Ptr _typeface = {};
+  juce::Font _font = juce::Font(juce::FontOptions());
 
   void DrawLinearSliderExchangeThumb(
     juce::Graphics& g, FBParamSlider& slider, FBColorScheme const& scheme,
@@ -36,6 +38,10 @@ public:
 
   void SetTheme(FBTheme const& theme);
   FBTheme const& Theme() const { return _theme; }
+
+  juce::Font const& GetFont() const { return _font; }
+  int GetFontHeight() const { return Theme().fontSize; }
+  int GetStandardPopupMenuItemHeight() const { return GetFontHeight() + 10; }
 
   juce::BorderSize<int> getLabelBorderSize(
     juce::Label&) override;
@@ -141,9 +147,9 @@ public:
     juce::Graphics& g, juce::Button& button, const juce::Colour& backgroundColour,
     bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
 
-  juce::Font getPopupMenuFont() override { return FBGUIGetFont(); }
-  juce::Font getLabelFont(juce::Label&) override { return FBGUIGetFont(); }
-  juce::Font getComboBoxFont(juce::ComboBox&) override { return FBGUIGetFont(); }
-  juce::Font getSliderPopupFont(juce::Slider&) override { return FBGUIGetFont(); }
-  juce::Font getTextButtonFont(juce::TextButton&, int)  override { return FBGUIGetFont(); }
+  juce::Font getPopupMenuFont() override { return GetFont(); }
+  juce::Font getLabelFont(juce::Label&) override { return GetFont(); }
+  juce::Font getComboBoxFont(juce::ComboBox&) override { return GetFont(); }
+  juce::Font getSliderPopupFont(juce::Slider&) override { return GetFont(); }
+  juce::Font getTextButtonFont(juce::TextButton&, int)  override { return GetFont(); }
 };

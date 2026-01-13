@@ -89,10 +89,11 @@ FBLastTweakedTextBox::
 FBLastTweakedTextBox(FBPlugGUI* plugGUI, int fixedWidth):
 _fixedWidth(fixedWidth), _plugGUI(plugGUI)
 {
+  auto lnf = FBGetLookAndFeelFor(plugGUI);
   setText("Knob...", dontSendNotification);
   plugGUI->AddParamListener(this);
   addListener(this);
-  setFont(FBGUIGetFont());
+  setFont(lnf->GetFont());
   setIndents(2, 8);
   setPopupMenuEnabled(false);
 }

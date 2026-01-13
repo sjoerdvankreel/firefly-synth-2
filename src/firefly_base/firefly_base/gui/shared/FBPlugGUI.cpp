@@ -309,9 +309,10 @@ FBPlugGUI::ShowPopupMenuFor(
   std::function<void(int)> callback)
 {
   PopupMenu::Options options;
+  auto lnf = FBGetLookAndFeelFor(this);
   options = options.withParentComponent(this);
   options = options.withTargetComponent(target);
-  options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
+  options = options.withStandardItemHeight(lnf->GetStandardPopupMenuItemHeight());
   options = options.withMousePosition();
   menu.showMenuAsync(options, callback);
 }
@@ -574,9 +575,10 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
     menu.addItem(9, "Redo " + undoState.RedoAction());
 
   PopupMenu::Options options;
+  auto lnf = FBGetLookAndFeelFor(this);
   options = options.withMousePosition();
   options = options.withParentComponent(this);
-  options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
+  options = options.withStandardItemHeight(lnf->GetStandardPopupMenuItemHeight());
   menu.showMenuAsync(options, [this](int id) {
     if (id == 1) HostContext()->ShowOnlineManual();
     if (id == 2) DumpTopologyToFile();
@@ -719,9 +721,10 @@ FBPlugGUI::LoadPreset(Component* clickedFrom)
     return;
   auto presetMenu = MakePresetMenu(presetList);
   PopupMenu::Options options = {};
+  auto lnf = FBGetLookAndFeelFor(this);
   options = options.withParentComponent(this);
   options = options.withTargetComponent(clickedFrom);
-  options = options.withStandardItemHeight(FBGUIGetStandardPopupMenuItemHeight());
+  options = options.withStandardItemHeight(lnf->GetStandardPopupMenuItemHeight());
   presetMenu.showMenuAsync(options);
 }
 

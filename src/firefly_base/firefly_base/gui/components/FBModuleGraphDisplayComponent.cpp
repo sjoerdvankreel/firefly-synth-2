@@ -200,6 +200,7 @@ FBModuleGraphDisplayComponent::PaintSeries(
 void
 FBModuleGraphDisplayComponent::paint(Graphics& g)
 {  
+  auto lnf = FBGetLookAndFeelFor(this);
   for (int graph = 0; graph < _data->graphs.size(); graph++)
   {
     int maxSizeAllSeries;
@@ -246,7 +247,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     if (graphData.subtext.size())
     {
       g.setColour(scheme.text2.withAlpha(0.33f));
-      g.setFont(FBGUIGetFont().withHeight(20.0f));
+      g.setFont(lnf->GetFont().withHeight(20.0f));
       g.drawText(graphData.subtext, graphBounds, Justification::centred, false);
     }
 
@@ -304,7 +305,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     if (graphData.title.size())
     {
       float const labelPad = 4.0f;
-      auto newFont = FBGUIGetFont().withHeight(14.0f);
+      auto newFont = lnf->GetFont().withHeight(14.0f);
       auto textSize = TextLayout::getStringBounds(newFont, graphData.title);
       auto textBounds = Rectangle<float>(
         graphBounds.getX() + graphBounds.getWidth() - textSize.getWidth() - 2.0f * labelPad,

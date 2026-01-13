@@ -72,8 +72,9 @@ _plugGUI(plugGUI), _big(big)
 int
 FBAutoSizeTabComponent::FixedWidth(int height) const
 {
+  int fontSize = FBGetLookAndFeelFor(this)->Theme().fontSize;
   auto& content = dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0));
-  return content.FixedWidth(height - FBGUIFontSize + 2) + 2;
+  return content.FixedWidth(height - fontSize + 2) + 2;
 }
 
 TabBarButton*

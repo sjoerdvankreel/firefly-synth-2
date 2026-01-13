@@ -12,9 +12,10 @@ FBInstanceNameEditor::
 FBInstanceNameEditor(FBPlugGUI* plugGUI, int fixedWidth):
 _fixedWidth(fixedWidth), _plugGUI(plugGUI)
 {
+  auto lnf = FBGetLookAndFeelFor(plugGUI);
   setText(_plugGUI->HostContext()->InstanceName(), dontSendNotification);
   addListener(this);
-  setFont(FBGUIGetFont());
+  setFont(lnf->GetFont());
   setIndents(3, 10);
   setPopupMenuEnabled(false);
 }
