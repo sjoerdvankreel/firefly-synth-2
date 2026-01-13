@@ -22,6 +22,7 @@ IsTweakableParam(FBRuntimeTopo const* topo, int index)
 FBLastTweakedLabel::
 ~FBLastTweakedLabel()
 {
+  _plugGUI->RemoveThemeListener(this);
   _plugGUI->RemoveParamListener(this);
 }
 
@@ -31,12 +32,14 @@ _plugGUI(plugGUI)
 {
   setText("Tweak", dontSendNotification);
   plugGUI->AddParamListener(this);
+  plugGUI->AddThemeListener(this);
+  CalculateMaxWidth();  
+}
 
-  auto const* topo = plugGUI->HostContext()->Topo();
-  for (int i = 0; i < topo->audio.params.size(); i++)
-    if (IsTweakableParam(topo, i))
-      _maxWidth = std::max(_maxWidth, 
-        FBGUIGetStringWidthCached(topo->audio.params[i].displayName));
+void
+FBLastTweakedLabel::ThemeChanged()
+{
+  CalculateMaxWidth();
 }
 
 int
@@ -49,6 +52,18 @@ int
 FBLastTweakedLabel::FixedWidth(int /*height*/) const
 {
   return getBorderSize().getLeftAndRight() + _maxWidth;
+}
+
+void
+FBLastTweakedLabel::CalculateMaxWidth()
+{
+  _maxWidth = 0;
+  auto lnf = FBGetLookAndFeelFor(this);
+  auto const* topo = _plugGUI->HostContext()->Topo();
+  for (int i = 0; i < topo->audio.params.size(); i++)
+    if (IsTweakableParam(topo, i))
+      _maxWidth = std::max(_maxWidth,
+        lnf->GetStringWidthCached(topo->audio.params[i].displayName));
 }
 
 void 
