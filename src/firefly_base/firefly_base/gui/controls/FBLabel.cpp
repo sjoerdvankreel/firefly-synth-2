@@ -53,7 +53,7 @@ FBAutoSizeLabel2::FixedWidth(int /*height*/) const
 
 FBGUIParamLabel::
 FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed, bool isPrimary) :
-FBAutoSizeLabel(param->displayName, false, isPrimary),
+FBAutoSizeLabel(plugGUI, param->displayName, false, isPrimary),
 FBGUIParamComponent(plugGUI, param, isThemed) {}
 
 void
@@ -64,7 +64,7 @@ FBGUIParamLabel::parentHierarchyChanged()
 
 FBParamLabel::
 FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed, bool isPrimary):
-FBAutoSizeLabel(param->displayName, false, isPrimary),
+FBAutoSizeLabel(plugGUI, param->displayName, false, isPrimary),
 FBParamComponent(plugGUI, param, isThemed) {}
 
 void 
@@ -75,7 +75,7 @@ FBParamLabel::parentHierarchyChanged()
 
 FBParamLinkedLabel::
 FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isPrimary, std::string text):
-FBAutoSizeLabel(text, false, isPrimary),
+FBAutoSizeLabel(plugGUI, text, false, isPrimary),
 FBParamsDependent(plugGUI, param->topoIndices.param.slot, param->topoIndices.module, param->static_.dependencies) {}
 
 void 

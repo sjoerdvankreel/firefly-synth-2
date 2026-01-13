@@ -28,7 +28,7 @@ _getCurrentRenderType(getCurrentRenderType),
 _fixedToRuntimeModuleIndex(fixedToRuntimeModuleIndex),
 _fixedToGraphIndex(fixedToGraphIndex),
 _data(std::make_unique<FBModuleGraphComponentData>()),
-_display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get(), _fixedToRuntimeModuleIndex == -1))
+_display(std::make_unique<FBModuleGraphDisplayComponent>(plugGUI, _data.get(), _fixedToRuntimeModuleIndex == -1))
 {
   _data->renderState = renderState;
   if (_fixedToRuntimeModuleIndex != -1)

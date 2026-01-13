@@ -29,9 +29,9 @@ _extension(extension),
 _onSelect(onSelect)
 {
   _title = std::make_unique<FBAutoSizeLabel>(plugGUI, title, true);
-  _okButton = std::make_unique<FBAutoSizeButton>("OK");
+  _okButton = std::make_unique<FBAutoSizeButton>(plugGUI, "OK");
   _okButton->onClick = [this]() { SelectFile(_browser->getSelectedFile(0)); };
-  _cancelButton = std::make_unique<FBAutoSizeButton>("Cancel");
+  _cancelButton = std::make_unique<FBAutoSizeButton>(plugGUI, "Cancel");
   _cancelButton->onClick = [this]() { Hide(); };
   _filter = std::make_unique<WildcardFileFilter>("*." + extension, "", filterName);
   int browserFlags = FileBrowserComponent::canSelectFiles | FileBrowserComponent::useTreeView;
