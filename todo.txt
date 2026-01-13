@@ -1,5 +1,6 @@
 v2.1.1
 [x] limit string osci from 20->8hz low + clamp
+[ ] up the margins
 [ ] pretty knobs, graphs, combos, checks, buttons, more?
 [ ] fix the string oversample bug already
 
