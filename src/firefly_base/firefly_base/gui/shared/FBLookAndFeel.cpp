@@ -196,6 +196,7 @@ FBLookAndFeel::DrawTabButtonPart(
 void 
 FBLookAndFeel::SetTheme(FBTheme const& theme) 
 { 
+  _stringSizeCache = {};
   _theme = FBTheme(theme);
   auto fontPath = FBGetThemesFolderPath() / theme.folderName / theme.fontFileName;
   auto fontBytes = FBReadFile(fontPath);
@@ -208,6 +209,20 @@ FBLookAndFeel::SetTheme(FBTheme const& theme)
   setColour(DirectoryContentsDisplayComponent::ColourIds::highlightedTextColourId, theme.defaultColorScheme.text2);
   setColour(DirectoryContentsDisplayComponent::ColourIds::highlightColourId, theme.defaultColorScheme.fileBrowserHighlight);
 }   
+
+Point<int> 
+FBLookAndFeel::GetStringSizeCached(std::string const& text) const
+{
+  auto iter = _stringSizeCache.find(text);
+  if (iter != _stringSizeCache.end())
+    return iter->second;
+  auto bounds = TextLayout::getStringBounds(_font, text);
+  auto result = juce::Point<int>(
+    static_cast<int>(std::ceil(bounds.getWidth())),
+    static_cast<int>(std::ceil(bounds.getHeight())));
+  _stringSizeCache[text] = result;
+  return result;
+}
     
 BorderSize<int> 
 FBLookAndFeel::getLabelBorderSize(
