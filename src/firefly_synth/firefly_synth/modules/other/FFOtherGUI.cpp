@@ -26,7 +26,7 @@ FFMakeOtherGUI(FFPlugGUI* plugGUI)
   auto instanceNameEditor = plugGUI->StoreComponent<FBInstanceNameEditor>(plugGUI, 100);
   plugGUI->onInstanceNameChanged = [instanceNameEditor](auto const& name) { instanceNameEditor->setText(name, false); };
   grid->Add(0, 1, instanceNameEditor);
-  auto panicButton = plugGUI->StoreComponent<FBAutoSizeButton>("Panic");
+  auto panicButton = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Panic");
   panicButton->setTooltip("Reset Voices And Delay Lines"); 
   panicButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushAudio(); };
   grid->Add(0, 2, panicButton);

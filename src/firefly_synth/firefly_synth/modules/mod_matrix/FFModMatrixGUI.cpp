@@ -116,7 +116,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slots, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, slots, std::to_string(global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount)));
   
-  auto clean = plugGUI->StoreComponent<FBAutoSizeButton>("Clean");
+  auto clean = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Clean");
   clean->setTooltip("Remove Inactive Slots");
   grid->Add(0, 5, clean);
   clean->onClick = [plugGUI, global]() {
@@ -174,7 +174,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
     hostContext->PerformImmediateAudioParamEdit(slotsParam->runtimeParamIndex, slotsNorm);
   };
 
-  auto initButton = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
+  auto initButton = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Init");
   initButton->setTooltip("Set To Defaults");
   grid->Add(0, 6, initButton);
   initButton->onClick = [plugGUI, global]() {

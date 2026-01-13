@@ -759,12 +759,12 @@ FBPlugGUI::SetupOverlayGUI()
   _overlayCaption = StoreComponent<FBAutoSizeLabel2>(false, 200);
   _overlayGrid->Add(0, 0, _overlayCaption);
 
-  auto overlayInit = StoreComponent<FBAutoSizeButton>("Init");
+  auto overlayInit = StoreComponent<FBAutoSizeButton>(this, "Init");
   overlayInit->onClick = [this] { _overlayInit(); };
   auto overlayInitSection = StoreComponent<FBMarginComponent>(this, false, false, true, true, overlayInit);
   _overlayGrid->Add(0, 1, overlayInitSection);
 
-  auto overlayClose = StoreComponent<FBAutoSizeButton>("Close");
+  auto overlayClose = StoreComponent<FBAutoSizeButton>(this, "Close");
   overlayClose->onClick = [this] { HideOverlayComponent(); };
   auto overlayCloseSection = StoreComponent<FBMarginComponent>(this, false, true, true, true, overlayClose);
   _overlayGrid->Add(0, 2, overlayCloseSection);

@@ -163,7 +163,7 @@ MakeEchoSectionTaps(
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0 });
 
   auto tapsEditor = MakeEchoTapsEditor(plugGUI, global);
-  *showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Multi Tap");
+  *showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Multi Tap");
   (*showTapsEditor)->setTooltip("Show Taps Editor");
   (*showTapsEditor)->onClick = [plugGUI, tapsEditor, global]() { 
     auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
