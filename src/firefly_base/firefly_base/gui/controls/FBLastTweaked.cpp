@@ -58,7 +58,7 @@ void
 FBLastTweakedLabel::CalculateMaxWidth()
 {
   _maxWidth = 0;
-  auto lnf = FBGetLookAndFeelFor(this);
+  auto lnf = FBGetLookAndFeelFor(_plugGUI);
   auto const* topo = _plugGUI->HostContext()->Topo();
   for (int i = 0; i < topo->audio.params.size(); i++)
     if (IsTweakableParam(topo, i))

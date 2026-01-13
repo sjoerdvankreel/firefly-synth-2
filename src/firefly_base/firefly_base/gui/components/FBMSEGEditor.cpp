@@ -44,15 +44,15 @@ _snapYCounts(snapYCounts)
 
   _editXLabel = std::make_unique<FBAutoSizeLabel>("X Mode");
   _editXGridLabel = std::make_unique<FBAutoSizeLabel>("Grid");
-  _xEditModeCombo = std::make_unique<FBAutoSizeComboBox>(xEditMenu);
+  _xEditModeCombo = std::make_unique<FBAutoSizeComboBox>(plugGUI, xEditMenu);
   _xEditModeCombo->onChange = [this] { ModelUpdated(); };
-  _snapXCountCombo = std::make_unique<FBAutoSizeComboBox>(snapXCountMenu);
+  _snapXCountCombo = std::make_unique<FBAutoSizeComboBox>(plugGUI, snapXCountMenu);
   _snapXCountCombo->onChange = [this] { ModelUpdated(); };
   _editYLabel = std::make_unique<FBAutoSizeLabel>("Y Mode");
   _editYGridLabel = std::make_unique<FBAutoSizeLabel>("Grid");
-  _yEditModeCombo = std::make_unique<FBAutoSizeComboBox>(yEditMenu);
+  _yEditModeCombo = std::make_unique<FBAutoSizeComboBox>(plugGUI, yEditMenu);
   _yEditModeCombo->onChange = [this] { ModelUpdated(); };
-  _snapYCountCombo = std::make_unique<FBAutoSizeComboBox>(snapYCountMenu);
+  _snapYCountCombo = std::make_unique<FBAutoSizeComboBox>(plugGUI, snapYCountMenu);
   _snapYCountCombo->onChange = [this] { ModelUpdated(); };
   _controlFiller = std::make_unique<FBFillerComponent>(1, 1);
   _controlGrid = std::make_unique<FBGridComponent>(true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 1 });
