@@ -119,6 +119,7 @@ protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
   FBPlugGUI(FBHostGUIContext* hostContext);
 
+  virtual void ForceReLayout() = 0;
   virtual void AfterPatchChanged() = 0;
   virtual void BeforePatchChanged() = 0;
   virtual void UpdateExchangeStateTick() = 0;

@@ -68,6 +68,21 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
   resized();
 }
 
+void 
+FFPlugGUI::ForceReLayout()
+{
+  // called after the theme changed
+  // because of custom font size this may change the size of labels etc very deep in the visual tree
+  // without affecting their parent size
+  // plain resized() doesnt cut it, so just whack it here
+
+  auto bounds = getLocalBounds();
+  getChildComponent(0)->setBounds(0, 0, bounds.getWidth() / 2, bounds.getHeight() / 2);
+  getChildComponent(0)->resized();
+  getChildComponent(0)->setBounds(bounds);
+  getChildComponent(0)->resized();
+}
+
 void
 FFPlugGUI::BeforePatchChanged()
 {

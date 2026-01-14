@@ -88,8 +88,7 @@ FBPlugGUI::SwitchTheme(std::string const& themeName)
   FBGetLookAndFeelFor(this)->SetTheme(GetTheme());
   for (int i = 0; i < _themeListeners.size(); i++)
     _themeListeners[i]->ThemeChanged();
-  resized(); // font size depends on theme
-  repaint();
+  ForceReLayout(); // font size depends on theme
 }
 
 void

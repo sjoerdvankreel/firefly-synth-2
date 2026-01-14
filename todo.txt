@@ -1,15 +1,17 @@
 v2.1.1
 [x] limit string osci from 20->8hz low + clamp
+[x] allow custom font and fontsize
+[ ] per-section fontsize
+[ ] just auto-fillup the last grid
 [ ] externalize header.png
-[ ] allow custom font and fontsize
 [ ] up the margins
 [ ] alternate-color the matrix rows et all
 [ ] pretty knobs, graphs, combos, checks, buttons, more?
-[ ] fix the string oversample bug already
+[ ] programmatic dump screenshot?
 
+fix the string oversample bug already
 drop screenshot_theme_light_default (for the website) once fix the auto-screenshot
 also probably make the images on the website bigger somehow
-programmatic dump screenshot?
 allow more margin/padding, the borders clip
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo

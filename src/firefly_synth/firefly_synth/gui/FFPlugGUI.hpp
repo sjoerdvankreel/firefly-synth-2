@@ -69,6 +69,7 @@ public FBPlugGUI
   FBParamModulationBoundsSource GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const override;
 
 protected:
+  void ForceReLayout() override;
   void AfterPatchChanged() override;
   void BeforePatchChanged() override;
   void UpdateExchangeStateTick() override;
