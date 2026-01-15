@@ -560,16 +560,15 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   auto& undoState = HostContext()->UndoState();
   PopupMenu menu;
   menu.addItem(1, "About");
+  menu.addItem(7, "Copy Patch");
+  menu.addItem(8, "Paste Patch");
   menu.addItem(2, "Show Manual");
   menu.addSeparator();
   menu.addItem(3, "Dump Topology");
   menu.addItem(4, "Dump Param List");
-  menu.addSeparator();
   menu.addItem(5, "Show Log Folder");
   menu.addItem(6, "Show Plugin Folder");
   menu.addSeparator();
-  menu.addItem(7, "Copy Patch");
-  menu.addItem(8, "Paste Patch");
   if (undoState.CanUndo() || undoState.CanRedo())
     menu.addSeparator();
   if (undoState.CanUndo())
