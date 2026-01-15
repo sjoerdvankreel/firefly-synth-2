@@ -25,11 +25,11 @@ FBModuleGraphRenderer;
 struct FBStaticModule final
 {
   bool voice = false;
-  int graphCount = 0;
   int slotCount = {};
   std::string id = {};
   std::string name = {};
   std::string matrixName = {};
+  int detailGraphCount = 0;
   bool slotFormatterOverrides = {};
   bool graphParticipatesInMain = true;
   FBModuleGraphRenderer graphRenderer = {};

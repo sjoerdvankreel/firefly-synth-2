@@ -65,7 +65,7 @@ FFMakeLFOTopo(bool global)
   result->voice = !global;
   result->name = global ? "GLFO" : "VLFO";
   result->slotCount = FFLFOCount;
-  result->graphCount = FFLFOBlockCount + 1;
+  result->detailGraphCount = FFLFOBlockCount + 1;
   result->graphRenderer = global ? FFLFORenderGraph<true> : FFLFORenderGraph<false>;
   result->id = prefix + "{6E9EC930-5391-41BB-9EDA-C9B79F3BE745}";
   result->params.resize((int)FFLFOParam::Count);

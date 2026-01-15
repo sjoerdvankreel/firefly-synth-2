@@ -75,7 +75,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   result->voice = !global;
   result->name = global? "GEcho": "VEcho";
   result->slotCount = 1;
-  result->graphCount = 4;
+  result->detailGraphCount = 4;
   result->graphRenderer = global ? FFEchoRenderGraph<true>: FFEchoRenderGraph<false>;
   result->id = prefix + "{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}";
   result->params.resize((int)FFEchoParam::Count);
