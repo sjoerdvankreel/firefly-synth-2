@@ -29,7 +29,7 @@ FBModuleGraphDisplayComponent::FindColorSchemeFor(
 {
   auto fbLookAndFeel = FBGetLookAndFeelFor(_plugGUI);
   auto const& theme = fbLookAndFeel->Theme();
-  if (theme.graphSchemeFollowsModule)
+  if (theme.global.graphSchemeFollowsModule)
   {
     if (moduleIndex != -1 && moduleSlot != -1)
       if (auto gui = findParentComponentOfClass<FBPlugGUI>())
@@ -37,7 +37,7 @@ FBModuleGraphDisplayComponent::FindColorSchemeFor(
         int rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at({ moduleIndex, moduleSlot });
         auto moduleIter = theme.moduleColors.find(rtModuleIndex);
         if (moduleIter != theme.moduleColors.end())
-          return theme.colorSchemes.at(moduleIter->second.colorScheme);
+          return theme.global.colorSchemes.at(moduleIter->second.colorScheme);
       }
   } 
   return fbLookAndFeel->FindColorSchemeFor(*this);

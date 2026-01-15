@@ -75,7 +75,7 @@ FBPlugGUI::GetTheme() const
 {
   static FBTheme fallback = {};
   for (int i = 0; i < Themes().size(); i++)
-    if (Themes()[i].name == HostContext()->ThemeName())
+    if (Themes()[i].global.name == HostContext()->ThemeName())
       return Themes()[i];
   if (Themes().size() > 0)
     return Themes()[0];

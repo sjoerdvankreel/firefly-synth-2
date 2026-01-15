@@ -43,7 +43,7 @@ public:
   juce::Point<int> GetStringSizeCached(std::string const& text) const;
 
   juce::Font const& GetFont() const { return _font; }
-  int GetFontHeight() const { return Theme().fontSize; }
+  int GetFontHeight() const { return Theme().global.fontSize; }
   int GetStandardPopupMenuItemHeight() const { return GetFontHeight() + 10; }
   int GetStringWidthCached(std::string const& text) const { return GetStringSizeCached(text).x; }
 

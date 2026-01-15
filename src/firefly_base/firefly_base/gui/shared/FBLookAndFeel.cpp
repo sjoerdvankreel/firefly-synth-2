@@ -115,7 +115,7 @@ FBLookAndFeel::FindColorSchemeFor(
         return *s;
     current = current->getParentComponent();
   }
-  return Theme().defaultColorScheme;
+  return Theme().global.defaultColorScheme;
 }
 
 void 
@@ -198,16 +198,16 @@ FBLookAndFeel::SetTheme(FBTheme const& theme)
 { 
   _stringSizeCache = {};
   _theme = FBTheme(theme);
-  auto fontPath = FBGetThemesFolderPath() / theme.folderName / theme.fontFileName;
+  auto fontPath = FBGetThemesFolderPath() / theme.global.folderName / theme.global.fontFileName;
   auto fontBytes = FBReadFile(fontPath);
   _typeface = Typeface::createSystemTypefaceFor(fontBytes.data(), fontBytes.size());
-  _font = Font(FontOptions(_typeface)).withHeight((float)_theme.fontSize);
-  setColour(ScrollBar::ColourIds::thumbColourId, theme.defaultColorScheme.fileBrowserHighlight);
-  setColour(AlertWindow::ColourIds::textColourId, theme.defaultColorScheme.alertWindowPrimary);
-  setColour(AlertWindow::ColourIds::backgroundColourId, theme.defaultColorScheme.sectionBackground);
-  setColour(DirectoryContentsDisplayComponent::ColourIds::textColourId, theme.defaultColorScheme.text);
-  setColour(DirectoryContentsDisplayComponent::ColourIds::highlightedTextColourId, theme.defaultColorScheme.text2);
-  setColour(DirectoryContentsDisplayComponent::ColourIds::highlightColourId, theme.defaultColorScheme.fileBrowserHighlight);
+  _font = Font(FontOptions(_typeface)).withHeight((float)_theme.global.fontSize);
+  setColour(ScrollBar::ColourIds::thumbColourId, theme.global.defaultColorScheme.fileBrowserHighlight);
+  setColour(AlertWindow::ColourIds::textColourId, theme.global.defaultColorScheme.alertWindowPrimary);
+  setColour(AlertWindow::ColourIds::backgroundColourId, theme.global.defaultColorScheme.sectionBackground);
+  setColour(DirectoryContentsDisplayComponent::ColourIds::textColourId, theme.global.defaultColorScheme.text);
+  setColour(DirectoryContentsDisplayComponent::ColourIds::highlightedTextColourId, theme.global.defaultColorScheme.text2);
+  setColour(DirectoryContentsDisplayComponent::ColourIds::highlightColourId, theme.global.defaultColorScheme.fileBrowserHighlight);
 }   
 
 Point<int> 
@@ -323,7 +323,7 @@ FBLookAndFeel::drawPopupMenuBackgroundWithOptions(
   int width, int height,
   const PopupMenu::Options& options)
 {
-  FBColorScheme const* scheme = &Theme().defaultColorScheme;
+  FBColorScheme const* scheme = &Theme().global.defaultColorScheme;
   if (options.getTargetComponent() != nullptr)
     scheme = &FindColorSchemeFor(*options.getTargetComponent());
 
@@ -339,7 +339,7 @@ FBLookAndFeel::drawPopupMenuItemWithOptions(
   const PopupMenu::Item& item,
   const PopupMenu::Options& options)
 {
-  FBColorScheme const* scheme = &Theme().defaultColorScheme;
+  FBColorScheme const* scheme = &Theme().global.defaultColorScheme;
   if (options.getTopLevelTargetComponent() != nullptr)
     scheme = &FindColorSchemeFor(*options.getTopLevelTargetComponent());
 
@@ -369,7 +369,7 @@ FBLookAndFeel::drawPopupMenuItem(
   const String& /*shortcutKeyText*/,
   const Drawable* /*icon*/, const Colour* const textColourToUse)
 {
-  auto const& scheme = Theme().defaultColorScheme;
+  auto const& scheme = Theme().global.defaultColorScheme;
   Colour textColor = scheme.text2;
   Colour selectedColor = textColourToUse != nullptr ? *textColourToUse : scheme.text2;
 
@@ -875,7 +875,7 @@ FBLookAndFeel::drawTooltip(
   // Tooltip window doesnt provide the target component, so wing it.
   // Won't be 100% accurate, but worst that can happen is we pick up the wrong color scheme.
   bool newCompIsParam = false;
-  auto const* scheme = &Theme().defaultColorScheme;
+  auto const* scheme = &Theme().global.defaultColorScheme;
   const auto mouseSource = Desktop::getInstance().getMainMouseSource();
   auto* newComp = mouseSource.isTouch() ? nullptr : mouseSource.getComponentUnderMouse();
   if (newComp != nullptr)

@@ -57,18 +57,24 @@ struct FBModuleColors
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBModuleColors);
 };
 
-struct FBTheme
+struct FBThemeGlobal
 {
   int fontSize = {};
   std::string name = {};
   std::string folderName = {};
   std::string fontFileName = {};
-  bool graphSchemeFollowsModule = {};
+  bool graphSchemeFollowsModule = {}; // todo lose this?
   bool unisonSchemeFollowsModule = {};
   FBColorScheme defaultColorScheme = {};
-  std::map<int, FBModuleColors> moduleColors = {}; // runtime module index
   std::map<std::string, FBColorScheme> colorSchemes = {};
   std::map<std::string, FBComponentColors> componentColors = {};
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBThemeGlobal);
+};
+
+struct FBTheme
+{
+  FBThemeGlobal global = {};
+  std::map<int, FBModuleColors> moduleColors = {}; // runtime module index
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBTheme);
 };
 

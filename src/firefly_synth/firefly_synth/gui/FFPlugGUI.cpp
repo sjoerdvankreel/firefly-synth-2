@@ -55,7 +55,7 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
   // needs to be before SetupGUI()
   bool found = false;
   for(int i = 0; i < Themes().size(); i++)
-    if (Themes()[i].name == HostContext()->ThemeName())
+    if (Themes()[i].global.name == HostContext()->ThemeName())
     {
       SwitchTheme(HostContext()->ThemeName());
       found = true;

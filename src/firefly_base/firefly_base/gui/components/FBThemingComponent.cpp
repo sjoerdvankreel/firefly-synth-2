@@ -51,9 +51,9 @@ FBThemedComponent::GetScheme(FBTheme const& theme) const
   auto componentIter = topo->static_->themedComponents.find(ComponentId());
   if (componentIter != topo->static_->themedComponents.end())
   {
-    auto schemeIter = theme.componentColors.find(FBCleanTopoId(componentIter->second.id));
-    if (schemeIter != theme.componentColors.end())
-      return &theme.colorSchemes.at(schemeIter->second.colorScheme);
+    auto schemeIter = theme.global.componentColors.find(FBCleanTopoId(componentIter->second.id));
+    if (schemeIter != theme.global.componentColors.end())
+      return &theme.global.colorSchemes.at(schemeIter->second.colorScheme);
   }
   return nullptr;
 }
@@ -146,6 +146,6 @@ FBModuleComponent::GetScheme(FBTheme const& theme) const
   int rtModuleIndex = _topo->moduleTopoToRuntime.at({ ModuleIndex(), ModuleSlot() });
   auto moduleIter = theme.moduleColors.find(rtModuleIndex);
   if (moduleIter != theme.moduleColors.end())
-    return &theme.colorSchemes.at(moduleIter->second.colorScheme);
+    return &theme.global.colorSchemes.at(moduleIter->second.colorScheme);
   return nullptr;
 }

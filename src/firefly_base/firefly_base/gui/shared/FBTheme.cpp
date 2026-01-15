@@ -28,16 +28,8 @@ struct FBModuleColorsJson
 
 struct FBThemeJson
 {
-  int fontSize = {};
-  std::string name = {};
-  std::string folderName = {};
-  std::string fontFileName = {};
-  bool graphSchemeFollowsModule = {};
-  bool unisonSchemeFollowsModule = {};
-  FBColorScheme defaultColorScheme = {};
+  FBThemeGlobal global = {};
   std::vector<FBModuleColorsJson> moduleColors = {};
-  std::map<std::string, FBColorScheme> colorSchemes = {};
-  std::map<std::string, FBComponentColors> componentColors = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBThemeJson);
 };
 
@@ -592,32 +584,32 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
 
   if (!RequireIntProperty(obj, "fontSize"))
     return false;
-  result.fontSize = (int)obj->getProperty("fontSize");
+  result.global.fontSize = (int)obj->getProperty("fontSize");
 
   if (!RequireStringProperty(obj, "name"))
     return false;
-  result.name = obj->getProperty("name").toString().toStdString();
+  result.global.name = obj->getProperty("name").toString().toStdString();
 
   if (!RequireStringProperty(obj, "fontFileName"))
     return false;
-  result.fontFileName = obj->getProperty("fontFileName").toString().toStdString();
+  result.global.fontFileName = obj->getProperty("fontFileName").toString().toStdString();
 
   if (!RequireBoolProperty(obj, "graphSchemeFollowsModule"))
     return false;
-  result.graphSchemeFollowsModule = (bool)obj->getProperty("graphSchemeFollowsModule");
+  result.global.graphSchemeFollowsModule = (bool)obj->getProperty("graphSchemeFollowsModule");
 
   if (!RequireBoolProperty(obj, "unisonSchemeFollowsModule"))
     return false;
-  result.unisonSchemeFollowsModule = (bool)obj->getProperty("unisonSchemeFollowsModule");
+  result.global.unisonSchemeFollowsModule = (bool)obj->getProperty("unisonSchemeFollowsModule");
 
   if (!RequireObjectProperty(obj, "defaultColorScheme"))
     return false;
-  if (!ParseDefaultColorScheme(obj->getProperty("defaultColorScheme").getDynamicObject(), result.defaultColorScheme))
+  if (!ParseDefaultColorScheme(obj->getProperty("defaultColorScheme").getDynamicObject(), result.global.defaultColorScheme))
     return false;
 
   if (!RequireObjectProperty(obj, "colorSchemes"))
     return false;
-  if (!ParseColorSchemesJson(obj->getProperty("colorSchemes").getDynamicObject(), result.defaultColorScheme, result.colorSchemes))
+  if (!ParseColorSchemesJson(obj->getProperty("colorSchemes").getDynamicObject(), result.global.defaultColorScheme, result.global.colorSchemes))
     return false;
 
   if (!RequireArrayProperty(obj, "moduleColors"))
@@ -635,13 +627,13 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
       return false;
     if (!RequireStringProperty(componentColorObj, "colorScheme"))
       return false;
-    result.componentColors[componentColorObj->getProperty("componentId").toString().toStdString()].colorScheme =
+    result.global.componentColors[componentColorObj->getProperty("componentId").toString().toStdString()].colorScheme =
       componentColorObj->getProperty("colorScheme").toString().toStdString();
   }
 
-  for (auto const& kv: result.componentColors)
+  for (auto const& kv: result.global.componentColors)
   {
-    if (result.colorSchemes.find(kv.second.colorScheme) == result.colorSchemes.end())
+    if (result.global.colorSchemes.find(kv.second.colorScheme) == result.global.colorSchemes.end())
     {
       FB_LOG_ERROR("Color scheme '" + kv.second.colorScheme + "' not found.");
       return false;
@@ -651,7 +643,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
   for(int i = 0; i < result.moduleColors.size(); i++)
   {
     auto const& moduleScheme = result.moduleColors[i].colorScheme;
-    if (result.colorSchemes.find(moduleScheme) == result.colorSchemes.end())
+    if (result.global.colorSchemes.find(moduleScheme) == result.global.colorSchemes.end())
     {
       FB_LOG_ERROR("Color scheme '" + moduleScheme + "' not found.");
       return false;
@@ -659,7 +651,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     for(int j = 0; j < result.moduleColors[i].guiParamColorSchemes.size(); j++)
     {
       auto const& paramScheme = result.moduleColors[i].guiParamColorSchemes[j].colorScheme;
-      if (result.colorSchemes.find(paramScheme) == result.colorSchemes.end())
+      if (result.global.colorSchemes.find(paramScheme) == result.global.colorSchemes.end())
       {
         FB_LOG_ERROR("Color scheme '" + paramScheme + "' not found.");
         return false;
@@ -668,7 +660,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     for (int j = 0; j < result.moduleColors[i].audioParamColorSchemes.size(); j++)
     {
       auto const& paramScheme = result.moduleColors[i].audioParamColorSchemes[j].colorScheme;
-      if (result.colorSchemes.find(paramScheme) == result.colorSchemes.end())
+      if (result.global.colorSchemes.find(paramScheme) == result.global.colorSchemes.end())
       {
         FB_LOG_ERROR("Color scheme '" + paramScheme + "' not found.");
         return false;
@@ -711,14 +703,14 @@ LoadThemeJsons()
           {
             bool foundName = false;
             for (int j = 0; j < result.size(); j++)
-              if (result[j].name == themeJson.name)
+              if (result[j].global.name == themeJson.global.name)
               {
                 foundName = true;
                 break;
               }
             if (!foundName)
             {
-              themeJson.folderName = file.getParentDirectory().getFileName().toStdString();
+              themeJson.global.folderName = file.getParentDirectory().getFileName().toStdString();
               result.push_back(themeJson);
             }
           }
@@ -811,28 +803,19 @@ MakeTheme(
   FBTheme& theme)
 {
   theme = {};  
-  theme.name = themeJson.name;
-  theme.fontSize = themeJson.fontSize;
-  theme.folderName = themeJson.folderName;
-  theme.fontFileName = themeJson.fontFileName;
-  for (auto const& kv : themeJson.colorSchemes)
-    theme.colorSchemes[kv.first] = FBColorScheme(kv.second);
-  theme.componentColors = themeJson.componentColors;
-  theme.graphSchemeFollowsModule = themeJson.graphSchemeFollowsModule;
-  theme.unisonSchemeFollowsModule = themeJson.unisonSchemeFollowsModule;
-  theme.defaultColorScheme = FBColorScheme(themeJson.defaultColorScheme);  
+  theme.global = FBThemeGlobal(themeJson.global);
 
   auto fontFile = File((
     FBGetThemesFolderPath() / 
-    std::filesystem::path(theme.folderName) / 
-    std::filesystem::path(theme.fontFileName)).string());
+    std::filesystem::path(theme.global.folderName) / 
+    std::filesystem::path(theme.global.fontFileName)).string());
   if(!fontFile.existsAsFile())
   {
     FB_LOG_ERROR("Cannot find font file '" + fontFile.getFullPathName().toStdString() + "'.");
     return false;
   }
 
-  for (auto const& kv : theme.componentColors)
+  for (auto const& kv : theme.global.componentColors)
   {
     bool found = false;
     for (int i = 0; i < topo->static_->themedComponents.size(); i++)
@@ -893,6 +876,6 @@ FBLoadThemes(FBRuntimeTopo const* topo)
     if (MakeTheme(topo, themeJsons[i], theme))
       result.push_back(theme);
   }
-  std::sort(result.begin(), result.end(), [](auto const& l, auto const& r) { return l.name < r.name; });
+  std::sort(result.begin(), result.end(), [](auto const& l, auto const& r) { return l.global.name < r.global.name; });
   return result;
 }
