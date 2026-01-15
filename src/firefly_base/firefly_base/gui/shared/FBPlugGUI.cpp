@@ -677,7 +677,7 @@ void
 FBPlugGUI::ShowAboutBox()
 {
   auto const& meta = HostContext()->Topo()->static_->meta;
-  ShowOverlayComponent(meta.name, 0, 0, _aboutBoxGrid, 400, 200, false, []() {}); // todo
+  ShowOverlayComponent(meta.name, 0, 0, _aboutBoxGrid, 400, 200, false, []() {});
 }
 
 void
@@ -765,10 +765,11 @@ void
 FBPlugGUI::SetupAboutBoxGUI()
 {
   auto const& meta = HostContext()->Topo()->static_->meta;
-  _aboutBoxGrid = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 1, 1, 1 } }, std::vector<int> { { 1 } });
-  _aboutBoxGrid->Add(0, 0, StoreComponent<FBAutoSizeLabel>(this, "Format: " + FBPlugFormatToString(meta.format)));
-  _aboutBoxGrid->Add(1, 0, StoreComponent<FBAutoSizeLabel>(this, "Version: " + meta.version.ToString()));
+  _aboutBoxGrid = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0, 0, 0 } }, std::vector<int> { { 1 } });
+  _aboutBoxGrid->Add(0, 0, StoreComponent<FBAutoSizeLabel>(this, "Version: " + meta.version.ToString()));
+  _aboutBoxGrid->Add(1, 0, StoreComponent<FBAutoSizeLabel>(this, "Format: " + FBPlugFormatToString(meta.format)));
   _aboutBoxGrid->Add(2, 0, StoreComponent<FBAutoSizeLabel>(this, "Plugin ID: " + meta.id));
+  _aboutBoxGrid->MarkSection({ { 0, 0}, { 3, 1 } });
 }
 
 void
@@ -778,9 +779,9 @@ FBPlugGUI::SetupOverlayGUI()
   _overlayCaption = StoreComponent<FBAutoSizeLabel2>(false, 200);
   _overlayGrid->Add(0, 0, _overlayCaption);
 
-  auto overlayInit = StoreComponent<FBAutoSizeButton>(this, "Init");
-  overlayInit->onClick = [this] { _overlayInit(); };
-  auto overlayInitSection = StoreComponent<FBMarginComponent>(this, false, false, true, true, overlayInit);
+  _overlayInitButton = StoreComponent<FBAutoSizeButton>(this, "Init");
+  _overlayInitButton->onClick = [this] { _overlayInit(); };
+  auto overlayInitSection = StoreComponent<FBMarginComponent>(this, false, false, true, true, _overlayInitButton);
   _overlayGrid->Add(0, 1, overlayInitSection);
 
   auto overlayClose = StoreComponent<FBAutoSizeButton>(this, "Close");
@@ -815,15 +816,14 @@ FBPlugGUI::ShowOverlayComponent(
   std::string const& title,
   int moduleIndex, int moduleSlot,
   Component* overlay,
-  int w, int h, bool vCenter,
+  int w, int h, bool hasInit,
   std::function<void()> init)
 {
   HideAllOverlaysAndFileBrowsers();
   int x = (getWidth() - w) / 2;
   int y = (getHeight() - h) / 2;
-  if (!vCenter)
-    y = (int)((getHeight() - h) * 0.9);
   _overlayInit = init;
+  _overlayInitButton->setVisible(hasInit);
   _overlayContent->SetContent(overlay);
   _overlayOuterMargin->setBounds(x, y, w, h);
   _overlayCaption->setText(title, dontSendNotification);

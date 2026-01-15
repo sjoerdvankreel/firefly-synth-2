@@ -19,6 +19,7 @@
 #include <unordered_set>
 
 class FBParamControl;
+class FBAutoSizeButton;
 class IFBThemeListener;
 class IFBParamListener;
 class FBGUIParamControl;
@@ -76,7 +77,7 @@ public:
     std::string const& title,
     int moduleIndex, int moduleSlot,
     juce::Component* overlay,
-    int w, int h, bool vCenter,
+    int w, int h, bool hasInit,
     std::function<void()> init);
 
   void AddThemeListener(IFBThemeListener* listener);
@@ -135,6 +136,7 @@ private:
 
   juce::Label* _overlayCaption = {};
   std::function<void()> _overlayInit = {};
+  FBAutoSizeButton* _overlayInitButton = {};
   FBGridComponent* _overlayGrid = {};
   juce::Component* _overlayComponent = {};
   FBModuleComponent* _overlayModule = {};
