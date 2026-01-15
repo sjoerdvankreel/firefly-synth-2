@@ -677,7 +677,7 @@ void
 FBPlugGUI::ShowAboutBox()
 {
   auto const& meta = HostContext()->Topo()->static_->meta;
-  ShowOverlayComponent(meta.name, 0, 0, _aboutBoxGrid, 400, 200, false, []() {});
+  ShowOverlayComponent(meta.name, 0, 0, _aboutBoxGrid, 300, 120, false, []() {});
 }
 
 void
