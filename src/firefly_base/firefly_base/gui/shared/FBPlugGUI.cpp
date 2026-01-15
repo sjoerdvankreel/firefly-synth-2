@@ -764,12 +764,18 @@ FBPlugGUI::MakePresetMenu(
 void
 FBPlugGUI::SetupAboutBoxGUI()
 {
+#if FB_APPLE_AARCH64      
+  std::string archName = "ARM";
+#else
+  std::string archName = "X64";
+#endif
   auto const& meta = HostContext()->Topo()->static_->meta;
-  _aboutBoxGrid = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0, 0, 0 } }, std::vector<int> { { 1 } });
-  _aboutBoxGrid->Add(0, 0, StoreComponent<FBAutoSizeLabel>(this, "Version: " + meta.version.ToString()));
-  _aboutBoxGrid->Add(1, 0, StoreComponent<FBAutoSizeLabel>(this, "Format: " + FBPlugFormatToString(meta.format)));
-  _aboutBoxGrid->Add(2, 0, StoreComponent<FBAutoSizeLabel>(this, "Plugin ID: " + meta.id));
-  _aboutBoxGrid->MarkSection({ { 0, 0}, { 3, 1 } });
+  _aboutBoxGrid = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0, 0, 0, 0 } }, std::vector<int> { { 1 } });
+  _aboutBoxGrid->Add(0, 0, StoreComponent<FBAutoSizeLabel>(this, "Arch: " + archName));
+  _aboutBoxGrid->Add(1, 0, StoreComponent<FBAutoSizeLabel>(this, "Version: " + meta.version.ToString()));
+  _aboutBoxGrid->Add(2, 0, StoreComponent<FBAutoSizeLabel>(this, "Format: " + FBPlugFormatToString(meta.format)));
+  _aboutBoxGrid->Add(3, 0, StoreComponent<FBAutoSizeLabel>(this, "Plugin ID: " + meta.id));
+  _aboutBoxGrid->MarkSection({ { 0, 0}, { 4, 1 } });
 }
 
 void
