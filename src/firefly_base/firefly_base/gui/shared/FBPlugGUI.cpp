@@ -67,6 +67,7 @@ _lookAndFeel(std::make_unique<FBLookAndFeel>())
   addAndMakeVisible(_tooltipWindow);
   addMouseListener(this, true);
   SetupOverlayGUI();
+  SetupAboutBoxGUI();
 }
 
 FBTheme const& 
@@ -558,21 +559,23 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
 
   auto& undoState = HostContext()->UndoState();
   PopupMenu menu;
-  menu.addItem(1, "Show Manual");
-  menu.addItem(2, "Dump Topology");
-  menu.addItem(3, "Dump Param List");
+  menu.addItem(1, "About");
+  menu.addItem(2, "Show Manual");
   menu.addSeparator();
-  menu.addItem(4, "Show Log Folder");
-  menu.addItem(5, "Show Plugin Folder");
+  menu.addItem(3, "Dump Topology");
+  menu.addItem(4, "Dump Param List");
   menu.addSeparator();
-  menu.addItem(6, "Copy Patch");
-  menu.addItem(7, "Paste Patch");
+  menu.addItem(5, "Show Log Folder");
+  menu.addItem(6, "Show Plugin Folder");
+  menu.addSeparator();
+  menu.addItem(7, "Copy Patch");
+  menu.addItem(8, "Paste Patch");
   if (undoState.CanUndo() || undoState.CanRedo())
     menu.addSeparator();
   if (undoState.CanUndo())
-    menu.addItem(8, "Undo " + undoState.UndoAction());
+    menu.addItem(9, "Undo " + undoState.UndoAction());
   if (undoState.CanRedo())
-    menu.addItem(9, "Redo " + undoState.RedoAction());
+    menu.addItem(10, "Redo " + undoState.RedoAction());
 
   PopupMenu::Options options;
   auto lnf = FBGetLookAndFeelFor(this);
@@ -580,19 +583,20 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   options = options.withParentComponent(this);
   options = options.withStandardItemHeight(lnf->GetStandardPopupMenuItemHeight());
   menu.showMenuAsync(options, [this](int id) {
-    if (id == 1) HostContext()->ShowOnlineManual();
-    if (id == 2) DumpTopologyToFile();
-    if (id == 3) DumpParamListToFile();
-    if (id == 4) ShowLogFolder();
-    if (id == 5) ShowPluginFolder();
-    if (id == 8) HostContext()->UndoState().Undo();
-    if (id == 9) HostContext()->UndoState().Redo();
-    if (id == 6) {
+    if (id == 1) ShowAboutBox();
+    if (id == 2) HostContext()->ShowOnlineManual();
+    if (id == 3) DumpTopologyToFile();
+    if (id == 4) DumpParamListToFile();
+    if (id == 5) ShowLogFolder();
+    if (id == 6) ShowPluginFolder();
+    if (id == 9) HostContext()->UndoState().Undo();
+    if (id == 10) HostContext()->UndoState().Redo();
+    if (id == 7) {
       FBScalarStateContainer editState(*HostContext()->Topo());
       editState.CopyFrom(HostContext(), true);
       SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveEditStateToString(editState, true));
     }
-    if (id == 7) {
+    if (id == 8) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
         AlertWindow::showMessageBoxAsync(
           MessageBoxIconType::NoIcon,
@@ -668,6 +672,13 @@ FBPlugGUI::ShowPluginFolder()
 {
   auto path = FBGetPluginContentsFolderPath();
   File(path.string()).revealToUser();
+}
+
+void
+FBPlugGUI::ShowAboutBox()
+{
+  auto const& meta = HostContext()->Topo()->static_->meta;
+  ShowOverlayComponent(meta.name, 0, 0, _aboutBoxGrid, 400, 200, false, []() {}); // todo
 }
 
 void
@@ -749,6 +760,16 @@ FBPlugGUI::MakePresetMenu(
   for (int i = 0; i < folder->folders.size(); i++)
     result.addSubMenu(folder->folders[i]->name, MakePresetMenu(folder->folders[i]));
   return result;
+}
+
+void
+FBPlugGUI::SetupAboutBoxGUI()
+{
+  auto const& meta = HostContext()->Topo()->static_->meta;
+  _aboutBoxGrid = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 1, 1, 1 } }, std::vector<int> { { 1 } });
+  _aboutBoxGrid->Add(0, 0, StoreComponent<FBAutoSizeLabel>(this, "Format: " + FBPlugFormatToString(meta.format)));
+  _aboutBoxGrid->Add(1, 0, StoreComponent<FBAutoSizeLabel>(this, "Version: " + meta.version.ToString()));
+  _aboutBoxGrid->Add(2, 0, StoreComponent<FBAutoSizeLabel>(this, "Plugin ID: " + meta.id));
 }
 
 void

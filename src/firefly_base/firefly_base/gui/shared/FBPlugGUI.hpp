@@ -151,6 +151,7 @@ private:
   std::unique_ptr<FBFileBrowserComponent> _saveTopologyBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _saveParamListBrowser = {};
 
+  FBGridComponent* _aboutBoxGrid = {};
   juce::TooltipWindow* _tooltipWindow = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
   std::unordered_map<int, int> _guiParamIndexToComponent = {};
@@ -161,12 +162,14 @@ private:
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsVisibleDependents = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsEnabledDependents = {};
 
+  void ShowAboutBox();
   void ShowLogFolder();
   void ShowPluginFolder();
   void DumpTopologyToFile();
   void DumpParamListToFile();
 
   void SetupOverlayGUI();
+  void SetupAboutBoxGUI();
   void GUIParamNormalizedChanged(int index);
   void AudioParamNormalizedChanged(int index);
 
