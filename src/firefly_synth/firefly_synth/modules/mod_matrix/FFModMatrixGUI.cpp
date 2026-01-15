@@ -63,7 +63,7 @@ FFModMatrixParamListener::AudioParamChanged(
       int sourceVal = _plugGUI->HostContext()->GetAudioParamList<int>(sourceIndices);
       auto const& moduleIndices = sources[sourceVal].indices.module;
       if (moduleIndices.index != -1)
-        ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
+        ffGUI.SwitchGraphsToModule(moduleIndices.index, moduleIndices.slot);
     }
 
     if (indices.param.index == (int)FFModMatrixParam::Scale ||
@@ -75,7 +75,7 @@ FFModMatrixParamListener::AudioParamChanged(
       int scaleVal = _plugGUI->HostContext()->GetAudioParamList<int>(scaleIndices);
       auto const& moduleIndices = sources[scaleVal].indices.module;
       if (moduleIndices.index != -1)
-        ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
+        ffGUI.SwitchGraphsToModule(moduleIndices.index, moduleIndices.slot);
     }
 
     if (indices.param.index == (int)FFModMatrixParam::Target ||
@@ -86,7 +86,7 @@ FFModMatrixParamListener::AudioParamChanged(
       int targetVal = _plugGUI->HostContext()->GetAudioParamList<int>(targetIndices);
       auto const& moduleIndices = targets[targetVal].module;
       if (moduleIndices.index != -1)
-        ffGUI.SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
+        ffGUI.SwitchGraphsToModule(moduleIndices.index, moduleIndices.slot);
     }
   }
 
@@ -331,7 +331,7 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
       auto const& sources = global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
       auto const& moduleIndices = sources[itemResultId - 1].indices.module;
       if (moduleIndices.index != -1)
-        plugGUI->SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
+        plugGUI->SwitchGraphsToModule(moduleIndices.index, moduleIndices.slot);
     } };
 
   auto source = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Source, slot } });
@@ -363,7 +363,7 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
       auto const& targets = global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
       auto const& moduleIndices = targets[itemResultId - 1].module;
       if (moduleIndices.index != -1)
-        plugGUI->SwitchMainGraphToModule(moduleIndices.index, moduleIndices.slot);
+        plugGUI->SwitchGraphsToModule(moduleIndices.index, moduleIndices.slot);
     } };
   grid->Add(r, 12, targetCombo);
   auto targetAmt = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::TargetAmt, slot } });

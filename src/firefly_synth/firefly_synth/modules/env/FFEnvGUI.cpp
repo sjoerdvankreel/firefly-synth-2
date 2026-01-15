@@ -132,7 +132,7 @@ MSEGModelUpdated(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel const& model)
     context->PerformImmediateAudioParamEdit({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } }, lengthBarsNorm);
   }
 
-  dynamic_cast<FFPlugGUI&>(*plugGUI).SwitchMainGraphToModule((int)FFModuleType::Env, moduleSlot);
+  dynamic_cast<FFPlugGUI&>(*plugGUI).SwitchGraphsToModule((int)FFModuleType::Env, moduleSlot);
 }
 
 static Component*

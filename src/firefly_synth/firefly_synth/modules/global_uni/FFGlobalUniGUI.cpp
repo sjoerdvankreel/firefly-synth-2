@@ -62,7 +62,7 @@ FFGlobalUniParamListener::AudioParamChanged(
   if (target == -1)
     return;
   FFModuleType targetModule = FFGlobalUniTargetToModule((FFGlobalUniTarget)target);
-  dynamic_cast<FFPlugGUI&>(*_plugGUI).SwitchMainGraphToModule((int)targetModule, 0);
+  dynamic_cast<FFPlugGUI&>(*_plugGUI).SwitchGraphsToModule((int)targetModule, 0);
 }
 
 static void

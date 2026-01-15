@@ -49,7 +49,7 @@ public FBPlugGUI
   FBGridComponent* _outputOtherAndPatch = {};
   FBGridComponent* _guiSettingsAndTweak = {};
 
-  FBModuleGraphComponent* _mainGraph = {};
+  FBModuleGraphComponent* _detailsGraph = {};
   std::vector<FBMSEGEditor*> _msegEditors = {};
   std::vector<FBModuleGraphComponent*> _fixedGraphs = {};
   std::unique_ptr<FFEnvParamListener> _envParamListener = {};
@@ -84,8 +84,8 @@ public:
   FFPlugGUI(FBHostGUIContext* hostContext);
 
   void FlushAudio();
+  void SwitchGraphsToModule(int index, int slot);
   void RequestFixedGraphsRerender(int moduleIndex);
-  void SwitchMainGraphToModule(int index, int slot);
 
   void resized() override;
   void OnPatchLoaded() override;
