@@ -3,6 +3,16 @@
 using namespace juce;
 
 void
+FBStackingComponent::resized()
+{
+  for (int i = 0; i < getNumChildComponents(); i++)
+  {
+    getChildComponent(i)->setBounds(getLocalBounds());
+    getChildComponent(i)->resized();
+  }
+}
+
+void
 FBContentComponent::resized()
 {
   auto child = getChildComponent(0);

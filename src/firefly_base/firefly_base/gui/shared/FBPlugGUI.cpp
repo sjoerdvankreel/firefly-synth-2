@@ -677,7 +677,7 @@ void
 FBPlugGUI::ShowAboutBox()
 {
   auto const& meta = HostContext()->Topo()->static_->meta;
-  ShowOverlayComponent(meta.name, 0, 0, _aboutBoxGrid, 300, 120, false, []() {});
+  ShowOverlayComponent(meta.name, 0, 0, _aboutBoxStack, 300, 120, false, []() {});
 }
 
 void
@@ -770,12 +770,14 @@ FBPlugGUI::SetupAboutBoxGUI()
   std::string archName = "X64";
 #endif
   auto const& meta = HostContext()->Topo()->static_->meta;
+  _aboutBoxStack = StoreComponent<FBStackingComponent>();
   _aboutBoxGrid = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0, 0, 0, 0 } }, std::vector<int> { { 1 } });
   _aboutBoxGrid->Add(0, 0, StoreComponent<FBAutoSizeLabel>(this, "Arch: " + archName));
   _aboutBoxGrid->Add(1, 0, StoreComponent<FBAutoSizeLabel>(this, "Version: " + meta.version.ToString()));
   _aboutBoxGrid->Add(2, 0, StoreComponent<FBAutoSizeLabel>(this, "Format: " + FBPlugFormatToString(meta.format)));
   _aboutBoxGrid->Add(3, 0, StoreComponent<FBAutoSizeLabel>(this, "Plugin ID: " + meta.id));
   _aboutBoxGrid->MarkSection({ { 0, 0}, { 4, 1 } });
+  _aboutBoxStack->addAndMakeVisible(_aboutBoxGrid);
 }
 
 void
