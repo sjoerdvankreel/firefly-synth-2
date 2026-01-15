@@ -154,7 +154,7 @@ EffectGraphRenderData<Global>::DoProcess(
 
 template <bool Global>
 void
-FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
+FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool)
 {
   EffectGraphRenderData<Global> renderData = {};
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
@@ -203,5 +203,5 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   }
 }
 
-template void FFEffectRenderGraph<true>(FBModuleGraphComponentData* graphData);
-template void FFEffectRenderGraph<false>(FBModuleGraphComponentData* graphData);
+template void FFEffectRenderGraph<true>(FBModuleGraphComponentData*, bool);
+template void FFEffectRenderGraph<false>(FBModuleGraphComponentData*, bool);

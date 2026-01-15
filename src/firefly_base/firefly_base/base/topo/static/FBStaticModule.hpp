@@ -19,7 +19,7 @@ FBGlobalModuleExchangeAddrSelector;
 typedef std::function<FBModuleProcExchangeStateBase* (
   int voice, int moduleSlot, void* state)>
 FBVoiceModuleExchangeAddrSelector;
-typedef std::function<void(FBModuleGraphComponentData* graphData)>
+typedef std::function<void(FBModuleGraphComponentData* graphData, bool detailGraphs)>
 FBModuleGraphRenderer;
 
 struct FBStaticModule final

@@ -21,6 +21,8 @@ class FBModuleGraphComponent final:
 public juce::Component
 {
   FBPlugGUI* const _plugGUI;
+  bool const _detailGraphs;
+
   int _tweakedModuleByUI = -1;
   std::unique_ptr<FBGridComponent> _grid = {};
   std::unique_ptr<FBMarginComponent> _margin = {};
@@ -49,6 +51,7 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBModuleGraphComponent);
   FBModuleGraphComponent(
     FBPlugGUI* plugGUI,
+    bool detailGraphs,
     FBGraphRenderState* renderState, 
     int fixedToRuntimeModuleIndex, 
     int fixedToGraphIndex, 

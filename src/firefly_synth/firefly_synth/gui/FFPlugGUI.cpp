@@ -282,7 +282,7 @@ FFPlugGUI::SetupGUI()
 {
   FB_LOG_ENTRY_EXIT();
 
-  _mainGraph = StoreComponent<FBModuleGraphComponent>(this, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
+  _mainGraph = StoreComponent<FBModuleGraphComponent>(this, true, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
   _headerAndGraph = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
   _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
   _headerAndGraph->Add(0, 1, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::Graphs, _mainGraph));

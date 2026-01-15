@@ -123,7 +123,7 @@ PlotParams(FBModuleGraphComponentData const* data, int /*graphIndex*/)
 }
 
 void
-FFOsciRenderGraph(FBModuleGraphComponentData* graphData)
+FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool)
 {
   OsciGraphRenderData renderData = {};
   graphData->skipDrawOnEqualsPrimary = false; // midi note dependent

@@ -139,7 +139,7 @@ EchoGraphRenderData<Global>::DoProcess(
 
 template <bool Global>
 void
-FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
+FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool)
 {
   EchoGraphRenderData<Global> renderData = {};
   graphData->skipDrawOnEqualsPrimary = true;
@@ -206,5 +206,5 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
 
 template struct EchoGraphRenderData<true>;
 template struct EchoGraphRenderData<false>;
-template void FFEchoRenderGraph<true>(FBModuleGraphComponentData*);
-template void FFEchoRenderGraph<false>(FBModuleGraphComponentData*);
+template void FFEchoRenderGraph<true>(FBModuleGraphComponentData*, bool);
+template void FFEchoRenderGraph<false>(FBModuleGraphComponentData*, bool);

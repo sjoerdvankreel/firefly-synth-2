@@ -113,7 +113,7 @@ LFOGraphRenderData<Global>::DoProcess(
 
 template <bool Global>
 void
-FFLFORenderGraph(FBModuleGraphComponentData* graphData)
+FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool)
 {
   LFOGraphRenderData<Global> renderData = {};
   auto moduleType = Global ? FFModuleType::GLFO : FFModuleType::VLFO;
@@ -161,5 +161,5 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   }
 }
 
-template void FFLFORenderGraph<true>(FBModuleGraphComponentData* graphData);
-template void FFLFORenderGraph<false>(FBModuleGraphComponentData* graphData);
+template void FFLFORenderGraph<true>(FBModuleGraphComponentData*, bool);
+template void FFLFORenderGraph<false>(FBModuleGraphComponentData*, bool);

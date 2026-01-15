@@ -182,7 +182,7 @@ EnvGraphRenderData::DoProcessIndicators(
 }
 
 void
-FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
+FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool)
 {
   EnvGraphRenderData renderData = {};
   renderData.graphData = graphData;

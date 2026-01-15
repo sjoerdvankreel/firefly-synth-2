@@ -18,12 +18,14 @@ FBModuleGraphComponent::
 FBModuleGraphComponent::
 FBModuleGraphComponent(
   FBPlugGUI* plugGUI,
+  bool detailGraphs,
   FBGraphRenderState* renderState,
   int fixedToRuntimeModuleIndex,
   int fixedToGraphIndex,
   std::function<FBGUIRenderType()> getCurrentRenderType) :
 Component(),
 _plugGUI(plugGUI),
+_detailGraphs(detailGraphs),
 _getCurrentRenderType(getCurrentRenderType),
 _fixedToRuntimeModuleIndex(fixedToRuntimeModuleIndex),
 _fixedToGraphIndex(fixedToGraphIndex),
@@ -129,5 +131,5 @@ FBModuleGraphComponent::paint(Graphics& /*g*/)
   _data->graphs.clear();
   _data->graphs.resize(topo->static_->modules[staticIndex].graphCount);
   _data->pixelWidth = getWidth() / static_cast<int>(_data->graphs.size());
-  topo->static_->modules[staticIndex].graphRenderer(_data.get());
+  topo->static_->modules[staticIndex].graphRenderer(_data.get(), _detailGraphs);
 }

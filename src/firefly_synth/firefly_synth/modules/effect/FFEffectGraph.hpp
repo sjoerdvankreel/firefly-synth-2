@@ -4,4 +4,4 @@ struct FBModuleGraphComponentData;
 
 template <bool Global>
 void
-FFEffectRenderGraph(FBModuleGraphComponentData* graphData);
+FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs);

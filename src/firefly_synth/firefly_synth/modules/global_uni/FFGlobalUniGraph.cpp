@@ -108,7 +108,7 @@ GlobalUniGraphRenderData::DoPostProcess(
 }
 
 void
-FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData)
+FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData, bool)
 {
   GlobalUniGraphRenderData renderData = {};
   graphData->pointIndicatorSize = 4;

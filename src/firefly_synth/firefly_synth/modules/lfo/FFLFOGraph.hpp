@@ -4,4 +4,4 @@ struct FBModuleGraphComponentData;
 
 template <bool Global>
 void
-FFLFORenderGraph(FBModuleGraphComponentData* graphData);
+FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs);
