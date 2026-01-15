@@ -129,7 +129,7 @@ FBModuleGraphComponent::paint(Graphics& /*g*/)
   _data->guiRenderType = _getCurrentRenderType();
 
   _data->graphs.clear();
-  _data->graphs.resize(topo->static_->modules[staticIndex].detailGraphCount);
+  _data->graphs.resize(_detailGraphs? topo->static_->modules[staticIndex].detailGraphCount: 1);
   _data->pixelWidth = getWidth() / static_cast<int>(_data->graphs.size());
   topo->static_->modules[staticIndex].graphRenderer(_data.get(), _detailGraphs);
 }

@@ -182,7 +182,7 @@ EnvGraphRenderData::DoProcessIndicators(
 }
 
 void
-FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool)
+FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
 {
   EnvGraphRenderData renderData = {};
   renderData.graphData = graphData;
@@ -193,19 +193,21 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool)
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].env[slot]; };
   renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, int /*graphIndex*/) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].env[slot].output; };
-  
+
+  int graphCount = detailGraphs ? FFEnvCount : 1;
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
-  for (int o = 0; o < FFEnvCount; o++)
+  for (int i = 0; i < graphCount; i++)
   {
-    graphData->renderState->ModuleProcState()->moduleSlot = o;
-    FBRenderModuleGraph<false, false>(renderData, o);
-    FBTopoIndices modIndices = { (int)FFModuleType::Env, o };
+    int graphModuleSlot = detailGraphs ? i : moduleSlot;
+    graphData->renderState->ModuleProcState()->moduleSlot = graphModuleSlot;
+    FBRenderModuleGraph<false, false>(renderData, i);
+    FBTopoIndices modIndices = { (int)FFModuleType::Env, graphModuleSlot };
     FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFEnvParam::Type, 0 } };
-    graphData->graphs[o].title = FBAsciiToUpper(graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name);
+    graphData->graphs[i].title = FBAsciiToUpper(graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name);
     auto envType = graphData->renderState->AudioParamList<FFEnvType>(paramIndices, false, -1);
-    graphData->graphs[o].subtext = FBAsciiToUpper(FFEnvTypeToString(envType));
-    graphData->graphs[o].moduleSlot = o;
-    graphData->graphs[o].moduleIndex = (int)FFModuleType::Env;
+    graphData->graphs[i].subtext = FBAsciiToUpper(FFEnvTypeToString(envType));
+    graphData->graphs[i].moduleSlot = graphModuleSlot;
+    graphData->graphs[i].moduleIndex = (int)FFModuleType::Env;
   }
   graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;
 }
