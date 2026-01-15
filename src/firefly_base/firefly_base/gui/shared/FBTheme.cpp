@@ -594,6 +594,10 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     return false;
   result.global.fontFileName = obj->getProperty("fontFileName").toString().toStdString();
 
+  if (!RequireStringProperty(obj, "aboutBoxImageFileName"))
+    return false;
+  result.global.aboutBoxImageFileName = obj->getProperty("aboutBoxImageFileName").toString().toStdString();
+
   if (!RequireBoolProperty(obj, "graphSchemeFollowsModule"))
     return false;
   result.global.graphSchemeFollowsModule = (bool)obj->getProperty("graphSchemeFollowsModule");
@@ -812,6 +816,16 @@ MakeTheme(
   if(!fontFile.existsAsFile())
   {
     FB_LOG_ERROR("Cannot find font file '" + fontFile.getFullPathName().toStdString() + "'.");
+    return false;
+  }
+
+  auto aboutBoxImageFile = File((
+    FBGetThemesFolderPath() /
+    std::filesystem::path(theme.global.folderName) /
+    std::filesystem::path(theme.global.aboutBoxImageFileName)).string());
+  if (!aboutBoxImageFile.existsAsFile())
+  {
+    FB_LOG_ERROR("Cannot find image file '" + aboutBoxImageFile.getFullPathName().toStdString() + "'.");
     return false;
   }
 

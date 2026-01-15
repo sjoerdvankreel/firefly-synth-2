@@ -63,6 +63,7 @@ struct FBThemeGlobal
   std::string name = {};
   std::string folderName = {};
   std::string fontFileName = {};
+  std::string aboutBoxImageFileName = {};
   bool graphSchemeFollowsModule = {}; // todo lose this?
   bool unisonSchemeFollowsModule = {};
   FBColorScheme defaultColorScheme = {};
