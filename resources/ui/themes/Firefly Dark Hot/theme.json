@@ -2,6 +2,7 @@
   "name": "Firefly Dark Hot",
   "fontSize": 13,
   "fontFileName": "Satoshi-Bold.ttf",
+  "aboutBoxImageFileName": "about.png",
   "graphSchemeFollowsModule": false,
   "unisonSchemeFollowsModule": false,
   "defaultColorScheme_comment": "Fallback scheme, any other scheme can override individual settings.",
