@@ -12,6 +12,7 @@
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBImageComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBContentComponent.hpp>
@@ -769,15 +770,18 @@ FBPlugGUI::SetupAboutBoxGUI()
 #else
   std::string archName = "X64";
 #endif
+  auto lnf = &dynamic_cast<FBLookAndFeel&>(LookAndFeel::getDefaultLookAndFeel());
   auto const& meta = HostContext()->Topo()->static_->meta;
   _aboutBoxStack = StoreComponent<FBStackingComponent>();
-  _aboutBoxGrid = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0, 0, 0, 0 } }, std::vector<int> { { 1 } });
-  _aboutBoxGrid->Add(0, 0, StoreComponent<FBAutoSizeLabel>(this, "Arch: " + archName));
-  _aboutBoxGrid->Add(1, 0, StoreComponent<FBAutoSizeLabel>(this, "Version: " + meta.version.ToString()));
-  _aboutBoxGrid->Add(2, 0, StoreComponent<FBAutoSizeLabel>(this, "Format: " + FBPlugFormatToString(meta.format)));
-  _aboutBoxGrid->Add(3, 0, StoreComponent<FBAutoSizeLabel>(this, "Plugin ID: " + meta.id));
-  _aboutBoxGrid->MarkSection({ { 0, 0}, { 4, 1 } });
-  _aboutBoxStack->addAndMakeVisible(_aboutBoxGrid);
+  auto image = StoreComponent<FBImageComponent>(this, 200, lnf->Theme().global.aboutBoxImageFileName, RectanglePlacement::Flags::centred);
+  auto grid = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0, 0, 0, 0 } }, std::vector<int> { { 1 } });
+  grid->Add(0, 0, StoreComponent<FBAutoSizeLabel>(this, "Arch: " + archName));
+  grid->Add(1, 0, StoreComponent<FBAutoSizeLabel>(this, "Version: " + meta.version.ToString()));
+  grid->Add(2, 0, StoreComponent<FBAutoSizeLabel>(this, "Format: " + FBPlugFormatToString(meta.format)));
+  grid->Add(3, 0, StoreComponent<FBAutoSizeLabel>(this, "Plugin ID: " + meta.id));
+  // todo grid->MarkSection({ { 0, 0}, { 4, 1 } });
+  _aboutBoxStack->addAndMakeVisible(image, 0);
+  //_aboutBoxStack->addAndMakeVisible(grid, 1);
 }
 
 void

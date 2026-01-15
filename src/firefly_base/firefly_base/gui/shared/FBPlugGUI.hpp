@@ -154,7 +154,6 @@ private:
   std::unique_ptr<FBFileBrowserComponent> _saveTopologyBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _saveParamListBrowser = {};
 
-  FBGridComponent* _aboutBoxGrid = {};
   FBStackingComponent* _aboutBoxStack = {};
   juce::TooltipWindow* _tooltipWindow = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
