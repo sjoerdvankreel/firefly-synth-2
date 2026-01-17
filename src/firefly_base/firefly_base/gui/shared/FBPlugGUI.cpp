@@ -780,7 +780,7 @@ FBPlugGUI::SetupAboutBoxGUI()
   grid->Add(3, 0, StoreComponent<FBAutoSizeLabel>(this, "Plugin ID: " + meta.id));
   // todo grid->MarkSection({ { 0, 0}, { 4, 1 } });
   _aboutBoxStack->addAndMakeVisible(image, 0);
-  //_aboutBoxStack->addAndMakeVisible(grid, 1);
+  _aboutBoxStack->addAndMakeVisible(grid, 1);
 }
 
 void
