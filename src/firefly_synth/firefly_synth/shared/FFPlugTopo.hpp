@@ -35,7 +35,8 @@ inline constexpr char FFPlugOnlineManualLocation[] = "https://github.com/sjoerdv
 
 enum class FFThemedComponentId {
   Patch,
-  Graphs,
+  MainGraphs,
+  DetailGraphs,
   LastTweaked,
   GlobalUniTop,
   MainSelector,

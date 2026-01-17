@@ -67,8 +67,13 @@
       "colorScheme": "Red"
     },
     {
-      "comment": "Graphs when not graphSchemeFollowsModule",
+      "comment": "Main Graphs when not graphSchemeFollowsModule",
       "componentId": "8DFD2F0E-A796-4570-B319-DCE1F0931DC9",
+      "colorScheme": "Red"
+    },
+    {
+      "comment": "Detail Graphs when not graphSchemeFollowsModule",
+      "componentId": "40286909-D60C-4BB8-B48B-12DAE59883CC",
       "colorScheme": "Orange"
     },
     {

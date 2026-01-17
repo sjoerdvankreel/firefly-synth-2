@@ -70,8 +70,10 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
  
   result->themedComponents[(int)FFThemedComponentId::Patch].name = "Patch";
   result->themedComponents[(int)FFThemedComponentId::Patch].id = "{878D9B5E-D11E-485D-8B57-5CAC8C8B612A}";
-  result->themedComponents[(int)FFThemedComponentId::Graphs].name = "Graphs";
-  result->themedComponents[(int)FFThemedComponentId::Graphs].id = "{8DFD2F0E-A796-4570-B319-DCE1F0931DC9}";
+  result->themedComponents[(int)FFThemedComponentId::MainGraphs].name = "Main Graphs";
+  result->themedComponents[(int)FFThemedComponentId::MainGraphs].id = "{8DFD2F0E-A796-4570-B319-DCE1F0931DC9}";
+  result->themedComponents[(int)FFThemedComponentId::DetailGraphs].name = "Detail Graphs";
+  result->themedComponents[(int)FFThemedComponentId::DetailGraphs].id = "{40286909-D60C-4BB8-B48B-12DAE59883CC}";
   result->themedComponents[(int)FFThemedComponentId::LastTweaked].name = "Last Tweaked";
   result->themedComponents[(int)FFThemedComponentId::LastTweaked].id = "{12937840-F39D-4041-986F-911005EC6C58}";
   result->themedComponents[(int)FFThemedComponentId::GlobalUniTop].name = "Unison Top";
