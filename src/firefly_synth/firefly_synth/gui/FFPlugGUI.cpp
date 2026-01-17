@@ -1,7 +1,6 @@
 #include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/gui/FFPatchGUI.hpp>
 #include <firefly_synth/gui/FFTweakGUI.hpp>
-#include <firefly_synth/gui/FFHeaderGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/lfo/FFLFOGUI.hpp>
@@ -299,10 +298,9 @@ FFPlugGUI::SetupGUI()
 
   _detailsGraph = StoreComponent<FBModuleGraphComponent>(this, true, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
   _envMainGraph = StoreComponent<FBModuleGraphComponent>(this, false, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
-  _headerAndGraph = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { { 2, 1 } }, std::vector<int> { { 0, 1 } });
-  _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
-  _headerAndGraph->Add(0, 1, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::Graphs, _envMainGraph));
-  _headerAndGraph->Add(1, 0, 1, 2, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::Graphs, _detailsGraph));
+  _mainAndDetailGraphs = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { { 2, 1 } }, std::vector<int> { { 1 } });
+  _mainAndDetailGraphs->Add(0, 0, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::Graphs, _envMainGraph)); // todo split main/detail
+  _mainAndDetailGraphs->Add(1, 0, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::Graphs, _detailsGraph));
 
   _outputOtherAndPatch = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
   _outputOtherAndPatch->Add(0, 0, FFMakeOutputGUI(this));
