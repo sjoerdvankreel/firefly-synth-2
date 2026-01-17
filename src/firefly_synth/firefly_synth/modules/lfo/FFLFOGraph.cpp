@@ -113,7 +113,7 @@ LFOGraphRenderData<Global>::DoProcess(
 
 template <bool Global>
 void
-FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool)
+FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
 {
   LFOGraphRenderData<Global> renderData = {};
   auto moduleType = Global ? FFModuleType::GLFO : FFModuleType::VLFO;
@@ -139,24 +139,27 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool)
   FBParamTopoIndices paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Type, 0 } };
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
   auto type = renderState->AudioParamList<FFLFOType>(paramIndices, false, -1);
-  for (int i = 0; i <= FFLFOBlockCount; i++)
+
+  int offset = detailGraphs ? 0 : FFLFOBlockCount;
+  int graphCount = detailGraphs ? FFLFOBlockCount : 1;
+  for (int i = 0; i < graphCount; i++)
   {
-    FBRenderModuleGraph<Global, false>(renderData, i);
+    FBRenderModuleGraph<Global, false>(renderData, i + offset);
     graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)moduleType;
     graphData->graphs[i].bipolar = false;
     graphData->graphs[i].drawClipBoundaries = false;
-    if (i == FFLFOBlockCount)
-    {
-      graphData->graphs[i].title = moduleName;
-      graphData->graphs[i].subtext = FBAsciiToUpper(FFLFOTypeToString(type, Global));
-    }
-    else
+    if (detailGraphs)
     {
       FBParamTopoIndices opTypeIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };
       auto opType = renderState->AudioParamList<FFModulationOpType>(opTypeIndices, false, -1);
       graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
       graphData->graphs[i].subtext = FBAsciiToUpper(FFModulationOpTypeToString(opType));
+    }
+    else
+    {
+      graphData->graphs[i].title = moduleName;
+      graphData->graphs[i].subtext = FBAsciiToUpper(FFLFOTypeToString(type, Global));
     }
   }
 }
