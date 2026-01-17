@@ -12,6 +12,7 @@
 
 using namespace juce;
   
+// TODO drop this and repurpose FFThemedComponentId
 Component*     
 FFMakeHeaderGUI(FFPlugGUI* plugGUI)
 {
@@ -27,7 +28,7 @@ FFMakeHeaderGUI(FFPlugGUI* plugGUI)
   std::string archName = "X64";
 #endif
   grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, formatName + " " + archName + " " + FF_PLUG_VERSION));
-  grid->Add(0, 1, 2, 1, plugGUI->StoreComponent<FBImageComponent>(plugGUI, 56, "header.png", RectanglePlacement::Flags::centred));
+  grid->Add(0, 1, 2, 1, plugGUI->StoreComponent<FBImageComponent>(plugGUI, FBThemeResourceId::AboutBoxImageFileName, 56, RectanglePlacement::Flags::centred));
   grid->Add(0, 2, plugGUI->StoreComponent<FBFillerComponent>(2, 1));
   grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::BackgroundAndBorder, 5.0f, 2);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);

@@ -592,11 +592,11 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
 
   if (!RequireStringProperty(obj, "fontFileName"))
     return false;
-  result.global.fontFileName = obj->getProperty("fontFileName").toString().toStdString();
+  result.global.resources.fontFileName = obj->getProperty("fontFileName").toString().toStdString();
 
   if (!RequireStringProperty(obj, "aboutBoxImageFileName"))
     return false;
-  result.global.aboutBoxImageFileName = obj->getProperty("aboutBoxImageFileName").toString().toStdString();
+  result.global.resources.aboutBoxImageFileName = obj->getProperty("aboutBoxImageFileName").toString().toStdString();
 
   if (!RequireBoolProperty(obj, "graphSchemeFollowsModule"))
     return false;
@@ -714,7 +714,7 @@ LoadThemeJsons()
               }
             if (!foundName)
             {
-              themeJson.global.folderName = file.getParentDirectory().getFileName().toStdString();
+              themeJson.global.resources.folderName = file.getParentDirectory().getFileName().toStdString();
               result.push_back(themeJson);
             }
           }
@@ -811,8 +811,8 @@ MakeTheme(
 
   auto fontFile = File((
     FBGetThemesFolderPath() / 
-    std::filesystem::path(theme.global.folderName) / 
-    std::filesystem::path(theme.global.fontFileName)).string());
+    std::filesystem::path(theme.global.resources.folderName) /
+    std::filesystem::path(theme.global.resources.fontFileName)).string());
   if(!fontFile.existsAsFile())
   {
     FB_LOG_ERROR("Cannot find font file '" + fontFile.getFullPathName().toStdString() + "'.");
@@ -821,8 +821,8 @@ MakeTheme(
 
   auto aboutBoxImageFile = File((
     FBGetThemesFolderPath() /
-    std::filesystem::path(theme.global.folderName) /
-    std::filesystem::path(theme.global.aboutBoxImageFileName)).string());
+    std::filesystem::path(theme.global.resources.folderName) /
+    std::filesystem::path(theme.global.resources.aboutBoxImageFileName)).string());
   if (!aboutBoxImageFile.existsAsFile())
   {
     FB_LOG_ERROR("Cannot find image file '" + aboutBoxImageFile.getFullPathName().toStdString() + "'.");
@@ -876,6 +876,18 @@ MakeTheme(
       }
   }
   return true;
+}
+
+std::string
+FBThemeResources::GetResourceName(FBThemeResourceId resourceId) const
+{
+  switch (resourceId)
+  {
+  case FBThemeResourceId::FolderName: return folderName;
+  case FBThemeResourceId::FontFileName: return fontFileName;
+  case FBThemeResourceId::AboutBoxImageFileName: return aboutBoxImageFileName;
+  default: FB_ASSERT(false); return {};
+  }
 }
 
 std::vector<FBTheme>

@@ -198,7 +198,7 @@ FBLookAndFeel::SetTheme(FBTheme const& theme)
 { 
   _stringSizeCache = {};
   _theme = FBTheme(theme);
-  auto fontPath = FBGetThemesFolderPath() / theme.global.folderName / theme.global.fontFileName;
+  auto fontPath = FBGetThemesFolderPath() / theme.global.resources.folderName / theme.global.resources.fontFileName;
   auto fontBytes = FBReadFile(fontPath);
   _typeface = Typeface::createSystemTypefaceFor(fontBytes.data(), fontBytes.size());
   _font = Font(FontOptions(_typeface)).withHeight((float)_theme.global.fontSize);

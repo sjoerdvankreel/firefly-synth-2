@@ -770,10 +770,9 @@ FBPlugGUI::SetupAboutBoxGUI()
 #else
   std::string archName = "X64";
 #endif
-  auto lnf = &dynamic_cast<FBLookAndFeel&>(LookAndFeel::getDefaultLookAndFeel());
   auto const& meta = HostContext()->Topo()->static_->meta;
   _aboutBoxStack = StoreComponent<FBStackingComponent>();
-  auto image = StoreComponent<FBImageComponent>(this, 200, lnf->Theme().global.aboutBoxImageFileName, RectanglePlacement::Flags::centred);
+  auto image = StoreComponent<FBImageComponent>(this, FBThemeResourceId::AboutBoxImageFileName, 200, RectanglePlacement::Flags::centred);
   auto grid = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0, 0, 0, 0 } }, std::vector<int> { { 1 } });
   grid->Add(0, 0, StoreComponent<FBAutoSizeLabel>(this, "Arch: " + archName));
   grid->Add(1, 0, StoreComponent<FBAutoSizeLabel>(this, "Version: " + meta.version.ToString()));

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_base/gui/shared/FBTheme.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBAutoSize.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -15,8 +16,8 @@ public IFBHorizontalAutoSize,
 public IFBThemeListener
 {
   FBPlugGUI* const _plugGUI;
+  FBThemeResourceId _resourceId;
   int const _width;
-  std::string const _resourceName;
   juce::RectanglePlacement const _placement;
   std::unique_ptr<juce::ImageComponent> _image = {};
 
@@ -25,9 +26,8 @@ public IFBThemeListener
 public:
   ~FBImageComponent();
   FBImageComponent(
-    FBPlugGUI* plugGUI, int width,
-    std::string const& resourceName, 
-    juce::RectanglePlacement placement);
+    FBPlugGUI* plugGUI, FBThemeResourceId resourceId, 
+    int width, juce::RectanglePlacement placement);
 
   void resized() override;
   void ThemeChanged() override;

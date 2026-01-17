@@ -10,6 +10,24 @@
 struct FBTheme;
 struct FBRuntimeTopo;
 
+// Needs some indirection here and there to prevent use-before-load stuff.
+enum class FBThemeResourceId
+{
+  FolderName,
+  FontFileName,
+  AboutBoxImageFileName
+};
+
+struct FBThemeResources
+{
+  std::string folderName = {};
+  std::string fontFileName = {};
+  std::string aboutBoxImageFileName = {};
+
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBThemeResources);
+  std::string GetResourceName(FBThemeResourceId resourceId) const;
+};
+
 struct FBColorScheme
 {
   float graphAlpha = {};
@@ -61,14 +79,13 @@ struct FBThemeGlobal
 {
   int fontSize = {};
   std::string name = {};
-  std::string folderName = {};
-  std::string fontFileName = {};
-  std::string aboutBoxImageFileName = {};
+  FBThemeResources resources = {};
   bool graphSchemeFollowsModule = {}; // todo lose this?
   bool unisonSchemeFollowsModule = {};
   FBColorScheme defaultColorScheme = {};
   std::map<std::string, FBColorScheme> colorSchemes = {};
   std::map<std::string, FBComponentColors> componentColors = {};
+
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBThemeGlobal);
 };
 
