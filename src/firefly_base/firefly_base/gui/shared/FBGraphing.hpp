@@ -22,26 +22,26 @@ struct FBModuleGraphPlotParams
 };
 
 typedef std::function<FBModuleGraphPlotParams(
-  FBModuleGraphComponentData const*, int graphIndex)>
+  FBModuleGraphComponentData const*, bool detailGraphs, int graphIndex)>
 FBModuleGraphPlotParamsSelector;
 typedef std::function<FBModuleProcExchangeStateBase const* (
-  void const* exchangeState, int moduleSlot, int graphIndex)>
+  void const* exchangeState, int moduleSlot, bool detailGraphs, int graphIndex)>
 FBModuleGraphGlobalExchangeSelector;    
 typedef std::function<FBModuleProcExchangeStateBase const* (
-  void const* exchangeState, int voice, int moduleSlot, int graphIndex)>
+  void const* exchangeState, int voice, int moduleSlot, bool detailGraphs, int graphIndex)>
 FBModuleGraphVoiceExchangeSelector;    
 
 typedef std::function<FBSArray<float, FBFixedBlockSamples> const* (
-  void const* procState, int moduleSlot, int graphIndex)>
+  void const* procState, int moduleSlot, bool detailGraphs, int graphIndex)>
 FBModuleGraphGlobalMonoOutputSelector;
 typedef std::function<FBSArray<float, FBFixedBlockSamples> const* (
-  void const* procState, int voice, int moduleSlot, int graphIndex)>
+  void const* procState, int voice, int moduleSlot, bool detailGraphs, int graphIndex)>
 FBModuleGraphVoiceMonoOutputSelector;
 typedef std::function<FBSArray2<float, FBFixedBlockSamples, 2> const* (
-  void const* procState, int voice, int moduleSlot, int graphIndex)>
+  void const* procState, int voice, int moduleSlot, bool detailGraphs, int graphIndex)>
 FBModuleGraphVoiceStereoOutputSelector;
 typedef std::function<FBSArray2<float, FBFixedBlockSamples, 2> const* (
-  void const* procState, int moduleSlot, int graphIndex)>
+  void const* procState, int moduleSlot, bool detailGraphs, int graphIndex)>
 FBModuleGraphGlobalStereoOutputSelector;
 
 template <class Derived>
@@ -56,23 +56,24 @@ struct FBModuleGraphRenderData
   FBModuleGraphVoiceStereoOutputSelector voiceStereoOutputSelector = {};
   FBModuleGraphGlobalStereoOutputSelector globalStereoOutputSelector = {};
 
-  int Process(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice) 
-  { return static_cast<Derived*>(this)->DoProcess(state, graphIndex, exchange, exchangeVoice); }
-  void BeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice) 
-  { static_cast<Derived*>(this)->DoBeginVoiceOrBlock(state, graphIndex, exchange, exchangeVoice); }
-  void ReleaseOnDemandBuffers(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
-  { static_cast<Derived*>(this)->DoReleaseOnDemandBuffers(state, graphIndex, exchange, exchangeVoice); }
-  void ProcessIndicators(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
-  { return static_cast<Derived*>(this)->DoProcessIndicators(state, graphIndex, exchange, exchangeVoice, points); }
-  void PostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
-  { return static_cast<Derived*>(this)->DoPostProcess(state, graphIndex, exchange, exchangeVoice, points); }
+  int Process(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice)
+  { return static_cast<Derived*>(this)->DoProcess(state, detailGraphs, graphIndex, exchange, exchangeVoice); }
+  void BeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice)
+  { static_cast<Derived*>(this)->DoBeginVoiceOrBlock(state, detailGraphs, graphIndex, exchange, exchangeVoice); }
+  void ReleaseOnDemandBuffers(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice)
+  { static_cast<Derived*>(this)->DoReleaseOnDemandBuffers(state, detailGraphs, graphIndex, exchange, exchangeVoice); }
+  void ProcessIndicators(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
+  { return static_cast<Derived*>(this)->DoProcessIndicators(state, detailGraphs, graphIndex, exchange, exchangeVoice, points); }
+  void PostProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
+  { return static_cast<Derived*>(this)->DoPostProcess(state, detailGraphs, graphIndex, exchange, exchangeVoice, points); }
 };
 
 template <bool Global, bool Stereo, class Derived> 
 void 
 FBRenderModuleGraphSeries(
   FBModuleGraphRenderData<Derived>& renderData,
-  bool exchange, int exchangeVoice, int graphIndex,
+  bool detailGraphs, int graphIndex,
+  bool exchange, int exchangeVoice,
   FBModuleGraphPoints& seriesOut)
 {
   seriesOut.l.clear();
@@ -88,20 +89,20 @@ FBRenderModuleGraphSeries(
   int moduleSlot = moduleProcState->moduleSlot;
   moduleProcState->input->noteEvents->clear();
 
-  renderData.BeginVoiceOrBlock(renderState, graphIndex, exchange, exchangeVoice);
+  renderData.BeginVoiceOrBlock(renderState, detailGraphs, graphIndex, exchange, exchangeVoice);
   while (processed == FBFixedBlockSamples)
   {
-    processed = renderData.Process(renderState, graphIndex, exchange, exchangeVoice);
+    processed = renderData.Process(renderState, detailGraphs, graphIndex, exchange, exchangeVoice);
     if constexpr (Global)
     {
       if constexpr(Stereo)
         renderData.globalStereoOutputSelector(
           moduleProcState->procRaw,
-          moduleSlot, graphIndex)->CopyTo(seriesStereoIn);
+          moduleSlot, detailGraphs, graphIndex)->CopyTo(seriesStereoIn);
       else
         renderData.globalMonoOutputSelector(
           moduleProcState->procRaw,
-          moduleSlot, graphIndex)->CopyTo(seriesMonoIn);
+          moduleSlot, detailGraphs, graphIndex)->CopyTo(seriesMonoIn);
     }
     else
     {
@@ -109,12 +110,12 @@ FBRenderModuleGraphSeries(
         renderData.voiceStereoOutputSelector(
           moduleProcState->procRaw,
           moduleProcState->voice->slot,
-          moduleSlot, graphIndex)->CopyTo(seriesStereoIn);
+          moduleSlot, detailGraphs, graphIndex)->CopyTo(seriesStereoIn);
       else
         renderData.voiceMonoOutputSelector(
           moduleProcState->procRaw,
           moduleProcState->voice->slot,
-          moduleSlot, graphIndex)->CopyTo(seriesMonoIn);
+          moduleSlot, detailGraphs, graphIndex)->CopyTo(seriesMonoIn);
     }
     if constexpr (Stereo)
     {
@@ -133,14 +134,16 @@ FBRenderModuleGraphSeries(
     }
   }
 
-  renderData.ProcessIndicators(renderState, graphIndex, exchange, exchangeVoice, seriesOut);
-  renderData.PostProcess(renderState, graphIndex, exchange, exchangeVoice, seriesOut);
-  renderData.ReleaseOnDemandBuffers(renderState, graphIndex, exchange, exchangeVoice);
+  renderData.ProcessIndicators(renderState, detailGraphs, graphIndex, exchange, exchangeVoice, seriesOut);
+  renderData.PostProcess(renderState, detailGraphs, graphIndex, exchange, exchangeVoice, seriesOut);
+  renderData.ReleaseOnDemandBuffers(renderState, detailGraphs, graphIndex, exchange, exchangeVoice);
 }
 
 template <bool Global, bool Stereo, class Derived>
 void
-FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex) 
+FBRenderModuleGraph(
+  FBModuleGraphRenderData<Derived>& renderData, 
+  bool detailGraphs, int graphIndex) 
 {
   auto graphData = renderData.graphData;
   auto renderState = graphData->renderState;
@@ -167,7 +170,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   }
 
   moduleProcState->anyExchangeActive = false;
-  auto plotParams = renderData.plotParamsSelector(graphData, graphIndex);
+  auto plotParams = renderData.plotParamsSelector(graphData, detailGraphs, graphIndex);
   int maxDspSampleCount = plotParams.sampleCount;
   if (maxDspSampleCount == 0)
     return;
@@ -177,7 +180,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
     if constexpr (Global)
     {
       auto moduleExchange = renderData.globalExchangeSelector(
-        exchangeState, moduleProcState->moduleSlot, graphIndex);
+        exchangeState, moduleProcState->moduleSlot, detailGraphs, graphIndex);
       moduleProcState->anyExchangeActive |= (moduleExchange->boolIsActive != 0);
       if (moduleExchange->boolIsActive != 0)
         maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->LengthSamples(graphIndex));
@@ -185,7 +188,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
     else for (int v = 0; v < FBMaxVoices; v++)
     {
       auto moduleExchange = renderData.voiceExchangeSelector(
-        exchangeState, v, moduleProcState->moduleSlot, graphIndex);
+        exchangeState, v, moduleProcState->moduleSlot, detailGraphs, graphIndex);
       moduleProcState->anyExchangeActive |= (moduleExchange->boolIsActive != 0);
       if (moduleExchange->boolIsActive != 0)
         maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->LengthSamples(graphIndex));
@@ -214,7 +217,9 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();
   moduleProcState->renderType = FBRenderType::GraphPrimary;
-  FBRenderModuleGraphSeries<Global, Stereo>(renderData, false, -1, graphIndex, graphData->graphs[graphIndex].primarySeries);
+  FBRenderModuleGraphSeries<Global, Stereo>(
+    renderData, false, -1, detailGraphs, graphIndex, 
+    graphData->graphs[graphIndex].primarySeries);
   
   if (guiRenderType == FBGUIRenderType::Basic)
     return;
@@ -223,7 +228,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   if constexpr (Global)
   {
     auto moduleExchange = renderData.globalExchangeSelector(
-      exchangeState, moduleProcState->moduleSlot, graphIndex);
+      exchangeState, moduleProcState->moduleSlot, detailGraphs, graphIndex);
     if (!moduleExchange->ShouldGraph(graphIndex))
       return;
     float positionNormalized = moduleExchange->PositionNormalized(graphIndex);
@@ -237,12 +242,12 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData->graphs[graphIndex].secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<Global, Stereo>(renderData, true, -1, graphIndex, secondary.points);
+    FBRenderModuleGraphSeries<Global, Stereo>(renderData, true, -1, detailGraphs, graphIndex, secondary.points);
     secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
   } else for (int v = 0; v < FBMaxVoices; v++)
   {
     auto moduleExchange = renderData.voiceExchangeSelector(
-      exchangeState, v, moduleProcState->moduleSlot, graphIndex);
+      exchangeState, v, moduleProcState->moduleSlot, detailGraphs, graphIndex);
     if (!moduleExchange->ShouldGraph(graphIndex))
       continue;
     renderState->PrepareForRenderExchangeVoice(v);
@@ -257,7 +262,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData->graphs[graphIndex].secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<false, Stereo>(renderData, true, v, graphIndex, secondary.points);
+    FBRenderModuleGraphSeries<false, Stereo>(renderData, true, v, detailGraphs, graphIndex, secondary.points);
     secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
   }
 }

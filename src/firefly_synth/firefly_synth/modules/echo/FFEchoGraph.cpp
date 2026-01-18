@@ -45,11 +45,11 @@ public FBModuleGraphRenderData<EchoGraphRenderData<Global>>
   std::array<int, 4> samplesProcessed = {};
 
   FFEchoProcessor<Global>& GetProcessor(FBModuleProcState& state);
-  int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoReleaseOnDemandBuffers(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoPostProcess(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
-  void DoProcessIndicators(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
+  int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
+  void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
+  void DoReleaseOnDemandBuffers(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
+  void DoPostProcess(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
+  void DoProcessIndicators(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
 
 static FBModuleGraphPlotParams
@@ -66,7 +66,7 @@ PlotParams(FBModuleGraphComponentData const* data, bool global, int /*graphIndex
 template <bool Global>
 void
 EchoGraphRenderData<Global>::DoReleaseOnDemandBuffers(
-  FBGraphRenderState* state, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/)
+  FBGraphRenderState* state, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/)
 {
   auto* moduleProcState = state->ModuleProcState();
   GetProcessor(*moduleProcState).ReleaseOnDemandBuffers(
@@ -77,7 +77,7 @@ EchoGraphRenderData<Global>::DoReleaseOnDemandBuffers(
 template <bool Global>
 void 
 EchoGraphRenderData<Global>::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
+  FBGraphRenderState* state, bool /*detailGraphs*/, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
 { 
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
@@ -102,7 +102,7 @@ EchoGraphRenderData<Global>::GetProcessor(FBModuleProcState& state)
 template <bool Global>
 int 
 EchoGraphRenderData<Global>::DoProcess(
-  FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
+  FBGraphRenderState* state, bool /*detailGraphs*/, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();
   auto moduleType = Global ? FFModuleType::GEcho : FFModuleType::VEcho;
@@ -139,20 +139,20 @@ EchoGraphRenderData<Global>::DoProcess(
 
 template <bool Global>
 void
-FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool)
+FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
 {
   EchoGraphRenderData<Global> renderData = {};
   graphData->skipDrawOnEqualsPrimary = true;
   renderData.graphData = graphData;
-  renderData.plotParamsSelector = [](auto graphData, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
+  renderData.plotParamsSelector = [](auto graphData, bool, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
   renderData.totalSamples = PlotParams(graphData, Global, -1).sampleCount;
-  renderData.globalExchangeSelector = [](void const* exchangeState, int /*slot*/, int /*graphIndex*/) {
+  renderData.globalExchangeSelector = [](void const* exchangeState, int /*slot*/, bool /*detailGraphs*/, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gEcho[0]; };
-  renderData.globalStereoOutputSelector = [](void const* procState, int /*slot*/, int /*graphIndex*/) {
+  renderData.globalStereoOutputSelector = [](void const* procState, int /*slot*/, bool /*detailGraphs*/, int /*graphIndex*/) {
     return &static_cast<FFProcState const*>(procState)->dsp.global.gEcho.output; };
-  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int /*slot*/, int /*graphIndex*/) {
+  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int /*slot*/, bool /*detailGraphs*/, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].vEcho[0]; };
-  renderData.voiceStereoOutputSelector = [](void const* procState, int voice, int /*slot*/, int /*graphIndex*/) {
+  renderData.voiceStereoOutputSelector = [](void const* procState, int voice, int /*slot*/, bool /*detailGraphs*/, int /*graphIndex*/) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].vEcho.output; };
 
   auto* renderState = graphData->renderState;
@@ -166,7 +166,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool)
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
 
   int tapsOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Taps);
-  FBRenderModuleGraph<Global, true>(renderData, tapsOrder);
+  FBRenderModuleGraph<Global, true>(renderData, detailGraphs, tapsOrder);
   graphData->graphs[tapsOrder].moduleSlot = 0;
   graphData->graphs[tapsOrder].moduleIndex = (int)moduleType;
   graphData->graphs[tapsOrder].bipolar = true;
@@ -175,7 +175,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool)
   graphData->graphs[tapsOrder].subtext = IsTapsOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   int feedbackOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Feedback);
-  FBRenderModuleGraph<Global, true>(renderData, feedbackOrder);
+  FBRenderModuleGraph<Global, true>(renderData, detailGraphs, feedbackOrder);
   graphData->graphs[feedbackOrder].moduleSlot = 0;
   graphData->graphs[feedbackOrder].moduleIndex = (int)moduleType;
   graphData->graphs[feedbackOrder].bipolar = true;
@@ -184,7 +184,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool)
   graphData->graphs[feedbackOrder].subtext = IsFeedbackOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   int reverbOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Reverb);
-  FBRenderModuleGraph<Global, true>(renderData, reverbOrder);
+  FBRenderModuleGraph<Global, true>(renderData, detailGraphs, reverbOrder);
   graphData->graphs[reverbOrder].moduleSlot = 0;
   graphData->graphs[reverbOrder].moduleIndex = (int)moduleType;
   graphData->graphs[reverbOrder].bipolar = true;
@@ -193,7 +193,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool)
   graphData->graphs[reverbOrder].subtext = IsReverbOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   int allOrder = (int)FFEchoModule::Count;
-  FBRenderModuleGraph<Global, true>(renderData, allOrder);
+  FBRenderModuleGraph<Global, true>(renderData, detailGraphs, allOrder);
   graphData->graphs[allOrder].moduleSlot = 0;
   graphData->graphs[allOrder].moduleIndex = (int)moduleType;
   graphData->graphs[allOrder].bipolar = true;
