@@ -137,6 +137,13 @@ FFPlugGUI::RequestFixedGraphsRerender(int moduleIndex)
 void 
 FFPlugGUI::RequestMainGraphsRerender(int index, int slot)
 {
+  if (index == -1)
+  {
+    _envMainGraph->RequestRerender(_envMainGraph->TweakedModuleByUI());
+    _lfoMainGraph->RequestRerender(_lfoMainGraph->TweakedModuleByUI());
+    return;
+  }
+
   if (index == (int)FFModuleType::Env)
     _envMainGraph->RequestRerender(HostContext()->Topo()->moduleTopoToRuntime.at({ index, slot }));
   if (index == (int)FFModuleType::VLFO || index == (int)FFModuleType::GLFO)
