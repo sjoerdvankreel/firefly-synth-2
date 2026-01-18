@@ -107,7 +107,7 @@ LFOGraphRenderData<Global>::DoProcess(
   }
 
   samplesProcessed[graphIndex] += FBFixedBlockSamples;
-  return GetProcessor(*moduleProcState).template Process<Global>(*moduleProcState, true, detailGraphs);
+  return GetProcessor(*moduleProcState).template Process<Global>(*moduleProcState, true);
 }
 
 template <bool Global>

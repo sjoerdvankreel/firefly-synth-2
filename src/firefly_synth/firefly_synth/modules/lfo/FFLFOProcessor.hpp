@@ -56,8 +56,7 @@ public:
 
   template <bool Global>
   int Process(
-    FBModuleProcState& state, 
-    bool graph, bool detailsGraph);
+    FBModuleProcState& state, bool graph);
 
   template <bool Global>
   void BeginVoiceOrBlock(

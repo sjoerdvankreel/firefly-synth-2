@@ -197,7 +197,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
 template <bool Global>
 int
 FFLFOProcessor::Process(
-  FBModuleProcState& state, bool graph, bool detailsGraph)
+  FBModuleProcState& state, bool graph)
 {
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -412,11 +412,12 @@ FFLFOProcessor::Process(
     return std::clamp(_graphSampleCount - _graphSamplesProcessed, 0, FBFixedBlockSamples);
   }
 
-  int maxSamples = 0;
   auto& exchangeDSP = *FFSelectDualState<Global>(
     [exchangeToGUI, &state]() { return &exchangeToGUI->global.gLFO[state.moduleSlot]; },
     [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vLFO[state.moduleSlot]; });
   exchangeDSP.boolIsActive = 1;
+  exchangeDSP.lengthSamples[FFLFOBlockCount] = 0;
+  exchangeDSP.positionSamples[FFLFOBlockCount] = 0;
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
     exchangeDSP.phases[i] = _phaseGens[i].CurrentScalar();
@@ -425,7 +426,7 @@ FFLFOProcessor::Process(
     exchangeDSP.smoothUniNoiseLastDraw[i] = _smoothUniNoiseGens[i].LastDraw();
     exchangeDSP.smoothNormNoiseLastDraw[i] = _smoothNormNoiseGens[i].LastDraw();
     exchangeDSP.lengthSamples[i] = rateHzPlain[i].Last() > 0.0f ? FBFreqToSamples(rateHzPlain[i].Last(), sampleRate) : 0;
-    maxSamples = std::max(exchangeDSP.lengthSamples[i], maxSamples);
+    exchangeDSP.lengthSamples[FFLFOBlockCount] = std::max(exchangeDSP.lengthSamples[i], exchangeDSP.lengthSamples[FFLFOBlockCount]);
 
     // 0: the lines move, so the position indicator stays fixed.
     if (_waveMode[i] == FFLFOWaveModeFreeUniRandom ||
@@ -449,18 +450,11 @@ FFLFOProcessor::Process(
     FFSelectDualExchangeState<Global>(exchangeParams.acc.rateHz[i], voice) = rateHzNormModulated[i].Last();
     FFSelectDualExchangeState<Global>(exchangeParams.voiceStart.phase[i], voice) = _voiceStartSnapshotNorm.phase[i];
   }
-
-  if (!detailsGraph)
-  {
-    // TODO
-   // exchangeDSP.positionSamples[0] = 0;
-    //exchangeDSP.lengthSamples[0] = maxSamples;
-  }
    
   return FBFixedBlockSamples;
 }
 
-template int FFLFOProcessor::Process<true>(FBModuleProcState&, bool, bool);
-template int FFLFOProcessor::Process<false>(FBModuleProcState&, bool, bool);
+template int FFLFOProcessor::Process<true>(FBModuleProcState&, bool);
+template int FFLFOProcessor::Process<false>(FBModuleProcState&, bool);
 template void FFLFOProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, FFLFOExchangeState const*, bool, bool, int, int);
 template void FFLFOProcessor::BeginVoiceOrBlock<false>(FBModuleProcState&, FFLFOExchangeState const*, bool, bool, int, int);
