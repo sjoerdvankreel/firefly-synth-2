@@ -62,5 +62,6 @@ public:
   void BeginVoiceOrBlock(
     FBModuleProcState& state, 
     FFLFOExchangeState const* exchangeFromDSP, 
-    bool graph, int graphIndex, int graphSampleCount);
+    bool graph, bool detailGraphs, 
+    int graphIndex, int graphSampleCount);
 };

@@ -51,6 +51,7 @@ public FBPlugGUI
 
   FBModuleGraphComponent* _detailsGraph = {};
   FBModuleGraphComponent* _envMainGraph = {};
+  FBModuleGraphComponent* _lfoMainGraph = {};
   std::vector<FBMSEGEditor*> _msegEditors = {};
   std::vector<FBModuleGraphComponent*> _fixedGraphs = {};
   std::unique_ptr<FFEnvParamListener> _envParamListener = {};

@@ -139,7 +139,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
     state.moduleSlot = i;
     if(_firstRoundThisVoice)
-      voiceDSP.vLFO[i].processor->BeginVoiceOrBlock<false>(state, nullptr, false, -1, -1);
+      voiceDSP.vLFO[i].processor->BeginVoiceOrBlock<false>(state, nullptr, false, false, -1, -1);
     voiceDSP.vLFO[i].processor->Process<false>(state, false);
     state.moduleSlot = 0;
     procState->dsp.voice[voice].vMatrix.processor->ModSourceCleared(state, { (int)FFModuleType::VLFO, i });

@@ -40,7 +40,8 @@ void
 FFLFOProcessor::BeginVoiceOrBlock(
   FBModuleProcState& state,
   FFLFOExchangeState const* exchangeFromDSP,
-  bool graph, int graphIndex, int graphSampleCount)
+  bool graph, bool detailGraphs,
+  int graphIndex, int graphSampleCount)
 {
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -97,7 +98,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
   _skewAXMode = topo.NormalizedToListFast<FFLFOSkewXMode>(FFLFOParam::SkewAXMode, skewAXModeNorm);
   _skewAYMode = topo.NormalizedToListFast<FFLFOSkewYMode>(FFLFOParam::SkewAYMode, skewAYModeNorm);
 
-  if (graph && graphIndex != FFLFOBlockCount)
+  if (graph && detailGraphs)
     _smoothSamples = 0;
   else
   {
@@ -144,10 +145,10 @@ FFLFOProcessor::BeginVoiceOrBlock(
 
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
-    bool blockActive = !graph || graphIndex == i || graphIndex == FFLFOBlockCount;
+    bool blockActive = !graph || graphIndex == i || !detailGraphs;
     _opType[i] = !blockActive ? 
       FFModulationOpType::Off :
-      graph && graphIndex != FFLFOBlockCount ?
+      graph && detailGraphs ?
       FFModulationOpType::UPAddU :
       topo.NormalizedToListFast<FFModulationOpType>(
       FFLFOParam::OpType,
@@ -164,7 +165,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
         FFSelectDualProcBlockParamNormalized<Global>(rateBarsNorm[i], voice), state.input->bpm);
 
     bool movingGraph = exchangeFromDSP != nullptr && (
-      graphIndex == FFLFOBlockCount || 
+      !detailGraphs || 
       _waveMode[i] == FFLFOWaveModeFreeUniRandom || 
       _waveMode[i] == FFLFOWaveModeFreeNormRandom ||
       _waveMode[i] == FFLFOWaveModeFreeUniSmooth ||
@@ -455,5 +456,5 @@ FFLFOProcessor::Process(
 
 template int FFLFOProcessor::Process<true>(FBModuleProcState&, bool);
 template int FFLFOProcessor::Process<false>(FBModuleProcState&, bool);
-template void FFLFOProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, FFLFOExchangeState const*, bool, int, int);
-template void FFLFOProcessor::BeginVoiceOrBlock<false>(FBModuleProcState&, FFLFOExchangeState const*, bool, int, int);
+template void FFLFOProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, FFLFOExchangeState const*, bool, bool, int, int);
+template void FFLFOProcessor::BeginVoiceOrBlock<false>(FBModuleProcState&, FFLFOExchangeState const*, bool, bool, int, int);
