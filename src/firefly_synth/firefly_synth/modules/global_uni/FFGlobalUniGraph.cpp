@@ -18,15 +18,15 @@ public FBModuleGraphRenderData<GlobalUniGraphRenderData>
   int samplesProcessed = {};
 
   FFGlobalUniProcessor& GetProcessor(FBModuleProcState& state);
-  int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
-  void DoProcessIndicators(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
-  void DoReleaseOnDemandBuffers(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/) {}
+  int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
+  void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
+  void DoPostProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
+  void DoProcessIndicators(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
+  void DoReleaseOnDemandBuffers(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/) {}
 };
 
 static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data, int /*graphIndex*/)
+PlotParams(FBModuleGraphComponentData const* data, bool /*detailGraphs*/, int /*graphIndex*/)
 {
   FBModuleGraphPlotParams result = {};
   result.sampleRate = 0.0f;
@@ -45,7 +45,7 @@ GlobalUniGraphRenderData::GetProcessor(FBModuleProcState& state)
 
 int
 GlobalUniGraphRenderData::DoProcess(
-  FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/)
+  FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/)
 {
   samplesProcessed += FBFixedBlockSamples;
   return std::clamp(totalSamples - samplesProcessed, 0, FBFixedBlockSamples);
@@ -53,7 +53,7 @@ GlobalUniGraphRenderData::DoProcess(
 
 void
 GlobalUniGraphRenderData::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, int /*graphIndex*/, bool exchange, int /*exchangeVoice*/)
+  FBGraphRenderState* state, bool /*detailGraphs*/, int /*graphIndex*/, bool exchange, int /*exchangeVoice*/)
 {
   samplesProcessed = 0;
   auto* moduleProcState = state->ModuleProcState();
@@ -67,8 +67,8 @@ GlobalUniGraphRenderData::DoBeginVoiceOrBlock(
 void
 GlobalUniGraphRenderData::DoProcessIndicators(
   FBGraphRenderState* state,
-  int /*graphIndex*/, bool exchange,
-  int /*exchangeVoice*/, FBModuleGraphPoints& points)
+  bool /*detailGraphs*/, int /*graphIndex*/, 
+  bool exchange, int /*exchangeVoice*/, FBModuleGraphPoints& points)
 {
   int slot = graphData->fixedGraphIndex;
   FBSArray<float, FBFixedBlockSamples> targetSignal;
@@ -86,8 +86,10 @@ GlobalUniGraphRenderData::DoProcessIndicators(
 
 void 
 GlobalUniGraphRenderData::DoPostProcess(
-  FBGraphRenderState* /*state*/, int /*graphIndex*/,
-  bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& points)
+  FBGraphRenderState* /*state*/, 
+  bool /*detailGraphs*/, int /*graphIndex*/,
+  bool /*exchange*/, int /*exchangeVoice*/, 
+  FBModuleGraphPoints& points)
 {
   int slot = graphData->fixedGraphIndex;
   if (FFGlobalUniTargetGetDefaultValue((FFGlobalUniTarget)slot) != 0.5f)
@@ -108,7 +110,7 @@ GlobalUniGraphRenderData::DoPostProcess(
 }
 
 void
-FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData, bool)
+FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
 {
   GlobalUniGraphRenderData renderData = {};
   graphData->pointIndicatorSize = 4;
@@ -125,10 +127,10 @@ FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData, bool)
 
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
-  renderData.totalSamples = PlotParams(graphData, 0).sampleCount;
-  renderData.globalExchangeSelector = [](void const* exchangeState, int /*slot*/, int /*graphIndex*/) {
+  renderData.totalSamples = PlotParams(graphData, detailGraphs, 0).sampleCount;
+  renderData.globalExchangeSelector = [](void const* exchangeState, int /*slot*/, bool /*detailGraphs*/, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.globalUni[0]; };
-  renderData.globalMonoOutputSelector = [](void const* procState, int /*slot*/, int /*graphIndex*/) {
+  renderData.globalMonoOutputSelector = [](void const* procState, int /*slot*/, bool /*detailGraphs*/, int /*graphIndex*/) {
     return &static_cast<FFProcState const*>(procState)->dsp.global.globalUni.fakeGraphOutput; };
-  FBRenderModuleGraph<true, false>(renderData, 0);
+  FBRenderModuleGraph<true, false>(renderData, detailGraphs, 0);
 }
