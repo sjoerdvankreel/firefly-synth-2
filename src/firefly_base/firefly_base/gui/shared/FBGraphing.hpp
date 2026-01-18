@@ -183,7 +183,7 @@ FBRenderModuleGraph(
         exchangeState, moduleProcState->moduleSlot, detailGraphs, graphIndex);
       moduleProcState->anyExchangeActive |= (moduleExchange->boolIsActive != 0);
       if (moduleExchange->boolIsActive != 0)
-        maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->LengthSamples(graphIndex));
+        maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->LengthSamples(detailGraphs, graphIndex));
     }
     else for (int v = 0; v < FBMaxVoices; v++)
     {
@@ -191,7 +191,7 @@ FBRenderModuleGraph(
         exchangeState, v, moduleProcState->moduleSlot, detailGraphs, graphIndex);
       moduleProcState->anyExchangeActive |= (moduleExchange->boolIsActive != 0);
       if (moduleExchange->boolIsActive != 0)
-        maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->LengthSamples(graphIndex));
+        maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->LengthSamples(detailGraphs, graphIndex));
     }
   }
 
@@ -229,9 +229,9 @@ FBRenderModuleGraph(
   {
     auto moduleExchange = renderData.globalExchangeSelector(
       exchangeState, moduleProcState->moduleSlot, detailGraphs, graphIndex);
-    if (!moduleExchange->ShouldGraph(graphIndex))
+    if (!moduleExchange->ShouldGraph(detailGraphs, graphIndex))
       return;
-    float positionNormalized = moduleExchange->PositionNormalized(graphIndex);
+    float positionNormalized = moduleExchange->PositionNormalized(detailGraphs, graphIndex);
     if (graphData->skipDrawOnEqualsPrimary &&
       renderState->GlobalModuleExchangeStateEqualsPrimary(
       plotParams.staticModuleIndex, moduleProcState->moduleSlot))
@@ -248,10 +248,10 @@ FBRenderModuleGraph(
   {
     auto moduleExchange = renderData.voiceExchangeSelector(
       exchangeState, v, moduleProcState->moduleSlot, detailGraphs, graphIndex);
-    if (!moduleExchange->ShouldGraph(graphIndex))
+    if (!moduleExchange->ShouldGraph(detailGraphs, graphIndex))
       continue;
     renderState->PrepareForRenderExchangeVoice(v);
-    float positionNormalized = moduleExchange->PositionNormalized(graphIndex);
+    float positionNormalized = moduleExchange->PositionNormalized(detailGraphs, graphIndex);
     if (graphData->skipDrawOnEqualsPrimary &&
       renderState->VoiceModuleExchangeStateEqualsPrimary(
       v, plotParams.staticModuleIndex, moduleProcState->moduleSlot))

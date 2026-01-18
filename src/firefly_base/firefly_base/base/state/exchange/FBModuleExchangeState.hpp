@@ -17,9 +17,9 @@ struct alignas(FBSIMDAlign) FBModuleProcExchangeStateBase
   virtual ~FBModuleProcExchangeStateBase() {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcExchangeStateBase);
 
-  virtual bool ShouldGraph(int graphIndex) const = 0;
-  virtual int LengthSamples(int graphIndex) const = 0;
-  virtual float PositionNormalized(int graphIndex) const = 0;
+  virtual bool ShouldGraph(bool detailGraphs, int graphIndex) const = 0;
+  virtual int LengthSamples(bool detailGraphs, int graphIndex) const = 0;
+  virtual float PositionNormalized(bool detailGraphs, int graphIndex) const = 0;
 };
 
 struct alignas(FBSIMDAlign) FBModuleProcSingleExchangeState:
@@ -30,11 +30,11 @@ public FBModuleProcExchangeStateBase
   ~FBModuleProcSingleExchangeState() = default;
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcSingleExchangeState);
 
-  int LengthSamples(int /*graphIndex*/) const override 
+  int LengthSamples(bool /*detailGraphs*/, int /*graphIndex*/) const override
   { return lengthSamples; }
-  bool ShouldGraph(int /*graphIndex*/) const override 
+  bool ShouldGraph(bool /*detailGraphs*/, int /*graphIndex*/) const override
   { return boolIsActive != 0 && positionSamples < lengthSamples; }
-  float PositionNormalized(int /*graphIndex*/) const override 
+  float PositionNormalized(bool /*detailGraphs*/, int /*graphIndex*/) const override
   { return positionSamples / static_cast<float>(lengthSamples); }
 };
 
@@ -47,11 +47,11 @@ public FBModuleProcExchangeStateBase
   ~FBModuleProcMultiExchangeState() = default;
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcMultiExchangeState);
 
-  int LengthSamples(int graphIndex) const override
+  int LengthSamples(bool /*detailGraphs*/, int graphIndex) const override
   { return lengthSamples[graphIndex]; }
-  bool ShouldGraph(int graphIndex) const override 
+  bool ShouldGraph(bool /*detailGraphs*/, int graphIndex) const override
   { return boolIsActive != 0 && positionSamples[graphIndex] < lengthSamples[graphIndex]; }
-  float PositionNormalized(int graphIndex) const override 
+  float PositionNormalized(bool /*detailGraphs*/, int graphIndex) const override
   { return positionSamples[graphIndex] / static_cast<float>(lengthSamples[graphIndex]); }
 };
 
