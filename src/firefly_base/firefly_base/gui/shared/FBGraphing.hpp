@@ -218,7 +218,7 @@ FBRenderModuleGraph(
     renderState->PrepareForRenderPrimaryVoice();
   moduleProcState->renderType = FBRenderType::GraphPrimary;
   FBRenderModuleGraphSeries<Global, Stereo>(
-    renderData, false, -1, detailGraphs, graphIndex, 
+    renderData, detailGraphs, graphIndex, false, -1,
     graphData->graphs[graphIndex].primarySeries);
   
   if (guiRenderType == FBGUIRenderType::Basic)
@@ -242,7 +242,7 @@ FBRenderModuleGraph(
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData->graphs[graphIndex].secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<Global, Stereo>(renderData, true, -1, detailGraphs, graphIndex, secondary.points);
+    FBRenderModuleGraphSeries<Global, Stereo>(renderData, detailGraphs, graphIndex, true, -1, secondary.points);
     secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
   } else for (int v = 0; v < FBMaxVoices; v++)
   {
@@ -262,7 +262,7 @@ FBRenderModuleGraph(
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData->graphs[graphIndex].secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<false, Stereo>(renderData, true, v, detailGraphs, graphIndex, secondary.points);
+    FBRenderModuleGraphSeries<false, Stereo>(renderData, detailGraphs, graphIndex, true, v, secondary.points);
     secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
   }
 }
