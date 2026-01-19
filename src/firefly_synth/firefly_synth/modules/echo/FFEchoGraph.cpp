@@ -102,7 +102,7 @@ EchoGraphRenderData<Global>::GetProcessor(FBModuleProcState& state)
 template <bool Global>
 int 
 EchoGraphRenderData<Global>::DoProcess(
-  FBGraphRenderState* state, bool /*detailGraphs*/, int graphIndex, bool exchange, int exchangeVoice)
+  FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();
   auto moduleType = Global ? FFModuleType::GEcho : FFModuleType::VEcho;
@@ -111,14 +111,17 @@ EchoGraphRenderData<Global>::DoProcess(
   if (target == 0)
     return 0;
 
-  indices = { { (int)moduleType, 0 }, { (int)FFEchoParam::Order, 0 } };
-  auto order = state->AudioParamList<FFEchoOrder>(indices, false, -1);
-  if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Taps) && !IsTapsOn(state, Global, exchange, exchangeVoice))
-    return 0;
-  if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Feedback) && !IsFeedbackOn(state, Global, exchange, exchangeVoice))
-    return 0;
-  if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Reverb) && !IsReverbOn(state, Global, exchange, exchangeVoice))
-    return 0;
+  if (detailGraphs)
+  {
+    indices = { { (int)moduleType, 0 }, { (int)FFEchoParam::Order, 0 } };
+    auto order = state->AudioParamList<FFEchoOrder>(indices, false, -1);
+    if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Taps) && !IsTapsOn(state, Global, exchange, exchangeVoice))
+      return 0;
+    if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Feedback) && !IsFeedbackOn(state, Global, exchange, exchangeVoice))
+      return 0;
+    if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Reverb) && !IsReverbOn(state, Global, exchange, exchangeVoice))
+      return 0;
+  }
 
   auto* procState = moduleProcState->ProcAs<FFProcState>();
   auto& input = *FFSelectDualState<Global>(
@@ -167,14 +170,13 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
 
   if (!detailGraphs)
   {
-    int allOrder = (int)FFEchoModule::Count;
-    FBRenderModuleGraph<Global, true>(renderData, detailGraphs, allOrder);
-    graphData->graphs[allOrder].moduleSlot = 0;
-    graphData->graphs[allOrder].moduleIndex = (int)moduleType;
-    graphData->graphs[allOrder].bipolar = true;
-    graphData->graphs[allOrder].drawClipBoundaries = true;
-    graphData->graphs[allOrder].title = FBAsciiToUpper(moduleName);
-    graphData->graphs[allOrder].subtext = FBAsciiToUpper(Global ?
+    FBRenderModuleGraph<Global, true>(renderData, detailGraphs, 0);
+    graphData->graphs[0].moduleSlot = 0;
+    graphData->graphs[0].moduleIndex = (int)moduleType;
+    graphData->graphs[0].bipolar = true;
+    graphData->graphs[0].drawClipBoundaries = true;
+    graphData->graphs[0].title = FBAsciiToUpper(moduleName);
+    graphData->graphs[0].subtext = FBAsciiToUpper(Global ?
       FFGEchoTargetToString((FFGEchoTarget)target) :
       FFVEchoTargetToString((FFVEchoTarget)target));
     return;

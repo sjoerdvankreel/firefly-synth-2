@@ -4,6 +4,7 @@ v2.1.1
 [x] get rid of the header
 [x] something with the image
 [x] externalize header.png
+[ ] not allcaps for graphs
 [ ] osc mod to own row (single)
 [ ] voice/master/settings to tabbed single row
 [ ] matrix/unison as popups?
