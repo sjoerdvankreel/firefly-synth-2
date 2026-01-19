@@ -56,14 +56,14 @@ OsciGraphRenderData::DoReleaseOnDemandBuffers(
 
 void
 OsciGraphRenderData::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, bool /*detailGraphs*/, int graphIndex, bool exchange, int exchangeVoice)
+  FBGraphRenderState* state, bool /*detailGraphs*/, int /*graphIndex*/, bool exchange, int exchangeVoice)
 {
   // need to handle all oscis up to this one + mod matrix
   auto* moduleProcState = state->ModuleProcState();
   int slot = moduleProcState->moduleSlot;
   moduleProcState->moduleSlot = 0;
   GetVoiceDSPState(*moduleProcState).osciMod.processor->BeginVoice(*moduleProcState, true);
-  for (int i = 0; i <= graphIndex; i++)
+  for (int i = 0; i <= slot; i++)
   {
     moduleProcState->moduleSlot = i;
     FFOsciExchangeState const* exchangeFromDSP = GetOsciExchangeStateFromDSP(state, i, exchange, exchangeVoice);
@@ -79,7 +79,7 @@ OsciGraphRenderData::DoBeginVoiceOrBlock(
 
 int 
 OsciGraphRenderData::DoProcess(
-  FBGraphRenderState* state, bool /*detailGraphs*/, int graphIndex, bool exchange, int exchangeVoice)
+  FBGraphRenderState* state, bool /*detailGraphs*/, int /*graphIndex*/, bool exchange, int exchangeVoice)
 {
   // need to handle all oscis up to this one + mod matrix
   auto* moduleProcState = state->ModuleProcState();
@@ -87,12 +87,12 @@ OsciGraphRenderData::DoProcess(
   int slot = moduleProcState->moduleSlot;
   moduleProcState->moduleSlot = 0;
   GetVoiceDSPState(*moduleProcState).osciMod.processor->Process(*moduleProcState);
-  for (int i = 0; i <= graphIndex; i++)
+  for (int i = 0; i <= slot; i++)
   {
     moduleProcState->moduleSlot = i;
     FFOsciExchangeState const* exchangeFromDSP = GetOsciExchangeStateFromDSP(state, i, exchange, exchangeVoice);
     int processed = GetVoiceDSPState(*moduleProcState).osci[i].processor->Process(*moduleProcState, exchangeFromDSP, true);
-    if (i == graphIndex) result = processed;
+    if (i == slot) result = processed;
   }
   moduleProcState->moduleSlot = slot;
   return result;
