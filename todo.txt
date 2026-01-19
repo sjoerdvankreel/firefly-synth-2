@@ -4,6 +4,7 @@ v2.1.1
 [x] get rid of the header
 [x] something with the image
 [x] externalize header.png
+[ ] settings block out of main
 [ ] do block-style (2row x 2col) tab headers to save on UI space
 [ ] run a dbg build after all the graph stuff
 [ ] tooltips for time stuff in hz and seconds

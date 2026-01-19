@@ -51,6 +51,7 @@ public FBPlugGUI
 
   FBModuleGraphComponent* _detailsGraph = {};
   FBModuleGraphComponent* _fxMainGraph = {};
+  FBModuleGraphComponent* _oscMainGraph = {};
   FBModuleGraphComponent* _envMainGraph = {};
   FBModuleGraphComponent* _lfoMainGraph = {};
   FBModuleGraphComponent* _echoMainGraph = {};
