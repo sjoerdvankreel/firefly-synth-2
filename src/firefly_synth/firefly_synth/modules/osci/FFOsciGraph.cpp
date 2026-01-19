@@ -135,19 +135,21 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].osci[slot].output; };
 
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
-  for (int o = 0; o < FFOsciCount; o++)
+  int graphCount = detailGraphs ? FFOsciCount : 1;
+  for (int i = 0; i < graphCount; i++)
   {
-    graphData->renderState->ModuleProcState()->moduleSlot = o;
-    FBRenderModuleGraph<false, true>(renderData, detailGraphs, o);
-    FBTopoIndices modIndices = { (int)FFModuleType::Osci, o };
+    int graphModuleSlot = detailGraphs ? i : moduleSlot;
+    graphData->renderState->ModuleProcState()->moduleSlot = graphModuleSlot;
+    FBRenderModuleGraph<false, true>(renderData, detailGraphs, i);
+    FBTopoIndices modIndices = { (int)FFModuleType::Osci, graphModuleSlot };
     FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::Type, 0 } };
-    graphData->graphs[o].title = FBAsciiToUpper(graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name);
+    graphData->graphs[i].title = FBAsciiToUpper(graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name);
     auto osciType = graphData->renderState->AudioParamList<FFOsciType>(paramIndices, false, -1);
-    graphData->graphs[o].subtext = FBAsciiToUpper(FFOsciTypeToString(osciType));
-    graphData->graphs[o].moduleSlot = o;
-    graphData->graphs[o].moduleIndex = (int)FFModuleType::Osci;
-    graphData->graphs[o].bipolar = true;
-    graphData->graphs[o].drawClipBoundaries = true;
+    graphData->graphs[i].subtext = FBAsciiToUpper(FFOsciTypeToString(osciType));
+    graphData->graphs[i].moduleSlot = graphModuleSlot;
+    graphData->graphs[i].moduleIndex = (int)FFModuleType::Osci;
+    graphData->graphs[i].bipolar = true;
+    graphData->graphs[i].drawClipBoundaries = true;
   }
   graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;
 }
