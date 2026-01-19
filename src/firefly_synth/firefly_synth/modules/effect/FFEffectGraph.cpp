@@ -15,7 +15,7 @@ struct EffectGraphRenderData final:
 public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
 {
   int totalSamples = {};
-  std::array<int, FFEffectBlockCount + 1> samplesProcessed = {};
+  std::array<int, FFEffectBlockCount> samplesProcessed = {};
 
   FFEffectProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
@@ -68,7 +68,7 @@ EffectGraphRenderData<Global>::DoReleaseOnDemandBuffers(
 template <bool Global>
 void 
 EffectGraphRenderData<Global>::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, bool /*detailGraphs*/, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
+  FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
 { 
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
@@ -77,7 +77,7 @@ EffectGraphRenderData<Global>::DoBeginVoiceOrBlock(
     state->ProcContainer(), moduleProcState->moduleSlot, 
     true, moduleProcState->input->sampleRate);
   GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(
-    *moduleProcState, true, graphIndex, totalSamples);
+    *moduleProcState, true, detailGraphs, graphIndex, totalSamples);
 }
 
 template <bool Global>
@@ -93,10 +93,10 @@ EffectGraphRenderData<Global>::GetProcessor(FBModuleProcState& state)
 template <bool Global>
 void
 EffectGraphRenderData<Global>::DoPostProcess(
-  FBGraphRenderState* state, bool /*detailGraphs*/, int graphIndex,
+  FBGraphRenderState* state, bool detailGraphs, int graphIndex,
   bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
 {
-  if (graphIndex == FFEffectBlockCount)
+  if (!detailGraphs)
     return;
 
   auto* moduleProcState = state->ModuleProcState();
@@ -115,7 +115,7 @@ EffectGraphRenderData<Global>::DoPostProcess(
 template <bool Global>
 int 
 EffectGraphRenderData<Global>::DoProcess(
-  FBGraphRenderState* state, bool /*detailGraphs*/, int graphIndex, bool exchange, int exchangeVoice)
+  FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice)
 {
   bool plotSpecificFilter = false;
   auto* moduleProcState = state->ModuleProcState();
@@ -126,7 +126,7 @@ EffectGraphRenderData<Global>::DoProcess(
   if (!on)
     return 0;
 
-  if (graphIndex != FFEffectBlockCount)
+  if (detailGraphs)
   {
     indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
     auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
@@ -179,19 +179,14 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   FBParamTopoIndices paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::On, 0 } };
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
   bool on = renderState->AudioParamBool(paramIndices, false, -1);
-  for (int i = 0; i <= FFEffectBlockCount; i++)
+
+  int graphCount = detailGraphs ? FFEffectBlockCount : 1;
+  for (int i = 0; i < graphCount; i++)
   {
     FBRenderModuleGraph<Global, false>(renderData, detailGraphs, i);
     graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)moduleType;
-    if (i == FFEffectBlockCount)
-    {
-      graphData->graphs[i].title = moduleName;
-      graphData->graphs[i].subtext = on? "ON": "OFF";
-      graphData->graphs[i].bipolar = true;
-      graphData->graphs[i].drawClipBoundaries = true;
-    }
-    else
+    if (detailGraphs)
     {
       FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } };
       auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
@@ -199,6 +194,13 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       graphData->graphs[i].subtext = FBAsciiToUpper(FFEffectKindToString(kind));
       graphData->graphs[i].bipolar = kind == FFEffectKind::Clip || kind == FFEffectKind::Fold || kind == FFEffectKind::Skew;
       graphData->graphs[i].drawClipBoundaries = graphData->graphs[i].bipolar;
+    }
+    else
+    {
+      graphData->graphs[i].title = moduleName;
+      graphData->graphs[i].subtext = on ? "ON" : "OFF";
+      graphData->graphs[i].bipolar = true;
+      graphData->graphs[i].drawClipBoundaries = true;
     }
   }
 }

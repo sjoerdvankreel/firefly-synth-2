@@ -97,7 +97,9 @@ FFEffectProcessor::AllocOnDemandBuffers(
 template <bool Global>
 void
 FFEffectProcessor::BeginVoiceOrBlock(
-  FBModuleProcState& state, bool graph, int graphIndex, int graphSampleCount)
+  FBModuleProcState& state, 
+  bool graph, bool detailGraphs,
+  int graphIndex, int graphSampleCount)
 {
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -131,7 +133,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
 
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
-    bool blockActive = !graph || graphIndex == i || graphIndex == FFEffectBlockCount;
+    bool blockActive = !graph || graphIndex == i || !detailGraphs;
     _kind[i] = !blockActive? FFEffectKind::Off: topo.NormalizedToListFast<FFEffectKind>(
       FFEffectParam::Kind, 
       FFSelectDualProcBlockParamNormalized<Global>(kindNorm[i], voice));
@@ -909,8 +911,8 @@ FFEffectProcessor::ProcessFold(
   }
 }
 
-template void FFEffectProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, bool, int, int);
-template void FFEffectProcessor::BeginVoiceOrBlock<false>(FBModuleProcState&, bool, int, int);
+template void FFEffectProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, bool, bool, int, int);
+template void FFEffectProcessor::BeginVoiceOrBlock<false>(FBModuleProcState&, bool, bool, int, int);
 template int FFEffectProcessor::Process<true>(FBModuleProcState&, FFEffectExchangeState const*, bool);
 template int FFEffectProcessor::Process<false>(FBModuleProcState&, FFEffectExchangeState const*, bool);
 template void FFEffectProcessor::AllocOnDemandBuffers<true>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);

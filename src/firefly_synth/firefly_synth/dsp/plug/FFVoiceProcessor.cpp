@@ -235,7 +235,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
     state.moduleSlot = i;
     if (_firstRoundThisVoice)
-      voiceDSP.vEffect[i].processor->BeginVoiceOrBlock<false>(state, false, -1, -1);
+      voiceDSP.vEffect[i].processor->BeginVoiceOrBlock<false>(state, false, false, -1, -1);
 
     if (_ampEnvTarget == FFVMixAmpEnvTarget::VFXIn)
       voiceDSP.vEffect[i].input.Mul(ampPlainModulated);

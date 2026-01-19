@@ -99,7 +99,8 @@ public:
 
   template <bool Global>
   void BeginVoiceOrBlock(
-    FBModuleProcState& state, bool graph,
+    FBModuleProcState& state, 
+    bool graph, bool detailGraphs,
     int graphIndex, int graphSampleCount);
   template <bool Global>
   int Process(
