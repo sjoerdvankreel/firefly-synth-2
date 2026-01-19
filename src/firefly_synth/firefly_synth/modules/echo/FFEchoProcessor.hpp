@@ -104,7 +104,7 @@ public:
 
   void FlushDelayLines();
   int Process(FBModuleProcState& state, bool graph, int ampEnvFinishedAt);
-  void BeginVoiceOrBlock(FBModuleProcState& state, bool graph, int graphIndex, int graphSampleCount);
   void ReleaseOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state);
   void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state, bool graph, float sampleRate);
+  void BeginVoiceOrBlock(FBModuleProcState& state, bool graph, bool detailGraphs, int graphIndex, int graphSampleCount);
 };

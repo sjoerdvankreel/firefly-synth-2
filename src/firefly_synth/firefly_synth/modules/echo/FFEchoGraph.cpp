@@ -42,7 +42,7 @@ struct EchoGraphRenderData final:
 public FBModuleGraphRenderData<EchoGraphRenderData<Global>>
 {
   int totalSamples = {};
-  std::array<int, 4> samplesProcessed = {};
+  std::array<int, (int)FFEchoModule::Count> samplesProcessed = {};
 
   FFEchoProcessor<Global>& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
@@ -77,7 +77,7 @@ EchoGraphRenderData<Global>::DoReleaseOnDemandBuffers(
 template <bool Global>
 void 
 EchoGraphRenderData<Global>::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, bool /*detailGraphs*/, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
+  FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
 { 
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
@@ -86,7 +86,7 @@ EchoGraphRenderData<Global>::DoBeginVoiceOrBlock(
     state->ProcContainer(),
     true, moduleProcState->input->sampleRate);
   GetProcessor(*moduleProcState).BeginVoiceOrBlock(
-    *moduleProcState, true, graphIndex, totalSamples);
+    *moduleProcState, true, detailGraphs, graphIndex, totalSamples);
 }
 
 template <bool Global>
@@ -165,6 +165,21 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   auto order = renderState->AudioParamList<FFEchoOrder>(paramIndices, false, -1);
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
 
+  if (!detailGraphs)
+  {
+    int allOrder = (int)FFEchoModule::Count;
+    FBRenderModuleGraph<Global, true>(renderData, detailGraphs, allOrder);
+    graphData->graphs[allOrder].moduleSlot = 0;
+    graphData->graphs[allOrder].moduleIndex = (int)moduleType;
+    graphData->graphs[allOrder].bipolar = true;
+    graphData->graphs[allOrder].drawClipBoundaries = true;
+    graphData->graphs[allOrder].title = FBAsciiToUpper(moduleName);
+    graphData->graphs[allOrder].subtext = FBAsciiToUpper(Global ?
+      FFGEchoTargetToString((FFGEchoTarget)target) :
+      FFVEchoTargetToString((FFVEchoTarget)target));
+    return;
+  }
+
   int tapsOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Taps);
   FBRenderModuleGraph<Global, true>(renderData, detailGraphs, tapsOrder);
   graphData->graphs[tapsOrder].moduleSlot = 0;
@@ -191,17 +206,6 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   graphData->graphs[reverbOrder].drawClipBoundaries = true;
   graphData->graphs[reverbOrder].title = FBAsciiToUpper(moduleName + " Rvrb");
   graphData->graphs[reverbOrder].subtext = IsReverbOn(renderState, Global, false, -1) ? "ON" : "OFF";
-
-  int allOrder = (int)FFEchoModule::Count;
-  FBRenderModuleGraph<Global, true>(renderData, detailGraphs, allOrder);
-  graphData->graphs[allOrder].moduleSlot = 0;
-  graphData->graphs[allOrder].moduleIndex = (int)moduleType;
-  graphData->graphs[allOrder].bipolar = true;
-  graphData->graphs[allOrder].drawClipBoundaries = true;
-  graphData->graphs[allOrder].title = FBAsciiToUpper(moduleName);
-  graphData->graphs[allOrder].subtext = FBAsciiToUpper(Global ? 
-    FFGEchoTargetToString((FFGEchoTarget)target) : 
-    FFVEchoTargetToString((FFVEchoTarget)target));
 }
 
 template struct EchoGraphRenderData<true>;
