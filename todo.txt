@@ -4,6 +4,10 @@ v2.1.1
 [x] get rid of the header
 [x] something with the image
 [x] externalize header.png
+[ ] osc mod to own row (single)
+[ ] voice/master/settings to tabbed single row
+[ ] matrix/unison as popups?
+[ ] rework unison to matrix format (breaking) with same targets as voice matrix
 [ ] get rid of graphschemefollowsmodule
 [ ] update the manual for about box
 [ ] fixup all the other themes

@@ -15,7 +15,7 @@ struct LFOGraphRenderData final:
 public FBModuleGraphRenderData<LFOGraphRenderData<Global>>
 {
   int totalSamples = {};
-  std::array<int, FFLFOBlockCount + 1> samplesProcessed = {};
+  std::array<int, FFLFOBlockCount> samplesProcessed = {};
 
   FFLFOProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
