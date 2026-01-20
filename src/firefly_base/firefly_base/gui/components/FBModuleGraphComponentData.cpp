@@ -68,9 +68,10 @@ FBModuleGraphData::GetScaleFactorToNormalized(float& factor) const
       max = std::max(max, std::abs(secondarySeries[s].points.r[i]));
   }
 
-  if (max > 1e-8)
+  if (max > 1e-6)
   {
     factor = 1.0f / max;
+    FB_ASSERT(!std::isinf(factor));
     return true;
   }
   factor = 1.0f;
@@ -95,9 +96,9 @@ FBModuleGraphData::ScaleBy(float factor)
   for (int s = 0; s < secondarySeries.size(); s++)
   {
     for (int i = 0; i < secondarySeries[s].points.l.size(); i++)
-      secondarySeries[s].points.l[s] *= factor;
+      secondarySeries[s].points.l[i] *= factor;
     for (int i = 0; i < secondarySeries[s].points.r.size(); i++)
-      secondarySeries[s].points.r[s] *= factor;
+      secondarySeries[s].points.r[i] *= factor;
   }
 }
 
@@ -132,4 +133,5 @@ FBModuleGraphData::GetLimits(int& maxSizeAllSeriesOut, float& absMaxValueAllSeri
   }
   maxSizeAllSeriesOut = _maxSizeAllSeries;
   absMaxValueAllSeriesOut = _absMaxValueAllSeries;
+  FB_ASSERT(!std::isinf(absMaxValueAllSeriesOut));
 }

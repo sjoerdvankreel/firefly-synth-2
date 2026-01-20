@@ -119,7 +119,7 @@ FBRenderModuleGraphSeries(
     }
     if constexpr (Stereo)
     {
-      seriesStereoIn.NaNCheck();
+      seriesStereoIn.SanityCheck();
       for (int i = 0; i < processed; i++)
       {
         seriesOut.l.push_back(seriesStereoIn[0].Get(i));
@@ -128,7 +128,7 @@ FBRenderModuleGraphSeries(
     }
     else
     {
-      seriesMonoIn.NaNCheck();
+      seriesMonoIn.SanityCheck();
       for (int i = 0; i < processed; i++)
         seriesOut.l.push_back(seriesMonoIn.Get(i));
     }

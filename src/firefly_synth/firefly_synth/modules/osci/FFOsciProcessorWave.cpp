@@ -932,7 +932,7 @@ GenerateWaveBasic(
   FBBatch<float> incrVec)
 {
   auto result = GenerateWaveBasicCheck(mode, phaseVec, incrVec);
-  FBBatchNaNCheck(result);
+  FBBatchSanityCheck(result);
   return result;
 }
 
@@ -944,7 +944,7 @@ GenerateWavePW(
   FBBatch<float> pwVec)
 {
   auto result = GenerateWavePWCheck(mode, phaseVec, incrVec, pwVec);
-  FBBatchNaNCheck(result);
+  FBBatchSanityCheck(result);
   return result;
 }
 
@@ -956,7 +956,7 @@ GenerateWaveHS(
   FBBatch<float> freqRatioVec)
 {
   auto result = GenerateWaveHSCheck(mode, phaseVec, incrVec, freqRatioVec);
-  FBBatchNaNCheck(result);
+  FBBatchSanityCheck(result);
   return result;
 }
 
@@ -988,7 +988,7 @@ GenerateDSF(
   FBBatch<float> overtoneVec)
 {
   auto result = GenerateDSFCheck(phaseVec, freqVec, decayVec, distFreqVec, overtoneVec);
-  FBBatchNaNCheck(result);
+  FBBatchSanityCheck(result);
   return result;
 }
 

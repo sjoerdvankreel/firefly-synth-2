@@ -344,7 +344,7 @@ FFOsciProcessor::Process(
       output[1].Add(s, uniPanning * uniMono * xsimd::sqrt(panning));
     }
   }
-  output.NaNCheck();
+  output.SanityCheck();
 
   _firstProcess = false;
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
