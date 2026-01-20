@@ -199,8 +199,22 @@ FBModuleGraphDisplayComponent::PaintSeries(
     color = color.darker(0.67f);
   if (primary)
   {
-    g.setColour(color.withAlpha(0.33f));
-    g.setGradientFill(ColourGradient(color, 0.0f, minY, color.withAlpha(0.0f), 0.0f, maxY, false));
+    if (_data->graphs[graph].bipolar)
+    {
+      float centerY = PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true);
+      float heightUp = centerY - minY;
+      float heightDown = maxY - centerY;
+      float heightBipolar = std::max(heightUp, heightDown);
+      float topY = centerY - heightBipolar;
+      float bottomY = centerY + heightBipolar;
+      auto gradient = ColourGradient(color, 0.0f, topY, color, 0.0f, bottomY, false);
+      gradient.addColour((bottomY - centerY) / (bottomY - topY), color.withAlpha(0.0f));
+      g.setGradientFill(gradient);
+    }
+    else
+    {
+      g.setGradientFill(ColourGradient(color, 0.0f, minY, color.withAlpha(0.0f), 0.0f, maxY, false));
+    }
     g.fillPath(fillPath);
   }
   g.setColour(color);
