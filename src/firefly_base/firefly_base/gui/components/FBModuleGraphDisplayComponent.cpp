@@ -174,7 +174,7 @@ FBModuleGraphDisplayComponent::PaintSeries(
 
   auto const& graphData = _data->graphs[graph];
   auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
-  auto color = primary ? scheme.primary : scheme.paramSecondary;
+  auto graphColor = scheme.primary.withMultipliedAlpha(primary? 1.0f: 0.33f);
 
   Path fillPath;
   Path strokePath;
@@ -196,28 +196,25 @@ FBModuleGraphDisplayComponent::PaintSeries(
   fillPath.lineTo(PointXLocation(graph, 1.0f, true), PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true));
   fillPath.closeSubPath();
   if (_data->paintAsDisabled)
-    color = color.darker(0.67f);
-  if (primary)
+    graphColor = graphColor.darker(0.67f);
+  if (_data->graphs[graph].bipolar)
   {
-    if (_data->graphs[graph].bipolar)
-    {
-      float centerY = PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true);
-      float heightUp = centerY - minY;
-      float heightDown = maxY - centerY;
-      float heightBipolar = std::max(heightUp, heightDown);
-      float topY = centerY - heightBipolar;
-      float bottomY = centerY + heightBipolar;
-      auto gradient = ColourGradient(color, 0.0f, topY, color, 0.0f, bottomY, false);
-      gradient.addColour((bottomY - centerY) / (bottomY - topY), color.withAlpha(0.0f));
-      g.setGradientFill(gradient);
-    }
-    else
-    {
-      g.setGradientFill(ColourGradient(color, 0.0f, minY, color.withAlpha(0.0f), 0.0f, maxY, false));
-    }
-    g.fillPath(fillPath);
+    float centerY = PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true);
+    float heightUp = centerY - minY;
+    float heightDown = maxY - centerY;
+    float heightBipolar = std::max(heightUp, heightDown);
+    float topY = centerY - heightBipolar;
+    float bottomY = centerY + heightBipolar;
+    auto gradient = ColourGradient(graphColor, 0.0f, topY, graphColor, 0.0f, bottomY, false);
+    gradient.addColour((bottomY - centerY) / (bottomY - topY), graphColor.withAlpha(0.0f));
+    g.setGradientFill(gradient);
   }
-  g.setColour(color);
+  else
+  {
+    g.setGradientFill(ColourGradient(graphColor, 0.0f, minY, graphColor.withAlpha(0.0f), 0.0f, maxY, false));
+  }
+  g.fillPath(fillPath);
+  g.setColour(graphColor);
   g.strokePath(strokePath, PathStrokeType(1.0f));
 }
 
