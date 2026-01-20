@@ -44,7 +44,9 @@ public:
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};
 
   void MergeStereo();
-  void ScaleToSelf();
+  void ScaleBy(float factor);
+  void ScaleToSelfNormalized();
+  bool GetScaleFactorToNormalized(float& factor) const;
   void GetLimits(int& maxSizeAllSeries, float& absMaxValueAllSeries) const;
 };
 
@@ -60,5 +62,9 @@ struct FBModuleGraphComponentData final
   std::vector<FBModuleGraphData> graphs = {};
   FBGUIRenderType guiRenderType = FBGUIRenderType::Basic;
   FBModuleGraphDrawMarkersSelector drawMarkersSelector = {};
+
+  void ScaleBy(float factor);
+  void ScaleToAllNormalized();
+  bool GetScaleFactorToAllNormalized(float& factor) const;
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleGraphComponentData);
 };

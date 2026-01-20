@@ -1,5 +1,43 @@
 #include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
 
+void 
+FBModuleGraphComponentData::ScaleToAllNormalized()
+{
+  float factor = 1.0f;
+  if (GetScaleFactorToAllNormalized(factor))
+    ScaleBy(factor);
+}
+
+void 
+FBModuleGraphComponentData::ScaleBy(float factor)
+{
+  for (int i = 0; i < graphs.size(); i++)
+    graphs[i].ScaleBy(factor);
+}
+
+bool 
+FBModuleGraphComponentData::GetScaleFactorToAllNormalized(float& factor) const
+{
+  bool any = false;
+  float min = std::numeric_limits<float>::max();
+  for (int i = 0; i < graphs.size(); i++)
+  {
+    float thisFactor = 0.0f;
+    if (graphs[i].GetScaleFactorToNormalized(thisFactor))
+    {
+      any = true;
+      min = std::min(min, thisFactor);
+    }
+  }
+  if (any)
+  {
+    factor = min;
+    return true;
+  }
+  factor = 1.0f;
+  return false;
+}
+
 void
 FBModuleGraphData::MergeStereo()
 {
@@ -14,8 +52,8 @@ FBModuleGraphData::MergeStereo()
   }
 }
 
-void
-FBModuleGraphData::ScaleToSelf()
+bool
+FBModuleGraphData::GetScaleFactorToNormalized(float& factor) const
 {
   float max = 0.0f;
   for (int i = 0; i < primarySeries.l.size(); i++)
@@ -32,17 +70,34 @@ FBModuleGraphData::ScaleToSelf()
 
   if (max > 1e-8)
   {
-    for (int i = 0; i < primarySeries.l.size(); i++)
-      primarySeries.l[i] /= max;
-    for (int i = 0; i < primarySeries.r.size(); i++)
-      primarySeries.r[i] /= max;
-    for (int s = 0; s < secondarySeries.size(); s++)
-    {
-      for (int i = 0; i < secondarySeries[s].points.l.size(); i++)
-        secondarySeries[s].points.l[s] /= max;
-      for (int i = 0; i < secondarySeries[s].points.r.size(); i++)
-        secondarySeries[s].points.r[s] /= max;
-    }
+    factor = 1.0f / max;
+    return true;
+  }
+  factor = 1.0f;
+  return false;
+}
+
+void
+FBModuleGraphData::ScaleToSelfNormalized()
+{
+  float factor = 1.0f;
+  if (GetScaleFactorToNormalized(factor))
+    ScaleBy(factor);
+}
+
+void
+FBModuleGraphData::ScaleBy(float factor)
+{
+  for (int i = 0; i < primarySeries.l.size(); i++)
+    primarySeries.l[i] *= factor;
+  for (int i = 0; i < primarySeries.r.size(); i++)
+    primarySeries.r[i] *= factor;
+  for (int s = 0; s < secondarySeries.size(); s++)
+  {
+    for (int i = 0; i < secondarySeries[s].points.l.size(); i++)
+      secondarySeries[s].points.l[s] *= factor;
+    for (int i = 0; i < secondarySeries[s].points.r.size(); i++)
+      secondarySeries[s].points.r[s] *= factor;
   }
 }
 
