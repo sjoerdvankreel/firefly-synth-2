@@ -1,5 +1,51 @@
 #include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
 
+void
+FBModuleGraphData::MergeStereo()
+{
+  for (int i = 0; i < primarySeries.l.size(); i++)
+    primarySeries.l[i] = (primarySeries.l[i] + primarySeries.r[i]) * 0.5f;
+  primarySeries.r.clear();
+  for (int s = 0; s < secondarySeries.size(); s++)
+  {
+    for (int i = 0; i < secondarySeries[s].points.l.size(); i++)
+      secondarySeries[s].points.l[i] = (secondarySeries[s].points.l[i] + secondarySeries[s].points.r[i]) * 0.5f;
+    secondarySeries[s].points.r.clear();
+  }
+}
+
+void
+FBModuleGraphData::ScaleToSelf()
+{
+  float max = 0.0f;
+  for (int i = 0; i < primarySeries.l.size(); i++)
+    max = std::max(max, std::abs(primarySeries.l[i]));
+  for (int i = 0; i < primarySeries.r.size(); i++)
+    max = std::max(max, std::abs(primarySeries.r[i]));
+  for (int s = 0; s < secondarySeries.size(); s++)
+  {
+    for (int i = 0; i < secondarySeries[s].points.l.size(); i++)
+      max = std::max(max, std::abs(secondarySeries[s].points.l[i]));
+    for (int i = 0; i < secondarySeries[s].points.r.size(); i++)
+      max = std::max(max, std::abs(secondarySeries[s].points.r[i]));
+  }
+
+  if (max > 1e-8)
+  {
+    for (int i = 0; i < primarySeries.l.size(); i++)
+      primarySeries.l[i] /= max;
+    for (int i = 0; i < primarySeries.r.size(); i++)
+      primarySeries.r[i] /= max;
+    for (int s = 0; s < secondarySeries.size(); s++)
+    {
+      for (int i = 0; i < secondarySeries[s].points.l.size(); i++)
+        secondarySeries[s].points.l[s] /= max;
+      for (int i = 0; i < secondarySeries[s].points.r.size(); i++)
+        secondarySeries[s].points.r[s] /= max;
+    }
+  }
+}
+
 void 
 FBModuleGraphData::GetLimits(int& maxSizeAllSeriesOut, float& absMaxValueAllSeriesOut) const
 {

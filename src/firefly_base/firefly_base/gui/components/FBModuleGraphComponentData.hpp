@@ -42,6 +42,9 @@ public:
   std::vector<int> primaryMarkers = {};
   FBModuleGraphPoints primarySeries = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};
+
+  void MergeStereo();
+  void ScaleToSelf();
   void GetLimits(int& maxSizeAllSeries, float& absMaxValueAllSeries) const;
 };
 

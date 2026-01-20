@@ -151,5 +151,10 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[i].bipolar = true;
     graphData->graphs[i].drawClipBoundaries = true;
   }
+  if (!detailGraphs)
+  {
+    graphData->graphs[0].MergeStereo();
+    graphData->graphs[0].ScaleToSelf();
+  }
   graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;
 }
