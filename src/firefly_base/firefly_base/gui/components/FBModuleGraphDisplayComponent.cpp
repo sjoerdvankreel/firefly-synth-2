@@ -178,12 +178,20 @@ FBModuleGraphDisplayComponent::PaintSeries(
 
   Path fillPath;
   Path strokePath;
-  fillPath.startNewSubPath(PointXLocation(graph, 0.0f, true), PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true));
+  float maxY = 0.0f;
+  float minY = std::numeric_limits<float>::max();
+  float fillY = PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true);
+  maxY = std::max(maxY, fillY);
+  minY = std::min(minY, fillY);
+  fillPath.startNewSubPath(PointXLocation(graph, 0.0f, true), fillY);
   strokePath.startNewSubPath(PointLocation(graph, points, 0, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
   for (int i = 1; i < points.size(); i++)
   {
-    fillPath.lineTo(PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
-    strokePath.lineTo(PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
+    auto thisPoint = PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
+    maxY = std::max(maxY, thisPoint.y);
+    minY = std::min(minY, thisPoint.y);
+    fillPath.lineTo(thisPoint);
+    strokePath.lineTo(thisPoint);
   }
   fillPath.lineTo(PointXLocation(graph, 1.0f, true), PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true));
   fillPath.closeSubPath();
@@ -192,6 +200,7 @@ FBModuleGraphDisplayComponent::PaintSeries(
   if (primary)
   {
     g.setColour(color.withAlpha(0.33f));
+    g.setGradientFill(ColourGradient(color, 0.0f, minY, color.withAlpha(0.0f), 0.0f, maxY, false));
     g.fillPath(fillPath);
   }
   g.setColour(color);
