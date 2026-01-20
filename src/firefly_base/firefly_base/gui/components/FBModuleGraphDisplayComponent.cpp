@@ -178,6 +178,7 @@ FBModuleGraphDisplayComponent::PaintSeries(
 
   Path fillPath;
   Path strokePath;
+  float maxX = 0.0f;
   float maxY = 0.0f;
   float minY = std::numeric_limits<float>::max();
   float fillY = PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true);
@@ -188,12 +189,13 @@ FBModuleGraphDisplayComponent::PaintSeries(
   for (int i = 1; i < points.size(); i++)
   {
     auto thisPoint = PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
+    maxX = std::max(maxX, thisPoint.x);
     maxY = std::max(maxY, thisPoint.y);
     minY = std::min(minY, thisPoint.y);
     fillPath.lineTo(thisPoint);
     strokePath.lineTo(thisPoint);
   }
-  fillPath.lineTo(PointXLocation(graph, 1.0f, true), PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true));
+  fillPath.lineTo(maxX, PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true));
   fillPath.closeSubPath();
   if (_data->paintAsDisabled)
     graphColor = graphColor.darker(0.67f);
