@@ -4,6 +4,7 @@ v2.1.1
 [x] get rid of the header
 [x] something with the image
 [x] externalize header.png
+[ ] freq response should plot logarithmic
 [ ] checkboxes as round tick thingies
 [ ] after init, load, etc, should select the first graph of everything
 [ ] allow click + on first disabled matrix slot
