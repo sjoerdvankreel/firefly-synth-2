@@ -159,6 +159,7 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       graphData->graphs[i].title = moduleName;
       graphData->graphs[i].subtext = FBAsciiToUpper(FFLFOTypeToString(type, Global));
     }
+    graphData->graphs[0].ScaleToSelfNormalized();
   }
   if (detailGraphs)
   {
@@ -166,7 +167,7 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   }
   else
   {
-    graphData->graphs[0].ScaleToSelfNormalized();
+    
   }
 }
 
