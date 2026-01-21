@@ -152,7 +152,7 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     title += ": " + FFOsciTypeToString(osciType);
     
     graphData->graphs[i].title = title;
-    graphData->graphs[i].subtext = std::to_string(absMaxValueAllSeries);
+    graphData->graphs[i].subtext = FBFormatDoubleCLocale(20.0f * std::log10(absMaxValueAllSeries), 2) + " dB";
     graphData->graphs[i].moduleSlot = graphModuleSlot;
     graphData->graphs[i].moduleIndex = (int)FFModuleType::Osci;
     graphData->graphs[i].bipolar = true;
