@@ -1,5 +1,40 @@
 #include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
 
+static void
+DropOutliers(std::vector<float>& v, float maxStDevTimes)
+{
+  if (v.size() == 0)
+    return;
+  float sum = 0.0f;
+  for (int i = 0; i < v.size(); i++)
+    sum += v[i];
+  float mean = sum / (float)v.size();
+
+  float variance = 0.0f;
+  for (int i = 0; i < v.size(); i++)
+  {
+    float devSqr = (v[i] - mean) * (v[i] - mean);
+    variance += devSqr;
+  }
+  variance /= (float)v.size();
+  float stDev = std::sqrt(variance);
+
+  for (int i = 0; i < v.size(); i++)
+  {
+    if (v[i] < mean - maxStDevTimes * stDev)
+      v[i] = mean - maxStDevTimes * stDev;
+    if (v[i] > mean + maxStDevTimes * stDev)
+      v[i] = mean + maxStDevTimes * stDev;
+  }
+}
+
+void 
+FBModuleGraphComponentData::DropOutliers(float maxStDevTimes)
+{
+  for (int i = 0; i < graphs.size(); i++)
+    graphs[i].DropOutliers(maxStDevTimes);
+}
+
 void 
 FBModuleGraphComponentData::ScaleToAllNormalized()
 {
@@ -36,6 +71,18 @@ FBModuleGraphComponentData::GetScaleFactorToAllNormalized(float& factor) const
   }
   factor = 1.0f;
   return false;
+}
+
+void 
+FBModuleGraphData::DropOutliers(float maxStDevTimes)
+{
+  ::DropOutliers(primarySeries.l, maxStDevTimes);
+  ::DropOutliers(primarySeries.r, maxStDevTimes);
+  for (int i = 0; i < secondarySeries.size(); i++)
+  {
+    ::DropOutliers(secondarySeries[i].points.l, maxStDevTimes);
+    ::DropOutliers(secondarySeries[i].points.r, maxStDevTimes);
+  }
 }
 
 void
