@@ -1,3 +1,6 @@
+#include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBTheme.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBCardComponent.hpp>
 
 static int const CornerSize = 3;
@@ -21,7 +24,9 @@ FBCardComponent::resized()
 void 
 FBCardComponent::paint(Graphics& g)
 {
-  g.setColour(Colours::green);
+  auto lnf = FBGetLookAndFeelFor(_plugGUI);
+  auto const& scheme = lnf->FindColorSchemeFor(*this);
+  g.setColour(scheme.sectionBackground);
   g.fillRoundedRectangle(getLocalBounds().toFloat(), (float)CornerSize);
 }
 
