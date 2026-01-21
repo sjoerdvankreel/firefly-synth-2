@@ -192,8 +192,10 @@ FBModuleGraphDisplayComponent::PaintSeries(
   float fillY = PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true);
   maxY = std::max(maxY, fillY);
   minY = std::min(minY, fillY);
+  auto strokeStart = PointLocation(graph, points, 0, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
+  strokePath.startNewSubPath(strokeStart);
   fillPath.startNewSubPath(PointXLocation(graph, 0.0f, true), fillY);
-  strokePath.startNewSubPath(PointLocation(graph, points, 0, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
+  fillPath.lineTo(strokeStart);
   for (int i = 1; i < points.size(); i++)
   {
     auto thisPoint = PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
