@@ -146,7 +146,6 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)moduleType;
     graphData->graphs[i].bipolar = false;
-    graphData->graphs[i].drawClipBoundaries = false;
     if (detailGraphs)
     {
       FBParamTopoIndices opTypeIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };

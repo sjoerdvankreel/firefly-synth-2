@@ -152,25 +152,6 @@ FBModuleGraphDisplayComponent::PaintMarker(
 }
 
 void
-FBModuleGraphDisplayComponent::PaintClipBoundaries(
-  juce::Graphics& g,
-  int graph, bool stereo, bool left,
-  float absMaxValueAllSeries)
-{
-  auto const& graphData = _data->graphs[graph];
-  auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
-
-  float dashes[2] = { 4.0, 2.0 };
-  float x0 = PointXLocation(graph, 0.0f, true);
-  float x1 = PointXLocation(graph, 1.0f, true);
-  float upperY = PointYLocation(graph, 1.0f, stereo, left, absMaxValueAllSeries, true);
-  float lowerY = PointYLocation(graph, _data->graphs[graph].bipolar? -1.0f: 0.0f, stereo, left, absMaxValueAllSeries, true);
-  g.setColour(scheme.text2.withAlpha(0.25f));
-  g.drawDashedLine(Line<float>(x0, upperY, x1, upperY), dashes, 2);
-  g.drawDashedLine(Line<float>(x0, lowerY, x1, lowerY), dashes, 2);
-}
-
-void
 FBModuleGraphDisplayComponent::PaintSeries(
   juce::Graphics& g, bool primary,
   int graph, std::vector<float> const& points,
@@ -332,13 +313,6 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
           PaintMarker(g, graph, primarySeries.l, graphData.primaryMarkers[i],
             true, false, false, true, maxSizeAllSeries, absMaxValueAllSeries);
         }
-
-      if (graphData.drawClipBoundaries)
-      {
-        PaintClipBoundaries(g, graph, stereo, false, absMaxValueAllSeries);
-        if (stereo)
-          PaintClipBoundaries(g, graph, stereo, true, absMaxValueAllSeries);
-      }
     }
 
     if (graphData.title.size())

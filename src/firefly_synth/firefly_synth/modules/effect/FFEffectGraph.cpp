@@ -203,7 +203,6 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       graphData->graphs[i].title = moduleName;
       graphData->graphs[i].subtext = on ? "ON" : "OFF";
       graphData->graphs[i].bipolar = true;
-      graphData->graphs[i].drawClipBoundaries = true;
     }
     graphData->graphs[i].ScaleToSelfNormalized();
   }

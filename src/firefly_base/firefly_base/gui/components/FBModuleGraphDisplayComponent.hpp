@@ -35,11 +35,6 @@ private:
     int graph, std::vector<float> const& points,
     int point, bool stereo, bool left,
     int maxSizeAllSeries, float absMaxValueAllSeries) const;
-  
-  void PaintClipBoundaries(
-    juce::Graphics& g,
-    int graph, bool stereo, bool left,
-    float absMaxValueAllSeries);
 
   void PaintVerticalIndicator(
     juce::Graphics& g, int graph, int point, bool primary,

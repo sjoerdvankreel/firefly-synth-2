@@ -149,7 +149,6 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[i].moduleSlot = graphModuleSlot;
     graphData->graphs[i].moduleIndex = (int)FFModuleType::Osci;
     graphData->graphs[i].bipolar = true;
-    graphData->graphs[i].drawClipBoundaries = true;
   }
   if (detailGraphs)
   {
