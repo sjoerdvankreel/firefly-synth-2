@@ -28,6 +28,8 @@ FBCardComponent::paint(Graphics& g)
   auto const& scheme = lnf->FindColorSchemeFor(*this);
   g.setColour(scheme.sectionBackground);
   g.fillRoundedRectangle(getLocalBounds().toFloat(), (float)CornerSize);
+  g.setGradientFill(ColourGradient(scheme.primary.withAlpha(0.1f), 0.0f, 0.0f, scheme.primary.withAlpha(0.0f), 0.0f, (float)getHeight(), false));
+  g.fillRoundedRectangle(getLocalBounds().toFloat(), (float)CornerSize);
 }
 
 int 
