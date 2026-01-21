@@ -39,6 +39,7 @@ public:
   std::string subtext = {};
   bool bipolar = false;
   bool plotLogarithmic = false;
+  bool roundPathCorners = false;
   bool drawClipBoundaries = false; // todo remove
   float plotLogEnd = {};
   float plotLogStart = {};

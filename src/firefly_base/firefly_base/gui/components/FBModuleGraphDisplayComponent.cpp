@@ -202,8 +202,8 @@ FBModuleGraphDisplayComponent::PaintSeries(
     maxX = std::max(maxX, thisPoint.x);
     maxY = std::max(maxY, thisPoint.y);
     minY = std::min(minY, thisPoint.y);
-    fillPath.lineTo(thisPoint);
     strokePath.lineTo(thisPoint);
+    fillPath.lineTo(thisPoint);
   }
   fillPath.lineTo(maxX, PointYLocation(graph, 0.0f, stereo, left, absMaxValueAllSeries, true));
   fillPath.closeSubPath();
@@ -224,6 +224,11 @@ FBModuleGraphDisplayComponent::PaintSeries(
   else
   {
     g.setGradientFill(ColourGradient(graphColor, 0.0f, minY, graphColor.withAlpha(0.0f), 0.0f, maxY, false));
+  }
+  if (_data->graphs[graph].roundPathCorners)
+  {
+    fillPath = fillPath.createPathWithRoundedCorners(10.0f);
+    strokePath = strokePath.createPathWithRoundedCorners(10.0f);
   }
   g.fillPath(fillPath);
   g.setColour(graphColor);

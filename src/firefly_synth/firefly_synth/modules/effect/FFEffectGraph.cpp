@@ -196,6 +196,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       graphData->graphs[i].plotLogStart = 20.0f;
       graphData->graphs[i].plotLogEnd = 20000.0f;
       graphData->graphs[i].plotLogarithmic = !graphData->graphs[i].bipolar;
+      graphData->graphs[i].roundPathCorners = !graphData->graphs[i].bipolar;
       graphData->graphs[i].drawClipBoundaries = graphData->graphs[i].bipolar;
     }
     else
