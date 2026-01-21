@@ -1,6 +1,7 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <memory>
@@ -23,15 +24,15 @@ public juce::Component
   FBPlugGUI* const _plugGUI;
   bool const _detailGraphs;
 
+  int _graphCount = -1;
   int _tweakedModuleByUI = -1;
   std::unique_ptr<FBGridComponent> _grid = {};
-  std::unique_ptr<FBMarginComponent> _margin = {};
   std::function<FBGUIRenderType()> _getCurrentRenderType;
 
   int const _fixedToRuntimeModuleIndex;
   int const _fixedToGraphIndex;
   std::unique_ptr<FBModuleGraphComponentData> _data;
-  std::unique_ptr<FBModuleGraphDisplayComponent> _display;
+  std::vector<std::unique_ptr<FBModuleGraphDisplayComponent>> _displays = {};
   std::chrono::high_resolution_clock::time_point _updated = {};
 
   bool PrepareForRender(int moduleIndex);

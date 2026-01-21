@@ -29,35 +29,18 @@ _detailGraphs(detailGraphs),
 _getCurrentRenderType(getCurrentRenderType),
 _fixedToRuntimeModuleIndex(fixedToRuntimeModuleIndex),
 _fixedToGraphIndex(fixedToGraphIndex),
-_data(std::make_unique<FBModuleGraphComponentData>()),
-_display(std::make_unique<FBModuleGraphDisplayComponent>(plugGUI, _data.get(), _fixedToRuntimeModuleIndex == -1))
+_data(std::make_unique<FBModuleGraphComponentData>())
 {
   _data->renderState = renderState;
-  if (_fixedToRuntimeModuleIndex != -1)
-  {
-    addAndMakeVisible(_display.get());
-  } else 
-  {
-    _grid = std::make_unique<FBGridComponent>(plugGUI, true, 1, 1);
-    _grid->Add(0, 0, _display.get());
-    _margin = std::make_unique<FBMarginComponent>(plugGUI, true, true, true, true, _grid.get());
-    addAndMakeVisible(_margin.get());
-  }
-  resized();
 }
 
 void
 FBModuleGraphComponent::resized()
 {
-  if (_margin)
+  if (_grid)
   {
-    _margin->setBounds(getLocalBounds());
-    _margin->resized();
-  }
-  else if (_display)
-  {
-    _display->setBounds(getLocalBounds());
-    _display->resized();
+    _grid->setBounds(getLocalBounds());
+    _grid->resized();
   }
 }
 
@@ -99,6 +82,24 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
   if (!PrepareForRender(moduleIndex))
     return;
   _tweakedModuleByUI = moduleIndex;
+
+  auto const& staticTopo = StaticModuleFor(moduleIndex);
+  int graphCount = _detailGraphs ? staticTopo.detailGraphCount : 1;
+  if (_graphCount != graphCount)
+  {
+    _graphCount = graphCount;
+    removeChildComponent(_grid.get());
+    _grid = std::make_unique<FBGridComponent>(_plugGUI, true, 1, _graphCount);
+    _displays.clear();
+    for (int i = 0; i < graphCount; i++)
+    {
+      auto display = std::make_unique<FBModuleGraphDisplayComponent>(_plugGUI, _data.get(), i);
+      _grid->Add(0, i, display.get());
+      _displays.emplace_back(std::move(display));
+    }
+    addAndMakeVisible(_grid.get());
+    resized();
+  }
 
   float fps = FBGUIFPS;
   auto now = high_resolution_clock::now();

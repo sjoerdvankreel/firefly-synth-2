@@ -12,8 +12,8 @@ class FBModuleGraphDisplayComponent final:
 public juce::Component
 {
   FBPlugGUI* const _plugGUI;
-  bool _withBorder;
   FBModuleGraphComponentData const* const _data;
+  int const _graphIndex;
 
   FBColorScheme const& FindColorSchemeFor(
     int moduleIndex, int moduleSlot) const;
@@ -21,34 +21,32 @@ public juce::Component
 public:
   void paint(juce::Graphics& g) override;
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBModuleGraphDisplayComponent);
-  FBModuleGraphDisplayComponent(FBPlugGUI* plugGUI, FBModuleGraphComponentData const* data, bool withBorder);
+  FBModuleGraphDisplayComponent(FBPlugGUI* plugGUI, FBModuleGraphComponentData const* data, int graphIndex);
 
 private:
   float PointXLocation(
-    int graph, float pointRelative, bool withPadding) const;
+    float pointRelative, bool withPadding) const;
 
   float PointYLocation(
-    int graph, float pointYValue, bool stereo, bool left, 
+    float pointYValue, bool stereo, bool left, 
     float absMaxValueAllSeries, bool withPadding) const;
 
   juce::Point<float> PointLocation(
-    int graph, std::vector<float> const& points,
+    std::vector<float> const& points,
     int point, bool stereo, bool left,
     int maxSizeAllSeries, float absMaxValueAllSeries) const;
 
   void PaintVerticalIndicator(
-    juce::Graphics& g, int graph, int point, bool primary,
+    juce::Graphics& g, int point, bool primary,
     int maxSizeAllSeries, float absMaxValueAllSeries);
 
   void PaintMarker(
-    juce::Graphics& g,
-    int graph, std::vector<float> const& points,
+    juce::Graphics& g, std::vector<float> const& points,
     int marker, bool primary, bool isPointIndicator, bool stereo,
     bool left, int maxSizeAllSeries, float absMaxValueAllSeries);
 
   void PaintSeries(
-    juce::Graphics& g, bool primary, 
-    int graph, std::vector<float> const& points,
-    bool stereo, bool left,
+    juce::Graphics& g, std::vector<float> const& points,
+    bool primary, bool stereo, bool left,
     int maxSizeAllSeries, float absMaxValueAllSeries);
 };
