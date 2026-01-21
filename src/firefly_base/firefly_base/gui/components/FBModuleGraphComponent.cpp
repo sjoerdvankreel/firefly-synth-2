@@ -90,12 +90,16 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
   {
     _graphCount = graphCount;
     removeChildComponent(_grid.get());
-    _grid = std::make_unique<FBGridComponent>(_plugGUI, true, 1, _graphCount);
+    _grid = std::make_unique<FBGridComponent>(_plugGUI, true, std::vector<int> { 1, 0 }, std::vector<int>(_graphCount, 1));
+    _titles.clear();
     _displays.clear();
     for (int i = 0; i < graphCount; i++)
     {
+      auto title = std::make_unique<FBModuleGraphTitleComponent>(_plugGUI, _data.get(), i);
       auto display = std::make_unique<FBModuleGraphDisplayComponent>(_plugGUI, _data.get(), i);
       _grid->Add(0, i, display.get());
+      _grid->Add(1, i, title.get());
+      _titles.emplace_back(std::move(title));
       _displays.emplace_back(std::move(display));
     }
     addAndMakeVisible(_grid.get());

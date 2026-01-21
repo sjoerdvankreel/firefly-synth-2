@@ -80,7 +80,7 @@ struct FBThemeGlobal
   int fontSize = {};
   std::string name = {};
   FBThemeResources resources = {};
-  bool graphSchemeFollowsModule = {}; // todo lose this?
+  bool graphSchemeFollowsModule = {}; // todo lose this
   bool unisonSchemeFollowsModule = {};
   FBColorScheme defaultColorScheme = {};
   std::map<std::string, FBColorScheme> colorSchemes = {};
