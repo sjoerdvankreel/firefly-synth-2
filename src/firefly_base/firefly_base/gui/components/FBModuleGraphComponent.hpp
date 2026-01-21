@@ -4,6 +4,7 @@
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
+#include <chrono>
 #include <memory>
 #include <functional>
 

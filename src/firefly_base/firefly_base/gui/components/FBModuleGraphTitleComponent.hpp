@@ -14,6 +14,10 @@ public IFBVerticalAutoSize
   FBModuleGraphComponentData const* const _data;
   int const _graphIndex;
 
+  std::string _title = {};
+  std::string _subText = {};
+  std::chrono::high_resolution_clock::time_point _updated = {};
+
 public:
   int FixedHeight() const override;
   void paint(juce::Graphics& g) override;

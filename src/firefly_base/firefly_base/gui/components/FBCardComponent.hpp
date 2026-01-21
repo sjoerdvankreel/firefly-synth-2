@@ -2,6 +2,7 @@
 
 #include <firefly_base/gui/shared/FBAutoSize.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
+#include <chrono>
 
 class FBPlugGUI;
 

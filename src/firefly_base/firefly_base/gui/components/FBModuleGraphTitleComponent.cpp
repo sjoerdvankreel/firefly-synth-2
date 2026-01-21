@@ -18,10 +18,22 @@ FBModuleGraphTitleComponent::FixedHeight() const
 void 
 FBModuleGraphTitleComponent::paint(Graphics& g)
 {
+  float fps = 10.0f; // no need to run at 60, it distracts
+  auto now = std::chrono::high_resolution_clock::now();
+  auto elapsedMillis = duration_cast<std::chrono::milliseconds>(now - _updated);
+  if (elapsedMillis.count() >= 1000.0 / fps)
+  {
+    _updated = now;
+    _title.clear();
+    _subText.clear();
+    _title.append(_data->graphs[_graphIndex].title);
+    _subText.append(_data->graphs[_graphIndex].subtext);
+  }
+
   auto lnf = FBGetLookAndFeelFor(_plugGUI);
   auto const& scheme = lnf->FindColorSchemeFor(*this);
   g.setColour(scheme.text);
   g.setFont(lnf->GetFont());
-  g.drawText(_data->graphs[_graphIndex].title, getLocalBounds(), Justification::centredLeft, false);
-  g.drawText(_data->graphs[_graphIndex].subtext, getLocalBounds(), Justification::centredRight, false);
+  g.drawText(_title, getLocalBounds(), Justification::centredLeft, false);
+  g.drawText(_subText, getLocalBounds(), Justification::centredRight, false);
 }
