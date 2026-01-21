@@ -146,7 +146,7 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     
     int maxSizeAllSeries = 0;
     float absMaxValueAllSeries = 0.0f;
-    graphData->graphs[i].GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
+    graphData->graphs[i].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
     auto osciType = graphData->renderState->AudioParamList<FFOsciType>(paramIndices, false, -1);
     std::string title = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
     title += ": " + FFOsciTypeToString(osciType);

@@ -30,7 +30,8 @@ struct FBModuleGraphData final
 {
 private:
   mutable int _maxSizeAllSeries = -1;
-  mutable float _absMaxValueAllSeries = {};
+  mutable float _absMaxValueAllSeriesAll = {};
+  mutable float _absMaxValueAllSeriesSecondary = {};
 
 public:
   int moduleSlot = -1;
@@ -50,7 +51,7 @@ public:
   void ScaleBy(float factor);
   void ScaleToSelfNormalized();
   bool GetScaleFactorToNormalized(float& factor) const;
-  void GetLimits(int& maxSizeAllSeries, float& absMaxValueAllSeries) const;
+  void GetLimits(bool includePrimary, int& maxSizeAllSeries, float& absMaxValueAllSeries) const;
 };
 
 struct FBModuleGraphComponentData final

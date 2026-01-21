@@ -218,7 +218,8 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
   auto const& secondarySeries = graphData.secondarySeries;
   auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
   bool stereo = !primarySeries.r.empty();
-  graphData.GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
+  graphData.GetLimits(true, maxSizeAllSeries, absMaxValueAllSeries);
+  absMaxValueAllSeries = std::max(1.0f, absMaxValueAllSeries);
   FB_ASSERT(graphData.secondarySeries.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
 
   auto bounds = getLocalBounds();
