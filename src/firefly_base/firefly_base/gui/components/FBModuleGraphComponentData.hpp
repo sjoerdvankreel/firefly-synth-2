@@ -38,7 +38,10 @@ public:
   std::string title = {};
   std::string subtext = {};
   bool bipolar = false;
-  bool drawClipBoundaries = false;
+  bool plotLogarithmic = false;
+  bool drawClipBoundaries = false; // todo remove
+  float plotLogEnd = {};
+  float plotLogStart = {};
   std::vector<int> primaryMarkers = {};
   FBModuleGraphPoints primarySeries = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};

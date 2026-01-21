@@ -193,6 +193,9 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
       graphData->graphs[i].subtext = FBAsciiToUpper(FFEffectKindToString(kind));
       graphData->graphs[i].bipolar = kind == FFEffectKind::Clip || kind == FFEffectKind::Fold || kind == FFEffectKind::Skew;
+      graphData->graphs[i].plotLogStart = 20.0f;
+      graphData->graphs[i].plotLogEnd = 20000.0f;
+      graphData->graphs[i].plotLogarithmic = !graphData->graphs[i].bipolar;
       graphData->graphs[i].drawClipBoundaries = graphData->graphs[i].bipolar;
     }
     else
