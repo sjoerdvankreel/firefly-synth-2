@@ -211,7 +211,6 @@ FBModuleGraphDisplayComponent::PaintSeries(
 void
 FBModuleGraphDisplayComponent::paint(Graphics& g)
 {  
-  auto lnf = FBGetLookAndFeelFor(_plugGUI);
   int maxSizeAllSeries;
   float absMaxValueAllSeries;
   auto& graphData = _data->graphs[_graphIndex];
@@ -245,13 +244,6 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         PaintVerticalIndicator(g, svi[j],
           false, maxSizeAllSeries, absMaxValueAllSeries);
     }
-  }
-
-  if (graphData.subtext.size())
-  {
-    g.setColour(scheme.text2.withAlpha(0.33f));
-    g.setFont(lnf->GetFont().withHeight(20.0f));
-    g.drawText(graphData.subtext, graphBounds, Justification::centred, false);
   }
 
   if (maxSizeAllSeries != 0)
@@ -296,22 +288,5 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         PaintMarker(g, primarySeries.l, graphData.primaryMarkers[i],
           true, false, false, true, maxSizeAllSeries, absMaxValueAllSeries);
       }
-  }
-
-  if (graphData.title.size())
-  {
-    float const labelPad = 4.0f;
-    auto newFont = lnf->GetFont().withHeight(14.0f);
-    auto textSize = TextLayout::getStringBounds(newFont, graphData.title);
-    auto textBounds = Rectangle<float>(
-      graphBounds.getX() + graphBounds.getWidth() - textSize.getWidth() - 2.0f * labelPad,
-      (float)graphBounds.getY() + labelPad,
-      textSize.getWidth() + labelPad,
-      textSize.getHeight() + labelPad);
-    g.setColour(scheme.sectionBackground.withAlpha(0.75f));
-    g.fillRoundedRectangle(textBounds, 2.0f);
-    g.setColour(scheme.text); 
-    g.setFont(newFont);
-    g.drawText(graphData.title, textBounds, Justification::centred, false);
   }
 }
