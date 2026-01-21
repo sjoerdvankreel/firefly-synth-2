@@ -178,6 +178,8 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[0].subtext = FBAsciiToUpper(Global ?
       FFGEchoTargetToString((FFGEchoTarget)target) :
       FFVEchoTargetToString((FFVEchoTarget)target));
+    graphData->graphs[0].MergeStereo();
+    graphData->graphs[0].ScaleToSelfNormalized();
     return;
   }
 
@@ -204,6 +206,8 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   graphData->graphs[reverbOrder].bipolar = true;
   graphData->graphs[reverbOrder].title = FBAsciiToUpper(moduleName + " Rvrb");
   graphData->graphs[reverbOrder].subtext = IsReverbOn(renderState, Global, false, -1) ? "ON" : "OFF";
+
+  graphData->ScaleToAllNormalized();
 }
 
 template struct EchoGraphRenderData<true>;
