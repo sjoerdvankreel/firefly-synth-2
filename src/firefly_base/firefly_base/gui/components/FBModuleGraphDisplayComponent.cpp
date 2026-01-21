@@ -220,9 +220,7 @@ FBModuleGraphDisplayComponent::PaintSeries(
 void
 FBModuleGraphDisplayComponent::paint(Graphics& g)
 {  
-#if 0  
   auto lnf = FBGetLookAndFeelFor(_plugGUI);
-#endif 
   for (int graph = 0; graph < _data->graphs.size(); graph++)
   {
     int maxSizeAllSeries;
@@ -240,18 +238,13 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     auto x1 = static_cast<int>(PointXLocation(graph, 1.0f, false));
     auto graphBounds = Rectangle<int>(x0, bounds.getY(), x1 - x0, bounds.getHeight());
     g.setColour(scheme.graphBackground);
-    g.fillRoundedRectangle(graphBounds.toFloat(), 3.0f);
-    ColourGradient bgGradient(scheme.primary.withAlpha(0.1f), 0.0f, 0.0f, scheme.primary.withAlpha(0.0f), 0.0f, (float)getHeight(), false);
-    g.setGradientFill(bgGradient);
-    g.fillRoundedRectangle(graphBounds.toFloat(), 3.0f);
+    g.fillRoundedRectangle(graphBounds.toFloat(), 5.0f);
 
-#if 0
     if (_withBorder)
     {
       g.setColour(scheme.graphBorder);  
       g.drawRoundedRectangle(graphBounds.toFloat(), 5.0f, 2.0f);
     }
-#endif
 
     if (maxSizeAllSeries != 0)
     {
@@ -271,14 +264,12 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       }
     }
 
-#if 0
     if (graphData.subtext.size())
     {
       g.setColour(scheme.text2.withAlpha(0.33f));
       g.setFont(lnf->GetFont().withHeight(20.0f));
       g.drawText(graphData.subtext, graphBounds, Justification::centred, false);
     }
-#endif
 
     if (maxSizeAllSeries != 0)
     {
@@ -324,7 +315,6 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         }
     }
 
-#if 0
     if (graphData.title.size())
     {
       float const labelPad = 4.0f;
@@ -341,6 +331,5 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       g.setFont(newFont);
       g.drawText(graphData.title, textBounds, Justification::centred, false);
     }
-#endif
   }
 }
