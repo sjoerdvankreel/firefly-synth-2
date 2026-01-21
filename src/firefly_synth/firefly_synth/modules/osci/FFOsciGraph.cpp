@@ -143,9 +143,16 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     FBRenderModuleGraph<false, true>(renderData, detailGraphs, i);
     FBTopoIndices modIndices = { (int)FFModuleType::Osci, graphModuleSlot };
     FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::Type, 0 } };
-    graphData->graphs[i].title = FBAsciiToUpper(graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name);
+    
+    int maxSizeAllSeries = 0;
+    float absMaxValueAllSeries = 0.0f;
+    graphData->graphs[i].GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
     auto osciType = graphData->renderState->AudioParamList<FFOsciType>(paramIndices, false, -1);
-    graphData->graphs[i].subtext = FBAsciiToUpper(FFOsciTypeToString(osciType));
+    std::string title = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
+    title += ": " + FFOsciTypeToString(osciType);
+    
+    graphData->graphs[i].title = title;
+    graphData->graphs[i].subtext = std::to_string(absMaxValueAllSeries);
     graphData->graphs[i].moduleSlot = graphModuleSlot;
     graphData->graphs[i].moduleIndex = (int)FFModuleType::Osci;
     graphData->graphs[i].bipolar = true;
