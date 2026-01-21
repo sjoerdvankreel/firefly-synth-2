@@ -8,6 +8,7 @@
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBModuleGraphComponent.hpp>
 #include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
+#include <firefly_base/gui/components/FBModuleGraphTitleComponent.hpp>
 #include <firefly_base/gui/components/FBModuleGraphDisplayComponent.hpp>
 
 using namespace juce;
