@@ -69,10 +69,11 @@ FBModuleGraphDisplayComponent::PointXLocation(
     graphWidth += (getWidth() - gapCount * gapWidth - graphCount * graphWidth);
   if (_data->graphs[graph].plotLogarithmic)
   {
-    float range = _data->graphs[graph].plotLogEnd / _data->graphs[graph].plotLogStart;
-    float expo = std::log(range) / std::log(2.0f);
-    float realVal = _data->graphs[graph].plotLogStart * std::pow(2.0f, expo * pointRelative);
-    pointRelative = (realVal - _data->graphs[graph].plotLogStart) / range;
+    float end = _data->graphs[graph].plotLogEnd;
+    float start = _data->graphs[graph].plotLogStart;
+    float expo = std::log(end / start) / std::log(2.0f);
+    float realVal = start + (end - start) * pointRelative;
+    pointRelative = std::log2(realVal / start) / expo;
   }
   if(withPadding)
     return graphLeft + Padding + pointRelative * (graphWidth - 2.0f * Padding);
