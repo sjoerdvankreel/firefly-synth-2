@@ -196,7 +196,7 @@ FBModuleGraphDisplayComponent::PaintSeries(
   strokePath.startNewSubPath(strokeStart);
   fillPath.startNewSubPath(PointXLocation(graph, 0.0f, true), fillY);
   fillPath.lineTo(strokeStart);
-  fillPath.lineTo(strokeStart);
+  fillPath.lineTo(strokeStart); // for the rounding
   for (int i = 1; i < points.size(); i++)
   {
     auto thisPoint = PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
