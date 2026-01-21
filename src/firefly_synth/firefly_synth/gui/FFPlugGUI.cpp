@@ -320,7 +320,7 @@ FFPlugGUI::SetupGUI()
   _envMainGraph = StoreComponent<FBModuleGraphComponent>(this, false, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
   _lfoMainGraph = StoreComponent<FBModuleGraphComponent>(this, false, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
   _echoMainGraph = StoreComponent<FBModuleGraphComponent>(this, false, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
-  _mainAndDetailGraphs = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { { 3, 2 } }, std::vector<int> { { 1, 1, 1, 1, 1 } });
+  _mainAndDetailGraphs = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 3, 2 } }, std::vector<int> { { 1, 1, 1, 1, 1 } });
   _mainAndDetailGraphs->Add(0, 0, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _oscMainGraph));
   _mainAndDetailGraphs->Add(0, 1, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _fxMainGraph));
   _mainAndDetailGraphs->Add(0, 2, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _echoMainGraph));
