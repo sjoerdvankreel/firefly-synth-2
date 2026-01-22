@@ -80,6 +80,9 @@ inline int const FBDefaultDisplayPrecision = 3;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(x); \
   x() = default
 
+std::string
+FBPitchToString(float pitch);
+
 // Remove { and } for use in json and urls.
 std::string
 FBCleanTopoId(std::string const& topoId);

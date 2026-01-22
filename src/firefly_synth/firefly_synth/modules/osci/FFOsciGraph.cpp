@@ -41,7 +41,7 @@ GetOsciExchangeStateFromDSP(FBGraphRenderState* state, int slot, bool exchange, 
 void 
 OsciGraphRenderData::DoProcessMainExchangeValue(FBModuleGraphData& data, float value)
 {
-  data.mainValueText = std::to_string(value);
+  data.mainValueText = FBPitchToString(value);
 }
 
 void 

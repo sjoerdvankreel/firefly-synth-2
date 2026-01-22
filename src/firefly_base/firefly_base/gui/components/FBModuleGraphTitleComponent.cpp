@@ -28,7 +28,7 @@ FBModuleGraphTitleComponent::paint(Graphics& g)
     _subAndMainValueText.clear();
     _title.append(_data->graphs[_graphIndex].title);
     _subAndMainValueText.append(_data->graphs[_graphIndex].subtext);
-    _subAndMainValueText.append(_data->graphs[_graphIndex].mainValueText);
+    _subAndMainValueText.append(", " + _data->graphs[_graphIndex].mainValueText);
   }
 
   auto lnf = FBGetLookAndFeelFor(_plugGUI);

@@ -9,6 +9,41 @@
 using namespace juce;
 
 std::string
+FBPitchToString(float pitch)
+{
+  int whole = (int)pitch;
+  float frac = pitch - whole;
+  if (frac > 0.5f)
+  {
+    whole += 1;
+    frac -= 1.0f;
+  }
+  int oct = whole / 12;
+  int note = whole % 12;
+  std::string noteText = {};
+  switch (note)
+  {
+  case 0: noteText = "C"; break;
+  case 1: noteText = "C#"; break;
+  case 2: noteText = "D"; break;
+  case 3: noteText = "D#"; break;
+  case 4: noteText = "E"; break;
+  case 5: noteText = "F"; break;
+  case 6: noteText = "F#"; break;
+  case 7: noteText = "G"; break;
+  case 8: noteText = "G#"; break;
+  case 9: noteText = "A"; break;
+  case 10: noteText = "A#"; break;
+  case 11: noteText = "B"; break;
+  default: FB_ASSERT(false); break;
+  }
+  std::string result = noteText + std::to_string(oct);
+  if (frac >= 0.0f)
+    result += "+";
+  return result + std::to_string((int)(frac * 100.0f));
+}
+
+std::string
 FBCleanTopoId(std::string const& topoId)
 {
   auto result = topoId;
