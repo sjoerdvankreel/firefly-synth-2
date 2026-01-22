@@ -159,12 +159,10 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   }
   if (detailGraphs)
   {
-    graphData->DropOutliers(3.0f);
     graphData->ScaleToAllNormalized();
   }
   else
   {
-    graphData->graphs[0].DropOutliers(3.0f);
     graphData->graphs[0].MergeStereo();
     graphData->graphs[0].ScaleToSelfNormalized();
   }

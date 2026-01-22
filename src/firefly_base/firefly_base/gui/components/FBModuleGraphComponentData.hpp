@@ -28,12 +28,6 @@ struct FBModuleGraphSecondarySeries final
 
 struct FBModuleGraphData final
 {
-private:
-  mutable int _maxSizeAllSeries = -1;
-  mutable float _absMaxValueAllSeriesAll = {};
-  mutable float _absMaxValueAllSeriesSecondary = {};
-
-public:
   int moduleSlot = -1;
   int moduleIndex = -1;
   std::string title = {};
@@ -50,7 +44,6 @@ public:
   void MergeStereo();
   void ScaleBy(float factor);
   void ScaleToSelfNormalized();
-  void DropOutliers(float maxStDevTimes);
   bool GetScaleFactorToNormalized(float& factor) const;
   void GetLimits(bool includePrimary, int& maxSizeAllSeries, float& absMaxValueAllSeries) const;
 };
@@ -70,7 +63,6 @@ struct FBModuleGraphComponentData final
 
   void ScaleBy(float factor);
   void ScaleToAllNormalized();
-  void DropOutliers(float maxStDevTimes);
   bool GetScaleFactorToAllNormalized(float& factor) const;
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleGraphComponentData);
 };
