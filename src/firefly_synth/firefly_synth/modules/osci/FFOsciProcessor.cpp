@@ -363,6 +363,7 @@ FFOsciProcessor::Process(
   auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
   exchangeDSP.boolIsActive = 1;
   exchangeDSP.basePitch = voiceBasePitch.Get(FBFixedBlockSamples - 1);
+  exchangeDSP.mainExchangeValue = basePitchPlain.Get(0);
   exchangeDSP.lengthSamples = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];

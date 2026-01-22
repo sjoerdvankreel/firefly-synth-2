@@ -25,9 +25,10 @@ FBModuleGraphTitleComponent::paint(Graphics& g)
   {
     _updated = now;
     _title.clear();
-    _subText.clear();
+    _subAndMainValueText.clear();
     _title.append(_data->graphs[_graphIndex].title);
-    _subText.append(_data->graphs[_graphIndex].subtext);
+    _subAndMainValueText.append(_data->graphs[_graphIndex].subtext);
+    _subAndMainValueText.append(_data->graphs[_graphIndex].mainValueText);
   }
 
   auto lnf = FBGetLookAndFeelFor(_plugGUI);
@@ -35,5 +36,5 @@ FBModuleGraphTitleComponent::paint(Graphics& g)
   g.setColour(scheme.text);
   g.setFont(lnf->GetFont());
   g.drawText(_title, getLocalBounds(), Justification::centredLeft, false);
-  g.drawText(_subText, getLocalBounds(), Justification::centredRight, false);
+  g.drawText(_subAndMainValueText, getLocalBounds(), Justification::centredRight, false);
 }

@@ -37,6 +37,7 @@ struct FBModuleGraphData final
   int moduleIndex = -1;
   std::string title = {};
   std::string subtext = {};
+  std::string mainValueText = {};
   std::vector<int> primaryMarkers = {};
   FBModuleGraphPoints primarySeries = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};

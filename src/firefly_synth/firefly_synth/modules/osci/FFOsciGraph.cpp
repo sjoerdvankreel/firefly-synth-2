@@ -12,6 +12,7 @@ struct OsciGraphRenderData final:
 public FBModuleGraphRenderData<OsciGraphRenderData>
 {
   FFVoiceDSPState& GetVoiceDSPState(FBModuleProcState& state);
+  void DoProcessMainExchangeValue(FBModuleGraphData& data, float value);
   int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
@@ -35,6 +36,12 @@ GetOsciExchangeStateFromDSP(FBGraphRenderState* state, int slot, bool exchange, 
   if (exchange)
     exchangeFromDSP = &dynamic_cast<FFOsciExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
   return exchangeFromDSP;
+}
+
+void 
+OsciGraphRenderData::DoProcessMainExchangeValue(FBModuleGraphData& data, float value)
+{
+  data.mainValueText = std::to_string(value);
 }
 
 void 

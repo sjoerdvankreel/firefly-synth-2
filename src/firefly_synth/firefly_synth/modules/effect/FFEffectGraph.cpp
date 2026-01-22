@@ -18,6 +18,7 @@ public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
   std::array<int, FFEffectBlockCount> samplesProcessed = {};
 
   FFEffectProcessor& GetProcessor(FBModuleProcState& state);
+  void DoProcessMainExchangeValue(FBModuleGraphData& /*data*/, float /*value*/) {}
   int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);

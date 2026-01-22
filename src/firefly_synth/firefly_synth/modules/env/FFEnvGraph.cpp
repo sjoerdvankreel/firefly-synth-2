@@ -12,6 +12,7 @@ struct EnvGraphRenderData final:
 public FBModuleGraphRenderData<EnvGraphRenderData>
 {
   FFEnvProcessor& GetProcessor(FBModuleProcState& state);
+  void DoProcessMainExchangeValue(FBModuleGraphData& /*data*/, float /*value*/) {}
   int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoProcessIndicators(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
