@@ -198,12 +198,13 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } };
       auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
       graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
-      graphData->graphs[i].subtext = FBAsciiToUpper(FFEffectKindToString(kind));
+      graphData->graphs[i].title += ": " + FFEffectKindToString(kind);
+      //graphData->graphs[i].subtext = FBAsciiToUpper(FFEffectKindToString(kind));
     }
     else
     {
-      graphData->graphs[i].title = moduleName;
-      graphData->graphs[i].subtext = on ? "ON" : "OFF";
+      graphData->graphs[i].title = moduleName + ": " + (on ? "On" : "Off");
+      //graphData->graphs[i].subtext = on ? "On" : "Off";
     }
     graphData->graphs[i].ScaleToSelfNormalized();
   }

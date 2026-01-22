@@ -152,14 +152,22 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->renderState->ModuleProcState()->moduleSlot = graphModuleSlot;
     FBRenderModuleGraph<false, true>(renderData, detailGraphs, i);
     FBTopoIndices modIndices = { (int)FFModuleType::Osci, graphModuleSlot };
-    FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::Type, 0 } };
     
     int maxSizeAllSeries = 0;
     float absMaxValueAllSeries = 0.0f;
     graphData->graphs[i].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
+    FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::Type, 0 } };
     auto osciType = graphData->renderState->AudioParamList<FFOsciType>(paramIndices, false, -1);
+    paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::UniCount, 0 } };
+    int uniCount = graphData->renderState->AudioParamDiscrete(paramIndices, false, -1);
     std::string title = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
     title += ": " + FFOsciTypeToString(osciType);
+    if (osciType != FFOsciType::Off)
+    {
+      title += ", " + std::to_string(uniCount) + " voice";
+      if (uniCount > 1)
+        title += "s";
+    }
     
     graphData->graphs[i].title = title;
     graphData->graphs[i].subtext = FBFormatDoubleCLocale(20.0f * std::log10(absMaxValueAllSeries), 2) + " dB";

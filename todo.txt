@@ -5,7 +5,9 @@ v2.1.1
 [x] something with the image
 [x] externalize header.png
 [x] freq response should plot logarithmic
-[ ] bipolar etc should be per exchange voice
+[x] bipolar etc should be per exchange voice
+[ ] get rid of the CamelCase in the ui
+[ ] do some sort of primary indicator on the left (pitch, freq, drive) and signal derived on the right (db, %)
 [ ] osci ovsmp + new unison to own module
 [ ] fix up the env graph
 [ ] do mod rate/amt for multitap
