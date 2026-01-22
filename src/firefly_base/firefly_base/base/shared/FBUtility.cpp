@@ -19,6 +19,8 @@ FBPitchToString(float pitch)
     frac -= 1.0f;
   }
   int oct = whole / 12;
+  while (whole < 0)
+    whole += 12;
   int note = whole % 12;
   std::string noteText = {};
   switch (note)
