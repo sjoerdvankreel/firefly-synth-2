@@ -22,20 +22,6 @@ FFLFOWaveModeToString(int mode)
 {
   switch (mode)
   {
-  case FFTrigSin: return "Sin";
-  case FFTrigCos: return "Cos";
-  case FFTrigSin2: return "SnSn";
-  case FFTrigCos2: return "CsCs";
-  case FFTrigSinCos: return "SnCs";
-  case FFTrigCosSin: return "CsSn";
-  case FFTrigSin3: return "SnSnSn";
-  case FFTrigCos3: return "CsCsCs";
-  case FFTrigSn2Cs: return "SnSnCs";
-  case FFTrigCs2Sn: return "CsCsSn";
-  case FFTrigSnCs2: return "SnCsCs";
-  case FFTrigCsSn2: return "CsSnSn";
-  case FFTrigSnCsSn: return "SnCsSn";
-  case FFTrigCsSnCs: return "CsSnCs";
   case FFLFOWaveModeSaw: return "Saw";
   case FFLFOWaveModeTri: return "Tri";
   case FFLFOWaveModeSqr: return "Sqr";
@@ -47,7 +33,7 @@ FFLFOWaveModeToString(int mode)
   case FFLFOWaveModeNormSmooth: return "SmthNrm";
   case FFLFOWaveModeFreeUniSmooth: return "SmthUniF";
   case FFLFOWaveModeFreeNormSmooth: return "SmthNrmF";
-  default: FB_ASSERT(false); return {};
+  default: return FFTrigFunctionToString((FFTrigFunction)mode);
   }
 }
 

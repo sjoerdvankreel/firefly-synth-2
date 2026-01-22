@@ -199,12 +199,49 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
       graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
       graphData->graphs[i].title += ": " + FFEffectKindToString(kind);
-      //graphData->graphs[i].subtext = FBAsciiToUpper(FFEffectKindToString(kind));
+      if (kind == FFEffectKind::StVar)
+      {
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarMode, i } };
+        auto mode = renderState->AudioParamList<FFStateVariableFilterMode>(indices, false, -1);
+        graphData->graphs[i].title += ", " + FFStateVariableFilterModeToString(mode);
+      }
+      if (kind == FFEffectKind::StVar || kind == FFEffectKind::Comb || kind == FFEffectKind::CombPlus || kind == FFEffectKind::CombMin)
+      {
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::FilterMode, i } };
+        auto mode = renderState->AudioParamList<FFEffectFilterMode>(indices, false, -1);
+        graphData->graphs[i].title += ", " + FFEffectFilterModeToString(mode);
+      }
+      if (kind == FFEffectKind::Clip)
+      {
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::ClipMode, i } };
+        auto mode = renderState->AudioParamList<FFEffectClipMode>(indices, false, -1);
+        graphData->graphs[i].title += ", " + FFEffectClipModeToString(mode);
+      }
+      if (kind == FFEffectKind::Fold)
+      {
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::FoldMode, i } };
+        auto mode = renderState->AudioParamList<FFEffectFoldMode>(indices, false, -1);
+        graphData->graphs[i].title += ", " + FFEffectFoldModeToString(mode);
+      }
+      if (kind == FFEffectKind::Skew)
+      {
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::SkewMode, i } };
+        auto mode = renderState->AudioParamList<FFEffectSkewMode>(indices, false, -1);
+        graphData->graphs[i].title += ", " + FFEffectSkewModeToString(mode);
+      }
+
+
+      //graphData->graphs[i].subtext = FBAsciiToUpper(FFEffectKindToString(kind)); // todo
     }
     else
     {
+      FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Oversample, 0 } };
+      bool oversample = renderState->AudioParamBool(indices, false, -1);
       graphData->graphs[i].title = moduleName + ": " + (on ? "On" : "Off");
-      //graphData->graphs[i].subtext = on ? "On" : "Off";
+      if (on && oversample)
+        graphData->graphs[i].title += ", Oversample";
+
+      //graphData->graphs[i].subtext = on ? "On" : "Off"; // todo
     }
     graphData->graphs[i].ScaleToSelfNormalized();
   }

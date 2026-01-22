@@ -124,7 +124,9 @@ FBHostProcessor::ProcessHost(
     if (!static_.voice)
     {
       if (_exchangeState->Modules()[m] != nullptr)
+      {
         _exchangeState->Modules()[m]->Global()->boolIsActive = 0;
+      }
     }
     else
     {

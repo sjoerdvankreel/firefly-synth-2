@@ -6,6 +6,45 @@
 #include <firefly_synth/modules/effect/FFEffectGraph.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
+std::string
+FFEffectSkewModeToString(FFEffectSkewMode mode)
+{
+  switch (mode)
+  {
+  case FFEffectSkewMode::Uni: return "UP";
+  case FFEffectSkewMode::Bi: return "BP";
+  default: FB_ASSERT(false); return {};
+  }
+}
+
+std::string
+FFEffectClipModeToString(FFEffectClipMode mode)
+{
+  switch (mode)
+  {
+  case FFEffectClipMode::Hard: return "Hard";
+  case FFEffectClipMode::TanH: return "TanH";
+  case FFEffectClipMode::Sin: return "Sin";
+  case FFEffectClipMode::TSQ: return "TSQ";
+  case FFEffectClipMode::Cube: return "Cube";
+  case FFEffectClipMode::Inv: return "Inv";
+  case FFEffectClipMode::Exp: return "Exp";
+  default: FB_ASSERT(false); return {};
+  }
+}
+
+std::string
+FFEffectFilterModeToString(FFEffectFilterMode mode)
+{
+  switch (mode)
+  {
+  case FFEffectFilterMode::Freq: return "Freq";
+  case FFEffectFilterMode::Pitch: return "Pitch";
+  case FFEffectFilterMode::Track: return "Track";
+  default: FB_ASSERT(false); return {};
+  }
+}
+
 std::string 
 FFEffectKindToString(FFEffectKind kind)
 {
@@ -17,9 +56,19 @@ FFEffectKindToString(FFEffectKind kind)
   case FFEffectKind::Skew: return "Skew";
   case FFEffectKind::Comb: return "Comb";
   case FFEffectKind::StVar: return "SVF";
-  case FFEffectKind::CombMin: return "Cmb-";
-  case FFEffectKind::CombPlus: return "Cmb+";
+  case FFEffectKind::CombMin: return "Comb-";
+  case FFEffectKind::CombPlus: return "Comb+";
   default: FB_ASSERT(false); return {};
+  }
+}
+
+std::string
+FFEffectFoldModeToString(FFEffectFoldMode mode)
+{
+  switch (mode)
+  {
+  case FFEffectFoldMode::FFEffectFoldModeFold: return "Fold";
+  default: return FFTrigFunctionToString((FFTrigFunction)mode);
   }
 }
 
@@ -192,9 +241,9 @@ FFMakeEffectTopo(bool global)
   filterMode.description = "Filter Frequency Mode";
   filterMode.type = FBParamType::List;
   filterMode.List().items = {
-    { "{64270F43-2D0C-4A1B-BFE7-0DC8FFE2C9DC}", "Freq" },
-    { "{08CB8D26-B925-4671-BB08-F3E57864E20B}", "Pitch" },
-    { "{B9C54398-0CE0-4636-8777-BEE9036B56D6}", "Track" } };
+    { "{64270F43-2D0C-4A1B-BFE7-0DC8FFE2C9DC}", FFEffectFilterModeToString(FFEffectFilterMode::Freq) },
+    { "{08CB8D26-B925-4671-BB08-F3E57864E20B}", FFEffectFilterModeToString(FFEffectFilterMode::Pitch) },
+    { "{B9C54398-0CE0-4636-8777-BEE9036B56D6}", FFEffectFilterModeToString(FFEffectFilterMode::Track) } };
   auto selectFilterMode = [](auto& module) { return &module.block.filterMode; };
   filterMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFilterMode);
   filterMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFilterMode);
@@ -215,15 +264,15 @@ FFMakeEffectTopo(bool global)
   stVarMode.description = "SV Filter Algorithm";
   stVarMode.type = FBParamType::List;
   stVarMode.List().items = {
-    { "{EAAE7102-9F6C-4EC2-8C39-B13BBDFF7AD1}", "LPF" },
-    { "{6A91C381-DB9F-4CAA-8155-4A407700661A}", "BPF" },
-    { "{747DA91C-C43D-4CFC-8EFD-353B0AC23E0E}", "HPF" },
-    { "{10FEE670-AB90-4DBF-A617-6F15F3E4602D}", "BSF" },
-    { "{EE9A4F79-B557-43B4-ABDF-320414D773D5}", "APF" },
-    { "{C9C3A3F5-5C5B-4331-8F6E-DDD2DC5A1D7B}", "PEQ" },
-    { "{8D885EEB-DF69-455A-9FFD-BA95E3E30596}", "BLL" },
-    { "{C4BBC616-CFDB-4E93-9315-D25552D85F71}", "LSH" },
-    { "{AF2550ED-90C5-4E09-996D-A4669728C744}", "HSH" } };
+    { "{EAAE7102-9F6C-4EC2-8C39-B13BBDFF7AD1}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::LPF) },
+    { "{6A91C381-DB9F-4CAA-8155-4A407700661A}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::BPF) },
+    { "{747DA91C-C43D-4CFC-8EFD-353B0AC23E0E}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::HPF) },
+    { "{10FEE670-AB90-4DBF-A617-6F15F3E4602D}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::BSF) },
+    { "{EE9A4F79-B557-43B4-ABDF-320414D773D5}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::APF) },
+    { "{C9C3A3F5-5C5B-4331-8F6E-DDD2DC5A1D7B}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::PEQ) },
+    { "{8D885EEB-DF69-455A-9FFD-BA95E3E30596}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::BLL) },
+    { "{C4BBC616-CFDB-4E93-9315-D25552D85F71}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::LSH) },
+    { "{AF2550ED-90C5-4E09-996D-A4669728C744}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::HSH) } };
   auto selectStVarMode = [](auto& module) { return &module.block.stVarMode; };
   stVarMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectStVarMode);
   stVarMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectStVarMode);
@@ -533,13 +582,13 @@ FFMakeEffectTopo(bool global)
   clipMode.description = "Wave Clipper Mode";
   clipMode.type = FBParamType::List;
   clipMode.List().items = {
-    { "{32F53B15-54AC-44AE-8812-97D598B9928B}", "Hard" },
-    { "{E4ECBDA0-F14F-411D-81A8-C59CC9B7C2C6}", "TanH" },
-    { "{851F55D9-89E0-4B37-A6DA-A81692A716BD}", "Sin" },
-    { "{A629BC3E-4732-4A6A-AB79-38CE84F04B0D}", "TSQ" },
-    { "{C0E30CBB-596C-4267-96E9-9FBFD5D26C27}", "Cube" },
-    { "{192BF63E-663D-494C-956F-3A8BB2E22067}", "Inv" },
-    { "{8A58AAB2-0AE7-426E-B71F-A444653286A6}", "Expo" } };
+    { "{32F53B15-54AC-44AE-8812-97D598B9928B}", FFEffectClipModeToString(FFEffectClipMode::Hard) },
+    { "{E4ECBDA0-F14F-411D-81A8-C59CC9B7C2C6}", FFEffectClipModeToString(FFEffectClipMode::TanH) },
+    { "{851F55D9-89E0-4B37-A6DA-A81692A716BD}", FFEffectClipModeToString(FFEffectClipMode::Sin) },
+    { "{A629BC3E-4732-4A6A-AB79-38CE84F04B0D}", FFEffectClipModeToString(FFEffectClipMode::TSQ) },
+    { "{C0E30CBB-596C-4267-96E9-9FBFD5D26C27}", FFEffectClipModeToString(FFEffectClipMode::Cube) },
+    { "{192BF63E-663D-494C-956F-3A8BB2E22067}", FFEffectClipModeToString(FFEffectClipMode::Inv) },
+    { "{8A58AAB2-0AE7-426E-B71F-A444653286A6}", FFEffectClipModeToString(FFEffectClipMode::Exp) } };
   auto selectClipMode = [](auto& module) { return &module.block.clipMode; };
   clipMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectClipMode);
   clipMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectClipMode);
@@ -562,21 +611,21 @@ FFMakeEffectTopo(bool global)
   foldMode.description = "Wave Folder Mode";
   foldMode.type = FBParamType::List;
   foldMode.List().items = {
-    { "{129369F6-C303-4BBA-8573-06FC33972FD9}", "Sin" },
-    { "{8CFCDA01-C9A9-4231-9994-8480CC08A1CE}", "Cos" },
-    { "{549CC93F-C88A-4C3B-AD37-B3C818DFF573}", "Sin2" },
-    { "{544151DB-5403-4732-B416-6CA2C9C78066}", "Cos2" },
-    { "{C10D2D9B-53F1-4779-AE80-D463A0DD7278}", "SnCs" },
-    { "{D820E334-2D19-4306-914D-00AA7D048D48}", "CsSn" },
-    { "{BB19624C-893C-41F9-83AD-CB17DFD9FC60}", "Sin3" },
-    { "{66737A7F-6548-4881-B8F3-69FCF0EB1843}", "Cos3" },
-    { "{2133F2BE-95B6-4845-A622-5712F2747960}", "S2Cs" },
-    { "{5C572DE3-6197-4289-A009-573A88E2B09F}", "C2Sn" },
-    { "{7527549D-68FE-4D6F-B420-BA75F9097EEE}", "SnC2" },
-    { "{7DA4D108-2DCB-49C1-97D3-A3528A3BD715}", "CsS2" },
-    { "{EAEFCA78-2779-484D-AC67-CD61786B64B5}", "SCS" },
-    { "{4C0E5578-38F2-411C-A266-8FD9FFEA8612}", "CSC" },
-    { "{55167ED0-D050-403B-A061-CA4D0916E400}", "Fold" } };
+    { "{129369F6-C303-4BBA-8573-06FC33972FD9}", FFTrigFunctionToString(FFTrigSin) },
+    { "{8CFCDA01-C9A9-4231-9994-8480CC08A1CE}", FFTrigFunctionToString(FFTrigCos) },
+    { "{549CC93F-C88A-4C3B-AD37-B3C818DFF573}", FFTrigFunctionToString(FFTrigSin2) },
+    { "{544151DB-5403-4732-B416-6CA2C9C78066}", FFTrigFunctionToString(FFTrigCos2) },
+    { "{C10D2D9B-53F1-4779-AE80-D463A0DD7278}", FFTrigFunctionToString(FFTrigSinCos) },
+    { "{D820E334-2D19-4306-914D-00AA7D048D48}", FFTrigFunctionToString(FFTrigCosSin) },
+    { "{BB19624C-893C-41F9-83AD-CB17DFD9FC60}", FFTrigFunctionToString(FFTrigSin3) },
+    { "{66737A7F-6548-4881-B8F3-69FCF0EB1843}", FFTrigFunctionToString(FFTrigCos3) },
+    { "{2133F2BE-95B6-4845-A622-5712F2747960}", FFTrigFunctionToString(FFTrigSn2Cs) },
+    { "{5C572DE3-6197-4289-A009-573A88E2B09F}", FFTrigFunctionToString(FFTrigCs2Sn) },
+    { "{7527549D-68FE-4D6F-B420-BA75F9097EEE}", FFTrigFunctionToString(FFTrigSnCs2) },
+    { "{7DA4D108-2DCB-49C1-97D3-A3528A3BD715}", FFTrigFunctionToString(FFTrigCsSn2) },
+    { "{EAEFCA78-2779-484D-AC67-CD61786B64B5}", FFTrigFunctionToString(FFTrigSnCsSn) },
+    { "{4C0E5578-38F2-411C-A266-8FD9FFEA8612}", FFTrigFunctionToString(FFTrigCsSnCs) },
+    { "{55167ED0-D050-403B-A061-CA4D0916E400}", FFEffectFoldModeToString(FFEffectFoldModeFold) } };
   foldMode.List().submenuStart[FFTrigSin] = "Trig1";
   foldMode.List().submenuStart[FFTrigSin2] = "Trig2";
   foldMode.List().submenuStart[FFTrigSin3] = "Trig3";
@@ -603,8 +652,8 @@ FFMakeEffectTopo(bool global)
   skewMode.description = "Wave Skewer Mode";
   skewMode.type = FBParamType::List;
   skewMode.List().items = {
-    { prefix + "{247BC86E-078E-409F-99B7-870F1B011C3B}", "UP" },
-    { prefix + "{C7689457-2AE9-4730-A341-5CB7B27047DE}", "BP" } };
+    { prefix + "{247BC86E-078E-409F-99B7-870F1B011C3B}", FFEffectSkewModeToString(FFEffectSkewMode::Uni) },
+    { prefix + "{C7689457-2AE9-4730-A341-5CB7B27047DE}", FFEffectSkewModeToString(FFEffectSkewMode::Bi) } };
   auto selectSkewMode = [](auto& module) { return &module.block.skewMode; };
   skewMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewMode);
   skewMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewMode);

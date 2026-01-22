@@ -164,7 +164,7 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     title += ": " + FFOsciTypeToString(osciType);
     if (osciType != FFOsciType::Off)
     {
-      title += ", " + std::to_string(uniCount) + " voice";
+      title += ", " + std::to_string(uniCount) + " Voice";
       if (uniCount > 1)
         title += "s";
     }

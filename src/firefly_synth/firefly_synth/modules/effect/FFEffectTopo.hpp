@@ -13,6 +13,11 @@ enum class FFEffectSkewMode { Uni, Bi };
 enum class FFEffectClipMode { Hard, TanH, Sin, TSQ, Cube, Inv, Exp  };
 enum class FFEffectFilterMode { Freq, Pitch, Track };
 
+std::string FFEffectFoldModeToString(FFEffectFoldMode mode);
+std::string FFEffectSkewModeToString(FFEffectSkewMode mode);
+std::string FFEffectClipModeToString(FFEffectClipMode mode);
+std::string FFEffectFilterModeToString(FFEffectFilterMode mode);
+
 enum class FFEffectKind { 
   Off, StVar, 
   Comb, CombPlus, CombMin,

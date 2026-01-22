@@ -5,6 +5,8 @@
 
 #include <array>
 #include <cmath>
+#include <string>
+#include <numbers>
 
 inline float constexpr FFMaxStateVariableFilterRes = 0.99f;
 inline float constexpr FFMinStateVariableFilterFreq = 20.0f;
@@ -12,6 +14,9 @@ inline float constexpr FFMaxStateVariableFilterFreq = 20000.0f;
 
 enum class FFStateVariableFilterMode
 { LPF, BPF, HPF, BSF, APF, PEQ, BLL, LSH, HSH };
+
+std::string
+FFStateVariableFilterModeToString(FFStateVariableFilterMode mode);
 
 // https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
 template <int Channels>
