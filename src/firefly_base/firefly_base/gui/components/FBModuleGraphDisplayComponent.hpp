@@ -25,28 +25,36 @@ public:
 
 private:
   float PointXLocation(
+    bool primarySeries, int secondaryIndex,
     float pointRelative, bool withPadding) const;
 
   float PointYLocation(
+    bool primarySeries, int secondaryIndex,
     float pointYValue, bool stereo, bool left, 
     float absMaxValueAllSeries, bool withPadding) const;
 
   juce::Point<float> PointLocation(
+    bool primarySeries, int secondaryIndex,
     std::vector<float> const& points,
     int point, bool stereo, bool left,
     int maxSizeAllSeries, float absMaxValueAllSeries) const;
 
   void PaintVerticalIndicator(
-    juce::Graphics& g, int point, bool primary,
+    juce::Graphics& g, 
+    bool primarySeries, int secondaryIndex, int point,
     int maxSizeAllSeries, float absMaxValueAllSeries);
 
   void PaintMarker(
-    juce::Graphics& g, std::vector<float> const& points,
-    int marker, bool primary, bool isPointIndicator, bool stereo,
+    juce::Graphics& g, 
+    bool primarySeries, int secondaryIndex,
+    std::vector<float> const& points,
+    int marker, bool isPointIndicator, bool stereo,
     bool left, int maxSizeAllSeries, float absMaxValueAllSeries);
 
   void PaintSeries(
-    juce::Graphics& g, std::vector<float> const& points,
-    bool primary, bool stereo, bool left,
+    juce::Graphics& g, 
+    bool primarySeries, int secondaryIndex,
+    std::vector<float> const& points,
+    bool stereo, bool left,
     int maxSizeAllSeries, float absMaxValueAllSeries);
 };

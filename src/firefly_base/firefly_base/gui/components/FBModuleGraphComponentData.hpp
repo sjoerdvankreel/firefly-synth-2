@@ -14,6 +14,11 @@ class FBGraphRenderState;
 
 struct FBModuleGraphPoints final
 {
+  float plotLogEnd = {};
+  float plotLogStart = {};
+  bool bipolar = false;
+  bool plotLogarithmic = false;
+  bool roundPathCorners = false;
   std::vector<float> l = {};
   std::vector<float> r = {};
   std::vector<int> pointIndicators = {};
@@ -32,11 +37,6 @@ struct FBModuleGraphData final
   int moduleIndex = -1;
   std::string title = {};
   std::string subtext = {};
-  bool bipolar = false;
-  bool plotLogarithmic = false;
-  bool roundPathCorners = false;
-  float plotLogEnd = {};
-  float plotLogStart = {};
   std::vector<int> primaryMarkers = {};
   FBModuleGraphPoints primarySeries = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};
@@ -46,6 +46,11 @@ struct FBModuleGraphData final
   void ScaleToSelfNormalized();
   bool GetScaleFactorToNormalized(float& factor) const;
   void GetLimits(bool includePrimary, int& maxSizeAllSeries, float& absMaxValueAllSeries) const;
+
+  FBModuleGraphPoints& GetPoints(bool primary, int secondaryIndex) 
+  { return primary ? primarySeries : secondarySeries[secondaryIndex].points; }
+  FBModuleGraphPoints const& GetPoints(bool primary, int secondaryIndex) const 
+  { return primary ? primarySeries : secondarySeries[secondaryIndex].points; }
 };
 
 struct FBModuleGraphComponentData final

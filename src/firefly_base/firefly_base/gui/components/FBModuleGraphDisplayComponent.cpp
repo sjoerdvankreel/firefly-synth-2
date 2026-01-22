@@ -45,25 +45,28 @@ FBModuleGraphDisplayComponent::FindColorSchemeFor(
 
 Point<float>
 FBModuleGraphDisplayComponent::PointLocation(
+  bool primarySeries, int secondaryIndex,
   std::vector<float> const& points,
   int point, bool stereo, bool left,
   int maxSizeAllSeries, float absMaxValueAllSeries) const
 {
   point = std::clamp(point, 0, static_cast<int>(points.size()) - 1);
-  float y = PointYLocation(points[point], stereo, left, absMaxValueAllSeries, true);
-  float x = PointXLocation(static_cast<float>(point) / maxSizeAllSeries, true);
+  float y = PointYLocation(primarySeries, secondaryIndex, points[point], stereo, left, absMaxValueAllSeries, true);
+  float x = PointXLocation(primarySeries, secondaryIndex, static_cast<float>(point) / maxSizeAllSeries, true);
   return { x, y };
 }
 
 float
 FBModuleGraphDisplayComponent::PointXLocation(
+  bool primarySeries, int secondaryIndex,
   float pointRelative, bool withPadding) const
 {
   FB_ASSERT(!std::isnan(pointRelative));
-  if (_data->graphs[_graphIndex].plotLogarithmic)
+  auto const& points = _data->graphs[_graphIndex].GetPoints(primarySeries, secondaryIndex);
+  if (points.plotLogarithmic)
   {
-    float end = _data->graphs[_graphIndex].plotLogEnd;
-    float start = _data->graphs[_graphIndex].plotLogStart;
+    float end = points.plotLogEnd;
+    float start = points.plotLogStart;
     float expo = std::log(end / start) / std::log(2.0f);
     float realVal = start + (end - start) * pointRelative;
     pointRelative = std::log2(realVal / start) / expo;
@@ -75,12 +78,13 @@ FBModuleGraphDisplayComponent::PointXLocation(
 
 float 
 FBModuleGraphDisplayComponent::PointYLocation(
+  bool primarySeries, int secondaryIndex,
   float pointYValue, bool stereo, 
   bool left, float absMaxValueAllSeries, bool withPadding) const
 {
   FB_ASSERT(!std::isnan(pointYValue));
   float pointValue = pointYValue / absMaxValueAllSeries;
-  if (_data->graphs[_graphIndex].bipolar)
+  if (_data->graphs[_graphIndex].GetPoints(primarySeries, secondaryIndex).bipolar)
     pointValue = FBToUnipolar(pointValue);
   if (stereo)
     pointValue = left ? 0.5f + pointValue * 0.5f: pointValue * 0.5f;
@@ -91,7 +95,8 @@ FBModuleGraphDisplayComponent::PointYLocation(
 
 void
 FBModuleGraphDisplayComponent::PaintVerticalIndicator(
-  Graphics& g, int point, bool primary,
+  Graphics& g, 
+  bool primarySeries, int secondaryIndex, int point,
   int maxSizeAllSeries, float absMaxValueAllSeries)
 {
   auto const& graphData = _data->graphs[_graphIndex];
@@ -99,18 +104,20 @@ FBModuleGraphDisplayComponent::PaintVerticalIndicator(
 
   float dashes[2] = { 4, 2 };
   g.setColour(scheme.text2.withAlpha(0.5f));
-  if (!primary)
+  if (!primarySeries)
     g.setColour(scheme.text2.withAlpha(0.25f));
-  float x = PointXLocation(point / static_cast<float>(maxSizeAllSeries), true);
-  float y0 = PointYLocation(0.0f, false, false, absMaxValueAllSeries, true);
-  float y1 = PointYLocation(absMaxValueAllSeries, false, false, absMaxValueAllSeries, true);
+  float x = PointXLocation(primarySeries, secondaryIndex, point / static_cast<float>(maxSizeAllSeries), true);
+  float y0 = PointYLocation(primarySeries, secondaryIndex, 0.0f, false, false, absMaxValueAllSeries, true);
+  float y1 = PointYLocation(primarySeries, secondaryIndex, absMaxValueAllSeries, false, false, absMaxValueAllSeries, true);
   g.drawDashedLine(Line<float>(x, y0, x, y1), dashes, 2);
 }
 
 void
 FBModuleGraphDisplayComponent::PaintMarker(
-  Graphics& g, std::vector<float> const& points,
-  int marker, bool primary, bool isPointIndicator, bool stereo,
+  Graphics& g, 
+  bool primarySeries, int secondaryIndex,
+  std::vector<float> const& points,
+  int marker, bool isPointIndicator, bool stereo,
   bool left, int maxSizeAllSeries, float absMaxValueAllSeries)
 {
   // It does happen every now and then.
@@ -124,10 +131,10 @@ FBModuleGraphDisplayComponent::PaintMarker(
   auto color = scheme.text2;
   if (_data->paintAsDisabled)
     color = color.darker(0.67f);
-  if (!primary)  
+  if (!primarySeries)  
     color = color.withAlpha(0.5f);
   g.setColour(color);
-  auto xy = PointLocation(points, marker, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
+  auto xy = PointLocation(primarySeries, secondaryIndex, points, marker, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
 
   float size = DefaultMarkerSize;
   bool fill = !isPointIndicator || _data->fillPointIndicators;
@@ -145,8 +152,10 @@ FBModuleGraphDisplayComponent::PaintMarker(
 
 void
 FBModuleGraphDisplayComponent::PaintSeries(
-  juce::Graphics& g, std::vector<float> const& points,
-  bool primary, bool stereo, bool left,
+  juce::Graphics& g, 
+  bool primarySeries, int secondaryIndex,
+  std::vector<float> const& points,
+  bool stereo, bool left,
   int maxSizeAllSeries, float absMaxValueAllSeries)
 {
   if (points.empty())
@@ -154,37 +163,37 @@ FBModuleGraphDisplayComponent::PaintSeries(
 
   auto const& graphData = _data->graphs[_graphIndex];
   auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
-  auto graphColor = scheme.primary.withMultipliedAlpha(primary? 1.0f: 0.33f);
+  auto graphColor = scheme.primary.withMultipliedAlpha(primarySeries? 1.0f: 0.33f);
 
   Path fillPath;
   Path strokePath;
   float maxX = 0.0f;
   float maxY = 0.0f;
   float minY = std::numeric_limits<float>::max();
-  float fillY = PointYLocation(0.0f, stereo, left, absMaxValueAllSeries, true);
+  float fillY = PointYLocation(primarySeries, secondaryIndex, 0.0f, stereo, left, absMaxValueAllSeries, true);
   maxY = std::max(maxY, fillY);
   minY = std::min(minY, fillY);
-  auto strokeStart = PointLocation(points, 0, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
+  auto strokeStart = PointLocation(primarySeries, secondaryIndex, points, 0, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
   strokePath.startNewSubPath(strokeStart);
-  fillPath.startNewSubPath(PointXLocation(0.0f, true), fillY);
+  fillPath.startNewSubPath(PointXLocation(primarySeries, secondaryIndex, 0.0f, true), fillY);
   fillPath.lineTo(strokeStart);
   fillPath.lineTo(strokeStart); // for the rounding
   for (int i = 1; i < points.size(); i++)
   {
-    auto thisPoint = PointLocation(points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
+    auto thisPoint = PointLocation(primarySeries, secondaryIndex, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
     maxX = std::max(maxX, thisPoint.x);
     maxY = std::max(maxY, thisPoint.y);
     minY = std::min(minY, thisPoint.y);
     strokePath.lineTo(thisPoint);
     fillPath.lineTo(thisPoint);
   }
-  fillPath.lineTo(maxX, PointYLocation(0.0f, stereo, left, absMaxValueAllSeries, true));
+  fillPath.lineTo(maxX, PointYLocation(primarySeries, secondaryIndex, 0.0f, stereo, left, absMaxValueAllSeries, true));
   fillPath.closeSubPath();
   if (_data->paintAsDisabled)
     graphColor = graphColor.darker(0.67f);
-  if (_data->graphs[_graphIndex].bipolar)
+  if (_data->graphs[_graphIndex].GetPoints(primarySeries, secondaryIndex).bipolar)
   {
-    float centerY = PointYLocation(0.0f, stereo, left, absMaxValueAllSeries, true);
+    float centerY = PointYLocation(primarySeries, secondaryIndex, 0.0f, stereo, left, absMaxValueAllSeries, true);
     float heightUp = centerY - minY;
     float heightDown = maxY - centerY;
     float heightBipolar = std::max(heightUp, heightDown);
@@ -198,7 +207,7 @@ FBModuleGraphDisplayComponent::PaintSeries(
   {
     g.setGradientFill(ColourGradient(graphColor, 0.0f, minY, graphColor.withAlpha(0.0f), 0.0f, maxY, false));
   }
-  if (_data->graphs[_graphIndex].roundPathCorners)
+  if (_data->graphs[_graphIndex].GetPoints(primarySeries, secondaryIndex).roundPathCorners)
   {
     fillPath = fillPath.createPathWithRoundedCorners(10.0f);
     strokePath = strokePath.createPathWithRoundedCorners(10.0f);
@@ -223,8 +232,8 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
   FB_ASSERT(graphData.secondarySeries.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
 
   auto bounds = getLocalBounds();
-  auto x0 = static_cast<int>(PointXLocation(0.0f, false));
-  auto x1 = static_cast<int>(PointXLocation(1.0f, false));
+  auto x0 = static_cast<int>(PointXLocation(true, -1, 0.0f, false));
+  auto x1 = static_cast<int>(PointXLocation(true, -1, 1.0f, false));
   auto graphBounds = Rectangle<int>(x0, bounds.getY(), x1 - x0, bounds.getHeight());
   g.setColour(scheme.graphBackground.withAlpha(0.5f));
   g.fillRoundedRectangle(graphBounds.toFloat(), 5.0f);
@@ -235,15 +244,17 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     for (int i = 0; i < pvi.size(); i++)
     {
       FB_ASSERT(!stereo);
-      PaintVerticalIndicator(g, pvi[i],
-        true, maxSizeAllSeries, absMaxValueAllSeries);
+      PaintVerticalIndicator(g, 
+        true, -1, pvi[i],
+        maxSizeAllSeries, absMaxValueAllSeries);
     }
     for (int i = 0; i < graphData.secondarySeries.size(); i++)
     {
       auto const& svi = graphData.secondarySeries[i].points.verticalIndicators;
       for (int j = 0; j < svi.size(); j++)
-        PaintVerticalIndicator(g, svi[j],
-          false, maxSizeAllSeries, absMaxValueAllSeries);
+        PaintVerticalIndicator(g, 
+          false, i, svi[j],
+          maxSizeAllSeries, absMaxValueAllSeries);
     }
   }
 
@@ -253,41 +264,49 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     {
       int marker = secondarySeries[i].marker;
       auto const& points = secondarySeries[i].points;
-      PaintSeries(g, points.l,
-        false, stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
+      PaintSeries(g, 
+        false, i, points.l,
+        stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
       if (stereo)
-        PaintSeries(g, points.r,
-          false, stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
+        PaintSeries(g, 
+          false, i, points.r,
+          stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
 
       for (int j = 0; j < points.pointIndicators.size(); j++)
-        PaintMarker(g, points.l, points.pointIndicators[j],
-          false, true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
+        PaintMarker(g, 
+          false, i, points.l, points.pointIndicators[j],
+          true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
 
       if (marker != -1 && _data->drawMarkersSelector != nullptr && _data->drawMarkersSelector(_graphIndex))
       {
         FB_ASSERT(!stereo);
-        PaintMarker(g, points.l, marker,
-          false, false, false, true, maxSizeAllSeries, absMaxValueAllSeries);
+        PaintMarker(g, 
+          false, i, points.l, marker,
+          false, false, true, maxSizeAllSeries, absMaxValueAllSeries);
       }
     }
 
-    PaintSeries(g, primarySeries.l,
-      true, stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
+    PaintSeries(g, 
+      true, -1, primarySeries.l,
+      stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
     if (stereo)
-      PaintSeries(g, primarySeries.r,
-        true, stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
+      PaintSeries(g, 
+        true, -1, primarySeries.r,
+        stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
 
     for (int i = 0; i < primarySeries.pointIndicators.size(); i++)
-      PaintMarker(g, primarySeries.l, primarySeries.pointIndicators[i],
-        true, true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
+      PaintMarker(g, 
+        true, -1, primarySeries.l, primarySeries.pointIndicators[i],
+        true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
 
     FB_ASSERT(graphData.primaryMarkers.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
     if (_data->drawMarkersSelector != nullptr && _data->drawMarkersSelector(_graphIndex))
       for (int i = 0; i < graphData.primaryMarkers.size(); i++)
       {
         FB_ASSERT(!stereo);
-        PaintMarker(g, primarySeries.l, graphData.primaryMarkers[i],
-          true, false, false, true, maxSizeAllSeries, absMaxValueAllSeries);
+        PaintMarker(g, 
+          true, -1, primarySeries.l, graphData.primaryMarkers[i],
+          false, false, true, maxSizeAllSeries, absMaxValueAllSeries);
       }
   }
 }

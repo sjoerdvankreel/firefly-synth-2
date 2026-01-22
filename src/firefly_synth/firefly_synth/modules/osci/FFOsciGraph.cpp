@@ -15,7 +15,7 @@ public FBModuleGraphRenderData<OsciGraphRenderData>
   int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoPostProcess(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
+  void DoPostProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
   void DoProcessIndicators(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
 
@@ -98,6 +98,16 @@ OsciGraphRenderData::DoProcess(
   return result;
 }
 
+void 
+OsciGraphRenderData::DoPostProcess(
+  FBGraphRenderState* /*state*/,
+  bool /*detailGraphs*/, int /*graphIndex*/,
+  bool /*exchange*/, int /*exchangeVoice*/,
+  FBModuleGraphPoints& points)
+{
+  points.bipolar = true;
+}
+
 static FBModuleGraphPlotParams
 PlotParams(FBModuleGraphComponentData const* data, bool /*detailGraphs*/, int /*graphIndex*/)
 {
@@ -155,7 +165,6 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[i].subtext = FBFormatDoubleCLocale(20.0f * std::log10(absMaxValueAllSeries), 2) + " dB";
     graphData->graphs[i].moduleSlot = graphModuleSlot;
     graphData->graphs[i].moduleIndex = (int)FFModuleType::Osci;
-    graphData->graphs[i].bipolar = true;
   }
   if (detailGraphs)
   {

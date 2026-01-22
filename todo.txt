@@ -5,6 +5,7 @@ v2.1.1
 [x] something with the image
 [x] externalize header.png
 [x] freq response should plot logarithmic
+[ ] bipolar etc should be per exchange voice
 [ ] osci ovsmp + new unison to own module
 [ ] fix up the env graph
 [ ] do mod rate/amt for multitap

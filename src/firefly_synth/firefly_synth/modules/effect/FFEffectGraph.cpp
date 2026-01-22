@@ -96,15 +96,22 @@ EffectGraphRenderData<Global>::DoPostProcess(
   FBGraphRenderState* state, bool detailGraphs, int graphIndex,
   bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
 {
-  if (!detailGraphs)
-    return;
-
   auto* moduleProcState = state->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
   FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
   auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
-  if (kind != FFEffectKind::StVar && kind != FFEffectKind::Comb && 
+
+  points.bipolar = !detailGraphs || (kind == FFEffectKind::Clip || kind == FFEffectKind::Fold || kind == FFEffectKind::Skew);
+  points.plotLogStart = 20.0f;
+  points.plotLogEnd = 20000.0f;
+  points.plotLogarithmic = !points.bipolar;
+  points.roundPathCorners = !points.bipolar;
+
+  if (!detailGraphs)
+    return;
+
+  if (kind != FFEffectKind::StVar && kind != FFEffectKind::Comb &&
     kind != FFEffectKind::CombPlus && kind != FFEffectKind::CombMin)
     return;
   if (points.l.size() == 0)
@@ -192,17 +199,11 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
       graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
       graphData->graphs[i].subtext = FBAsciiToUpper(FFEffectKindToString(kind));
-      graphData->graphs[i].bipolar = kind == FFEffectKind::Clip || kind == FFEffectKind::Fold || kind == FFEffectKind::Skew;
-      graphData->graphs[i].plotLogStart = 20.0f;
-      graphData->graphs[i].plotLogEnd = 20000.0f;
-      graphData->graphs[i].plotLogarithmic = !graphData->graphs[i].bipolar;
-      graphData->graphs[i].roundPathCorners = !graphData->graphs[i].bipolar;
     }
     else
     {
       graphData->graphs[i].title = moduleName;
       graphData->graphs[i].subtext = on ? "ON" : "OFF";
-      graphData->graphs[i].bipolar = true;
     }
     graphData->graphs[i].ScaleToSelfNormalized();
   }

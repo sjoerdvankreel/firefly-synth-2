@@ -145,7 +145,6 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     FBRenderModuleGraph<Global, false>(renderData, detailGraphs, i);
     graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)moduleType;
-    graphData->graphs[i].bipolar = false;
     if (detailGraphs)
     {
       FBParamTopoIndices opTypeIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };
@@ -166,7 +165,7 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   }
   else
   {
-    
+    graphData->graphs[0].ScaleToSelfNormalized();
   }
 }
 
