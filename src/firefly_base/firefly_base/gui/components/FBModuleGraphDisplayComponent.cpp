@@ -12,9 +12,9 @@
 
 using namespace juce;
 
-static float constexpr Padding = 3.0f; 
 static float constexpr DefaultMarkerSize = 8.0f;
-static float constexpr HalfDefaultMarkerSize = 4.0f;
+static float constexpr HalfDefaultMarkerSize = DefaultMarkerSize / 2.0f;
+static float constexpr Padding = HalfDefaultMarkerSize;
 
 FBModuleGraphDisplayComponent::
 FBModuleGraphDisplayComponent(FBPlugGUI* plugGUI, FBModuleGraphComponentData const* data, int graphIndex):
@@ -89,8 +89,8 @@ FBModuleGraphDisplayComponent::PointYLocation(
   if (stereo)
     pointValue = left ? 0.5f + pointValue * 0.5f: pointValue * 0.5f;
   if(withPadding)
-    return HalfDefaultMarkerSize + Padding + (1.0f - pointValue) * (getHeight() - DefaultMarkerSize - 2.0f * Padding);
-  return HalfDefaultMarkerSize + (1.0f - pointValue) * (getHeight() - DefaultMarkerSize);
+    return Padding + (1.0f - pointValue) * (getHeight() - 2.0f * Padding);
+  return (1.0f - pointValue) * getHeight();
 }
 
 void
