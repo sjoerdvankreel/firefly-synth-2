@@ -384,8 +384,8 @@ FFEchoProcessor<Global>::Process(
     [exchangeToGUI]() { return &exchangeToGUI->global.gEcho[0]; },
     [exchangeToGUI, voice]() { return &exchangeToGUI->voice[voice].vEcho[0]; });
   exchangeDSP.boolIsActive = 1;
-  exchangeDSP.makeUpGain = gainNorm.CV().Last();
   exchangeDSP.lengthSamples = FBTimeToSamples(FFEchoPlotLengthSeconds, sampleRate);
+  exchangeDSP.makeUpGain = topo.NormalizedToLinearFast(FFEchoParam::Gain, gainNorm.CV().Last());
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI] { return &exchangeToGUI->param.global.gEcho[0]; },
