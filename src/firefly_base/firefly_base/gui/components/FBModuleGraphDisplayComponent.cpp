@@ -191,6 +191,8 @@ FBModuleGraphDisplayComponent::PaintSeries(
   fillPath.closeSubPath();
   if (_data->paintAsDisabled)
     graphColor = graphColor.darker(0.67f);
+  auto fillHi = graphColor.withAlpha(primarySeries ? 0.8f : 0.3f);
+  auto fillLow = graphColor.withAlpha(primarySeries ? 0.2f : 0.0f);
   if (_data->graphs[_graphIndex].GetPoints(primarySeries, secondaryIndex).bipolar)
   {
     float centerY = PointYLocation(primarySeries, secondaryIndex, 0.0f, stereo, left, absMaxValueAllSeries, true);
@@ -199,13 +201,13 @@ FBModuleGraphDisplayComponent::PaintSeries(
     float heightBipolar = std::max(heightUp, heightDown);
     float topY = centerY - heightBipolar;
     float bottomY = centerY + heightBipolar;
-    auto gradient = ColourGradient(graphColor, 0.0f, topY, graphColor, 0.0f, bottomY, false);
-    gradient.addColour((bottomY - centerY) / (bottomY - topY), graphColor.withAlpha(0.0f));
+    auto gradient = ColourGradient(fillHi, 0.0f, topY, fillHi, 0.0f, bottomY, false);
+    gradient.addColour((bottomY - centerY) / (bottomY - topY), fillLow);
     g.setGradientFill(gradient);
   }
   else
   {
-    g.setGradientFill(ColourGradient(graphColor, 0.0f, minY, graphColor.withAlpha(0.0f), 0.0f, maxY, false));
+    g.setGradientFill(ColourGradient(fillHi, 0.0f, minY, fillLow, 0.0f, maxY, false));
   }
   if (_data->graphs[_graphIndex].GetPoints(primarySeries, secondaryIndex).roundPathCorners)
   {
@@ -262,21 +264,34 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
   {
     for (int i = 0; i < secondarySeries.size(); i++)
     {
-      int marker = secondarySeries[i].marker;
+      // if l is different, r is probably as well.
+      bool equalsPrimarySeries = primarySeries.l.size() == secondarySeries[i].points.l.size();
+      if(equalsPrimarySeries)
+        for(int j = 0; j < primarySeries.l.size(); j++)
+          if (std::abs(primarySeries.l[j] - secondarySeries[i].points.l[j]) >= 1e-5)
+          {
+            equalsPrimarySeries = false;
+            break;
+          }      
+
       auto const& points = secondarySeries[i].points;
-      PaintSeries(g, 
-        false, i, points.l,
-        stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
-      if (stereo)
-        PaintSeries(g, 
-          false, i, points.r,
-          stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
+      if (!equalsPrimarySeries)
+      {
+        PaintSeries(g,
+          false, i, points.l,
+          stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
+        if (stereo)
+          PaintSeries(g,
+            false, i, points.r,
+            stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
+      }
 
       for (int j = 0; j < points.pointIndicators.size(); j++)
         PaintMarker(g, 
           false, i, points.l, points.pointIndicators[j],
           true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
 
+      int marker = secondarySeries[i].marker;
       if (marker != -1 && _data->drawMarkersSelector != nullptr && _data->drawMarkersSelector(_graphIndex))
       {
         FB_ASSERT(!stereo);
