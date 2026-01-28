@@ -9,7 +9,9 @@ v2.1.1
 [x] lfo graph clips balls
 [x] display param values as rounded
 [x] scale osc individually
+[ ] re-un-shorten all the texts
 [ ] test the clap
+[ ] re-profile the gui
 [ ] too much balls on the lfo graph
 [ ] DONT do other stuff beside GUI
 [ ] detail graphs for env = ADSR

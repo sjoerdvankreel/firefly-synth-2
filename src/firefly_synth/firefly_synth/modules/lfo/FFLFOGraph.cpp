@@ -155,8 +155,13 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   auto* moduleProcState = renderState->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
   FBTopoIndices modIndices = { (int)moduleType, moduleSlot };
+  FBParamTopoIndices paramIndices = { modIndices, { (int)FFLFOParam::Sync, 0 } };
+  bool sync = renderState->AudioParamBool(paramIndices, false, -1);
+  auto const* topo = graphData->renderState->PlugGUI()->HostContext()->Topo();
+  auto const& moduleTopo = topo->static_->modules[(int)moduleType];
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
   int graphCount = detailGraphs ? FFLFOBlockCount : 1;
+
   for (int i = 0; i < graphCount; i++)
   {
     FBRenderModuleGraph<Global, false>(renderData, detailGraphs, i);
@@ -164,27 +169,31 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[i].moduleIndex = (int)moduleType;
     if (detailGraphs)
     {
-      FBParamTopoIndices paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };
+      paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };
       auto opType = renderState->AudioParamList<FFModulationOpType>(paramIndices, false, -1);
       paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::WaveMode, i } };
       auto waveMode = renderState->AudioParamList<FFLFOWaveMode>(paramIndices, false, -1);
-      paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateHz, i } }; // todo
+      paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateHz, i } };
       float rateHz = renderState->AudioParamLinear(paramIndices, false, -1);
+      paramIndices = { modIndices, { (int)FFLFOParam::RateBars, i } };
+      double rateBarsNorm = renderState->AudioParamNormalized(paramIndices, false, -1);
+      paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Min, i } };
+      float minVal = renderState->AudioParamIdentity(paramIndices, false, -1);
       paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Max, i } };
       float maxVal = renderState->AudioParamIdentity(paramIndices, false, -1);
       graphData->graphs[i].title = std::string(1, static_cast<char>('A' + i));
       graphData->graphs[i].title += ": " + FFModulationOpTypeToString(opType);
       if(opType != FFModulationOpType::Off)
         graphData->graphs[i].title += ", " + FFLFOWaveModeToString(waveMode);
-      graphData->graphs[i].defaultMainText = FBToStringHz(rateHz, 2);
-      graphData->graphs[i].defaultSubText = FBToStringPercent(maxVal, 2);
+      graphData->graphs[i].defaultSubText = FBToStringPercent(std::max(minVal, maxVal), 2);
+      graphData->graphs[i].defaultMainText = !sync ?
+        FBToStringHz(rateHz, 2):
+        (moduleTopo.params[(int)FFLFOParam::RateBars].BarsNonRealTime().NormalizedToText(false, 0, rateBarsNorm) + " Bars");
     }
     else
     {
-      FBParamTopoIndices paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Type, 0 } };
+      paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Type, 0 } };
       auto type = renderState->AudioParamList<FFLFOType>(paramIndices, false, -1);
-      paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Sync, 0 } };
-      bool sync = renderState->AudioParamBool(paramIndices, false, -1);
       graphData->graphs[i].title = moduleName;
       graphData->graphs[i].title += ": " + FFLFOTypeToString(type, Global);
       if (type != FFLFOType::Off)
