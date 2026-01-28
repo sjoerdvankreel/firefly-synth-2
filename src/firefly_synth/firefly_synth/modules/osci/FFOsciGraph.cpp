@@ -191,9 +191,9 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[i].title = title;
     graphData->graphs[i].moduleSlot = graphModuleSlot;
     graphData->graphs[i].moduleIndex = (int)FFModuleType::Osci;
-    graphData->graphs[i].defaultSubText = FBGainToStringDb(gain);
-    graphData->graphs[i].defaultMainText = FBPitchToStringSemis(coarse, fine);
-    graphData->graphs[i].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries);
+    graphData->graphs[i].defaultSubText = FBGainToStringDb(gain, 2);
+    graphData->graphs[i].defaultMainText = FBPitchToStringSemis(coarse, fine, 2);
+    graphData->graphs[i].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
 
     if (!detailGraphs)
       graphData->graphs[i].MergeStereo();

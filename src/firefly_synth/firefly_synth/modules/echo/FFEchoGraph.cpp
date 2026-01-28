@@ -50,7 +50,7 @@ public FBModuleGraphRenderData<EchoGraphRenderData<Global>>
   void DoReleaseOnDemandBuffers(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoPostProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
   void DoProcessIndicators(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
-  void DoProcessExchangeState(FBGraphRenderState* /*graphState*/, FBModuleGraphData& /*data*/, bool /*detailGraphs*/, int /*graphIndex*/, int /*exchangeVoice*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) {}
+  void DoProcessExchangeState(FBGraphRenderState* /*graphState*/, FBModuleGraphData& /*data*/, bool /*detailGraphs*/, int /*graphIndex*/, int /*exchangeVoice*/, FBModuleProcExchangeStateBase const* /*exchangeState*/);
 };
 
 static FBModuleGraphPlotParams
@@ -64,20 +64,32 @@ PlotParams(FBModuleGraphComponentData const* data, bool global, int /*graphIndex
   return result;
 }
 
-#if 0 // todo
-static FFEchoExchangeState const*
-GetEchoExchangeStateFromDSP(FBGraphRenderState* state, bool global, int slot, bool exchange, int exchangeVoice)
+template <bool Global>
+void
+EchoGraphRenderData<Global>::DoProcessExchangeState(
+  FBGraphRenderState* graphState, FBModuleGraphData& data,
+  bool detailGraphs, int graphIndex, int /*exchangeVoice*/,
+  FBModuleProcExchangeStateBase const* exchangeState)
 {
-  auto* moduleProcState = state->ModuleProcState();
-  FFEchoExchangeState const* exchangeFromDSP = nullptr;
-  int moduleType = global ? (int)FFModuleType::GEcho : (int)FFModuleType::VEcho;
-  int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ moduleType, slot });
-  auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
-  if (exchange)
-    exchangeFromDSP = &dynamic_cast<FFEchoExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
-  return exchangeFromDSP;
+  auto echoExchange = dynamic_cast<FFEchoExchangeState const*>(exchangeState);
+  if (!detailGraphs)
+  {
+    data.exchangeMainText = FBToStringPercent(echoExchange->makeUpGain, 2);
+    return;
+  }
+
+  auto moduleType = Global ? FFModuleType::GEcho : FFModuleType::VEcho;
+  FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEchoParam::Order, 0 } };
+  auto order = graphState->AudioParamList<FFEchoOrder>(indices, false, -1);
+  if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Taps))
+    data.exchangeMainText = FBToStringPercent(echoExchange->tapsMix, 2);
+  else if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Feedback))
+    data.exchangeMainText = FBToStringSeconds(echoExchange->feedbackDelay, 3);
+  else if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Reverb))
+    data.exchangeMainText = FBToStringPercent(echoExchange->reverbSize, 2);
+  else
+    FB_ASSERT(false);
 }
-#endif
 
 template <bool Global>
 void

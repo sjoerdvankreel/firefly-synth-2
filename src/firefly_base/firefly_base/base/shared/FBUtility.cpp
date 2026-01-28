@@ -9,16 +9,28 @@
 using namespace juce;
 
 std::string
-FBGainToStringDb(float gain)
+FBToStringSeconds(float val, int precision)
 {
-  float db = 20.0f * std::log10(gain);
-  return FBFormatDoubleCLocale(db, 2) + " dB";
+  return FBFormatDoubleCLocale(val, precision) + " Sec";
 }
 
 std::string
-FBPitchToStringSemis(float coarse, float fine)
+FBToStringPercent(float val, int precision)
 {
-  std::string result = FBFormatDoubleCLocale(coarse + fine, 2);
+  return FBFormatDoubleCLocale(val * 100.0f, precision) + " %";
+}
+
+std::string
+FBGainToStringDb(float gain, int precision)
+{
+  float db = 20.0f * std::log10(gain);
+  return FBFormatDoubleCLocale(db, precision) + " dB";
+}
+
+std::string
+FBPitchToStringSemis(float coarse, float fine, int precision)
+{
+  std::string result = FBFormatDoubleCLocale(coarse + fine, precision);
   if (coarse + fine >= 0.0f)
     result = "+" + result;
   return result + " Semis";
@@ -109,6 +121,14 @@ FBFormatDoubleCLocale(double val)
 std::string
 FBFormatDoubleCLocale(double val, int precision)
 {
+  // rounding to fixed
+  int multiplier = 1;
+  for (int i = 0; i < precision; i++)
+    multiplier *= 10;
+  val *= multiplier;
+  val = std::round(val);
+  val /= multiplier;
+
   std::stringstream ss;
   ss.imbue(std::locale("C"));
   ss << std::fixed;

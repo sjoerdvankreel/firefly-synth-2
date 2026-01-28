@@ -81,11 +81,15 @@ inline int const FBDefaultDisplayPrecision = 3;
   x() = default
 
 std::string
-FBGainToStringDb(float gain);
-std::string
 FBPitchToStringNotes(float pitch);
 std::string
-FBPitchToStringSemis(float coarse, float fine);
+FBToStringPercent(float val, int precision);
+std::string
+FBToStringSeconds(float val, int precision);
+std::string
+FBGainToStringDb(float gain, int precision);
+std::string
+FBPitchToStringSemis(float coarse, float fine, int precision);
 
 // Remove { and } for use in json and urls.
 std::string
