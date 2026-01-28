@@ -74,7 +74,7 @@ EchoGraphRenderData<Global>::DoProcessExchangeState(
   auto echoExchange = dynamic_cast<FFEchoExchangeState const*>(exchangeState);
   if (!detailGraphs)
   {
-    data.exchangeMainText = FBToStringPercent(echoExchange->makeUpGain, 2);
+    data.exchangeMainText = FBGainToStringDb(echoExchange->makeUpGain, 2) + " Gain";
     return;
   }
 
@@ -200,22 +200,30 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   auto* renderState = graphData->renderState;
   auto moduleType = Global ? FFModuleType::GEcho : FFModuleType::VEcho;
   FBTopoIndices modIndices = { (int)moduleType, 0 };
+  auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
+
   FBParamTopoIndices paramIndices = { modIndices, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
   auto target = renderState->AudioParamList<int>(paramIndices, false, -1);
-
   paramIndices = { modIndices, { (int)FFEchoParam::Order, 0 } };
   auto order = renderState->AudioParamList<FFEchoOrder>(paramIndices, false, -1);
-  auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
+  paramIndices = { modIndices, { (int)FFEchoParam::Gain, 0 } };
+  float gain = renderState->AudioParamLinear(paramIndices, false, -1);
 
   if (!detailGraphs)
   {
+    int maxSizeAllSeries = 0;
+    float absMaxValueAllSeries = 0.0f;
     FBRenderModuleGraph<Global, true>(renderData, detailGraphs, 0);
+    graphData->graphs[0].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
+
     graphData->graphs[0].moduleSlot = 0;
     graphData->graphs[0].moduleIndex = (int)moduleType;
-    graphData->graphs[0].title = FBAsciiToUpper(moduleName);
-    graphData->graphs[0].defaultSubText = FBAsciiToUpper(Global ?
+    graphData->graphs[0].title = moduleName;
+    graphData->graphs[0].title += ": " + (Global ?
       FFGEchoTargetToString((FFGEchoTarget)target) :
       FFVEchoTargetToString((FFVEchoTarget)target));
+    graphData->graphs[0].defaultMainText = FBGainToStringDb(gain, 2) + " Gain";
+    graphData->graphs[0].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
     graphData->graphs[0].MergeStereo();
     graphData->graphs[0].ScaleToSelfNormalized();
     return;

@@ -17,6 +17,21 @@ MakeEchoSmoothBarsItems()
 }
 
 std::string 
+FFEchoOrderToString(FFEchoOrder order)
+{
+  switch (order)
+  {
+  case FFEchoOrder::TapsToFeedbackToReverb: return "T\U00002192F\U00002192R";
+  case FFEchoOrder::TapsToReverbToFeedback: return "T\U00002192R\U00002192F";
+  case FFEchoOrder::FeedbackToTapsToReverb: return "F\U00002192T\U00002192R";
+  case FFEchoOrder::FeedbackToReverbToTaps: return "F\U00002192R\U00002192T";
+  case FFEchoOrder::ReverbToTapsToFeedback: return "R\U00002192T\U00002192F";
+  case FFEchoOrder::ReverbToFeedbackToTaps: return "R\U00002192F\U00002192T";
+  default: FB_ASSERT(false); return "";
+  }
+}
+
+std::string 
 FFGEchoTargetToString(FFGEchoTarget target)
 {
   switch (target)
@@ -145,12 +160,12 @@ FFMakeEchoTopo(bool global, bool isFx)
   order.description = "Echo Processing Order";
   order.type = FBParamType::List;
   order.List().items = {
-    { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "T\U00002192F\U00002192R" },
-    { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "T\U00002192R\U00002192F" },
-    { "{883FA130-AB68-42D5-B56A-C61039DAD9A6}", "F\U00002192T\U00002192R" },
-    { "{56CE90EE-F9D0-4CCF-93B8-9BB0501DCBEF}", "F\U00002192R\U00002192T" },
-    { "{80ECC9AA-AC6B-44DC-B305-43057720A4AC}", "R\U00002192T\U00002192F" },
-    { "{050E8D54-BFD2-4821-B14F-717D161D69DB}", "R\U00002192F\U00002192T" } };
+    { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", FFEchoOrderToString(FFEchoOrder::TapsToFeedbackToReverb) },
+    { "{9A195809-A9A8-454A-ACD1-5376892EE416}", FFEchoOrderToString(FFEchoOrder::TapsToReverbToFeedback) },
+    { "{883FA130-AB68-42D5-B56A-C61039DAD9A6}", FFEchoOrderToString(FFEchoOrder::FeedbackToTapsToReverb) },
+    { "{56CE90EE-F9D0-4CCF-93B8-9BB0501DCBEF}", FFEchoOrderToString(FFEchoOrder::FeedbackToReverbToTaps) },
+    { "{80ECC9AA-AC6B-44DC-B305-43057720A4AC}", FFEchoOrderToString(FFEchoOrder::ReverbToTapsToFeedback) },
+    { "{050E8D54-BFD2-4821-B14F-717D161D69DB}", FFEchoOrderToString(FFEchoOrder::ReverbToFeedbackToTaps) } };
   auto selectOrder = [](auto& module) { return &module.block.order; };
   order.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOrder);
   order.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOrder);

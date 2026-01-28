@@ -166,8 +166,7 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     
     int maxSizeAllSeries = 0;
     float absMaxValueAllSeries = 0.0f;
-    graphData->graphs[i].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
-    
+    graphData->graphs[i].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);    
     FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::Type, 0 } };
     auto osciType = graphData->renderState->AudioParamList<FFOsciType>(paramIndices, false, -1);
     paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::UniCount, 0 } };

@@ -29,9 +29,12 @@ FBModuleGraphTitleComponent::paint(Graphics& g)
 
     auto const& gd = _data->graphs[_graphIndex];
     _title.append(gd.title);
-    _subAndMainText.append(gd.anyExchangeActive ? gd.exchangeSubText: gd.defaultSubText);
-    _subAndMainText.append(", ");
-    _subAndMainText.append(gd.anyExchangeActive ? gd.exchangeMainText : gd.defaultMainText);
+    auto const& subText = gd.anyExchangeActive ? gd.exchangeSubText : gd.defaultSubText;
+    auto const& mainText = gd.anyExchangeActive ? gd.exchangeMainText : gd.defaultMainText;
+    _subAndMainText.append(subText);
+    if(subText.size() && mainText.size())
+      _subAndMainText.append(", ");
+    _subAndMainText.append(mainText);
   }
 
   auto lnf = FBGetLookAndFeelFor(_plugGUI);
