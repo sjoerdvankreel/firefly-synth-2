@@ -35,9 +35,12 @@ struct FBModuleGraphData final
 {
   int moduleSlot = -1;
   int moduleIndex = -1;
+  bool anyExchangeActive = false;
   std::string title = {};
-  std::string subtext = {};
-  std::string mainValueText = {};
+  std::string defaultSubText = {};
+  std::string defaultMainText = {};
+  std::string exchangeSubText = {};
+  std::string exchangeMainText = {};
   std::vector<int> primaryMarkers = {};
   FBModuleGraphPoints primarySeries = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};

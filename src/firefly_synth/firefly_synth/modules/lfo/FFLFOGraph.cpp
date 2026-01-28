@@ -151,12 +151,12 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       FBParamTopoIndices opTypeIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };
       auto opType = renderState->AudioParamList<FFModulationOpType>(opTypeIndices, false, -1);
       graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
-      graphData->graphs[i].subtext = FBAsciiToUpper(FFModulationOpTypeToString(opType));
+      graphData->graphs[i].defaultSubText = FBAsciiToUpper(FFModulationOpTypeToString(opType));
     }
     else
     {
       graphData->graphs[i].title = moduleName;
-      graphData->graphs[i].subtext = FBAsciiToUpper(FFLFOTypeToString(type, Global));
+      graphData->graphs[i].defaultSubText = FBAsciiToUpper(FFLFOTypeToString(type, Global));
     }
     graphData->graphs[0].ScaleToSelfNormalized();
   }

@@ -9,7 +9,23 @@
 using namespace juce;
 
 std::string
-FBPitchToString(float pitch)
+FBGainToStringDb(float gain)
+{
+  float db = 20.0f * std::log10(gain);
+  return FBFormatDoubleCLocale(db, 2) + " dB";
+}
+
+std::string
+FBPitchToStringSemis(float coarse, float fine)
+{
+  std::string result = FBFormatDoubleCLocale(coarse + fine, 2);
+  if (coarse + fine >= 0.0f)
+    result = "+" + result;
+  return result + " Semis";
+}
+
+std::string
+FBPitchToStringNotes(float pitch)
 {
   int whole = (int)pitch;
   float frac = pitch - whole;
@@ -25,24 +41,25 @@ FBPitchToString(float pitch)
   std::string noteText = {};
   switch (note)
   {
-  case 0: noteText = "C"; break;
+  case 0: noteText = "C-"; break;
   case 1: noteText = "C#"; break;
-  case 2: noteText = "D"; break;
+  case 2: noteText = "D-"; break;
   case 3: noteText = "D#"; break;
-  case 4: noteText = "E"; break;
-  case 5: noteText = "F"; break;
+  case 4: noteText = "E-"; break;
+  case 5: noteText = "F-"; break;
   case 6: noteText = "F#"; break;
-  case 7: noteText = "G"; break;
+  case 7: noteText = "G-"; break;
   case 8: noteText = "G#"; break;
-  case 9: noteText = "A"; break;
+  case 9: noteText = "A-"; break;
   case 10: noteText = "A#"; break;
-  case 11: noteText = "B"; break;
+  case 11: noteText = "B-"; break;
   default: FB_ASSERT(false); break;
   }
   std::string result = noteText + std::to_string(oct);
-  if (frac >= 0.0f)
-    result += "+";
-  return result + std::to_string((int)(frac * 100.0f));
+  std::string cents = std::to_string((int)(frac * 100.0f));
+  if (!cents.starts_with('-'))
+    cents = "+" + cents;
+  return result + cents;
 }
 
 std::string

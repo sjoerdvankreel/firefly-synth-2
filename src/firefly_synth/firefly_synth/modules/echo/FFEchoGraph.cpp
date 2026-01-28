@@ -186,7 +186,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[0].moduleSlot = 0;
     graphData->graphs[0].moduleIndex = (int)moduleType;
     graphData->graphs[0].title = FBAsciiToUpper(moduleName);
-    graphData->graphs[0].subtext = FBAsciiToUpper(Global ?
+    graphData->graphs[0].defaultSubText = FBAsciiToUpper(Global ?
       FFGEchoTargetToString((FFGEchoTarget)target) :
       FFVEchoTargetToString((FFVEchoTarget)target));
     graphData->graphs[0].MergeStereo();
@@ -199,21 +199,21 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   graphData->graphs[tapsOrder].moduleSlot = 0;
   graphData->graphs[tapsOrder].moduleIndex = (int)moduleType;
   graphData->graphs[tapsOrder].title = FBAsciiToUpper(moduleName + " Taps");
-  graphData->graphs[tapsOrder].subtext = IsTapsOn(renderState, Global, false, -1) ? "ON" : "OFF";
+  graphData->graphs[tapsOrder].defaultSubText = IsTapsOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   int feedbackOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Feedback);
   FBRenderModuleGraph<Global, true>(renderData, detailGraphs, feedbackOrder);
   graphData->graphs[feedbackOrder].moduleSlot = 0;
   graphData->graphs[feedbackOrder].moduleIndex = (int)moduleType;
   graphData->graphs[feedbackOrder].title = FBAsciiToUpper(moduleName + " Fdbk");
-  graphData->graphs[feedbackOrder].subtext = IsFeedbackOn(renderState, Global, false, -1) ? "ON" : "OFF";
+  graphData->graphs[feedbackOrder].defaultSubText = IsFeedbackOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   int reverbOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Reverb);
   FBRenderModuleGraph<Global, true>(renderData, detailGraphs, reverbOrder);
   graphData->graphs[reverbOrder].moduleSlot = 0;
   graphData->graphs[reverbOrder].moduleIndex = (int)moduleType;
   graphData->graphs[reverbOrder].title = FBAsciiToUpper(moduleName + " Rvrb");
-  graphData->graphs[reverbOrder].subtext = IsReverbOn(renderState, Global, false, -1) ? "ON" : "OFF";
+  graphData->graphs[reverbOrder].defaultSubText = IsReverbOn(renderState, Global, false, -1) ? "ON" : "OFF";
 
   graphData->ScaleToAllNormalized();
 }

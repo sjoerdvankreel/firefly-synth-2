@@ -188,6 +188,7 @@ FBRenderModuleGraph(
   }
 
   moduleProcState->anyExchangeActive = false;
+  graphData->graphs[graphIndex].anyExchangeActive = false;
   auto plotParams = renderData.plotParamsSelector(graphData, detailGraphs, graphIndex);
   int maxDspSampleCount = plotParams.sampleCount;
   if (maxDspSampleCount == 0)
@@ -200,6 +201,7 @@ FBRenderModuleGraph(
       auto moduleExchange = renderData.globalExchangeSelector(
         exchangeState, moduleProcState->moduleSlot, detailGraphs, graphIndex);
       moduleProcState->anyExchangeActive |= (moduleExchange->boolIsActive != 0);
+      graphData->graphs[graphIndex].anyExchangeActive |= (moduleExchange->boolIsActive != 0);
       if (moduleExchange->boolIsActive != 0)
         maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->LengthSamples(detailGraphs, graphIndex));
     }
@@ -208,6 +210,7 @@ FBRenderModuleGraph(
       auto moduleExchange = renderData.voiceExchangeSelector(
         exchangeState, v, moduleProcState->moduleSlot, detailGraphs, graphIndex);
       moduleProcState->anyExchangeActive |= (moduleExchange->boolIsActive != 0);
+      graphData->graphs[graphIndex].anyExchangeActive |= (moduleExchange->boolIsActive != 0);
       if (moduleExchange->boolIsActive != 0)
         maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->LengthSamples(detailGraphs, graphIndex));
     }

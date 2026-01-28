@@ -38,10 +38,21 @@ GetOsciExchangeStateFromDSP(FBGraphRenderState* state, int slot, bool exchange, 
   return exchangeFromDSP;
 }
 
-void 
-OsciGraphRenderData::DoProcessMainExchangeValue(FBModuleGraphData& data, float value)
+void
+OsciGraphRenderData::DoPostProcess(
+  FBGraphRenderState* /*state*/,
+  bool /*detailGraphs*/, int /*graphIndex*/,
+  bool /*exchange*/, int /*exchangeVoice*/,
+  FBModuleGraphPoints& points)
 {
-  data.mainValueText = FBPitchToString(value);
+  points.bipolar = true;
+}
+
+void 
+OsciGraphRenderData::DoProcessMainExchangeValue(
+  FBModuleGraphData& data, float value)
+{
+  data.exchangeMainText = FBPitchToStringNotes(value);
 }
 
 void 
@@ -105,16 +116,6 @@ OsciGraphRenderData::DoProcess(
   return result;
 }
 
-void 
-OsciGraphRenderData::DoPostProcess(
-  FBGraphRenderState* /*state*/,
-  bool /*detailGraphs*/, int /*graphIndex*/,
-  bool /*exchange*/, int /*exchangeVoice*/,
-  FBModuleGraphPoints& points)
-{
-  points.bipolar = true;
-}
-
 static FBModuleGraphPlotParams
 PlotParams(FBModuleGraphComponentData const* data, bool /*detailGraphs*/, int /*graphIndex*/)
 {
@@ -163,10 +164,18 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     int maxSizeAllSeries = 0;
     float absMaxValueAllSeries = 0.0f;
     graphData->graphs[i].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
+    
     FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::Type, 0 } };
     auto osciType = graphData->renderState->AudioParamList<FFOsciType>(paramIndices, false, -1);
     paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::UniCount, 0 } };
     int uniCount = graphData->renderState->AudioParamDiscrete(paramIndices, false, -1);
+    paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::Gain, 0 } };
+    float gain = graphData->renderState->AudioParamLinear(paramIndices, false, -1);
+    paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::Coarse, 0 } };
+    float coarse = graphData->renderState->AudioParamLinear(paramIndices, false, -1);
+    paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::Fine, 0 } };
+    float fine = graphData->renderState->AudioParamLinear(paramIndices, false, -1);
+
     std::string title = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
     title += ": " + FFOsciTypeToString(osciType);
     if (osciType != FFOsciType::Off)
@@ -177,9 +186,11 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     }
     
     graphData->graphs[i].title = title;
-    graphData->graphs[i].subtext = FBFormatDoubleCLocale(20.0f * std::log10(absMaxValueAllSeries), 2) + " dB";
     graphData->graphs[i].moduleSlot = graphModuleSlot;
     graphData->graphs[i].moduleIndex = (int)FFModuleType::Osci;
+    graphData->graphs[i].defaultSubText = FBGainToStringDb(gain);
+    graphData->graphs[i].defaultMainText = FBPitchToStringSemis(coarse, fine);
+    graphData->graphs[i].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries);
   }
   if (detailGraphs)
   {
