@@ -18,8 +18,11 @@ struct LFOGraphRenderData;
 struct alignas(FBSIMDAlign) FFLFOExchangeState final:
 public FBModuleProcMultiExchangeState<FFLFOBlockCount>
 {
+  float value = {};
   int lengthSamplesAll = {};
   int positionSamplesAll = {};
+  std::array<float, FFLFOBlockCount> rates = {};
+  std::array<float, FFLFOBlockCount> values = {};
   std::array<float, FFLFOBlockCount> phases = {};
   std::array<float, FFLFOBlockCount> uniNoiseLastDraw = {};
   std::array<float, FFLFOBlockCount> normNoiseLastDraw = {};

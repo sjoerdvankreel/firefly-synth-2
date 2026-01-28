@@ -9,6 +9,12 @@
 using namespace juce;
 
 std::string
+FBToStringHz(float val, int precision)
+{
+  return FBFormatDoubleCLocale(val, precision) + " Hz";
+}
+
+std::string
 FBToStringSeconds(float val, int precision)
 {
   return FBFormatDoubleCLocale(val, precision) + " Sec";

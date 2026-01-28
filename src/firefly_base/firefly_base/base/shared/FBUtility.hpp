@@ -83,6 +83,8 @@ inline int const FBDefaultDisplayPrecision = 3;
 std::string
 FBPitchToStringNotes(float pitch);
 std::string
+FBToStringHz(float val, int precision);
+std::string
 FBToStringPercent(float val, int precision);
 std::string
 FBToStringSeconds(float val, int precision);

@@ -23,7 +23,7 @@ public FBModuleGraphRenderData<LFOGraphRenderData<Global>>
   void DoReleaseOnDemandBuffers(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/) {}
   void DoPostProcess(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
   void DoProcessIndicators(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
-  void DoProcessExchangeState(FBGraphRenderState* /*graphState*/, FBModuleGraphData& /*data*/, bool /*detailGraphs*/, int /*graphIndex*/, int /*exchangeVoice*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) {}
+  void DoProcessExchangeState(FBGraphRenderState* graphState, FBModuleGraphData& data, bool detailGraphs, int graphIndex, int exchangeVoice, FBModuleProcExchangeStateBase const* exchangeState);
 };
 
 static FBModuleGraphPlotParams
@@ -113,6 +113,25 @@ LFOGraphRenderData<Global>::DoProcess(
 
 template <bool Global>
 void
+LFOGraphRenderData<Global>::DoProcessExchangeState(
+  FBGraphRenderState* /*graphState*/, FBModuleGraphData& data,
+  bool detailGraphs, int graphIndex, int /*exchangeVoice*/,
+  FBModuleProcExchangeStateBase const* exchangeState)
+{
+  auto lfoExchange = dynamic_cast<FFLFOExchangeState const*>(exchangeState);
+  if (!detailGraphs)
+  {
+    data.exchangeMainText = FBToStringHz(lfoExchange->rates[0], 2);
+    data.exchangeSubText = FBToStringPercent(lfoExchange->value, 2);
+    return;
+  }
+
+  data.exchangeMainText = FBToStringHz(lfoExchange->rates[graphIndex], 2);
+  data.exchangeSubText = FBToStringPercent(lfoExchange->values[graphIndex], 2);
+}
+
+template <bool Global>
+void
 FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
 {
   LFOGraphRenderData<Global> renderData = {};
@@ -136,10 +155,7 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   auto* moduleProcState = renderState->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
   FBTopoIndices modIndices = { (int)moduleType, moduleSlot };
-  FBParamTopoIndices paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Type, 0 } };
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
-  auto type = renderState->AudioParamList<FFLFOType>(paramIndices, false, -1);
-
   int graphCount = detailGraphs ? FFLFOBlockCount : 1;
   for (int i = 0; i < graphCount; i++)
   {
@@ -148,25 +164,27 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[i].moduleIndex = (int)moduleType;
     if (detailGraphs)
     {
-      FBParamTopoIndices opTypeIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };
-      auto opType = renderState->AudioParamList<FFModulationOpType>(opTypeIndices, false, -1);
-      graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
-      graphData->graphs[i].defaultSubText = FBAsciiToUpper(FFModulationOpTypeToString(opType));
+      FBParamTopoIndices paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };
+      auto opType = renderState->AudioParamList<FFModulationOpType>(paramIndices, false, -1);
+      paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::WaveMode, i } };
+      auto waveMode = renderState->AudioParamList<FFLFOWaveMode>(paramIndices, false, -1);
+      graphData->graphs[i].title = std::string(1, static_cast<char>('A' + i));
+      graphData->graphs[i].title += ": " + FFModulationOpTypeToString(opType);
+      if(opType != FFModulationOpType::Off)
+        graphData->graphs[i].title += ", " + FFLFOWaveModeToString(waveMode);
     }
     else
     {
+      FBParamTopoIndices paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Type, 0 } };
+      auto type = renderState->AudioParamList<FFLFOType>(paramIndices, false, -1);
+      paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Sync, 0 } };
+      bool sync = renderState->AudioParamBool(paramIndices, false, -1);
       graphData->graphs[i].title = moduleName;
-      graphData->graphs[i].defaultSubText = FBAsciiToUpper(FFLFOTypeToString(type, Global));
+      graphData->graphs[i].title += ": " + FFLFOTypeToString(type, Global);
+      if (type != FFLFOType::Off)
+        graphData->graphs[i].title += std::string(", ") + (sync ? "BPM" : "Time");
     }
-    graphData->graphs[0].ScaleToSelfNormalized();
-  }
-  if (detailGraphs)
-  {
-    graphData->ScaleToAllNormalized();
-  }
-  else
-  {
-    graphData->graphs[0].ScaleToSelfNormalized();
+    graphData->graphs[i].ScaleToSelfNormalized();
   }
 }
 

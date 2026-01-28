@@ -7,15 +7,17 @@ v2.1.1
 [x] freq response should plot logarithmic
 [x] bipolar etc should be per exchange voice
 [x] lfo graph clips balls
+[x] display param values as rounded
+[x] scale osc individually
+[ ] detail graphs for env = ADSR
+[ ] one phase LFO type
 [ ] run debug build
 [ ] bigass bg image
 [ ] recheck all the container components, do we need em?
 [ ] gfx1->gfx 1
 [ ] drop scaletoallnormalized
-[ ] display param values as rounded
 [ ] detail editors not inline like detail graphs (bundle them?)
 [ ] do FBModuleGraphData anyExchActive
-[ ] scale osc individually
 [ ] do some sort of primary indicator on the left (pitch, freq) and signal derived on the right (db, %) + primary derived (pitch, freq, length)
 [ ] osci ovsmp + new unison to own module
 [ ] fix up the env graph

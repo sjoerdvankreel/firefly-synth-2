@@ -71,7 +71,7 @@ struct FBModuleGraphComponentData final
   FBModuleGraphDrawMarkersSelector drawMarkersSelector = {};
 
   void ScaleBy(float factor);
-  void ScaleToAllNormalized();
+  void ScaleToAllNormalized(); // todo drop it
   bool GetScaleFactorToAllNormalized(float& factor) const;
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleGraphComponentData);
 };
