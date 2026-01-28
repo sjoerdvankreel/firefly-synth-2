@@ -82,11 +82,11 @@ EchoGraphRenderData<Global>::DoProcessExchangeState(
   FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEchoParam::Order, 0 } };
   auto order = graphState->AudioParamList<FFEchoOrder>(indices, false, -1);
   if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Taps))
-    data.exchangeMainText = FBToStringPercent(echoExchange->tapsMix, 2);
+    data.exchangeMainText = FBToStringPercent(echoExchange->tapsMix, 2) + " Mix";
   else if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Feedback))
     data.exchangeMainText = FBToStringSeconds(echoExchange->feedbackDelay, 3);
   else if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Reverb))
-    data.exchangeMainText = FBToStringPercent(echoExchange->reverbSize, 2);
+    data.exchangeMainText = FBToStringPercent(echoExchange->reverbSize, 2) + " Size";
   else
     FB_ASSERT(false);
 }
@@ -200,6 +200,8 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   auto* renderState = graphData->renderState;
   auto moduleType = Global ? FFModuleType::GEcho : FFModuleType::VEcho;
   FBTopoIndices modIndices = { (int)moduleType, 0 };
+  auto const* topo = graphData->renderState->PlugGUI()->HostContext()->Topo();
+  auto const& moduleTopo = topo->static_->modules[(int)moduleType];
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
 
   FBParamTopoIndices paramIndices = { modIndices, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
@@ -209,10 +211,10 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   paramIndices = { modIndices, { (int)FFEchoParam::Gain, 0 } };
   float gain = renderState->AudioParamLinear(paramIndices, false, -1);
 
+  int maxSizeAllSeries = 0;
+  float absMaxValueAllSeries = 0.0f;
   if (!detailGraphs)
   {
-    int maxSizeAllSeries = 0;
-    float absMaxValueAllSeries = 0.0f;
     FBRenderModuleGraph<Global, true>(renderData, detailGraphs, 0);
     graphData->graphs[0].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
 
@@ -229,28 +231,50 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     return;
   }
 
+  paramIndices = { modIndices, { (int)FFEchoParam::TapsMix, 0 } };
+  float tapsMix = renderState->AudioParamIdentity(paramIndices, false, -1);
   int tapsOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Taps);
   FBRenderModuleGraph<Global, true>(renderData, detailGraphs, tapsOrder);
+  graphData->graphs[tapsOrder].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
   graphData->graphs[tapsOrder].moduleSlot = 0;
   graphData->graphs[tapsOrder].moduleIndex = (int)moduleType;
-  graphData->graphs[tapsOrder].title = FBAsciiToUpper(moduleName + " Taps");
-  graphData->graphs[tapsOrder].defaultSubText = IsTapsOn(renderState, Global, false, -1) ? "ON" : "OFF";
+  graphData->graphs[tapsOrder].title = moduleName + " Multi Tap: ";
+  graphData->graphs[tapsOrder].title += IsTapsOn(renderState, Global, false, -1) ? "On" : "Off";
+  graphData->graphs[tapsOrder].defaultMainText = FBToStringPercent(tapsMix, 2) + " Mix";
+  graphData->graphs[tapsOrder].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
+  graphData->graphs[tapsOrder].ScaleToSelfNormalized();
 
+  paramIndices = { modIndices, { (int)FFEchoParam::Sync, 0 } };
+  bool sync = renderState->AudioParamBool(paramIndices, false, -1);
+  paramIndices = { modIndices, { (int)FFEchoParam::FeedbackDelayTime, 0 } };
+  float feedbackDelayTime = renderState->AudioParamLinear(paramIndices, false, -1);
+  paramIndices = { modIndices, { (int)FFEchoParam::FeedbackDelayBars, 0 } };
+  double feedbackDelayBarsNorm = renderState->AudioParamNormalized(paramIndices, false, -1);
   int feedbackOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Feedback);
   FBRenderModuleGraph<Global, true>(renderData, detailGraphs, feedbackOrder);
+  graphData->graphs[feedbackOrder].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
   graphData->graphs[feedbackOrder].moduleSlot = 0;
   graphData->graphs[feedbackOrder].moduleIndex = (int)moduleType;
-  graphData->graphs[feedbackOrder].title = FBAsciiToUpper(moduleName + " Fdbk");
-  graphData->graphs[feedbackOrder].defaultSubText = IsFeedbackOn(renderState, Global, false, -1) ? "ON" : "OFF";
+  graphData->graphs[feedbackOrder].title = moduleName + " Feedback: ";
+  graphData->graphs[feedbackOrder].title += IsFeedbackOn(renderState, Global, false, -1) ? "On" : "Off";
+  graphData->graphs[feedbackOrder].defaultMainText = !sync ?
+    FBToStringSeconds(feedbackDelayTime, 3) :
+    moduleTopo.params[(int)FFEchoParam::FeedbackDelayBars].BarsNonRealTime().NormalizedToText(false, 0, feedbackDelayBarsNorm);
+  graphData->graphs[feedbackOrder].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
+  graphData->graphs[feedbackOrder].ScaleToSelfNormalized();
 
+  paramIndices = { modIndices, { (int)FFEchoParam::ReverbSize, 0 } };
+  float reverbSize = renderState->AudioParamIdentity(paramIndices, false, -1);
   int reverbOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Reverb);
   FBRenderModuleGraph<Global, true>(renderData, detailGraphs, reverbOrder);
+  graphData->graphs[reverbOrder].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
   graphData->graphs[reverbOrder].moduleSlot = 0;
   graphData->graphs[reverbOrder].moduleIndex = (int)moduleType;
-  graphData->graphs[reverbOrder].title = FBAsciiToUpper(moduleName + " Rvrb");
-  graphData->graphs[reverbOrder].defaultSubText = IsReverbOn(renderState, Global, false, -1) ? "ON" : "OFF";
-
-  graphData->ScaleToAllNormalized();
+  graphData->graphs[reverbOrder].title = moduleName + " Reverb: ";
+  graphData->graphs[reverbOrder].title += IsReverbOn(renderState, Global, false, -1) ? "On" : "Off";
+  graphData->graphs[reverbOrder].defaultMainText = FBToStringPercent(reverbSize, 2) + " Size";
+  graphData->graphs[reverbOrder].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
+  graphData->graphs[reverbOrder].ScaleToSelfNormalized();
 }
 
 template struct EchoGraphRenderData<true>;

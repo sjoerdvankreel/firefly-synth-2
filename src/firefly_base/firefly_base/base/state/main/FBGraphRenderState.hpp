@@ -33,10 +33,6 @@ class FBGraphRenderState final
   std::unique_ptr<FBVoiceManager> _primaryVoiceManager;
   std::unique_ptr<FBVoiceManager> _exchangeVoiceManager;
 
-  double GetAudioParamNormalized(
-    FBParamTopoIndices const& indices,
-    bool exchange, int exchangeVoice) const;
-
 public:
   ~FBGraphRenderState();
   FBGraphRenderState(FBPlugGUI const* plugGUI);
@@ -57,9 +53,11 @@ public:
   bool GlobalModuleExchangeStateEqualsPrimary(int moduleIndex, int moduleSlot) const;
   bool VoiceModuleExchangeStateEqualsPrimary(int voice, int moduleIndex, int moduleSlot) const;
 
+  double AudioParamNormalized(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   bool AudioParamBool(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   int AudioParamDiscrete(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   float AudioParamLinear(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
+  float AudioParamIdentity(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   template <class T> T AudioParamList(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   int AudioParamLinearFreqSamples(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate) const;
   int AudioParamLinearTimeSamples(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate) const;
@@ -71,6 +69,6 @@ FBGraphRenderState::AudioParamList(
   FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
+  double normalized = AudioParamNormalized(indices, exchange, exchangeVoice);
   return static_cast<T>(param->static_.List().NormalizedToPlainFast(static_cast<float>(normalized)));
 }

@@ -325,7 +325,7 @@ FFEchoProcessor<Global>::Process(
     if (_voiceExtensionStage == FFEchoVoiceExtensionStage::Finished)
       return 0;
 
-  // make-up gain to offset all the dry/wet mixing
+  // input gain to offset all the dry/wet mixing
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     for (int c = 0; c < 2; c++)
       output[c].Mul(s, topo.NormalizedToLinearFast(FFEchoParam::Gain, gainNorm.CV().Load(s)));

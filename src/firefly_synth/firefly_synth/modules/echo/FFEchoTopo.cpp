@@ -181,7 +181,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   gain.slotCount = 1;
   gain.unit = "%";
   gain.id = prefix + "{557D9FBC-0EA3-4DDD-914F-7C9E647E25E0}";
-  gain.description = "Echo Make-up Gain";
+  gain.description = "Echo Input Gain";
   gain.type = FBParamType::Linear;
   gain.Linear().min = 0.0f;
   gain.Linear().max = 4.0f;
