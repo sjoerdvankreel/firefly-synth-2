@@ -8,6 +8,9 @@
 
 using namespace juce;
 
+// turns out this is expensive to construct
+static std::locale const CLocale("C");
+
 std::string
 FBToStringHz(float val, int precision)
 {
@@ -136,7 +139,7 @@ FBFormatDoubleCLocale(double val, int precision)
   val /= multiplier;
 
   std::stringstream ss;
-  ss.imbue(std::locale("C"));
+  ss.imbue(CLocale);
   ss << std::fixed;
   ss.precision(precision);
   ss << val;
