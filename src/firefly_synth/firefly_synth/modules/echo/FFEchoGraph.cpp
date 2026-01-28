@@ -253,34 +253,52 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   graphData->graphs[tapsOrder].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
   graphData->graphs[tapsOrder].ScaleToSelfNormalized();
 
+  bool feedbackOn = IsFeedbackOn(renderState, Global, false, -1);
   paramIndices = { modIndices, { (int)FFEchoParam::Sync, 0 } };
   bool sync = renderState->AudioParamBool(paramIndices, false, -1);
   paramIndices = { modIndices, { (int)FFEchoParam::FeedbackDelayTime, 0 } };
   float feedbackDelayTime = renderState->AudioParamLinear(paramIndices, false, -1);
   paramIndices = { modIndices, { (int)FFEchoParam::FeedbackDelayBars, 0 } };
   double feedbackDelayBarsNorm = renderState->AudioParamNormalized(paramIndices, false, -1);
+  paramIndices = { modIndices, { (int)FFEchoParam::FeedbackLPOn, 0 } };
+  bool feedbackLPOn = renderState->AudioParamBool(paramIndices, false, -1);
+  paramIndices = { modIndices, { (int)FFEchoParam::FeedbackHPOn, 0 } };
+  bool feedbackHPOn = renderState->AudioParamBool(paramIndices, false, -1);
   int feedbackOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Feedback);
   FBRenderModuleGraph<Global, true>(renderData, detailGraphs, feedbackOrder);
   graphData->graphs[feedbackOrder].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
   graphData->graphs[feedbackOrder].moduleSlot = 0;
   graphData->graphs[feedbackOrder].moduleIndex = (int)moduleType;
   graphData->graphs[feedbackOrder].title = "Feedback: ";
-  graphData->graphs[feedbackOrder].title += IsFeedbackOn(renderState, Global, false, -1) ? "On" : "Off";
+  graphData->graphs[feedbackOrder].title += feedbackOn ? "On" : "Off";
+  if (feedbackOn && feedbackLPOn)
+    graphData->graphs[feedbackOrder].title += ", LPF";
+  if (feedbackOn && feedbackHPOn)
+    graphData->graphs[feedbackOrder].title += ", HPF";
   graphData->graphs[feedbackOrder].defaultMainText = !sync ?
     FBToStringSeconds(feedbackDelayTime, 3) :
     moduleTopo.params[(int)FFEchoParam::FeedbackDelayBars].BarsNonRealTime().NormalizedToText(false, 0, feedbackDelayBarsNorm);
   graphData->graphs[feedbackOrder].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
   graphData->graphs[feedbackOrder].ScaleToSelfNormalized();
 
+  bool reverbOn = IsReverbOn(renderState, Global, false, -1);
   paramIndices = { modIndices, { (int)FFEchoParam::ReverbSize, 0 } };
   float reverbSize = renderState->AudioParamIdentity(paramIndices, false, -1);
+  paramIndices = { modIndices, { (int)FFEchoParam::ReverbLPOn, 0 } };
+  bool reverbLPOn = renderState->AudioParamBool(paramIndices, false, -1);
+  paramIndices = { modIndices, { (int)FFEchoParam::ReverbHPOn, 0 } };
+  bool reverbHPOn = renderState->AudioParamBool(paramIndices, false, -1);
   int reverbOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Reverb);
   FBRenderModuleGraph<Global, true>(renderData, detailGraphs, reverbOrder);
   graphData->graphs[reverbOrder].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
   graphData->graphs[reverbOrder].moduleSlot = 0;
   graphData->graphs[reverbOrder].moduleIndex = (int)moduleType;
   graphData->graphs[reverbOrder].title = "Reverb: ";
-  graphData->graphs[reverbOrder].title += IsReverbOn(renderState, Global, false, -1) ? "On" : "Off";
+  graphData->graphs[reverbOrder].title += reverbOn ? "On" : "Off";
+  if (reverbOn && reverbLPOn)
+    graphData->graphs[reverbOrder].title += ", LPF";
+  if (reverbOn && reverbHPOn)
+    graphData->graphs[reverbOrder].title += ", HPF";
   graphData->graphs[reverbOrder].defaultMainText = FBToStringPercent(reverbSize, 2) + " Size";
   graphData->graphs[reverbOrder].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
   graphData->graphs[reverbOrder].ScaleToSelfNormalized();
