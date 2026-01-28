@@ -194,10 +194,22 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     {
       paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Type, 0 } };
       auto type = renderState->AudioParamList<FFLFOType>(paramIndices, false, -1);
-      graphData->graphs[i].title = moduleName;
-      graphData->graphs[i].title += ": " + FFLFOTypeToString(type, Global);
+      paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateHz, 0 } };
+      float rateHz = renderState->AudioParamLinear(paramIndices, false, -1);
+      paramIndices = { modIndices, { (int)FFLFOParam::RateBars, 0 } };
+      double rateBarsNorm = renderState->AudioParamNormalized(paramIndices, false, -1);
+      paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Min, 0 } };
+      float minVal = renderState->AudioParamIdentity(paramIndices, false, -1);
+      paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Max, 0 } };
+      float maxVal = renderState->AudioParamIdentity(paramIndices, false, -1);
+      graphData->graphs[0].title = moduleName;
+      graphData->graphs[0].title += ": " + FFLFOTypeToString(type, Global);
       if (type != FFLFOType::Off)
-        graphData->graphs[i].title += std::string(", ") + (sync ? "BPM" : "Time");
+        graphData->graphs[0].title += std::string(", ") + (sync ? "BPM" : "Time");
+      graphData->graphs[0].defaultSubText = FBToStringPercent(std::max(minVal, maxVal), 2);
+      graphData->graphs[0].defaultMainText = !sync ?
+        FBToStringHz(rateHz, 2) :
+        (moduleTopo.params[(int)FFLFOParam::RateBars].BarsNonRealTime().NormalizedToText(false, 0, rateBarsNorm) + " Bars");
     }
     graphData->graphs[i].ScaleToSelfNormalized();
   }
