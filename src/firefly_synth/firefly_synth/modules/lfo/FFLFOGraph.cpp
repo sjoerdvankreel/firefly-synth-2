@@ -168,10 +168,16 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       auto opType = renderState->AudioParamList<FFModulationOpType>(paramIndices, false, -1);
       paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::WaveMode, i } };
       auto waveMode = renderState->AudioParamList<FFLFOWaveMode>(paramIndices, false, -1);
+      paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateHz, i } }; // todo
+      float rateHz = renderState->AudioParamLinear(paramIndices, false, -1);
+      paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Max, i } };
+      float maxVal = renderState->AudioParamIdentity(paramIndices, false, -1);
       graphData->graphs[i].title = std::string(1, static_cast<char>('A' + i));
       graphData->graphs[i].title += ": " + FFModulationOpTypeToString(opType);
       if(opType != FFModulationOpType::Off)
         graphData->graphs[i].title += ", " + FFLFOWaveModeToString(waveMode);
+      graphData->graphs[i].defaultMainText = FBToStringHz(rateHz, 2);
+      graphData->graphs[i].defaultSubText = FBToStringPercent(maxVal, 2);
     }
     else
     {
