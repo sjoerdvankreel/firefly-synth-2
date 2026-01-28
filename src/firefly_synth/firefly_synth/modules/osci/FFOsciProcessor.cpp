@@ -218,7 +218,7 @@ FFOsciProcessor::Process(
   if (graph)
   {
     if (exchangeFromDSP != nullptr)
-      voiceBasePitch.Fill(FBBatch<float>(exchangeFromDSP->basePitch));
+      voiceBasePitch.Fill(FBBatch<float>(exchangeFromDSP->voiceBasePitch));
     else
       voiceBasePitch.Fill(FBBatch<float>(60.0f));
   }
@@ -362,8 +362,8 @@ FFOsciProcessor::Process(
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
   exchangeDSP.boolIsActive = 1;
-  exchangeDSP.basePitch = voiceBasePitch.Get(FBFixedBlockSamples - 1);
-  exchangeDSP.mainExchangeValue = basePitchPlain.Get(0);
+  exchangeDSP.osciEffectivePitch = basePitchPlain.Get(0);
+  exchangeDSP.voiceBasePitch = voiceBasePitch.Get(FBFixedBlockSamples - 1);
   exchangeDSP.lengthSamples = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];

@@ -18,12 +18,12 @@ public FBModuleGraphRenderData<GlobalUniGraphRenderData>
   int samplesProcessed = {};
 
   FFGlobalUniProcessor& GetProcessor(FBModuleProcState& state);
-  void DoProcessMainExchangeValue(FBModuleGraphData& /*data*/, float /*value*/) {}
   int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoPostProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
   void DoProcessIndicators(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/) {}
+  void DoProcessExchangeState(FBGraphRenderState* /*graphState*/, FBModuleGraphData& /*data*/, bool /*detailGraphs*/, int /*graphIndex*/, int /*exchangeVoice*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) {}
 };
 
 static FBModuleGraphPlotParams

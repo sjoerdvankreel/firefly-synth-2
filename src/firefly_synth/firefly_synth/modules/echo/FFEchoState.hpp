@@ -16,6 +16,15 @@ struct FBStaticModule;
 template <bool Global>
 struct EchoGraphRenderData;
 
+struct alignas(FBSIMDAlign) FFEchoExchangeState final:
+public FBModuleProcSingleExchangeState
+{
+  float tapsMix = {};
+  float makeUpGain = {};
+  float reverbSize = {};
+  float feedbackDelay = {};
+};
+
 template <bool Global>
 class FFEchoDSPState final
 {

@@ -45,12 +45,12 @@ public FBModuleGraphRenderData<EchoGraphRenderData<Global>>
   std::array<int, (int)FFEchoModule::Count> samplesProcessed = {};
 
   FFEchoProcessor<Global>& GetProcessor(FBModuleProcState& state);
-  void DoProcessMainExchangeValue(FBModuleGraphData& /*data*/, float /*value*/) {}
   int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoPostProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
   void DoProcessIndicators(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
+  void DoProcessExchangeState(FBGraphRenderState* /*graphState*/, FBModuleGraphData& /*data*/, bool /*detailGraphs*/, int /*graphIndex*/, int /*exchangeVoice*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) {}
 };
 
 static FBModuleGraphPlotParams
@@ -63,6 +63,21 @@ PlotParams(FBModuleGraphComponentData const* data, bool global, int /*graphIndex
   result.staticModuleIndex = (int)(global ? FFModuleType::GEcho : FFModuleType::VEcho);
   return result;
 }
+
+#if 0 // todo
+static FFEchoExchangeState const*
+GetEchoExchangeStateFromDSP(FBGraphRenderState* state, bool global, int slot, bool exchange, int exchangeVoice)
+{
+  auto* moduleProcState = state->ModuleProcState();
+  FFEchoExchangeState const* exchangeFromDSP = nullptr;
+  int moduleType = global ? (int)FFModuleType::GEcho : (int)FFModuleType::VEcho;
+  int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ moduleType, slot });
+  auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
+  if (exchange)
+    exchangeFromDSP = &dynamic_cast<FFEchoExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
+  return exchangeFromDSP;
+}
+#endif
 
 template <bool Global>
 void

@@ -12,11 +12,11 @@ struct OsciGraphRenderData final:
 public FBModuleGraphRenderData<OsciGraphRenderData>
 {
   FFVoiceDSPState& GetVoiceDSPState(FBModuleProcState& state);
-  void DoProcessMainExchangeValue(FBModuleGraphData& data, float value);
   int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoPostProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
+  void DoProcessExchangeState(FBGraphRenderState* graphState, FBModuleGraphData& data, bool detailGraphs, int graphIndex, int exchangeVoice, FBModuleProcExchangeStateBase const* exchangeState);
   void DoProcessIndicators(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
 
@@ -49,10 +49,13 @@ OsciGraphRenderData::DoPostProcess(
 }
 
 void 
-OsciGraphRenderData::DoProcessMainExchangeValue(
-  FBModuleGraphData& data, float value)
+OsciGraphRenderData::DoProcessExchangeState(
+  FBGraphRenderState* /*graphState*/, FBModuleGraphData& data,
+  bool /*detailGraphs*/, int /*graphIndex*/, int /*exchangeVoice*/,
+  FBModuleProcExchangeStateBase const* exchangeState)
 {
-  data.exchangeMainText = FBPitchToStringNotes(value);
+  auto osciExchange = dynamic_cast<FFOsciExchangeState const*>(exchangeState);
+  data.exchangeMainText = FBPitchToStringNotes(osciExchange->osciEffectivePitch);
 }
 
 void 

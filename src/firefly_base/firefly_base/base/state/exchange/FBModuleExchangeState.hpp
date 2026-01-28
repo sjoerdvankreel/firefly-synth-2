@@ -14,7 +14,6 @@
 struct alignas(FBSIMDAlign) FBModuleProcExchangeStateBase
 {
   int boolIsActive = 0; // i dont dare to put not aligned stuff in here anymore because of ARM mac
-  float mainExchangeValue = 0.0f; // anything we want to plot, pitch, freq, seconds, etc
   virtual ~FBModuleProcExchangeStateBase() {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcExchangeStateBase);
 

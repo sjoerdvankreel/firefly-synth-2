@@ -56,8 +56,6 @@ struct FBModuleGraphRenderData
   FBModuleGraphVoiceStereoOutputSelector voiceStereoOutputSelector = {};
   FBModuleGraphGlobalStereoOutputSelector globalStereoOutputSelector = {};
 
-  void ProcessMainExchangeValue(FBModuleGraphData& data, float value)
-  { return static_cast<Derived*>(this)->DoProcessMainExchangeValue(data, value); }
   int Process(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice)
   { return static_cast<Derived*>(this)->DoProcess(state, detailGraphs, graphIndex, exchange, exchangeVoice); }
   void BeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice)
@@ -68,6 +66,8 @@ struct FBModuleGraphRenderData
   { return static_cast<Derived*>(this)->DoPostProcess(state, detailGraphs, graphIndex, exchange, exchangeVoice, points); }
   void ProcessIndicators(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
   { return static_cast<Derived*>(this)->DoProcessIndicators(state, detailGraphs, graphIndex, exchange, exchangeVoice, points); }
+  void ProcessExchangeState(FBGraphRenderState* graphState, FBModuleGraphData& data, bool detailGraphs, int graphIndex, int exchangeVoice, FBModuleProcExchangeStateBase const* exchangeState)
+  { return static_cast<Derived*>(this)->DoProcessExchangeState(graphState, data, detailGraphs, graphIndex, exchangeVoice, exchangeState); }
 };
 
 template <bool Global, bool Stereo, class Derived> 
@@ -146,14 +146,18 @@ FBRenderModuleGraphSeries(
     auto moduleExchange = renderData.globalExchangeSelector(
       exchangeState, moduleProcState->moduleSlot, detailGraphs, graphIndex);
     if(moduleExchange->boolIsActive)
-      renderData.ProcessMainExchangeValue(renderData.graphData->graphs[graphIndex], moduleExchange->mainExchangeValue);
+      renderData.ProcessExchangeState(
+        renderState, renderData.graphData->graphs[graphIndex], 
+        detailGraphs, graphIndex, -1, moduleExchange);
   }
   else for (int v = 0; v < FBMaxVoices; v++)
   {
     auto moduleExchange = renderData.voiceExchangeSelector(
       exchangeState, v, moduleProcState->moduleSlot, detailGraphs, graphIndex);
     if(moduleExchange->boolIsActive)
-       renderData.ProcessMainExchangeValue(renderData.graphData->graphs[graphIndex], moduleExchange->mainExchangeValue);
+       renderData.ProcessExchangeState(
+         renderState, renderData.graphData->graphs[graphIndex],
+         detailGraphs, graphIndex, v, moduleExchange);
   }
 }
 
