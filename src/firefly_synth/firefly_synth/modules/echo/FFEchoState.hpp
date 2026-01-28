@@ -20,7 +20,7 @@ struct alignas(FBSIMDAlign) FFEchoExchangeState final:
 public FBModuleProcSingleExchangeState
 {
   float tapsMix = {};
-  float makeUpGain = {};
+  float inputGain = {};
   float reverbSize = {};
   float feedbackDelay = {};
 };

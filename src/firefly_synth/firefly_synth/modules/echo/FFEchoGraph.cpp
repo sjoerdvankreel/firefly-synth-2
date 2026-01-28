@@ -74,7 +74,7 @@ EchoGraphRenderData<Global>::DoProcessExchangeState(
   auto echoExchange = dynamic_cast<FFEchoExchangeState const*>(exchangeState);
   if (!detailGraphs)
   {
-    data.exchangeMainText = FBGainToStringDb(echoExchange->makeUpGain, 2) + " Gain";
+    data.exchangeMainText = FBGainToStringDb(echoExchange->inputGain, 2) + " Gain";
     return;
   }
 
