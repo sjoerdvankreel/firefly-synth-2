@@ -231,15 +231,24 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     return;
   }
 
+  int tapCount = 0;
+  for (int i = 0; i < FFEchoTapCount; i++)
+  {
+    paramIndices = { modIndices, { (int)FFEchoParam::TapOn, i } };
+    tapCount += renderState->AudioParamBool(paramIndices, false, -1) ? 1 : 0;
+  }
   paramIndices = { modIndices, { (int)FFEchoParam::TapsMix, 0 } };
+  bool tapsOn = IsTapsOn(renderState, Global, false, -1);
   float tapsMix = renderState->AudioParamIdentity(paramIndices, false, -1);
   int tapsOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Taps);
   FBRenderModuleGraph<Global, true>(renderData, detailGraphs, tapsOrder);
   graphData->graphs[tapsOrder].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
   graphData->graphs[tapsOrder].moduleSlot = 0;
   graphData->graphs[tapsOrder].moduleIndex = (int)moduleType;
-  graphData->graphs[tapsOrder].title = moduleName + " Multi Tap: ";
+  graphData->graphs[tapsOrder].title = "Multi Tap: ";
   graphData->graphs[tapsOrder].title += IsTapsOn(renderState, Global, false, -1) ? "On" : "Off";
+  if (tapsOn)
+    graphData->graphs[tapsOrder].title += ", " + std::to_string(tapCount) + " Taps";
   graphData->graphs[tapsOrder].defaultMainText = FBToStringPercent(tapsMix, 2) + " Mix";
   graphData->graphs[tapsOrder].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
   graphData->graphs[tapsOrder].ScaleToSelfNormalized();
@@ -255,7 +264,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   graphData->graphs[feedbackOrder].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
   graphData->graphs[feedbackOrder].moduleSlot = 0;
   graphData->graphs[feedbackOrder].moduleIndex = (int)moduleType;
-  graphData->graphs[feedbackOrder].title = moduleName + " Feedback: ";
+  graphData->graphs[feedbackOrder].title = "Feedback: ";
   graphData->graphs[feedbackOrder].title += IsFeedbackOn(renderState, Global, false, -1) ? "On" : "Off";
   graphData->graphs[feedbackOrder].defaultMainText = !sync ?
     FBToStringSeconds(feedbackDelayTime, 3) :
@@ -270,7 +279,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   graphData->graphs[reverbOrder].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
   graphData->graphs[reverbOrder].moduleSlot = 0;
   graphData->graphs[reverbOrder].moduleIndex = (int)moduleType;
-  graphData->graphs[reverbOrder].title = moduleName + " Reverb: ";
+  graphData->graphs[reverbOrder].title = "Reverb: ";
   graphData->graphs[reverbOrder].title += IsReverbOn(renderState, Global, false, -1) ? "On" : "Off";
   graphData->graphs[reverbOrder].defaultMainText = FBToStringPercent(reverbSize, 2) + " Size";
   graphData->graphs[reverbOrder].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
