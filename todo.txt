@@ -12,10 +12,8 @@ v2.1.1
 [ ] re-un-shorten all the texts
 [ ] test the clap
 [ ] re-profile the gui
-[ ] too much balls on the lfo graph
 [ ] DONT do other stuff beside GUI
 [ ] detail graphs for env = ADSR
-[ ] one phase LFO type
 [ ] run debug build
 [ ] bigass bg image
 [ ] recheck all the container components, do we need em?
@@ -26,19 +24,16 @@ v2.1.1
 [ ] do some sort of primary indicator on the left (pitch, freq) and signal derived on the right (db, %) + primary derived (pitch, freq, length)
 [ ] osci ovsmp + new unison to own module
 [ ] fix up the env graph
-[ ] do mod rate/amt for multitap
 [ ] different init and clear patches
 [ ] checkboxes as round tick thingies
 [ ] after init, load, etc, should select the first graph of everything
 [ ] allow click + on first disabled matrix slot
-[ ] override all-osci unison
 [ ] settings block out of main
 [ ] do block-style (2row x 2col) tab headers to save on UI space
 [ ] run a dbg build after all the graph stuff
 [ ] tooltips for time stuff in hz and seconds
 [ ] do all kinds of non-breaking stuff, break later
 [ ] do more easy access controls (and maybe more mod sources)
-[ ] bpexpo envelopes + docs
 [ ] click main module graph shows details
 [ ] not allcaps for graphs
 [ ] osc mod to own row (single)
@@ -58,8 +53,13 @@ v2.1.1
 [ ] alternate-color the matrix rows et all
 [ ] pretty knobs, graphs, combos, checks, buttons, more?
 [ ] programmatic dump screenshot?
-[ ] add loop count param
 [ ] check todos
+
+[ ] add loop count param
+[ ] one phase LFO type
+[ ] do mod rate/amt for multitap
+[ ] override all-osci unison
+[ ] bpexpo envelopes + docs
 
 fix the string oversample bug already
 drop screenshot_theme_light_default (for the website) once fix the auto-screenshot
