@@ -194,15 +194,10 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[i].defaultSubText = FBGainToStringDb(gain);
     graphData->graphs[i].defaultMainText = FBPitchToStringSemis(coarse, fine);
     graphData->graphs[i].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries);
-  }
-  if (detailGraphs)
-  {
-    graphData->ScaleToAllNormalized();
-  }
-  else
-  {
-    graphData->graphs[0].MergeStereo();
-    graphData->graphs[0].ScaleToSelfNormalized();
+
+    if (!detailGraphs)
+      graphData->graphs[i].MergeStereo();
+    graphData->graphs[i].ScaleToSelfNormalized();
   }
   graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;
 }
