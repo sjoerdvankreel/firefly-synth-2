@@ -277,7 +277,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[feedbackOrder].title += ", HPF";
   graphData->graphs[feedbackOrder].defaultMainText = !sync ?
     FBToStringSeconds(feedbackDelayTime, 3) :
-    moduleTopo.params[(int)FFEchoParam::FeedbackDelayBars].BarsNonRealTime().NormalizedToText(false, 0, feedbackDelayBarsNorm);
+    (moduleTopo.params[(int)FFEchoParam::FeedbackDelayBars].BarsNonRealTime().NormalizedToText(false, 0, feedbackDelayBarsNorm) + " Bars");
   graphData->graphs[feedbackOrder].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
   graphData->graphs[feedbackOrder].ScaleToSelfNormalized();
 
