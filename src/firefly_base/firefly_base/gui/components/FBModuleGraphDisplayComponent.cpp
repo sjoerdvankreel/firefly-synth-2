@@ -163,7 +163,6 @@ FBModuleGraphDisplayComponent::PaintSeries(
 
   auto const& graphData = _data->graphs[_graphIndex];
   auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
-  auto graphColor = scheme.primary.withMultipliedAlpha(primarySeries? 1.0f: 0.33f);
 
   Path fillPath;
   Path strokePath;
@@ -189,33 +188,18 @@ FBModuleGraphDisplayComponent::PaintSeries(
   }
   fillPath.lineTo(maxX, PointYLocation(primarySeries, secondaryIndex, 0.0f, stereo, left, absMaxValueAllSeries, true));
   fillPath.closeSubPath();
-  if (_data->paintAsDisabled)
-    graphColor = graphColor.darker(0.67f);
-  auto fillHi = graphColor.withAlpha(primarySeries ? 0.8f : 0.3f);
-  auto fillLow = graphColor.withAlpha(primarySeries ? 0.2f : 0.0f);
-  if (_data->graphs[_graphIndex].GetPoints(primarySeries, secondaryIndex).bipolar)
-  {
-    float centerY = PointYLocation(primarySeries, secondaryIndex, 0.0f, stereo, left, absMaxValueAllSeries, true);
-    float heightUp = centerY - minY;
-    float heightDown = maxY - centerY;
-    float heightBipolar = std::max(heightUp, heightDown);
-    float topY = centerY - heightBipolar;
-    float bottomY = centerY + heightBipolar;
-    auto gradient = ColourGradient(fillHi, 0.0f, topY, fillHi, 0.0f, bottomY, false);
-    gradient.addColour((bottomY - centerY) / (bottomY - topY), fillLow);
-    g.setGradientFill(gradient);
-  }
-  else
-  {
-    g.setGradientFill(ColourGradient(fillHi, 0.0f, minY, fillLow, 0.0f, maxY, false));
-  }
+
   if (_data->graphs[_graphIndex].GetPoints(primarySeries, secondaryIndex).roundPathCorners)
   {
     fillPath = fillPath.createPathWithRoundedCorners(10.0f);
     strokePath = strokePath.createPathWithRoundedCorners(10.0f);
   }
+  auto graphColor = scheme.primary;
+  if (_data->paintAsDisabled)
+    graphColor = graphColor.darker(0.67f);
+  g.setColour(graphColor.withMultipliedAlpha(primarySeries? 0.4f: 0.1f));
   g.fillPath(fillPath);
-  g.setColour(graphColor);
+  g.setColour(graphColor.withMultipliedAlpha(primarySeries? 1.0f: 0.4f));
   g.strokePath(strokePath, PathStrokeType(1.0f));
 }
 
