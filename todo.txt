@@ -9,6 +9,8 @@ v2.1.1
 [x] lfo graph clips balls
 [x] display param values as rounded
 [x] scale osc individually
+[ ] gui cpu load as an output param?
+[ ] gui FPS switch?
 [ ] gradients are expensive
 [ ] less points for the graphs
 [ ] re-un-shorten all the texts
