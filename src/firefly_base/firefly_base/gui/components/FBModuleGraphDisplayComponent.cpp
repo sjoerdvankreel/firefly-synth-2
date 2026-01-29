@@ -161,11 +161,6 @@ FBModuleGraphDisplayComponent::PaintSeries(
   if (points.empty())
     return;
 
-  // Because this is just plain stupid.
-  // It's hard to find the exact perfect samplerate always,
-  // but, no need to go wildly generating points to toss out either.
-  FB_ASSERT(points.size() <= 2 * getWidth());
-
   auto const& graphData = _data->graphs[_graphIndex];
   auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
   auto graphColor = scheme.primary.withMultipliedAlpha(primarySeries? 1.0f: 0.33f);

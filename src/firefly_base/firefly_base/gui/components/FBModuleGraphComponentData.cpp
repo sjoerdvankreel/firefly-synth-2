@@ -1,38 +1,5 @@
 #include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
 
-static void
-ToLogarithmic(std::vector<float>& points, float scaleStart, float scaleEnd)
-{
-  float expo = std::log(scaleEnd / scaleStart) / std::log(2.0f);
-  for (int i = 0; i < points.size(); i++)
-  {
-    float realVal = scaleStart + (scaleEnd - scaleStart) * points[i];
-    points[i] = std::log2(realVal / scaleStart) / expo;
-  }
-}
-
-static void
-Downsample(std::vector<float>& points, int factor)
-{
-  for (int i = 0; i < points.size() / factor; i++)
-    points[i] = points[i] * factor;
-  points.resize(points.size() / factor);
-}
-
-void 
-FBModuleGraphPoints::ToLogarithmic(float scaleStart, float scaleEnd)
-{
-  ::ToLogarithmic(l, scaleStart, scaleEnd);
-  ::ToLogarithmic(r, scaleStart, scaleEnd);
-}
-
-void 
-FBModuleGraphPoints::Downsample(int factor)
-{
-  ::Downsample(l, factor);
-  ::Downsample(r, factor);
-}
-
 void 
 FBModuleGraphComponentData::ScaleToAllNormalized()
 {

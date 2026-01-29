@@ -23,9 +23,6 @@ struct FBModuleGraphPoints final
   std::vector<float> r = {};
   std::vector<int> pointIndicators = {};
   std::vector<int> verticalIndicators = {};
-  
-  void Downsample(int factor);
-  void ToLogarithmic(float scaleStart, float scaleEnd);
 };
 
 struct FBModuleGraphSecondarySeries final

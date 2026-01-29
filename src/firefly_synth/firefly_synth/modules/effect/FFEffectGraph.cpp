@@ -10,12 +10,6 @@
 #include <bit>
 #include <algorithm>
 
-// Because filters.
-// Too much work to NOT oversample for shapers.
-static const int PlotOversample = 4;
-static const float PlotFilterStart = 20.0f;
-static const float PlotFilterEnd = 20000.0f;
-
 template <bool Global>
 struct EffectGraphRenderData final:
 public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
@@ -49,14 +43,14 @@ GetEffectExchangeStateFromDSP(FBGraphRenderState* state, bool global, int slot, 
 }
 
 static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data, bool global)
+PlotParams(FBModuleGraphComponentData const* data, bool global, int /*graphIndex*/)
 {
   // Need to know SR for graphing because filters.
   // Plot a bit more than exact pixel width to make it look prettier.
   FBModuleGraphPlotParams result = {};
   result.autoSampleRate = false;
-  result.sampleCount = data->pixelWidth * PlotOversample;
-  result.sampleRate = data->pixelWidth * PlotOversample / FFEffectPlotLengthSeconds;
+  result.sampleCount = data->pixelWidth * 4;
+  result.sampleRate = data->pixelWidth * 4.0f / FFEffectPlotLengthSeconds;
   result.staticModuleIndex = static_cast<int>(global ? FFModuleType::GEffect : FFModuleType::VEffect);
   return result;
 }
@@ -109,18 +103,21 @@ EffectGraphRenderData<Global>::DoPostProcess(
   FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
   auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
 
-  bool isFilter = detailGraphs && FFEffectKindIsFilter(kind);
-  points.bipolar = !isFilter;
-  points.roundPathCorners = isFilter;
+  points.bipolar = !detailGraphs || (kind == FFEffectKind::Clip || kind == FFEffectKind::Fold || kind == FFEffectKind::Skew);
+  points.plotLogStart = 20.0f;
+  points.plotLogEnd = 20000.0f;
+  points.plotLogarithmic = !points.bipolar;
+  points.roundPathCorners = !points.bipolar;
 
+  if (!detailGraphs)
+    return;
+
+  if (kind != FFEffectKind::StVar && kind != FFEffectKind::Comb &&
+    kind != FFEffectKind::CombPlus && kind != FFEffectKind::CombMin)
+    return;
   if (points.l.size() == 0)
     return;
-  if (isFilter)
-  {
-    state->FFT(points.l);
-    points.ToLogarithmic(PlotFilterStart, PlotFilterEnd);
-  }
-  points.Downsample(PlotOversample);
+  state->FFT(points.l);
 }
 
 template <bool Global>
@@ -141,7 +138,8 @@ EffectGraphRenderData<Global>::DoProcess(
   {
     indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
     auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
-    plotSpecificFilter = FFEffectKindIsFilter(kind);
+    plotSpecificFilter = kind == FFEffectKind::StVar || kind == FFEffectKind::Comb ||
+      kind == FFEffectKind::CombMin || kind == FFEffectKind::CombPlus;
     if (kind == FFEffectKind::Off)
       return 0;
   }
@@ -171,8 +169,8 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
 
   graphData->skipDrawOnEqualsPrimary = false; // midi note dependent
   renderData.graphData = graphData;
-  renderData.plotParamsSelector = [](auto graphData, bool /*detailGraphs*/, int /*graphIndex*/) { return PlotParams(graphData, Global); };
-  renderData.totalSamples = PlotParams(graphData, Global).sampleCount;
+  renderData.plotParamsSelector = [](auto graphData, bool, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
+  renderData.totalSamples = PlotParams(graphData, Global, -1).sampleCount;
   renderData.globalExchangeSelector = [](void const* exchangeState, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gEffect[slot]; };
   renderData.globalMonoOutputSelector = [](void const* procState, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
@@ -208,7 +206,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
         auto mode = renderState->AudioParamList<FFStateVariableFilterMode>(indices, false, -1);
         graphData->graphs[i].title += ", " + FFStateVariableFilterModeToString(mode);
       }
-      if (FFEffectKindIsFilter(kind))
+      if (kind == FFEffectKind::StVar || kind == FFEffectKind::Comb || kind == FFEffectKind::CombPlus || kind == FFEffectKind::CombMin)
       {
         indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::FilterMode, i } };
         auto mode = renderState->AudioParamList<FFEffectFilterMode>(indices, false, -1);
