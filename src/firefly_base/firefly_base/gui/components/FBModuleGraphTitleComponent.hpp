@@ -15,7 +15,7 @@ public IFBVerticalAutoSize
   int const _graphIndex;
 
   std::string _mainText = {};
-  std::string _titleAndSubText = {};
+  std::string _titleAndGainText = {};
   std::chrono::high_resolution_clock::time_point _updated = {};
 
 public:

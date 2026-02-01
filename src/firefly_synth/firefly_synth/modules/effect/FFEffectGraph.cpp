@@ -89,11 +89,11 @@ EffectGraphRenderData<Global>::DoProcessExchangeState(
   auto effectExchange = dynamic_cast<FFEffectExchangeState const*>(exchangeState);
   if (!detailGraphs)
   {
-    data.exchangeSubText = FBGainToStringDb(effectExchange->output, 2);
+    data.exchangeGainValue = effectExchange->output;
     return;
   }
 
-  data.exchangeSubText = FBGainToStringDb(effectExchange->outputs[graphIndex], 2);
+  data.exchangeGainValue = effectExchange->outputs[graphIndex];
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
   FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEffectParam::Kind, graphIndex } };
   auto kind = graphState->AudioParamList<FFEffectKind>(indices, false, -1);
@@ -251,6 +251,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     FBRenderModuleGraph<Global, false>(renderData, detailGraphs, i);
     graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)moduleType;
+    graphData->graphs[i].displayGainAsDb = true;
     graphData->graphs[i].ScaleToSelfNormalized();
 
     if (detailGraphs)

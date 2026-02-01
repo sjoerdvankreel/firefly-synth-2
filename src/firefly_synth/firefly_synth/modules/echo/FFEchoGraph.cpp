@@ -74,7 +74,7 @@ EchoGraphRenderData<Global>::DoProcessExchangeState(
   auto echoExchange = dynamic_cast<FFEchoExchangeState const*>(exchangeState);
   if (!detailGraphs)
   {
-    data.exchangeSubText = FBGainToStringDb(echoExchange->output, 2);
+    data.exchangeGainValue = echoExchange->output;
     data.exchangeMainText = FBToStringPercent(echoExchange->inputGain, 2) + " Gain";
     return;
   }
@@ -84,17 +84,17 @@ EchoGraphRenderData<Global>::DoProcessExchangeState(
   auto order = graphState->AudioParamList<FFEchoOrder>(indices, false, -1);
   if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Taps))
   {
-    data.exchangeSubText = FBGainToStringDb(echoExchange->outputTaps, 2);
+    data.exchangeGainValue = echoExchange->outputTaps;
     data.exchangeMainText = FBToStringPercent(echoExchange->tapsMix, 2) + " Mix";
   }
   else if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Feedback))
   {
-    data.exchangeSubText = FBGainToStringDb(echoExchange->outputFeedback, 2);
+    data.exchangeGainValue = echoExchange->outputFeedback;
     data.exchangeMainText = FBToStringSeconds(echoExchange->feedbackDelay, 3);
   }
   else if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Reverb))
   {
-    data.exchangeSubText = FBGainToStringDb(echoExchange->outputReverb, 2);
+    data.exchangeGainValue = echoExchange->outputReverb;
     data.exchangeMainText = FBToStringPercent(echoExchange->reverbSize, 2) + " Size";
   }
   else
@@ -226,6 +226,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     FBRenderModuleGraph<Global, true>(renderData, detailGraphs, 0);
     graphData->graphs[0].moduleSlot = 0;
     graphData->graphs[0].moduleIndex = (int)moduleType;
+    graphData->graphs[0].displayGainAsDb = true;
     graphData->graphs[0].title = moduleName;
     graphData->graphs[0].title += ": " + (Global ?
       FFGEchoTargetToString((FFGEchoTarget)target) :
@@ -249,6 +250,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   FBRenderModuleGraph<Global, true>(renderData, detailGraphs, tapsOrder);
   graphData->graphs[tapsOrder].moduleSlot = 0;
   graphData->graphs[tapsOrder].moduleIndex = (int)moduleType;
+  graphData->graphs[tapsOrder].displayGainAsDb = true;
   graphData->graphs[tapsOrder].title = "Multi Tap: ";
   graphData->graphs[tapsOrder].title += IsTapsOn(renderState, Global, false, -1) ? "On" : "Off";
   if (tapsOn)
@@ -271,6 +273,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   FBRenderModuleGraph<Global, true>(renderData, detailGraphs, feedbackOrder);
   graphData->graphs[feedbackOrder].moduleSlot = 0;
   graphData->graphs[feedbackOrder].moduleIndex = (int)moduleType;
+  graphData->graphs[feedbackOrder].displayGainAsDb = true;
   graphData->graphs[feedbackOrder].title = "Feedback: ";
   graphData->graphs[feedbackOrder].title += feedbackOn ? "On" : "Off";
   if (feedbackOn && feedbackLPOn)
@@ -293,6 +296,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   FBRenderModuleGraph<Global, true>(renderData, detailGraphs, reverbOrder);
   graphData->graphs[reverbOrder].moduleSlot = 0;
   graphData->graphs[reverbOrder].moduleIndex = (int)moduleType;
+  graphData->graphs[reverbOrder].displayGainAsDb = true;
   graphData->graphs[reverbOrder].title = "Reverb: ";
   graphData->graphs[reverbOrder].title += reverbOn ? "On" : "Off";
   if (reverbOn && reverbLPOn)

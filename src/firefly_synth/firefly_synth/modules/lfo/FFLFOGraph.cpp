@@ -122,12 +122,12 @@ LFOGraphRenderData<Global>::DoProcessExchangeState(
   if (!detailGraphs)
   {
     data.exchangeMainText = FBToStringHz(lfoExchange->rates[0], 2);
-    data.exchangeSubText = FBToStringPercent(lfoExchange->output, 2);
+    data.exchangeGainValue = lfoExchange->output;
     return;
   }
 
+  data.exchangeGainValue = lfoExchange->outputs[graphIndex];
   data.exchangeMainText = FBToStringHz(lfoExchange->rates[graphIndex], 2);
-  data.exchangeSubText = FBToStringPercent(lfoExchange->outputs[graphIndex], 2);
 }
 
 template <bool Global>
@@ -185,7 +185,8 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       graphData->graphs[i].title += ": " + FFModulationOpTypeToString(opType);
       if(opType != FFModulationOpType::Off)
         graphData->graphs[i].title += ", " + FFLFOWaveModeToString(waveMode);
-      graphData->graphs[i].defaultSubText = FBToStringPercent(std::max(minVal, maxVal), 2);
+      graphData->graphs[i].hasDefaultGainValue = true;
+      graphData->graphs[i].defaultGainValue = std::max(minVal, maxVal);
       graphData->graphs[i].defaultMainText = !sync ?
         FBToStringHz(rateHz, 2):
         (moduleTopo.params[(int)FFLFOParam::RateBars].BarsNonRealTime().NormalizedToText(false, 0, rateBarsNorm) + " Bars");
@@ -206,7 +207,8 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       graphData->graphs[0].title += ": " + FFLFOTypeToString(type, Global);
       if (type != FFLFOType::Off)
         graphData->graphs[0].title += std::string(", ") + (sync ? "BPM" : "Time");
-      graphData->graphs[0].defaultSubText = FBToStringPercent(std::max(minVal, maxVal), 2);
+      graphData->graphs[0].hasDefaultGainValue = true;
+      graphData->graphs[0].defaultGainValue = std::max(minVal, maxVal);
       graphData->graphs[0].defaultMainText = !sync ?
         FBToStringHz(rateHz, 2) :
         (moduleTopo.params[(int)FFLFOParam::RateBars].BarsNonRealTime().NormalizedToText(false, 0, rateBarsNorm) + " Bars");

@@ -24,24 +24,38 @@ FBModuleGraphTitleComponent::paint(Graphics& g)
   if (elapsedMillis.count() >= 1000.0 / fps)
   {
     _updated = now;
-    _mainText.clear();
-    _titleAndSubText.clear();
-
     auto const& gd = _data->graphs[_graphIndex];
-    _titleAndSubText.append(gd.title);
-    auto const& subText = (gd.anyExchangeActive && gd.exchangeSubText.size()) ? gd.exchangeSubText : gd.defaultSubText;
-    if (subText.size())
-    {
-      _titleAndSubText.append(", ");
-      _titleAndSubText.append(subText);
-    }
+    _mainText.clear();
     _mainText.append((gd.anyExchangeActive && gd.exchangeMainText.size()) ? gd.exchangeMainText : gd.defaultMainText);
+
+    float gain = 0.0f;
+    bool haveGain = false;
+    _titleAndGainText.clear();
+    _titleAndGainText.append(gd.title);
+    if (gd.anyExchangeActive)
+    {
+      haveGain = true;
+      gain = gd.exchangeGainValue;
+    }
+    else
+    {
+      gain = gd.defaultGainValue;
+      haveGain = gd.hasDefaultGainValue;
+    }
+    if (haveGain)
+    {
+      _titleAndGainText.append(", ");
+      if(gd.displayGainAsDb)
+        _titleAndGainText.append(FBGainToStringDb(gain, 2));
+      else
+        _titleAndGainText.append(FBToStringPercent(gain, 2));
+    }
   }
 
   auto lnf = FBGetLookAndFeelFor(_plugGUI);
   auto const& scheme = lnf->FindColorSchemeFor(*this);
   g.setColour(scheme.text);
   g.setFont(lnf->GetFont());
-  g.drawText(_titleAndSubText, getLocalBounds(), Justification::centredLeft, false);
+  g.drawText(_titleAndGainText, getLocalBounds(), Justification::centredLeft, false);
   g.drawText(_mainText, getLocalBounds(), Justification::centredRight, false);
 }

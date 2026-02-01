@@ -55,7 +55,7 @@ OsciGraphRenderData::DoProcessExchangeState(
   FBModuleProcExchangeStateBase const* exchangeState)
 {
   auto osciExchange = dynamic_cast<FFOsciExchangeState const*>(exchangeState);
-  data.exchangeSubText = FBGainToStringDb(osciExchange->output, 2);
+  data.exchangeGainValue = osciExchange->output;
   data.exchangeMainText = FBPitchToStringNotes(osciExchange->osciEffectivePitch);
 }
 
@@ -187,7 +187,9 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[i].title = title;
     graphData->graphs[i].moduleSlot = graphModuleSlot;
     graphData->graphs[i].moduleIndex = (int)FFModuleType::Osci;
-    graphData->graphs[i].defaultSubText = FBGainToStringDb(gain, 2);
+    graphData->graphs[i].displayGainAsDb = true;
+    graphData->graphs[i].defaultGainValue = gain;
+    graphData->graphs[i].hasDefaultGainValue = true;
     graphData->graphs[i].defaultMainText = FBPitchToStringSemis(coarse, fine, 2, true);
 
     if (!detailGraphs)
