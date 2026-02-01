@@ -14,8 +14,8 @@ public IFBVerticalAutoSize
   FBModuleGraphComponentData const* const _data;
   int const _graphIndex;
 
-  std::string _title = {};
-  std::string _subAndMainText = {};
+  std::string _mainText = {};
+  std::string _titleAndSubText = {};
   std::chrono::high_resolution_clock::time_point _updated = {};
 
 public:
