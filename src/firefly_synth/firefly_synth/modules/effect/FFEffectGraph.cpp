@@ -233,6 +233,10 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     {
       FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } };
       auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
+      indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::FilterMode, i } };
+      auto filterMode = renderState->AudioParamList<FFEffectFilterMode>(indices, false, -1);
+      indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistDrive, i } };
+      auto distDrive = renderState->AudioParamLinear(indices, false, -1);
       graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
       graphData->graphs[i].title += ": " + FFEffectKindToString(kind);
       if (kind == FFEffectKind::StVar)
@@ -243,9 +247,12 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       }
       if (kind == FFEffectKind::StVar || kind == FFEffectKind::Comb || kind == FFEffectKind::CombPlus || kind == FFEffectKind::CombMin)
       {
-        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::FilterMode, i } };
-        auto mode = renderState->AudioParamList<FFEffectFilterMode>(indices, false, -1);
-        graphData->graphs[i].title += ", " + FFEffectFilterModeToString(mode);
+        graphData->graphs[i].title += ", " + FFEffectFilterModeToString(filterMode);
+      }
+
+      if (FFEffectKindIsShaper(kind))
+      {
+        graphData->graphs[i].defaultMainText = FBToStringPercent(distDrive, 2) + " Drive";
       }
       if (kind == FFEffectKind::Clip)
       {
