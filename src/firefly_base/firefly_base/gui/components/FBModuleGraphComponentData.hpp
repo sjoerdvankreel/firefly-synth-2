@@ -23,6 +23,8 @@ struct FBModuleGraphPoints final
   std::vector<float> r = {};
   std::vector<int> pointIndicators = {};
   std::vector<int> verticalIndicators = {};
+
+  float GetAbsMaxValue() const;
 };
 
 struct FBModuleGraphSecondarySeries final

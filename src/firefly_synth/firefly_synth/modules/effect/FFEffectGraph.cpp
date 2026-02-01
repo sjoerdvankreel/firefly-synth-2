@@ -21,7 +21,7 @@ public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
   int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoPostProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
+  void DoPostProcess(FBGraphRenderState* state, FBModuleGraphData& data, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
   void DoProcessIndicators(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
   void DoProcessExchangeState(FBGraphRenderState* graphState, FBModuleGraphData& data, bool detailGraphs, int graphIndex, int exchangeVoice, FBModuleProcExchangeStateBase const* exchangeState);
 };
@@ -147,7 +147,8 @@ EffectGraphRenderData<Global>::GetProcessor(FBModuleProcState& state)
 template <bool Global>
 void
 EffectGraphRenderData<Global>::DoPostProcess(
-  FBGraphRenderState* state, bool detailGraphs, int graphIndex,
+  FBGraphRenderState* state, FBModuleGraphData& data,
+  bool detailGraphs, int graphIndex,
   bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
 {
   auto* moduleProcState = state->ModuleProcState();
@@ -162,14 +163,17 @@ EffectGraphRenderData<Global>::DoPostProcess(
   points.plotLogarithmic = !points.bipolar;
   points.roundPathCorners = !points.bipolar;
 
+  // Need to get this value before FFT.
+  if (exchange)
+    data.exchangeSubText = FBGainToStringDb(points.GetAbsMaxValue(), 2);
+
   if (!detailGraphs)
     return;
-
-  if (kind != FFEffectKind::StVar && kind != FFEffectKind::Comb &&
-    kind != FFEffectKind::CombPlus && kind != FFEffectKind::CombMin)
+  if (!FFEffectKindIsFilter(kind))
     return;
   if (points.l.size() == 0)
     return;
+
   state->FFT(points.l);
 }
 
@@ -191,8 +195,7 @@ EffectGraphRenderData<Global>::DoProcess(
   {
     indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
     auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
-    plotSpecificFilter = kind == FFEffectKind::StVar || kind == FFEffectKind::Comb ||
-      kind == FFEffectKind::CombMin || kind == FFEffectKind::CombPlus;
+    plotSpecificFilter = FFEffectKindIsFilter(kind);
     if (kind == FFEffectKind::Off)
       return 0;
   }
@@ -241,16 +244,13 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
   bool on = renderState->AudioParamBool(paramIndices, false, -1);
 
-  int maxSizeAllSeries = 0;
-  float absMaxValueAllSeries = 0.0f;
+ 
   int graphCount = detailGraphs ? FFEffectBlockCount : 1;
   for (int i = 0; i < graphCount; i++)
   {
     FBRenderModuleGraph<Global, false>(renderData, detailGraphs, i);
-    graphData->graphs[i].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
     graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)moduleType;
-    graphData->graphs[i].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
     graphData->graphs[i].ScaleToSelfNormalized();
 
     if (detailGraphs)

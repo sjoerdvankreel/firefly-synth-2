@@ -1,5 +1,19 @@
 #include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
 
+float 
+FBModuleGraphPoints::GetAbsMaxValue() const
+{
+  float result = 0;
+  bool stereo = r.size() > 0;
+  for (int i = 0; i < l.size(); i++)
+  {
+    result = std::max(result, std::abs(l[i]));
+    if (stereo)
+      result = std::max(result, std::abs(r[i]));
+  }
+  return result;
+}
+
 void
 FBModuleGraphData::MergeStereo()
 {
@@ -18,17 +32,9 @@ bool
 FBModuleGraphData::GetScaleFactorToNormalized(float& factor) const
 {
   float max = 0.0f;
-  for (int i = 0; i < primarySeries.l.size(); i++)
-    max = std::max(max, std::abs(primarySeries.l[i]));
-  for (int i = 0; i < primarySeries.r.size(); i++)
-    max = std::max(max, std::abs(primarySeries.r[i]));
+  max = std::max(max, primarySeries.GetAbsMaxValue());
   for (int s = 0; s < secondarySeries.size(); s++)
-  {
-    for (int i = 0; i < secondarySeries[s].points.l.size(); i++)
-      max = std::max(max, std::abs(secondarySeries[s].points.l[i]));
-    for (int i = 0; i < secondarySeries[s].points.r.size(); i++)
-      max = std::max(max, std::abs(secondarySeries[s].points.r[i]));
-  }
+    max = std::max(max, secondarySeries[s].points.GetAbsMaxValue());
 
   if (max > 1e-6)
   {
@@ -65,33 +71,18 @@ FBModuleGraphData::ScaleBy(float factor)
 }
 
 void 
-FBModuleGraphData::GetLimits(bool includePrimary, int& maxSizeAllSeriesOut, float& absMaxValueAllSeriesOut) const
+FBModuleGraphData::GetLimits(bool includePrimary, int& maxSizeAllSeries, float& absMaxValueAllSeries) const
 {
-  bool stereo = !primarySeries.r.empty();
-  float absMaxValueAllSeriesAll = 0.0f;
   float absMaxValueAllSeriesSecondary = 0.0f;
-  int maxSizeAllSeries = static_cast<int>(primarySeries.l.size());
-  for (int i = 0; i < primarySeries.l.size(); i++)
-  {
-    absMaxValueAllSeriesAll = std::max(absMaxValueAllSeriesAll, std::abs(primarySeries.l[i]));
-    if (stereo)
-      absMaxValueAllSeriesAll = std::max(absMaxValueAllSeriesAll, std::abs(primarySeries.r[i]));
-  }
+  maxSizeAllSeries = static_cast<int>(primarySeries.l.size());
+  float absMaxValueAllSeriesAll = std::max(absMaxValueAllSeriesAll, primarySeries.GetAbsMaxValue());
   for (int i = 0; i < secondarySeries.size(); i++)
   {
+    float absMaxValueSecondary = secondarySeries[i].points.GetAbsMaxValue();
+    absMaxValueAllSeriesAll = std::max(absMaxValueAllSeriesAll, absMaxValueSecondary);
+    absMaxValueAllSeriesSecondary = std::max(absMaxValueAllSeriesSecondary, absMaxValueSecondary);
     maxSizeAllSeries = std::max(maxSizeAllSeries, static_cast<int>(secondarySeries[i].points.l.size()));
-    for (int j = 0; j < secondarySeries[i].points.l.size(); j++)
-    {
-      absMaxValueAllSeriesAll = std::max(absMaxValueAllSeriesAll, std::abs(secondarySeries[i].points.l[j]));
-      absMaxValueAllSeriesSecondary = std::max(absMaxValueAllSeriesSecondary, std::abs(secondarySeries[i].points.l[j]));
-      if (stereo)
-      {
-        absMaxValueAllSeriesAll = std::max(absMaxValueAllSeriesAll, std::abs(secondarySeries[i].points.r[j]));
-        absMaxValueAllSeriesSecondary = std::max(absMaxValueAllSeriesSecondary, std::abs(secondarySeries[i].points.r[j]));
-      }
-    }
   }
-  maxSizeAllSeriesOut = maxSizeAllSeries;
-  absMaxValueAllSeriesOut = includePrimary ? absMaxValueAllSeriesAll : absMaxValueAllSeriesSecondary;
-  FB_ASSERT(!std::isinf(absMaxValueAllSeriesOut));
+  absMaxValueAllSeries = includePrimary ? absMaxValueAllSeriesAll : absMaxValueAllSeriesSecondary;
+  FB_ASSERT(!std::isinf(absMaxValueAllSeries));
 }

@@ -62,10 +62,10 @@ struct FBModuleGraphRenderData
   { static_cast<Derived*>(this)->DoBeginVoiceOrBlock(state, detailGraphs, graphIndex, exchange, exchangeVoice); }
   void ReleaseOnDemandBuffers(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice)
   { static_cast<Derived*>(this)->DoReleaseOnDemandBuffers(state, detailGraphs, graphIndex, exchange, exchangeVoice); }
-  void PostProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
-  { return static_cast<Derived*>(this)->DoPostProcess(state, detailGraphs, graphIndex, exchange, exchangeVoice, points); }
   void ProcessIndicators(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
   { return static_cast<Derived*>(this)->DoProcessIndicators(state, detailGraphs, graphIndex, exchange, exchangeVoice, points); }
+  void PostProcess(FBGraphRenderState* state, FBModuleGraphData& data, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
+  { return static_cast<Derived*>(this)->DoPostProcess(state, data, detailGraphs, graphIndex, exchange, exchangeVoice, points); }
   void ProcessExchangeState(FBGraphRenderState* graphState, FBModuleGraphData& data, bool detailGraphs, int graphIndex, int exchangeVoice, FBModuleProcExchangeStateBase const* exchangeState)
   { return static_cast<Derived*>(this)->DoProcessExchangeState(graphState, data, detailGraphs, graphIndex, exchangeVoice, exchangeState); }
 };
@@ -138,7 +138,7 @@ FBRenderModuleGraphSeries(
   }
 
   renderData.ProcessIndicators(renderState, detailGraphs, graphIndex, exchange, exchangeVoice, seriesOut);
-  renderData.PostProcess(renderState, detailGraphs, graphIndex, exchange, exchangeVoice, seriesOut);
+  renderData.PostProcess(renderState, renderData.graphData->graphs[graphIndex], detailGraphs, graphIndex, exchange, exchangeVoice, seriesOut);
   renderData.ReleaseOnDemandBuffers(renderState, detailGraphs, graphIndex, exchange, exchangeVoice);
 
   if constexpr (Global)
