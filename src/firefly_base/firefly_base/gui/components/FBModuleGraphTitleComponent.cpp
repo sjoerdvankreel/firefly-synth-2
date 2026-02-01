@@ -44,11 +44,18 @@ FBModuleGraphTitleComponent::paint(Graphics& g)
     }
     if (haveGain)
     {
+      _gainSlidingWindow.push_back(gain);
+      if (_gainSlidingWindow.size() > GainSlidingWindowSize)
+        _gainSlidingWindow.erase(_gainSlidingWindow.begin());
+      float sum = 0.0f;
+      for (int i = 0; i < _gainSlidingWindow.size(); i++)
+        sum += _gainSlidingWindow[i];
+      float avgGain = sum / _gainSlidingWindow.size();
       _titleAndGainText.append(", ");
       if(gd.displayGainAsDb)
-        _titleAndGainText.append(FBGainToStringDb(gain, 2));
+        _titleAndGainText.append(FBGainToStringDb(avgGain, 2));
       else
-        _titleAndGainText.append(FBToStringPercent(gain, 2));
+        _titleAndGainText.append(FBToStringPercent(avgGain, 2));
     }
   }
 

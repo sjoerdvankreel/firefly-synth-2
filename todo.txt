@@ -23,7 +23,8 @@ v2.1.1
 [ ] bigass bg image
 [ ] recheck all the container components, do we need em?
 [ ] gfx1->gfx 1
-[ ] up the fx slotcount
+[ ] up the fx slotcount + up the according env/lfo
+[ ] do to-echo easy access mods on stuff
 [ ] drop fx on param?
 [ ] drop scaletoallnormalized
 [ ] detail editors not inline like detail graphs (bundle them?)
