@@ -88,8 +88,12 @@ EffectGraphRenderData<Global>::DoProcessExchangeState(
 {
   auto effectExchange = dynamic_cast<FFEffectExchangeState const*>(exchangeState);
   if (!detailGraphs)
+  {
+    data.exchangeSubText = FBGainToStringDb(effectExchange->output, 2);
     return;
+  }
 
+  data.exchangeSubText = FBGainToStringDb(effectExchange->outputs[graphIndex], 2);
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
   FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEffectParam::Kind, graphIndex } };
   auto kind = graphState->AudioParamList<FFEffectKind>(indices, false, -1);
@@ -147,7 +151,7 @@ EffectGraphRenderData<Global>::GetProcessor(FBModuleProcState& state)
 template <bool Global>
 void
 EffectGraphRenderData<Global>::DoPostProcess(
-  FBGraphRenderState* state, FBModuleGraphData& data,
+  FBGraphRenderState* state, FBModuleGraphData& /*data*/,
   bool detailGraphs, int graphIndex,
   bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
 {
@@ -162,10 +166,6 @@ EffectGraphRenderData<Global>::DoPostProcess(
   points.plotLogEnd = 20000.0f;
   points.plotLogarithmic = !points.bipolar;
   points.roundPathCorners = !points.bipolar;
-
-  // Need to get this value before FFT.
-  if (exchange)
-    data.exchangeSubText = FBGainToStringDb(points.GetAbsMaxValue(), 2);
 
   if (!detailGraphs)
     return;

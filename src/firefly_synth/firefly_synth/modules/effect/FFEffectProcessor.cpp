@@ -611,8 +611,15 @@ FFEffectProcessor::Process(
         oversampled[c].Set(s, oversampledBlock.getSample(c, s));
   }
 
+  FFEffectExchangeState* exchangeDSP = nullptr;
   float oversampledRate = _oversampleTimes * sampleRate;
-  for(int i = 0; i < FFEffectBlockCount; i++)
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if(exchangeToGUI != nullptr)
+    exchangeDSP = FFSelectDualState<Global>(
+      [exchangeToGUI, &state]() { return &exchangeToGUI->global.gEffect[state.moduleSlot]; },
+      [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vEffect[state.moduleSlot]; });
+  for (int i = 0; i < FFEffectBlockCount; i++)
+  {
     switch (_kind[i])
     {
     case FFEffectKind::Fold:
@@ -639,6 +646,9 @@ FFEffectProcessor::Process(
     default:
       break;
     }
+    if(exchangeDSP != nullptr)
+      exchangeDSP->outputs[i] = std::max(std::abs(oversampled[0].Get(0)), std::abs(oversampled[1].Get(0)));
+  }
 
   if(_oversampleTimes == 1)
     for (int c = 0; c < 2; c++)
@@ -656,27 +666,23 @@ FFEffectProcessor::Process(
     _oversampler.processSamplesDown(outputBlock);
   }
 
-  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
   {
     _graphSamplesProcessed += FBFixedBlockSamples;
     return std::clamp(_graphSampleCount - _graphSamplesProcessed, 0, FBFixedBlockSamples);
   }
 
-  auto& exchangeDSP = *FFSelectDualState<Global>(
-    [exchangeToGUI, &state]() { return &exchangeToGUI->global.gEffect[state.moduleSlot]; },
-    [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vEffect[state.moduleSlot]; });
-  exchangeDSP.boolIsActive = 1;
-  exchangeDSP.basePitch = _basePitch.Get(FBFixedBlockSamples - 1);
-  exchangeDSP.lengthSamples = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
-  exchangeDSP.output = std::max(std::abs(output[0].Get(0)), std::abs(output[1].Get(0)));
+  exchangeDSP->boolIsActive = 1;
+  exchangeDSP->basePitch = _basePitch.Get(FBFixedBlockSamples - 1);
+  exchangeDSP->lengthSamples = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
+  exchangeDSP->output = std::max(std::abs(output[0].Get(0)), std::abs(output[1].Get(0)));
 
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
-    exchangeDSP.shaperDrives[i] = distDrivePlain[i].First();
-    exchangeDSP.stVarFreqs[i] = stVarRealFreqPlain[i].First();
-    exchangeDSP.combMinFreqs[i] = combRealFreqMinPlain[i].First();
-    exchangeDSP.combPlusFreqs[i] = combRealFreqPlusPlain[i].First();
+    exchangeDSP->shaperDrives[i] = distDrivePlain[i].First();
+    exchangeDSP->stVarFreqs[i] = stVarRealFreqPlain[i].First();
+    exchangeDSP->combMinFreqs[i] = combRealFreqMinPlain[i].First();
+    exchangeDSP->combPlusFreqs[i] = combRealFreqPlusPlain[i].First();
   }
 
   auto& exchangeParams = *FFSelectDualState<Global>(
