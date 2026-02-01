@@ -33,7 +33,19 @@ FilterMainText(FFEffectFilterMode mode, float freq, float coarse)
   {
   case FFEffectFilterMode::Freq: return FBToStringHz(freq, 2);
   case FFEffectFilterMode::Pitch: return FBPitchToStringNotes(coarse);
-  case FFEffectFilterMode::Track: return FBPitchToStringSemis(coarse, 0.0f, 2);
+  case FFEffectFilterMode::Track: return FBPitchToStringSemis(coarse, 0.0f, 2, true);
+  default: FB_ASSERT(false); return {};
+  }
+}
+
+static std::string
+CombMainText(FFEffectFilterMode mode, float freqPlus, float coarsePlus, float freqMin, float coarseMin)
+{
+  switch (mode)
+  {
+  case FFEffectFilterMode::Freq: return FBFormatDoubleCLocale(freqPlus, 2) + " / " + FBToStringHz(freqMin, 2);
+  case FFEffectFilterMode::Pitch: return FBPitchToStringNotes(coarsePlus) + " / " + FBPitchToStringNotes(coarseMin);
+  case FFEffectFilterMode::Track: return FBPitchToStringSemis(coarsePlus, 0.0f, 2, false) + " / " + FBPitchToStringSemis(coarseMin, 0.0f, 2, true);
   default: FB_ASSERT(false); return {};
   }
 }
@@ -277,6 +289,8 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
           graphData->graphs[i].defaultMainText = FilterMainText(filterMode, freqPlus, coarsePlus);
         else if (kind == FFEffectKind::CombMin)
           graphData->graphs[i].defaultMainText = FilterMainText(filterMode, freqMin, coarseMin);
+        else
+          graphData->graphs[i].defaultMainText = CombMainText(filterMode, freqPlus, coarsePlus, freqMin, coarseMin);
       }
 
       if (FFEffectKindIsFilter(kind))

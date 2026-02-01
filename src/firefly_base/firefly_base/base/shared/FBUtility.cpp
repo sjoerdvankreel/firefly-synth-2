@@ -37,12 +37,14 @@ FBGainToStringDb(float gain, int precision)
 }
 
 std::string
-FBPitchToStringSemis(float coarse, float fine, int precision)
+FBPitchToStringSemis(float coarse, float fine, int precision, bool unit)
 {
   std::string result = FBFormatDoubleCLocale(coarse + fine, precision);
   if (coarse + fine >= 0.0f)
     result = "+" + result;
-  return result + " Semis";
+  if (unit)
+    result += " Semis";
+  return result;
 }
 
 std::string

@@ -91,7 +91,7 @@ FBToStringSeconds(float val, int precision);
 std::string
 FBGainToStringDb(float gain, int precision);
 std::string
-FBPitchToStringSemis(float coarse, float fine, int precision);
+FBPitchToStringSemis(float coarse, float fine, int precision, bool unit);
 
 // Remove { and } for use in json and urls.
 std::string
