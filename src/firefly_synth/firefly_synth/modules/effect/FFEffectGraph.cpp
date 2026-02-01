@@ -26,6 +26,18 @@ public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
   void DoProcessExchangeState(FBGraphRenderState* graphState, FBModuleGraphData& data, bool detailGraphs, int graphIndex, int exchangeVoice, FBModuleProcExchangeStateBase const* exchangeState);
 };
 
+static std::string
+FilterMainText(FFEffectFilterMode mode, float freq, float coarse)
+{
+  switch (mode)
+  {
+  case FFEffectFilterMode::Freq: return FBToStringHz(freq, 2);
+  case FFEffectFilterMode::Pitch: return FBPitchToStringNotes(coarse);
+  case FFEffectFilterMode::Track: return FBPitchToStringSemis(coarse, 0.0f, 2);
+  default: FB_ASSERT(false); return {};
+  }
+}
+
 static FFEffectExchangeState const*
 GetEffectExchangeStateFromDSP(FBGraphRenderState* state, bool global, int slot, bool exchange, int exchangeVoice)
 {
@@ -243,20 +255,30 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       if (kind == FFEffectKind::StVar)
       {
         indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarMode, i } };
-        auto mode = renderState->AudioParamList<FFStateVariableFilterMode>(indices, false, -1);
+        auto stVarMode = renderState->AudioParamList<FFStateVariableFilterMode>(indices, false, -1);
         indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarFreqFreq, i } };
         float freq = renderState->AudioParamLog2(indices, false, -1);
         indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarPitchCoarse, i } };
         float coarse = renderState->AudioParamLinear(indices, false, -1);
-        graphData->graphs[i].title += ", " + FFStateVariableFilterModeToString(mode);
-        switch (filterMode)
-        {
-        case FFEffectFilterMode::Freq: graphData->graphs[i].defaultMainText = FBToStringHz(freq, 2); break;
-        case FFEffectFilterMode::Pitch: graphData->graphs[i].defaultMainText = FBPitchToStringNotes(coarse); break;
-        case FFEffectFilterMode::Track: graphData->graphs[i].defaultMainText = FBPitchToStringSemis(coarse, 0.0f, 2); break;
-        default: FB_ASSERT(false); break;
-        }
+        graphData->graphs[i].title += ", " + FFStateVariableFilterModeToString(stVarMode);
+        graphData->graphs[i].defaultMainText = FilterMainText(filterMode, freq, coarse);
       }
+      if(FFEffectKindIsComb(kind))
+      {
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombFreqFreqPlus, i } };
+        float freqPlus = renderState->AudioParamLog2(indices, false, -1);
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombPitchCoarsePlus, i } };
+        float coarsePlus = renderState->AudioParamLinear(indices, false, -1);
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombFreqFreqMin, i } };
+        float freqMin = renderState->AudioParamLog2(indices, false, -1);
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombPitchCoarseMin, i } };
+        float coarseMin = renderState->AudioParamLinear(indices, false, -1);
+        if(kind == FFEffectKind::CombPlus)
+          graphData->graphs[i].defaultMainText = FilterMainText(filterMode, freqPlus, coarsePlus);
+        else if (kind == FFEffectKind::CombMin)
+          graphData->graphs[i].defaultMainText = FilterMainText(filterMode, freqMin, coarseMin);
+      }
+
       if (FFEffectKindIsFilter(kind))
       {
         graphData->graphs[i].title += ", " + FFEffectFilterModeToString(filterMode);
