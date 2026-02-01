@@ -239,13 +239,25 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       auto distDrive = renderState->AudioParamLinear(indices, false, -1);
       graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
       graphData->graphs[i].title += ": " + FFEffectKindToString(kind);
+
       if (kind == FFEffectKind::StVar)
       {
         indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarMode, i } };
         auto mode = renderState->AudioParamList<FFStateVariableFilterMode>(indices, false, -1);
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarFreqFreq, i } };
+        float freq = renderState->AudioParamLog2(indices, false, -1);
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarPitchCoarse, i } };
+        float coarse = renderState->AudioParamLinear(indices, false, -1);
         graphData->graphs[i].title += ", " + FFStateVariableFilterModeToString(mode);
+        switch (filterMode)
+        {
+        case FFEffectFilterMode::Freq: graphData->graphs[i].defaultMainText = FBToStringHz(freq, 2); break;
+        case FFEffectFilterMode::Pitch: graphData->graphs[i].defaultMainText = FBPitchToStringNotes(coarse); break;
+        case FFEffectFilterMode::Track: graphData->graphs[i].defaultMainText = FBPitchToStringSemis(coarse, 0.0f, 2); break;
+        default: FB_ASSERT(false); break;
+        }
       }
-      if (kind == FFEffectKind::StVar || kind == FFEffectKind::Comb || kind == FFEffectKind::CombPlus || kind == FFEffectKind::CombMin)
+      if (FFEffectKindIsFilter(kind))
       {
         graphData->graphs[i].title += ", " + FFEffectFilterModeToString(filterMode);
       }

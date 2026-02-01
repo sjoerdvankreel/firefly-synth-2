@@ -187,6 +187,15 @@ FBGraphRenderState::AudioParamDiscrete(
 }
 
 float
+FBGraphRenderState::AudioParamLog2(
+  FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const
+{
+  auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
+  double normalized = AudioParamNormalized(indices, exchange, exchangeVoice);
+  return param->static_.Log2().NormalizedToPlainFast(static_cast<float>(normalized));
+}
+
+float
 FBGraphRenderState::AudioParamLinear(
   FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const
 {

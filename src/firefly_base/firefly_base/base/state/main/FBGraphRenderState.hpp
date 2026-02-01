@@ -56,6 +56,7 @@ public:
   double AudioParamNormalized(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   bool AudioParamBool(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   int AudioParamDiscrete(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
+  float AudioParamLog2(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   float AudioParamLinear(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   float AudioParamIdentity(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   template <class T> T AudioParamList(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
