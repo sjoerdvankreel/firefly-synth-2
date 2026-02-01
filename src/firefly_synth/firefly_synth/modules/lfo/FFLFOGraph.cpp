@@ -122,12 +122,12 @@ LFOGraphRenderData<Global>::DoProcessExchangeState(
   if (!detailGraphs)
   {
     data.exchangeMainText = FBToStringHz(lfoExchange->rates[0], 2);
-    data.exchangeGainValue = lfoExchange->output;
+    data.exchangeGainValue = std::max(data.exchangeGainValue, lfoExchange->output);
     return;
   }
 
-  data.exchangeGainValue = lfoExchange->outputs[graphIndex];
   data.exchangeMainText = FBToStringHz(lfoExchange->rates[graphIndex], 2);
+  data.exchangeGainValue = std::max(data.exchangeGainValue, lfoExchange->outputs[graphIndex]);
 }
 
 template <bool Global>

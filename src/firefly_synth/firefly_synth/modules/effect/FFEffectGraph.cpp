@@ -89,11 +89,11 @@ EffectGraphRenderData<Global>::DoProcessExchangeState(
   auto effectExchange = dynamic_cast<FFEffectExchangeState const*>(exchangeState);
   if (!detailGraphs)
   {
-    data.exchangeGainValue = effectExchange->output;
+    data.exchangeGainValue = std::max(data.exchangeGainValue, effectExchange->output);
     return;
   }
 
-  data.exchangeGainValue = effectExchange->outputs[graphIndex];
+  data.exchangeGainValue = std::max(data.exchangeGainValue, effectExchange->outputs[graphIndex]);
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
   FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEffectParam::Kind, graphIndex } };
   auto kind = graphState->AudioParamList<FFEffectKind>(indices, false, -1);

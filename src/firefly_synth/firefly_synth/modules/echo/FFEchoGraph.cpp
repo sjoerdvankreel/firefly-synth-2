@@ -74,7 +74,7 @@ EchoGraphRenderData<Global>::DoProcessExchangeState(
   auto echoExchange = dynamic_cast<FFEchoExchangeState const*>(exchangeState);
   if (!detailGraphs)
   {
-    data.exchangeGainValue = echoExchange->output;
+    data.exchangeGainValue = std::max(data.exchangeGainValue, echoExchange->output);
     data.exchangeMainText = FBToStringPercent(echoExchange->inputGain, 2) + " Gain";
     return;
   }
@@ -84,18 +84,18 @@ EchoGraphRenderData<Global>::DoProcessExchangeState(
   auto order = graphState->AudioParamList<FFEchoOrder>(indices, false, -1);
   if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Taps))
   {
-    data.exchangeGainValue = echoExchange->outputTaps;
     data.exchangeMainText = FBToStringPercent(echoExchange->tapsMix, 2) + " Mix";
+    data.exchangeGainValue = std::max(data.exchangeGainValue, echoExchange->outputTaps);
   }
   else if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Feedback))
   {
-    data.exchangeGainValue = echoExchange->outputFeedback;
     data.exchangeMainText = FBToStringSeconds(echoExchange->feedbackDelay, 3);
+    data.exchangeGainValue = std::max(data.exchangeGainValue, echoExchange->outputFeedback);
   }
   else if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Reverb))
   {
-    data.exchangeGainValue = echoExchange->outputReverb;
     data.exchangeMainText = FBToStringPercent(echoExchange->reverbSize, 2) + " Size";
+    data.exchangeGainValue = std::max(data.exchangeGainValue, echoExchange->outputReverb);
   }
   else
     FB_ASSERT(false);

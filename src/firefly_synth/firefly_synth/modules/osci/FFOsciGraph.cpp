@@ -55,8 +55,8 @@ OsciGraphRenderData::DoProcessExchangeState(
   FBModuleProcExchangeStateBase const* exchangeState)
 {
   auto osciExchange = dynamic_cast<FFOsciExchangeState const*>(exchangeState);
-  data.exchangeGainValue = osciExchange->output;
   data.exchangeMainText = FBPitchToStringNotes(osciExchange->osciEffectivePitch);
+  data.exchangeGainValue = std::max(data.exchangeGainValue, osciExchange->output);
 }
 
 void 
