@@ -669,6 +669,7 @@ FFEffectProcessor::Process(
   exchangeDSP.boolIsActive = 1;
   exchangeDSP.basePitch = _basePitch.Get(FBFixedBlockSamples - 1);
   exchangeDSP.lengthSamples = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
+  exchangeDSP.output = std::max(std::abs(output[0].Get(0)), std::abs(output[1].Get(0)));
 
   for (int i = 0; i < FFEffectBlockCount; i++)
   {

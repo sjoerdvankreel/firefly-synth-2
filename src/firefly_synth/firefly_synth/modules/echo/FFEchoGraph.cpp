@@ -82,13 +82,21 @@ EchoGraphRenderData<Global>::DoProcessExchangeState(
   auto moduleType = Global ? FFModuleType::GEcho : FFModuleType::VEcho;
   FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEchoParam::Order, 0 } };
   auto order = graphState->AudioParamList<FFEchoOrder>(indices, false, -1);
-  data.exchangeSubText = FBGainToStringDb(echoExchange->output, 2);
   if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Taps))
+  {
+    data.exchangeSubText = FBGainToStringDb(echoExchange->outputTaps, 2);
     data.exchangeMainText = FBToStringPercent(echoExchange->tapsMix, 2) + " Mix";
+  }
   else if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Feedback))
+  {
+    data.exchangeSubText = FBGainToStringDb(echoExchange->outputFeedback, 2);
     data.exchangeMainText = FBToStringSeconds(echoExchange->feedbackDelay, 3);
+  }
   else if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Reverb))
+  {
+    data.exchangeSubText = FBGainToStringDb(echoExchange->outputReverb, 2);
     data.exchangeMainText = FBToStringPercent(echoExchange->reverbSize, 2) + " Size";
+  }
   else
     FB_ASSERT(false);
 }
