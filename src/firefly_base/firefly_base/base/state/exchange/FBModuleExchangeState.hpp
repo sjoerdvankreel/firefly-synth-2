@@ -13,6 +13,7 @@
 // so, we're probably good.
 struct alignas(FBSIMDAlign) FBModuleProcExchangeStateBase
 {
+  float output = 0.0f;
   int boolIsActive = 0; // i dont dare to put not aligned stuff in here anymore because of ARM mac
   virtual ~FBModuleProcExchangeStateBase() {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcExchangeStateBase);

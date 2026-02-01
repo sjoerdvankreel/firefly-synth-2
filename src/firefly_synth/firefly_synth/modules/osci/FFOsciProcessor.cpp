@@ -365,6 +365,7 @@ FFOsciProcessor::Process(
   exchangeDSP.osciEffectivePitch = basePitchPlain.Get(0);
   exchangeDSP.voiceBasePitch = voiceBasePitch.Get(FBFixedBlockSamples - 1);
   exchangeDSP.lengthSamples = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
+  exchangeDSP.output = std::max(std::abs(output[0].Get(0)), std::abs(output[1].Get(0)));
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.envToGain[0][voice] = envToGain.Last();

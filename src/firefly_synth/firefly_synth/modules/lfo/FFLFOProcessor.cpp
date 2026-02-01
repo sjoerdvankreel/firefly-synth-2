@@ -418,11 +418,11 @@ FFLFOProcessor::Process(
   exchangeDSP.boolIsActive = 1;
   exchangeDSP.lengthSamplesAll = 0;
   exchangeDSP.positionSamplesAll = 0;
-  exchangeDSP.value = outputAll.Get(0);
+  exchangeDSP.output = outputAll.Get(0);
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
-    exchangeDSP.values[i] = outputRaw[i].Get(0);
     exchangeDSP.rates[i] = rateHzPlain[i].Get(0);
+    exchangeDSP.outputs[i] = outputRaw[i].Get(0);
     exchangeDSP.phases[i] = _phaseGens[i].CurrentScalar();
     exchangeDSP.uniNoiseLastDraw[i] = _uniNoiseGens[i].LastDraw();
     exchangeDSP.normNoiseLastDraw[i] = _normNoiseGens[i].LastDraw();

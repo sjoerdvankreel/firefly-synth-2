@@ -55,6 +55,7 @@ OsciGraphRenderData::DoProcessExchangeState(
   FBModuleProcExchangeStateBase const* exchangeState)
 {
   auto osciExchange = dynamic_cast<FFOsciExchangeState const*>(exchangeState);
+  data.exchangeSubText = FBGainToStringDb(osciExchange->output, 2);
   data.exchangeMainText = FBPitchToStringNotes(osciExchange->osciEffectivePitch);
 }
 
@@ -163,10 +164,6 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->renderState->ModuleProcState()->moduleSlot = graphModuleSlot;
     FBRenderModuleGraph<false, true>(renderData, detailGraphs, i);
     FBTopoIndices modIndices = { (int)FFModuleType::Osci, graphModuleSlot };
-    
-    int maxSizeAllSeries = 0;
-    float absMaxValueAllSeries = 0.0f;
-    graphData->graphs[i].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);    
     FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::Type, 0 } };
     auto osciType = graphData->renderState->AudioParamList<FFOsciType>(paramIndices, false, -1);
     paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::UniCount, 0 } };
@@ -192,7 +189,6 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[i].moduleIndex = (int)FFModuleType::Osci;
     graphData->graphs[i].defaultSubText = FBGainToStringDb(gain, 2);
     graphData->graphs[i].defaultMainText = FBPitchToStringSemis(coarse, fine, 2, true);
-    graphData->graphs[i].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
 
     if (!detailGraphs)
       graphData->graphs[i].MergeStereo();

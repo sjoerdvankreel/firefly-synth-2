@@ -122,12 +122,12 @@ LFOGraphRenderData<Global>::DoProcessExchangeState(
   if (!detailGraphs)
   {
     data.exchangeMainText = FBToStringHz(lfoExchange->rates[0], 2);
-    data.exchangeSubText = FBToStringPercent(lfoExchange->value, 2);
+    data.exchangeSubText = FBToStringPercent(lfoExchange->output, 2);
     return;
   }
 
   data.exchangeMainText = FBToStringHz(lfoExchange->rates[graphIndex], 2);
-  data.exchangeSubText = FBToStringPercent(lfoExchange->values[graphIndex], 2);
+  data.exchangeSubText = FBToStringPercent(lfoExchange->outputs[graphIndex], 2);
 }
 
 template <bool Global>
