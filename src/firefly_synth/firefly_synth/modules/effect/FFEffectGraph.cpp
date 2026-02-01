@@ -23,7 +23,7 @@ public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
   void DoReleaseOnDemandBuffers(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoPostProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
   void DoProcessIndicators(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
-  void DoProcessExchangeState(FBGraphRenderState* /*graphState*/, FBModuleGraphData& /*data*/, bool /*detailGraphs*/, int /*graphIndex*/, int /*exchangeVoice*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) {}
+  void DoProcessExchangeState(FBGraphRenderState* graphState, FBModuleGraphData& data, bool detailGraphs, int graphIndex, int exchangeVoice, FBModuleProcExchangeStateBase const* exchangeState);
 };
 
 static FFEffectExchangeState const*
@@ -53,6 +53,35 @@ PlotParams(FBModuleGraphComponentData const* data, bool global, int /*graphIndex
   result.sampleRate = data->pixelWidth * 4.0f / FFEffectPlotLengthSeconds;
   result.staticModuleIndex = static_cast<int>(global ? FFModuleType::GEffect : FFModuleType::VEffect);
   return result;
+}
+
+template <bool Global>
+void
+EffectGraphRenderData<Global>::DoProcessExchangeState(
+  FBGraphRenderState* graphState, FBModuleGraphData& data,
+  bool detailGraphs, int graphIndex, int /*exchangeVoice*/,
+  FBModuleProcExchangeStateBase const* exchangeState)
+{
+  auto effectExchange = dynamic_cast<FFEffectExchangeState const*>(exchangeState);
+  if (!detailGraphs)
+    return;
+
+  auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
+  FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEffectParam::Kind, graphIndex } };
+  auto kind = graphState->AudioParamList<FFEffectKind>(indices, false, -1);
+  if (kind == FFEffectKind::StVar)
+    data.exchangeMainText = FBToStringHz(effectExchange->stVarFreqs[graphIndex], 2);
+  else if (FFEffectKindIsShaper(kind))
+    data.exchangeMainText = FBToStringPercent(effectExchange->shaperDrives[graphIndex], 2) + " Drive";
+  else if (kind == FFEffectKind::CombPlus)
+    data.exchangeMainText = FBToStringHz(effectExchange->combPlusFreqs[graphIndex], 2);
+  else if (kind == FFEffectKind::CombMin)
+    data.exchangeMainText = FBToStringHz(effectExchange->combMinFreqs[graphIndex], 2);
+  else if (kind == FFEffectKind::Comb)
+    data.exchangeMainText = FBFormatDoubleCLocale(effectExchange->combPlusFreqs[graphIndex], 2) + " / " + 
+      FBToStringHz(effectExchange->combMinFreqs[graphIndex], 2);
+  else
+    FB_ASSERT(false);
 }
 
 template <bool Global>
@@ -188,12 +217,18 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
   bool on = renderState->AudioParamBool(paramIndices, false, -1);
 
+  int maxSizeAllSeries = 0;
+  float absMaxValueAllSeries = 0.0f;
   int graphCount = detailGraphs ? FFEffectBlockCount : 1;
   for (int i = 0; i < graphCount; i++)
   {
     FBRenderModuleGraph<Global, false>(renderData, detailGraphs, i);
+    graphData->graphs[i].GetLimits(false, maxSizeAllSeries, absMaxValueAllSeries);
     graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)moduleType;
+    graphData->graphs[i].exchangeSubText = FBGainToStringDb(absMaxValueAllSeries, 2);
+    graphData->graphs[i].ScaleToSelfNormalized();
+
     if (detailGraphs)
     {
       FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } };
@@ -230,9 +265,6 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
         auto mode = renderState->AudioParamList<FFEffectSkewMode>(indices, false, -1);
         graphData->graphs[i].title += ", " + FFEffectSkewModeToString(mode);
       }
-
-
-      //graphData->graphs[i].subtext = FBAsciiToUpper(FFEffectKindToString(kind)); // todo
     }
     else
     {
@@ -241,10 +273,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       graphData->graphs[i].title = moduleName + ": " + (on ? "On" : "Off");
       if (on && oversample)
         graphData->graphs[i].title += ", Oversample";
-
-      //graphData->graphs[i].subtext = on ? "On" : "Off"; // todo
-    }
-    graphData->graphs[i].ScaleToSelfNormalized();
+    }    
   }
 }
 

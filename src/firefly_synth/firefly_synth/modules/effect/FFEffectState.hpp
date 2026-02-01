@@ -19,6 +19,10 @@ struct alignas(FBSIMDAlign) FFEffectExchangeState final:
 public FBModuleProcSingleExchangeState
 {
   float basePitch = {};
+  std::array<float, FFEffectBlockCount> shaperDrives = {};
+  std::array<float, FFEffectBlockCount> stVarFreqs = {};
+  std::array<float, FFEffectBlockCount> combMinFreqs = {};
+  std::array<float, FFEffectBlockCount> combPlusFreqs = {};
 };
 
 class alignas(FBSIMDAlign) FFEffectDSPState final

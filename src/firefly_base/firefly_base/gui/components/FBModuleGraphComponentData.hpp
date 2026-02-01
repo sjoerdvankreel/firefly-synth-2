@@ -70,8 +70,5 @@ struct FBModuleGraphComponentData final
   FBGUIRenderType guiRenderType = FBGUIRenderType::Basic;
   FBModuleGraphDrawMarkersSelector drawMarkersSelector = {};
 
-  void ScaleBy(float factor);
-  void ScaleToAllNormalized(); // todo drop it
-  bool GetScaleFactorToAllNormalized(float& factor) const;
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleGraphComponentData);
 };

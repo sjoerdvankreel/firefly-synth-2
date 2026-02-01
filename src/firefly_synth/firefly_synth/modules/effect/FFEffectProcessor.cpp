@@ -88,8 +88,7 @@ FFEffectProcessor::AllocOnDemandBuffers(
   {
     auto kind = moduleTopo.NormalizedToListFast<FFEffectKind>(FFEffectParam::Kind,
       FFSelectDualProcBlockParamNormalizedGlobal<Global>(kindNorm[i]));
-    if (graph || (
-      kind == FFEffectKind::Comb || kind == FFEffectKind::CombPlus || kind == FFEffectKind::CombMin))
+    if (graph || FFEffectKindIsComb(kind))
       _combFilters[i].AllocBuffers(state->MemoryPool(), sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier); 
   }
 }
@@ -351,9 +350,7 @@ FFEffectProcessor::Process(
 
         stVarRealFreqPlain[i].Store(s, realFreqPlain);
       }
-      else if (_kind[i] == FFEffectKind::Comb ||
-        _kind[i] == FFEffectKind::CombPlus ||
-        _kind[i] == FFEffectKind::CombMin)
+      else if (FFEffectKindIsComb(_kind[i]))
       {
         combKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombKeyTrk,
           FFSelectDualProcAccParamNormalized<Global>(combKeyTrkNorm[i], voice), s));
@@ -519,7 +516,7 @@ FFEffectProcessor::Process(
           combRealFreqPlusPlain[i].Store(s, realFreqPlain);
         }
       }
-      else if (_kind[i] == FFEffectKind::Clip || _kind[i] == FFEffectKind::Fold || _kind[i] == FFEffectKind::Skew)
+      else if (FFEffectKindIsShaper(_kind[i]))
       {
         distAmtPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistAmt,
           FFSelectDualProcAccParamNormalized<Global>(distAmtNorm[i], voice), s));
@@ -568,9 +565,7 @@ FFEffectProcessor::Process(
         stVarKeyTrkPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         stVarRealFreqPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
       }
-      else if (_kind[i] == FFEffectKind::Comb ||
-        _kind[i] == FFEffectKind::CombPlus ||
-        _kind[i] == FFEffectKind::CombMin)
+      else if (FFEffectKindIsComb(_kind[i]))
       {
         combKeyTrkPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         if (_kind[i] == FFEffectKind::Comb ||
@@ -586,7 +581,7 @@ FFEffectProcessor::Process(
           combRealFreqPlusPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         }
       }
-      else if (_kind[i] == FFEffectKind::Clip || _kind[i] == FFEffectKind::Fold || _kind[i] == FFEffectKind::Skew)
+      else if (FFEffectKindIsShaper(_kind[i]))
       {
         distAmtPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         distMixPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
@@ -674,6 +669,14 @@ FFEffectProcessor::Process(
   exchangeDSP.boolIsActive = 1;
   exchangeDSP.basePitch = _basePitch.Get(FBFixedBlockSamples - 1);
   exchangeDSP.lengthSamples = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
+
+  for (int i = 0; i < FFEffectBlockCount; i++)
+  {
+    exchangeDSP.shaperDrives[i] = distDrivePlain[i].First();
+    exchangeDSP.stVarFreqs[i] = stVarRealFreqPlain[i].First();
+    exchangeDSP.combMinFreqs[i] = combRealFreqMinPlain[i].First();
+    exchangeDSP.combPlusFreqs[i] = combRealFreqPlusPlain[i].First();
+  }
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gEffect[state.moduleSlot]; },

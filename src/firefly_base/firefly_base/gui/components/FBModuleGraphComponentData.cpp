@@ -1,43 +1,5 @@
 #include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
 
-void 
-FBModuleGraphComponentData::ScaleToAllNormalized()
-{
-  float factor = 1.0f;
-  if (GetScaleFactorToAllNormalized(factor))
-    ScaleBy(factor);
-}
-
-void 
-FBModuleGraphComponentData::ScaleBy(float factor)
-{
-  for (int i = 0; i < graphs.size(); i++)
-    graphs[i].ScaleBy(factor);
-}
-
-bool 
-FBModuleGraphComponentData::GetScaleFactorToAllNormalized(float& factor) const
-{
-  bool any = false;
-  float min = std::numeric_limits<float>::max();
-  for (int i = 0; i < graphs.size(); i++)
-  {
-    float thisFactor = 0.0f;
-    if (graphs[i].GetScaleFactorToNormalized(thisFactor))
-    {
-      any = true;
-      min = std::min(min, thisFactor);
-    }
-  }
-  if (any)
-  {
-    factor = min;
-    return true;
-  }
-  factor = 1.0f;
-  return false;
-}
-
 void
 FBModuleGraphData::MergeStereo()
 {
