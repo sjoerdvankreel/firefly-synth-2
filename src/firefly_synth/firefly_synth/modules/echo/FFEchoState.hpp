@@ -23,6 +23,9 @@ public FBModuleProcSingleExchangeState
   float inputGain = {};
   float reverbSize = {};
   float feedbackDelay = {};
+  float outputTaps = {};
+  float outputReverb = {};
+  float outputFeedback = {};
 };
 
 template <bool Global>

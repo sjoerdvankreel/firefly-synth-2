@@ -385,6 +385,7 @@ FFEchoProcessor<Global>::Process(
     [exchangeToGUI, voice]() { return &exchangeToGUI->voice[voice].vEcho[0]; });
   exchangeDSP.boolIsActive = 1;
   exchangeDSP.lengthSamples = FBTimeToSamples(FFEchoPlotLengthSeconds, sampleRate);
+  exchangeDSP.output = std::max(std::abs(output[0].Get(0)), std::abs(output[1].Get(0)));
   exchangeDSP.inputGain = topo.NormalizedToLinearFast(FFEchoParam::Gain, gainNorm.CV().Last());
 
   auto& exchangeParams = *FFSelectDualState<Global>(
@@ -542,6 +543,7 @@ FFEchoProcessor<Global>::ProcessFeedback(
     [exchangeToGUI]() { return &exchangeToGUI->global.gEcho[0]; },
     [exchangeToGUI, voice]() { return &exchangeToGUI->voice[voice].vEcho[0]; });
   exchangeDSP.feedbackDelay = lengthTimeSecondsSmooth;
+  exchangeDSP.outputFeedback = std::max(std::abs(output[0].Get(0)), std::abs(output[1].Get(0)));
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI] { return &exchangeToGUI->param.global.gEcho[0]; },
@@ -728,6 +730,7 @@ FFEchoProcessor<Global>::ProcessTaps(
     [exchangeToGUI]() { return &exchangeToGUI->global.gEcho[0]; },
     [exchangeToGUI, voice]() { return &exchangeToGUI->voice[voice].vEcho[0]; });
   exchangeDSP.tapsMix = tapsMixPlain;
+  exchangeDSP.outputTaps = std::max(std::abs(output[0].Get(0)), std::abs(output[1].Get(0)));
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI] { return &exchangeToGUI->param.global.gEcho[0]; },
@@ -895,6 +898,7 @@ FFEchoProcessor<Global>::ProcessReverb(
     [exchangeToGUI]() { return &exchangeToGUI->global.gEcho[0]; },
     [exchangeToGUI, voice]() { return &exchangeToGUI->voice[voice].vEcho[0]; });
   exchangeDSP.reverbSize = sizePlain;
+  exchangeDSP.outputReverb = std::max(std::abs(output[0].Get(0)), std::abs(output[1].Get(0)));
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI] { return &exchangeToGUI->param.global.gEcho[0]; },
