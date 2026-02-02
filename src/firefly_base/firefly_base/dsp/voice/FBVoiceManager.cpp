@@ -50,6 +50,7 @@ FBVoiceManager::InitFromExchange(
   {
     _num[i] = i;
     _voices[i].slot = i;
+    _voices[i].num = voices[i].num;
     _voices[i].event = voices[i].event;
     _voices[i].state = voices[i].state;
     _voices[i].groupId = voices[i].groupId;
@@ -90,6 +91,7 @@ FBVoiceManager::Lease(FBNoteEvent const& event, std::int64_t groupId, int slotIn
 
   _num[slot] = ++_counter;
   _voices[slot].slot = slot;
+  _voices[slot].num = _num[slot];
   _voices[slot].event = event;
   _voices[slot].groupId = groupId;
   _voices[slot].slotInGroup = slotInGroup;

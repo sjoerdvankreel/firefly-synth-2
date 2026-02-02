@@ -75,8 +75,8 @@ void
 FBRenderModuleGraphSeries(
   FBModuleGraphRenderData<Derived>& renderData,
   bool detailGraphs, int graphIndex,
-  bool exchange, int exchangeVoice,
-  FBModuleGraphPoints& seriesOut)
+  FBModuleProcExchangeStateBase const* exchangeState, 
+  int exchangeVoice, FBModuleGraphPoints& seriesOut)
 {
   seriesOut.l.clear();
   seriesOut.r.clear();
@@ -86,8 +86,8 @@ FBRenderModuleGraphSeries(
   FBSArray2<float, FBFixedBlockSamples, 2> seriesStereoIn = {};
 
   int processed = FBFixedBlockSamples;
+  bool exchange = exchangeState != nullptr;
   auto renderState = renderData.graphData->renderState;
-  auto exchangeState = renderState->ExchangeContainer()->Raw();
   auto moduleProcState = renderState->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
   moduleProcState->input->noteEvents->clear();
@@ -141,24 +141,10 @@ FBRenderModuleGraphSeries(
   renderData.PostProcess(renderState, renderData.graphData->graphs[graphIndex], detailGraphs, graphIndex, exchange, exchangeVoice, seriesOut);
   renderData.ReleaseOnDemandBuffers(renderState, detailGraphs, graphIndex, exchange, exchangeVoice);
 
-  if constexpr (Global)
-  {
-    auto moduleExchange = renderData.globalExchangeSelector(
-      exchangeState, moduleProcState->moduleSlot, detailGraphs, graphIndex);
-    if(moduleExchange->boolIsActive)
-      renderData.ProcessExchangeState(
-        renderState, renderData.graphData->graphs[graphIndex], 
-        detailGraphs, graphIndex, -1, moduleExchange);
-  }
-  else for (int v = 0; v < FBMaxVoices; v++)
-  {
-    auto moduleExchange = renderData.voiceExchangeSelector(
-      exchangeState, v, moduleProcState->moduleSlot, detailGraphs, graphIndex);
-    if(moduleExchange->boolIsActive)
-       renderData.ProcessExchangeState(
-         renderState, renderData.graphData->graphs[graphIndex],
-         detailGraphs, graphIndex, v, moduleExchange);
-  }
+  if (exchange)
+    renderData.ProcessExchangeState(
+      renderState, renderData.graphData->graphs[graphIndex],
+      detailGraphs, graphIndex, exchangeVoice, exchangeState);
 }
 
 template <bool Global, bool Stereo, class Derived>
@@ -243,7 +229,7 @@ FBRenderModuleGraph(
     renderState->PrepareForRenderPrimaryVoice();
   moduleProcState->renderType = FBRenderType::GraphPrimary;
   FBRenderModuleGraphSeries<Global, Stereo>(
-    renderData, detailGraphs, graphIndex, false, -1,
+    renderData, detailGraphs, graphIndex, nullptr, -1,
     graphData->graphs[graphIndex].primarySeries);
   
   if (guiRenderType == FBGUIRenderType::Basic)
@@ -267,27 +253,39 @@ FBRenderModuleGraph(
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData->graphs[graphIndex].secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<Global, Stereo>(renderData, detailGraphs, graphIndex, true, -1, secondary.points);
+    FBRenderModuleGraphSeries<Global, Stereo>(renderData, detailGraphs, graphIndex, moduleExchange, -1, secondary.points);
     secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
-  } else for (int v = 0; v < FBMaxVoices; v++)
+  } else
   {
-    auto moduleExchange = renderData.voiceExchangeSelector(
-      exchangeState, v, moduleProcState->moduleSlot, detailGraphs, graphIndex);
-    if (!moduleExchange->ShouldGraph(detailGraphs, graphIndex))
-      continue;
-    renderState->PrepareForRenderExchangeVoice(v);
-    float positionNormalized = moduleExchange->PositionNormalized(detailGraphs, graphIndex);
-    if (graphData->skipDrawOnEqualsPrimary &&
-      renderState->VoiceModuleExchangeStateEqualsPrimary(
-      v, plotParams.staticModuleIndex, moduleProcState->moduleSlot))
+    // Render voices from oldest to newest.
+    // This makes it easier to just continuously overwrite metadata like main/subtext.
+    auto const* voices = &renderState->ExchangeContainer()->Voices();
+    std::vector<int> voiceIndicesByAge = {};
+    for (int i = 0; i < FBMaxVoices; i++)
+      voiceIndicesByAge.push_back(i);
+    std::sort(voiceIndicesByAge.begin(), voiceIndicesByAge.end(), [voices](int l, int r) { return (*voices)[l].num < (*voices)[r].num; });
+
+    for (int i = 0; i < FBMaxVoices; i++)
     {
-      graphData->graphs[graphIndex].primaryMarkers.push_back(
-        static_cast<int>(positionNormalized * graphData->graphs[graphIndex].primarySeries.l.size()));
-      continue;
+      int v = voiceIndicesByAge[i];
+      auto moduleExchange = renderData.voiceExchangeSelector(
+        exchangeState, v, moduleProcState->moduleSlot, detailGraphs, graphIndex);
+      if (!moduleExchange->ShouldGraph(detailGraphs, graphIndex))
+        continue;
+      renderState->PrepareForRenderExchangeVoice(v);
+      float positionNormalized = moduleExchange->PositionNormalized(detailGraphs, graphIndex);
+      if (graphData->skipDrawOnEqualsPrimary &&
+        renderState->VoiceModuleExchangeStateEqualsPrimary(
+          v, plotParams.staticModuleIndex, moduleProcState->moduleSlot))
+      {
+        graphData->graphs[graphIndex].primaryMarkers.push_back(
+          static_cast<int>(positionNormalized * graphData->graphs[graphIndex].primarySeries.l.size()));
+        continue;
+      }
+      moduleProcState->renderType = FBRenderType::GraphExchange;
+      auto& secondary = graphData->graphs[graphIndex].secondarySeries.emplace_back();
+      FBRenderModuleGraphSeries<false, Stereo>(renderData, detailGraphs, graphIndex, moduleExchange, v, secondary.points);
+      secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
     }
-    moduleProcState->renderType = FBRenderType::GraphExchange;
-    auto& secondary = graphData->graphs[graphIndex].secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<false, Stereo>(renderData, detailGraphs, graphIndex, true, v, secondary.points);
-    secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
   }
 }
