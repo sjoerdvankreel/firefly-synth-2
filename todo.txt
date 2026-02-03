@@ -13,6 +13,7 @@ v2.1.1
 [x] gradients are expensive
 [x] less points for the graphs
 [ ] detail graphs for env = ADSR
+[ ] GLFO_N->X everywhere you can do VLFO_N->X
 [ ] cardcontainercomponent
 [ ] gui cpu load as an output param?
 [ ] gui FPS switch?
