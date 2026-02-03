@@ -9,16 +9,17 @@ v2.1.1
 [x] lfo graph clips balls
 [x] display param values as rounded
 [x] scale osc individually
-[ ] do sliding windows for the db gains
+[x] do sliding windows for the db gains
+[x] gradients are expensive
+[x] less points for the graphs
+[ ] detail graphs for env = ADSR
+[ ] cardcontainercomponent
 [ ] gui cpu load as an output param?
 [ ] gui FPS switch?
-[ ] gradients are expensive
-[ ] less points for the graphs
 [ ] re-un-shorten all the texts
 [ ] test the clap
 [ ] re-profile the gui
 [ ] DONT do other stuff beside GUI
-[ ] detail graphs for env = ADSR
 [ ] run debug build
 [ ] bigass bg image
 [ ] recheck all the container components, do we need em?
@@ -61,6 +62,7 @@ v2.1.1
 [ ] alternate-color the matrix rows et all
 [ ] pretty knobs, graphs, combos, checks, buttons, more?
 [ ] programmatic dump screenshot?
+[ ] compressor
 [ ] check todos
 
 [ ] add loop count param

@@ -93,9 +93,10 @@ EffectGraphRenderData<Global>::DoProcessExchangeState(
     return;
   }
 
+  int moduleSlot = graphState->ModuleProcState()->moduleSlot;
   data.exchangeGainValue = std::max(data.exchangeGainValue, effectExchange->outputs[graphIndex]);
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
-  FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEffectParam::Kind, graphIndex } };
+  FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
   auto kind = graphState->AudioParamList<FFEffectKind>(indices, false, -1);
   if (kind == FFEffectKind::StVar)
     data.exchangeMainText = FBToStringHz(effectExchange->stVarFreqs[graphIndex], 2);
@@ -109,7 +110,7 @@ EffectGraphRenderData<Global>::DoProcessExchangeState(
     data.exchangeMainText = FBFormatDoubleCLocale(effectExchange->combPlusFreqs[graphIndex], 2) + " / " + 
       FBToStringHz(effectExchange->combMinFreqs[graphIndex], 2);
   else
-    FB_ASSERT(false);
+    FB_ASSERT(kind == FFEffectKind::Off);
 }
 
 template <bool Global>
@@ -243,7 +244,6 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   FBParamTopoIndices paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::On, 0 } };
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
   bool on = renderState->AudioParamBool(paramIndices, false, -1);
-
  
   int graphCount = detailGraphs ? FFEffectBlockCount : 1;
   for (int i = 0; i < graphCount; i++)
@@ -262,7 +262,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       auto filterMode = renderState->AudioParamList<FFEffectFilterMode>(indices, false, -1);
       indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistDrive, i } };
       auto distDrive = renderState->AudioParamLinear(indices, false, -1);
-      graphData->graphs[i].title = FBAsciiToUpper(moduleName + std::string(1, static_cast<char>('A' + i)));
+      graphData->graphs[i].title = std::string(1, static_cast<char>('A' + i));
       graphData->graphs[i].title += ": " + FFEffectKindToString(kind);
 
       if (kind == FFEffectKind::StVar)
