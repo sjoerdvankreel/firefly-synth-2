@@ -21,7 +21,8 @@ struct EnvSectionDetails
   int stageEnd = {};
   int stageStart = {};
   bool haveSection = {};
-  int sectionLengthTotal = {};
+  int sectionStartSamples = {};
+  int sectionLengthSamples = {};
   std::vector<int> stageLengths = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(EnvSectionDetails);
 };
@@ -55,8 +56,8 @@ public FBModuleGraphRenderData<EnvGraphRenderData>
   int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
   void DoProcessIndicators(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
+  void DoPostProcess(FBGraphRenderState* state, FBModuleGraphData& data, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/) {}
-  void DoPostProcess(FBGraphRenderState* /*state*/, FBModuleGraphData& /*data*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
   void DoProcessExchangeState(FBGraphRenderState* /*graphState*/, FBModuleGraphData& /*data*/, bool /*detailGraphs*/, int /*graphIndex*/, int /*exchangeVoice*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) {}
 };
 
@@ -124,33 +125,49 @@ GetEnvelopeDetails(
     else
       stageLength = state->AudioParamLinearTimeSamples(
         { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } }, exchange, exchangeVoice, sampleRate);
-    details.all.sectionLengthTotal += stageLength;
+    details.all.sectionStartSamples = 0;
+    details.all.sectionLengthSamples += stageLength;
     details.all.stageLengths.push_back(stageLength);
-    if (releaseStart != -1 && i >= releaseStart)
+    if (releaseStart != -1)
     {
-      details.release.haveSection = true;
-      details.release.stageStart = releaseStart;
-      details.release.stageEnd = FFEnvStageCount;
-      details.release.sectionLengthTotal += stageLength;
-      details.release.stageLengths.push_back(stageLength);
-    }
-    if (sustainStart != -1 && i >= sustainStart && i <= sustainEnd)
-    {
-      details.loop.haveSection = true;
-      details.loop.stageEnd = sustainEnd;
-      details.loop.stageStart = sustainStart;
-      if (i < sustainEnd)
+      if (i >= releaseStart)
       {
-        details.loop.sectionLengthTotal += stageLength;
-        details.loop.stageLengths.push_back(stageLength);
+        details.release.haveSection = true;
+        details.release.stageStart = releaseStart;
+        details.release.stageEnd = FFEnvStageCount;
+        details.release.sectionLengthSamples += stageLength;
+        details.release.stageLengths.push_back(stageLength);
+      }
+      else
+      {
+        details.release.sectionStartSamples += stageLength;
+      }
+    }
+    if (sustainStart != -1)
+    {
+      if (i >= sustainStart && i <= sustainEnd)
+      {
+        details.loop.haveSection = true;
+        details.loop.stageEnd = sustainEnd;
+        details.loop.stageStart = sustainStart;
+        if (i < sustainEnd)
+        {
+          details.loop.sectionLengthSamples += stageLength;
+          details.loop.stageLengths.push_back(stageLength);
+        }
+      }
+      else if (i < sustainStart)
+      {
+        details.loop.sectionStartSamples += stageLength;
       }
     }
     if (attackDecayEnd != -1 && i < attackDecayEnd)
     {
       details.attackDecay.haveSection = true;
+      details.attackDecay.sectionStartSamples = 0;
       details.attackDecay.stageStart = 0;
       details.attackDecay.stageEnd = attackDecayEnd;
-      details.attackDecay.sectionLengthTotal += stageLength;
+      details.attackDecay.sectionLengthSamples += stageLength;
       details.attackDecay.stageLengths.push_back(stageLength);
     }
   }
@@ -168,7 +185,7 @@ PlotParams(FBModuleGraphComponentData const* data, bool detailGraphs, int /*grap
   EnvDetails details = {};
   GetEnvelopeDetails(data->renderState, false, -1, details);
   auto const& sectionDetails = details.GetSectionDetails(EnvSection::All);
-  result.sampleCount = sectionDetails.sectionLengthTotal;
+  result.sampleCount = sectionDetails.sectionLengthSamples;
   if (!detailGraphs)
     result.sampleCount += details.smoothLength;
   return result;
@@ -201,6 +218,30 @@ EnvGraphRenderData::DoProcess(
   auto* moduleProcState = state->ModuleProcState();
   auto const* exchangeFromDSP = GetEnvExchangeState(state, exchange, exchangeVoice);
   return GetProcessor(*moduleProcState).Process(*moduleProcState, exchangeFromDSP, true, !detailGraphs, -1);
+}
+
+void 
+EnvGraphRenderData::DoPostProcess(
+  FBGraphRenderState* state, 
+  FBModuleGraphData& /*data*/,
+  bool detailGraphs, int graphIndex, 
+  bool exchange, int exchangeVoice, 
+  FBModuleGraphPoints& points)
+{
+  if (!detailGraphs)
+    return;
+
+  EnvDetails details = {};
+  GetEnvelopeDetails(state, exchange, exchangeVoice, details);
+  auto const& sectionDetails = details.GetSectionDetails((EnvSection)(graphIndex + 1));
+  if (!sectionDetails.haveSection)
+  {
+    points = {};
+    return;
+  }
+
+  points.l.erase(points.l.begin(), points.l.begin() + sectionDetails.sectionStartSamples);
+  points.l.erase(points.l.begin() + sectionDetails.sectionLengthSamples, points.l.end());
 }
 
 void
