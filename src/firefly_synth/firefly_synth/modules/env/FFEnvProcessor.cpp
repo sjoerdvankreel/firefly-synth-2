@@ -152,7 +152,7 @@ FFEnvProcessor::BeginVoice(
 int
 FFEnvProcessor::Process(
   FBModuleProcState& state, FFEnvExchangeState const* exchangeFromDSP, 
-  bool graph, int releaseAt)
+  bool graph, bool mainGraph, int releaseAt)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -260,7 +260,10 @@ FFEnvProcessor::Process(
         _lastOverall *= portaAmpReleaseMultiplier;
       }
 
-      output.Set(s, _smoother.NextScalar(_lastOverall));
+      if (!graph || mainGraph)
+        output.Set(s, _smoother.NextScalar(_lastOverall));
+      else
+        output.Set(s, _lastOverall);
 
       bool isReleaseNow = s == releaseAt;
       s++;
@@ -314,13 +317,20 @@ FFEnvProcessor::Process(
   }
 
   for (; s < FBFixedBlockSamples && _smoothPosition < _smoothSamples; s++, _smoothPosition++, _positionSamples++)
-    output.Set(s, _smoother.NextScalar(_lastOverall));
+    if (!graph || mainGraph)
+      output.Set(s, _smoother.NextScalar(_lastOverall));
+    else
+      output.Set(s, _lastOverall);
 
   int processed = s;
   if (s < FBFixedBlockSamples)
     _finished = true;
+
   for (; s < FBFixedBlockSamples; s++)
-    output.Set(s, _smoother.State());
+    if (!graph || mainGraph)
+      output.Set(s, _smoother.State());
+    else
+      output.Set(s, _lastOverall);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)

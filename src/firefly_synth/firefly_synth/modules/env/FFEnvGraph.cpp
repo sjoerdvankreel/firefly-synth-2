@@ -8,6 +8,46 @@
 
 #include <algorithm>
 
+enum class EnvSection
+{
+  All,
+  AttackDecay,
+  Loop,
+  Release
+};
+
+struct EnvSectionDetails
+{
+  int stageEnd = {};
+  int stageStart = {};
+  bool haveSection = {};
+  int sectionLengthTotal = {};
+  std::vector<int> stageLengths = {};
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(EnvSectionDetails);
+};
+
+struct EnvDetails
+{
+  int smoothLength = {};
+  EnvSectionDetails all = {};
+  EnvSectionDetails loop = {};
+  EnvSectionDetails release = {};
+  EnvSectionDetails attackDecay = {};
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(EnvDetails);
+
+  EnvSectionDetails const& GetSectionDetails(EnvSection section)
+  {
+    switch (section)
+    {
+    case EnvSection::All: return all;
+    case EnvSection::Loop: return loop;
+    case EnvSection::Release: return release;
+    case EnvSection::AttackDecay: return attackDecay;
+    default: FB_ASSERT(false); return *((EnvSectionDetails*)(nullptr));
+    }
+  }
+};
+
 struct EnvGraphRenderData final:
 public FBModuleGraphRenderData<EnvGraphRenderData>
 {
@@ -36,43 +76,88 @@ FBGraphRenderState* state, bool exchange, int exchangeVoice)
 }
 
 static void
-StageLengthAudioSamples(
+GetEnvelopeDetails(
   FBGraphRenderState const* state, 
   bool exchange, int exchangeVoice, 
-  std::vector<int>& stageLengths, int& smoothLength)
+  EnvDetails& details)
 {
-  stageLengths = {};
+  details = EnvDetails({});
   float bpm = state->ExchangeContainer()->Host()->bpm;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
   
   auto type = state->AudioParamList<FFEnvType>(
     { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } }, exchange, exchangeVoice);
-  bool sync = state->AudioParamBool(
-    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } }, exchange, exchangeVoice);
   if (type == FFEnvType::Off)
     return;
 
-  if (!sync)
-  {
-    for (int i = 0; i < FFEnvStageCount; i++)
-      stageLengths.push_back(state->AudioParamLinearTimeSamples(
-        { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } }, exchange, exchangeVoice, sampleRate));
-    smoothLength = state->AudioParamLinearTimeSamples(
-      { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothTime, 0 } }, exchange, exchangeVoice, sampleRate);
-  }
-  else
-  {
-    for (int i = 0; i < FFEnvStageCount; i++)
-      stageLengths.push_back(state->AudioParamBarsSamples(
-        { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } }, exchange, exchangeVoice, sampleRate, bpm));
-    smoothLength = state->AudioParamBarsSamples(
+  bool sync = state->AudioParamBool(
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } }, exchange, exchangeVoice);
+  int loopStart = state->AudioParamDiscrete(
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }, exchange, exchangeVoice);
+  int loopLength = state->AudioParamDiscrete(
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } }, exchange, exchangeVoice);
+  int releasePoint = state->AudioParamDiscrete(
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } }, exchange, exchangeVoice);
+  
+  int sustainStart = loopStart == 0 ? -1 : loopStart - 1;
+  int sustainEnd = loopStart == 0 ? -1 : loopStart - 1 + loopLength;
+  int releaseStart = releasePoint == 0 ? -1 : releasePoint - 1;
+  int attackDecayEnd = sustainStart != -1 ? sustainStart : releaseStart != -1 ? releaseStart : -1;
+
+  details.all.haveSection = true;
+  details.all.stageStart = 0;
+  details.all.stageEnd = FFEnvStageCount;
+  if (sync)
+    details.smoothLength = state->AudioParamBarsSamples(
       { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothBars, 0 } }, exchange, exchangeVoice, sampleRate, bpm);
+  else
+    details.smoothLength = state->AudioParamLinearTimeSamples(
+      { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothTime, 0 } }, exchange, exchangeVoice, sampleRate);
+
+  int stageLength;
+  for (int i = 0; i < FFEnvStageCount; i++)
+  {
+    if (sync)
+      stageLength = state->AudioParamBarsSamples(
+        { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } }, exchange, exchangeVoice, sampleRate, bpm);
+    else
+      stageLength = state->AudioParamLinearTimeSamples(
+        { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } }, exchange, exchangeVoice, sampleRate);
+    details.all.sectionLengthTotal += stageLength;
+    details.all.stageLengths.push_back(stageLength);
+    if (releaseStart != -1 && i >= releaseStart)
+    {
+      details.release.haveSection = true;
+      details.release.stageStart = releaseStart;
+      details.release.stageEnd = FFEnvStageCount;
+      details.release.sectionLengthTotal += stageLength;
+      details.release.stageLengths.push_back(stageLength);
+    }
+    if (sustainStart != -1 && i >= sustainStart && i <= sustainEnd)
+    {
+      details.loop.haveSection = true;
+      details.loop.stageEnd = sustainEnd;
+      details.loop.stageStart = sustainStart;
+      if (i < sustainEnd)
+      {
+        details.loop.sectionLengthTotal += stageLength;
+        details.loop.stageLengths.push_back(stageLength);
+      }
+    }
+    if (attackDecayEnd != -1 && i < attackDecayEnd)
+    {
+      details.attackDecay.haveSection = true;
+      details.attackDecay.stageStart = 0;
+      details.attackDecay.stageEnd = attackDecayEnd;
+      details.attackDecay.sectionLengthTotal += stageLength;
+      details.attackDecay.stageLengths.push_back(stageLength);
+    }
   }
 }
 
 static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data, bool /*detailGraphs*/, int /*graphIndex*/)
+PlotParams(FBModuleGraphComponentData const* data, bool detailGraphs, int /*graphIndex*/)
 {
   FBModuleGraphPlotParams result = {};
   result.sampleCount = 0;
@@ -80,13 +165,12 @@ PlotParams(FBModuleGraphComponentData const* data, bool /*detailGraphs*/, int /*
   result.autoSampleRate = true;
   result.staticModuleIndex = (int)FFModuleType::Env;
 
-  int smoothLength = 0;
-  std::vector<int> stageLengths;
-  auto const* state = data->renderState;
-  StageLengthAudioSamples(state, false, -1, stageLengths, smoothLength);
-  for (int i = 0; i < stageLengths.size(); i++)
-    result.sampleCount += stageLengths[i];
-  result.sampleCount += smoothLength;
+  EnvDetails details = {};
+  GetEnvelopeDetails(data->renderState, false, -1, details);
+  auto const& sectionDetails = details.GetSectionDetails(EnvSection::All);
+  result.sampleCount = sectionDetails.sectionLengthTotal;
+  if (!detailGraphs)
+    result.sampleCount += details.smoothLength;
   return result;
 }
 
@@ -111,20 +195,21 @@ EnvGraphRenderData::DoBeginVoiceOrBlock(
 int 
 EnvGraphRenderData::DoProcess(
   FBGraphRenderState* state, 
-  bool /*detailGraphs*/, int /*graphIndex*/,
+  bool detailGraphs, int /*graphIndex*/,
   bool exchange, int exchangeVoice)
 { 
   auto* moduleProcState = state->ModuleProcState();
   auto const* exchangeFromDSP = GetEnvExchangeState(state, exchange, exchangeVoice);
-  return GetProcessor(*moduleProcState).Process(*moduleProcState, exchangeFromDSP, true, -1);
+  return GetProcessor(*moduleProcState).Process(*moduleProcState, exchangeFromDSP, true, !detailGraphs, -1);
 }
 
 void
 EnvGraphRenderData::DoProcessIndicators(
-  FBGraphRenderState* state, 
+  FBGraphRenderState* /*state*/,
   bool /*detailGraphs*/, int /*graphIndex*/, 
-  bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
+  bool /*/exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/)
 {
+#if 0 // todo
   int smoothLengthAudio;
   int totalSamplesAudio = 0;
   std::vector<int> stageLengthsAudio;
@@ -182,6 +267,7 @@ EnvGraphRenderData::DoProcessIndicators(
       points.verticalIndicators.push_back(loopStartSamples + loopLengthSamples);
     }
   }
+#endif
 }
 
 void
@@ -197,18 +283,15 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].env[slot].output; };
 
-  int graphCount = detailGraphs ? FFEnvCount : 1;
+  int graphCount = detailGraphs ? 3 : 1;
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
   for (int i = 0; i < graphCount; i++)
   {
-    int graphModuleSlot = detailGraphs ? i : moduleSlot;
-    graphData->renderState->ModuleProcState()->moduleSlot = graphModuleSlot;
     FBRenderModuleGraph<false, false>(renderData, detailGraphs, i);
-    FBTopoIndices modIndices = { (int)FFModuleType::Env, graphModuleSlot };
+    FBTopoIndices modIndices = { (int)FFModuleType::Env, moduleSlot };
     FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFEnvParam::Type, 0 } };
     graphData->graphs[i].title = FBAsciiToUpper(graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name);
-    graphData->graphs[i].moduleSlot = graphModuleSlot;
+    graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)FFModuleType::Env;
   }
-  graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;
 }

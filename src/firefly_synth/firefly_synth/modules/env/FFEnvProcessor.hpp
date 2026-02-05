@@ -47,5 +47,5 @@ class FFEnvProcessor final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
   void BeginVoice(FBModuleProcState& state, FFEnvExchangeState const* exchangeFromDSP, bool graph);
-  int Process(FBModuleProcState& state, FFEnvExchangeState const* exchangeFromDSP, bool graph, int releaseAt);
+  int Process(FBModuleProcState& state, FFEnvExchangeState const* exchangeFromDSP, bool graph, bool mainGraph, int releaseAt);
 };

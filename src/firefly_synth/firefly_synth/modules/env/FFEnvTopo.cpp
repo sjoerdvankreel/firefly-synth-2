@@ -91,7 +91,7 @@ FFMakeEnvTopo()
   result->voice = true;
   result->name = "Env";
   result->slotCount = FFEnvCount;
-  result->detailGraphCount = FFEnvCount;
+  result->detailGraphCount = 3;
   result->slotFormatterOverrides = true; 
   result->graphRenderer = FFEnvRenderGraph;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
