@@ -14,7 +14,7 @@
 struct FBStaticModule;
 
 template <bool Global>
-struct EchoGraphRenderData;
+class EchoGraphProcessor;
 
 struct alignas(FBSIMDAlign) FFEchoExchangeState final:
 public FBModuleProcSingleExchangeState
@@ -33,8 +33,8 @@ class FFEchoDSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
-  friend struct EchoGraphRenderData<true>;
-  friend struct EchoGraphRenderData<false>;
+  friend class EchoGraphProcessor<true>;
+  friend class EchoGraphProcessor<false>;
   std::unique_ptr<FFEchoProcessor<Global>> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEchoDSPState);
