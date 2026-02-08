@@ -10,10 +10,10 @@
 
 enum class EnvSection
 {
-  All,
   AttackDecay,
   Loop,
-  Release
+  Release,
+  All,
 };
 
 struct EnvSectionDetails
@@ -173,8 +173,26 @@ GetEnvelopeDetails(
   }
 }
 
+static int 
+GetRenderLengthSamples(
+  EnvDetails const& details,
+  bool detailGraphs, int graphIndex)
+{
+  // toss out the rest later
+  // seems too hard to start in the middle of the env
+  if (!detailGraphs)
+    return details.all.sectionLengthSamples + details.smoothLength;
+  switch ((EnvSection)graphIndex)
+  {
+  case EnvSection::Release: return details.all.sectionLengthSamples;
+  case EnvSection::AttackDecay: return details.attackDecay.sectionLengthSamples;
+  case EnvSection::Loop: return details.attackDecay.sectionLengthSamples + details.loop.sectionLengthSamples;
+  default: FB_ASSERT(false); return -1;
+  }
+}
+
 static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data, bool detailGraphs, int /*graphIndex*/)
+PlotParams(FBModuleGraphComponentData const* data, bool detailGraphs, int graphIndex)
 {
   FBModuleGraphPlotParams result = {};
   result.sampleCount = 0;
@@ -184,10 +202,7 @@ PlotParams(FBModuleGraphComponentData const* data, bool detailGraphs, int /*grap
 
   EnvDetails details = {};
   GetEnvelopeDetails(data->renderState, false, -1, details);
-  auto const& sectionDetails = details.GetSectionDetails(EnvSection::All);
-  result.sampleCount = sectionDetails.sectionLengthSamples;
-  if (!detailGraphs)
-    result.sampleCount += details.smoothLength;
+  result.sampleCount = GetRenderLengthSamples(details, detailGraphs, graphIndex);
   return result;
 }
 
@@ -201,12 +216,16 @@ EnvGraphRenderData::GetProcessor(FBModuleProcState& state)
 void
 EnvGraphRenderData::DoBeginVoiceOrBlock(
   FBGraphRenderState* state, 
-  bool /*detailGraphs*/, int /*graphIndex*/,
+  bool detailGraphs, int graphIndex,
   bool exchange, int exchangeVoice)
 {
+  EnvDetails details = {};
+  GetEnvelopeDetails(state, exchange, exchangeVoice, details);
+  int graphSampleCount = GetRenderLengthSamples(details, detailGraphs, graphIndex);
+
   auto* moduleProcState = state->ModuleProcState();
   auto const* exchangeFromDSP = GetEnvExchangeState(state, exchange, exchangeVoice);
-  GetProcessor(*moduleProcState).BeginVoice(*moduleProcState, exchangeFromDSP, true);
+  GetProcessor(*moduleProcState).BeginVoice(*moduleProcState, exchangeFromDSP, true, graphSampleCount);
 }
 
 int 
@@ -233,7 +252,7 @@ EnvGraphRenderData::DoPostProcess(
 
   EnvDetails details = {};
   GetEnvelopeDetails(state, exchange, exchangeVoice, details);
-  auto const& sectionDetails = details.GetSectionDetails((EnvSection)(graphIndex + 1));
+  auto const& sectionDetails = details.GetSectionDetails(!detailGraphs? EnvSection::All: (EnvSection)graphIndex);
   if (!sectionDetails.haveSection)
   {
     points = {};
@@ -242,8 +261,9 @@ EnvGraphRenderData::DoPostProcess(
 
   // details are against dsp sample rate,
   // series is against gui sample rate
-  int start = sectionDetails.sectionStartSamples * (int)points.l.size() / details.all.sectionLengthSamples;
-  int length = sectionDetails.sectionLengthSamples * (int)points.l.size() / details.all.sectionLengthSamples;
+  int renderLength = GetRenderLengthSamples(details, detailGraphs, graphIndex);
+  int start = sectionDetails.sectionStartSamples * (int)points.l.size() / renderLength;
+  int length = sectionDetails.sectionLengthSamples * (int)points.l.size() / renderLength;
   points.l.erase(points.l.begin(), points.l.begin() + start);
   points.l.erase(points.l.begin() + length, points.l.end());
 }

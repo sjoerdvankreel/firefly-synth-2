@@ -12,7 +12,8 @@ v2.1.1
 [x] do sliding windows for the db gains
 [x] gradients are expensive
 [x] less points for the graphs
-[ ] get rid of the env graph markers if we do ad/s/r
+[ ] do check the env + porta stuff
+[ ] get rid of the env graph markers if we do ad/s/r?
 [ ] store last selected patch folder in global settings on disk
 [ ] detail graphs for env = ADSR
 [ ] GLFO_N->X everywhere you can do VLFO_N->X

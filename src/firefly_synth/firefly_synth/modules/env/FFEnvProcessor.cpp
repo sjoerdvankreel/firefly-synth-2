@@ -13,7 +13,7 @@ void
 FFEnvProcessor::BeginVoice( 
   FBModuleProcState& state, 
   FFEnvExchangeState const* exchangeFromDSP,
-  bool graph)
+  bool graph, int graphSamples)
 {
   _smoother = {};
   _finished = false;
@@ -23,6 +23,7 @@ FFEnvProcessor::BeginVoice(
   _positionSamples = 0;
   _stagePositions.fill(0);
   _lastBeforeRelease = 0.0f;
+  _grampSamplesTotal = graphSamples;
 
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -323,7 +324,7 @@ FFEnvProcessor::Process(
       output.Set(s, _lastOverall);
 
   int processed = s;
-  if (s < FBFixedBlockSamples)
+  if (s < FBFixedBlockSamples || graph && _positionSamples >= _grampSamplesTotal)
     _finished = true;
 
   for (; s < FBFixedBlockSamples; s++)
