@@ -240,8 +240,12 @@ EnvGraphRenderData::DoPostProcess(
     return;
   }
 
-  points.l.erase(points.l.begin(), points.l.begin() + sectionDetails.sectionStartSamples);
-  points.l.erase(points.l.begin() + sectionDetails.sectionLengthSamples, points.l.end());
+  // details are against dsp sample rate,
+  // series is against gui sample rate
+  int start = sectionDetails.sectionStartSamples * (int)points.l.size() / details.all.sectionLengthSamples;
+  int length = sectionDetails.sectionLengthSamples * (int)points.l.size() / details.all.sectionLengthSamples;
+  points.l.erase(points.l.begin(), points.l.begin() + start);
+  points.l.erase(points.l.begin() + length, points.l.end());
 }
 
 void
