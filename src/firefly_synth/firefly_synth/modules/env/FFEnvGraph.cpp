@@ -72,8 +72,8 @@ public:
     FBModuleGraphProcessParams const& /*params*/) override {}
   void ProcessIndicators(FBGraphRenderState* state,
     FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
-  void PostProcess(FBGraphRenderState* state,
-    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
+  void PostProcess(FBGraphRenderState* state, FBModuleGraphData& data, FBModuleGraphProcessParams const& params,
+    FBModuleGraphPoints& points, std::vector<int>* /*primaryMarkersInOut*/, int* /*secondaryMarkerInOut*/) override;
   void ProcessExchangeState(FBGraphRenderState* /*graphState*/,
     FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) override {}
 };
@@ -272,7 +272,8 @@ EnvGraphProcessor::PlotParams(
 void 
 EnvGraphProcessor::PostProcess(
   FBGraphRenderState* state, FBModuleGraphData& /*data*/,
-  FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points)
+  FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points,
+  std::vector<int>* primaryMarkersInOut, int* /*secondaryMarkerInOut*/)
 {
   if (!params.detailGraphs)
     return;
@@ -288,10 +289,20 @@ EnvGraphProcessor::PostProcess(
 
   // details are against dsp sample rate,
   // series is against gui sample rate
+  int pointCount = (int)points.l.size();
   int start = (int)(sectionDetails.sectionStartSamples * params.guiSampleRate / params.hostSampleRate);
   int length = (int)(sectionDetails.sectionLengthSamples * params.guiSampleRate / params.hostSampleRate);
   points.l.erase(points.l.begin(), points.l.begin() + std::min(start, (int)points.l.size()));
   points.l.erase(points.l.begin() + std::min(length, (int)points.l.size()), points.l.end());
+
+  if (primaryMarkersInOut == nullptr || points.l.size() == 0)
+    return;
+
+  for (int i = 0; i < primaryMarkersInOut->size(); i++)
+  {
+    (*primaryMarkersInOut)[i] -= start;
+    (*primaryMarkersInOut)[i] = (int)((*primaryMarkersInOut)[i] * pointCount / (float)points.l.size());
+  }
 }
 
 void

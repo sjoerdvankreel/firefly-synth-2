@@ -37,8 +37,8 @@ public:
     FBModuleGraphProcessParams const& params) override;
   void ProcessIndicators(FBGraphRenderState* /*state*/,
     FBModuleGraphProcessParams const& /*params*/, FBModuleGraphPoints& /*points*/) override { }
-  void PostProcess(FBGraphRenderState* state, 
-    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
+  void PostProcess(FBGraphRenderState* state, FBModuleGraphData& data, FBModuleGraphProcessParams const& params, 
+    FBModuleGraphPoints& points, std::vector<int>* /*primaryMarkersInOut*/, int* /*secondaryMarkerInOut*/) override;
   void ProcessExchangeState(FBGraphRenderState* graphState,
     FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleProcExchangeStateBase const* exchangeState) override;
 };
@@ -160,7 +160,8 @@ template <bool Global>
 void
 EffectGraphProcessor<Global>::PostProcess(
   FBGraphRenderState* state, FBModuleGraphData& /*data*/,
-  FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points)
+  FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points, 
+  std::vector<int>* /*primaryMarkersInOut*/, int* /*secondaryMarkerInOut*/)
 {
   auto* moduleProcState = state->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
