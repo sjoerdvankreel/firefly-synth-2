@@ -402,7 +402,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     FBRenderModuleGraph(&processor, false, false, detailGraphs, i);
     FBTopoIndices modIndices = { (int)FFModuleType::Env, moduleSlot };
     FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFEnvParam::Type, 0 } };
-    graphData->graphs[i].title = FBAsciiToUpper(graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name);
+    graphData->graphs[i].title = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
     graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)FFModuleType::Env;
   }
