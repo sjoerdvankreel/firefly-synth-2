@@ -120,7 +120,7 @@ GetEnvelopeDetails(
   
   int sustainStart = loopStart == 0 ? -1 : loopStart - 1;
   int sustainEnd = loopStart == 0 ? -1 : loopStart - 1 + loopLength;
-  int releaseStart = releasePoint == 0 ? -1 : releasePoint - 1;
+  int releaseStart = releasePoint == 0 ? -1 : releasePoint;
   int attackDecayEnd = sustainStart != -1 ? sustainStart : releaseStart != -1 ? releaseStart : -1;
 
   details.all.haveSection = true;
@@ -288,11 +288,10 @@ EnvGraphProcessor::PostProcess(
 
   // details are against dsp sample rate,
   // series is against gui sample rate
-  int renderLength = GetRenderLengthSamples(details, params.detailGraphs, params.graphIndex);
-  int start = sectionDetails.sectionStartSamples * (int)points.l.size() / renderLength;
-  int length = sectionDetails.sectionLengthSamples * (int)points.l.size() / renderLength;
-  points.l.erase(points.l.begin(), points.l.begin() + start);
-  points.l.erase(points.l.begin() + length, points.l.end());
+  int start = (int)(sectionDetails.sectionStartSamples * params.guiSampleRate / params.hostSampleRate);
+  int length = (int)(sectionDetails.sectionLengthSamples * params.guiSampleRate / params.hostSampleRate);
+  points.l.erase(points.l.begin(), points.l.begin() + std::min(start, (int)points.l.size()));
+  points.l.erase(points.l.begin() + std::min(length, (int)points.l.size()), points.l.end());
 }
 
 void
