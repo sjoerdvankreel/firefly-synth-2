@@ -395,15 +395,35 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   graphData->skipDrawOnEqualsPrimary = false; // porta subsections
   graphData->drawMarkersSelector = [](int) { return true; };
 
+  FBParamTopoIndices paramIndices;
   int graphCount = detailGraphs ? 3 : 1;
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
   for (int i = 0; i < graphCount; i++)
   {
     FBRenderModuleGraph(&processor, false, false, detailGraphs, i);
     FBTopoIndices modIndices = { (int)FFModuleType::Env, moduleSlot };
-    FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFEnvParam::Type, 0 } };
-    graphData->graphs[i].title = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
     graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)FFModuleType::Env;
+
+    float maxVal = 0.0f;
+    for (int j = 0; j < graphData->graphs[i].primarySeries.l.size(); j++)
+      maxVal = std::max(maxVal, graphData->graphs[i].primarySeries.l[j]);
+    graphData->graphs[i].displayGainAsDb = false;
+    graphData->graphs[i].hasDefaultGainValue = true;
+    graphData->graphs[i].defaultGainValue = maxVal;
+
+    if (!detailGraphs)
+    {
+      paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFEnvParam::Type, 0 } };
+      auto type = graphData->renderState->AudioParamList<FFEnvType>(paramIndices, false, -1);
+      graphData->graphs[i].title = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
+      graphData->graphs[i].title += ": " + FFEnvTypeToString(type);
+      if (type != FFEnvType::Off)
+      {
+        paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFEnvParam::Sync, 0 } };
+        bool sync = graphData->renderState->AudioParamBool(paramIndices, false, -1);
+        graphData->graphs[i].title += std::string(", ") + (sync ? "BPM" : "Time");
+      }
+    }
   }
 }
