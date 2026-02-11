@@ -11,35 +11,86 @@
 #include <algorithm>
 
 template <bool Global>
-struct LFOGraphRenderData final:
-public FBModuleGraphRenderData<LFOGraphRenderData<Global>>
+class LFOGraphProcessor final:
+public FBModuleGraphProcessor
 {
+public:
   int totalSamples = {};
   std::array<int, FFLFOBlockCount> samplesProcessed = {};
 
   FFLFOProcessor& GetProcessor(FBModuleProcState& state);
-  int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoReleaseOnDemandBuffers(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/) {}
-  void DoProcessIndicators(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
-  void DoPostProcess(FBGraphRenderState* /*state*/, FBModuleGraphData& /*data*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
-  void DoProcessExchangeState(FBGraphRenderState* graphState, FBModuleGraphData& data, bool detailGraphs, int graphIndex, int exchangeVoice, FBModuleProcExchangeStateBase const* exchangeState);
+  LFOGraphProcessor(FBModuleGraphComponentData* componentData) :
+  FBModuleGraphProcessor(componentData) {}
+
+  FBModuleGraphPlotParams PlotParams(
+    bool detailGraphs, int graphIndex) const override;
+  FBSArray<float, FBFixedBlockSamples> const* MonoOutput(
+    void const* procState, FBModuleGraphStateParams const& params);
+  FBModuleProcExchangeStateBase const* ExchangeState(
+    void const* exchangeState, FBModuleGraphStateParams const& params);
+
+  int Process(FBGraphRenderState* state,
+    FBModuleGraphProcessParams const& params) override;
+  void BeginVoiceOrBlock(FBGraphRenderState* state,
+    FBModuleGraphProcessParams const& params) override;
+  void ReleaseOnDemandBuffers(FBGraphRenderState* /*state*/,
+    FBModuleGraphProcessParams const& /*params*/) override { }
+  void ProcessIndicators(FBGraphRenderState* /*state*/,
+    FBModuleGraphProcessParams const& /*params*/, FBModuleGraphPoints& /*points*/) override { }
+  void PostProcess(FBGraphRenderState* /*state*/,
+    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, FBModuleGraphPoints& /*points*/) override { }
+  void ProcessExchangeState(FBGraphRenderState* graphState,
+    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleProcExchangeStateBase const* exchangeState) override;
 };
 
-static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data, bool global, bool /*detailGraphs*/, int graphIndex)
+template <bool Global>
+FFLFOProcessor&
+LFOGraphProcessor<Global>::GetProcessor(FBModuleProcState& state)
+{
+  auto* procState = state.ProcAs<FFProcState>();
+  return *FFSelectDualState<Global>(
+    [procState, &state] { return procState->dsp.global.gLFO[state.moduleSlot].processor.get(); },
+    [procState, &state] { return procState->dsp.voice[state.voice->slot].vLFO[state.moduleSlot].processor.get(); });
+}
+
+template <bool Global>
+FBSArray<float, FBFixedBlockSamples> const* 
+LFOGraphProcessor<Global>::MonoOutput(
+  void const* procState, FBModuleGraphStateParams const& params)
+{
+  if constexpr(Global)
+    return &static_cast<FFProcState const*>(procState)->dsp.global.gLFO[params.moduleSlot].outputAll;
+  else
+    return &static_cast<FFProcState const*>(procState)->dsp.voice[params.voice].vLFO[params.moduleSlot].outputAll;
+}
+
+template <bool Global>
+FBModuleProcExchangeStateBase const* 
+LFOGraphProcessor<Global>::ExchangeState(
+  void const* exchangeState, FBModuleGraphStateParams const& params)
+{
+  if constexpr(Global)
+    return &static_cast<FFExchangeState const*>(exchangeState)->global.gLFO[params.moduleSlot];
+  else
+    return &static_cast<FFExchangeState const*>(exchangeState)->voice[params.voice].vLFO[params.moduleSlot];
+}
+
+template <bool Global>
+FBModuleGraphPlotParams
+LFOGraphProcessor<Global>::PlotParams(
+  bool detailGraphs, int graphIndex) const
 {
   FBModuleGraphPlotParams result = {};
   result.autoSampleRate = false;
-  result.sampleCount = data->pixelWidth;
-  result.staticModuleIndex = static_cast<int>(global ? FFModuleType::GLFO : FFModuleType::VLFO);
+  result.sampleCount = ComponentData()->pixelWidth;
+  result.staticModuleIndex = static_cast<int>(Global ? FFModuleType::GLFO : FFModuleType::VLFO);
   
   int hostSampleCount;
-  auto const* state = data->renderState;
+  auto const* state = ComponentData()->renderState;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float bpm = state->ExchangeContainer()->Host()->bpm;
   float hostSampleRate = state->ExchangeContainer()->Host()->sampleRate;
-  int moduleType = (int)(global ? FFModuleType::GLFO : FFModuleType::VLFO);
+  int moduleType = (int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO);
   FBParamTopoIndices indices = { { moduleType, moduleSlot }, { (int)FFLFOParam::Sync, 0 } };
   bool sync = state->AudioParamBool(indices, false, -1);
   if (sync)
@@ -58,38 +109,29 @@ PlotParams(FBModuleGraphComponentData const* data, bool global, bool /*detailGra
 
 template <bool Global>
 void 
-LFOGraphRenderData<Global>::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice)
+LFOGraphProcessor<Global>::BeginVoiceOrBlock(
+  FBGraphRenderState* state, FBModuleGraphProcessParams const& params)
 { 
-  samplesProcessed[graphIndex] = 0;
+  samplesProcessed[params.graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
   FFLFOExchangeState const* exchangeFromDSP = nullptr;
   int moduleSlot = moduleProcState->moduleSlot;
   int staticModuleIndex = (int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO);
   int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ staticModuleIndex, moduleSlot });
   auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
-  if (exchange)
+  if (params.exchange)
     if constexpr (Global)
       exchangeFromDSP = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Global());
     else
-      exchangeFromDSP = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
-  GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(*moduleProcState, exchangeFromDSP, true, detailGraphs, graphIndex, totalSamples);
-}
-
-template <bool Global>
-FFLFOProcessor&
-LFOGraphRenderData<Global>::GetProcessor(FBModuleProcState& state)
-{
-  auto* procState = state.ProcAs<FFProcState>();
-  return *FFSelectDualState<Global>(
-    [procState, &state] { return procState->dsp.global.gLFO[state.moduleSlot].processor.get(); },
-    [procState, &state] { return procState->dsp.voice[state.voice->slot].vLFO[state.moduleSlot].processor.get(); });
+      exchangeFromDSP = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Voice()[params.exchangeVoice]);
+  GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(*moduleProcState, exchangeFromDSP, true, params.detailGraphs, params.graphIndex, totalSamples);
 }
 
 template <bool Global>
 int 
-LFOGraphRenderData<Global>::DoProcess(
-  FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice)
+LFOGraphProcessor<Global>::Process(
+  FBGraphRenderState* state, 
+  FBModuleGraphProcessParams const& params)
 {
   auto* moduleProcState = state->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
@@ -99,57 +141,46 @@ LFOGraphRenderData<Global>::DoProcess(
   if (type == FFLFOType::Off)
     return 0;
 
-  if (detailGraphs)
+  if (params.detailGraphs)
   {
-    indices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, graphIndex } };
-    auto opType = state->AudioParamList<FFModulationOpType>(indices, exchange, exchangeVoice);
+    indices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, params.graphIndex } };
+    auto opType = state->AudioParamList<FFModulationOpType>(indices, params.exchange, params.exchangeVoice);
     if (opType == FFModulationOpType::Off)
       return 0;
   }
 
-  samplesProcessed[graphIndex] += FBFixedBlockSamples;
+  samplesProcessed[params.graphIndex] += FBFixedBlockSamples;
   return GetProcessor(*moduleProcState).template Process<Global>(*moduleProcState, true);
 }
 
 template <bool Global>
 void
-LFOGraphRenderData<Global>::DoProcessExchangeState(
-  FBGraphRenderState* /*graphState*/, FBModuleGraphData& data,
-  bool detailGraphs, int graphIndex, int /*exchangeVoice*/,
+LFOGraphProcessor<Global>::ProcessExchangeState(
+  FBGraphRenderState* graphState, FBModuleGraphData& data,
+  FBModuleGraphProcessParams const& params, 
   FBModuleProcExchangeStateBase const* exchangeState)
 {
   auto lfoExchange = dynamic_cast<FFLFOExchangeState const*>(exchangeState);
-  if (!detailGraphs)
+  if (!params.detailGraphs)
   {
     data.exchangeMainText = FBToStringHz(lfoExchange->rates[0], 2);
     data.exchangeGainValue = std::max(data.exchangeGainValue, lfoExchange->output);
     return;
   }
 
-  data.exchangeMainText = FBToStringHz(lfoExchange->rates[graphIndex], 2);
-  data.exchangeGainValue = std::max(data.exchangeGainValue, lfoExchange->outputs[graphIndex]);
+  data.exchangeMainText = FBToStringHz(lfoExchange->rates[params.graphIndex], 2);
+  data.exchangeGainValue = std::max(data.exchangeGainValue, lfoExchange->outputs[params.graphIndex]);
 }
 
 template <bool Global>
 void
 FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
 {
-  LFOGraphRenderData<Global> renderData = {};
+  LFOGraphProcessor<Global> processor(graphData);
   auto moduleType = Global ? FFModuleType::GLFO : FFModuleType::VLFO;
-
   graphData->skipDrawOnEqualsPrimary = false; // need exchange state for all sub-lfos
   graphData->drawMarkersSelector = [](int) { return true; };
-  renderData.graphData = graphData;
-  renderData.plotParamsSelector = [](auto graphData, bool detailGraphs, int graphIndex) { return PlotParams(graphData, Global, detailGraphs, graphIndex); };
-  renderData.totalSamples = PlotParams(graphData, Global, detailGraphs, 0).sampleCount; // just pick one
-  renderData.globalExchangeSelector = [](void const* exchangeState, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFExchangeState const*>(exchangeState)->global.gLFO[slot]; };
-  renderData.globalMonoOutputSelector = [](void const* procState, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFProcState const*>(procState)->dsp.global.gLFO[slot].outputAll; };
-  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].vLFO[slot]; };
-  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].vLFO[slot].outputAll; };
+  processor.totalSamples = processor.PlotParams(detailGraphs, 0).sampleCount; // just pick one
 
   auto* renderState = graphData->renderState;
   auto* moduleProcState = renderState->ModuleProcState();
@@ -164,7 +195,7 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
 
   for (int i = 0; i < graphCount; i++)
   {
-    FBRenderModuleGraph<Global, false>(renderData, detailGraphs, i);
+    FBRenderModuleGraph(&processor, Global, false, detailGraphs, i);
     graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)moduleType;
     if (detailGraphs)

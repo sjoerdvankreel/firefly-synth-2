@@ -13,7 +13,7 @@
 
 struct FBStaticModule; 
 template <bool Global>
-struct LFOGraphRenderData;
+class LFOGraphProcessor;
 
 struct alignas(FBSIMDAlign) FFLFOExchangeState final:
 public FBModuleProcMultiExchangeState<FFLFOBlockCount>
@@ -40,8 +40,8 @@ class alignas(FBSIMDAlign) FFLFODSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
-  friend struct LFOGraphRenderData<true>;
-  friend struct LFOGraphRenderData<false>;
+  friend class LFOGraphProcessor<true>;
+  friend class LFOGraphProcessor<false>;
   std::unique_ptr<FFLFOProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFLFODSPState);
