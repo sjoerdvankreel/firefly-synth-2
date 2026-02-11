@@ -123,7 +123,7 @@ FBRenderModuleGraph(
     renderState->PrepareForRenderPrimaryVoice();
   moduleProcState->renderType = FBRenderType::GraphPrimary;
 
-  stateParams.voice = -1;
+  stateParams.voice = global? -1: 0;
   FBModuleGraphProcessParams processParams = {};
   processParams.exchange = false;
   processParams.exchangeVoice = -1;
