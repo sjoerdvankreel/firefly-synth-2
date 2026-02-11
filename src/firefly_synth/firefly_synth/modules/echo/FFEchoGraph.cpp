@@ -64,8 +64,8 @@ public:
     FBModuleGraphProcessParams const& params) override;
   void ProcessIndicators(FBGraphRenderState*,
     FBModuleGraphProcessParams const&, FBModuleGraphPoints&) override {};
-  void PostProcess(FBGraphRenderState* state, FBModuleGraphData& data, FBModuleGraphProcessParams const& params, 
-    FBModuleGraphPoints& points, std::vector<int>* /*primaryMarkersInOut*/, int* /*secondaryMarkerInOut*/) override;
+  void PostProcess(FBGraphRenderState* state,
+    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
   void ProcessExchangeState(FBGraphRenderState* graphState,
     FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleProcExchangeStateBase const* exchangeState) override;
 };
@@ -84,8 +84,7 @@ template <bool Global>
 void
 EchoGraphProcessor<Global>::PostProcess(
   FBGraphRenderState* /*state*/, FBModuleGraphData& /*data*/,
-  FBModuleGraphProcessParams const& /*params*/, FBModuleGraphPoints& points, 
-  std::vector<int>* /*primaryMarkersInOut*/, int* /*secondaryMarkerInOut*/)
+  FBModuleGraphProcessParams const& /*params*/, FBModuleGraphPoints& points)
 {
   points.bipolar = true;
 }

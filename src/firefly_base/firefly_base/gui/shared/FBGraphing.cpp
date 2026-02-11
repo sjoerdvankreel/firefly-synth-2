@@ -7,9 +7,7 @@ FBRenderModuleGraphSeries(
   FBModuleGraphStateParams const& stateParams,
   FBModuleGraphProcessParams const& processParams,
   FBModuleProcExchangeStateBase const* exchangeState, 
-  FBModuleGraphPoints& seriesOut,
-  std::vector<int>* primaryMarkersInOut,
-  int* secondaryMarkerInOut)
+  FBModuleGraphPoints& seriesOut)
 {
   seriesOut.l.clear();
   seriesOut.r.clear();
@@ -50,7 +48,7 @@ FBRenderModuleGraphSeries(
 
   auto& graphData = processor->ComponentData()->graphs[processParams.graphIndex];
   processor->ProcessIndicators(renderState, processParams, seriesOut);
-  processor->PostProcess(renderState, graphData, processParams, seriesOut, primaryMarkersInOut, secondaryMarkerInOut);
+  processor->PostProcess(renderState, graphData, processParams, seriesOut);
   processor->ReleaseOnDemandBuffers(renderState, processParams);
   if (processParams.exchange)
     processor->ProcessExchangeState(renderState, graphData, processParams, exchangeState);
@@ -133,10 +131,7 @@ FBRenderModuleGraph(
   processParams.detailGraphs = detailGraphs;
   processParams.guiSampleRate = guiSampleRate;
   processParams.hostSampleRate = hostSampleRate;
-  FBRenderModuleGraphSeries(
-    processor, stereo, stateParams, processParams, nullptr, 
-    componentData->graphs[graphIndex].primarySeries, 
-    &componentData->graphs[graphIndex].primaryMarkers, nullptr);
+  FBRenderModuleGraphSeries(processor, stereo, stateParams, processParams, nullptr, componentData->graphs[graphIndex].primarySeries);
   
   if (guiRenderType == FBGUIRenderType::Basic)
     return;
@@ -160,7 +155,7 @@ FBRenderModuleGraph(
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData.secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries(processor, stereo, stateParams, processParams, moduleExchange, secondary.points, nullptr, &secondary.marker);
+    FBRenderModuleGraphSeries(processor, stereo, stateParams, processParams, moduleExchange, secondary.points);
     secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
   } else
   {
@@ -191,7 +186,7 @@ FBRenderModuleGraph(
       }
       moduleProcState->renderType = FBRenderType::GraphExchange;
       auto& secondary = graphData.secondarySeries.emplace_back();
-      FBRenderModuleGraphSeries(processor, stereo, stateParams, processParams, moduleExchange, secondary.points, nullptr, &secondary.marker);
+      FBRenderModuleGraphSeries(processor, stereo, stateParams, processParams, moduleExchange, secondary.points);
       secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
     }
   }

@@ -78,8 +78,8 @@ public:
     FBModuleGraphProcessParams const& params) = 0;
   virtual void ProcessIndicators(FBGraphRenderState* state,
     FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) = 0;
-  virtual void PostProcess(FBGraphRenderState* state, FBModuleGraphData& data, FBModuleGraphProcessParams const& params, 
-    FBModuleGraphPoints& points, std::vector<int>* primaryMarkersInOut, int* secondaryMarkerInOut) = 0;
+  virtual void PostProcess(FBGraphRenderState* state, 
+    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) = 0;
   virtual void ProcessExchangeState(FBGraphRenderState* graphState,
     FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleProcExchangeStateBase const* exchangeState) = 0;
 };

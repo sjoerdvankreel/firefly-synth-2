@@ -37,8 +37,8 @@ public:
     FBModuleGraphProcessParams const& /*params*/) override {}
   void ProcessIndicators(FBGraphRenderState* state,
     FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
-  void PostProcess(FBGraphRenderState* state, FBModuleGraphData& data, FBModuleGraphProcessParams const& params,
-    FBModuleGraphPoints& points, std::vector<int>* /*primaryMarkersInOut*/, int* /*secondaryMarkerInOut*/) override;
+  void PostProcess(FBGraphRenderState* state,
+    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
   void ProcessExchangeState(FBGraphRenderState* /*graphState*/,
     FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) override {}
 };
@@ -121,8 +121,7 @@ GlobalUniGraphProcessor::ProcessIndicators(
 void 
 GlobalUniGraphProcessor::PostProcess(
   FBGraphRenderState* /*state*/, FBModuleGraphData& /*data*/,
-  FBModuleGraphProcessParams const& /*params*/, FBModuleGraphPoints& points,
-  std::vector<int>* /*primaryMarkersInOut*/, int* /*secondaryMarkerInOut*/)
+  FBModuleGraphProcessParams const& /*params*/, FBModuleGraphPoints& points)
 {
   int slot = ComponentData()->fixedGraphIndex;
   if (FFGlobalUniTargetGetDefaultValue((FFGlobalUniTarget)slot) != 0.5f)
