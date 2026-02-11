@@ -43,6 +43,7 @@ FBModuleGraphTitleComponent::paint(Graphics& g)
     {
       gain = gd.defaultGainValue;
       haveGain = gd.hasDefaultGainValue;
+      _gainSlidingWindow.clear();
     }
     if (haveGain)
     {
