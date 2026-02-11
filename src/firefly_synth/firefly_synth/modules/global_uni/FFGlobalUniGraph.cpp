@@ -120,8 +120,8 @@ GlobalUniGraphProcessor::ProcessIndicators(
 
 void 
 GlobalUniGraphProcessor::PostProcess(
-  FBGraphRenderState* state, FBModuleGraphData& data, 
-  FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points)
+  FBGraphRenderState* /*state*/, FBModuleGraphData& /*data*/,
+  FBModuleGraphProcessParams const& /*params*/, FBModuleGraphPoints& points)
 {
   int slot = ComponentData()->fixedGraphIndex;
   if (FFGlobalUniTargetGetDefaultValue((FFGlobalUniTarget)slot) != 0.5f)
