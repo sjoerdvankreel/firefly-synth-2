@@ -78,7 +78,7 @@ LFOGraphProcessor<Global>::ExchangeState(
 template <bool Global>
 FBModuleGraphPlotParams
 LFOGraphProcessor<Global>::PlotParams(
-  bool detailGraphs, int graphIndex) const
+  bool /*detailGraphs*/, int graphIndex) const
 {
   FBModuleGraphPlotParams result = {};
   result.autoSampleRate = false;
@@ -156,7 +156,7 @@ LFOGraphProcessor<Global>::Process(
 template <bool Global>
 void
 LFOGraphProcessor<Global>::ProcessExchangeState(
-  FBGraphRenderState* graphState, FBModuleGraphData& data,
+  FBGraphRenderState* /*graphState*/, FBModuleGraphData& data,
   FBModuleGraphProcessParams const& params, 
   FBModuleProcExchangeStateBase const* exchangeState)
 {

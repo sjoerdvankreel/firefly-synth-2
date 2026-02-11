@@ -75,7 +75,7 @@ public:
   void PostProcess(FBGraphRenderState* state,
     FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
   void ProcessExchangeState(FBGraphRenderState* /*graphState*/,
-    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) override;
+    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) override {}
 };
 
 static FFEnvExchangeState const*
