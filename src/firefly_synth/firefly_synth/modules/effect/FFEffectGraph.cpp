@@ -11,19 +11,36 @@
 #include <algorithm>
 
 template <bool Global>
-struct EffectGraphRenderData final:
-public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
+class EffectGraphProcessor final:
+public FBModuleGraphProcessor
 {
+public:
   int totalSamples = {};
   std::array<int, FFEffectBlockCount> samplesProcessed = {};
 
   FFEffectProcessor& GetProcessor(FBModuleProcState& state);
-  int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoReleaseOnDemandBuffers(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoPostProcess(FBGraphRenderState* state, FBModuleGraphData& data, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
-  void DoProcessIndicators(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
-  void DoProcessExchangeState(FBGraphRenderState* graphState, FBModuleGraphData& data, bool detailGraphs, int graphIndex, int exchangeVoice, FBModuleProcExchangeStateBase const* exchangeState);
+  EffectGraphProcessor(FBModuleGraphComponentData* componentData) :
+  FBModuleGraphProcessor(componentData) {}
+
+  FBModuleGraphPlotParams PlotParams(
+    bool detailGraphs, int graphIndex) const override;
+  FBSArray<float, FBFixedBlockSamples> const* MonoOutput(
+    void const* procState, FBModuleGraphStateParams const& params);
+  FBModuleProcExchangeStateBase const* ExchangeState(
+    void const* exchangeState, FBModuleGraphStateParams const& params);
+
+  int Process(FBGraphRenderState* state,
+    FBModuleGraphProcessParams const& params) override;
+  void BeginVoiceOrBlock(FBGraphRenderState* state,
+    FBModuleGraphProcessParams const& params) override;
+  void ReleaseOnDemandBuffers(FBGraphRenderState* state, 
+    FBModuleGraphProcessParams const& params) override;
+  void ProcessIndicators(FBGraphRenderState* /*state*/,
+    FBModuleGraphProcessParams const& /*params*/, FBModuleGraphPoints& /*points*/) override { }
+  void PostProcess(FBGraphRenderState* state, 
+    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
+  void ProcessExchangeState(FBGraphRenderState* graphState,
+    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleProcExchangeStateBase const* exchangeState) override;
 };
 
 static std::string
@@ -66,82 +83,31 @@ GetEffectExchangeStateFromDSP(FBGraphRenderState* state, bool global, int slot, 
   return exchangeFromDSP;
 }
 
-static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data, bool global, int /*graphIndex*/)
-{
-  // Need to know SR for graphing because filters.
-  // Plot a bit more than exact pixel width to make it look prettier.
-  FBModuleGraphPlotParams result = {};
-  result.autoSampleRate = false;
-  result.sampleCount = data->pixelWidth * 4;
-  result.sampleRate = data->pixelWidth * 4.0f / FFEffectPlotLengthSeconds;
-  result.staticModuleIndex = static_cast<int>(global ? FFModuleType::GEffect : FFModuleType::VEffect);
-  return result;
-}
-
 template <bool Global>
-void
-EffectGraphRenderData<Global>::DoProcessExchangeState(
-  FBGraphRenderState* graphState, FBModuleGraphData& data,
-  bool detailGraphs, int graphIndex, int /*exchangeVoice*/,
-  FBModuleProcExchangeStateBase const* exchangeState)
+FBSArray<float, FBFixedBlockSamples> const* 
+EffectGraphProcessor<Global>::MonoOutput(
+  void const* procState, FBModuleGraphStateParams const& params)
 {
-  auto effectExchange = dynamic_cast<FFEffectExchangeState const*>(exchangeState);
-  if (!detailGraphs)
-  {
-    data.exchangeGainValue = std::max(data.exchangeGainValue, effectExchange->output);
-    return;
-  }
-
-  int moduleSlot = graphState->ModuleProcState()->moduleSlot;
-  data.exchangeGainValue = std::max(data.exchangeGainValue, effectExchange->outputs[graphIndex]);
-  auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
-  FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
-  auto kind = graphState->AudioParamList<FFEffectKind>(indices, false, -1);
-  if (kind == FFEffectKind::StVar)
-    data.exchangeMainText = FBToStringHz(effectExchange->stVarFreqs[graphIndex], 2);
-  else if (FFEffectKindIsShaper(kind))
-    data.exchangeMainText = FBToStringPercent(effectExchange->shaperDrives[graphIndex], 2) + " Drive";
-  else if (kind == FFEffectKind::CombPlus)
-    data.exchangeMainText = FBToStringHz(effectExchange->combPlusFreqs[graphIndex], 2);
-  else if (kind == FFEffectKind::CombMin)
-    data.exchangeMainText = FBToStringHz(effectExchange->combMinFreqs[graphIndex], 2);
-  else if (kind == FFEffectKind::Comb)
-    data.exchangeMainText = FBFormatDoubleCLocale(effectExchange->combPlusFreqs[graphIndex], 2) + " / " + 
-      FBToStringHz(effectExchange->combMinFreqs[graphIndex], 2);
+  if constexpr (Global)
+    return &static_cast<FFProcState const*>(procState)->dsp.global.gEffect[params.moduleSlot].output[0];
   else
-    FB_ASSERT(kind == FFEffectKind::Off);
+    return &static_cast<FFProcState const*>(procState)->dsp.voice[params.voice].vEffect[params.moduleSlot].output[0];
 }
 
 template <bool Global>
-void
-EffectGraphRenderData<Global>::DoReleaseOnDemandBuffers(
-  FBGraphRenderState* state, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/)
+FBModuleProcExchangeStateBase const* 
+EffectGraphProcessor<Global>::ExchangeState(
+  void const* exchangeState, FBModuleGraphStateParams const& params)
 {
-  auto* moduleProcState = state->ModuleProcState();
-  GetProcessor(*moduleProcState).ReleaseOnDemandBuffers(
-    state->PlugGUI()->HostContext()->Topo(),
-    state->ProcContainer());
-}
-
-template <bool Global>
-void 
-EffectGraphRenderData<Global>::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
-{ 
-  samplesProcessed[graphIndex] = 0;
-  auto* moduleProcState = state->ModuleProcState();
-  GetProcessor(*moduleProcState).template AllocOnDemandBuffers<Global>(
-    state->PlugGUI()->HostContext()->Topo(), 
-    state->ProcContainer(), moduleProcState->moduleSlot, 
-    true, moduleProcState->input->sampleRate);
-  GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(
-    *moduleProcState, true, detailGraphs, graphIndex, totalSamples);
+  if constexpr(Global)
+    return &static_cast<FFExchangeState const*>(exchangeState)->global.gEffect[params.moduleSlot];
+  else
+    return &static_cast<FFExchangeState const*>(exchangeState)->voice[params.voice].vEffect[params.moduleSlot];
 }
 
 template <bool Global>
 FFEffectProcessor&
-EffectGraphRenderData<Global>::GetProcessor(FBModuleProcState& state)
+EffectGraphProcessor<Global>::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   return *FFSelectDualState<Global>(
@@ -151,24 +117,64 @@ EffectGraphRenderData<Global>::GetProcessor(FBModuleProcState& state)
 
 template <bool Global>
 void
-EffectGraphRenderData<Global>::DoPostProcess(
+EffectGraphProcessor<Global>::ReleaseOnDemandBuffers(
+  FBGraphRenderState* state, FBModuleGraphProcessParams const& /*params*/)
+{
+  auto* moduleProcState = state->ModuleProcState();
+  GetProcessor(*moduleProcState).ReleaseOnDemandBuffers(
+    state->PlugGUI()->HostContext()->Topo(),
+    state->ProcContainer());
+}
+
+template <bool Global>
+FBModuleGraphPlotParams 
+EffectGraphProcessor<Global>::PlotParams(
+  bool /*detailGraphs*/, int /*graphIndex*/) const
+{
+  // Need to know SR for graphing because filters.
+  // Plot a bit more than exact pixel width to make it look prettier.
+  FBModuleGraphPlotParams result = {};
+  result.autoSampleRate = false;
+  result.sampleCount = ComponentData()->pixelWidth * 4;
+  result.sampleRate = ComponentData()->pixelWidth * 4.0f / FFEffectPlotLengthSeconds;
+  result.staticModuleIndex = static_cast<int>(Global ? FFModuleType::GEffect : FFModuleType::VEffect);
+  return result;
+}
+
+template <bool Global>
+void
+EffectGraphProcessor<Global>::BeginVoiceOrBlock(
+  FBGraphRenderState* state, FBModuleGraphProcessParams const& params)
+{
+  samplesProcessed[params.graphIndex] = 0;
+  auto* moduleProcState = state->ModuleProcState();
+  GetProcessor(*moduleProcState).template AllocOnDemandBuffers<Global>(
+    state->PlugGUI()->HostContext()->Topo(),
+    state->ProcContainer(), moduleProcState->moduleSlot,
+    true, moduleProcState->input->sampleRate);
+  GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(
+    *moduleProcState, true, params.detailGraphs, params.graphIndex, totalSamples);
+}
+
+template <bool Global>
+void
+EffectGraphProcessor<Global>::PostProcess(
   FBGraphRenderState* state, FBModuleGraphData& /*data*/,
-  bool detailGraphs, int graphIndex,
-  bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
+  FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points)
 {
   auto* moduleProcState = state->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
-  FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
-  auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
+  FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, params.graphIndex } };
+  auto kind = state->AudioParamList<FFEffectKind>(indices, params.exchange, params.exchangeVoice);
 
-  points.bipolar = !detailGraphs || (kind == FFEffectKind::Clip || kind == FFEffectKind::Fold || kind == FFEffectKind::Skew);
+  points.bipolar = !params.detailGraphs || (kind == FFEffectKind::Clip || kind == FFEffectKind::Fold || kind == FFEffectKind::Skew);
   points.plotLogStart = 20.0f;
   points.plotLogEnd = 20000.0f;
   points.plotLogarithmic = !points.bipolar;
   points.roundPathCorners = !points.bipolar;
 
-  if (!detailGraphs)
+  if (!params.detailGraphs)
     return;
   if (!FFEffectKindIsFilter(kind))
     return;
@@ -179,9 +185,42 @@ EffectGraphRenderData<Global>::DoPostProcess(
 }
 
 template <bool Global>
+void
+EffectGraphProcessor<Global>::ProcessExchangeState(
+  FBGraphRenderState* graphState, FBModuleGraphData& data, 
+  FBModuleGraphProcessParams const& params, FBModuleProcExchangeStateBase const* exchangeState)
+{
+  auto effectExchange = dynamic_cast<FFEffectExchangeState const*>(exchangeState);
+  if (!params.detailGraphs)
+  {
+    data.exchangeGainValue = std::max(data.exchangeGainValue, effectExchange->output);
+    return;
+  }
+
+  int moduleSlot = graphState->ModuleProcState()->moduleSlot;
+  data.exchangeGainValue = std::max(data.exchangeGainValue, effectExchange->outputs[params.graphIndex]);
+  auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
+  FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, params.graphIndex } };
+  auto kind = graphState->AudioParamList<FFEffectKind>(indices, false, -1);
+  if (kind == FFEffectKind::StVar)
+    data.exchangeMainText = FBToStringHz(effectExchange->stVarFreqs[params.graphIndex], 2);
+  else if (FFEffectKindIsShaper(kind))
+    data.exchangeMainText = FBToStringPercent(effectExchange->shaperDrives[params.graphIndex], 2) + " Drive";
+  else if (kind == FFEffectKind::CombPlus)
+    data.exchangeMainText = FBToStringHz(effectExchange->combPlusFreqs[params.graphIndex], 2);
+  else if (kind == FFEffectKind::CombMin)
+    data.exchangeMainText = FBToStringHz(effectExchange->combMinFreqs[params.graphIndex], 2);
+  else if (kind == FFEffectKind::Comb)
+    data.exchangeMainText = FBFormatDoubleCLocale(effectExchange->combPlusFreqs[params.graphIndex], 2) + " / " +
+      FBToStringHz(effectExchange->combMinFreqs[params.graphIndex], 2);
+  else
+    FB_ASSERT(kind == FFEffectKind::Off);
+}
+
+template <bool Global>
 int 
-EffectGraphRenderData<Global>::DoProcess(
-  FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice)
+EffectGraphProcessor<Global>::Process(
+  FBGraphRenderState* state, FBModuleGraphProcessParams const& params)
 {
   bool plotSpecificFilter = false;
   auto* moduleProcState = state->ModuleProcState();
@@ -192,10 +231,10 @@ EffectGraphRenderData<Global>::DoProcess(
   if (!on)
     return 0;
 
-  if (detailGraphs)
+  if (params.detailGraphs)
   {
-    indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
-    auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
+    indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, params.graphIndex } };
+    auto kind = state->AudioParamList<FFEffectKind>(indices, params.exchange, params.exchangeVoice);
     plotSpecificFilter = FFEffectKindIsFilter(kind);
     if (kind == FFEffectKind::Off)
       return 0;
@@ -208,12 +247,12 @@ EffectGraphRenderData<Global>::DoProcess(
   for (int c = 0; c < 2; c++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       if (plotSpecificFilter)
-        input[c].Set(s, (samplesProcessed[graphIndex] + s) == 0 ? 1.0f : 0.0f);
+        input[c].Set(s, (samplesProcessed[params.graphIndex] + s) == 0 ? 1.0f : 0.0f);
       else
-        input[c].Set(s, ((samplesProcessed[graphIndex] + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
+        input[c].Set(s, ((samplesProcessed[params.graphIndex] + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
   
-  auto const* exchangeFromDSP = GetEffectExchangeStateFromDSP(state, Global, moduleSlot, exchange, exchangeVoice);
-  samplesProcessed[graphIndex] += FBFixedBlockSamples;
+  auto const* exchangeFromDSP = GetEffectExchangeStateFromDSP(state, Global, moduleSlot, params.exchange, params.exchangeVoice);
+  samplesProcessed[params.graphIndex] += FBFixedBlockSamples;
   return GetProcessor(*moduleProcState).template Process<Global>(*moduleProcState, exchangeFromDSP, true);
 }
 
@@ -221,21 +260,10 @@ template <bool Global>
 void
 FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
 {
-  EffectGraphRenderData<Global> renderData = {};
-  auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
-
   graphData->skipDrawOnEqualsPrimary = false; // midi note dependent
-  renderData.graphData = graphData;
-  renderData.plotParamsSelector = [](auto graphData, bool, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
-  renderData.totalSamples = PlotParams(graphData, Global, -1).sampleCount;
-  renderData.globalExchangeSelector = [](void const* exchangeState, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFExchangeState const*>(exchangeState)->global.gEffect[slot]; };
-  renderData.globalMonoOutputSelector = [](void const* procState, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFProcState const*>(procState)->dsp.global.gEffect[slot].output[0]; };
-  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].vEffect[slot]; };
-  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].vEffect[slot].output[0]; };
+  EffectGraphProcessor<Global> processor(graphData);
+  auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
+  processor.totalSamples = processor.PlotParams(Global, -1).sampleCount;
 
   auto* renderState = graphData->renderState;
   auto* moduleProcState = renderState->ModuleProcState();
@@ -248,7 +276,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   int graphCount = detailGraphs ? FFEffectBlockCount : 1;
   for (int i = 0; i < graphCount; i++)
   {
-    FBRenderModuleGraph<Global, false>(renderData, detailGraphs, i);
+    FBRenderModuleGraph(&processor, Global, false, detailGraphs, i);
     graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)moduleType;
     graphData->graphs[i].displayGainAsDb = true;

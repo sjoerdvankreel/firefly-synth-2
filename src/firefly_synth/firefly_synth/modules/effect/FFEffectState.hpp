@@ -13,7 +13,7 @@
 struct FBStaticModule;
 
 template <bool Global>
-struct EffectGraphRenderData;
+class EffectGraphProcessor;
 
 struct alignas(FBSIMDAlign) FFEffectExchangeState final:
 public FBModuleProcSingleExchangeState
@@ -30,8 +30,8 @@ class alignas(FBSIMDAlign) FFEffectDSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
-  friend struct EffectGraphRenderData<true>;
-  friend struct EffectGraphRenderData<false>;
+  friend class EffectGraphProcessor<true>;
+  friend class EffectGraphProcessor<false>;
   std::unique_ptr<FFEffectProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectDSPState);
