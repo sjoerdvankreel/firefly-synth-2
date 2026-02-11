@@ -4,6 +4,8 @@
 
 using namespace juce;
 
+static int const GainSlidingWindowSize = 10;
+
 FBModuleGraphTitleComponent::
 FBModuleGraphTitleComponent(FBPlugGUI* plugGUI, FBModuleGraphComponentData const* data, int graphIndex):
 _plugGUI(plugGUI), _data(data), _graphIndex(graphIndex) {}

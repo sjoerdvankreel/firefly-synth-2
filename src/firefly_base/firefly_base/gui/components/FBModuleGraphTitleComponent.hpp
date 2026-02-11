@@ -14,8 +14,6 @@ class FBModuleGraphTitleComponent final:
 public juce::Component,
 public IFBVerticalAutoSize
 {
-  static inline int const GainSlidingWindowSize = 100;
-
   FBPlugGUI* const _plugGUI;
   FBModuleGraphComponentData const* const _data;
   int const _graphIndex;
