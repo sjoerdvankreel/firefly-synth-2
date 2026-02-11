@@ -72,6 +72,8 @@ public:
     FBModuleGraphProcessParams const& /*params*/) override {}
   void ProcessIndicators(FBGraphRenderState* state,
     FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
+  void PostProcessMarker(FBGraphRenderState* /*state*/,
+    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, float& /*positionNormalized*/) override;
   void PostProcess(FBGraphRenderState* state,
     FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
   void ProcessExchangeState(FBGraphRenderState* /*graphState*/,
@@ -267,6 +269,28 @@ EnvGraphProcessor::PlotParams(
   GetEnvelopeDetails(ComponentData()->renderState, false, -1, details);
   result.sampleCount = GetRenderLengthSamples(details, detailGraphs, graphIndex);
   return result;
+}
+
+void 
+EnvGraphProcessor::PostProcessMarker(
+  FBGraphRenderState* state, FBModuleGraphData& /*data*/,
+  FBModuleGraphProcessParams const& params, float& positionNormalized)
+{
+  if (!params.detailGraphs)
+    return;
+
+  EnvDetails details = {};
+  GetEnvelopeDetails(state, params.exchange, params.exchangeVoice, details);
+  auto const& sectionDetails = details.GetSectionDetails(!params.detailGraphs ? EnvSection::All : (EnvSection)params.graphIndex);
+  if (!sectionDetails.haveSection || sectionDetails.sectionLengthSamples == 0)
+  {
+    positionNormalized = 0.0f;
+    return;
+  }
+
+  positionNormalized -= sectionDetails.sectionStartSamples / (float)details.all.sectionLengthSamples;
+  positionNormalized *= details.all.sectionLengthSamples / (float)sectionDetails.sectionLengthSamples;
+  positionNormalized = std::clamp(positionNormalized, 0.0f, 1.0f);
 }
 
 void 

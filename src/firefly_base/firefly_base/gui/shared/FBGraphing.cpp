@@ -145,6 +145,7 @@ FBRenderModuleGraph(
     if (!moduleExchange->ShouldGraph(detailGraphs, graphIndex))
       return;
     float positionNormalized = moduleExchange->PositionNormalized(detailGraphs, graphIndex);
+    processor->PostProcessMarker(renderState, componentData->graphs[graphIndex], processParams, positionNormalized);
     if (componentData->skipDrawOnEqualsPrimary &&
       renderState->GlobalModuleExchangeStateEqualsPrimary(
       plotParams.staticModuleIndex, moduleProcState->moduleSlot))
@@ -177,6 +178,7 @@ FBRenderModuleGraph(
         continue;
       renderState->PrepareForRenderExchangeVoice(v);
       float positionNormalized = moduleExchange->PositionNormalized(detailGraphs, graphIndex);
+      processor->PostProcessMarker(renderState, componentData->graphs[graphIndex], processParams, positionNormalized);
       if (componentData->skipDrawOnEqualsPrimary &&
         renderState->VoiceModuleExchangeStateEqualsPrimary(
           v, plotParams.staticModuleIndex, moduleProcState->moduleSlot))
