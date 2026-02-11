@@ -8,23 +8,36 @@
 
 #include <algorithm>
    
-struct OsciGraphRenderData final:
-public FBModuleGraphRenderData<OsciGraphRenderData>
+class OsciGraphProcessor final:
+public FBModuleGraphProcessor
 {
-  FFVoiceDSPState& GetVoiceDSPState(FBModuleProcState& state);
-  int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoReleaseOnDemandBuffers(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoPostProcess(FBGraphRenderState* state, FBModuleGraphData& data, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
-  void DoProcessExchangeState(FBGraphRenderState* graphState, FBModuleGraphData& data, bool detailGraphs, int graphIndex, int exchangeVoice, FBModuleProcExchangeStateBase const* exchangeState);
-  void DoProcessIndicators(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
-};
+public:
+  OsciGraphProcessor(FBModuleGraphComponentData* componentData) :
+  FBModuleGraphProcessor(componentData) {}
 
-FFVoiceDSPState&
-OsciGraphRenderData::GetVoiceDSPState(FBModuleProcState& state)
-{
-  return state.ProcAs<FFProcState>()->dsp.voice[state.voice->slot];
-}
+  FFOsciProcessor& GetProcessor(FBModuleProcState& state);
+  FFVoiceDSPState& GetVoiceDSPState(FBModuleProcState& state);
+
+  FBModuleGraphPlotParams PlotParams(
+    bool detailGraphs, int graphIndex) const override;
+  FBSArray2<float, FBFixedBlockSamples, 2> const* StereoOutput(
+    void const* procState, FBModuleGraphStateParams const& params);
+  FBModuleProcExchangeStateBase const* ExchangeState(
+    void const* exchangeState, FBModuleGraphStateParams const& params);
+
+  int Process(FBGraphRenderState* state,
+    FBModuleGraphProcessParams const& params) override;
+  void BeginVoiceOrBlock(FBGraphRenderState* state,
+    FBModuleGraphProcessParams const& params) override;
+  void ReleaseOnDemandBuffers(FBGraphRenderState* state,
+    FBModuleGraphProcessParams const& params) override;
+  void ProcessIndicators(FBGraphRenderState* /*state*/,
+    FBModuleGraphProcessParams const& /*params*/, FBModuleGraphPoints& /*points*/) override { }
+  void PostProcess(FBGraphRenderState* state,
+    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
+  void ProcessExchangeState(FBGraphRenderState* graphState,
+    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleProcExchangeStateBase const* exchangeState) override;
+};
 
 static FFOsciExchangeState const*
 GetOsciExchangeStateFromDSP(FBGraphRenderState* state, int slot, bool exchange, int exchangeVoice)
@@ -38,21 +51,38 @@ GetOsciExchangeStateFromDSP(FBGraphRenderState* state, int slot, bool exchange, 
   return exchangeFromDSP;
 }
 
+FFVoiceDSPState&
+OsciGraphProcessor::GetVoiceDSPState(FBModuleProcState& state)
+{
+  return state.ProcAs<FFProcState>()->dsp.voice[state.voice->slot];
+}
+
+FBSArray2<float, FBFixedBlockSamples, 2> const*
+OsciGraphProcessor::StereoOutput(
+  void const* procState, FBModuleGraphStateParams const& params)
+{
+  return &static_cast<FFProcState const*>(procState)->dsp.voice[params.voice].osci[params.moduleSlot].output;
+}
+
+FBModuleProcExchangeStateBase const*
+OsciGraphProcessor::ExchangeState(
+  void const* exchangeState, FBModuleGraphStateParams const& params)
+{
+  return &static_cast<FFExchangeState const*>(exchangeState)->voice[params.voice].osci[params.moduleSlot];
+}
+
 void
-OsciGraphRenderData::DoPostProcess(
+OsciGraphProcessor::PostProcess(
   FBGraphRenderState* /*state*/, FBModuleGraphData& /*data*/,
-  bool /*detailGraphs*/, int /*graphIndex*/,
-  bool /*exchange*/, int /*exchangeVoice*/,
-  FBModuleGraphPoints& points)
+  FBModuleGraphProcessParams const& /*params*/, FBModuleGraphPoints& points)
 {
   points.bipolar = true;
 }
 
 void 
-OsciGraphRenderData::DoProcessExchangeState(
+OsciGraphProcessor::ProcessExchangeState(
   FBGraphRenderState* /*graphState*/, FBModuleGraphData& data,
-  bool /*detailGraphs*/, int /*graphIndex*/, int /*exchangeVoice*/,
-  FBModuleProcExchangeStateBase const* exchangeState)
+  FBModuleGraphProcessParams const& /*params*/, FBModuleProcExchangeStateBase const* exchangeState)
 {
   auto osciExchange = dynamic_cast<FFOsciExchangeState const*>(exchangeState);
   data.exchangeMainText = FBPitchToStringNotes(osciExchange->osciEffectivePitch);
@@ -60,13 +90,13 @@ OsciGraphRenderData::DoProcessExchangeState(
 }
 
 void 
-OsciGraphRenderData::DoReleaseOnDemandBuffers(
-  FBGraphRenderState* state, bool /*detailGraphs*/, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
+OsciGraphProcessor::ReleaseOnDemandBuffers(
+  FBGraphRenderState* state, FBModuleGraphProcessParams const& params)
 {
   // need to handle all oscis up to this one
   auto* moduleProcState = state->ModuleProcState();
   int slot = moduleProcState->moduleSlot;
-  for (int i = 0; i <= graphIndex; i++)
+  for (int i = 0; i <= params.graphIndex; i++)
   {
     auto& processor = GetVoiceDSPState(*moduleProcState).osci[i].processor;
     processor->ReleaseOnDemandBuffers(
@@ -77,8 +107,8 @@ OsciGraphRenderData::DoReleaseOnDemandBuffers(
 }
 
 void
-OsciGraphRenderData::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, bool /*detailGraphs*/, int /*graphIndex*/, bool exchange, int exchangeVoice)
+OsciGraphProcessor::BeginVoiceOrBlock(
+  FBGraphRenderState* state, FBModuleGraphProcessParams const& params)
 {
   // need to handle all oscis up to this one + mod matrix
   auto* moduleProcState = state->ModuleProcState();
@@ -88,7 +118,7 @@ OsciGraphRenderData::DoBeginVoiceOrBlock(
   for (int i = 0; i <= slot; i++)
   {
     moduleProcState->moduleSlot = i;
-    FFOsciExchangeState const* exchangeFromDSP = GetOsciExchangeStateFromDSP(state, i, exchange, exchangeVoice);
+    FFOsciExchangeState const* exchangeFromDSP = GetOsciExchangeStateFromDSP(state, i, params.exchange, params.exchangeVoice);
     auto& processor = GetVoiceDSPState(*moduleProcState).osci[i].processor;
     processor->AllocOnDemandBuffers(
       state->PlugGUI()->HostContext()->Topo(), 
@@ -100,8 +130,8 @@ OsciGraphRenderData::DoBeginVoiceOrBlock(
 }
 
 int 
-OsciGraphRenderData::DoProcess(
-  FBGraphRenderState* state, bool /*detailGraphs*/, int /*graphIndex*/, bool exchange, int exchangeVoice)
+OsciGraphProcessor::Process(
+  FBGraphRenderState* state, FBModuleGraphProcessParams const& params)
 {
   // need to handle all oscis up to this one + mod matrix
   auto* moduleProcState = state->ModuleProcState();
@@ -112,7 +142,7 @@ OsciGraphRenderData::DoProcess(
   for (int i = 0; i <= slot; i++)
   {
     moduleProcState->moduleSlot = i;
-    FFOsciExchangeState const* exchangeFromDSP = GetOsciExchangeStateFromDSP(state, i, exchange, exchangeVoice);
+    FFOsciExchangeState const* exchangeFromDSP = GetOsciExchangeStateFromDSP(state, i, params.exchange, params.exchangeVoice);
     int processed = GetVoiceDSPState(*moduleProcState).osci[i].processor->Process(*moduleProcState, exchangeFromDSP, true);
     if (i == slot) result = processed;
   }
@@ -120,15 +150,15 @@ OsciGraphRenderData::DoProcess(
   return result;
 }
 
-static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data, bool /*detailGraphs*/, int /*graphIndex*/)
+FBModuleGraphPlotParams
+OsciGraphProcessor::PlotParams(bool /*detailGraphs*/, int /*graphIndex*/) const
 {
   FBModuleGraphPlotParams result = {};
   result.sampleRate = 0.0f;
   result.autoSampleRate = true;
   result.staticModuleIndex = static_cast<int>(FFModuleType::Osci);
 
-  auto const* state = data->renderState;
+  auto const* state = ComponentData()->renderState;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
   FBParamTopoIndices indices = { { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Coarse, 0 } };
@@ -146,15 +176,8 @@ PlotParams(FBModuleGraphComponentData const* data, bool /*detailGraphs*/, int /*
 void
 FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
 {
-  OsciGraphRenderData renderData = {};
+  OsciGraphProcessor processor(graphData);
   graphData->skipDrawOnEqualsPrimary = false; // midi note dependent
-  renderData.graphData = graphData;
-  renderData.plotParamsSelector = PlotParams;
-
-  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].osci[slot]; };
-  renderData.voiceStereoOutputSelector = [](void const* procState, int voice, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].osci[slot].output; };
 
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
   int graphCount = detailGraphs ? FFOsciCount : 1;
@@ -162,7 +185,7 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   {
     int graphModuleSlot = detailGraphs ? i : moduleSlot;
     graphData->renderState->ModuleProcState()->moduleSlot = graphModuleSlot;
-    FBRenderModuleGraph<false, true>(renderData, detailGraphs, i);
+    FBRenderModuleGraph(&processor, false, true, detailGraphs, i);
     FBTopoIndices modIndices = { (int)FFModuleType::Osci, graphModuleSlot };
     FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::Type, 0 } };
     auto osciType = graphData->renderState->AudioParamList<FFOsciType>(paramIndices, false, -1);

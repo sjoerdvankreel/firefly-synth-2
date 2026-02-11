@@ -24,7 +24,7 @@ class alignas(FBSIMDAlign) FFOsciDSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
-  friend struct OsciGraphRenderData;
+  friend class OsciGraphProcessor;
   std::unique_ptr<FFOsciProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
