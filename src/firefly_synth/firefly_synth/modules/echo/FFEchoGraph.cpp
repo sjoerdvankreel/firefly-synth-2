@@ -65,7 +65,7 @@ public:
   void ProcessIndicators(FBGraphRenderState*,
     FBModuleGraphProcessParams const&, FBModuleGraphPoints&) override {};
   void PostProcessMarker(FBGraphRenderState* /*state*/,
-    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, float& /*positionNormalized*/) override { }
+    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, float& /*positionNormalized*/, bool& /*displayMarker*/) override { }
   void PostProcess(FBGraphRenderState* state,
     FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
   void ProcessExchangeState(FBGraphRenderState* graphState,

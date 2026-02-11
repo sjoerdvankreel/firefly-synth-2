@@ -79,7 +79,7 @@ public:
   virtual void ProcessIndicators(FBGraphRenderState* state,
     FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) = 0;
   virtual void PostProcessMarker(FBGraphRenderState* state,
-    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, float& positionNormalized) = 0;
+    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, float& positionNormalized, bool& displayMarker) = 0;
   virtual void PostProcess(FBGraphRenderState* state,
     FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) = 0;
   virtual void ProcessExchangeState(FBGraphRenderState* graphState,

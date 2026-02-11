@@ -144,20 +144,22 @@ FBRenderModuleGraph(
     auto moduleExchange = processor->ExchangeState(exchangeState, stateParams);
     if (!moduleExchange->ShouldGraph(detailGraphs, graphIndex))
       return;
+    bool displayMarker = true;
     float positionNormalized = moduleExchange->PositionNormalized(detailGraphs, graphIndex);
-    processor->PostProcessMarker(renderState, componentData->graphs[graphIndex], processParams, positionNormalized);
+    processor->PostProcessMarker(renderState, componentData->graphs[graphIndex], processParams, positionNormalized, displayMarker);
     if (componentData->skipDrawOnEqualsPrimary &&
       renderState->GlobalModuleExchangeStateEqualsPrimary(
       plotParams.staticModuleIndex, moduleProcState->moduleSlot))
     {
-      componentData->graphs[graphIndex].primaryMarkers.push_back(
-        static_cast<int>(positionNormalized * graphData.primarySeries.l.size()));
+      if(displayMarker)
+        componentData->graphs[graphIndex].primaryMarkers.push_back(
+          static_cast<int>(positionNormalized * graphData.primarySeries.l.size()));
       return;
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData.secondarySeries.emplace_back();
     FBRenderModuleGraphSeries(processor, stereo, stateParams, processParams, moduleExchange, secondary.points);
-    secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
+    secondary.marker = !displayMarker? -1: static_cast<int>(positionNormalized * secondary.points.l.size());
   } else
   {
     // Render voices from oldest to newest.
@@ -177,19 +179,21 @@ FBRenderModuleGraph(
       if (!moduleExchange->ShouldGraph(detailGraphs, graphIndex))
         continue;
       renderState->PrepareForRenderExchangeVoice(v);
+      bool displayMarker = true;
       float positionNormalized = moduleExchange->PositionNormalized(detailGraphs, graphIndex);
-      processor->PostProcessMarker(renderState, componentData->graphs[graphIndex], processParams, positionNormalized);
+      processor->PostProcessMarker(renderState, componentData->graphs[graphIndex], processParams, positionNormalized, displayMarker);
       if (componentData->skipDrawOnEqualsPrimary &&
         renderState->VoiceModuleExchangeStateEqualsPrimary(
           v, plotParams.staticModuleIndex, moduleProcState->moduleSlot))
       {
-        graphData.primaryMarkers.push_back(static_cast<int>(positionNormalized * graphData.primarySeries.l.size()));
+        if(displayMarker)
+          graphData.primaryMarkers.push_back(static_cast<int>(positionNormalized * graphData.primarySeries.l.size()));
         continue;
       }
       moduleProcState->renderType = FBRenderType::GraphExchange;
       auto& secondary = graphData.secondarySeries.emplace_back();
       FBRenderModuleGraphSeries(processor, stereo, stateParams, processParams, moduleExchange, secondary.points);
-      secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
+      secondary.marker = !displayMarker? -1: static_cast<int>(positionNormalized * secondary.points.l.size());
     }
   }
 }

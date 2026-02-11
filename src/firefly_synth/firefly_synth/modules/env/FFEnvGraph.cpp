@@ -73,7 +73,7 @@ public:
   void ProcessIndicators(FBGraphRenderState* state,
     FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
   void PostProcessMarker(FBGraphRenderState* /*state*/,
-    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, float& /*positionNormalized*/) override;
+    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, float& /*positionNormalized*/, bool& displayMarker) override;
   void PostProcess(FBGraphRenderState* state,
     FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
   void ProcessExchangeState(FBGraphRenderState* /*graphState*/,
@@ -274,7 +274,7 @@ EnvGraphProcessor::PlotParams(
 void 
 EnvGraphProcessor::PostProcessMarker(
   FBGraphRenderState* state, FBModuleGraphData& /*data*/,
-  FBModuleGraphProcessParams const& params, float& positionNormalized)
+  FBModuleGraphProcessParams const& params, float& positionNormalized, bool& displayMarker)
 {
   if (!params.detailGraphs)
     return;
@@ -289,7 +289,9 @@ EnvGraphProcessor::PostProcessMarker(
   }
 
   positionNormalized -= sectionDetails.sectionStartSamples / (float)details.all.sectionLengthSamples;
+  displayMarker &= positionNormalized >= 0.0f; // still in prev
   positionNormalized *= details.all.sectionLengthSamples / (float)sectionDetails.sectionLengthSamples;
+  displayMarker &= positionNormalized < 0.99f; // next one takes over
   positionNormalized = std::clamp(positionNormalized, 0.0f, 1.0f);
 }
 
