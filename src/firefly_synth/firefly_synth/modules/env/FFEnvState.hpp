@@ -29,6 +29,9 @@ public:
 struct alignas(FBSIMDAlign) FFEnvExchangeState final:
 public FBModuleProcSingleExchangeState
 {
+  float outputLoop = {};
+  float outputAttack = {};
+  float outputRelease = {};
   float portaSectionAmpAttack = {};
   float portaSectionAmpRelease = {};
 

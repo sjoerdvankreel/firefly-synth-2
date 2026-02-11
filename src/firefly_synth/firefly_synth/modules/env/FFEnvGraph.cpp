@@ -76,8 +76,8 @@ public:
     FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, float& /*positionNormalized*/, bool& displayMarker) override;
   void PostProcess(FBGraphRenderState* state,
     FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
-  void ProcessExchangeState(FBGraphRenderState* /*graphState*/,
-    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) override {}
+  void ProcessExchangeState(FBGraphRenderState* graphState,
+    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleProcExchangeStateBase const* exchangeState) override;
 };
 
 static FFEnvExchangeState const*
@@ -255,6 +255,32 @@ EnvGraphProcessor::BeginVoiceOrBlock(
   GetProcessor(*moduleProcState).BeginVoice(*moduleProcState, exchangeFromDSP, true, graphSampleCount);
 }
 
+void 
+EnvGraphProcessor::ProcessExchangeState(
+  FBGraphRenderState* graphState, FBModuleGraphData& data, 
+  FBModuleGraphProcessParams const& params, FBModuleProcExchangeStateBase const* exchangeState)
+{
+  auto envExchange = dynamic_cast<FFEnvExchangeState const*>(exchangeState);
+  if (!params.detailGraphs)
+  {
+    // TODO data.exchangeMainText = FBToStringHz(lfoExchange->rates[0], 2);
+    data.exchangeGainValue = std::max(data.exchangeGainValue, envExchange->output);
+    return;
+  }
+
+  // TODO data.exchangeMainText = FBToStringHz(lfoExchange->rates[params.graphIndex], 2);
+  EnvDetails details = {};
+  GetEnvelopeDetails(graphState, params.exchange, params.exchangeVoice, details);
+  if (params.graphIndex == (int)EnvSection::AttackDecay)
+    data.exchangeGainValue = std::max(data.exchangeGainValue, envExchange->outputAttack);
+  else if (params.graphIndex == (int)EnvSection::Loop)
+    data.exchangeGainValue = std::max(data.exchangeGainValue, envExchange->outputLoop);
+  else if (params.graphIndex == (int)EnvSection::Release)
+    data.exchangeGainValue = std::max(data.exchangeGainValue, envExchange->outputRelease);
+  else
+    FB_ASSERT(false);
+}
+
 FBModuleGraphPlotParams
 EnvGraphProcessor::PlotParams(
   bool detailGraphs, int graphIndex) const
@@ -395,6 +421,9 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   graphData->skipDrawOnEqualsPrimary = false; // porta subsections
   graphData->drawMarkersSelector = [](int) { return true; };
 
+  EnvDetails details = {};
+  GetEnvelopeDetails(graphData->renderState, false, -1, details);
+
   FBParamTopoIndices paramIndices;
   int graphCount = detailGraphs ? 3 : 1;
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
@@ -424,6 +453,19 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
         bool sync = graphData->renderState->AudioParamBool(paramIndices, false, -1);
         graphData->graphs[i].title += std::string(", ") + (sync ? "BPM" : "Time");
       }
+    }
+    else
+    {
+      auto const& sectionDetails = details.GetSectionDetails((EnvSection)i);
+      if (i == (int)EnvSection::AttackDecay)
+        graphData->graphs[i].title = "Attack/Decay";
+      else if (i == (int)EnvSection::Loop)
+        graphData->graphs[i].title = "Loop/Sustain";
+      else if (i == (int)EnvSection::Release)
+        graphData->graphs[i].title = "Release";
+      else
+        FB_ASSERT(false);
+      graphData->graphs[i].title += sectionDetails.haveSection ? ": On" : ": Off";
     }
   }
 }
