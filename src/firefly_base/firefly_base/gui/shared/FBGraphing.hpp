@@ -58,6 +58,7 @@ protected:
   _componentData(componentData) {}
 
 public:
+  FBModuleGraphComponentData* ComponentData() { return _componentData; }
   FBModuleGraphComponentData const* ComponentData() const { return _componentData; }
 
   virtual FBModuleGraphPlotParams PlotParams(

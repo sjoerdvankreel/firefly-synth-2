@@ -49,16 +49,33 @@ struct EnvDetails
   }
 };
 
-struct EnvGraphRenderData final:
-public FBModuleGraphRenderData<EnvGraphRenderData>
+class EnvGraphProcessor final:
+public FBModuleGraphProcessor
 {
+public:
   FFEnvProcessor& GetProcessor(FBModuleProcState& state);
-  int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoProcessIndicators(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
-  void DoPostProcess(FBGraphRenderState* state, FBModuleGraphData& data, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
-  void DoReleaseOnDemandBuffers(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/) {}
-  void DoProcessExchangeState(FBGraphRenderState* /*graphState*/, FBModuleGraphData& /*data*/, bool /*detailGraphs*/, int /*graphIndex*/, int /*exchangeVoice*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) {}
+  EnvGraphProcessor(FBModuleGraphComponentData* componentData) :
+  FBModuleGraphProcessor(componentData) {}
+
+  FBModuleGraphPlotParams PlotParams(
+    bool detailGraphs, int graphIndex) const override;
+  FBSArray<float, FBFixedBlockSamples> const* MonoOutput(
+    void const* procState, FBModuleGraphStateParams const& params);
+  FBModuleProcExchangeStateBase const* ExchangeState(
+    void const* exchangeState, FBModuleGraphStateParams const& params);
+
+  int Process(FBGraphRenderState* state,
+    FBModuleGraphProcessParams const& params) override;
+  void BeginVoiceOrBlock(FBGraphRenderState* state,
+    FBModuleGraphProcessParams const& params) override;
+  void ReleaseOnDemandBuffers(FBGraphRenderState* /*state*/,
+    FBModuleGraphProcessParams const& /*params*/) override {}
+  void ProcessIndicators(FBGraphRenderState* state,
+    FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
+  void PostProcess(FBGraphRenderState* state,
+    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
+  void ProcessExchangeState(FBGraphRenderState* /*graphState*/,
+    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) override;
 };
 
 static FFEnvExchangeState const*
@@ -191,8 +208,54 @@ GetRenderLengthSamples(
   }
 }
 
-static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data, bool detailGraphs, int graphIndex)
+FFEnvProcessor&
+EnvGraphProcessor::GetProcessor(FBModuleProcState& state)
+{
+  auto* procState = state.ProcAs<FFProcState>();
+  return *procState->dsp.voice[state.voice->slot].env[state.moduleSlot].processor;
+}
+
+int
+EnvGraphProcessor::Process(
+  FBGraphRenderState* state,
+  FBModuleGraphProcessParams const& params)
+{
+  auto* moduleProcState = state->ModuleProcState();
+  auto const* exchangeFromDSP = GetEnvExchangeState(state, params.exchange, params.exchangeVoice);
+  return GetProcessor(*moduleProcState).Process(*moduleProcState, exchangeFromDSP, true, !params.detailGraphs, -1);
+}
+
+FBSArray<float, FBFixedBlockSamples> const*
+EnvGraphProcessor::MonoOutput(
+  void const* procState, FBModuleGraphStateParams const& params)
+{
+  return &static_cast<FFProcState const*>(procState)->dsp.voice[params.voice].env[params.moduleSlot].output;
+}
+
+FBModuleProcExchangeStateBase const* 
+EnvGraphProcessor::ExchangeState(
+  void const* exchangeState, FBModuleGraphStateParams const& params)
+{
+  return &static_cast<FFExchangeState const*>(exchangeState)->voice[params.voice].env[params.moduleSlot];
+}
+
+void
+EnvGraphProcessor::BeginVoiceOrBlock(
+  FBGraphRenderState* state,
+  FBModuleGraphProcessParams const& params)
+{
+  EnvDetails details = {};
+  GetEnvelopeDetails(state, params.exchange, params.exchangeVoice, details);
+  int graphSampleCount = GetRenderLengthSamples(details, params.detailGraphs, params.graphIndex);
+
+  auto* moduleProcState = state->ModuleProcState();
+  auto const* exchangeFromDSP = GetEnvExchangeState(state, params.exchange, params.exchangeVoice);
+  GetProcessor(*moduleProcState).BeginVoice(*moduleProcState, exchangeFromDSP, true, graphSampleCount);
+}
+
+FBModuleGraphPlotParams
+EnvGraphProcessor::PlotParams(
+  bool detailGraphs, int graphIndex) const
 {
   FBModuleGraphPlotParams result = {};
   result.sampleCount = 0;
@@ -201,58 +264,22 @@ PlotParams(FBModuleGraphComponentData const* data, bool detailGraphs, int graphI
   result.staticModuleIndex = (int)FFModuleType::Env;
 
   EnvDetails details = {};
-  GetEnvelopeDetails(data->renderState, false, -1, details);
+  GetEnvelopeDetails(ComponentData()->renderState, false, -1, details);
   result.sampleCount = GetRenderLengthSamples(details, detailGraphs, graphIndex);
   return result;
 }
 
-FFEnvProcessor&
-EnvGraphRenderData::GetProcessor(FBModuleProcState& state)
-{
-  auto* procState = state.ProcAs<FFProcState>();
-  return *procState->dsp.voice[state.voice->slot].env[state.moduleSlot].processor;
-}
-
-void
-EnvGraphRenderData::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, 
-  bool detailGraphs, int graphIndex,
-  bool exchange, int exchangeVoice)
-{
-  EnvDetails details = {};
-  GetEnvelopeDetails(state, exchange, exchangeVoice, details);
-  int graphSampleCount = GetRenderLengthSamples(details, detailGraphs, graphIndex);
-
-  auto* moduleProcState = state->ModuleProcState();
-  auto const* exchangeFromDSP = GetEnvExchangeState(state, exchange, exchangeVoice);
-  GetProcessor(*moduleProcState).BeginVoice(*moduleProcState, exchangeFromDSP, true, graphSampleCount);
-}
-
-int 
-EnvGraphRenderData::DoProcess(
-  FBGraphRenderState* state, 
-  bool detailGraphs, int /*graphIndex*/,
-  bool exchange, int exchangeVoice)
-{ 
-  auto* moduleProcState = state->ModuleProcState();
-  auto const* exchangeFromDSP = GetEnvExchangeState(state, exchange, exchangeVoice);
-  return GetProcessor(*moduleProcState).Process(*moduleProcState, exchangeFromDSP, true, !detailGraphs, -1);
-}
-
 void 
-EnvGraphRenderData::DoPostProcess(
-  FBGraphRenderState* state, 
-  FBModuleGraphData& /*data*/,
-  bool detailGraphs, int graphIndex, 
-  bool exchange, int exchangeVoice, 
-  FBModuleGraphPoints& points)
+EnvGraphProcessor::PostProcess(
+  FBGraphRenderState* state, FBModuleGraphData& /*data*/,
+  FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points)
 {
-  if (!detailGraphs)
+  if (!params.detailGraphs)
     return;
 
   EnvDetails details = {};
-  GetEnvelopeDetails(state, exchange, exchangeVoice, details);
-  auto const& sectionDetails = details.GetSectionDetails(!detailGraphs? EnvSection::All: (EnvSection)graphIndex);
+  GetEnvelopeDetails(state, params.exchange, params.exchangeVoice, details);
+  auto const& sectionDetails = details.GetSectionDetails(!params.detailGraphs? EnvSection::All: (EnvSection)params.graphIndex);
   if (!sectionDetails.haveSection)
   {
     points = {};
@@ -261,7 +288,7 @@ EnvGraphRenderData::DoPostProcess(
 
   // details are against dsp sample rate,
   // series is against gui sample rate
-  int renderLength = GetRenderLengthSamples(details, detailGraphs, graphIndex);
+  int renderLength = GetRenderLengthSamples(details, params.detailGraphs, params.graphIndex);
   int start = sectionDetails.sectionStartSamples * (int)points.l.size() / renderLength;
   int length = sectionDetails.sectionLengthSamples * (int)points.l.size() / renderLength;
   points.l.erase(points.l.begin(), points.l.begin() + start);
@@ -269,10 +296,9 @@ EnvGraphRenderData::DoPostProcess(
 }
 
 void
-EnvGraphRenderData::DoProcessIndicators(
+EnvGraphProcessor::ProcessIndicators(
   FBGraphRenderState* /*state*/,
-  bool /*detailGraphs*/, int /*graphIndex*/, 
-  bool /*/exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/)
+  FBModuleGraphProcessParams const& /*params*/, FBModuleGraphPoints& /*points*/)
 {
 #if 0 // todo
   int smoothLengthAudio;
@@ -338,21 +364,15 @@ EnvGraphRenderData::DoProcessIndicators(
 void
 FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
 {
-  EnvGraphRenderData renderData = {};
-  renderData.graphData = graphData;
-  renderData.plotParamsSelector = PlotParams;
+  EnvGraphProcessor processor(graphData);
   graphData->skipDrawOnEqualsPrimary = false; // porta subsections
   graphData->drawMarkersSelector = [](int) { return true; };
-  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].env[slot]; };
-  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].env[slot].output; };
 
   int graphCount = detailGraphs ? 3 : 1;
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
   for (int i = 0; i < graphCount; i++)
   {
-    FBRenderModuleGraph<false, false>(renderData, detailGraphs, i);
+    FBRenderModuleGraph(&processor, false, false, detailGraphs, i);
     FBTopoIndices modIndices = { (int)FFModuleType::Env, moduleSlot };
     FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFEnvParam::Type, 0 } };
     graphData->graphs[i].title = FBAsciiToUpper(graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name);
