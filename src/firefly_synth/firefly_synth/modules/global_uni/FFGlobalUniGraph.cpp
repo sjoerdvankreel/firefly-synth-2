@@ -11,72 +11,105 @@
 #include <bit>
 #include <algorithm>
 
-struct GlobalUniGraphRenderData final :
-public FBModuleGraphRenderData<GlobalUniGraphRenderData>
+class GlobalUniGraphProcessor final :
+public FBModuleGraphProcessor
 {
+public:
   int totalSamples = {};
   int samplesProcessed = {};
 
   FFGlobalUniProcessor& GetProcessor(FBModuleProcState& state);
-  int DoProcess(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoBeginVoiceOrBlock(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice);
-  void DoProcessIndicators(FBGraphRenderState* state, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
-  void DoPostProcess(FBGraphRenderState* state, FBModuleGraphData& data, bool detailGraphs, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
-  void DoReleaseOnDemandBuffers(FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/) {}
-  void DoProcessExchangeState(FBGraphRenderState* /*graphState*/, FBModuleGraphData& /*data*/, bool /*detailGraphs*/, int /*graphIndex*/, int /*exchangeVoice*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) {}
+  GlobalUniGraphProcessor(FBModuleGraphComponentData* componentData) :
+  FBModuleGraphProcessor(componentData) {}
+
+  FBModuleGraphPlotParams PlotParams(
+    bool detailGraphs, int graphIndex) const override;
+  FBSArray<float, FBFixedBlockSamples> const* MonoOutput(
+    void const* procState, FBModuleGraphStateParams const& params);
+  FBModuleProcExchangeStateBase const* ExchangeState(
+    void const* exchangeState, FBModuleGraphStateParams const& params);
+
+  int Process(FBGraphRenderState* state,
+    FBModuleGraphProcessParams const& params) override;
+  void BeginVoiceOrBlock(FBGraphRenderState* state,
+    FBModuleGraphProcessParams const& params) override;
+  void ReleaseOnDemandBuffers(FBGraphRenderState* /*state*/,
+    FBModuleGraphProcessParams const& /*params*/) override {}
+  void ProcessIndicators(FBGraphRenderState* state,
+    FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
+  void PostProcess(FBGraphRenderState* state,
+    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
+  void ProcessExchangeState(FBGraphRenderState* /*graphState*/,
+    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, FBModuleProcExchangeStateBase const* /*exchangeState*/) override {}
 };
 
-static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data, bool /*detailGraphs*/, int /*graphIndex*/)
-{
-  FBModuleGraphPlotParams result = {};
-  result.sampleRate = 0.0f;
-  result.autoSampleRate = true;
-  result.sampleCount = data->pixelWidth * 2;
-  result.staticModuleIndex = (int)FFModuleType::GlobalUni;
-  return result;
-}
-
 FFGlobalUniProcessor&
-GlobalUniGraphRenderData::GetProcessor(FBModuleProcState& state)
+GlobalUniGraphProcessor::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   return *procState->dsp.global.globalUni.processor;
 }
 
+FBSArray<float, FBFixedBlockSamples> const* 
+GlobalUniGraphProcessor::MonoOutput(
+  void const* procState, FBModuleGraphStateParams const& /*params*/)
+{
+  return &static_cast<FFProcState const*>(procState)->dsp.global.globalUni.fakeGraphOutput;
+}
+
+FBModuleProcExchangeStateBase const* 
+GlobalUniGraphProcessor::ExchangeState(
+  void const* exchangeState, FBModuleGraphStateParams const& /*params*/)
+{
+  return &static_cast<FFExchangeState const*>(exchangeState)->global.globalUni[0];
+}
+
 int
-GlobalUniGraphRenderData::DoProcess(
-  FBGraphRenderState* /*state*/, bool /*detailGraphs*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/)
+GlobalUniGraphProcessor::Process(
+  FBGraphRenderState* /*state*/,
+  FBModuleGraphProcessParams const& /*params*/)
 {
   samplesProcessed += FBFixedBlockSamples;
   return std::clamp(totalSamples - samplesProcessed, 0, FBFixedBlockSamples);
 }
 
+FBModuleGraphPlotParams
+GlobalUniGraphProcessor::PlotParams(
+  bool /*detailGraphs*/, int /*graphIndex*/) const
+{
+  FBModuleGraphPlotParams result = {};
+  result.sampleRate = 0.0f;
+  result.autoSampleRate = true;
+  result.sampleCount = ComponentData()->pixelWidth * 2;
+  result.staticModuleIndex = (int)FFModuleType::GlobalUni;
+  return result;
+}
+
 void
-GlobalUniGraphRenderData::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, bool /*detailGraphs*/, int /*graphIndex*/, bool exchange, int /*exchangeVoice*/)
+GlobalUniGraphProcessor::BeginVoiceOrBlock(
+  FBGraphRenderState* state,
+  FBModuleGraphProcessParams const& params)
 {
   samplesProcessed = 0;
   auto* moduleProcState = state->ModuleProcState();
   int voiceCount = state->AudioParamDiscrete(
-    { { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } }, exchange, -1);
+    { { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } }, params.exchange, -1);
   GetProcessor(*moduleProcState).BeginBlock(*moduleProcState);
   for (int i = 0; i < voiceCount; i++)
     GetProcessor(*moduleProcState).BeginVoice(i);
 }
 
 void
-GlobalUniGraphRenderData::DoProcessIndicators(
+GlobalUniGraphProcessor::ProcessIndicators(
   FBGraphRenderState* state,
-  bool /*detailGraphs*/, int /*graphIndex*/, 
-  bool exchange, int /*exchangeVoice*/, FBModuleGraphPoints& points)
+  FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points)
 {
-  int slot = graphData->fixedGraphIndex;
+  int slot = ComponentData()->fixedGraphIndex;
   FBSArray<float, FBFixedBlockSamples> targetSignal;
   FFProcDSPState* procState = &state->ModuleProcState()->ProcAs<FFProcState>()->dsp;
   FFGlobalUniProcessor* processor = procState->global.globalUni.processor.get();
   float targetDefault = FFGlobalUniTargetGetDefaultValue((FFGlobalUniTarget)slot);
-  int voiceCount = state->AudioParamDiscrete({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } }, exchange, -1);
+  int voiceCount = state->AudioParamDiscrete({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } }, params.exchange, -1);
   for (int i = 0; i < voiceCount; i++)
   {
     targetSignal.Fill(FBBatch<float>(targetDefault));
@@ -86,13 +119,11 @@ GlobalUniGraphRenderData::DoProcessIndicators(
 }
 
 void 
-GlobalUniGraphRenderData::DoPostProcess(
-  FBGraphRenderState* /*state*/, FBModuleGraphData& /*data*/,
-  bool /*detailGraphs*/, int /*graphIndex*/,
-  bool /*exchange*/, int /*exchangeVoice*/, 
-  FBModuleGraphPoints& points)
+GlobalUniGraphProcessor::PostProcess(
+  FBGraphRenderState* state, FBModuleGraphData& data, 
+  FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points)
 {
-  int slot = graphData->fixedGraphIndex;
+  int slot = ComponentData()->fixedGraphIndex;
   if (FFGlobalUniTargetGetDefaultValue((FFGlobalUniTarget)slot) != 0.5f)
   {
     for (int i = 0; i < points.l.size(); i++)
@@ -113,7 +144,7 @@ GlobalUniGraphRenderData::DoPostProcess(
 void
 FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
 {
-  GlobalUniGraphRenderData renderData = {};
+  GlobalUniGraphProcessor processor(graphData);
   graphData->pointIndicatorSize = 4;
   graphData->fillPointIndicators = true;
   graphData->skipDrawOnEqualsPrimary = true;
@@ -126,12 +157,6 @@ FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     { { (int)FFModuleType::GlobalUni, 0 },
     { (int)FFGlobalUniParam::Mode, graphData->fixedGraphIndex } }, false, -1) == FFGlobalUniMode::Off;
 
-  renderData.graphData = graphData;
-  renderData.plotParamsSelector = PlotParams;
-  renderData.totalSamples = PlotParams(graphData, detailGraphs, 0).sampleCount;
-  renderData.globalExchangeSelector = [](void const* exchangeState, int /*slot*/, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFExchangeState const*>(exchangeState)->global.globalUni[0]; };
-  renderData.globalMonoOutputSelector = [](void const* procState, int /*slot*/, bool /*detailGraphs*/, int /*graphIndex*/) {
-    return &static_cast<FFProcState const*>(procState)->dsp.global.globalUni.fakeGraphOutput; };
-  FBRenderModuleGraph<true, false>(renderData, detailGraphs, 0);
+  processor.totalSamples = processor.PlotParams(detailGraphs, 0).sampleCount;
+  FBRenderModuleGraph(&processor, true, false, detailGraphs, 0);
 }
