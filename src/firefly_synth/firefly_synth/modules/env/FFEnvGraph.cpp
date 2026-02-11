@@ -123,7 +123,7 @@ GetEnvelopeDetails(
   int sustainStart = loopStart == 0 ? -1 : loopStart - 1;
   int sustainEnd = loopStart == 0 ? -1 : loopStart - 1 + loopLength;
   int releaseStart = releasePoint == 0 ? -1 : releasePoint;
-  int attackDecayEnd = sustainStart != -1 ? sustainStart : releaseStart != -1 ? releaseStart : -1;
+  int attackDecayEnd = sustainStart != -1 ? sustainStart : releaseStart != -1 ? releaseStart : FFEnvStageCount;
 
   details.all.haveSection = true;
   details.all.stageStart = 0;
