@@ -23,13 +23,15 @@ struct EnvSectionDetails
   bool haveSection = {};
   int sectionStartSamples = {};
   int sectionLengthSamples = {};
+  float sectionLengthSeconds = {};
   std::vector<int> stageLengths = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(EnvSectionDetails);
 };
 
 struct EnvDetails
 {
-  int smoothLength = {};
+  int smoothLengthSamples = {};
+  float smoothLengthSeconds = {};
   EnvSectionDetails all = {};
   EnvSectionDetails loop = {};
   EnvSectionDetails release = {};
@@ -129,11 +131,12 @@ GetEnvelopeDetails(
   details.all.stageStart = 0;
   details.all.stageEnd = FFEnvStageCount;
   if (sync)
-    details.smoothLength = state->AudioParamBarsSamples(
+    details.smoothLengthSamples = state->AudioParamBarsSamples(
       { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothBars, 0 } }, exchange, exchangeVoice, sampleRate, bpm);
   else
-    details.smoothLength = state->AudioParamLinearTimeSamples(
+    details.smoothLengthSamples = state->AudioParamLinearTimeSamples(
       { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothTime, 0 } }, exchange, exchangeVoice, sampleRate);
+  details.smoothLengthSeconds = details.smoothLengthSamples / sampleRate;
 
   int stageLength;
   for (int i = 0; i < FFEnvStageCount; i++)
@@ -190,6 +193,11 @@ GetEnvelopeDetails(
       details.attackDecay.stageLengths.push_back(stageLength);
     }
   }
+
+  details.all.sectionLengthSeconds = details.all.sectionLengthSamples / sampleRate;
+  details.loop.sectionLengthSeconds = details.loop.sectionLengthSamples / sampleRate;
+  details.release.sectionLengthSeconds = details.release.sectionLengthSamples / sampleRate;
+  details.attackDecay.sectionLengthSeconds = details.attackDecay.sectionLengthSamples / sampleRate;
 }
 
 static int 
@@ -200,7 +208,7 @@ GetRenderLengthSamples(
   // toss out the rest later
   // seems too hard to start in the middle of the env
   if (!detailGraphs)
-    return details.all.sectionLengthSamples + details.smoothLength;
+    return details.all.sectionLengthSamples + details.smoothLengthSamples;
   switch ((EnvSection)graphIndex)
   {
   case EnvSection::Release: return details.all.sectionLengthSamples;
@@ -315,7 +323,7 @@ EnvGraphProcessor::PostProcessMarker(
   }
 
   // dsp is always processed with smoothing, so need to correct for that
-  positionNormalized /= details.all.sectionLengthSamples / ((float)details.all.sectionLengthSamples + details.smoothLength);
+  positionNormalized /= details.all.sectionLengthSamples / ((float)details.all.sectionLengthSamples + details.smoothLengthSamples);
   positionNormalized -= sectionDetails.sectionStartSamples / (float)details.all.sectionLengthSamples;
   displayMarker &= positionNormalized >= 0.0f; // still in prev
   positionNormalized *= details.all.sectionLengthSamples / (float)sectionDetails.sectionLengthSamples;
@@ -372,7 +380,7 @@ EnvGraphProcessor::ProcessIndicators(
       stageLengthsAudio[i] = (int)std::round((float)stageLengthsAudio[i] * exchangeFromDSP->portaSectionAmpAttack);
     totalSamplesAudio += stageLengthsAudio[i];
   }
-  totalSamplesAudio += details.smoothLength;
+  totalSamplesAudio += details.smoothLengthSamples;
   float thisSamplesGUI = static_cast<float>(points.l.size());
 
   int moduleSlot = ComponentData()->renderState->ModuleProcState()->moduleSlot;
@@ -449,6 +457,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       auto type = graphData->renderState->AudioParamList<FFEnvType>(paramIndices, false, -1);
       graphData->graphs[i].title = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
       graphData->graphs[i].title += ": " + FFEnvTypeToString(type);
+      graphData->graphs[i].defaultMainText = FBToStringSeconds(details.all.sectionLengthSeconds + details.smoothLengthSeconds, 3);
       if (type != FFEnvType::Off)
       {
         paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFEnvParam::Sync, 0 } };
@@ -468,6 +477,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       else
         FB_ASSERT(false);
       graphData->graphs[i].title += sectionDetails.haveSection ? ": On" : ": Off";
+      graphData->graphs[i].defaultMainText = FBToStringSeconds(sectionDetails.sectionLengthSeconds, 3);
     }
   }
 }
