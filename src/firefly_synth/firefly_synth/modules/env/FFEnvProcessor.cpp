@@ -13,7 +13,7 @@ void
 FFEnvProcessor::BeginVoice( 
   FBModuleProcState& state, 
   FFEnvExchangeState const* exchangeFromDSP,
-  bool graph, int graphSamples)
+  bool graph, bool mainGraph, int graphSamples)
 {
   _smoother = {};
   _finished = false;
@@ -72,10 +72,12 @@ FFEnvProcessor::BeginVoice(
   _loopStart = topo.NormalizedToDiscreteFast(FFEnvParam::LoopStart, loopStartNorm);
   _loopLength = topo.NormalizedToDiscreteFast(FFEnvParam::LoopStart, loopLengthNorm);
 
+  _smoothSamples = 0;
   if (_sync)
   {
-    _smoothSamples = topo.NormalizedToBarsSamplesFast(
-      FFEnvParam::SmoothBars, smoothBarsNorm, state.input->sampleRate, state.input->bpm);
+    if(!graph || mainGraph)
+      _smoothSamples = topo.NormalizedToBarsSamplesFast(
+        FFEnvParam::SmoothBars, smoothBarsNorm, state.input->sampleRate, state.input->bpm);
     for (int i = 0; i < FFEnvStageCount; i++)
     {
       float stageSamples = topo.NormalizedToBarsFloatSamplesFast(
@@ -88,8 +90,9 @@ FFEnvProcessor::BeginVoice(
   }
   else
   {
-    _smoothSamples = topo.NormalizedToLinearTimeSamplesFast(
-      FFEnvParam::SmoothTime, smoothTimeNorm, state.input->sampleRate);
+    if (!graph || mainGraph)
+      _smoothSamples = topo.NormalizedToLinearTimeSamplesFast(
+        FFEnvParam::SmoothTime, smoothTimeNorm, state.input->sampleRate);
     for (int i = 0; i < FFEnvStageCount; i++)
     {
       _voiceStartSnapshotNorm.stageTime[i] = stageTimeNorm[i].Voice()[voice].CV().Get(state.voice->offsetInBlock);
@@ -155,6 +158,7 @@ FFEnvProcessor::Process(
   FBModuleProcState& state, FFEnvExchangeState const* exchangeFromDSP, 
   bool graph, bool mainGraph, int releaseAt)
 {
+  (void)mainGraph;// todo
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& procParams = procState->param.voice.env[state.moduleSlot];
@@ -265,11 +269,7 @@ FFEnvProcessor::Process(
         _lastOverall *= portaAmpReleaseMultiplier;
       }
 
-      if (!graph || mainGraph)
-        output.Set(s, _smoother.NextScalar(_lastOverall));
-      else
-        output.Set(s, _lastOverall);
-
+      output.Set(s, _smoother.NextScalar(_lastOverall));
       if (stage >= releasePoint)
         outputRelease = output.Get(s);
       else if (loopStart != -1 && loopStart <= stage && stage < loopEnd)
@@ -329,20 +329,14 @@ FFEnvProcessor::Process(
   }
 
   for (; s < FBFixedBlockSamples && _smoothPosition < _smoothSamples; s++, _smoothPosition++, _positionSamples++)
-    if (!graph || mainGraph)
-      output.Set(s, _smoother.NextScalar(_lastOverall));
-    else
-      output.Set(s, _lastOverall);
+    output.Set(s, _smoother.NextScalar(_lastOverall));
 
   int processed = s;
   if (s < FBFixedBlockSamples || graph && _positionSamples >= _grampSamplesTotal)
     _finished = true;
 
   for (; s < FBFixedBlockSamples; s++)
-    if (!graph || mainGraph)
-      output.Set(s, _smoother.State());
-    else
-      output.Set(s, _lastOverall);
+    output.Set(s, _smoother.State());
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)

@@ -252,7 +252,7 @@ EnvGraphProcessor::BeginVoiceOrBlock(
 
   auto* moduleProcState = state->ModuleProcState();
   auto const* exchangeFromDSP = GetEnvExchangeState(state, params.exchange, params.exchangeVoice);
-  GetProcessor(*moduleProcState).BeginVoice(*moduleProcState, exchangeFromDSP, true, graphSampleCount);
+  GetProcessor(*moduleProcState).BeginVoice(*moduleProcState, exchangeFromDSP, true, !params.detailGraphs, graphSampleCount);
 }
 
 void 
@@ -314,6 +314,8 @@ EnvGraphProcessor::PostProcessMarker(
     return;
   }
 
+  // dsp is always processed with smoothing, so need to correct for that
+  positionNormalized /= details.all.sectionLengthSamples / ((float)details.all.sectionLengthSamples + details.smoothLength);
   positionNormalized -= sectionDetails.sectionStartSamples / (float)details.all.sectionLengthSamples;
   displayMarker &= positionNormalized >= 0.0f; // still in prev
   positionNormalized *= details.all.sectionLengthSamples / (float)sectionDetails.sectionLengthSamples;
