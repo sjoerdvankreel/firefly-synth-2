@@ -11,7 +11,7 @@ class FBPlugGUI;
 
 enum class FBGridSectionMark
 {
-  Background,
+  DefaultBackground,
   Border,
   Alternate,
   BackgroundAndBorder,
@@ -76,7 +76,7 @@ public:
   void Add(int row, int col, juce::Component* child);
   void Remove(int row, int col, juce::Component* child);
   void Add(int row, int col, int rowSpan, int colSpan, juce::Component* child);
-  void MarkSection(FBGridSection const& section, FBGridSectionMark mark = FBGridSectionMark::Background, float cornerSize = 3.0f, int marginR = 0);
+  void MarkSection(FBGridSection const& section, FBGridSectionMark mark = FBGridSectionMark::DefaultBackground, float cornerSize = 3.0f, int marginR = 0);
 
   FBGridComponent() = delete;
   FBGridComponent(FBPlugGUI* plugGUI, bool rowColGap, int rows, int cols);

@@ -254,7 +254,7 @@ FBGridComponent::paint(Graphics& g)
     }
     float subtractR = i == _sectionsAndMarks.size() - 1 ? 0.0f : 2.0f;
     subtractR += _sectionsAndMarks[i].marginR;
-    if (_sectionsAndMarks[i].mark == FBGridSectionMark::Background ||
+    if (_sectionsAndMarks[i].mark == FBGridSectionMark::DefaultBackground ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndBorder ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndAlternate)
     {
