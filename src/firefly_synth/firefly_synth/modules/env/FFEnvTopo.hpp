@@ -26,6 +26,7 @@ inline float constexpr FFEnvMaxTime = 10.0f;
 
 enum class FFEnvCVOutput { Output, Count };
 enum class FFEnvType { Off, Linear, Exp };
+enum class EnvSection { AttackDecay, Loop, Release, All };
 std::string FFEnvTypeToString(FFEnvType type);
 
 enum class FFEnvGUIParam { 
@@ -37,3 +38,41 @@ enum class FFEnvParam {
   Type, Sync, Release, SmoothTime, SmoothBars, 
   LoopStart, LoopLength, StartLevel,
   StageLevel, StageSlope, StageTime, StageBars, Count };
+
+struct FFEnvSectionDetails
+{
+  int stageEnd = {};
+  int stageStart = {};
+  bool haveSection = {};
+  int sectionStartSamples = {};
+  int sectionLengthSamples = {};
+  float sectionLengthSeconds = {};
+  std::vector<int> stageLengths = {};
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FFEnvSectionDetails);
+};
+
+struct FFEnvDetails
+{
+  int smoothLengthSamples = {};
+  float smoothLengthSeconds = {};
+  FFEnvSectionDetails all = {};
+  FFEnvSectionDetails loop = {};
+  FFEnvSectionDetails release = {};
+  FFEnvSectionDetails attackDecay = {};
+  
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FFEnvDetails);
+  FFEnvSectionDetails const& GetSectionDetails(EnvSection section);
+};
+
+inline FFEnvSectionDetails const&
+FFEnvDetails::GetSectionDetails(EnvSection section)
+{
+  switch (section)
+  {
+  case EnvSection::All: return all;
+  case EnvSection::Loop: return loop;
+  case EnvSection::Release: return release;
+  case EnvSection::AttackDecay: return attackDecay;
+  default: FB_ASSERT(false); return *((FFEnvSectionDetails*)(nullptr));
+  }
+}
