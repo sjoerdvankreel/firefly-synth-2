@@ -352,6 +352,7 @@ FFPlugGUI::SetupGUI()
   _topModules->Add(0, 2, FFMakeSettingsGUI(this));
 
   _matrix = FFMakeModMatrixGUI(this);
+  _detailContent = StoreComponent<FBContentComponent>();
   _globalUni = FFMakeGlobalUniGUI(this, _graphRenderState.get(), &_fixedGraphs);
   for (int i = 0; i < FFOsciCount; i++)
     _osciDetails[i] = FFMakeOsciDetailGUI(this, i);
@@ -364,7 +365,6 @@ FFPlugGUI::SetupGUI()
   _main->Add(4, 0, 1, 1, FFMakeEchoGUI(this));
   _main->Add(5, 0, 1, 1, FFMakeLFOGUI(this));
   _main->Add(6, 0, 1, 1, FFMakeEnvGUI(this, _msegEditors));
-  _detailContent = StoreComponent<FBContentComponent>();
   _main->Add(1, 1, 6, 1, _detailContent);
 
   _tabs = StoreComponent<FBAutoSizeTabComponent>(this, true);
