@@ -31,7 +31,7 @@ FFMakeOtherGUI(FFPlugGUI* plugGUI)
   panicButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushAudio(); };
   grid->Add(0, 2, panicButton);
   grid->Add(0, 3, plugGUI->StoreComponent<FBFillerComponent>(1, 1));
-  grid->MarkSection({ { 0, 0 }, { 1, 4 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0 }, { 1, 4 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
   auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Other, 0, section);
 }

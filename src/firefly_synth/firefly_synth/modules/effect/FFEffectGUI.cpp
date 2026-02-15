@@ -201,7 +201,7 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lfoAmt));
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lfoAmt, Slider::SliderStyle::RotaryVerticalDrag));
 
-  grid->MarkSection({ { 0, 0 }, { 2, 8 } }, block % 2 != 0? FBGridSectionMark::BackgroundAndAlternate : FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0 }, { 2, 8 } }, block % 2 != 0? FBGridSectionMark::BackgroundAndAlternate : FBGridSectionMark::DefaultBackgroundDefaultBorder);
   return grid;
 }
 

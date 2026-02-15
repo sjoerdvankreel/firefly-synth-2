@@ -121,7 +121,7 @@ MakeVMixSectionOsciAndVFXToOut(FBPlugGUI* plugGUI)
     auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::VFXToOut, e } });
     grid->Add(1, 1 + e, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ { 0, 0 }, { 2, FFOsciCount + 1 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0 }, { 2, FFOsciCount + 1 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
   return grid;
 }
 
@@ -147,7 +147,7 @@ MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(FBPlugGUI* plugGUI)
     auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::OsciMixToVFX, e } });
     grid->Add(1, 1 + e, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ { 0, 0 }, { 2, FFOsciCount + 1 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0 }, { 2, FFOsciCount + 1 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
   return grid;
 }
 

@@ -135,7 +135,7 @@ MakeOsciSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
   auto random = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::UniRandom, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, random));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, random, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
   return grid;
 }
 

@@ -60,7 +60,7 @@ MakeSettingsSectionTuning(FBPlugGUI* plugGUI)
   auto tuneVoiceMatrix = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneVoiceMatrix, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneVoiceMatrix));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneVoiceMatrix));
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
   return grid;
 }
 

@@ -47,7 +47,7 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
     if (plugGUI->Themes()[i].global.name == plugGUI->HostContext()->ThemeName())
       themeCombo->setSelectedItemIndex(i);
   grid->Add(0, 9, themeCombo);   
-  grid->MarkSection({ { 0, 0 }, { 1, 10 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0 }, { 1, 10 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
   auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::GUISettings, 0, section);
 }

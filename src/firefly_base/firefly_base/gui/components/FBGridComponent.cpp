@@ -255,7 +255,7 @@ FBGridComponent::paint(Graphics& g)
     float subtractR = i == _sectionsAndMarks.size() - 1 ? 0.0f : 2.0f;
     subtractR += _sectionsAndMarks[i].marginR;
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::DefaultBackground ||
-      _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndBorder ||
+      _sectionsAndMarks[i].mark == FBGridSectionMark::DefaultBackgroundDefaultBorder ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndAlternate)
     {
       g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).sectionBackground);
@@ -274,7 +274,7 @@ FBGridComponent::paint(Graphics& g)
       g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize, lineThickness);
     }
     if (_sectionsAndMarks[i].mark == FBGridSectionMark::DefaultBorder ||
-      _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndBorder)
+      _sectionsAndMarks[i].mark == FBGridSectionMark::DefaultBackgroundDefaultBorder)
     {
       g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).sectionBorder.withAlpha(0.125f));
       g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize, lineThickness);

@@ -14,7 +14,7 @@ enum class FBGridSectionMark
   DefaultBackground,
   DefaultBorder,
   AlternateBorder,
-  BackgroundAndBorder,
+  DefaultBackgroundDefaultBorder,
   BackgroundAndAlternate,
   AlternateAndAlternate
 };

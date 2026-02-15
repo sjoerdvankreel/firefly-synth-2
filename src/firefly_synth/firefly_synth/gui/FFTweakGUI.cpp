@@ -20,7 +20,7 @@ FFMakeTweakGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 1, plugGUI->StoreComponent<FBLastTweakedLabel>(plugGUI));
   auto box = plugGUI->StoreComponent<FBLastTweakedTextBox>(plugGUI, 150);
   grid->Add(0, 2, plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, box));
-  grid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
   auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
   return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::LastTweaked, section);
 }

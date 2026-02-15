@@ -188,7 +188,7 @@ MakeEchoSectionTaps(
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::LinearHorizontal));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
 
-  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
   return grid;
 }
 
@@ -286,7 +286,7 @@ MakeEchoSectionReverb(FBPlugGUI* plugGUI, bool global)
   auto hpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbHPRes, 0 } });
   grid->Add(1, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
   grid->Add(1, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 12 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0 }, { 2, 12 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
   return grid;
 }
 

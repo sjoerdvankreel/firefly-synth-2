@@ -61,7 +61,7 @@ MakeMasterSectionAux(FBPlugGUI* plugGUI)
     grid->Add(row, col * 2 + 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, aux));
     grid->Add(row, col * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, aux, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ { 0, 0 }, { 2, 2 * FFMasterAuxCount / 2 } }, FBGridSectionMark::BackgroundAndBorder);
+  grid->MarkSection({ { 0, 0 }, { 2, 2 * FFMasterAuxCount / 2 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
   return grid;
 }
 
