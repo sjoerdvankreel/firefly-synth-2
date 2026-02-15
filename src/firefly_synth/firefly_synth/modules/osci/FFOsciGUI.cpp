@@ -394,7 +394,7 @@ MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 MakeOsciDetail(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1 });
   grid->Add(0, 0, MakeOsciSectionWave(plugGUI, moduleSlot));
   grid->Add(0, 0, MakeOsciSectionFM(plugGUI, moduleSlot));
   grid->Add(0, 0, MakeOsciSectionString(plugGUI, moduleSlot));
