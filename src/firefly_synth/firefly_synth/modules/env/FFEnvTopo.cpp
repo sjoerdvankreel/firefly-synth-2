@@ -26,6 +26,109 @@ FFEnvTypeToString(FFEnvType type)
   }
 }
 
+static void
+GetEnvelopeDetails(
+  FBGraphRenderState const* state, 
+  bool exchange, int exchangeVoice, 
+  EnvDetails& details)
+{
+  details = EnvDetails({});
+  float bpm = state->ExchangeContainer()->Host()->bpm;
+  int moduleSlot = state->ModuleProcState()->moduleSlot;
+  float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
+  
+  auto type = state->AudioParamList<FFEnvType>(
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } }, exchange, exchangeVoice);
+  if (type == FFEnvType::Off)
+    return;
+
+  bool sync = state->AudioParamBool(
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } }, exchange, exchangeVoice);
+  int loopStart = state->AudioParamDiscrete(
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }, exchange, exchangeVoice);
+  int loopLength = state->AudioParamDiscrete(
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } }, exchange, exchangeVoice);
+  int releasePoint = state->AudioParamDiscrete(
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } }, exchange, exchangeVoice);
+  
+  int sustainStart = loopStart == 0 ? -1 : loopStart - 1;
+  int sustainEnd = loopStart == 0 ? -1 : loopStart - 1 + loopLength;
+  int releaseStart = releasePoint == 0 ? -1 : releasePoint;
+  int attackDecayEnd = sustainStart != -1 ? sustainStart : releaseStart != -1 ? releaseStart : FFEnvStageCount;
+
+  details.all.haveSection = true;
+  details.all.stageStart = 0;
+  details.all.stageEnd = FFEnvStageCount;
+  if (sync)
+    details.smoothLengthSamples = state->AudioParamBarsSamples(
+      { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothBars, 0 } }, exchange, exchangeVoice, sampleRate, bpm);
+  else
+    details.smoothLengthSamples = state->AudioParamLinearTimeSamples(
+      { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothTime, 0 } }, exchange, exchangeVoice, sampleRate);
+  details.smoothLengthSeconds = details.smoothLengthSamples / sampleRate;
+
+  int stageLength;
+  for (int i = 0; i < FFEnvStageCount; i++)
+  {
+    if (sync)
+      stageLength = state->AudioParamBarsSamples(
+        { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } }, exchange, exchangeVoice, sampleRate, bpm);
+    else
+      stageLength = state->AudioParamLinearTimeSamples(
+        { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } }, exchange, exchangeVoice, sampleRate);
+    details.all.sectionStartSamples = 0;
+    details.all.sectionLengthSamples += stageLength;
+    details.all.stageLengths.push_back(stageLength);
+    if (releaseStart != -1)
+    {
+      if (i >= releaseStart)
+      {
+        details.release.haveSection = true;
+        details.release.stageStart = releaseStart;
+        details.release.stageEnd = FFEnvStageCount;
+        details.release.sectionLengthSamples += stageLength;
+        details.release.stageLengths.push_back(stageLength);
+      }
+      else
+      {
+        details.release.sectionStartSamples += stageLength;
+      }
+    }
+    if (sustainStart != -1)
+    {
+      if (i >= sustainStart && i <= sustainEnd)
+      {
+        details.loop.haveSection = true;
+        details.loop.stageEnd = sustainEnd;
+        details.loop.stageStart = sustainStart;
+        if (i < sustainEnd)
+        {
+          details.loop.sectionLengthSamples += stageLength;
+          details.loop.stageLengths.push_back(stageLength);
+        }
+      }
+      else if (i < sustainStart)
+      {
+        details.loop.sectionStartSamples += stageLength;
+      }
+    }
+    if (attackDecayEnd != -1 && i < attackDecayEnd)
+    {
+      details.attackDecay.haveSection = true;
+      details.attackDecay.sectionStartSamples = 0;
+      details.attackDecay.stageStart = 0;
+      details.attackDecay.stageEnd = attackDecayEnd;
+      details.attackDecay.sectionLengthSamples += stageLength;
+      details.attackDecay.stageLengths.push_back(stageLength);
+    }
+  }
+
+  details.all.sectionLengthSeconds = details.all.sectionLengthSamples / sampleRate;
+  details.loop.sectionLengthSeconds = details.loop.sectionLengthSamples / sampleRate;
+  details.release.sectionLengthSeconds = details.release.sectionLengthSamples / sampleRate;
+  details.attackDecay.sectionLengthSeconds = details.attackDecay.sectionLengthSamples / sampleRate;
+}
+
 static std::vector<FBListItem>
 MakeMSEGSnapXItems()
 {

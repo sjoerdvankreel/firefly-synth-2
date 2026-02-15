@@ -5,51 +5,7 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBGraphing.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
-
 #include <algorithm>
-
-enum class EnvSection
-{
-  AttackDecay,
-  Loop,
-  Release,
-  All,
-};
-
-struct EnvSectionDetails
-{
-  int stageEnd = {};
-  int stageStart = {};
-  bool haveSection = {};
-  int sectionStartSamples = {};
-  int sectionLengthSamples = {};
-  float sectionLengthSeconds = {};
-  std::vector<int> stageLengths = {};
-  FB_EXPLICIT_COPY_MOVE_DEFCTOR(EnvSectionDetails);
-};
-
-struct EnvDetails
-{
-  int smoothLengthSamples = {};
-  float smoothLengthSeconds = {};
-  EnvSectionDetails all = {};
-  EnvSectionDetails loop = {};
-  EnvSectionDetails release = {};
-  EnvSectionDetails attackDecay = {};
-  FB_EXPLICIT_COPY_MOVE_DEFCTOR(EnvDetails);
-
-  EnvSectionDetails const& GetSectionDetails(EnvSection section)
-  {
-    switch (section)
-    {
-    case EnvSection::All: return all;
-    case EnvSection::Loop: return loop;
-    case EnvSection::Release: return release;
-    case EnvSection::AttackDecay: return attackDecay;
-    default: FB_ASSERT(false); return *((EnvSectionDetails*)(nullptr));
-    }
-  }
-};
 
 class EnvGraphProcessor final:
 public FBModuleGraphProcessor
