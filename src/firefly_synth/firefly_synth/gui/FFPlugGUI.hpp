@@ -99,6 +99,7 @@ public:
   void SwitchGraphsToModule(int index, int slot);
   void RequestFixedGraphsRerender(int moduleIndex);
   void RequestMainGraphsRerender(int index, int slot);
+  void SwitchDetailsSectionToModule(int index, int slot);
 
   void resized() override;
   void OnPatchLoaded() override;
