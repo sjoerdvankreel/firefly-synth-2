@@ -357,7 +357,7 @@ FFPlugGUI::SetupGUI()
   for (int i = 0; i < FFOsciCount; i++)
     _osciDetails[i] = FFMakeOsciDetailGUI(this, i);
 
-  _main = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 64, 15 } });
+  _main = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 16, 5 } });
   _main->Add(0, 0, 1, 2, _topModules);
   _main->Add(1, 0, 1, 1, FFMakeMixGUI(this));
   _main->Add(2, 0, 1, 1, FFMakeOsciGUI(this));
