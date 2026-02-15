@@ -250,11 +250,11 @@ FFMakeGlobalUniGUI(
   auto bottomGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1 } });
   auto bottomGridLeft = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   bottomGridLeft->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, MakeGlobalUniContent(plugGUI, graphRenderState, 0, fixedGraphs)));
-  bottomGridLeft->MarkSection({ { 0, 0}, { 1, 1 } }, FBGridSectionMark::Border);
+  bottomGridLeft->MarkSection({ { 0, 0}, { 1, 1 } }, FBGridSectionMark::DefaultBorder);
   bottomGrid->Add(0, 0, bottomGridLeft);
   auto bottomGridRight = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   bottomGridRight->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, MakeGlobalUniContent(plugGUI, graphRenderState, (int)FFGlobalUniTarget::Count / 2, fixedGraphs)));
-  bottomGridRight->MarkSection({ { 0, 0}, { 1, 1 } }, FBGridSectionMark::Border);
+  bottomGridRight->MarkSection({ { 0, 0}, { 1, 1 } }, FBGridSectionMark::DefaultBorder);
   bottomGrid->Add(0, 1, bottomGridRight);
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, false, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, false, true, topComponent));

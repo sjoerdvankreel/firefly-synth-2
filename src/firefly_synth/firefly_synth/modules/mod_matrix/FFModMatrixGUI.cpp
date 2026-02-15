@@ -407,7 +407,7 @@ MakeModMatrixAllSlotsGUI(FFPlugGUI* plugGUI)
   auto innerLeftMargin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, leftGrid);
   auto outerLeftGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   outerLeftGrid->Add(0, 0, innerLeftMargin);
-  outerLeftGrid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::Border);
+  outerLeftGrid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBorder);
   mainGrid->Add(0, 0, outerLeftGrid);
   auto rightGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { { 7, 13 } }, std::vector<int> { { 1 } });
   rightGrid->Add(0, 0, plugGUI->StoreComponent<FBModuleComponent>(
@@ -419,7 +419,7 @@ MakeModMatrixAllSlotsGUI(FFPlugGUI* plugGUI)
   auto innerRightMargin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, rightGrid);
   auto outerRightGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
   outerRightGrid->Add(0, 0, innerRightMargin);
-  outerRightGrid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::Border);
+  outerRightGrid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBorder);
   mainGrid->Add(0, 1, outerRightGrid);
   return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, mainGrid);
 }

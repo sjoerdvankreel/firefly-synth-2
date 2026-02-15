@@ -12,7 +12,7 @@ class FBPlugGUI;
 enum class FBGridSectionMark
 {
   DefaultBackground,
-  Border,
+  DefaultBorder,
   Alternate,
   BackgroundAndBorder,
   BackgroundAndAlternate,
