@@ -799,7 +799,7 @@ FBPlugGUI::SetupOverlayGUI()
   auto overlayCloseSection = StoreComponent<FBMarginComponent>(this, false, true, true, true, overlayClose);
   _overlayGrid->Add(0, 2, overlayCloseSection);
 
-  _overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::AlternateAndAlternate);
+  _overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::AlternateBackgroundAlternateBorder);
   _overlayContent = StoreComponent<FBContentComponent>();
   _overlayInnerMargin = StoreComponent<FBMarginComponent>(this, true, true, true, true, _overlayContent);
   _overlayGrid->Add(1, 0, 1, 3, _overlayInnerMargin);

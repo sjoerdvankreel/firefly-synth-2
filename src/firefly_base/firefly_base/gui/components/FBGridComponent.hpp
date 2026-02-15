@@ -16,7 +16,7 @@ enum class FBGridSectionMark
   AlternateBorder,
   DefaultBackgroundDefaultBorder,
   DefaultBackgroundAlternateBorder,
-  AlternateAndAlternate
+  AlternateBackgroundAlternateBorder
 };
 
 struct FBGridCell final
