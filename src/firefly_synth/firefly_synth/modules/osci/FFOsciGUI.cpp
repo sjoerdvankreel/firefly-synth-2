@@ -390,6 +390,17 @@ MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, margin);
 }
 
+static Component*
+MakeOsciDetail(FBPlugGUI* plugGUI, int moduleSlot)
+{
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0 });
+  grid->Add(0, 0, MakeOsciSectionWave(plugGUI, moduleSlot));
+  grid->Add(0, 0, MakeOsciSectionFM(plugGUI, moduleSlot));
+  grid->Add(0, 0, MakeOsciSectionString(plugGUI, moduleSlot));
+  grid->Add(0, 0, MakeOsciSectionExtAudio(plugGUI, moduleSlot));
+  return grid;
+}
+
 Component*
 FFMakeOsciGUI(FBPlugGUI* plugGUI)
 {
@@ -414,8 +425,7 @@ FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
   auto name = plugGUI->HostContext()->Topo()->modules[index].name;
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1 });
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
-  auto content = plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "booyah " + std::to_string(moduleSlot)); // todo
-  grid->Add(0, 0, content);
+  grid->Add(0, 0, MakeOsciDetail(plugGUI, moduleSlot));
   grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::BackgroundAndAlternate);
   tabs->AddTab(name, true, margin);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, tabs);
