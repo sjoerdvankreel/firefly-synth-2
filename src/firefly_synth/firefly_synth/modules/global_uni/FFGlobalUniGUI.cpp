@@ -230,7 +230,7 @@ MakeGlobalUniContent(
         [](FBTheme const& t) { return t.global.unisonSchemeFollowsModule; },
         plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag, false)));
     }
-    grid->MarkSection({ { guiRow, 1 + 9 }, { 1, FFGlobalUniMaxCount } }, FBGridSectionMark::DefaultBackground, 3.0f, r == uniTargetCount / 2 - 1? 2: 0);
+    grid->MarkSection({ { guiRow, 1 + 9 }, { 1, FFGlobalUniMaxCount } }, FBGridSectionMark::DefaultBackground, { true, 3.0f, r == uniTargetCount / 2 - 1 ? 2 : 0 });
   }
  
   return grid;

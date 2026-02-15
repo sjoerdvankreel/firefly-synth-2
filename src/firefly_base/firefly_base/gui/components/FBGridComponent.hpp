@@ -33,12 +33,18 @@ struct FBGridSection final
   FBGridCell span = {};
 };
 
-struct FBGridSectionAndMark final 
+struct FBGridSectionDetails final
 {
-  int marginR = 0;
+  bool roundCorners = true;
   float cornerSize = 3.0f;
+  int marginR = 0;
+};
+
+struct FBGridSectionMarkDetails final 
+{
   FBGridSection section = {};
   FBGridSectionMark mark = {};
+  FBGridSectionDetails details = {};
 };
 
 struct FBGridChildrenAndSpan final
@@ -62,7 +68,7 @@ public IFBHorizontalAutoSize
 
   juce::Grid _grid = {};
   std::map<FBGridCell, FBGridChildrenAndSpan> _cells = {};
-  std::vector<FBGridSectionAndMark> _sectionsAndMarks = {};
+  std::vector<FBGridSectionMarkDetails> _sectionMarkDetails = {};
 
   int FixedRowHeight(int row) const;
   int FixedColWidth(int col, int height) const;
@@ -77,7 +83,9 @@ public:
   void Add(int row, int col, juce::Component* child);
   void Remove(int row, int col, juce::Component* child);
   void Add(int row, int col, int rowSpan, int colSpan, juce::Component* child);
-  void MarkSection(FBGridSection const& section, FBGridSectionMark mark = FBGridSectionMark::DefaultBackground, float cornerSize = 3.0f, int marginR = 0);
+  void MarkSection(FBGridSection const& section);
+  void MarkSection(FBGridSection const& section, FBGridSectionMark mark);
+  void MarkSection(FBGridSection const& section, FBGridSectionMark mark, FBGridSectionDetails const& details);
 
   FBGridComponent() = delete;
   FBGridComponent(FBPlugGUI* plugGUI, bool rowColGap, int rows, int cols);
