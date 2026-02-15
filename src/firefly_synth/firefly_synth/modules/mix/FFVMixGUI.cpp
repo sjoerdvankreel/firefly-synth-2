@@ -95,7 +95,7 @@ MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
       grid->Add(row, colStart + 1 + e, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
     }
   }
-  grid->MarkSection({ { 0, 0 }, { 2, FFVMixOsciToVFXCount / 2 + 2 } }, FBGridSectionMark::BackgroundAndAlternate);
+  grid->MarkSection({ { 0, 0 }, { 2, FFVMixOsciToVFXCount / 2 + 2 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
   return grid;
 }
 
@@ -178,7 +178,7 @@ MakeVMixGUISectionAmpBalAndOsciMixToOut(FBPlugGUI* plugGUI)
   oscMixToOutGrid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Osc Mix\U00002192Out"));
   oscMixToOutGrid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, oscMixToOut, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(1, 4, oscMixToOutGrid);
-  grid->MarkSection({ { 0, 0 }, { 2, 5 } }, FBGridSectionMark::BackgroundAndAlternate);
+  grid->MarkSection({ { 0, 0 }, { 2, 5 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
   return grid;
 }
 

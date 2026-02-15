@@ -33,7 +33,7 @@ MakeSettingsSectionMain(FBPlugGUI* plugGUI)
   auto softClip = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::AutoSoftClip, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, softClip));
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, softClip));
-  grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::BackgroundAndAlternate);
+  grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
   return grid;
 }
 

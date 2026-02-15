@@ -148,7 +148,7 @@ MakeEchoSectionMain(
   auto sync = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Sync, 0 } });
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
-  grid->MarkSection({ { 0, 0 }, { 2, 7 } }, FBGridSectionMark::BackgroundAndAlternate);
+  grid->MarkSection({ { 0, 0 }, { 2, 7 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
   return grid;
 }
 
@@ -240,7 +240,7 @@ MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
   auto hpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackHPRes, 0 } });
   grid->Add(1, 11, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
   grid->Add(1, 12, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 13 } }, FBGridSectionMark::BackgroundAndAlternate);
+  grid->MarkSection({ { 0, 0 }, { 2, 13 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
   return grid;
 }
 

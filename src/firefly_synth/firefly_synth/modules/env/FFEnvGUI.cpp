@@ -167,7 +167,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
   auto showMSEG = plugGUI->StoreComponent<FBParamValueLinkedButton>(plugGUI, type, "MSEG", [](int v) { return v != 0; });
   showMSEG->setTooltip("Show MSEG Editor");
   grid->Add(1, 6, 1, 2, showMSEG);
-  grid->MarkSection({ { 0, 0 }, { 2, 8 } }, FBGridSectionMark::BackgroundAndAlternate);
+  grid->MarkSection({ { 0, 0 }, { 2, 8 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
 
   auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
   std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot);
@@ -230,7 +230,7 @@ MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
     lower->Add(0, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, level, Slider::SliderStyle::RotaryVerticalDrag));
     auto slope = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } });
     lower->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slope, Slider::SliderStyle::RotaryVerticalDrag));
-    grid->MarkSection({ { 0, 1 + i }, { 2, 1 } }, i % 2 == 0? FBGridSectionMark::BackgroundAndAlternate: FBGridSectionMark::DefaultBackgroundDefaultBorder);
+    grid->MarkSection({ { 0, 1 + i }, { 2, 1 } }, i % 2 == 0? FBGridSectionMark::DefaultBackgroundAlternateBorder : FBGridSectionMark::DefaultBackgroundDefaultBorder);
   }
   return grid;
 }

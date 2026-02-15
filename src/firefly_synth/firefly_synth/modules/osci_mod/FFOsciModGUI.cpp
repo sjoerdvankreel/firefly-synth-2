@@ -28,7 +28,7 @@ FFMakeOsciModGUISectionMain(FBPlugGUI* plugGUI)
   auto expoFM = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::ExpoFM, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, expoFM));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, expoFM));
-  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, FBGridSectionMark::BackgroundAndAlternate);
+  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
   return grid;
 }
 
@@ -57,7 +57,7 @@ FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI)
     grid->Add(1, i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::LinearHorizontal));
   }
   grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  grid->MarkSection({ { 0, 3 }, { 2, 6 } }, FBGridSectionMark::BackgroundAndAlternate);
+  grid->MarkSection({ { 0, 3 }, { 2, 6 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
   grid->MarkSection({ { 0, 9 }, { 2, 9 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
   return grid;
 }
