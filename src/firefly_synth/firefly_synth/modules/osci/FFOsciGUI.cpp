@@ -408,5 +408,14 @@ FFMakeOsciGUI(FBPlugGUI* plugGUI)
 Component*
 FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  return plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "booyah " + std::to_string(moduleSlot)); // todo
+  FB_LOG_ENTRY_EXIT();
+  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>(plugGUI);
+  int index = plugGUI->HostContext()->Topo()->moduleTopoToRuntime.at({ (int)FFModuleType::Osci, moduleSlot });
+  auto name = plugGUI->HostContext()->Topo()->modules[index].name;
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1 });
+  auto content = plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "booyah " + std::to_string(moduleSlot)); // todo
+  grid->Add(0, 0, content);
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::BackgroundAndAlternate);
+  tabs->AddTab(name, true, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, tabs);
 }
