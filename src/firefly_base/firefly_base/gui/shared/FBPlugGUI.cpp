@@ -803,7 +803,7 @@ FBPlugGUI::SetupOverlayGUI()
   _overlayContent = StoreComponent<FBContentComponent>();
   _overlayInnerMargin = StoreComponent<FBMarginComponent>(this, true, true, true, true, _overlayContent);
   _overlayGrid->Add(1, 0, 1, 3, _overlayInnerMargin);
-  _overlayGrid->MarkSection({ { 1, 0 }, { 1, 3 } }, FBGridSectionMark::Alternate);
+  _overlayGrid->MarkSection({ { 1, 0 }, { 1, 3 } }, FBGridSectionMark::AlternateBorder);
   _overlayModule = StoreComponent<FBModuleComponent>(HostContext()->Topo());
   _overlayOuterMargin = StoreComponent<FBMarginComponent>(this, true, true, true, true, _overlayModule, true);
 }

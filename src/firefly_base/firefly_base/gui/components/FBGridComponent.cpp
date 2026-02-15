@@ -266,7 +266,7 @@ FBGridComponent::paint(Graphics& g)
       g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).gridAlternateBackground);
       g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionsAndMarks[i].cornerSize);
     }
-    if (_sectionsAndMarks[i].mark == FBGridSectionMark::Alternate ||
+    if (_sectionsAndMarks[i].mark == FBGridSectionMark::AlternateBorder ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::BackgroundAndAlternate ||
       _sectionsAndMarks[i].mark == FBGridSectionMark::AlternateAndAlternate)
     {
