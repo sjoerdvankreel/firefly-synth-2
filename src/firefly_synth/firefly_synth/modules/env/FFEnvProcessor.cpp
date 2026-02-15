@@ -156,9 +156,8 @@ FFEnvProcessor::BeginVoice(
 int
 FFEnvProcessor::Process(
   FBModuleProcState& state, FFEnvExchangeState const* exchangeFromDSP, 
-  bool graph, bool mainGraph, int releaseAt)
+  bool graph, int releaseAt)
 {
-  (void)mainGraph;// todo
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& procParams = procState->param.voice.env[state.moduleSlot];

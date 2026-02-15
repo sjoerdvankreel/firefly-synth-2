@@ -232,7 +232,7 @@ EnvGraphProcessor::Process(
 {
   auto* moduleProcState = state->ModuleProcState();
   auto const* exchangeFromDSP = GetEnvExchangeState(state, params.exchange, params.exchangeVoice);
-  return GetProcessor(*moduleProcState).Process(*moduleProcState, exchangeFromDSP, true, !params.detailGraphs, -1);
+  return GetProcessor(*moduleProcState).Process(*moduleProcState, exchangeFromDSP, true, -1);
 }
 
 FBSArray<float, FBFixedBlockSamples> const*
@@ -268,23 +268,31 @@ EnvGraphProcessor::ProcessExchangeState(
   FBGraphRenderState* graphState, FBModuleGraphData& data, 
   FBModuleGraphProcessParams const& params, FBModuleProcExchangeStateBase const* exchangeState)
 {
+  EnvDetails details = {};
   auto envExchange = dynamic_cast<FFEnvExchangeState const*>(exchangeState);
+  GetEnvelopeDetails(graphState, params.exchange, params.exchangeVoice, details);
+
   if (!params.detailGraphs)
   {
-    // TODO data.exchangeMainText = FBToStringHz(lfoExchange->rates[0], 2);
+    data.exchangeMainText = FBToStringSeconds(details.all.sectionLengthSeconds, 3);
     data.exchangeGainValue = std::max(data.exchangeGainValue, envExchange->output);
     return;
   }
-
-  // TODO data.exchangeMainText = FBToStringHz(lfoExchange->rates[params.graphIndex], 2);
-  EnvDetails details = {};
-  GetEnvelopeDetails(graphState, params.exchange, params.exchangeVoice, details);
   if (params.graphIndex == (int)EnvSection::AttackDecay)
+  {
+    data.exchangeMainText = FBToStringSeconds(details.attackDecay.sectionLengthSeconds, 3);
     data.exchangeGainValue = std::max(data.exchangeGainValue, envExchange->outputAttack);
+  }
   else if (params.graphIndex == (int)EnvSection::Loop)
+  {
+    data.exchangeMainText = FBToStringSeconds(details.loop.sectionLengthSeconds, 3);
     data.exchangeGainValue = std::max(data.exchangeGainValue, envExchange->outputLoop);
+  }
   else if (params.graphIndex == (int)EnvSection::Release)
+  {
+    data.exchangeMainText = FBToStringSeconds(details.release.sectionLengthSeconds, 3);
     data.exchangeGainValue = std::max(data.exchangeGainValue, envExchange->outputRelease);
+  }
   else
     FB_ASSERT(false);
 }
