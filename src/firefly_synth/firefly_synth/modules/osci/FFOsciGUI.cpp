@@ -142,8 +142,9 @@ MakeOsciSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  int rowCount = FFOsciWaveBasicCount + FFOsciWavePWCount + 2;
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0, 0, 0 }, std::vector<int> { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int>(rowCount, 0), std::vector<int> { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 });
   for (int i = 0; i < FFOsciWaveBasicCount; i++)
   {
     auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WaveBasicMode, i } });
@@ -199,6 +200,8 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(offset, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, decay));
     grid->Add(offset, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, decay, Slider::SliderStyle::RotaryVerticalDrag));
   }
+  for (int i = 0; i < rowCount; i += 2)
+    grid->MarkSection({ { i, 0 }, { 1, 10 } }, FBGridSectionMark::AlternateAndAlternate);
 
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
