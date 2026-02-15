@@ -32,10 +32,6 @@ public FBModuleProcSingleExchangeState
   float outputLoop = {};
   float outputAttack = {};
   float outputRelease = {};
-  float totalLengthSeconds = {};
-  float loopLengthSeconds = {};
-  float attackLengthSeconds = {};
-  float releaseLengthSeconds = {};
   float portaSectionAmpAttack = {};
   float portaSectionAmpRelease = {};
 
