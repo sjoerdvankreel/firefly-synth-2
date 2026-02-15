@@ -344,14 +344,16 @@ FFPlugGUI::SetupGUI()
 
   _matrix = FFMakeModMatrixGUI(this);
   _globalUni = FFMakeGlobalUniGUI(this, _graphRenderState.get(), &_fixedGraphs);
-  _main = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 1 } });
-  _main->Add(0, 0, _topModules);
-  _main->Add(1, 0, FFMakeMixGUI(this));
-  _main->Add(2, 0, FFMakeOsciGUI(this));
-  _main->Add(3, 0, FFMakeEffectGUI(this));
-  _main->Add(4, 0, FFMakeEchoGUI(this));
-  _main->Add(5, 0, FFMakeLFOGUI(this));
-  _main->Add(6, 0, FFMakeEnvGUI(this, _msegEditors));
+  _main = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 64, 15 } });
+  _main->Add(0, 0, 1, 2, _topModules);
+  _main->Add(1, 0, 1, 1, FFMakeMixGUI(this));
+  _main->Add(2, 0, 1, 1, FFMakeOsciGUI(this));
+  _main->Add(3, 0, 1, 1, FFMakeEffectGUI(this));
+  _main->Add(4, 0, 1, 1, FFMakeEchoGUI(this));
+  _main->Add(5, 0, 1, 1, FFMakeLFOGUI(this));
+  _main->Add(6, 0, 1, 1, FFMakeEnvGUI(this, _msegEditors));
+  _detailContent = StoreComponent<FBContentComponent>();
+  _main->Add(1, 1, 6, 1, _detailContent);
 
   _tabs = StoreComponent<FBAutoSizeTabComponent>(this, true);
   _tabs->addTab("MAIN", Colours::black, StoreComponent<FBMarginComponent>(this, false, false, true, false, _main), false);

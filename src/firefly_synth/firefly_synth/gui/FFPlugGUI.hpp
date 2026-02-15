@@ -8,11 +8,14 @@
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleGUI.hpp>
+#include <firefly_synth/shared/FFPlugTopo.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBContentComponent.hpp>
 
+#include <array>
 #include <memory>
 #include <vector>
 
@@ -55,6 +58,10 @@ public FBPlugGUI
   FBModuleGraphComponent* _envMainGraph = {};
   FBModuleGraphComponent* _lfoMainGraph = {};
   FBModuleGraphComponent* _echoMainGraph = {};
+
+  FBContentComponent* _detailContent = {};
+  std::array<juce::Component*, FFOsciCount> _osciDetails = {};
+
   std::vector<FBMSEGEditor*> _msegEditors = {};
   std::vector<FBModuleGraphComponent*> _fixedGraphs = {};
   std::unique_ptr<FFEnvParamListener> _envParamListener = {};

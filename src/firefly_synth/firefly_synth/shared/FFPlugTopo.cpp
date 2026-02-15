@@ -55,9 +55,9 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   auto result = std::make_unique<FFStaticTopo>();
   result->meta = FFPlugMeta(format, isFX);
   result->maxUndoSize = 15;
-  result->guiWidth = 1280;
+  result->guiWidth = 1280 + 300; // todo
   result->guiAspectRatioWidth = 128;
-  result->guiAspectRatioHeight = 75;
+  result->guiAspectRatioHeight = 61;
   result->patchExtension = "ff2preset";    
   result->patchFilterName = "FF2 Presets";                            
   result->defaultThemeName = "Firefly Dark Hot";          

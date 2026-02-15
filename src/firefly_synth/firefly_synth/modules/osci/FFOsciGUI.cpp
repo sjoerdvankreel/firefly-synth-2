@@ -404,3 +404,9 @@ FFMakeOsciGUI(FBPlugGUI* plugGUI)
   tabs->ActivateStoredSelectedTab();
   return tabs;
 }
+
+Component*
+FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
+{
+  return plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "booyah " + std::to_string(moduleSlot)); // todo
+}

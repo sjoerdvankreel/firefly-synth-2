@@ -20,5 +20,10 @@ public:
 
 juce::Component*
 FFMakeOsciGUI(FBPlugGUI* plugGUI);
-bool FFOsciAdjustParamModulationGUIBounds(
-FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm);
+juce::Component*
+FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot);
+
+bool
+FFOsciAdjustParamModulationGUIBounds(
+  FBHostGUIContext const* ctx, int index, 
+  float& currentMinNorm, float& currentMaxNorm);
