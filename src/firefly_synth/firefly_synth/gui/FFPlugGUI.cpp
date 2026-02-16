@@ -389,5 +389,6 @@ FFPlugGUI::SetupGUI()
   _voiceModuleParamListener = std::make_unique<FFVoiceModuleParamListener>(this);
   _envParamListener = std::make_unique<FFEnvParamListener>(this, _msegEditors);
 
-  addAndMakeVisible(_container);
+  _containerMargin = StoreComponent<FBMarginComponent>(this, true, true, true, true, _container);
+  addAndMakeVisible(_containerMargin);
 }

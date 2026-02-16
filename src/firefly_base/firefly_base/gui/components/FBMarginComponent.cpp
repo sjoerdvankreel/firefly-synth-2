@@ -3,7 +3,7 @@
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 
-static int const MarginX = 1;
+static int const MarginX = 2;
 static int const MarginY = 2;
 
 using namespace juce;

@@ -13,6 +13,7 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBContentComponent.hpp>
 
 #include <array>
@@ -48,6 +49,7 @@ public FBPlugGUI
   FBGridComponent* _container = {};
   FBGridComponent* _topModules = {};
   FBAutoSizeTabComponent* _tabs = {};
+  FBMarginComponent* _containerMargin = {};
   FBGridComponent* _mainAndDetailGraphs = {};
   FBGridComponent* _outputOtherAndPatch = {};
   FBGridComponent* _guiSettingsAndTweak = {};
