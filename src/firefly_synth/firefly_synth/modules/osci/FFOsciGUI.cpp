@@ -403,7 +403,7 @@ MakeOsciDetail(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 0, MakeOsciSectionFM(plugGUI, moduleSlot));
   grid->Add(0, 0, MakeOsciSectionString(plugGUI, moduleSlot));
   grid->Add(0, 0, MakeOsciSectionExtAudio(plugGUI, moduleSlot));
-  return grid;
+  return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, true, false, grid);
 }
 
 Component*

@@ -93,7 +93,7 @@ void
 FBAutoSizeTabComponent::AddTab(
   std::string const& header, bool centerText, Component* component)
 {
-  addTab(header, Colours::black, component, false);
+  addTab(header, Colours::transparentBlack, component, false);
   auto button = getTabbedButtonBar().getTabButton(getTabbedButtonBar().getNumTabs() - 1);
   auto& fbTabButton = dynamic_cast<FBTabBarButton&>(*button);
   fbTabButton.centerText = centerText;
