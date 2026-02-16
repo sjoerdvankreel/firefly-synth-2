@@ -149,7 +149,7 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
   for (int i = 0; i < FFOsciWaveBasicCount; i++)
   {
     auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WaveBasicMode, i } });
-    grid->Add(i, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode, true, true));
+    grid->Add(i, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode));
     grid->Add(i, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
     auto gain = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WaveBasicGain, i } });
     grid->Add(i, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
@@ -159,7 +159,7 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
   {
     int offset = FFOsciWaveBasicCount;
     auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WavePWMode, i } });
-    grid->Add(i + offset, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode, true, true));
+    grid->Add(i + offset, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode));
     grid->Add(i + offset, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
     auto gain = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WavePWGain, i } });
     grid->Add(i + offset, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
@@ -171,7 +171,7 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
   {
     int offset = FFOsciWaveBasicCount + FFOsciWavePWCount;
     auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WaveHSMode, 0 } });
-    grid->Add(offset, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode, true, true));
+    grid->Add(offset, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode));
     grid->Add(offset, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
     auto gain = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WaveHSGain, 0 } });
     grid->Add(offset, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
@@ -183,7 +183,7 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
   {
     int offset = FFOsciWaveBasicCount + FFOsciWavePWCount + 1;
     auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WaveDSFMode, 0  } });
-    grid->Add(offset, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode, true, true));
+    grid->Add(offset, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode));
     grid->Add(offset, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
     auto gain = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WaveDSFGain, 0 } });
     grid->Add(offset, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
@@ -430,5 +430,6 @@ FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
   auto name = plugGUI->HostContext()->Topo()->modules[index].name;
   tabs->AddTab(name, true, MakeOsciDetail(plugGUI, moduleSlot));
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, tabs);
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, card);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, card);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, margin);
 }
