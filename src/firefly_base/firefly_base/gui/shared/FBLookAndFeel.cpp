@@ -162,22 +162,18 @@ FBLookAndFeel::DrawTabButtonPart(
   bool isSeparator, std::string const& text,
   Rectangle<int> const& activeArea)
 {
+  auto const& scheme = FindColorSchemeFor(button);
   bool isHeader = button.getTabbedButtonBar().getNumTabs() == 1;
 
-  auto const& scheme = FindColorSchemeFor(button);
-  if (isHeader)
-    g.setColour(scheme.headerBackground);
-  else if (isSeparator)      
+  if (isSeparator)      
     g.setColour(scheme.paramSecondary);
-  else if (toggleState)
+  else if (toggleState || isHeader)
     g.setColour(scheme.activeTabBackground);
   else
     g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(activeArea.toFloat(), 3.0f);
 
-  if (isHeader)
-    g.setColour(scheme.headerBorder);
-  else if(toggleState || isMouseOver)
+  if(isHeader || toggleState || isMouseOver)
     g.setColour(scheme.primary);
   else
     g.setColour(scheme.sectionBorder);  
