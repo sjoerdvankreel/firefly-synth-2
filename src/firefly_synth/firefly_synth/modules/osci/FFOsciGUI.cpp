@@ -425,11 +425,15 @@ Component*
 FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>(plugGUI);
   int index = plugGUI->HostContext()->Topo()->moduleTopoToRuntime.at({ (int)FFModuleType::Osci, moduleSlot });
   auto name = plugGUI->HostContext()->Topo()->modules[index].name;
-  tabs->AddTab(name, true, MakeOsciDetail(plugGUI, moduleSlot));
-  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, tabs);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1 });
+
+  //  FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, bool centred = false, bool isPrimary = false, bool small = false);
+
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, name, false, true, false));
+  grid->Add(1, 0, MakeOsciDetail(plugGUI, moduleSlot));
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, card);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, margin);
 }
