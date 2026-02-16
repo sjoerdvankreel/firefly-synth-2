@@ -429,10 +429,12 @@ FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
   auto name = plugGUI->HostContext()->Topo()->modules[index].name;
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1 });
 
+  // todo
   //  FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, bool centred = false, bool isPrimary = false, bool small = false);
 
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, name, false, true, false));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, name));
   grid->Add(1, 0, MakeOsciDetail(plugGUI, moduleSlot));
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::AlternateBackground);
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, card);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, margin);
