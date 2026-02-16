@@ -14,6 +14,7 @@
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
+#include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
@@ -201,7 +202,7 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(offset, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, decay, Slider::SliderStyle::RotaryVerticalDrag));
   }
   for (int i = 0; i < rowCount; i += 2)
-    grid->MarkSection({ { i, 0 }, { 1, 10 } }, FBGridSectionMark::AlternateBackground);
+    grid->MarkSection({ { i, 0 }, { 1, 10 } }, FBGridSectionMark::AlternateBackground, { false, 0.0f, 0 });
 
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
@@ -427,10 +428,7 @@ FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
   auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>(plugGUI);
   int index = plugGUI->HostContext()->Topo()->moduleTopoToRuntime.at({ (int)FFModuleType::Osci, moduleSlot });
   auto name = plugGUI->HostContext()->Topo()->modules[index].name;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1 });
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
-  grid->Add(0, 0, MakeOsciDetail(plugGUI, moduleSlot));
-  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
-  tabs->AddTab(name, true, margin);
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, tabs);
+  tabs->AddTab(name, true, MakeOsciDetail(plugGUI, moduleSlot));
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, tabs);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, card);
 }

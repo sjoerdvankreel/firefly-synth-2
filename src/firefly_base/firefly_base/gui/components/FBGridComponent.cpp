@@ -270,26 +270,38 @@ FBGridComponent::paint(Graphics& g)
       _sectionMarkDetails[i].mark == FBGridSectionMark::DefaultBackgroundAlternateBorder)
     {
       g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).sectionBackground);
-      g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionMarkDetails[i].details.cornerSize);
+      if (_sectionMarkDetails[i].details.roundCorners)
+        g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionMarkDetails[i].details.cornerSize);
+      else
+        g.fillRect(x0, y0, x1 - x0 - subtractR, y1 - y0);
     }
     if (_sectionMarkDetails[i].mark == FBGridSectionMark::AlternateBackground ||
       _sectionMarkDetails[i].mark == FBGridSectionMark::AlternateBackgroundAlternateBorder)
     {
       g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).gridAlternateBackground);
-      g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionMarkDetails[i].details.cornerSize);
+      if (_sectionMarkDetails[i].details.roundCorners)
+        g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionMarkDetails[i].details.cornerSize);
+      else
+        g.fillRect(x0, y0, x1 - x0 - subtractR, y1 - y0);
     }
     if (_sectionMarkDetails[i].mark == FBGridSectionMark::AlternateBorder ||
       _sectionMarkDetails[i].mark == FBGridSectionMark::DefaultBackgroundAlternateBorder ||
       _sectionMarkDetails[i].mark == FBGridSectionMark::AlternateBackgroundAlternateBorder)
     {
       g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).primary.withAlpha(0.25f));
-      g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionMarkDetails[i].details.cornerSize, lineThickness);
+      if (_sectionMarkDetails[i].details.roundCorners)
+        g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionMarkDetails[i].details.cornerSize, lineThickness);
+      else
+        g.drawRect(x0, y0, x1 - x0 - subtractR, y1 - y0, lineThickness);
     }
     if (_sectionMarkDetails[i].mark == FBGridSectionMark::DefaultBorder ||
       _sectionMarkDetails[i].mark == FBGridSectionMark::DefaultBackgroundDefaultBorder)
     {
       g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).sectionBorder.withAlpha(0.125f));
-      g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionMarkDetails[i].details.cornerSize, lineThickness);
+      if (_sectionMarkDetails[i].details.roundCorners)
+        g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionMarkDetails[i].details.cornerSize, lineThickness);
+      else
+        g.drawRect(x0, y0, x1 - x0 - subtractR, y1 - y0, lineThickness);
     }      
   }
-} 
+}
