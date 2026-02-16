@@ -202,7 +202,7 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(offset, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, decay, Slider::SliderStyle::RotaryVerticalDrag));
   }
   for (int i = 0; i < rowCount; i += 2)
-    grid->MarkSection({ { i, 0 }, { 1, 10 } }, FBGridSectionMark::AlternateBackground, { false, 0.0f, 0 });
+    grid->MarkSection({ { i, 0 }, { 1, 10 } }, FBGridSectionMark::AlternateBackground);
 
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
