@@ -807,7 +807,7 @@ FBLookAndFeel::drawRotarySlider(
   if (paramSlider != nullptr)
   { 
     if (paramSlider->IsHighlightTweaked())
-    {
+    {         
       g.setColour(scheme.paramHighlight);
       g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
     }

@@ -50,9 +50,9 @@
       "gridAlternateBackground": "FF550015"
     },
     "Orange": {
-      "primary": "FFFF8010",
-      "headerText": "FFFF8010",
-      "headerBorder": "FFFF8010",
+      "primary": "FFFF8020",
+      "headerText": "FFFF8020",
+      "headerBorder": "FFFF8020",
       "sliderModBounds": "FF984C09",
       "buttonBackground": "FF984C09",
       "activeTabBackground": "FF984C09",
