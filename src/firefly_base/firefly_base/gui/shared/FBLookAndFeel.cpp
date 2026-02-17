@@ -185,7 +185,7 @@ FBLookAndFeel::DrawTabButtonPart(
   float depth = area.getHeight();   
 
   // todo drop scheme.headerText
-  auto textColor = scheme.text2.darker(isSeparator || isMouseOver || toggleState || isHeader ? 0.0f : scheme.dimDisabled);
+  auto textColor = scheme.text2;
   ::CreateTabTextLayout(button, length, textColor, GetFont(), centerText, text, textLayout);
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));
   textLayout.draw(g, Rectangle<float>(length, depth));
@@ -483,7 +483,7 @@ FBLookAndFeel::drawLabel(
   }
       
   if (isCombo)
-    colorText = scheme->primary.darker(cb->isEnabled() ? 0.0f : scheme->dimDisabled);
+    colorText = scheme->primary;
   else if (label.findParentComponentOfClass<FBFileBrowserComponent>())
     colorText = scheme->text;
 
@@ -538,7 +538,7 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   {
     if (paramCombo->IsFlashDisabling())
     {
-      g.setColour(scheme.primary.withMultipliedAlpha(0.5f));
+      g.setColour(Colours::white.withMultipliedAlpha(0.5f));
       g.fillRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize);
     }
     if (paramCombo->IsHighlightTweaked())
@@ -582,7 +582,7 @@ FBLookAndFeel::drawTickBox(
 
   if (ticked)
   {
-    g.setColour(scheme.primary.darker(component.isEnabled()? 0.0f: scheme.dimDisabled));
+    g.setColour(scheme.primary);
     DrawCross(g, tickBounds.reduced(6.0f, 6.0f));
   }
 }
@@ -659,7 +659,7 @@ FBLookAndFeel::drawLinearSlider(
     }
   }
 
-  g.setColour(scheme.primary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
+  g.setColour(scheme.primary); // todo get rid of the paint disabled everywhere
   g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
   g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
   if (paramSlider != nullptr)
@@ -706,7 +706,7 @@ FBLookAndFeel::drawButtonText(
   auto const& scheme = FindColorSchemeFor(button);
   Font font(getTextButtonFont(button, button.getHeight()));
   g.setFont(font);
-  g.setColour(button.isEnabled() ? scheme.text2 : scheme.text2.darker(scheme.dimDisabled));
+  g.setColour(scheme.text2);
 
   const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
   const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
@@ -801,7 +801,7 @@ FBLookAndFeel::drawRotarySlider(
   auto thumbWidth = lineW * 2.0f;
   Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(scheme.primary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
+  g.setColour(scheme.primary);
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 
   if (paramSlider != nullptr)

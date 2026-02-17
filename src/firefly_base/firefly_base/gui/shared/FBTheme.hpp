@@ -30,8 +30,8 @@ struct FBThemeResources
 
 struct FBColorScheme
 {
+  // todo get rid of dimdisabled in all theme files
   float graphAlpha = {};
-  float dimDisabled = {};
   juce::Colour text = {};
   juce::Colour text2 = {};
   juce::Colour background = {};

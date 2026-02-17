@@ -562,7 +562,7 @@ FBMSEGCanvas::paint(Graphics& g)
   path.lineTo(_currentPointsScreen[_currentPointsScreen.size() - 1].getX(), zeroPointScreenY);
   path.closeSubPath();
   
-  auto fillColor = scheme.primary.darker(_model.enabled ? 0.0f : scheme.dimDisabled);
+  auto fillColor = scheme.primary;
   g.setColour(fillColor.withAlpha(scheme.graphAlpha));
   g.fillPath(path);
   g.setColour(fillColor);

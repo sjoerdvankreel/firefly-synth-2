@@ -197,15 +197,6 @@ ParseDefaultColorScheme(
 {
   result = {};
 
-  if (!RequireDoubleProperty(obj, "dimDisabled"))
-    return false;
-  result.dimDisabled = (float)(double)obj->getProperty("dimDisabled");
-  if (result.dimDisabled < 0.0 || result.dimDisabled > 1.0)
-  {
-    FB_LOG_ERROR("Dim disabled should be between 0 and 1.");
-    return false;
-  }
-
   if (!RequireDoubleProperty(obj, "graphAlpha"))
     return false;
   result.graphAlpha = (float)(double)obj->getProperty("graphAlpha");
@@ -330,15 +321,6 @@ ParseColorScheme(
 {
   result = {};
   bool present = false;
-
-  if (!OptionalDoubleProperty(obj, "dimDisabled", present))
-    return false;
-  result.dimDisabled = present ? (float)(double)obj->getProperty("dimDisabled") : defaultScheme.dimDisabled;
-  if (result.dimDisabled < 0.0 || result.dimDisabled > 1.0)
-  {
-    FB_LOG_ERROR("Dim disabled should be between 0 and 1.");
-    return false;
-  }
 
   if (!OptionalDoubleProperty(obj, "graphAlpha", present))
     return false;
