@@ -461,17 +461,24 @@ FBLookAndFeel::drawLabel(
   else
   {
     auto autoSizeLabel = dynamic_cast<FBAutoSizeLabel*>(&label);
-    if (autoSizeLabel && autoSizeLabel->Colors() == FBLabelColors::PrimaryBackground)
+    if (autoSizeLabel)
     {
-      hasBackground2 = true;
-      g.setColour(scheme->primary.darker(1.0f));
-      auto newRect = Rectangle<int>(
-        label.getLocalBounds().getX() + 2,
-        label.getLocalBounds().getY() + 2,
-        label.getLocalBounds().getWidth() - 2,
-        label.getLocalBounds().getHeight() - 4);
-      g.fillRoundedRectangle(newRect.toFloat(), 2.0f);
-      colorText = scheme->text2;
+      if (autoSizeLabel->Colors() == FBLabelColors::PrimaryBackground)
+      {
+        hasBackground2 = true; // todo get rid of this crap
+        g.setColour(scheme->primary.darker(1.0f));
+        auto newRect = Rectangle<int>(
+          label.getLocalBounds().getX() + 2,
+          label.getLocalBounds().getY() + 2,
+          label.getLocalBounds().getWidth() - 2,
+          label.getLocalBounds().getHeight() - 4);
+        g.fillRoundedRectangle(newRect.toFloat(), 2.0f);
+        colorText = scheme->text2;
+      }
+      else if (autoSizeLabel->Colors() == FBLabelColors::PrimaryForeground)
+      {
+        colorText = scheme->primary;
+      }
     }
   }
       
