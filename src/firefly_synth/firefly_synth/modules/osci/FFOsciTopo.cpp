@@ -381,8 +381,8 @@ FFMakeOsciTopo()
   auto& wavePWMode = result->params[(int)FFOsciParam::WavePWMode];
   wavePWMode.mode = FBParamMode::Block;
   wavePWMode.defaultText = "Off";
-  wavePWMode.name = "PW Mode";
-  wavePWMode.display = "PW";
+  wavePWMode.name = "PWM Mode";
+  wavePWMode.display = "PWM";
   wavePWMode.slotFormatDisplay = true;
   wavePWMode.slotCount = FFOsciWavePWCount;
   wavePWMode.slotFormatter = FFFormatBlockSlot;
@@ -447,7 +447,7 @@ FFMakeOsciTopo()
   waveHSMode.mode = FBParamMode::Block;
   waveHSMode.defaultText = "Off";
   waveHSMode.name = "Hard Sync Mode";
-  waveHSMode.display = "HSync";
+  waveHSMode.display = "Hard Sync";
   waveHSMode.slotFormatDisplay = true;
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";
