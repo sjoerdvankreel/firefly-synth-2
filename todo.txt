@@ -14,8 +14,9 @@ v2.1.1
 [x] less points for the graphs
 [x] get rid of the env graph markers if we do ad/s/r?
 [x] detail graphs for env = ADSR
+[ ] up the default fontsize once we have the room for it
 [ ] hunt down all the stuff thats a modification of ffa040
-[ ] make "show tweaked from xyz" into a button with menu for temporary hilite
+[ ] make "show tweaked from xyz" into a button with menu for temporary hilite??
 [ ] check what scheme colors are being used
 [ ] hilite mouseover/active tab, not dim the others
 [ ] get rid off all the various primaryxyz theme values, stick to 1
