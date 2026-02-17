@@ -263,8 +263,7 @@ FBGridComponent::paint(Graphics& g)
       if (_grid.items[j].column.end.getNumber() == _sectionMarkDetails[i].section.pos.col + _sectionMarkDetails[i].section.span.col + 1)
         x1 = static_cast<float>(_grid.items[j].associatedComponent->getRight());
     }
-    float subtractR = i == _sectionMarkDetails.size() - 1 ? 0.0f : 2.0f;
-    subtractR += _sectionMarkDetails[i].details.marginR;
+    float subtractR = (float)_sectionMarkDetails[i].details.marginR; // todo get rid of it
     if (_sectionMarkDetails[i].mark == FBGridSectionMark::DefaultBackground ||
       _sectionMarkDetails[i].mark == FBGridSectionMark::DefaultBackgroundDefaultBorder ||
       _sectionMarkDetails[i].mark == FBGridSectionMark::DefaultBackgroundAlternateBorder)
