@@ -166,7 +166,7 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(i + offset, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
     auto pw = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WavePWPW, i } });
     grid->Add(i + offset, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, pw));
-    grid->Add(i + offset, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, pw, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(i + offset, 5, 1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, pw, Slider::SliderStyle::LinearHorizontal));
   }
   {
     int offset = FFOsciWaveBasicCount + FFOsciWavePWCount;
@@ -178,7 +178,7 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(offset, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
     auto pitch = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WaveHSPitch, 0 } });
     grid->Add(offset, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, pitch));
-    grid->Add(offset, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, pitch, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(offset, 5, 1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, pitch, Slider::SliderStyle::LinearHorizontal));
   }
   {
     int offset = FFOsciWaveBasicCount + FFOsciWavePWCount + 1;
