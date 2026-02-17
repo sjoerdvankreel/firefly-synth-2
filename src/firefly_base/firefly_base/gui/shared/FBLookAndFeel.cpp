@@ -536,15 +536,15 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
   if (paramCombo != nullptr)
   {
-    if (paramCombo->IsFlashDisabling())
-    {
-      g.setColour(Colours::white.withMultipliedAlpha(0.5f));
-      g.fillRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize);
-    }
     if (paramCombo->IsHighlightTweaked())
     {
       g.setColour(scheme.paramHighlight);
       g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+    }
+    if (paramCombo->IsFlashDisabling())
+    {
+      g.setColour(Colours::white.withAlpha(0.5f));
+      g.fillRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize);
     }
   }
 }
@@ -568,15 +568,15 @@ FBLookAndFeel::drawTickBox(
   auto* paramToggle = dynamic_cast<FBParamToggleButton*>(&component);
   if (paramToggle != nullptr)
   {
-    if (paramToggle->IsFlashDisabling())
-    {
-      g.setColour(scheme.primary.withMultipliedAlpha(0.5f));
-      g.fillRoundedRectangle(tickBounds, 2.0f);
-    }
     if (paramToggle->IsHighlightTweaked())
     {
       g.setColour(scheme.paramHighlight);
       g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
+    }
+    if (paramToggle->IsFlashDisabling())
+    {
+      g.setColour(Colours::white.withAlpha(0.5f));
+      g.fillRoundedRectangle(tickBounds, 2.0f);
     }
   }
 
@@ -664,16 +664,16 @@ FBLookAndFeel::drawLinearSlider(
   g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
   if (paramSlider != nullptr)
   {
-    if (paramSlider->IsFlashDisabling())
-    {
-      g.setColour(scheme.primary.withMultipliedAlpha(0.5f));
-      g.fillRoundedRectangle((float)x, thumbY, (float)width, thumbH, 2.0f);
-    }
     if (paramSlider->IsHighlightTweaked())
     {
       g.setColour(scheme.paramHighlight);
       g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
       g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
+    }
+    if (paramSlider->IsFlashDisabling())
+    {
+      g.setColour(Colours::white.withAlpha(0.5f));
+      g.fillRoundedRectangle((float)x, thumbY, (float)width, thumbH, 2.0f);
     }
   }
 }
@@ -806,17 +806,17 @@ FBLookAndFeel::drawRotarySlider(
 
   if (paramSlider != nullptr)
   { 
-    if (paramSlider->IsFlashDisabling())
-    {
-      g.setColour(scheme.primary.withMultipliedAlpha(0.5f));
-      g.fillEllipse(bounds.toFloat().reduced(0.5f, 0.5f));
-    }
     if (paramSlider->IsHighlightTweaked())
     {
       g.setColour(scheme.paramHighlight);
       g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
     }
-  } 
+    if (paramSlider->IsFlashDisabling())
+    {
+      g.setColour(Colours::white.withAlpha(0.5f));
+      g.fillEllipse(bounds.toFloat().reduced(0.5f, 0.5f));
+    }
+  }
 }
 
 juce::Rectangle<int> 
