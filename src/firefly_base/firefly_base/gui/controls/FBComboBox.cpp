@@ -58,7 +58,7 @@ FBAutoSizeComboBox::ThemeChanged()
 int 
 FBAutoSizeComboBox::FixedHeight() const
 {
-  return 24;
+  return FBPrimaryHeight;
 }
 
 int

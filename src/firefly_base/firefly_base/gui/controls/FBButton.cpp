@@ -20,7 +20,7 @@ _text(text)
 int 
 FBAutoSizeButton::FixedHeight() const
 {
-  return 24;
+  return FBPrimaryHeight;
 }
 
 int 

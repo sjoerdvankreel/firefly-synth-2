@@ -23,7 +23,7 @@ _small(small)
 int 
 FBAutoSizeLabel::FixedHeight() const
 {
-  return 20;
+  return FBPrimaryHeight;
 }
 
 int 
@@ -42,7 +42,7 @@ _fixedWidth(fixedWidth) { }
 int
 FBAutoSizeLabel2::FixedHeight() const
 {
-  return 20;
+  return FBPrimaryHeight;
 }
 
 int

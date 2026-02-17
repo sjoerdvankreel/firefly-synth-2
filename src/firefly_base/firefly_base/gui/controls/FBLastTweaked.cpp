@@ -45,7 +45,7 @@ FBLastTweakedLabel::ThemeChanged()
 int
 FBLastTweakedLabel::FixedHeight() const
 {
-  return 20;
+  return FBPrimaryHeight;
 }
 
 int
@@ -117,7 +117,7 @@ _fixedWidth(fixedWidth), _plugGUI(plugGUI)
 int
 FBLastTweakedTextBox::FixedHeight() const
 {
-  return 24;
+  return FBPrimaryHeight;
 }
 
 int

@@ -23,7 +23,7 @@ _fixedWidth(fixedWidth), _plugGUI(plugGUI)
 int
 FBInstanceNameEditor::FixedHeight() const
 {
-  return 24;
+  return FBPrimaryHeight;
 }
 
 int

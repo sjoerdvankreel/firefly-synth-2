@@ -6,6 +6,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 inline int constexpr FBGUIFPS = 30;
+inline int constexpr FBPrimaryHeight = 24;
 
 class FBPlugGUI;
 class FBLookAndFeel;
