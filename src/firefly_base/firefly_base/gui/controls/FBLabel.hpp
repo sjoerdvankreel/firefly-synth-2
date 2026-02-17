@@ -19,14 +19,12 @@ public IFBHorizontalAutoSize
   std::string const _text;
   bool const _isPrimary;
   bool const _small;
-  bool const _big;
 public:
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
-  bool Big() const { return _big; }
   bool Small() const { return _small; }
   bool IsPrimary() const { return _isPrimary; }
-  FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, bool centred = false, bool isPrimary = false, bool small = false, bool big = false);
+  FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, bool centred = false, bool isPrimary = false, bool small = false);
 };
 
 class FBAutoSizeLabel2:

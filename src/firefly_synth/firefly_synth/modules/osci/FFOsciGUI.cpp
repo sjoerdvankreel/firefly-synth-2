@@ -428,7 +428,7 @@ FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
   int index = plugGUI->HostContext()->Topo()->moduleTopoToRuntime.at({ (int)FFModuleType::Osci, moduleSlot });
   auto name = plugGUI->HostContext()->Topo()->modules[index].name;
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, name, true, true, false, false));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, name));
   grid->Add(1, 0, MakeOsciDetail(plugGUI, moduleSlot));
   grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::AlternateBackground);
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);

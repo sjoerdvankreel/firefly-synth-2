@@ -436,7 +436,6 @@ FBLookAndFeel::drawLabel(
 
   bool isCombo = false;
   ComboBox* cb = nullptr;
-  bool big = false;
   bool small = false;
   bool hasBackground = false;
   bool hasBackground2 = false;
@@ -463,22 +462,18 @@ FBLookAndFeel::drawLabel(
   else
   {
     auto autoSizeLabel = dynamic_cast<FBAutoSizeLabel*>(&label);
-    if (autoSizeLabel)
+    if (autoSizeLabel && autoSizeLabel->IsPrimary())
     {
-      big = autoSizeLabel->Big();
+      hasBackground2 = true;
       small = autoSizeLabel->Small();
-      if (autoSizeLabel->IsPrimary())
-      {
-        hasBackground2 = true;
-        g.setColour(scheme->primary.darker(1.0f));
-        auto newRect = Rectangle<int>(
-          label.getLocalBounds().getX() + 2,
-          label.getLocalBounds().getY() + 2,
-          label.getLocalBounds().getWidth() - 2 - (small ? 4 : 0) + (big ? 4 : 0),
-          label.getLocalBounds().getHeight() - 4);
-        g.fillRoundedRectangle(newRect.toFloat(), 2.0f);
-        colorText = scheme->text2;
-      }
+      g.setColour(scheme->primary.darker(1.0f));
+      auto newRect = Rectangle<int>(
+        label.getLocalBounds().getX() + 2,
+        label.getLocalBounds().getY() + 2,
+        label.getLocalBounds().getWidth() - 2 - (small? 4: 0),
+        label.getLocalBounds().getHeight() - 4);
+      g.fillRoundedRectangle(newRect.toFloat(), 2.0f);
+      colorText = scheme->text2;
     }
   }
       
@@ -487,10 +482,7 @@ FBLookAndFeel::drawLabel(
   else if (label.findParentComponentOfClass<FBFileBrowserComponent>())
     colorText = scheme->text;
 
-  auto font = getLabelFont(label);
-  if (big)
-    font = font.withHeight(font.getHeight() + 2.0f);
-  g.setFont(font);
+  g.setFont(getLabelFont(label));
   g.setColour(colorText);
   auto textArea = getLabelBorderSize(label).subtractedFrom(label.getLocalBounds());
   if (hasBackground)
@@ -500,7 +492,7 @@ FBLookAndFeel::drawLabel(
     textArea = Rectangle<int>(
       textArea.getX() + 2,
       textArea.getY() + 2,
-      textArea.getWidth() - 2 - (small? 4: 0) + (big? 4: 0),
+      textArea.getWidth() - 2 - (small? 4: 0),
       textArea.getHeight() - 4);
   }
   g.drawText(label.getText(), textArea, label.getJustificationType(), false);

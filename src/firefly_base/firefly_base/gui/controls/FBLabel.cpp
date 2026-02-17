@@ -6,14 +6,13 @@
 using namespace juce;
 
 FBAutoSizeLabel::
-FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, bool centred, bool isPrimary, bool small, bool big):
+FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, bool centred, bool isPrimary, bool small):
 Label(),
 IFBHorizontalAutoSize(),
 _plugGUI(plugGUI),
 _text(text),
 _isPrimary(isPrimary),
-_small(small),
-_big(big)
+_small(small)
 {
   setText(text, dontSendNotification);
   setBorderSize({ 1, 2, 1, 2 });
