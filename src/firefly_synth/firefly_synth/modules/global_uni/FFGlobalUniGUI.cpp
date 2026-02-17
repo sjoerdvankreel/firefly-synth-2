@@ -91,7 +91,7 @@ MakeGlobalUniVoices(
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0 });
   auto voiceCount = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount, true, true));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount, true, FBLabelColors::PrimaryBackground));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, voiceCount, std::to_string(FFGlobalUniMaxCount)));
   grid->MarkSection({ { 0, 0, }, { 1, 3 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
@@ -133,7 +133,7 @@ MakeGlobalUniContent(
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, rowSizes, columnSizes);
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Target"));
   auto mode0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, 0 } });
-  grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, mode0->static_.display, false, true));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, mode0->static_.display, false, FBLabelColors::PrimaryBackground));
   auto opType0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, opType0->static_.name));
   grid->Add(0, 3, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Out"));
@@ -141,7 +141,7 @@ MakeGlobalUniContent(
   grid->MarkSection({ { 0, 0 }, { 1, 5 } });
 
   auto spread0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, 0 } });
-  grid->Add(0, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, spread0->static_.display, false, true));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, spread0->static_.display, false, FBLabelColors::PrimaryBackground));
   auto skew0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSkew, 0 } });
   grid->Add(0, 6, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, skew0->static_.display));
   auto rand0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRand, 0 } });
@@ -153,7 +153,7 @@ MakeGlobalUniContent(
   grid->MarkSection({ { 0, 5 }, { 1, 5 } });
 
   for (int i = 0; i < FFGlobalUniMaxCount; i++)
-    grid->Add(0, i + 1 + 9, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, std::to_string(i + 1), true, true));
+    grid->Add(0, i + 1 + 9, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, std::to_string(i + 1), true, FBLabelColors::PrimaryBackground));
   grid->MarkSection({ { 0, 1 + 9 }, { 1, FFGlobalUniMaxCount } });
 
   for (int r = 0; r < uniTargetCount / 2; r++)

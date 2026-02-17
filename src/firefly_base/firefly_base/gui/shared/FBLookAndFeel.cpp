@@ -461,7 +461,7 @@ FBLookAndFeel::drawLabel(
   else
   {
     auto autoSizeLabel = dynamic_cast<FBAutoSizeLabel*>(&label);
-    if (autoSizeLabel && autoSizeLabel->IsPrimary())
+    if (autoSizeLabel && autoSizeLabel->Colors() == FBLabelColors::PrimaryBackground)
     {
       hasBackground2 = true;
       g.setColour(scheme->primary.darker(1.0f));

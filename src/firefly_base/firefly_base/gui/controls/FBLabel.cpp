@@ -6,12 +6,12 @@
 using namespace juce;
 
 FBAutoSizeLabel::
-FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, bool centred, bool isPrimary):
+FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, bool centred, FBLabelColors colors):
 Label(),
 IFBHorizontalAutoSize(),
 _plugGUI(plugGUI),
 _text(text),
-_isPrimary(isPrimary)
+_colors(colors)
 {
   setText(text, dontSendNotification);
   setBorderSize({ 1, 2, 1, 2 });
@@ -28,7 +28,7 @@ FBAutoSizeLabel::FixedHeight() const
 int 
 FBAutoSizeLabel::FixedWidth(int /*height*/) const
 {
-  return getBorderSize().getLeftAndRight() + FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text) + (_isPrimary ? 2 : 0);
+  return getBorderSize().getLeftAndRight() + FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text);
 }
 
 FBAutoSizeLabel2::
@@ -51,8 +51,8 @@ FBAutoSizeLabel2::FixedWidth(int /*height*/) const
 }
 
 FBGUIParamLabel::
-FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed, bool isPrimary) :
-FBAutoSizeLabel(plugGUI, param->displayName, false, isPrimary),
+FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed, FBLabelColors colors) :
+FBAutoSizeLabel(plugGUI, param->displayName, false, colors),
 FBGUIParamComponent(plugGUI, param, isThemed) {}
 
 void
@@ -62,8 +62,8 @@ FBGUIParamLabel::parentHierarchyChanged()
 }
 
 FBParamLabel::
-FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed, bool isPrimary):
-FBAutoSizeLabel(plugGUI, param->displayName, false, isPrimary),
+FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed, FBLabelColors colors):
+FBAutoSizeLabel(plugGUI, param->displayName, false, colors),
 FBParamComponent(plugGUI, param, isThemed) {}
 
 void 
@@ -73,8 +73,8 @@ FBParamLabel::parentHierarchyChanged()
 }
 
 FBParamLinkedLabel::
-FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isPrimary, std::string text):
-FBAutoSizeLabel(plugGUI, text, false, isPrimary),
+FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string text, FBLabelColors colors):
+FBAutoSizeLabel(plugGUI, text, false, colors),
 FBParamsDependent(plugGUI, param->topoIndices.param.slot, param->topoIndices.module, param->static_.dependencies) {}
 
 void 
