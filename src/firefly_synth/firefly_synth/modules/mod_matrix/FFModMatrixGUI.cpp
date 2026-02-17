@@ -224,15 +224,15 @@ static void
 AddMatrixHeaderRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r)
 {
   grid->Add(r, 0, 1, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, global? "Global": "Voice"));
-  grid->Add(r, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Op", false, true, true));
-  grid->Add(r, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Source", false, true, true));
+  grid->Add(r, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Op", false, true));
+  grid->Add(r, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Source", false, true));
   grid->Add(r, 6, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Inv"));
   grid->Add(r, 7, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Lo"));
   grid->Add(r, 8, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Hi"));
-  grid->Add(r, 9, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Scale", false, true, true));
+  grid->Add(r, 9, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Scale", false, true));
   grid->Add(r, 10, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Min"));
   grid->Add(r, 11, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Max"));
-  grid->Add(r, 12, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Target", false, true, true));
+  grid->Add(r, 12, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Target", false, true));
   grid->Add(r, 13, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Amt"));
 }
 

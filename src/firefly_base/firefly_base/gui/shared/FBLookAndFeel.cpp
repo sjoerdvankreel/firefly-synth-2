@@ -436,7 +436,6 @@ FBLookAndFeel::drawLabel(
 
   bool isCombo = false;
   ComboBox* cb = nullptr;
-  bool small = false;
   bool hasBackground = false;
   bool hasBackground2 = false;
   auto const* scheme = &FindColorSchemeFor(label);
@@ -465,12 +464,11 @@ FBLookAndFeel::drawLabel(
     if (autoSizeLabel && autoSizeLabel->IsPrimary())
     {
       hasBackground2 = true;
-      small = autoSizeLabel->Small();
       g.setColour(scheme->primary.darker(1.0f));
       auto newRect = Rectangle<int>(
         label.getLocalBounds().getX() + 2,
         label.getLocalBounds().getY() + 2,
-        label.getLocalBounds().getWidth() - 2 - (small? 4: 0),
+        label.getLocalBounds().getWidth() - 2,
         label.getLocalBounds().getHeight() - 4);
       g.fillRoundedRectangle(newRect.toFloat(), 2.0f);
       colorText = scheme->text2;
@@ -492,7 +490,7 @@ FBLookAndFeel::drawLabel(
     textArea = Rectangle<int>(
       textArea.getX() + 2,
       textArea.getY() + 2,
-      textArea.getWidth() - 2 - (small? 4: 0),
+      textArea.getWidth() - 2,
       textArea.getHeight() - 4);
   }
   g.drawText(label.getText(), textArea, label.getJustificationType(), false);
