@@ -879,8 +879,8 @@ FFMakeOsciTopo()
   auto& stringLPKTrk = result->params[(int)FFOsciParam::StringLPKTrk];
   stringLPKTrk.mode = FBParamMode::Accurate;
   stringLPKTrk.defaultText = "0";
-  stringLPKTrk.name = "String LP KTrk";
-  stringLPKTrk.display = "KTrk";
+  stringLPKTrk.name = "String LP KeyTrk";
+  stringLPKTrk.display = "KeyTrk";
   stringLPKTrk.slotCount = 1;
   stringLPKTrk.unit = "%";
   stringLPKTrk.id = "{C6EFCD36-256A-4F2C-B772-D5966460E893}";
@@ -946,8 +946,8 @@ FFMakeOsciTopo()
   auto& stringHPKTrk = result->params[(int)FFOsciParam::StringHPKTrk];
   stringHPKTrk.mode = FBParamMode::Accurate;
   stringHPKTrk.defaultText = "0";
-  stringHPKTrk.name = "String HP KTrk";
-  stringHPKTrk.display = "KTrk";
+  stringHPKTrk.name = "String HP KeyTrk";
+  stringHPKTrk.display = "KeyTrk";
   stringHPKTrk.slotCount = 1;
   stringHPKTrk.unit = "%";
   stringHPKTrk.id = "{61BA0D46-9BC3-496C-A004-671F3465142E}";
@@ -981,8 +981,8 @@ FFMakeOsciTopo()
   auto& stringDampKTrk = result->params[(int)FFOsciParam::StringDampKTrk];
   stringDampKTrk.mode = FBParamMode::Accurate;
   stringDampKTrk.defaultText = "0";
-  stringDampKTrk.name = "String Damp KTrk";
-  stringDampKTrk.display = "KTrk";
+  stringDampKTrk.name = "String Damp KeyTrk";
+  stringDampKTrk.display = "KeyTrk";
   stringDampKTrk.slotCount = 1;
   stringDampKTrk.unit = "%";
   stringDampKTrk.id = "{5B4F67F9-30E9-482C-922A-33F5CB7F5A1F}";
@@ -1000,8 +1000,8 @@ FFMakeOsciTopo()
   auto& stringFeedback = result->params[(int)FFOsciParam::StringFeedback];
   stringFeedback.mode = FBParamMode::Accurate;
   stringFeedback.defaultText = "100";
-  stringFeedback.name = "String Fdbk";
-  stringFeedback.display = "Fdbk";
+  stringFeedback.name = "String Feedback";
+  stringFeedback.display = "Feedback";
   stringFeedback.slotCount = 1;
   stringFeedback.unit = "%";
   stringFeedback.id = "{280B9667-8DA5-4DD6-B7CD-695DF38AA857}";
@@ -1016,8 +1016,8 @@ FFMakeOsciTopo()
   auto& stringFeedbackKTrk = result->params[(int)FFOsciParam::StringFeedbackKTrk];
   stringFeedbackKTrk.mode = FBParamMode::Accurate;
   stringFeedbackKTrk.defaultText = "0";
-  stringFeedbackKTrk.name = "String Fdbk KTrk";
-  stringFeedbackKTrk.display = "KTrk";
+  stringFeedbackKTrk.name = "String Feedback KeyTrk";
+  stringFeedbackKTrk.display = "KeyTrk";
   stringFeedbackKTrk.slotCount = 1;
   stringFeedbackKTrk.unit = "%";
   stringFeedbackKTrk.id = "{239389B7-52BC-437F-909C-184621F69E79}";
