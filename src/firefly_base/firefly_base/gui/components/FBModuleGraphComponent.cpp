@@ -87,15 +87,41 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
 
   auto const& staticTopo = StaticModuleFor(moduleIndex);
   int graphCount = _detailGraphs ? staticTopo.detailGraphCount : 1;
-  if (_graphCount != graphCount)
+  FBModuleGraphLayout layout = _detailGraphs ? staticTopo.detailGraphLayout : FBModuleGraphLayout::LeftToRight;
+  if (_graphCount != graphCount || _layout != layout)
   {
+    _layout = layout;
     _graphCount = graphCount;
+
+    int rows = 0;
+    int cols = 0;
+    if (_layout == FBModuleGraphLayout::LeftToRight)
+    {
+      rows = 1;
+      cols = graphCount;
+    }
+    else if (_layout == FBModuleGraphLayout::TopToBottom)
+    {
+      cols = 1;
+      rows = graphCount;
+    }
+    else if (_layout == FBModuleGraphLayout::Grid)
+    {
+      rows = (int)std::ceil(std::sqrt((float)graphCount));
+      cols = (int)std::ceil(graphCount / (float)rows);
+    }
+    else
+      FB_ASSERT(false);
+
     removeChildComponent(_grid.get());
-    _grid = std::make_unique<FBGridComponent>(_plugGUI, true, 1, _graphCount);
+    _grid = std::make_unique<FBGridComponent>(_plugGUI, true, rows, cols);
     _cards.clear();
     _titles.clear();
     _displays.clear();
     _displayAndTitleGrids.clear();
+
+    int r = 0;
+    int c = 0;
     for (int i = 0; i < graphCount; i++)
     {
       auto title = std::make_unique<FBModuleGraphTitleComponent>(_plugGUI, _data.get(), i);
@@ -104,11 +130,18 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
       displayAndTitleGrid->Add(0, 0, display.get());
       displayAndTitleGrid->Add(1, 0, title.get());
       auto card = std::make_unique<FBCardComponent>(_plugGUI, displayAndTitleGrid.get());
-      _grid->Add(0, i, card.get());
+      _grid->Add(r, c, card.get());
       _cards.emplace_back(std::move(card));
       _titles.emplace_back(std::move(title));
       _displays.emplace_back(std::move(display));
       _displayAndTitleGrids.emplace_back(std::move(displayAndTitleGrid));
+      
+      c++;
+      if (c == cols)
+      {
+        c = 0;
+        r++;
+      }
     }
     addAndMakeVisible(_grid.get());
     resized();

@@ -13,6 +13,13 @@ class FBPlugGUI;
 struct FBModuleGraphComponentData;
 struct FBModuleProcExchangeStateBase;
 
+enum class FBModuleGraphLayout
+{
+  LeftToRight,
+  TopToBottom,
+  Grid
+};
+
 typedef std::function<FBModuleProcExchangeStateBase* (
   int moduleSlot, void* state)>
 FBGlobalModuleExchangeAddrSelector;
@@ -35,6 +42,7 @@ struct FBStaticModule final
   FBModuleGraphRenderer graphRenderer = {};
   FBModuleSlotFormatter slotFormatter = {};
   FBModuleSlotFormatter tabSlotFormatter = {};
+  FBModuleGraphLayout detailGraphLayout = {};
   std::vector<FBStaticParam> params = {};
   std::vector<FBStaticGUIParam> guiParams = {};
   std::vector<FBStaticCVOutput> cvOutputs = {};

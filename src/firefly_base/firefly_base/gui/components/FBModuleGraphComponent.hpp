@@ -29,6 +29,7 @@ public juce::Component
 
   int _graphCount = -1;
   int _tweakedModuleByUI = -1;
+  FBModuleGraphLayout _layout = {};
   std::unique_ptr<FBGridComponent> _grid = {};
   std::function<FBGUIRenderType()> _getCurrentRenderType;
 
