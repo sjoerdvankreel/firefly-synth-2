@@ -60,6 +60,7 @@ FFMakeOsciTopo()
   result->name = "Osc";
   result->slotCount = FFOsciCount;
   result->detailGraphCount = FFOsciCount;
+  result->detailGraphUpperLowerText = true;
   result->detailGraphLayout = FBModuleGraphLayout::Grid;
   result->graphRenderer = FFOsciRenderGraph;
   result->id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";

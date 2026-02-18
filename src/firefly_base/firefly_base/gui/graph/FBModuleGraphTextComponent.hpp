@@ -10,13 +10,21 @@
 class FBPlugGUI;
 struct FBModuleGraphComponentData;
 
-class FBModuleGraphTitleComponent final:
+enum class FBModuleGraphTextType
+{
+  TitleGain,
+  Main,
+  Both
+};
+
+class FBModuleGraphTextComponent:
 public juce::Component,
 public IFBVerticalAutoSize
 {
   FBPlugGUI* const _plugGUI;
   FBModuleGraphComponentData const* const _data;
   int const _graphIndex;
+  FBModuleGraphTextType _textType;
 
   std::string _mainText = {};
   std::string _titleAndGainText = {};
@@ -24,7 +32,13 @@ public IFBVerticalAutoSize
   std::chrono::high_resolution_clock::time_point _updated = {};
 
 public:
+
+  FBModuleGraphTextComponent(
+    FBPlugGUI* plugGUI, 
+    FBModuleGraphComponentData const* data, 
+    int graphIndex,
+    FBModuleGraphTextType textType);
+
   int FixedHeight() const override;
   void paint(juce::Graphics& g) override;
-  FBModuleGraphTitleComponent(FBPlugGUI* plugGUI, FBModuleGraphComponentData const* data, int graphIndex);
 };

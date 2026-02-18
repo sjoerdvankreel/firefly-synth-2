@@ -39,6 +39,7 @@ struct FBStaticModule final
   int detailGraphCount = 0;
   bool slotFormatterOverrides = {};
   bool graphParticipatesInMain = true;
+  bool detailGraphUpperLowerText = false;
   FBModuleGraphRenderer graphRenderer = {};
   FBModuleSlotFormatter slotFormatter = {};
   FBModuleSlotFormatter tabSlotFormatter = {};

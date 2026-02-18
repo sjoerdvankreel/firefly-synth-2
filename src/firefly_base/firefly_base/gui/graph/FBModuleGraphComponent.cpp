@@ -116,26 +116,43 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
     removeChildComponent(_grid.get());
     _grid = std::make_unique<FBGridComponent>(_plugGUI, true, rows, cols);
     _cards.clear();
-    _titles.clear();
     _displays.clear();
-    _displayAndTitleGrids.clear();
+    _upperTexts.clear();
+    _lowerTexts.clear();
+    _displayAndTextGrids.clear();
 
     int r = 0;
     int c = 0;
     for (int i = 0; i < graphCount; i++)
     {
-      auto title = std::make_unique<FBModuleGraphTitleComponent>(_plugGUI, _data.get(), i);
+      std::unique_ptr<FBGridComponent> displayAndTextGrid = {};
       auto display = std::make_unique<FBModuleGraphDisplayComponent>(_plugGUI, _data.get(), i);
-      auto displayAndTitleGrid = std::make_unique<FBGridComponent>(_plugGUI, true, std::vector<int> { 1, 0 }, std::vector<int> { 1 });
-      displayAndTitleGrid->Add(0, 0, display.get());
-      displayAndTitleGrid->Add(1, 0, title.get());
-      auto card = std::make_unique<FBCardComponent>(_plugGUI, displayAndTitleGrid.get());
+      if (staticTopo.detailGraphUpperLowerText)
+      {
+        auto upperText = std::make_unique<FBModuleGraphTextComponent>(_plugGUI, _data.get(), i, FBModuleGraphTextType::TitleGain);
+        auto lowerText = std::make_unique<FBModuleGraphTextComponent>(_plugGUI, _data.get(), i, FBModuleGraphTextType::Main);
+        displayAndTextGrid = std::make_unique<FBGridComponent>(_plugGUI, true, std::vector<int> { 0, 1, 0 }, std::vector<int> { 1 });
+        displayAndTextGrid->Add(0, 0, upperText.get());
+        displayAndTextGrid->Add(1, 0, display.get());
+        displayAndTextGrid->Add(2, 0, lowerText.get());
+        _upperTexts.emplace_back(std::move(upperText));
+        _lowerTexts.emplace_back(std::move(lowerText));
+      }
+      else
+      {
+        auto text = std::make_unique<FBModuleGraphTextComponent>(_plugGUI, _data.get(), i, FBModuleGraphTextType::Both);
+        displayAndTextGrid = std::make_unique<FBGridComponent>(_plugGUI, true, std::vector<int> { 1, 0 }, std::vector<int> { 1 });
+        displayAndTextGrid->Add(0, 0, display.get());
+        displayAndTextGrid->Add(1, 0, text.get());
+        _lowerTexts.emplace_back(std::move(text));
+      }
+
+      auto card = std::make_unique<FBCardComponent>(_plugGUI, displayAndTextGrid.get());
       _grid->Add(r, c, card.get());
       _cards.emplace_back(std::move(card));
-      _titles.emplace_back(std::move(title));
       _displays.emplace_back(std::move(display));
-      _displayAndTitleGrids.emplace_back(std::move(displayAndTitleGrid));
-      
+      _displayAndTextGrids.emplace_back(std::move(displayAndTextGrid));
+
       c++;
       if (c == cols)
       {

@@ -13,7 +13,7 @@ class FBGridComponent;
 class FBCardComponent;
 class FBMarginComponent;
 class FBGraphRenderState;
-class FBModuleGraphTitleComponent;
+class FBModuleGraphTextComponent;
 class FBModuleGraphDisplayComponent;
 
 struct FBTopoIndices;
@@ -37,9 +37,10 @@ public juce::Component
   int const _fixedToGraphIndex;
   std::unique_ptr<FBModuleGraphComponentData> _data;
   std::vector<std::unique_ptr<FBCardComponent>> _cards = {};
-  std::vector<std::unique_ptr<FBModuleGraphTitleComponent>> _titles = {};
+  std::vector<std::unique_ptr<FBModuleGraphTextComponent>> _upperTexts = {};
+  std::vector<std::unique_ptr<FBModuleGraphTextComponent>> _lowerTexts = {};
   std::vector<std::unique_ptr<FBModuleGraphDisplayComponent>> _displays = {};
-  std::vector<std::unique_ptr<FBGridComponent>> _displayAndTitleGrids = {};
+  std::vector<std::unique_ptr<FBGridComponent>> _displayAndTextGrids = {};
   std::chrono::high_resolution_clock::time_point _updated = {};
 
   bool PrepareForRender(int moduleIndex);

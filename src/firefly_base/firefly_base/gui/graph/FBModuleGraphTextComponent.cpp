@@ -6,19 +6,24 @@ using namespace juce;
 
 static int const GainSlidingWindowSize = 10;
 
-FBModuleGraphTitleComponent::
-FBModuleGraphTitleComponent(FBPlugGUI* plugGUI, FBModuleGraphComponentData const* data, int graphIndex):
-_plugGUI(plugGUI), _data(data), _graphIndex(graphIndex) {}
+FBModuleGraphTextComponent::
+FBModuleGraphTextComponent(
+  FBPlugGUI* plugGUI, 
+  FBModuleGraphComponentData const* data, 
+  int graphIndex, 
+  FBModuleGraphTextType textType):
+_plugGUI(plugGUI), _data(data), 
+_graphIndex(graphIndex), _textType(textType) {}
 
 int 
-FBModuleGraphTitleComponent::FixedHeight() const
+FBModuleGraphTextComponent::FixedHeight() const
 {
   auto lnf = FBGetLookAndFeelFor(_plugGUI);
   return lnf->GetFontHeight() + 4;
 }
 
 void 
-FBModuleGraphTitleComponent::paint(Graphics& g)
+FBModuleGraphTextComponent::paint(Graphics& g)
 {
   float fps = 10.0f; // no need to run at 60, it distracts
   auto now = std::chrono::high_resolution_clock::now();
@@ -65,6 +70,8 @@ FBModuleGraphTitleComponent::paint(Graphics& g)
   auto const& scheme = lnf->FindColorSchemeFor(*this);
   g.setColour(scheme.text);
   g.setFont(lnf->GetFont());
-  g.drawText(_titleAndGainText, getLocalBounds(), Justification::centredLeft, false);
-  g.drawText(_mainText, getLocalBounds(), Justification::centredRight, false);
+  if(_textType == FBModuleGraphTextType::TitleGain || _textType == FBModuleGraphTextType::Both)
+    g.drawText(_titleAndGainText, getLocalBounds(), Justification::centredLeft, false);
+  if (_textType == FBModuleGraphTextType::Main || _textType == FBModuleGraphTextType::Both)
+    g.drawText(_mainText, getLocalBounds(), Justification::centredRight, false);
 }
