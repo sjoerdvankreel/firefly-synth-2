@@ -67,7 +67,7 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
     return std::make_unique<FFPlugGUI>(hostContext); };
   result->deserializationConverterFactory = [](FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo) { 
     return std::make_unique<FFDeserializationConverter>(oldVersion, topo); };
- 
+  
   result->themedComponents[(int)FFThemedComponentId::Patch].name = "Patch";
   result->themedComponents[(int)FFThemedComponentId::Patch].id = "{878D9B5E-D11E-485D-8B57-5CAC8C8B612A}";
   result->themedComponents[(int)FFThemedComponentId::MainGraphs].name = "Main Graphs";
