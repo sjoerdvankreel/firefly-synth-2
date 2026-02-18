@@ -217,7 +217,7 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[i].hasDefaultGainValue = true;
     graphData->graphs[i].defaultMainText = FBPitchToStringSemis(coarse, fine, 2, true);
 
-    if (!detailGraphs)
+    if (detailGraphs)
       graphData->graphs[i].MergeStereo();
     graphData->graphs[i].ScaleToSelfNormalized();
   }
