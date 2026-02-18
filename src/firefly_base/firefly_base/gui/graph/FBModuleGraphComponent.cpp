@@ -87,11 +87,13 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
 
   auto const& staticTopo = StaticModuleFor(moduleIndex);
   int graphCount = _detailGraphs ? staticTopo.detailGraphCount : 1;
+  bool detailGraphUpperLowerText = _detailGraphs ? staticTopo.detailGraphUpperLowerText : false;
   FBModuleGraphLayout layout = _detailGraphs ? staticTopo.detailGraphLayout : FBModuleGraphLayout::LeftToRight;
-  if (_graphCount != graphCount || _layout != layout)
+  if (_graphCount != graphCount || _layout != layout || _detailGraphUpperLowerText != detailGraphUpperLowerText)
   {
     _layout = layout;
     _graphCount = graphCount;
+    _detailGraphUpperLowerText = detailGraphUpperLowerText;
 
     int rows = 0;
     int cols = 0;
@@ -127,7 +129,7 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
     {
       std::unique_ptr<FBGridComponent> displayAndTextGrid = {};
       auto display = std::make_unique<FBModuleGraphDisplayComponent>(_plugGUI, _data.get(), i);
-      if (staticTopo.detailGraphUpperLowerText)
+      if (detailGraphUpperLowerText)
       {
         auto upperText = std::make_unique<FBModuleGraphTextComponent>(_plugGUI, _data.get(), i, FBModuleGraphTextType::TitleGain);
         auto lowerText = std::make_unique<FBModuleGraphTextComponent>(_plugGUI, _data.get(), i, FBModuleGraphTextType::Main);
