@@ -69,7 +69,7 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
 
   for (int t = 0; t < FFEchoTapCount; t++)
   {
-    grid->Add(t + 1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, std::to_string(t + 1), true));
+    grid->Add(t + 1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, std::to_string(t + 1), FBLabelAlign::Center));
     grid->MarkSection({ { t + 1, 0 }, { 1, 1 } });
 
     auto tapOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapOn, t } });

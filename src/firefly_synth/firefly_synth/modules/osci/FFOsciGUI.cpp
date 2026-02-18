@@ -13,6 +13,7 @@
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
+#include <firefly_base/gui/controls/FBParamDisplay.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
@@ -425,12 +426,15 @@ Component*
 FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
-  int index = plugGUI->HostContext()->Topo()->moduleTopoToRuntime.at({ (int)FFModuleType::Osci, moduleSlot });
-  auto name = plugGUI->HostContext()->Topo()->modules[index].name;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, FBAsciiToUpper(name), true, FBLabelColors::PrimaryForeground));
-  grid->Add(1, 0, MakeOsciDetail(plugGUI, moduleSlot));
-  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBackground);
+  auto topo = plugGUI->HostContext()->Topo();
+  int index = topo->moduleTopoToRuntime.at({ (int)FFModuleType::Osci, moduleSlot });
+  auto name = topo->modules[index].name;
+  auto type = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Type, 0 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1, 1 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, FBAsciiToUpper(name), FBLabelAlign::Right, FBLabelColors::PrimaryForeground));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, type, FFOsciTypeToString(FFOsciType::ExtAudio)));
+  grid->Add(1, 0, 1, 2, MakeOsciDetail(plugGUI, moduleSlot));
+  grid->MarkSection({ { 0, 0 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground);
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, card);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, margin);

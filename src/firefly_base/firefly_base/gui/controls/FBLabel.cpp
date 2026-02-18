@@ -6,7 +6,7 @@
 using namespace juce;
 
 FBAutoSizeLabel::
-FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, bool centred, FBLabelColors colors):
+FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, FBLabelAlign align, FBLabelColors colors):
 Label(),
 IFBHorizontalAutoSize(),
 _plugGUI(plugGUI),
@@ -15,8 +15,10 @@ _colors(colors)
 {
   setText(text, dontSendNotification);
   setBorderSize({ 1, 2, 1, 2 });
-  if (centred)
+  if (align == FBLabelAlign::Center)
     setJustificationType(Justification::centred);
+  if (align == FBLabelAlign::Right)
+    setJustificationType(Justification::centredRight);
 }
 
 int 
@@ -52,7 +54,7 @@ FBAutoSizeLabel2::FixedWidth(int /*height*/) const
 
 FBGUIParamLabel::
 FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed, FBLabelColors colors) :
-FBAutoSizeLabel(plugGUI, param->displayName, false, colors),
+FBAutoSizeLabel(plugGUI, param->displayName, FBLabelAlign::Left, colors),
 FBGUIParamComponent(plugGUI, param, isThemed) {}
 
 void
@@ -63,7 +65,7 @@ FBGUIParamLabel::parentHierarchyChanged()
 
 FBParamLabel::
 FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed, FBLabelColors colors):
-FBAutoSizeLabel(plugGUI, param->displayName, false, colors),
+FBAutoSizeLabel(plugGUI, param->displayName, FBLabelAlign::Left, colors),
 FBParamComponent(plugGUI, param, isThemed) {}
 
 void 
@@ -74,7 +76,7 @@ FBParamLabel::parentHierarchyChanged()
 
 FBParamLinkedLabel::
 FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string text, FBLabelColors colors):
-FBAutoSizeLabel(plugGUI, text, false, colors),
+FBAutoSizeLabel(plugGUI, text, FBLabelAlign::Left, colors),
 FBParamsDependent(plugGUI, param->topoIndices.param.slot, param->topoIndices.module, param->static_.dependencies) {}
 
 void 

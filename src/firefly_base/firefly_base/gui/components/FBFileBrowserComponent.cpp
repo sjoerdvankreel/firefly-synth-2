@@ -28,7 +28,7 @@ _isSave(isSave),
 _extension(extension),
 _onSelect(onSelect)
 {
-  _title = std::make_unique<FBAutoSizeLabel>(plugGUI, title, true);
+  _title = std::make_unique<FBAutoSizeLabel>(plugGUI, title, FBLabelAlign::Center);
   _okButton = std::make_unique<FBAutoSizeButton>(plugGUI, "OK");
   _okButton->onClick = [this]() { SelectFile(_browser->getSelectedFile(0)); };
   _cancelButton = std::make_unique<FBAutoSizeButton>(plugGUI, "Cancel");

@@ -10,6 +10,13 @@ class FBPlugGUI;
 struct FBRuntimeParam;
 struct FBRuntimeGUIParam;
 
+enum class FBLabelAlign
+{
+  Left,
+  Right,
+  Center
+};
+
 enum class FBLabelColors
 {
   Regular,
@@ -29,7 +36,7 @@ public:
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
   FBLabelColors Colors() const { return _colors; }
-  FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, bool centred = false, FBLabelColors colors = {});
+  FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, FBLabelAlign align = {}, FBLabelColors colors = {});
 };
 
 class FBAutoSizeLabel2:
