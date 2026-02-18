@@ -327,12 +327,12 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(4, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpKTrk));
   grid->Add(4, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpKTrk, Slider::SliderStyle::RotaryVerticalDrag));
 
-  auto color = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringColor, 0 } });
-  grid->Add(5, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, color));
-  grid->Add(5, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, color, Slider::SliderStyle::RotaryVerticalDrag));
   auto poles = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringPoles, 0 } });
-  grid->Add(5, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, poles));
-  grid->Add(5, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, poles, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(5, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, poles));
+  grid->Add(5, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, poles, Slider::SliderStyle::RotaryVerticalDrag));
+  auto color = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringColor, 0 } });
+  grid->Add(5, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, color));
+  grid->Add(5, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, color, Slider::SliderStyle::LinearHorizontal));
   auto x = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringX, 0 } });
   grid->Add(5, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, x));
   grid->Add(5, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, x, Slider::SliderStyle::RotaryVerticalDrag));
