@@ -9,8 +9,8 @@ FFOsciFMFormatRatioSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 {
   switch (itemSlot)
   {
-  case 0: return "2:1";
-  case 1: return "3:2";
+  case 0: return "Op2:Op1";
+  case 1: return "Op3:Op2";
   default: FB_ASSERT(false); return "";
   }
 }
@@ -643,11 +643,11 @@ FFMakeOsciTopo()
   auto& fmRatioMode = result->params[(int)FFOsciParam::FMRatioMode];
   fmRatioMode.mode = FBParamMode::Block;
   fmRatioMode.defaultText = "Ratio";
-  fmRatioMode.name = "FM Ratio Mode";
-  fmRatioMode.display = "Ratio";
+  fmRatioMode.name = "FM Ratio/Free";
+  fmRatioMode.display = "Ratio/Free";
   fmRatioMode.slotCount = 1;
   fmRatioMode.id = "{40838341-6882-4BF8-813F-BA5B89B3042F}";
-  fmRatioMode.description = "FM Oscillator C:M Ratio Mode";
+  fmRatioMode.description = "FM Oscillator C:M Ratio/Free";
   fmRatioMode.type = FBParamType::List;
   fmRatioMode.List().items = {
     { "{A6E83AA7-9DA3-4ECA-90DE-BCA123B48203}", "Ratio" },
