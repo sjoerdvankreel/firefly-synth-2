@@ -847,7 +847,7 @@ FFMakeOsciTopo()
   stringLPFreq.mode = FBParamMode::Accurate;
   stringLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
   stringLPFreq.name = "String LP Freq";
-  stringLPFreq.display = "Frq";
+  stringLPFreq.display = "Freq";
   stringLPFreq.slotCount = 1;
   stringLPFreq.unit = "Hz";
   stringLPFreq.id = "{F8865388-AD37-4A9F-92DC-9AAB62BCF04E}";
@@ -863,8 +863,8 @@ FFMakeOsciTopo()
   auto& stringLPRes = result->params[(int)FFOsciParam::StringLPRes];
   stringLPRes.mode = FBParamMode::Accurate;
   stringLPRes.defaultText = "0";
-  stringLPRes.name = "String LP Res";
-  stringLPRes.display = "Res";
+  stringLPRes.name = "String LP Reso";
+  stringLPRes.display = "Reso";
   stringLPRes.slotCount = 1;
   stringLPRes.unit = "%";
   stringLPRes.id = "{A0FF6017-BF7D-446C-91E6-8893A696D2BA}";
@@ -914,7 +914,7 @@ FFMakeOsciTopo()
   stringHPFreq.mode = FBParamMode::Accurate;
   stringHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   stringHPFreq.name = "String HP Freq";
-  stringHPFreq.display = "Frq";
+  stringHPFreq.display = "Freq";
   stringHPFreq.slotCount = 1;
   stringHPFreq.unit = "Hz";
   stringHPFreq.id = "{1753A4C9-BE63-4079-A875-59C35F3BC584}";
@@ -930,8 +930,8 @@ FFMakeOsciTopo()
   auto& stringHPRes = result->params[(int)FFOsciParam::StringHPRes];
   stringHPRes.mode = FBParamMode::Accurate;
   stringHPRes.defaultText = "0";
-  stringHPRes.name = "String HP Res";
-  stringHPRes.display = "Res";
+  stringHPRes.name = "String HP Reso";
+  stringHPRes.display = "Reso";
   stringHPRes.slotCount = 1;
   stringHPRes.unit = "%";
   stringHPRes.id = "{164AD99E-1C52-4302-8032-4E02F7A43224}";
@@ -1069,7 +1069,7 @@ FFMakeOsciTopo()
   extAudioLPFreq.mode = FBParamMode::Accurate;
   extAudioLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
   extAudioLPFreq.name = "Ext Audio LP Freq";
-  extAudioLPFreq.display = "Frq";
+  extAudioLPFreq.display = "Freq";
   extAudioLPFreq.slotCount = 1;
   extAudioLPFreq.unit = "Hz";
   extAudioLPFreq.id = "{E2C27D74-394C-4CB3-98C2-9EBBCDE23B6D}";
@@ -1085,8 +1085,8 @@ FFMakeOsciTopo()
   auto& extAudioLPRes = result->params[(int)FFOsciParam::ExtAudioLPRes];
   extAudioLPRes.mode = FBParamMode::Accurate;
   extAudioLPRes.defaultText = "0";
-  extAudioLPRes.name = "Ext Audio LP Res";
-  extAudioLPRes.display = "Res";
+  extAudioLPRes.name = "Ext Audio LP Reso";
+  extAudioLPRes.display = "Reso";
   extAudioLPRes.slotCount = 1;
   extAudioLPRes.unit = "%";
   extAudioLPRes.id = "{CFDA83CE-8D58-43E9-ADA8-DD67E2074B1E}";
@@ -1117,7 +1117,7 @@ FFMakeOsciTopo()
   extAudioHPFreq.mode = FBParamMode::Accurate;
   extAudioHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   extAudioHPFreq.name = "Ext Audio HP Freq";
-  extAudioHPFreq.display = "Frq";
+  extAudioHPFreq.display = "Freq";
   extAudioHPFreq.slotCount = 1;
   extAudioHPFreq.unit = "Hz";
   extAudioHPFreq.id = "{FE65BB51-F63B-464F-91B2-7E8732ADF9CC}";
@@ -1133,8 +1133,8 @@ FFMakeOsciTopo()
   auto& extAudioHPRes = result->params[(int)FFOsciParam::ExtAudioHPRes];
   extAudioHPRes.mode = FBParamMode::Accurate;
   extAudioHPRes.defaultText = "0";
-  extAudioHPRes.name = "Ext Audio HP Res";
-  extAudioHPRes.display = "Res";
+  extAudioHPRes.name = "Ext Audio HP Reso";
+  extAudioHPRes.display = "Reso";
   extAudioHPRes.slotCount = 1;
   extAudioHPRes.unit = "%";
   extAudioHPRes.id = "{F9F7A9FE-5D3D-45A9-A15D-19D80634DF10}";
