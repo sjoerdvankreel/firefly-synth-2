@@ -1,4 +1,4 @@
-#include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphComponentData.hpp>
 
 float 
 FBModuleGraphPoints::GetAbsMaxValue() const

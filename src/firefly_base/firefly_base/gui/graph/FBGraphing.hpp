@@ -5,7 +5,7 @@
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
 
 #include <firefly_base/base/state/main/FBGraphRenderState.hpp>
-#include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphComponentData.hpp>
 
 #include <vector>
 

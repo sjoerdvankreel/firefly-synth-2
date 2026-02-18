@@ -1,4 +1,4 @@
-#include <firefly_base/gui/shared/FBGraphing.hpp>
+#include <firefly_base/gui/graph/FBGraphing.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 static void 

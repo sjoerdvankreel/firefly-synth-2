@@ -3,8 +3,8 @@
 #include <firefly_synth/modules/effect/FFEffectGraph.hpp>
 #include <firefly_synth/modules/effect/FFEffectProcessor.hpp>
 
+#include <firefly_base/gui/graph/FBGraphing.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
-#include <firefly_base/gui/shared/FBGraphing.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 
 #include <bit>

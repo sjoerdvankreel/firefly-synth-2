@@ -3,8 +3,8 @@
 #include <firefly_synth/modules/global_uni/FFGlobalUniGraph.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniProcessor.hpp>
 
+#include <firefly_base/gui/graph/FBGraphing.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
-#include <firefly_base/gui/shared/FBGraphing.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 

@@ -7,10 +7,10 @@
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
-#include <firefly_base/gui/components/FBModuleGraphComponent.hpp>
-#include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
-#include <firefly_base/gui/components/FBModuleGraphTitleComponent.hpp>
-#include <firefly_base/gui/components/FBModuleGraphDisplayComponent.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphComponent.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphComponentData.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphTextComponent.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphDisplayComponent.hpp>
 
 using namespace juce;
 

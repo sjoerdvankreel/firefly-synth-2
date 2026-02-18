@@ -1,6 +1,6 @@
-#include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
-#include <firefly_base/gui/components/FBModuleGraphTitleComponent.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphComponentData.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphTextComponent.hpp>
 
 using namespace juce;
 

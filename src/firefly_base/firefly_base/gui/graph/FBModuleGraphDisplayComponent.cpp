@@ -4,8 +4,8 @@
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
-#include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
-#include <firefly_base/gui/components/FBModuleGraphDisplayComponent.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphComponentData.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphDisplayComponent.hpp>
 
 #include <cmath>
 #include <numbers>

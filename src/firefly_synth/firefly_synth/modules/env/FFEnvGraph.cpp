@@ -2,8 +2,8 @@
 #include <firefly_synth/modules/env/FFEnvGraph.hpp>
 #include <firefly_synth/modules/env/FFEnvProcessor.hpp>
 
+#include <firefly_base/gui/graph/FBGraphing.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
-#include <firefly_base/gui/shared/FBGraphing.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 
 #include <algorithm>
