@@ -373,7 +373,8 @@ FFPlugGUI::SetupGUI()
   _main->Add(5, 0, 1, 1, FFMakeLFOGUI(this));
   _main->Add(6, 0, 1, 1, FFMakeEnvGUI(this, _msegEditors));
   _main->Add(1, 1, 3, 1, _detailContent);
-  _main->Add(4, 1, 3, 1, StoreComponent<FBMarginComponent>(this, true, true, false, true, _detailsGraph2));
+  _main->Add(4, 1, 3, 1, StoreComponent<FBMarginComponent>(this, true, true, false, true, 
+      StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::DetailGraphs, _detailsGraph2)));
 
   _tabs = StoreComponent<FBAutoSizeTabComponent>(this, true);
   _tabs->addTab("MAIN", Colours::black, StoreComponent<FBMarginComponent>(this, false, false, true, false, _main), false);
