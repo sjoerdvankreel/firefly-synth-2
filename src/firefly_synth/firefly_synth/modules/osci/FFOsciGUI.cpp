@@ -277,15 +277,15 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
   auto trackingKey = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringTrackingKey, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, trackingKey));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, trackingKey, Slider::SliderStyle::RotaryVerticalDrag));
-  auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringMode, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
+  auto seed = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringSeed, 0 } });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, seed));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag));
   auto excite = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringExcite, 0 } });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, excite));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, excite, Slider::SliderStyle::LinearHorizontal));
-  auto seed = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringSeed, 0 } });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, seed));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag));
+  auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringMode, 0 } });
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
 
   auto dampKTrk = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringDampKTrk, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, dampKTrk));
