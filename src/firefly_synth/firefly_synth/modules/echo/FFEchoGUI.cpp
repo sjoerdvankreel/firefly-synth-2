@@ -24,6 +24,41 @@
 
 using namespace juce;
 
+static std::string
+MakeEchoDetailLabel(FBRuntimeParam const* order, std::vector<double> const& normalized)
+{
+  std::vector<int> orders;
+  bool tapsOn = normalized[1] > 0.5;
+  bool feedbackOn = normalized[2] > 0.5;
+  bool reverbOn = normalized[3] > 0.5;
+  std::array<bool, 3> componentOn = { tapsOn, feedbackOn, reverbOn };
+  std::vector<std::string> componentNames = { "Multi Tap", "Feedback", "Reverb" };
+  auto orderVal = (FFEchoOrder)order->static_.ListNonRealTime().NormalizedToPlainFast((float)normalized[0]);
+  switch (orderVal)
+  {
+  case FFEchoOrder::TapsToFeedbackToReverb: orders = { 0, 1, 2 }; break;
+  case FFEchoOrder::TapsToReverbToFeedback: orders = { 0, 2, 1 }; break;
+  case FFEchoOrder::FeedbackToReverbToTaps: orders = { 1, 2, 0 }; break;
+  case FFEchoOrder::FeedbackToTapsToReverb: orders = { 1, 0, 2 }; break;
+  case FFEchoOrder::ReverbToFeedbackToTaps: orders = { 2, 1, 0 }; break;
+  case FFEchoOrder::ReverbToTapsToFeedback: orders = { 2, 0, 1 }; break;
+  default: FB_ASSERT(false);
+  }
+  bool haveAny = false;
+  std::string result = {};
+  for (int i = 0; i < 3; i++)
+  {
+    if (haveAny)
+      result += ", ";
+    if (componentOn[orders[i]])
+    {
+      result += componentNames[orders[i]];
+      haveAny = true;
+    }
+  }
+  return result;
+}
+
 static Component* 
 MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
 {
@@ -397,14 +432,15 @@ FFMakeEchoDetailGUI(FBPlugGUI* plugGUI, bool global)
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   int index = topo->moduleTopoToRuntime.at({ (int)moduleType, 0 });
   auto name = topo->modules[index].name;
+  auto order = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Order, 0 } });
   auto tapsOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapsOn, 0 } });
   auto reverbOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbOn, 0 } });
   auto feedbackOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackOn, 0 } });
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1, 1 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, FBAsciiToUpper(name), FBLabelAlign::Center, FBLabelColors::PrimaryForeground));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBMultiParamDisplayLabel>(plugGUI, 
-    std::vector<FBRuntimeParam const*> { tapsOn, feedbackOn, reverbOn }, 
-    std::vector<std::string> { "Multi Tap", "Feedback", "Reverb" }));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, FBAsciiToUpper(name), FBLabelAlign::Right, FBLabelColors::PrimaryForeground));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBMultiParamDisplayLabel>(plugGUI,
+    std::vector<FBRuntimeParam const*> { order, tapsOn, feedbackOn, reverbOn },
+    [order](std::vector<double> const& normalized) { return MakeEchoDetailLabel(order, normalized); }));
   grid->Add(1, 0, 1, 2, MakeEchoDetail(plugGUI, global));
   grid->MarkSection({ { 0, 0 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground);
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);

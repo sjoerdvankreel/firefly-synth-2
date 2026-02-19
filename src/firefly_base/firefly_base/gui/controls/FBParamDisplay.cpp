@@ -53,10 +53,10 @@ FBMultiParamDisplayLabel::
 FBMultiParamDisplayLabel(
   FBPlugGUI* plugGUI,
   std::vector<FBRuntimeParam const*> const& params,
-  std::vector<std::string> const& texts):
+  std::function<std::string(std::vector<double> const&)> normalizedToText):
 _plugGUI(plugGUI),
 _params(params),
-_texts(texts)
+_normalizedToText(normalizedToText)
 {
   UpdateText();
   plugGUI->AddParamListener(this);
@@ -76,17 +76,10 @@ FBMultiParamDisplayLabel::AudioParamChanged(int index, double /*normalized*/, bo
 void 
 FBMultiParamDisplayLabel::UpdateText()
 {
-  bool haveAny = false;
-  std::string text = {};
+  _normalized.clear();
   for (int i = 0; i < _params.size(); i++)
-    if (_plugGUI->HostContext()->GetAudioParamBool(_params[i]->topoIndices))
-    {
-      if (haveAny)
-        text += ", ";
-      text += _texts[i];
-      haveAny = true;
-    }
-  setText(text, dontSendNotification);
+    _normalized.push_back(_plugGUI->HostContext()->GetAudioParamNormalized(_params[i]->runtimeParamIndex));
+  setText(_normalizedToText(_normalized), dontSendNotification);
 }
 
 FBParamDisplayMeter::

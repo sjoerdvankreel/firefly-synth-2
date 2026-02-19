@@ -5,11 +5,11 @@
 #include <firefly_base/gui/shared/FBPlugGUIListeners.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
+#include <functional>
 
 class FBPlugGUI;
 struct FBRuntimeParam;
 
-// Displays the actual param value.
 class FBParamDisplayLabel final:
 public juce::Label,
 public FBParamControl,
@@ -29,14 +29,14 @@ public:
   void SetValueNormalizedFromHost(double normalized) override;
 };
 
-// Displays custom text if param value is not false (requires boolean/toggle).
 class FBMultiParamDisplayLabel final:
 public juce::Label,
 public IFBParamListener
 {
   FBPlugGUI* const _plugGUI;
   std::vector<FBRuntimeParam const*> _params;
-  std::vector<std::string> const _texts;
+  std::function<std::string(std::vector<double> const&)> _normalizedToText;
+  std::vector<double> _normalized = {};
 
   void UpdateText();
 
@@ -45,7 +45,7 @@ public:
   FBMultiParamDisplayLabel(
     FBPlugGUI* plugGUI,
     std::vector<FBRuntimeParam const*> const& params,
-    std::vector<std::string> const& texts);
+    std::function<std::string(std::vector<double> const&)> normalizedToText);
   
   void AudioParamChanged(int index, double normalized, bool changedFromUI) override;
 };
