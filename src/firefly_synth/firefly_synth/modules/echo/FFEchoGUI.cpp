@@ -47,15 +47,13 @@ MakeEchoDetailLabel(FBRuntimeParam const* order, std::vector<double> const& norm
   bool haveAny = false;
   std::string result = {};
   for (int i = 0; i < 3; i++)
-  {
-    if (haveAny)
-      result += ", ";
     if (componentOn[orders[i]])
     {
+      if (haveAny)
+        result += ", ";
       result += componentNames[orders[i]];
       haveAny = true;
     }
-  }
   return result;
 }
 
