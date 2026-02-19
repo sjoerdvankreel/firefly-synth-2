@@ -139,6 +139,10 @@ FFPlugGUI::SwitchDetailsSectionToModule(int index, int slot)
 {
   if (index == (int)FFModuleType::Osci)
     _detailContent->SetContent(_osciDetails[slot]);
+  if (index == (int)FFModuleType::VEcho)
+    _detailContent->SetContent(_vEchoDetails);
+  if (index == (int)FFModuleType::GEcho)
+    _detailContent->SetContent(_gEchoDetails);
 }
 
 void 
@@ -361,6 +365,8 @@ FFPlugGUI::SetupGUI()
   _matrix = FFMakeModMatrixGUI(this);
   _detailContent = StoreComponent<FBContentComponent>();
   _globalUni = FFMakeGlobalUniGUI(this, _graphRenderState.get(), &_fixedGraphs);
+  _vEchoDetails = FFMakeEchoDetailGUI(this, false);
+  _gEchoDetails = FFMakeEchoDetailGUI(this, true);
   for (int i = 0; i < FFOsciCount; i++)
     _osciDetails[i] = FFMakeOsciDetailGUI(this, i);
 

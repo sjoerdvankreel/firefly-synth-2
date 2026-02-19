@@ -6,3 +6,5 @@ class FBPlugGUI;
 
 juce::Component*
 FFMakeEchoGUI(FBPlugGUI* plugGUI);
+juce::Component*
+FFMakeEchoDetailGUI(FBPlugGUI* plugGUI, bool global);
