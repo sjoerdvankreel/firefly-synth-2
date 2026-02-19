@@ -12,6 +12,7 @@
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
+#include <firefly_base/gui/controls/FBParamDisplay.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBCardComponent.hpp>
@@ -396,11 +397,16 @@ FFMakeEchoDetailGUI(FBPlugGUI* plugGUI, bool global)
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   int index = topo->moduleTopoToRuntime.at({ (int)moduleType, 0 });
   auto name = topo->modules[index].name;
-  // TODO list the ON modules
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1 });
+  auto tapsOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapsOn, 0 } });
+  auto reverbOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbOn, 0 } });
+  auto feedbackOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackOn, 0 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1, 1 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, FBAsciiToUpper(name), FBLabelAlign::Center, FBLabelColors::PrimaryForeground));
-  grid->Add(1, 0, MakeEchoDetail(plugGUI, global));
-  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBackground);
+  grid->Add(0, 1, plugGUI->StoreComponent<FBMultiParamDisplayLabel>(plugGUI, 
+    std::vector<FBRuntimeParam const*> { tapsOn, feedbackOn, reverbOn }, 
+    std::vector<std::string> { "Multi Tap", "Feedback", "Reverb" }));
+  grid->Add(1, 0, 1, 2, MakeEchoDetail(plugGUI, global));
+  grid->MarkSection({ { 0, 0 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground);
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, card);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, 0, margin);

@@ -43,6 +43,52 @@ FBParamDisplayLabel::SetValueNormalizedFromHost(double normalized)
   setText(_param->NormalizedToTextWithUnit(false, normalized), dontSendNotification);
 }
 
+FBMultiParamDisplayLabel::
+~FBMultiParamDisplayLabel()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FBMultiParamDisplayLabel::
+FBMultiParamDisplayLabel(
+  FBPlugGUI* plugGUI,
+  std::vector<FBRuntimeParam const*> const& params,
+  std::vector<std::string> const& texts):
+_plugGUI(plugGUI),
+_params(params),
+_texts(texts)
+{
+  UpdateText();
+  plugGUI->AddParamListener(this);
+}
+
+void 
+FBMultiParamDisplayLabel::AudioParamChanged(int index, double /*normalized*/, bool /*changedFromUI*/)
+{
+  for (int i = 0; i < _params.size(); i++)
+    if (_params[i]->runtimeParamIndex == index)
+    {
+      UpdateText();
+      break;
+    }
+}
+
+void 
+FBMultiParamDisplayLabel::UpdateText()
+{
+  bool haveAny = false;
+  std::string text = {};
+  for (int i = 0; i < _params.size(); i++)
+    if (_plugGUI->HostContext()->GetAudioParamBool(_params[i]->topoIndices))
+    {
+      if (haveAny)
+        text += ", ";
+      text += _texts[i];
+      haveAny = true;
+    }
+  setText(text, dontSendNotification);
+}
+
 FBParamDisplayMeter::
 FBParamDisplayMeter(
   FBPlugGUI* plugGUI, 
