@@ -1,4 +1,4 @@
-Read the [Comparison to FF1](/static/compare_to_ff1.md).<br/>
+Read the [Comparison to FF1](/static/compare_to_ff1.md).<br/>    
 Read the [Manual](/static/Manual.md). Click the outline (3 dashes) menu for table-of-contents.<br/>
 <br/>
 See [FF2 on KVR](https://www.kvraudio.com/product/firefly-synth-2-by-sjoerdvankreel).<br/>
