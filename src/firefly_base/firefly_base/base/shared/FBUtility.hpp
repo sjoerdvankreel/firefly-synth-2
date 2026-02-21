@@ -9,7 +9,7 @@
 #include <optional>
 #include <filesystem>
 
-#if (defined __APPLE__) && defined(__aarch64__)
+#if defined(__aarch64__)
 #define FB_AARCH64 1
 #else
 #define FB_AARCH64 0
