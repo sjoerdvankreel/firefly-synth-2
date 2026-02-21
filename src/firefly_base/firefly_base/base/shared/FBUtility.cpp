@@ -78,37 +78,6 @@ FBStringToDoubleOptCLocale(std::string const& text)
   return result;
 }
 
-void
-FBRestoreDenormal(FBDenormalState state)
-{
-#if FB_AARCH64
-  if (state.wasApplied)
-    fesetenv(&state.env);
-#else
-  _MM_SET_FLUSH_ZERO_MODE(state.ftz);
-  _MM_SET_DENORMALS_ZERO_MODE(state.daz);
-#endif
-}
-
-FBDenormalState
-FBDisableDenormal()
-{
-#if FB_AARCH64
-  FBDenormalState result = {};
-  result.wasApplied = fegetenv(&result.env) == 0;
-  if (result.wasApplied)
-    result.wasApplied = fesetenv(FE_DFL_DISABLE_DENORMS_ENV) == 0;
-  return result;
-#else
-  FBDenormalState result;
-  result.ftz = _MM_GET_FLUSH_ZERO_MODE();
-  result.daz = _MM_GET_DENORMALS_ZERO_MODE();
-  _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
-  _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
-  return result;
-#endif
-}
-
 std::filesystem::path
 FBGetUserPluginDataFolder(FBStaticTopoMeta const& meta)
 {

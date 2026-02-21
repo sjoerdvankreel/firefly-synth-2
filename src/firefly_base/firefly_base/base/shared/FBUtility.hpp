@@ -15,14 +15,6 @@
 #define FB_AARCH64 0
 #endif
 
-#if FB_AARCH64
-#include <fenv.h>
-struct FBDenormalState { fenv_t env; bool wasApplied; };
-#else
-#include <immintrin.h>
-struct FBDenormalState { std::uint32_t ftz; std::uint32_t daz; };
-#endif
-
 struct FBStaticTopoMeta;
 inline int const FBDefaultDisplayPrecision = 3;
 
@@ -83,11 +75,6 @@ inline int const FBDefaultDisplayPrecision = 3;
 // Remove { and } for use in json and urls.
 std::string
 FBCleanTopoId(std::string const& topoId);
-
-FBDenormalState
-FBDisableDenormal();
-void 
-FBRestoreDenormal(FBDenormalState state);
 
 // Oh c'mon cpp, don't make me resort to ICU when i *know* input is in ascii.
 std::string
