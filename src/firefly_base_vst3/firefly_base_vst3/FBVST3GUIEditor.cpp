@@ -174,13 +174,13 @@ FBVST3GUIEditor::isPlatformTypeSupported(FIDString type)
 }
 
 tresult PLUGIN_API
-FBVST3GUIEditor::queryInterface(TUID const iid, void** obj)
+FBVST3GUIEditor::queryInterface(TUID const tiid, void** obj)
 {
 #if SMTG_OS_LINUX
-  QUERY_INTERFACE(iid, obj, IEventHandler::iid, IEventHandler);
+  QUERY_INTERFACE(tiid, obj, IEventHandler::iid, IEventHandler);
 #endif
-  QUERY_INTERFACE(iid, obj, IPlugViewContentScaleSupport::iid, IPlugViewContentScaleSupport);
-  return EditorView::queryInterface(iid, obj);
+  QUERY_INTERFACE(tiid, obj, IPlugViewContentScaleSupport::iid, IPlugViewContentScaleSupport);
+  return EditorView::queryInterface(tiid, obj);
 }
 
 IPtr<IContextMenu>
