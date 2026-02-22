@@ -232,24 +232,23 @@ MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
   auto on = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackOn, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on, true, FBLabelColors::PrimaryBackground));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
-  auto delayTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackDelayTime, 0 } });
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delayTime));
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, delayTime, Slider::SliderStyle::RotaryVerticalDrag));
-  auto delayBars = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackDelayBars, 0 } });
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delayBars));
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, delayBars));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
   auto mix = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackMix, 0 } });
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
+  auto delayTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackDelayTime, 0 } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delayTime));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, delayTime, Slider::SliderStyle::RotaryVerticalDrag));
+  auto delayBars = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackDelayBars, 0 } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delayBars));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, delayBars));
   auto amount = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackAmount, 0 } });
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, amount));
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, Slider::SliderStyle::RotaryVerticalDrag));
-  
-  grid->MarkSection({ { 0, 0 }, { 2, 13 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, amount));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, Slider::SliderStyle::RotaryVerticalDrag));  
+  grid->MarkSection({ { 0, 0 }, { 2, 4 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
   return grid;
 }
 
