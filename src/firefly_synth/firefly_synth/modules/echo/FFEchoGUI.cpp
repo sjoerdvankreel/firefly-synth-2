@@ -159,15 +159,20 @@ MakeEchoSectionMain(
   auto order = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Order, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, order));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, order));
+
+  // todo clean it up
+  auto gain = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Gain, 0 } });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
+
   auto delaySmoothTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::DelaySmoothTime, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delaySmoothTime));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, delaySmoothTime, Slider::SliderStyle::LinearHorizontal));
   auto delaySmoothBars = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::DelaySmoothBars, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delaySmoothBars));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, delaySmoothBars));
-  auto gain = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Gain, 0 } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
+
+
   auto voiceExtendTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceExtendTime, 0 } });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceExtendTime));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceExtendTime, Slider::SliderStyle::LinearHorizontal));
@@ -180,6 +185,7 @@ MakeEchoSectionMain(
   auto voiceFadeBars = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceFadeBars, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceFadeBars));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, voiceFadeBars));
+
   auto sync = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Sync, 0 } });
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
@@ -308,7 +314,7 @@ MakeEchoDetail(FBPlugGUI* plugGUI, bool global)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0 }, std::vector<int> { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0, 0, 0, 0 }, std::vector<int> { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 });
   
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Feedback"));
   auto feedbackModRate = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackModRate, 0 } });
@@ -369,7 +375,26 @@ MakeEchoDetail(FBPlugGUI* plugGUI, bool global)
   grid->Add(3, 9, plugGUI->StoreComponent<FBParamLabel>(plugGUI, reverbHpRes));
   grid->Add(3, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, reverbHpRes, Slider::SliderStyle::RotaryVerticalDrag));
 
-  for (int i = 0; i < 4; i += 2)
+  auto delaySmoothTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::DelaySmoothTime, 0 } });
+  grid->Add(4, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delaySmoothTime));
+  grid->Add(4, 2, 1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, delaySmoothTime, Slider::SliderStyle::LinearHorizontal));
+  auto delaySmoothBars = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::DelaySmoothBars, 0 } });
+  grid->Add(4, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delaySmoothBars));
+  grid->Add(4, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, delaySmoothBars));
+  auto voiceExtendTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceExtendTime, 0 } });
+  grid->Add(5, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceExtendTime));
+  grid->Add(5, 2, 1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceExtendTime, Slider::SliderStyle::LinearHorizontal));
+  auto voiceExtendBars = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceExtendBars, 0 } });
+  grid->Add(5, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceExtendBars));
+  grid->Add(5, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, voiceExtendBars));
+  auto voiceFadeTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceFadeTime, 0 } });
+  grid->Add(6, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceFadeTime));
+  grid->Add(6, 2, 1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceFadeTime, Slider::SliderStyle::LinearHorizontal));
+  auto voiceFadeBars = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceFadeBars, 0 } });
+  grid->Add(6, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceFadeBars));
+  grid->Add(6, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, voiceFadeBars));
+
+  for (int i = 0; i < (global? 5: 7); i += 2)
       grid->MarkSection({ { i, 0 }, { 1, 11 } }, FBGridSectionMark::AlternateBackground);
 
   return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, true, false, grid);

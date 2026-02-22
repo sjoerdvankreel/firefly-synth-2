@@ -215,7 +215,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   auto& delaySmoothTime = result->params[(int)FFEchoParam::DelaySmoothTime];
   delaySmoothTime.mode = FBParamMode::Block;
   delaySmoothTime.defaultText = "500";
-  delaySmoothTime.display = "Smth";
+  delaySmoothTime.display = "Smooth";
   delaySmoothTime.name = "Delay Smooth Length Time";
   delaySmoothTime.slotCount = 1;
   delaySmoothTime.unit = "Ms";
@@ -237,7 +237,7 @@ FFMakeEchoTopo(bool global, bool isFx)
 
   auto& delaySmoothBars = result->params[(int)FFEchoParam::DelaySmoothBars];
   delaySmoothBars.mode = FBParamMode::Block;
-  delaySmoothBars.display = "Smth";
+  delaySmoothBars.display = "Smooth";
   delaySmoothBars.name = "Delay Smooth Length Bars";
   delaySmoothBars.slotCount = 1;
   delaySmoothBars.unit = "Bars";
@@ -259,7 +259,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   auto& voiceExtendTime = result->params[(int)FFEchoParam::VoiceExtendTime];
   voiceExtendTime.mode = FBParamMode::VoiceStart;
   voiceExtendTime.defaultText = "1000";
-  voiceExtendTime.display = "Extend";
+  voiceExtendTime.display = "Voice Extend";
   voiceExtendTime.name = "Voice Extend Time";
   voiceExtendTime.slotCount = 1;
   voiceExtendTime.unit = "Ms";
@@ -276,12 +276,12 @@ FFMakeEchoTopo(bool global, bool isFx)
   voiceExtendTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectVoiceExtendTime);
   voiceExtendTime.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVoiceExtendTime);
   voiceExtendTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVoiceExtendTime);
-  voiceExtendTime.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  voiceExtendTime.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] == 0; });
   voiceExtendTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] == 0; });
 
   auto& voiceExtendBars = result->params[(int)FFEchoParam::VoiceExtendBars];
   voiceExtendBars.mode = FBParamMode::Block;
-  voiceExtendBars.display = "Extend";
+  voiceExtendBars.display = "Voice Extend";
   voiceExtendBars.name = "Voice Extend Bars";
   voiceExtendBars.slotCount = 1;
   voiceExtendBars.unit = "Bars";
@@ -296,13 +296,13 @@ FFMakeEchoTopo(bool global, bool isFx)
   voiceExtendBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectVoiceExtendBars);
   voiceExtendBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVoiceExtendBars);
   voiceExtendBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVoiceExtendBars);
-  voiceExtendBars.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  voiceExtendBars.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0; });
   voiceExtendBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] != 0; });
   
   auto& voiceFadeTime = result->params[(int)FFEchoParam::VoiceFadeTime];
   voiceFadeTime.mode = FBParamMode::VoiceStart;
   voiceFadeTime.defaultText = "1000";
-  voiceFadeTime.display = "Fade";
+  voiceFadeTime.display = "Voice Fade";
   voiceFadeTime.name = "Voice Fade Time";
   voiceFadeTime.slotCount = 1;
   voiceFadeTime.unit = "Ms";
@@ -319,12 +319,12 @@ FFMakeEchoTopo(bool global, bool isFx)
   voiceFadeTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectVoiceFadeTime);
   voiceFadeTime.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVoiceFadeTime);
   voiceFadeTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVoiceFadeTime);
-  voiceFadeTime.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  voiceFadeTime.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] == 0; });
   voiceFadeTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] == 0; });
 
   auto& voiceFadeBars = result->params[(int)FFEchoParam::VoiceFadeBars];
   voiceFadeBars.mode = FBParamMode::Block;
-  voiceFadeBars.display = "Fade";
+  voiceFadeBars.display = "Voice Fade";
   voiceFadeBars.name = "Voice Fade Bars";
   voiceFadeBars.slotCount = 1;
   voiceFadeBars.unit = "Bars";
@@ -339,7 +339,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   voiceFadeBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectVoiceFadeBars);
   voiceFadeBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVoiceFadeBars);
   voiceFadeBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVoiceFadeBars);
-  voiceFadeBars.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  voiceFadeBars.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0; });
   voiceFadeBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] != 0; });
 
   auto& tapsMix = result->params[(int)FFEchoParam::TapsMix];
