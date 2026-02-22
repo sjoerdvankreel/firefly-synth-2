@@ -248,33 +248,7 @@ MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
   auto amount = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackAmount, 0 } });
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, amount));
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, Slider::SliderStyle::RotaryVerticalDrag));
-  auto xOver = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackXOver, 0 } });
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, xOver));
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, xOver, Slider::SliderStyle::RotaryVerticalDrag));
-  auto modRate = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackModRate, 0 } });
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, modRate));
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, modRate, Slider::SliderStyle::RotaryVerticalDrag));
-  auto modAmt = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackModAmt, 0 } });
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, modAmt));
-  grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, modAmt, Slider::SliderStyle::RotaryVerticalDrag));
-  auto lpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackLPOn, 0 } });
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpOn));
-  grid->Add(0, 8, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, lpOn));
-  auto lpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackLPFreq, 0 } });
-  grid->Add(0, 9, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpFreq));
-  grid->Add(0, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::RotaryVerticalDrag));
-  auto lpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackLPRes, 0 } });
-  grid->Add(0, 11, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpRes));
-  grid->Add(0, 12, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpRes, Slider::SliderStyle::RotaryVerticalDrag));
-  auto hpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackHPOn, 0 } });
-  grid->Add(1, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpOn));
-  grid->Add(1, 8, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, hpOn));
-  auto hpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackHPFreq, 0 } });
-  grid->Add(1, 9, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpFreq));
-  grid->Add(1, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, Slider::SliderStyle::RotaryVerticalDrag));
-  auto hpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackHPRes, 0 } });
-  grid->Add(1, 11, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
-  grid->Add(1, 12, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  
   grid->MarkSection({ { 0, 0 }, { 2, 13 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
   return grid;
 }
@@ -335,35 +309,69 @@ MakeEchoDetail(FBPlugGUI* plugGUI, bool global)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0 }, std::vector<int> { 0, 0, 1, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0 }, std::vector<int> { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 });
   
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Reverb"));
-  auto apf = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbAPF, 0 } });
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, apf));
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, apf, Slider::SliderStyle::LinearHorizontal));
-  auto lpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbLPOn, 0 } });
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpOn));
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, lpOn));
-  auto lpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbLPFreq, 0 } });
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpFreq));
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::RotaryVerticalDrag));
-  auto lpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbLPRes, 0 } });
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpRes));
-  grid->Add(0, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Feedback"));
+  auto feedbackModRate = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackModRate, 0 } });
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackModRate));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedbackModRate, Slider::SliderStyle::RotaryVerticalDrag));
+  auto feedbackModAmt = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackModAmt, 0 } });
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackModAmt));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedbackModAmt, Slider::SliderStyle::RotaryVerticalDrag));
+  auto feedbackLpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackLPOn, 0 } });
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackLpOn));
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, feedbackLpOn));
+  auto feedbackLpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackLPFreq, 0 } });
+  grid->Add(0, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackLpFreq));
+  grid->Add(0, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedbackLpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  auto feedbackLpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackLPRes, 0 } });
+  grid->Add(0, 9, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackLpRes));
+  grid->Add(0, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedbackLpRes, Slider::SliderStyle::RotaryVerticalDrag));
+
+  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Feedback"));
+  auto feedbackXOver = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackXOver, 0 } });
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackXOver));
+  grid->Add(1, 2, 1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedbackXOver, Slider::SliderStyle::LinearHorizontal));
+  auto feedbackHpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackHPOn, 0 } });
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackHpOn));
+  grid->Add(1, 6, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, feedbackHpOn));
+  auto feedbackHpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackHPFreq, 0 } });
+  grid->Add(1, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackHpFreq));
+  grid->Add(1, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedbackHpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  auto feedbackHpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackHPRes, 0 } });
+  grid->Add(1, 9, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackHpRes));
+  grid->Add(1, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedbackHpRes, Slider::SliderStyle::RotaryVerticalDrag));
+
+  grid->Add(2, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Reverb"));
+  auto reverbApf = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbAPF, 0 } });
+  grid->Add(2, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, reverbApf));
+  grid->Add(2, 2, 1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, reverbApf, Slider::SliderStyle::LinearHorizontal));
+  auto reverbLpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbLPOn, 0 } });
+  grid->Add(2, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, reverbLpOn));
+  grid->Add(2, 6, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, reverbLpOn));
+  auto reverbLpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbLPFreq, 0 } });
+  grid->Add(2, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, reverbLpFreq));
+  grid->Add(2, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, reverbLpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  auto reverbLpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbLPRes, 0 } });
+  grid->Add(2, 9, plugGUI->StoreComponent<FBParamLabel>(plugGUI, reverbLpRes));
+  grid->Add(2, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, reverbLpRes, Slider::SliderStyle::RotaryVerticalDrag));
   
-  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Reverb"));
-  auto xOver = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbXOver, 0 } });
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, xOver));
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, xOver, Slider::SliderStyle::LinearHorizontal));
-  auto hpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbHPOn, 0 } });
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpOn));
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, hpOn));
-  auto hpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbHPFreq, 0 } });
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpFreq));
-  grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, Slider::SliderStyle::RotaryVerticalDrag));
-  auto hpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbHPRes, 0 } });
-  grid->Add(1, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
-  grid->Add(1, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(3, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Reverb"));
+  auto reverbXOver = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbXOver, 0 } });
+  grid->Add(3, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, reverbXOver));
+  grid->Add(3, 2, 1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, reverbXOver, Slider::SliderStyle::LinearHorizontal));
+  auto reverbHpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbHPOn, 0 } });
+  grid->Add(3, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, reverbHpOn));
+  grid->Add(3, 6, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, reverbHpOn));
+  auto reverbHpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbHPFreq, 0 } });
+  grid->Add(3, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, reverbHpFreq));
+  grid->Add(3, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, reverbHpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  auto reverbHpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbHPRes, 0 } });
+  grid->Add(3, 9, plugGUI->StoreComponent<FBParamLabel>(plugGUI, reverbHpRes));
+  grid->Add(3, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, reverbHpRes, Slider::SliderStyle::RotaryVerticalDrag));
+
+  for (int i = 0; i < 4; i += 2)
+      grid->MarkSection({ { i, 0 }, { 1, 11 } }, FBGridSectionMark::AlternateBackground);
 
   return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, true, false, grid);
 }
