@@ -10,7 +10,7 @@ if not exist build\windows mkdir build\windows
 cd build\windows
 cmake -DFB_WARN_AS_ERROR="%2" -DFB_ENABLE_ASAN="%3" ..\..
 if %errorlevel% neq 0 exit /b !errorlevel!
-msbuild /property:Configuration="%1" firefly_synth_2.sln
+msbuild /property:Configuration="%1" firefly_synth_2.slnx
 if %errorlevel% neq 0 exit /b !errorlevel!
 
 cd ..\..\dist\windows\"%1"

@@ -35,11 +35,19 @@ protected:
   void DoPerformAudioParamEdit(int index, double normalized) override;
 
 public:
+
+#if _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4458)
+#endif
   DEFINE_INTERFACES
     DEF_INTERFACE(IMidiMapping)
     DEF_INTERFACE(IDataExchangeReceiver)
   END_DEFINE_INTERFACES(EditController)
   DELEGATE_REFCOUNT(EditController)
+#if _MSC_VER
+#pragma warning(pop)
+#endif
 
   ~FBVST3EditController();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3EditController);

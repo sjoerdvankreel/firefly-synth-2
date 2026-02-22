@@ -22,6 +22,12 @@ jobs:
           - name: "Ubuntu 22 Release"
             os: ubuntu-22.04
             build_type: RELEASE
+          - name: "Ubuntu 24 ARM Debug"
+            os: ubuntu-24.04-arm
+            build_type: DEBUG
+          - name: "Ubuntu 24 ARM Release"
+            os: ubuntu-24.04-arm
+            build_type: RELEASE
           - name: "MacOS 14 Debug"
             os: macos-14
             build_type: DEBUG
@@ -34,7 +40,7 @@ jobs:
         with:
           submodules: recursive
       - name: Install Linux Deps
-        if: matrix.os == 'ubuntu-22.04'
+        if: ${{ (matrix.os == 'ubuntu-22.04') || (matrix.os == 'ubuntu-24.04-arm') }}
         shell: bash
         run: |
           sudo apt-get update
