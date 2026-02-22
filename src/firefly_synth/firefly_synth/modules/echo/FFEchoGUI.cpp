@@ -380,19 +380,19 @@ MakeEchoDetail(FBPlugGUI* plugGUI, bool global)
   grid->Add(4, 2, 1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, delaySmoothTime, Slider::SliderStyle::LinearHorizontal));
   auto delaySmoothBars = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::DelaySmoothBars, 0 } });
   grid->Add(4, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delaySmoothBars));
-  grid->Add(4, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, delaySmoothBars));
+  grid->Add(4, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, delaySmoothBars));
   auto voiceExtendTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceExtendTime, 0 } });
   grid->Add(5, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceExtendTime));
   grid->Add(5, 2, 1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceExtendTime, Slider::SliderStyle::LinearHorizontal));
   auto voiceExtendBars = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceExtendBars, 0 } });
   grid->Add(5, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceExtendBars));
-  grid->Add(5, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, voiceExtendBars));
+  grid->Add(5, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, voiceExtendBars));
   auto voiceFadeTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceFadeTime, 0 } });
   grid->Add(6, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceFadeTime));
   grid->Add(6, 2, 1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceFadeTime, Slider::SliderStyle::LinearHorizontal));
   auto voiceFadeBars = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceFadeBars, 0 } });
   grid->Add(6, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceFadeBars));
-  grid->Add(6, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, voiceFadeBars));
+  grid->Add(6, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, voiceFadeBars));
 
   for (int i = 0; i < (global? 5: 7); i += 2)
       grid->MarkSection({ { i, 0 }, { 1, 11 } }, FBGridSectionMark::AlternateBackground);
