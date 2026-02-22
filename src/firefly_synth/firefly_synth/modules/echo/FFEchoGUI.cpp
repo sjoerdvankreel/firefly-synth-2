@@ -164,7 +164,7 @@ MakeEchoSectionMain(
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, order));
   auto gain = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Gain, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ { 0, 0 }, { 2, 4 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
   return grid;
 }
