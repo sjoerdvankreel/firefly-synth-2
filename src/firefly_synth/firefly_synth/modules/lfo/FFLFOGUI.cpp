@@ -1,4 +1,5 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/dsp/shared/FFModulate.hpp>
 #include <firefly_synth/modules/lfo/FFLFOGUI.hpp>
 #include <firefly_synth/modules/lfo/FFLFOTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
@@ -11,7 +12,9 @@
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
+#include <firefly_base/gui/controls/FBParamDisplay.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
+#include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
@@ -19,6 +22,32 @@
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
 
 using namespace juce;
+
+static std::string
+MakeLFODetailLabel(FBRuntimeTopo const* topo, bool global, std::vector<double> const& normalized)
+{
+  std::vector<FFLFOWaveMode> modes = {};
+  std::vector<FFModulationOpType> opTypes = {};
+  auto moduleType = global ? FFModuleType::GLFO : FFModuleType::VLFO;
+  auto const& moduleTopo = topo->static_->modules[(int)moduleType];
+  for (int i = 0; i < FFLFOBlockCount; i++)
+  {
+    opTypes.push_back(moduleTopo.NormalizedToListFast<FFModulationOpType>(FFLFOParam::OpType, (float)normalized[2 * i]));
+    modes.push_back(moduleTopo.NormalizedToListFast<FFLFOWaveMode>(FFLFOParam::WaveMode, (float)normalized[2 * i + 1]));
+  }
+
+  bool haveAny = false;
+  std::string result = {};
+  for (int i = 0; i < FFLFOBlockCount; i++)
+    if (opTypes[i] != FFModulationOpType::Off)
+    {
+      if (haveAny)
+        result += ", ";
+      result += FFLFOWaveModeToString(modes[i]);
+      haveAny = true;
+    }
+  return result;
+}
 
 static Component*
 MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
@@ -130,4 +159,29 @@ FFMakeLFOGUI(FBPlugGUI* plugGUI)
     tabs->AddModuleTab(true, false, { (int)FFModuleType::GLFO, i }, MakeLFOTab(plugGUI, FFModuleType::GLFO, i));
   tabs->ActivateStoredSelectedTab();
   return tabs;
+}
+
+Component*
+FFMakeLFODetailGUI(FBPlugGUI* plugGUI, bool global)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto topo = plugGUI->HostContext()->Topo();
+  auto moduleType = global ? FFModuleType::GLFO : FFModuleType::VLFO;
+  std::vector<FBRuntimeParam const*> params = {};
+  int index = topo->moduleTopoToRuntime.at({ (int)moduleType, 0 });
+  auto name = topo->modules[index].name;
+  for (int i = 0; i < FFLFOBlockCount; i++)
+  {
+    params.push_back(topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFLFOParam::OpType, i } }));
+    params.push_back(topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFLFOParam::WaveMode, i } }));
+  }
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1, 1 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, FBAsciiToUpper(name), FBLabelAlign::Right, FBLabelColors::PrimaryForeground));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBMultiParamDisplayLabel>(plugGUI, params,
+    [topo, global](std::vector<double> const& normalized) { return MakeLFODetailLabel(topo, global, normalized); }));
+  //grid->Add(1, 0, 1, 2, MakeEchoDetail(plugGUI, global));
+  grid->MarkSection({ { 0, 0 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground);
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, card);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, 0, margin);
 }
