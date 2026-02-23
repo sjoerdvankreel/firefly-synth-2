@@ -261,12 +261,18 @@ MakeEffectDetail(FBPlugGUI* plugGUI, bool global, int moduleSlot)
     auto stVarGain = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarGain, i } });
     grid->Add(i, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarGain));
     grid->Add(i, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarGain, Slider::SliderStyle::RotaryVerticalDrag));
+    auto distBias = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistBias, i } });
+    grid->Add(i, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, distBias));
+    grid->Add(i, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distBias, Slider::SliderStyle::RotaryVerticalDrag));
     auto stVarKeyTrak = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarKeyTrak, i } });
     grid->Add(i, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarKeyTrak));
     grid->Add(i, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarKeyTrak, Slider::SliderStyle::RotaryVerticalDrag));
     auto combKeyTrk = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombKeyTrk, i } });
     grid->Add(i, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combKeyTrk));
     grid->Add(i, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combKeyTrk, Slider::SliderStyle::RotaryVerticalDrag));
+    auto distAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistAmt, i } });
+    grid->Add(i, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, distAmt));
+    grid->Add(i, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distAmt, Slider::SliderStyle::RotaryVerticalDrag));
     auto envAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::EnvAmt, i } });
     grid->Add(i, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, envAmt));
     grid->Add(i, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, envAmt, Slider::SliderStyle::RotaryVerticalDrag));
