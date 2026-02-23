@@ -139,7 +139,7 @@ MakeLFODetail(FBPlugGUI* plugGUI, bool global, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GLFO : FFModuleType::VLFO;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0, 0, 0 }, std::vector<int> { 0, 0, 1, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0, 0, 0 }, std::vector<int> { 0, 0, 1, 0, 1 });
 
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
@@ -149,14 +149,14 @@ MakeLFODetail(FBPlugGUI* plugGUI, bool global, int moduleSlot)
     grid->Add(i * 2, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, min, Slider::SliderStyle::LinearHorizontal));
     auto phase = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Phase, i } });
     grid->Add(i * 2, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, phase));
-    grid->Add(i * 2, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phase, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(i * 2, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phase, Slider::SliderStyle::LinearHorizontal));
     grid->Add(i * 2 + 1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, std::string(1, static_cast<char>('A' + i))));
     auto max = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Max, i } });
     grid->Add(i * 2 + 1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, max));
     grid->Add(i * 2 + 1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, max, Slider::SliderStyle::LinearHorizontal));
     auto steps = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Steps, i } });
     grid->Add(i * 2 + 1, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, steps));
-    grid->Add(i * 2 + 1, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, steps, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(i * 2 + 1, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, steps, Slider::SliderStyle::LinearHorizontal));
   }
 
   for (int i = 0; i < 6; i += 2)
