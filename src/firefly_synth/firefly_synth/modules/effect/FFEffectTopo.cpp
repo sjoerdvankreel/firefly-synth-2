@@ -127,7 +127,7 @@ FFMakeEffectTopo(bool global)
   trackingKey.mode = FBParamMode::Accurate;
   trackingKey.defaultText = "0";
   trackingKey.name = "Tracking Key";
-  trackingKey.display = "TrkK";
+  trackingKey.display = "TrkKey";
   trackingKey.slotCount = 1;
   trackingKey.unit = "Semitones";
   trackingKey.id = prefix + "{409B79DA-5F59-4C54-AA3D-3E7E84B1A303}";
@@ -146,8 +146,8 @@ FFMakeEffectTopo(bool global)
   auto& lastKeySmoothTime = result->params[(int)FFEffectParam::LastKeySmoothTime];
   lastKeySmoothTime.mode = FBParamMode::Block;
   lastKeySmoothTime.defaultText = "0.1";
-  lastKeySmoothTime.display = "Smth";
-  lastKeySmoothTime.name = "KeySmt";
+  lastKeySmoothTime.display = "KeySmth";
+  lastKeySmoothTime.name = "Key Smth";
   lastKeySmoothTime.slotCount = 1;
   lastKeySmoothTime.unit = "Sec";
   lastKeySmoothTime.id = prefix + "{453EDEDA-3FB8-4211-A5DD-DCDC4F44119D}";
@@ -289,8 +289,8 @@ FFMakeEffectTopo(bool global)
   auto& stVarKeyTrk = result->params[(int)FFEffectParam::StVarKeyTrak];
   stVarKeyTrk.mode = FBParamMode::Accurate;
   stVarKeyTrk.defaultText = "0";
-  stVarKeyTrk.name = "SVF KTrk";
-  stVarKeyTrk.display = "KTrk";
+  stVarKeyTrk.name = "SVF KeyTrk";
+  stVarKeyTrk.display = "KeyTrk";
   stVarKeyTrk.slotCount = FFEffectBlockCount;
   stVarKeyTrk.slotFormatter = FFFormatBlockSlot;
   stVarKeyTrk.unit = "%";
@@ -407,8 +407,8 @@ FFMakeEffectTopo(bool global)
   auto& combKeyTrk = result->params[(int)FFEffectParam::CombKeyTrk];
   combKeyTrk.mode = FBParamMode::Accurate;
   combKeyTrk.defaultText = "0";
-  combKeyTrk.name = "Comb KTrk";
-  combKeyTrk.display = "KTrk";
+  combKeyTrk.name = "Comb KeyTrk";
+  combKeyTrk.display = "KeyTrk";
   combKeyTrk.slotCount = FFEffectBlockCount;
   combKeyTrk.slotFormatter = FFFormatBlockSlot;
   combKeyTrk.unit = "%";
