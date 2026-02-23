@@ -399,6 +399,7 @@ FFMakeLFOTopo(bool global)
   skewAXAmt.mode = FBParamMode::Accurate;
   skewAXAmt.defaultText = "0";
   skewAXAmt.name = "Skew A X Amt";
+  skewAXAmt.display = "Amt";
   skewAXAmt.slotCount = 1;
   skewAXAmt.unit = "%";
   skewAXAmt.id = prefix + "{49209170-5BA6-4B96-8E60-79A287680EAD}";
@@ -437,6 +438,7 @@ FFMakeLFOTopo(bool global)
   skewAYAmt.mode = FBParamMode::Accurate;
   skewAYAmt.defaultText = "0";
   skewAYAmt.name = "Skew A Y Amt";
+  skewAYAmt.display = "Amt";
   skewAYAmt.slotCount = 1;
   skewAYAmt.unit = "%";
   skewAYAmt.id = prefix + "{E8E4BD9E-7E2A-4B26-AA42-87157C5246BF}";
