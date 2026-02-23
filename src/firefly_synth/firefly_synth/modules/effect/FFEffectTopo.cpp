@@ -81,6 +81,8 @@ FFMakeEffectTopo(bool global)
   result->name = global ? "GFX" : "VFX";
   result->slotCount = FFEffectCount;
   result->detailGraphCount = FFEffectBlockCount;
+  result->detailGraphUpperLowerText = true;
+  result->detailGraphLayout = FBModuleGraphLayout::Grid;
   result->graphRenderer = global? FFEffectRenderGraph<true>: FFEffectRenderGraph<false>;
   result->id = prefix + "{154051CE-66D9-41C8-B479-C52D1111C962}";
   result->params.resize((int)FFEffectParam::Count);
