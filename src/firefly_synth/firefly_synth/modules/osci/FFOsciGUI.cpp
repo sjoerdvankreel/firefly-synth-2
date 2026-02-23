@@ -436,7 +436,7 @@ FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
   auto type = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Type, 0 } });
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1, 1 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, FBAsciiToUpper(name), FBLabelAlign::Right, FBLabelColors::PrimaryForeground));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, type, FFOsciTypeToString(FFOsciType::ExtAudio)));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, type));
   grid->Add(1, 0, 1, 2, MakeOsciDetail(plugGUI, moduleSlot));
   grid->MarkSection({ { 0, 0 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground);
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);

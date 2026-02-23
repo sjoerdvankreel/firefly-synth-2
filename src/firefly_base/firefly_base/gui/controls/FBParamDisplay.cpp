@@ -13,13 +13,41 @@ using namespace juce;
 FBParamDisplayLabel::
 FBParamDisplayLabel(
   FBPlugGUI* plugGUI, 
-  FBRuntimeParam const* param, 
-  std::string const& maxWidthText,
+  FBRuntimeParam const* param,
   bool isThemed):
 Label(),
-FBParamControl(plugGUI, param, isThemed),
-_maxWidthText(maxWidthText)
+FBParamControl(plugGUI, param, isThemed)
 {
+  // need to store the actual text not the width, 
+  // in case LNF flips theme later on
+  int maxTextWidth = 0;
+  auto const* lnf = FBGetLookAndFeelFor(plugGUI);
+  auto const& nrt = param->static_.NonRealTime();
+  if (param->static_.type == FBParamType::Discrete)
+    for (int i = 0; i < param->static_.Discrete().valueCount; i++)
+    {
+      auto text = nrt.PlainToText(false, param->topoIndices.module.index, i + param->Static().Discrete().valueOffset);
+      int w = lnf->GetStringWidthCached(text);
+      if (w > maxTextWidth)
+      {
+        maxTextWidth = w;
+        _maxWidthText = text;
+      }
+    }
+  else if (param->static_.type == FBParamType::List)
+    for (int i = 0; i < param->static_.List().items.size(); i++)
+    {
+      auto text = nrt.PlainToText(false, param->topoIndices.module.index, i);
+      int w = lnf->GetStringWidthCached(text);
+      if (w > maxTextWidth)
+      {
+        maxTextWidth = w;
+        _maxWidthText = text;
+      }
+    }
+  else
+    FB_ASSERT(false);
+
   double normalized = plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
   auto text = plugGUI->HostContext()->Topo()->audio.params[param->runtimeParamIndex].NormalizedToTextWithUnit(false, normalized);
   setText(text, dontSendNotification);

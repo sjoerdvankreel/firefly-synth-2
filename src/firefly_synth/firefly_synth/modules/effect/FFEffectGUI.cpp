@@ -264,7 +264,7 @@ MakeEffectDetail(FBPlugGUI* plugGUI, bool global, int moduleSlot)
   {
     auto kind = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } });
     grid->Add(1 + i, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, std::string(1, static_cast<char>('A' + i))));
-    grid->Add(1 + i, 1, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, kind, FFEffectKindToString(FFEffectKind::CombPlus)));
+    grid->Add(1 + i, 1, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, kind));
     auto stVarGain = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarGain, i } });
     grid->Add(1 + i, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarGain));
     grid->Add(1 + i, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarGain, Slider::SliderStyle::RotaryVerticalDrag));

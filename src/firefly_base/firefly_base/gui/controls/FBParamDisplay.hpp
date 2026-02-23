@@ -15,13 +15,12 @@ public juce::Label,
 public FBParamControl,
 public IFBHorizontalAutoSize
 {
-  std::string const _maxWidthText;
+  std::string _maxWidthText = {};
 
 public:
   FBParamDisplayLabel(
     FBPlugGUI* plugGUI,
     FBRuntimeParam const* param,
-    std::string const& maxWidthText,
     bool isThemed = true);
 
   void parentHierarchyChanged() override;
