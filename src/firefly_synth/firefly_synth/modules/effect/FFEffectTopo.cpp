@@ -359,8 +359,8 @@ FFMakeEffectTopo(bool global)
   auto& stVarPitchCoarse = result->params[(int)FFEffectParam::StVarPitchCoarse];
   stVarPitchCoarse.mode = FBParamMode::Accurate;
   stVarPitchCoarse.defaultText = "0";
-  stVarPitchCoarse.name = "SVF Coarse";
-  stVarPitchCoarse.display = "Crse";
+  stVarPitchCoarse.name = "SVF Pitch";
+  stVarPitchCoarse.display = "Pitch";
   stVarPitchCoarse.slotCount = FFEffectBlockCount;
   stVarPitchCoarse.slotFormatter = FFFormatBlockSlot;
   stVarPitchCoarse.unit = "Semitones";
@@ -455,8 +455,8 @@ FFMakeEffectTopo(bool global)
   auto& combPitchCoarsePlus = result->params[(int)FFEffectParam::CombPitchCoarsePlus];
   combPitchCoarsePlus.mode = FBParamMode::Accurate;
   combPitchCoarsePlus.defaultText = "0";
-  combPitchCoarsePlus.name = "Comb+ Coarse";
-  combPitchCoarsePlus.display = "Crs+";
+  combPitchCoarsePlus.name = "Comb+ Pitch";
+  combPitchCoarsePlus.display = "Pitch+";
   combPitchCoarsePlus.slotCount = FFEffectBlockCount;
   combPitchCoarsePlus.slotFormatter = FFFormatBlockSlot;
   combPitchCoarsePlus.unit = "Semitones";
@@ -502,8 +502,8 @@ FFMakeEffectTopo(bool global)
   auto& combPitchCoarseMin = result->params[(int)FFEffectParam::CombPitchCoarseMin];
   combPitchCoarseMin.mode = FBParamMode::Accurate;
   combPitchCoarseMin.defaultText = "0";
-  combPitchCoarseMin.name = "Comb- Coarse";
-  combPitchCoarseMin.display = "Crs-";
+  combPitchCoarseMin.name = "Comb- Pitch";
+  combPitchCoarseMin.display = "Pitch-";
   combPitchCoarseMin.slotCount = FFEffectBlockCount;
   combPitchCoarseMin.slotFormatter = FFFormatBlockSlot;
   combPitchCoarseMin.unit = "Semitones";
