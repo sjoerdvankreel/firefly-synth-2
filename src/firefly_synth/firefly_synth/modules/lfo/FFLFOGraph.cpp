@@ -15,8 +15,8 @@ class LFOGraphProcessor final:
 public FBModuleGraphProcessor
 {
 public:
-  int totalSamples = {};
-  std::array<int, FFLFOBlockCount> samplesProcessed = {};
+  int totalSamplesMain = {};
+  std::array<int, FFLFOBlockCount> totalSamplesDetail = {};
 
   FFLFOProcessor& GetProcessor(FBModuleProcState& state);
   LFOGraphProcessor(FBModuleGraphComponentData* componentData) :
@@ -80,14 +80,14 @@ LFOGraphProcessor<Global>::ExchangeState(
 template <bool Global>
 FBModuleGraphPlotParams
 LFOGraphProcessor<Global>::PlotParams(
-  bool /*detailGraphs*/, int graphIndex) const
+  bool /*detailGraphs*/, int /*graphIndex*/) const
 {
   FBModuleGraphPlotParams result = {};
   result.autoSampleRate = false;
   result.sampleCount = ComponentData()->pixelWidth;
   result.staticModuleIndex = static_cast<int>(Global ? FFModuleType::GLFO : FFModuleType::VLFO);
   
-  int hostSampleCount;
+  int maxHostSampleCount = 0;
   auto const* state = ComponentData()->renderState;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float bpm = state->ExchangeContainer()->Host()->bpm;
@@ -95,17 +95,21 @@ LFOGraphProcessor<Global>::PlotParams(
   int moduleType = (int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO);
   FBParamTopoIndices indices = { { moduleType, moduleSlot }, { (int)FFLFOParam::Sync, 0 } };
   bool sync = state->AudioParamBool(indices, false, -1);
-  if (sync)
+
+  for (int i = 0; i < FFLFOBlockCount; i++)
   {
-    indices = { { moduleType, moduleSlot }, { (int)FFLFOParam::RateBars, graphIndex } };
-    hostSampleCount = state->AudioParamBarsSamples(indices, false, -1, hostSampleRate, bpm);
+    if (sync)
+    {
+      indices = { { moduleType, moduleSlot }, { (int)FFLFOParam::RateBars, i } };
+      maxHostSampleCount = std::max(maxHostSampleCount, state->AudioParamBarsSamples(indices, false, -1, hostSampleRate, bpm));
+    }
+    else
+    {
+      indices = { { moduleType, moduleSlot }, { (int)FFLFOParam::RateHz, i } };
+      maxHostSampleCount = std::max(maxHostSampleCount, state->AudioParamLinearFreqSamples(indices, false, -1, hostSampleRate));
+    }
   }
-  else
-  {
-    indices = { { moduleType, moduleSlot }, { (int)FFLFOParam::RateHz, graphIndex } };
-    hostSampleCount = state->AudioParamLinearFreqSamples(indices, false, -1, hostSampleRate);
-  }
-  result.sampleRate = result.sampleCount * hostSampleRate / hostSampleCount;
+  result.sampleRate = result.sampleCount * hostSampleRate / maxHostSampleCount;
   return result;
 }
 
@@ -114,7 +118,6 @@ void
 LFOGraphProcessor<Global>::BeginVoiceOrBlock(
   FBGraphRenderState* state, FBModuleGraphProcessParams const& params)
 { 
-  samplesProcessed[params.graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
   FFLFOExchangeState const* exchangeFromDSP = nullptr;
   int moduleSlot = moduleProcState->moduleSlot;
@@ -126,6 +129,7 @@ LFOGraphProcessor<Global>::BeginVoiceOrBlock(
       exchangeFromDSP = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Global());
     else
       exchangeFromDSP = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Voice()[params.exchangeVoice]);
+  int totalSamples = params.detailGraphs ? totalSamplesDetail[params.graphIndex] : totalSamplesMain;
   GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(*moduleProcState, exchangeFromDSP, true, params.detailGraphs, params.graphIndex, totalSamples);
 }
 
@@ -150,8 +154,6 @@ LFOGraphProcessor<Global>::Process(
     if (opType == FFModulationOpType::Off)
       return 0;
   }
-
-  samplesProcessed[params.graphIndex] += FBFixedBlockSamples;
   return GetProcessor(*moduleProcState).template Process<Global>(*moduleProcState, true);
 }
 
@@ -182,7 +184,9 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   auto moduleType = Global ? FFModuleType::GLFO : FFModuleType::VLFO;
   graphData->skipDrawOnEqualsPrimary = false; // need exchange state for all sub-lfos
   graphData->drawMarkersSelector = [](int) { return true; };
-  processor.totalSamples = processor.PlotParams(detailGraphs, 0).sampleCount; // just pick one
+  processor.totalSamplesMain = processor.PlotParams(false, 0).sampleCount;
+  for (int i = 0; i < FFLFOBlockCount; i++)
+    processor.totalSamplesDetail[i] = processor.PlotParams(true, i).sampleCount;
 
   auto* renderState = graphData->renderState;
   auto* moduleProcState = renderState->ModuleProcState();
