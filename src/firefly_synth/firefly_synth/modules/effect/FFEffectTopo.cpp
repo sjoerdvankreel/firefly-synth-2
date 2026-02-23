@@ -337,7 +337,7 @@ FFMakeEffectTopo(bool global)
   stVarFreqFreq.mode = FBParamMode::Accurate;
   stVarFreqFreq.defaultText = "1000";
   stVarFreqFreq.name = "SVF Freq";
-  stVarFreqFreq.display = "Frq";
+  stVarFreqFreq.display = "Freq";
   stVarFreqFreq.slotCount = FFEffectBlockCount;
   stVarFreqFreq.slotFormatter = FFFormatBlockSlot;
   stVarFreqFreq.unit = "Hz";
@@ -671,7 +671,7 @@ FFMakeEffectTopo(bool global)
   distDrive.mode = FBParamMode::Accurate;
   distDrive.defaultText = "100";
   distDrive.name = "Dist Drive";
-  distDrive.display = "Drv";
+  distDrive.display = "Drive";
   distDrive.slotCount = FFEffectBlockCount;
   distDrive.slotFormatter = FFFormatBlockSlot;
   distDrive.unit = "%";
