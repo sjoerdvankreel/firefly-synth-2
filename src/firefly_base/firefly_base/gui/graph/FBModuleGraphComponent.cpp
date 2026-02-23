@@ -115,6 +115,7 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
     else
       FB_ASSERT(false);
 
+    _columnCount = cols;
     removeChildComponent(_grid.get());
     _grid = std::make_unique<FBGridComponent>(_plugGUI, true, rows, cols);
     _cards.clear();
@@ -196,6 +197,6 @@ FBModuleGraphComponent::paint(Graphics& /*g*/)
 
   _data->graphs.clear();
   _data->graphs.resize(_detailGraphs? topo->static_->modules[staticIndex].detailGraphCount: 1);
-  _data->pixelWidth = getWidth() / static_cast<int>(_data->graphs.size());
+  _data->pixelWidth = getWidth() / _columnCount;
   topo->static_->modules[staticIndex].graphRenderer(_data.get(), _detailGraphs);
 }

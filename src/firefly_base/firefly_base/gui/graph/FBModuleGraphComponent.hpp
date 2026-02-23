@@ -28,6 +28,7 @@ public juce::Component
   bool const _detailGraphs;
 
   int _graphCount = -1;
+  int _columnCount = -1;
   int _tweakedModuleByUI = -1;
   FBModuleGraphLayout _layout = {};
   bool _detailGraphUpperLowerText = false;
