@@ -432,8 +432,8 @@ FFMakeEffectTopo(bool global)
   auto& combFreqFreqPlus = result->params[(int)FFEffectParam::CombFreqFreqPlus];
   combFreqFreqPlus.mode = FBParamMode::Accurate;
   combFreqFreqPlus.defaultText = "1000";
-  combFreqFreqPlus.name = "Comb Freq+";
-  combFreqFreqPlus.display = "Frq+";
+  combFreqFreqPlus.name = "Comb+ Freq";
+  combFreqFreqPlus.display = "Freq+";
   combFreqFreqPlus.slotCount = FFEffectBlockCount;
   combFreqFreqPlus.slotFormatter = FFFormatBlockSlot;
   combFreqFreqPlus.unit = "Hz";
@@ -455,7 +455,7 @@ FFMakeEffectTopo(bool global)
   auto& combPitchCoarsePlus = result->params[(int)FFEffectParam::CombPitchCoarsePlus];
   combPitchCoarsePlus.mode = FBParamMode::Accurate;
   combPitchCoarsePlus.defaultText = "0";
-  combPitchCoarsePlus.name = "Comb Coarse+";
+  combPitchCoarsePlus.name = "Comb+ Coarse";
   combPitchCoarsePlus.display = "Crs+";
   combPitchCoarsePlus.slotCount = FFEffectBlockCount;
   combPitchCoarsePlus.slotFormatter = FFFormatBlockSlot;
@@ -479,8 +479,8 @@ FFMakeEffectTopo(bool global)
   auto& combFreqFreqMin = result->params[(int)FFEffectParam::CombFreqFreqMin];
   combFreqFreqMin.mode = FBParamMode::Accurate;
   combFreqFreqMin.defaultText = "1000";
-  combFreqFreqMin.name = "Comb Freq-";
-  combFreqFreqMin.display = "Frq-";
+  combFreqFreqMin.name = "Comb- Freq";
+  combFreqFreqMin.display = "Freq-";
   combFreqFreqMin.slotCount = FFEffectBlockCount;
   combFreqFreqMin.slotFormatter = FFFormatBlockSlot;
   combFreqFreqMin.unit = "Hz";
@@ -502,7 +502,7 @@ FFMakeEffectTopo(bool global)
   auto& combPitchCoarseMin = result->params[(int)FFEffectParam::CombPitchCoarseMin];
   combPitchCoarseMin.mode = FBParamMode::Accurate;
   combPitchCoarseMin.defaultText = "0";
-  combPitchCoarseMin.name = "Comb Coarse-";
+  combPitchCoarseMin.name = "Comb- Coarse";
   combPitchCoarseMin.display = "Crs-";
   combPitchCoarseMin.slotCount = FFEffectBlockCount;
   combPitchCoarseMin.slotFormatter = FFFormatBlockSlot;
@@ -526,8 +526,8 @@ FFMakeEffectTopo(bool global)
   auto& combResPlus = result->params[(int)FFEffectParam::CombResPlus];
   combResPlus.mode = FBParamMode::Accurate;
   combResPlus.defaultText = "50";
-  combResPlus.name = "Comb Res+";
-  combResPlus.display = "Res+";
+  combResPlus.name = "Comb+ Reso";
+  combResPlus.display = "Reso+";
   combResPlus.slotCount = FFEffectBlockCount;
   combResPlus.slotFormatter = FFFormatBlockSlot;
   combResPlus.unit = "%";
@@ -551,8 +551,8 @@ FFMakeEffectTopo(bool global)
   auto& combResMin = result->params[(int)FFEffectParam::CombResMin];
   combResMin.mode = FBParamMode::Accurate;
   combResMin.defaultText = "0";
-  combResMin.name = "Comb Res-";
-  combResMin.display = "Res-";
+  combResMin.name = "Comb- Reso";
+  combResMin.display = "Reso-";
   combResMin.slotCount = FFEffectBlockCount;
   combResMin.slotFormatter = FFFormatBlockSlot;
   combResMin.unit = "%";
