@@ -277,7 +277,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     tapCount += renderState->AudioParamBool(paramIndices, false, -1) ? 1 : 0;
   }
   paramIndices = { modIndices, { (int)FFEchoParam::TapsMix, 0 } };
-  bool tapsOn = IsTapsOn(renderState, Global, false, -1);
+  bool tapsOn = target != 0 && IsTapsOn(renderState, Global, false, -1);
   float tapsMix = renderState->AudioParamIdentity(paramIndices, false, -1);
   int tapsOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Taps);
   FBRenderModuleGraph(&processor, Global, true, detailGraphs, tapsOrder);
@@ -285,13 +285,13 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   graphData->graphs[tapsOrder].moduleIndex = (int)moduleType;
   graphData->graphs[tapsOrder].displayGainAsDb = true;
   graphData->graphs[tapsOrder].title = "Multi Tap: ";
-  graphData->graphs[tapsOrder].title += IsTapsOn(renderState, Global, false, -1) ? "On" : "Off";
+  graphData->graphs[tapsOrder].title += tapsOn ? "On" : "Off";
   if (tapsOn)
     graphData->graphs[tapsOrder].title += ", " + std::to_string(tapCount) + " Taps";
   graphData->graphs[tapsOrder].defaultMainText = FBToStringPercent(tapsMix, 2) + " Mix";
   graphData->graphs[tapsOrder].ScaleToSelfNormalized();
 
-  bool feedbackOn = IsFeedbackOn(renderState, Global, false, -1);
+  bool feedbackOn = target != 0 && IsFeedbackOn(renderState, Global, false, -1);
   paramIndices = { modIndices, { (int)FFEchoParam::Sync, 0 } };
   bool sync = renderState->AudioParamBool(paramIndices, false, -1);
   paramIndices = { modIndices, { (int)FFEchoParam::FeedbackDelayTime, 0 } };
@@ -318,7 +318,7 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     (moduleTopo.params[(int)FFEchoParam::FeedbackDelayBars].BarsNonRealTime().NormalizedToText(false, 0, feedbackDelayBarsNorm) + " Bars");
   graphData->graphs[feedbackOrder].ScaleToSelfNormalized();
 
-  bool reverbOn = IsReverbOn(renderState, Global, false, -1);
+  bool reverbOn = target != 0 && IsReverbOn(renderState, Global, false, -1);
   paramIndices = { modIndices, { (int)FFEchoParam::ReverbSize, 0 } };
   float reverbSize = renderState->AudioParamIdentity(paramIndices, false, -1);
   paramIndices = { modIndices, { (int)FFEchoParam::ReverbLPOn, 0 } };
