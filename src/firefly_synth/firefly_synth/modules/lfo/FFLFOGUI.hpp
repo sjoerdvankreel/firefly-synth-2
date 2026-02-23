@@ -7,4 +7,4 @@ class FBPlugGUI;
 juce::Component*
 FFMakeLFOGUI(FBPlugGUI* plugGUI);
 juce::Component*
-FFMakeLFODetailGUI(FBPlugGUI* plugGUI, bool global);
+FFMakeLFODetailGUI(FBPlugGUI* plugGUI, bool global, int moduleSlot);

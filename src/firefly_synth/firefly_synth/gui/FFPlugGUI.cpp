@@ -137,16 +137,16 @@ FFPlugGUI::RequestFixedGraphsRerender(int moduleIndex)
 void
 FFPlugGUI::SwitchDetailsSectionToModule(int index, int slot)
 {
-  if (index == (int)FFModuleType::Osci)
-    _detailContent->SetContent(_osciDetails[slot]);
-  if (index == (int)FFModuleType::VLFO)
-    _detailContent->SetContent(_vLFODetails);
-  if (index == (int)FFModuleType::GLFO)
-    _detailContent->SetContent(_gLFODetails);
   if (index == (int)FFModuleType::VEcho)
     _detailContent->SetContent(_vEchoDetails);
   if (index == (int)FFModuleType::GEcho)
     _detailContent->SetContent(_gEchoDetails);
+  if (index == (int)FFModuleType::Osci)
+    _detailContent->SetContent(_osciDetails[slot]);
+  if (index == (int)FFModuleType::VLFO)
+    _detailContent->SetContent(_vLFODetails[slot]);
+  if (index == (int)FFModuleType::GLFO)
+    _detailContent->SetContent(_gLFODetails[slot]);
 }
 
 void 
@@ -369,12 +369,15 @@ FFPlugGUI::SetupGUI()
   _matrix = FFMakeModMatrixGUI(this);
   _detailContent = StoreComponent<FBContentComponent>();
   _globalUni = FFMakeGlobalUniGUI(this, _graphRenderState.get(), &_fixedGraphs);
-  _gLFODetails = FFMakeLFODetailGUI(this, true);
-  _vLFODetails = FFMakeLFODetailGUI(this, false);
   _gEchoDetails = FFMakeEchoDetailGUI(this, true);
   _vEchoDetails = FFMakeEchoDetailGUI(this, false);
   for (int i = 0; i < FFOsciCount; i++)
     _osciDetails[i] = FFMakeOsciDetailGUI(this, i);
+  for (int i = 0; i < FFLFOCount; i++)
+  {
+    _gLFODetails[i] = FFMakeLFODetailGUI(this, true, i);
+    _vLFODetails[i] = FFMakeLFODetailGUI(this, false, i);
+  }
 
   _main = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 16, 5 } });
   _main->Add(0, 0, 1, 2, _topModules);

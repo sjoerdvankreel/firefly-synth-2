@@ -24,7 +24,9 @@
 using namespace juce;
 
 static std::string
-MakeLFODetailLabel(FBRuntimeTopo const* topo, bool global, std::vector<double> const& normalized)
+MakeLFODetailLabel(
+  FBRuntimeTopo const* topo, bool global, 
+  std::vector<double> const& normalized)
 {
   std::vector<FFLFOWaveMode> modes = {};
   std::vector<FFModulationOpType> opTypes = {};
@@ -77,7 +79,7 @@ static Component*
 MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot, int block)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 1, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0 });
   auto opType = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, block } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, opType, std::string(1, static_cast<char>('A' + block)), FBLabelColors::PrimaryBackground));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
@@ -89,20 +91,8 @@ MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot,
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, rateHz, Slider::SliderStyle::RotaryVerticalDrag));
   auto rateBars = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateBars, block } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, rateBars));
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, rateBars));
-  auto min = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Min, block } });
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, min));
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, min, Slider::SliderStyle::LinearHorizontal));
-  auto max = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Max, block } });
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, max));
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, max, Slider::SliderStyle::LinearHorizontal));
-  auto phase = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Phase, block } });
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, phase));
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phase, Slider::SliderStyle::RotaryVerticalDrag));
-  auto steps = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Steps, block } });
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, steps));
-  grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, steps, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 7 } }, block % 2 == 0? FBGridSectionMark::DefaultBackgroundDefaultBorder : FBGridSectionMark::DefaultBackgroundAlternateBorder);
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, rateBars));  
+  grid->MarkSection({ { 0, 0 }, { 2, 3 } }, block % 2 == 0? FBGridSectionMark::DefaultBackgroundDefaultBorder : FBGridSectionMark::DefaultBackgroundAlternateBorder);
   return grid;
 }
 
@@ -144,6 +134,37 @@ MakeLFOTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, moduleSlot, margin);
 }
 
+static Component*
+MakeLFODetail(FBPlugGUI* plugGUI, bool global, int moduleSlot)
+{
+  auto topo = plugGUI->HostContext()->Topo();
+  auto moduleType = global ? FFModuleType::GLFO : FFModuleType::VLFO;
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0, 0, 0 }, std::vector<int> { 0, 0, 1, 0, 0 });
+
+  for (int i = 0; i < FFLFOBlockCount; i++)
+  {
+    grid->Add(i * 2, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, std::string(1, static_cast<char>('A' + i))));
+    auto min = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Min, i } });
+    grid->Add(i * 2, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, min));
+    grid->Add(i * 2, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, min, Slider::SliderStyle::LinearHorizontal));
+    auto phase = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Phase, i } });
+    grid->Add(i * 2, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, phase));
+    grid->Add(i * 2, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phase, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(i * 2 + 1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, std::string(1, static_cast<char>('A' + i))));
+    auto max = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Max, i } });
+    grid->Add(i * 2 + 1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, max));
+    grid->Add(i * 2 + 1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, max, Slider::SliderStyle::LinearHorizontal));
+    auto steps = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Steps, i } });
+    grid->Add(i * 2 + 1, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, steps));
+    grid->Add(i * 2 + 1, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, steps, Slider::SliderStyle::RotaryVerticalDrag));
+  }
+
+  for (int i = 0; i < 6; i += 2)
+    grid->MarkSection({ { i, 0 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
+
+  return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, true, false, grid);
+}
+
 Component*
 FFMakeLFOGUI(FBPlugGUI* plugGUI)
 {
@@ -162,24 +183,24 @@ FFMakeLFOGUI(FBPlugGUI* plugGUI)
 }
 
 Component*
-FFMakeLFODetailGUI(FBPlugGUI* plugGUI, bool global)
+FFMakeLFODetailGUI(FBPlugGUI* plugGUI, bool global, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GLFO : FFModuleType::VLFO;
   std::vector<FBRuntimeParam const*> params = {};
-  int index = topo->moduleTopoToRuntime.at({ (int)moduleType, 0 });
+  int index = topo->moduleTopoToRuntime.at({ (int)moduleType, moduleSlot });
   auto name = topo->modules[index].name;
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
-    params.push_back(topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFLFOParam::OpType, i } }));
-    params.push_back(topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFLFOParam::WaveMode, i } }));
+    params.push_back(topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } }));
+    params.push_back(topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::WaveMode, i } }));
   }
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1, 1 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, FBAsciiToUpper(name), FBLabelAlign::Right, FBLabelColors::PrimaryForeground));
   grid->Add(0, 1, plugGUI->StoreComponent<FBMultiParamDisplayLabel>(plugGUI, params,
     [topo, global](std::vector<double> const& normalized) { return MakeLFODetailLabel(topo, global, normalized); }));
-  //grid->Add(1, 0, 1, 2, MakeEchoDetail(plugGUI, global));
+  grid->Add(1, 0, 1, 2, MakeLFODetail(plugGUI, global, moduleSlot));
   grid->MarkSection({ { 0, 0 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground);
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, card);

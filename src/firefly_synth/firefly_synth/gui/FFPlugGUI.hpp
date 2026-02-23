@@ -63,10 +63,10 @@ public FBPlugGUI
   FBModuleGraphComponent* _echoMainGraph = {};
 
   FBContentComponent* _detailContent = {};
-  juce::Component* _vLFODetails = {};
-  juce::Component* _gLFODetails = {};
   juce::Component* _vEchoDetails = {};
   juce::Component* _gEchoDetails = {};
+  std::array<juce::Component*, FFLFOCount> _vLFODetails = {};
+  std::array<juce::Component*, FFLFOCount> _gLFODetails = {};
   std::array<juce::Component*, FFOsciCount> _osciDetails = {};
 
   std::vector<FBMSEGEditor*> _msegEditors = {};
