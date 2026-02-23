@@ -162,6 +162,7 @@ FFMakeEffectTopo(bool global)
   lastKeySmoothTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectLastKeySmoothTime);
   lastKeySmoothTime.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectLastKeySmoothTime);
   lastKeySmoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectLastKeySmoothTime);
+  lastKeySmoothTime.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::On }, [global](auto const&) { return global; });
   lastKeySmoothTime.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On }, [global](auto const& vs) { return global && vs[0] != 0; });
 
   auto& kind = result->params[(int)FFEffectParam::Kind];
