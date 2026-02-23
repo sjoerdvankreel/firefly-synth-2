@@ -44,15 +44,18 @@ class FBParamSlider final:
 public FBAutoSizeSlider,
 public FBParamControl
 {
+  bool const _drawAtCenter;
   FBParamActiveExchangeState _paramActive = {};
 
 public:
   FBParamSlider(
-    FBPlugGUI* plugGUI, 
-    FBRuntimeParam const* param, 
+    FBPlugGUI* plugGUI,
+    FBRuntimeParam const* param,
     juce::Slider::SliderStyle style,
-    bool isThemed = true);
+    bool isThemed = true,
+    bool drawAtCenter = true);
 
+  bool DrawAtCenter() const { return _drawAtCenter; }
   FBParamActiveExchangeState const&
   ParamActiveExchangeState() const { return _paramActive; }
 

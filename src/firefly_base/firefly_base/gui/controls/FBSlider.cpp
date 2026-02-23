@@ -90,9 +90,10 @@ FBParamSlider(
   FBPlugGUI* plugGUI,
   FBRuntimeParam const* param, 
   Slider::SliderStyle style, 
-  bool isThemed):
+  bool isThemed, bool drawAtCenter):
 FBAutoSizeSlider(plugGUI, style),
-FBParamControl(plugGUI, param, isThemed)
+FBParamControl(plugGUI, param, isThemed),
+_drawAtCenter(drawAtCenter)
 {
   if (param->static_.NonRealTime().IsStepped())
     setRange(0.0, 1.0, 1.0 / (param->static_.NonRealTime().ValueCount() - 1.0));

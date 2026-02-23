@@ -734,6 +734,10 @@ FBLookAndFeel::drawRotarySlider(
   width += 12;
   height += 12;
 
+  FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
+  if (paramSlider && !paramSlider->DrawAtCenter() && width > height)
+    width = height;
+
   auto const& scheme = FindColorSchemeFor(slider);
   auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(10);
   auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
@@ -785,8 +789,7 @@ FBLookAndFeel::drawRotarySlider(
     g.setColour(scheme.sliderModBounds); 
     g.strokePath(modArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
   }
-
-  FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
+  
   if (paramSlider != nullptr)
   {
     auto paramActive = paramSlider->ParamActiveExchangeState();

@@ -163,18 +163,12 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
   auto combPitchCoarsePlus = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombPitchCoarsePlus, block } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combPitchCoarsePlus));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combPitchCoarsePlus, Slider::SliderStyle::RotaryVerticalDrag));
-  auto combResPlus = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombResPlus, block } });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combResPlus));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combResPlus, Slider::SliderStyle::RotaryVerticalDrag));
   auto combFreqFreqMin = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombFreqFreqMin, block } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combFreqFreqMin));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combFreqFreqMin, Slider::SliderStyle::RotaryVerticalDrag));
   auto combPitchCoarseMin = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombPitchCoarseMin, block } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combPitchCoarseMin));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combPitchCoarseMin, Slider::SliderStyle::RotaryVerticalDrag));
-  auto combResMin = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombResMin, block } });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combResMin));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combResMin, Slider::SliderStyle::RotaryVerticalDrag));
 
   grid->MarkSection({ { 0, 0 }, { 2, 6 } }, block % 2 != 0? FBGridSectionMark::DefaultBackgroundAlternateBorder : FBGridSectionMark::DefaultBackgroundDefaultBorder);
   return grid;
@@ -200,7 +194,7 @@ MakeEffectDetail(FBPlugGUI* plugGUI, bool global, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEffect : FFModuleType::VEffect;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0, 0 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0, 0 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 });
 
   auto lastKeySmoothTime = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::LastKeySmoothTime, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lastKeySmoothTime));
@@ -231,14 +225,20 @@ MakeEffectDetail(FBPlugGUI* plugGUI, bool global, int moduleSlot)
     grid->Add(1 + i, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distAmt, Slider::SliderStyle::RotaryVerticalDrag));
     auto stVarGain = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarGain, i } });
     grid->Add(1 + i, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarGain));
-    grid->Add(1 + i, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarGain, Slider::SliderStyle::LinearHorizontal));
+    grid->Add(1 + i, 9, 1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarGain, Slider::SliderStyle::LinearHorizontal));
     auto distBias = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistBias, i } });
     grid->Add(1 + i, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, distBias));
-    grid->Add(1 + i, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distBias, Slider::SliderStyle::LinearHorizontal));
+    grid->Add(1 + i, 9, 1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distBias, Slider::SliderStyle::LinearHorizontal));
+    auto combResPlus = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombResPlus, i } });
+    grid->Add(1 + i, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combResPlus));
+    grid->Add(1 + i, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combResPlus, Slider::SliderStyle::RotaryVerticalDrag, true, false));
+    auto combResMin = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombResMin, i } });
+    grid->Add(1 + i, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combResMin));
+    grid->Add(1 + i, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combResMin, Slider::SliderStyle::RotaryVerticalDrag));
   }
 
   for (int i = 0; i < 5; i += 2)
-    grid->MarkSection({ { i, 0 }, { 1, 10 } }, FBGridSectionMark::AlternateBackground);
+    grid->MarkSection({ { i, 0 }, { 1, 12 } }, FBGridSectionMark::AlternateBackground);
 
   return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, true, false, grid);
 }
