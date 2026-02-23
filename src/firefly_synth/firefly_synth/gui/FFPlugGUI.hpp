@@ -68,6 +68,8 @@ public FBPlugGUI
   std::array<juce::Component*, FFLFOCount> _vLFODetails = {};
   std::array<juce::Component*, FFLFOCount> _gLFODetails = {};
   std::array<juce::Component*, FFOsciCount> _osciDetails = {};
+  std::array<juce::Component*, FFEffectCount> _vEffectDetails = {};
+  std::array<juce::Component*, FFEffectCount> _gEffectDetails = {};
 
   std::vector<FBMSEGEditor*> _msegEditors = {};
   std::vector<FBModuleGraphComponent*> _fixedGraphs = {};

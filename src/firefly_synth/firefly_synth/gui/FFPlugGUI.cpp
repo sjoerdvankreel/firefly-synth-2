@@ -147,6 +147,10 @@ FFPlugGUI::SwitchDetailsSectionToModule(int index, int slot)
     _detailContent->SetContent(_vLFODetails[slot]);
   if (index == (int)FFModuleType::GLFO)
     _detailContent->SetContent(_gLFODetails[slot]);
+  if (index == (int)FFModuleType::VEffect)
+    _detailContent->SetContent(_vEffectDetails[slot]);
+  if (index == (int)FFModuleType::GEffect)
+    _detailContent->SetContent(_gEffectDetails[slot]);
 }
 
 void 
@@ -377,6 +381,11 @@ FFPlugGUI::SetupGUI()
   {
     _gLFODetails[i] = FFMakeLFODetailGUI(this, true, i);
     _vLFODetails[i] = FFMakeLFODetailGUI(this, false, i);
+  }
+  for (int i = 0; i < FFEffectCount; i++)
+  {
+    _gEffectDetails[i] = FFMakeEffectDetailGUI(this, true, i);
+    _vEffectDetails[i] = FFMakeEffectDetailGUI(this, false, i);
   }
 
   _main = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 16, 5 } });

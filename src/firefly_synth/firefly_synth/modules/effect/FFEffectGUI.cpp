@@ -11,8 +11,10 @@
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
+#include <firefly_base/gui/controls/FBParamDisplay.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
+#include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
@@ -78,6 +80,30 @@ FFEffectAdjustParamModulationGUIBounds(
   }
 
   return false;
+}
+
+static std::string
+MakeEffectDetailLabel(
+  FBRuntimeTopo const* topo, bool global, 
+  std::vector<double> const& normalized)
+{
+  std::vector<FFEffectKind> kinds = {};
+  auto moduleType = global ? FFModuleType::GEffect : FFModuleType::VEffect;
+  auto const& moduleTopo = topo->static_->modules[(int)moduleType];
+  for (int i = 0; i < FFEffectBlockCount; i++)
+    kinds.push_back(moduleTopo.NormalizedToListFast<FFEffectKind>(FFEffectParam::Kind, (float)normalized[i]));
+
+  bool haveAny = false;
+  std::string result = {};
+  for (int i = 0; i < FFEffectBlockCount; i++)
+    if (kinds[i] != FFEffectKind::Off)
+    {
+      if (haveAny)
+        result += ", ";
+      result += FFEffectKindToString(kinds[i]);
+      haveAny = true;
+    }
+  return result;
 }
 
 static Component*
@@ -235,4 +261,26 @@ FFMakeEffectGUI(FBPlugGUI* plugGUI)
     tabs->AddModuleTab(true, false, { (int)FFModuleType::GEffect, i }, MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
   tabs->ActivateStoredSelectedTab();
   return tabs;
+}
+
+Component*
+FFMakeEffectDetailGUI(FBPlugGUI* plugGUI, bool global, int moduleSlot)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto topo = plugGUI->HostContext()->Topo();
+  auto moduleType = global ? FFModuleType::GEffect : FFModuleType::VEffect;
+  std::vector<FBRuntimeParam const*> params = {};
+  int index = topo->moduleTopoToRuntime.at({ (int)moduleType, moduleSlot });
+  auto name = topo->modules[index].name;
+  for (int i = 0; i < FFEffectBlockCount; i++)
+    params.push_back(topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } }));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1, 1 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, FBAsciiToUpper(name), FBLabelAlign::Right, FBLabelColors::PrimaryForeground));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBMultiParamDisplayLabel>(plugGUI, params,
+    [topo, global](std::vector<double> const& normalized) { return MakeEffectDetailLabel(topo, global, normalized); }));
+  //grid->Add(1, 0, 1, 2, MakeLFODetail(plugGUI, global, moduleSlot));
+  grid->MarkSection({ { 0, 0 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground);
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, card);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, 0, margin);
 }
