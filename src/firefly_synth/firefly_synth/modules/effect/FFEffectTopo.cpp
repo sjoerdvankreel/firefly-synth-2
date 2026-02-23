@@ -109,8 +109,7 @@ FFMakeEffectTopo(bool global)
   auto& oversample = result->params[(int)FFEffectParam::Oversample];
   oversample.mode = FBParamMode::Block;
   oversample.defaultText = "Off";
-  oversample.name = "4X Oversample";
-  oversample.display = "4X OS";
+  oversample.name = "Oversample";
   oversample.slotCount = 1;
   oversample.id = prefix + "{D8AA4B9D-EAFD-4E87-9DC9-108B8894A4D0}";
   oversample.description = "4X Oversampling";
