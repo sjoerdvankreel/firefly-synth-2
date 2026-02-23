@@ -224,6 +224,14 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
   g.setColour(scheme.graphBackground.withAlpha(0.5f));
   g.fillRoundedRectangle(graphBounds.toFloat(), 5.0f);
 
+  if (maxSizeAllSeries == 0)
+  {
+    auto lnf = FBGetLookAndFeelFor(_plugGUI);
+    g.setFont(lnf->GetFont().withHeight(16.0f));
+    g.setColour(Colours::white.withAlpha(0.25f));
+    g.drawText("OFF", graphBounds, Justification::centred, false);
+  }
+
   if (maxSizeAllSeries != 0)
   {
     auto const& pvi = graphData.primarySeries.verticalIndicators;
