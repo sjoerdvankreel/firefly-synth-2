@@ -129,8 +129,8 @@ FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* chil
   else
   {
     _cells[cell].children.push_back(child);
-    FB_ASSERT(_cells[cell].span.row == rowSpan);
-    FB_ASSERT(_cells[cell].span.col == colSpan);
+    FB_ASSERT(_cells[cell].span.row >= rowSpan);
+    FB_ASSERT(_cells[cell].span.col >= colSpan);
   }
 }
 

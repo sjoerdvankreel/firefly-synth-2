@@ -636,6 +636,8 @@ FFEffectProcessor::Process(
   {
     switch (_kind[i])
     {
+    case FFEffectKind::Off:
+      break;
     case FFEffectKind::Fold:
       ProcessFold(i, oversampled, distMixPlain, distBiasPlain, distDrivePlain);
       break;
