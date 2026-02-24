@@ -299,8 +299,8 @@ FFMakeEffectTopo(bool global)
   auto& stVarRes = result->params[(int)FFEffectParam::StVarRes];
   stVarRes.mode = FBParamMode::Accurate;
   stVarRes.defaultText = "0";
-  stVarRes.name = "SVF Res";
-  stVarRes.display = "Res";
+  stVarRes.name = "SVF Reso";
+  stVarRes.display = "Reso";
   stVarRes.slotCount = FFEffectBlockCount;
   stVarRes.slotFormatter = FFFormatBlockSlot;
   stVarRes.unit = "%";

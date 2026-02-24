@@ -145,16 +145,15 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, distDrive));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distDrive, Slider::SliderStyle::RotaryVerticalDrag));
 
+  auto stVarGain = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarGain, block } });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarGain));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarGain, Slider::SliderStyle::RotaryVerticalDrag));
   auto stVarFreqFreq = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarFreqFreq, block } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarFreqFreq));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarFreqFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarFreqFreq));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarFreqFreq, Slider::SliderStyle::RotaryVerticalDrag));
   auto stVarPitchCoarse = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarPitchCoarse, block } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarPitchCoarse));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarPitchCoarse, Slider::SliderStyle::RotaryVerticalDrag));
-  auto stVarRes = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarRes, block } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarRes));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarRes, Slider::SliderStyle::RotaryVerticalDrag));
-
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarPitchCoarse));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarPitchCoarse, Slider::SliderStyle::RotaryVerticalDrag));
   auto combFreqFreqPlus = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombFreqFreqPlus, block } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combFreqFreqPlus));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combFreqFreqPlus, Slider::SliderStyle::RotaryVerticalDrag));
@@ -221,9 +220,9 @@ MakeEffectDetail(FBPlugGUI* plugGUI, bool global, int moduleSlot)
     auto distAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistAmt, i } });
     grid->Add(1 + i, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, distAmt));
     grid->Add(1 + i, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distAmt, Slider::SliderStyle::RotaryVerticalDrag));
-    auto stVarGain = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarGain, i } });
-    grid->Add(1 + i, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarGain));
-    grid->Add(1 + i, 9, 1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarGain, Slider::SliderStyle::LinearHorizontal));
+    auto stVarRes = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarRes, i } });
+    grid->Add(1 + i, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarRes));
+    grid->Add(1 + i, 9, 1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarRes, Slider::SliderStyle::LinearHorizontal));
     auto distBias = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistBias, i } });
     grid->Add(1 + i, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, distBias));
     grid->Add(1 + i, 9, 1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distBias, Slider::SliderStyle::LinearHorizontal));
