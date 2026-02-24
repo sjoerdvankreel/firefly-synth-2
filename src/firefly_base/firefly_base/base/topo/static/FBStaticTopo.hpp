@@ -43,6 +43,19 @@ struct FBPlugVersion final
   bool operator<(FBPlugVersion const& rhs) const;
 };
 
+struct FBOldParamInfo final
+{
+  int tag = {};
+  int index = {};
+  int paramSlot = {};
+  int moduleSlot = {};
+  std::string id = {};
+  std::string name = {};
+  std::string value = {};
+  std::string paramId = {};
+  std::string moduleId = {};
+};
+
 struct FBStaticTopoMeta final
 {
   bool isFx = {};
@@ -75,7 +88,8 @@ public:
 
   // Generic catch-all.
   virtual void PostProcess(
-    bool /* isGuiState */,
+    bool /* isGuiState */, 
+    std::vector<FBOldParamInfo> const& /*oldState*/,
     std::vector<double*> const& /*paramValues*/) const { }
 
   virtual bool OnParamNotFound(

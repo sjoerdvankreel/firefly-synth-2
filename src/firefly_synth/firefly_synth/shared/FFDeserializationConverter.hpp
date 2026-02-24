@@ -16,6 +16,7 @@ public:
 
   void PostProcess(
     bool isGuiState,
+    std::vector<FBOldParamInfo> const& oldState,
     std::vector<double*> const& paramValues) const override;
 
   bool OnParamNotFound(

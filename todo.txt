@@ -15,7 +15,9 @@ v2.1.1
 [x] get rid of the env graph markers if we do ad/s/r?
 [x] detail graphs for env = ADSR
 [x] the reverb detail graph is borked
-[ ] do OFF inside graphs
+[x] do OFF inside graphs
+[x] vs2026
+[ ] fix the build scripts for linux-arm
 [ ] merge stvarmode
 [ ] hide disabled stuff when possible
 [ ] flash stuff on button click
