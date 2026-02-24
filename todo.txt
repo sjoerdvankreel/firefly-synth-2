@@ -17,8 +17,9 @@ v2.1.1
 [x] the reverb detail graph is borked
 [x] do OFF inside graphs
 [x] vs2026
+[x] merge stvarmode
+[ ] drop the env detail graphs
 [ ] fix the build scripts for linux-arm
-[ ] merge stvarmode
 [ ] hide disabled stuff when possible
 [ ] flash stuff on button click
 [ ] do the popup editors
