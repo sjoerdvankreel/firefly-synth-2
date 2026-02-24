@@ -477,9 +477,9 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     {
       auto const& sectionDetails = details.GetSectionDetails((EnvSection)i);
       if (i == (int)EnvSection::AttackDecay)
-        graphData->graphs[i].title = "Attack/Decay";
+        graphData->graphs[i].title = "Att/Dcy";
       else if (i == (int)EnvSection::Loop)
-        graphData->graphs[i].title = "Loop/Sustain";
+        graphData->graphs[i].title = "Loop";
       else if (i == (int)EnvSection::Release)
         graphData->graphs[i].title = "Release";
       else
