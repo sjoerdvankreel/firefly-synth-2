@@ -204,7 +204,7 @@ EffectGraphProcessor<Global>::ProcessExchangeState(
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
   FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, params.graphIndex } };
   auto kind = graphState->AudioParamList<FFEffectKind>(indices, false, -1);
-  if (kind == FFEffectKind::StVar)
+  if (FFEffectKindIsSVF(kind))
     data.exchangeMainText = FBToStringHz(effectExchange->stVarFreqs[params.graphIndex], 2);
   else if (FFEffectKindIsShaper(kind))
     data.exchangeMainText = FBToStringPercent(effectExchange->shaperDrives[params.graphIndex], 2) + " Drive";
@@ -295,15 +295,12 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
       graphData->graphs[i].title = std::string(1, static_cast<char>('A' + i));
       graphData->graphs[i].title += ": " + FFEffectKindToString(kind);
 
-      if (kind == FFEffectKind::StVar)
+      if (FFEffectKindIsSVF(kind))
       {
-        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarMode, i } };
-        auto stVarMode = renderState->AudioParamList<FFStateVariableFilterMode>(indices, false, -1);
         indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarFreqFreq, i } };
         float freq = renderState->AudioParamLog2(indices, false, -1);
         indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarPitchCoarse, i } };
         float coarse = renderState->AudioParamLinear(indices, false, -1);
-        graphData->graphs[i].title += ", " + FFStateVariableFilterModeToString(stVarMode);
         graphData->graphs[i].defaultMainText = FilterMainText(filterMode, freq, coarse);
       }
       if(FFEffectKindIsComb(kind))

@@ -55,7 +55,15 @@ FFEffectKindToString(FFEffectKind kind)
   case FFEffectKind::Fold: return "Fold";
   case FFEffectKind::Skew: return "Skew";
   case FFEffectKind::Comb: return "Comb";
-  case FFEffectKind::StVar: return "SVF";
+  case FFEffectKind::LPF: return "LowPass";
+  case FFEffectKind::BPF: return "BandPass";
+  case FFEffectKind::HPF: return "HighPass";
+  case FFEffectKind::BSF: return "BandStop";
+  case FFEffectKind::APF: return "AllPass";
+  case FFEffectKind::PEQ: return "PeakEQ";
+  case FFEffectKind::BLL: return "Bell";
+  case FFEffectKind::LSH: return "LowShelf";
+  case FFEffectKind::HSH: return "HighShelf";
   case FFEffectKind::CombMin: return "Comb-";
   case FFEffectKind::CombPlus: return "Comb+";
   default: FB_ASSERT(false); return {};
@@ -171,19 +179,27 @@ FFMakeEffectTopo(bool global)
   kind.slotFormatter = FFFormatBlockSlot;
   kind.id = prefix + "{1585A19D-639E-4202-B60B-BD8560BC8B70}";
   kind.description = "Effect Kind";
-  kind.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return FFEffectKindToString(ps == 0 ? FFEffectKind::StVar: FFEffectKind::Off); };
+  kind.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return FFEffectKindToString(ps == 0 ? FFEffectKind::LPF: FFEffectKind::Off); };
   kind.type = FBParamType::List;
   kind.List().items = {
     { "{46A4BE9B-1072-4811-B3A1-3A463D0BA534}", FFEffectKindToString(FFEffectKind::Off) },
-    { "{348FED12-9753-4C48-9D21-BB8D21E036AB}", FFEffectKindToString(FFEffectKind::StVar)  },
-    { "{B74E9485-459E-4017-ACF4-8466FBBF51EF}", FFEffectKindToString(FFEffectKind::Comb)  },
+    { "{14948CA0-469E-4F04-898E-BAD4B92D50AB}", FFEffectKindToString(FFEffectKind::LPF) },
+    { "{5AE1ED7B-9F20-4822-92F1-32FCE60946D8}", FFEffectKindToString(FFEffectKind::BPF) },
+    { "{32FE4541-7D8F-452D-8878-9CD632A0A324}", FFEffectKindToString(FFEffectKind::HPF) },
+    { "{955E2ED1-0B2E-4E31-A7EE-E6CBBD388B54}", FFEffectKindToString(FFEffectKind::BSF) },
+    { "{1DCB92CA-92C0-4C0E-80CC-B8AC03343ECD}", FFEffectKindToString(FFEffectKind::APF) },
+    { "{4038CFB6-5FEF-4C9B-9C44-098E7090918D}", FFEffectKindToString(FFEffectKind::PEQ) },
+    { "{6209AC05-A0AF-4322-956B-0F875335BD27}", FFEffectKindToString(FFEffectKind::BLL) },
+    { "{2BD0BBBA-616D-422E-949E-8A82514C3B13}", FFEffectKindToString(FFEffectKind::LSH) },
+    { "{9A047C20-0F36-4931-BD57-3FF6E2C256CA}", FFEffectKindToString(FFEffectKind::HSH) },
+    { "{B74E9485-459E-4017-ACF4-8466FBBF51EF}", FFEffectKindToString(FFEffectKind::Comb) },
     { "{88898697-C102-4BDC-BF31-257553217696}", FFEffectKindToString(FFEffectKind::CombPlus) },
     { "{37005D34-E2E4-4CCD-8783-135952515B41}", FFEffectKindToString(FFEffectKind::CombMin) },
     { "{FD072A47-EE67-4091-A687-7168B69A6E89}", FFEffectKindToString(FFEffectKind::Clip) },
     { "{06334343-5264-489E-ADF9-20ADCEF983FC}", FFEffectKindToString(FFEffectKind::Fold) },
     { "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", FFEffectKindToString(FFEffectKind::Skew) } };
   kind.List().submenuStart[(int)FFEffectKind::Off] = "Off";
-  kind.List().submenuStart[(int)FFEffectKind::StVar] = "Filter";
+  kind.List().submenuStart[(int)FFEffectKind::LPF] = "Filter";
   kind.List().submenuStart[(int)FFEffectKind::Clip] = "Shape";
   auto selectKind = [](auto& module) { return &module.block.kind; };
   kind.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectKind);
@@ -253,38 +269,7 @@ FFMakeEffectTopo(bool global)
   filterMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectFilterMode);
   filterMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectFilterMode);
   filterMode.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind }, 
-    [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::StVar || vs[1] == (int)FFEffectKind::Comb || vs[1] == (int)FFEffectKind::CombMin || vs[1] == (int)FFEffectKind::CombPlus); });
-
-  auto& stVarMode = result->params[(int)FFEffectParam::StVarMode];
-  stVarMode.mode = FBParamMode::Block;
-  stVarMode.defaultText = "LPF";
-  stVarMode.name = "SVF Mode";
-  stVarMode.display = "Mode";
-  stVarMode.slotCount = FFEffectBlockCount;
-  stVarMode.slotFormatter = FFFormatBlockSlot;
-  stVarMode.id = prefix + "{275B2C8D-6D21-4741-AB69-D21FA95CD7F5}";
-  stVarMode.description = "SV Filter Algorithm";
-  stVarMode.type = FBParamType::List;
-  stVarMode.List().items = {
-    { "{EAAE7102-9F6C-4EC2-8C39-B13BBDFF7AD1}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::LPF) },
-    { "{6A91C381-DB9F-4CAA-8155-4A407700661A}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::BPF) },
-    { "{747DA91C-C43D-4CFC-8EFD-353B0AC23E0E}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::HPF) },
-    { "{10FEE670-AB90-4DBF-A617-6F15F3E4602D}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::BSF) },
-    { "{EE9A4F79-B557-43B4-ABDF-320414D773D5}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::APF) },
-    { "{C9C3A3F5-5C5B-4331-8F6E-DDD2DC5A1D7B}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::PEQ) },
-    { "{8D885EEB-DF69-455A-9FFD-BA95E3E30596}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::BLL) },
-    { "{C4BBC616-CFDB-4E93-9315-D25552D85F71}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::LSH) },
-    { "{AF2550ED-90C5-4E09-996D-A4669728C744}", FFStateVariableFilterModeToString(FFStateVariableFilterMode::HSH) } };
-  auto selectStVarMode = [](auto& module) { return &module.block.stVarMode; };
-  stVarMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectStVarMode);
-  stVarMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectStVarMode);
-  stVarMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectStVarMode);
-  stVarMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectStVarMode);
-  stVarMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectStVarMode);
-  stVarMode.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectKind::StVar; });
-  stVarMode.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::StVar; });
+    [](auto const& vs) { return vs[0] != 0 && FFEffectKindIsFilter((FFEffectKind)vs[1]); });
 
   auto& stVarKeyTrk = result->params[(int)FFEffectParam::StVarKeyTrak];
   stVarKeyTrk.mode = FBParamMode::Accurate;
@@ -307,9 +292,9 @@ FFMakeEffectTopo(bool global)
   stVarKeyTrk.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectStVarKeyTrk);
   stVarKeyTrk.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectStVarKeyTrk);
   stVarKeyTrk.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectKind::StVar; });
+    [](auto const& vs) { return vs[0] == 0 || FFEffectKindIsSVF((FFEffectKind)vs[0]); });
   stVarKeyTrk.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::StVar; });
+    [](auto const& vs) { return vs[0] != 0 && FFEffectKindIsSVF((FFEffectKind)vs[1]); });
 
   auto& stVarRes = result->params[(int)FFEffectParam::StVarRes];
   stVarRes.mode = FBParamMode::Accurate;
@@ -329,9 +314,9 @@ FFMakeEffectTopo(bool global)
   stVarRes.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectStVarRes);
   stVarRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectStVarRes);
   stVarRes.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectKind::StVar; });
+    [](auto const& vs) { return vs[0] == 0 || FFEffectKindIsSVF((FFEffectKind)vs[0]); });
   stVarRes.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::StVar); });
+    [](auto const& vs) { return vs[0] != 0 && FFEffectKindIsSVF((FFEffectKind)vs[1]); });
 
   auto& stVarFreqFreq = result->params[(int)FFEffectParam::StVarFreqFreq];
   stVarFreqFreq.mode = FBParamMode::Accurate;
@@ -352,9 +337,9 @@ FFMakeEffectTopo(bool global)
   stVarFreqFreq.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectStVarFreqFreq);
   stVarFreqFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectStVarFreqFreq);
   stVarFreqFreq.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind, (int)FFEffectParam::FilterMode },
-    [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectKind::StVar && vs[1] == (int)FFEffectFilterMode::Freq; });
+    [](auto const& vs) { return vs[0] == 0 || FFEffectKindIsSVF((FFEffectKind)vs[0]) && vs[1] == (int)FFEffectFilterMode::Freq; });
   stVarFreqFreq.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::FilterMode },
-    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::StVar && vs[2] == (int)FFEffectFilterMode::Freq; });
+    [](auto const& vs) { return vs[0] != 0 && FFEffectKindIsSVF((FFEffectKind)vs[1]) && vs[2] == (int)FFEffectFilterMode::Freq; });
 
   auto& stVarPitchCoarse = result->params[(int)FFEffectParam::StVarPitchCoarse];
   stVarPitchCoarse.mode = FBParamMode::Accurate;
@@ -376,9 +361,9 @@ FFMakeEffectTopo(bool global)
   stVarPitchCoarse.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectStVarPitchCoarse);
   stVarPitchCoarse.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectStVarPitchCoarse);
   stVarPitchCoarse.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind, (int)FFEffectParam::FilterMode },
-    [](auto const& vs) { return vs[0] == (int)FFEffectKind::StVar && vs[1] != (int)FFEffectFilterMode::Freq; });
+    [](auto const& vs) { return FFEffectKindIsSVF((FFEffectKind)vs[0]) && vs[1] != (int)FFEffectFilterMode::Freq; });
   stVarPitchCoarse.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::FilterMode },
-    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::StVar && vs[2] != (int)FFEffectFilterMode::Freq; });
+    [](auto const& vs) { return vs[0] != 0 && FFEffectKindIsSVF((FFEffectKind)vs[1]) && vs[2] != (int)FFEffectFilterMode::Freq; });
 
   auto& stVarGain = result->params[(int)FFEffectParam::StVarGain];
   stVarGain.mode = FBParamMode::Accurate;
@@ -400,9 +385,9 @@ FFMakeEffectTopo(bool global)
   stVarGain.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectStVarGain);
   stVarGain.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectStVarGain);
   stVarGain.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectKind::StVar; });
-  stVarGain.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::StVarMode},
-    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::StVar && vs[2] >= (int)FFStateVariableFilterMode::BLL; });
+    [](auto const& vs) { return vs[0] == 0 || FFEffectKindIsSVF((FFEffectKind)vs[0]); });
+  stVarGain.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && FFEffectKindIsSVFWithGain((FFEffectKind)vs[1]); });
 
   auto& combKeyTrk = result->params[(int)FFEffectParam::CombKeyTrk];
   combKeyTrk.mode = FBParamMode::Accurate;

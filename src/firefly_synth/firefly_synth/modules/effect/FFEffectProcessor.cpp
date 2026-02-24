@@ -16,6 +16,24 @@
 
 using namespace juce::dsp;
 
+static inline FFStateVariableFilterMode
+EffectKindToSVFMode(FFEffectKind kind)
+{
+  switch (kind)
+  {
+  case FFEffectKind::LPF: return FFStateVariableFilterMode::LPF;
+  case FFEffectKind::BPF: return FFStateVariableFilterMode::BPF;
+  case FFEffectKind::HPF: return FFStateVariableFilterMode::HPF;
+  case FFEffectKind::BSF: return FFStateVariableFilterMode::BSF;
+  case FFEffectKind::APF: return FFStateVariableFilterMode::APF;
+  case FFEffectKind::PEQ: return FFStateVariableFilterMode::PEQ;
+  case FFEffectKind::BLL: return FFStateVariableFilterMode::BLL;
+  case FFEffectKind::LSH: return FFStateVariableFilterMode::LSH;
+  case FFEffectKind::HSH: return FFStateVariableFilterMode::HSH;
+  default: FB_ASSERT(false); return {};
+  }
+}
+
 static inline FBBatch<float>
 FoldBack(FBBatch<float> in)
 {
@@ -111,7 +129,6 @@ FFEffectProcessor::BeginVoiceOrBlock(
   auto const& clipModeNorm = params.block.clipMode;
   auto const& foldModeNorm = params.block.foldMode;
   auto const& skewModeNorm = params.block.skewMode;
-  auto const& stVarModeNorm = params.block.stVarMode;
   auto const& filterModeNorm = params.block.filterMode;
   float onNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.on[0], voice);
   float oversampleNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.oversample[0], voice);
@@ -145,9 +162,6 @@ FFEffectProcessor::BeginVoiceOrBlock(
     _skewMode[i] = topo.NormalizedToListFast<FFEffectSkewMode>(
       FFEffectParam::SkewMode, 
       FFSelectDualProcBlockParamNormalized<Global>(skewModeNorm[i], voice));
-    _stVarMode[i] = topo.NormalizedToListFast<FFStateVariableFilterMode>(
-      FFEffectParam::StVarMode, 
-      FFSelectDualProcBlockParamNormalized<Global>(stVarModeNorm[i], voice));
     _filterMode[i] = topo.NormalizedToListFast<FFEffectFilterMode>(
       FFEffectParam::FilterMode,
       FFSelectDualProcBlockParamNormalized<Global>(filterModeNorm[i], voice));
@@ -268,7 +282,7 @@ FFEffectProcessor::Process(
     trackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFEffectParam::TrackingKey, trackingKeyNorm, s));
     for (int i = 0; i < FFEffectBlockCount; i++)
     {
-      if (_kind[i] == FFEffectKind::StVar)
+      if (FFEffectKindIsSVF(_kind[i]))
       {
         stVarResPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::StVarRes,
           FFSelectDualProcAccParamNormalized<Global>(stVarResNorm[i], voice), s));
@@ -558,7 +572,7 @@ FFEffectProcessor::Process(
     trackingKeyPlain.UpsampleStretch<FFEffectOversampleTimes>();
     for (int i = 0; i < FFEffectBlockCount; i++)
     {
-      if (_kind[i] == FFEffectKind::StVar)
+      if (FFEffectKindIsSVF(_kind[i]))
       {
         stVarResPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         stVarGainPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
@@ -631,9 +645,6 @@ FFEffectProcessor::Process(
     case FFEffectKind::Skew:
       ProcessSkew(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
       break;
-    case FFEffectKind::StVar:
-      ProcessStVar<Global>(i, oversampledRate, oversampled, stVarResPlain, stVarRealFreqPlain, stVarGainPlain);
-      break;
     case FFEffectKind::Comb:
       ProcessComb<Global, true, true>(i, oversampledRate, oversampled, combResMinPlain, combResPlusPlain, combRealFreqMinPlain, combRealFreqPlusPlain);
       break;
@@ -644,6 +655,8 @@ FFEffectProcessor::Process(
       ProcessComb<Global, false, true>(i, oversampledRate, oversampled, combResMinPlain, combResPlusPlain, combRealFreqMinPlain, combRealFreqPlusPlain);
       break;
     default:
+      FB_ASSERT(FFEffectKindIsSVF(_kind[i]));
+      ProcessStVar<Global>(i, oversampledRate, oversampled, stVarResPlain, stVarRealFreqPlain, stVarGainPlain);
       break;
     }
     if(exchangeDSP != nullptr)
@@ -692,10 +705,10 @@ FFEffectProcessor::Process(
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
     // Need to translate filter freqs/pitches back to normalized because keytracking is applied on plain, not normalized.
-    if (_on && _kind[i] == FFEffectKind::StVar && _filterMode[i] == FFEffectFilterMode::Freq)
+    if (_on && FFEffectKindIsSVF(_kind[i]) && _filterMode[i] == FFEffectFilterMode::Freq)
       FFSelectDualExchangeState<Global>(exchangeParams.acc.stVarFreqFreq[i], voice) =
         topo.params[(int)FFEffectParam::StVarFreqFreq].Log2().PlainToNormalizedFast(stVarFreqFreqPlain[i].Get(FBFixedBlockSamples - 1));
-    if (_on && _kind[i] == FFEffectKind::StVar && _filterMode[i] != FFEffectFilterMode::Freq)
+    if (_on && FFEffectKindIsSVF(_kind[i]) && _filterMode[i] != FFEffectFilterMode::Freq)
       FFSelectDualExchangeState<Global>(exchangeParams.acc.stVarPitchCoarse[i], voice) =
       topo.params[(int)FFEffectParam::StVarPitchCoarse].Linear().PlainToNormalizedFast(stVarPitchCoarsePlain[i].Get(FBFixedBlockSamples - 1));
     if (_on && (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombMin) && _filterMode[i] == FFEffectFilterMode::Freq)
@@ -767,7 +780,7 @@ FFEffectProcessor::ProcessStVar(
     auto res = stVarResPlain[block].Get(s);
     auto freq = stVarFreqPlain[block].Get(s);
     auto gain = stVarGainPlain[block].Get(s);
-    _stVarFilters[block].Set(_stVarMode[block], oversampledRate, freq, res, gain);
+    _stVarFilters[block].Set(EffectKindToSVFMode(_kind[block]), oversampledRate, freq, res, gain);
     for (int c = 0; c < 2; c++)
       oversampled[c].Set(s, static_cast<float>(_stVarFilters[block].Next(c, oversampled[c].Get(s))));
   }
