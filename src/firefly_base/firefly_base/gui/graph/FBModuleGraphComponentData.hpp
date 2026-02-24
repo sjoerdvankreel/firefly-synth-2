@@ -35,6 +35,7 @@ struct FBModuleGraphSecondarySeries final
 
 struct FBModuleGraphData final
 {
+  int gridSizeY = -1;
   int moduleSlot = -1;
   int moduleIndex = -1;
   bool displayGainAsDb = false;

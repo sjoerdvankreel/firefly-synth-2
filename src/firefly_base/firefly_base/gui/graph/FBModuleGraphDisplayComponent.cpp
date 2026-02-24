@@ -232,6 +232,16 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     g.drawText("OFF", graphBounds, Justification::centred, false);
   }
 
+  if (graphData.gridSizeY != -1)
+  {
+    g.setColour(Colours::white.withAlpha(0.25f));
+    for (int r = 1; r < graphData.gridSizeY; r++)
+    {
+      float y = graphBounds.getHeight() / (float)graphData.gridSizeY * r;
+      g.drawLine((float)graphBounds.getX(), y, graphBounds.getX() + (float)graphBounds.getWidth(), y, 1.0f);
+    }        
+  }
+
   if (maxSizeAllSeries != 0)
   {
     auto const& pvi = graphData.primarySeries.verticalIndicators;
