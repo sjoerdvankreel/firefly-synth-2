@@ -10,8 +10,10 @@
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
+#include <firefly_base/gui/controls/FBParamDisplay.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
+#include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
@@ -21,6 +23,39 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
+
+static void
+UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model);
+
+FFEnvParamListener::
+~FFEnvParamListener()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FFEnvParamListener::
+FFEnvParamListener(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*> const& msegEditors) :
+  _plugGUI(plugGUI),
+  _msegEditors(msegEditors)
+{
+  _plugGUI->AddParamListener(this);
+}
+
+void
+FFEnvParamListener::AudioParamChanged(
+  int index, double /*normalized*/, bool /*changedFromUI*/)
+{
+  auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
+  if (indices.module.index != (int)FFModuleType::Env)
+    return;
+
+  // Dont do it right away, if MSEG is being dragged, 
+  // we're in the same call stack and stuff gets overwritten.
+  MessageManager::callAsync([this, indices]() {
+    UpdateMSEGModel(_plugGUI, indices.module.slot, _msegEditors[indices.module.slot]->Model());
+    _msegEditors[indices.module.slot]->UpdateModel();
+    });
+}
 
 static std::string
 GetMSEGTooltip(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGNearestHitType hitType, int index)
@@ -304,32 +339,20 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
   return tabs;
 }
 
-FFEnvParamListener::
-~FFEnvParamListener()
+Component*
+FFMakeEnvDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  _plugGUI->RemoveParamListener(this);
-}
-
-FFEnvParamListener::
-FFEnvParamListener(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*> const& msegEditors) :
-  _plugGUI(plugGUI),
-  _msegEditors(msegEditors)
-{
-  _plugGUI->AddParamListener(this);
-}
-
-void
-FFEnvParamListener::AudioParamChanged(
-  int index, double /*normalized*/, bool /*changedFromUI*/)
-{
-  auto const& indices = _plugGUI->HostContext()->Topo()->audio.params[index].topoIndices;
-  if (indices.module.index != (int)FFModuleType::Env)
-    return;
-
-  // Dont do it right away, if MSEG is being dragged, 
-  // we're in the same call stack and stuff gets overwritten.
-  MessageManager::callAsync([this, indices]() {
-    UpdateMSEGModel(_plugGUI, indices.module.slot, _msegEditors[indices.module.slot]->Model());
-    _msegEditors[indices.module.slot]->UpdateModel();
-    });
+  FB_LOG_ENTRY_EXIT();
+  auto topo = plugGUI->HostContext()->Topo();
+  int index = topo->moduleTopoToRuntime.at({ (int)FFModuleType::Env, moduleSlot });
+  auto name = topo->modules[index].name;
+  auto type = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1, 1 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, FBAsciiToUpper(name), FBLabelAlign::Right, FBLabelColors::PrimaryForeground));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, type));
+  //grid->Add(1, 0, 1, 2, MakeEnvDetail(plugGUI, moduleSlot));
+  grid->MarkSection({ { 0, 0 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground);
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, card);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Env, moduleSlot, margin);
 }

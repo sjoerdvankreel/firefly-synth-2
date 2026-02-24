@@ -141,6 +141,8 @@ FFPlugGUI::SwitchDetailsSectionToModule(int index, int slot)
     _detailContent->SetContent(_vEchoDetails);
   if (index == (int)FFModuleType::GEcho)
     _detailContent->SetContent(_gEchoDetails);
+  if (index == (int)FFModuleType::Env)
+    _detailContent->SetContent(_envDetails[slot]);
   if (index == (int)FFModuleType::Osci)
     _detailContent->SetContent(_osciDetails[slot]);
   if (index == (int)FFModuleType::VLFO)
@@ -375,6 +377,8 @@ FFPlugGUI::SetupGUI()
   _globalUni = FFMakeGlobalUniGUI(this, _graphRenderState.get(), &_fixedGraphs);
   _gEchoDetails = FFMakeEchoDetailGUI(this, true);
   _vEchoDetails = FFMakeEchoDetailGUI(this, false);
+  for (int i = 0; i < FFEnvCount; i++)
+    _envDetails[i] = FFMakeEnvDetailGUI(this, i);
   for (int i = 0; i < FFOsciCount; i++)
     _osciDetails[i] = FFMakeOsciDetailGUI(this, i);
   for (int i = 0; i < FFLFOCount; i++)

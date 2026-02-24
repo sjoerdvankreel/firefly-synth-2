@@ -65,6 +65,7 @@ public FBPlugGUI
   FBContentComponent* _detailContent = {};
   juce::Component* _vEchoDetails = {};
   juce::Component* _gEchoDetails = {};
+  std::array<juce::Component*, FFEnvCount> _envDetails = {};
   std::array<juce::Component*, FFLFOCount> _vLFODetails = {};
   std::array<juce::Component*, FFLFOCount> _gLFODetails = {};
   std::array<juce::Component*, FFOsciCount> _osciDetails = {};
