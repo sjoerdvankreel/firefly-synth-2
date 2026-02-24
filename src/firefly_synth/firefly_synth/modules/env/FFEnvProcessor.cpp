@@ -344,9 +344,6 @@ FFEnvProcessor::Process(
   auto& exchangeDSP = exchangeToGUI->voice[voice].env[state.moduleSlot];
   exchangeDSP.boolIsActive = 1;
   exchangeDSP.output = output.Get(0);
-  exchangeDSP.outputLoop = outputLoop;
-  exchangeDSP.outputAttack = outputAttack;
-  exchangeDSP.outputRelease = outputRelease;
   exchangeDSP.lengthSamples = _lengthSamples;
   exchangeDSP.positionSamples = _positionSamples;
   exchangeDSP.portaSectionAmpAttack = _portaSectionAmpAttackNorm;

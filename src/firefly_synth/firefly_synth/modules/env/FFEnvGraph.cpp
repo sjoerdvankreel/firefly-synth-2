@@ -8,47 +8,14 @@
 
 #include <algorithm>
 
-enum class EnvSection
-{
-  AttackDecay,
-  Loop,
-  Release,
-  All,
-};
-
-struct EnvSectionDetails
-{
-  int stageEnd = {};
-  int stageStart = {};
-  bool haveSection = {};
-  int sectionStartSamples = {};
-  int sectionLengthSamples = {};
-  float sectionLengthSeconds = {};
-  std::vector<int> stageLengths = {};
-  FB_EXPLICIT_COPY_MOVE_DEFCTOR(EnvSectionDetails);
-};
-
 struct EnvDetails
 {
   int smoothLengthSamples = {};
+  int stagesLengthSamples = {};
   float smoothLengthSeconds = {};
-  EnvSectionDetails all = {};
-  EnvSectionDetails loop = {};
-  EnvSectionDetails release = {};
-  EnvSectionDetails attackDecay = {};
+  float stagesLengthSeconds = {};
+  std::vector<int> stageLengths = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(EnvDetails);
-
-  EnvSectionDetails const& GetSectionDetails(EnvSection section)
-  {
-    switch (section)
-    {
-    case EnvSection::All: return all;
-    case EnvSection::Loop: return loop;
-    case EnvSection::Release: return release;
-    case EnvSection::AttackDecay: return attackDecay;
-    default: FB_ASSERT(false); return *((EnvSectionDetails*)(nullptr));
-    }
-  }
 };
 
 class EnvGraphProcessor final:
@@ -75,9 +42,9 @@ public:
   void ProcessIndicators(FBGraphRenderState* state,
     FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
   void PostProcessMarker(FBGraphRenderState* /*state*/,
-    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, float& /*positionNormalized*/, bool& displayMarker) override;
-  void PostProcess(FBGraphRenderState* state,
-    FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points) override;
+    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, float& /*positionNormalized*/, bool& /*displayMarker*/) override { }
+  void PostProcess(FBGraphRenderState* /*state*/,
+    FBModuleGraphData& /*data*/, FBModuleGraphProcessParams const& /*params*/, FBModuleGraphPoints& /*points*/) override { }
   void ProcessExchangeState(FBGraphRenderState* graphState,
     FBModuleGraphData& data, FBModuleGraphProcessParams const& params, FBModuleProcExchangeStateBase const* exchangeState) override;
 };
@@ -110,26 +77,11 @@ GetEnvelopeDetails(
   
   auto type = state->AudioParamList<FFEnvType>(
     { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } }, exchange, exchangeVoice);
+  bool sync = state->AudioParamBool(
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } }, exchange, exchangeVoice);
   if (type == FFEnvType::Off)
     return;
 
-  bool sync = state->AudioParamBool(
-    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } }, exchange, exchangeVoice);
-  int loopStart = state->AudioParamDiscrete(
-    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }, exchange, exchangeVoice);
-  int loopLength = state->AudioParamDiscrete(
-    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } }, exchange, exchangeVoice);
-  int releasePoint = state->AudioParamDiscrete(
-    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } }, exchange, exchangeVoice);
-  
-  int sustainStart = loopStart == 0 ? -1 : loopStart - 1;
-  int sustainEnd = loopStart == 0 ? -1 : loopStart - 1 + loopLength;
-  int releaseStart = releasePoint == 0 ? -1 : releasePoint;
-  int attackDecayEnd = sustainStart != -1 ? sustainStart : releaseStart != -1 ? releaseStart : FFEnvStageCount;
-
-  details.all.haveSection = true;
-  details.all.stageStart = 0;
-  details.all.stageEnd = FFEnvStageCount;
   if (sync)
     details.smoothLengthSamples = state->AudioParamBarsSamples(
       { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothBars, 0 } }, exchange, exchangeVoice, sampleRate, bpm);
@@ -147,75 +99,11 @@ GetEnvelopeDetails(
     else
       stageLength = state->AudioParamLinearTimeSamples(
         { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } }, exchange, exchangeVoice, sampleRate);
-    details.all.sectionStartSamples = 0;
-    details.all.sectionLengthSamples += stageLength;
-    details.all.stageLengths.push_back(stageLength);
-    if (releaseStart != -1)
-    {
-      if (i >= releaseStart)
-      {
-        details.release.haveSection = true;
-        details.release.stageStart = releaseStart;
-        details.release.stageEnd = FFEnvStageCount;
-        details.release.sectionLengthSamples += stageLength;
-        details.release.stageLengths.push_back(stageLength);
-      }
-      else
-      {
-        details.release.sectionStartSamples += stageLength;
-      }
-    }
-    if (sustainStart != -1)
-    {
-      if (i >= sustainStart && i <= sustainEnd)
-      {
-        details.loop.haveSection = true;
-        details.loop.stageEnd = sustainEnd;
-        details.loop.stageStart = sustainStart;
-        if (i < sustainEnd)
-        {
-          details.loop.sectionLengthSamples += stageLength;
-          details.loop.stageLengths.push_back(stageLength);
-        }
-      }
-      else if (i < sustainStart)
-      {
-        details.loop.sectionStartSamples += stageLength;
-      }
-    }
-    if (attackDecayEnd != -1 && i < attackDecayEnd)
-    {
-      details.attackDecay.haveSection = true;
-      details.attackDecay.sectionStartSamples = 0;
-      details.attackDecay.stageStart = 0;
-      details.attackDecay.stageEnd = attackDecayEnd;
-      details.attackDecay.sectionLengthSamples += stageLength;
-      details.attackDecay.stageLengths.push_back(stageLength);
-    }
+    details.stagesLengthSamples += stageLength;
+    details.stageLengths.push_back(stageLength);
   }
 
-  details.all.sectionLengthSeconds = details.all.sectionLengthSamples / sampleRate;
-  details.loop.sectionLengthSeconds = details.loop.sectionLengthSamples / sampleRate;
-  details.release.sectionLengthSeconds = details.release.sectionLengthSamples / sampleRate;
-  details.attackDecay.sectionLengthSeconds = details.attackDecay.sectionLengthSamples / sampleRate;
-}
-
-static int 
-GetRenderLengthSamples(
-  EnvDetails const& details,
-  bool detailGraphs, int graphIndex)
-{
-  // toss out the rest later
-  // seems too hard to start in the middle of the env
-  if (!detailGraphs)
-    return details.all.sectionLengthSamples + details.smoothLengthSamples;
-  switch ((EnvSection)graphIndex)
-  {
-  case EnvSection::Release: return details.all.sectionLengthSamples;
-  case EnvSection::AttackDecay: return details.attackDecay.sectionLengthSamples;
-  case EnvSection::Loop: return details.attackDecay.sectionLengthSamples + details.loop.sectionLengthSamples;
-  default: FB_ASSERT(false); return -1;
-  }
+  details.stagesLengthSeconds = details.stagesLengthSamples / sampleRate;
 }
 
 FFEnvProcessor&
@@ -256,8 +144,7 @@ EnvGraphProcessor::BeginVoiceOrBlock(
 {
   EnvDetails details = {};
   GetEnvelopeDetails(state, params.exchange, params.exchangeVoice, details);
-  int graphSampleCount = GetRenderLengthSamples(details, params.detailGraphs, params.graphIndex);
-
+  int graphSampleCount = details.stagesLengthSamples + details.smoothLengthSamples;
   auto* moduleProcState = state->ModuleProcState();
   auto const* exchangeFromDSP = GetEnvExchangeState(state, params.exchange, params.exchangeVoice);
   GetProcessor(*moduleProcState).BeginVoice(*moduleProcState, exchangeFromDSP, true, !params.detailGraphs, graphSampleCount);
@@ -271,35 +158,13 @@ EnvGraphProcessor::ProcessExchangeState(
   EnvDetails details = {};
   auto envExchange = dynamic_cast<FFEnvExchangeState const*>(exchangeState);
   GetEnvelopeDetails(graphState, params.exchange, params.exchangeVoice, details);
-
-  if (!params.detailGraphs)
-  {
-    data.exchangeMainText = FBToStringSeconds(details.all.sectionLengthSeconds, 3);
-    data.exchangeGainValue = std::max(data.exchangeGainValue, envExchange->output);
-    return;
-  }
-  if (params.graphIndex == (int)EnvSection::AttackDecay)
-  {
-    data.exchangeMainText = FBToStringSeconds(details.attackDecay.sectionLengthSeconds, 3);
-    data.exchangeGainValue = std::max(data.exchangeGainValue, envExchange->outputAttack);
-  }
-  else if (params.graphIndex == (int)EnvSection::Loop)
-  {
-    data.exchangeMainText = FBToStringSeconds(details.loop.sectionLengthSeconds, 3);
-    data.exchangeGainValue = std::max(data.exchangeGainValue, envExchange->outputLoop);
-  }
-  else if (params.graphIndex == (int)EnvSection::Release)
-  {
-    data.exchangeMainText = FBToStringSeconds(details.release.sectionLengthSeconds, 3);
-    data.exchangeGainValue = std::max(data.exchangeGainValue, envExchange->outputRelease);
-  }
-  else
-    FB_ASSERT(false);
+  data.exchangeMainText = FBToStringSeconds(details.stagesLengthSeconds + details.smoothLengthSeconds, 3);
+  data.exchangeGainValue = std::max(data.exchangeGainValue, envExchange->output);
 }
 
 FBModuleGraphPlotParams
 EnvGraphProcessor::PlotParams(
-  bool detailGraphs, int graphIndex) const
+  bool /*detailGraphs*/, int /*graphIndex*/) const
 {
   FBModuleGraphPlotParams result = {};
   result.sampleCount = 0;
@@ -309,59 +174,8 @@ EnvGraphProcessor::PlotParams(
 
   EnvDetails details = {};
   GetEnvelopeDetails(ComponentData()->renderState, false, -1, details);
-  result.sampleCount = GetRenderLengthSamples(details, detailGraphs, graphIndex);
+  result.sampleCount = details.stagesLengthSamples + details.smoothLengthSamples;
   return result;
-}
-
-void 
-EnvGraphProcessor::PostProcessMarker(
-  FBGraphRenderState* state, FBModuleGraphData& /*data*/,
-  FBModuleGraphProcessParams const& params, float& positionNormalized, bool& displayMarker)
-{
-  if (!params.detailGraphs)
-    return;
-
-  EnvDetails details = {};
-  GetEnvelopeDetails(state, params.exchange, params.exchangeVoice, details);
-  auto const& sectionDetails = details.GetSectionDetails(!params.detailGraphs ? EnvSection::All : (EnvSection)params.graphIndex);
-  if (!sectionDetails.haveSection || sectionDetails.sectionLengthSamples == 0)
-  {
-    positionNormalized = 0.0f;
-    return;
-  }
-
-  // dsp is always processed with smoothing, so need to correct for that
-  positionNormalized /= details.all.sectionLengthSamples / ((float)details.all.sectionLengthSamples + details.smoothLengthSamples);
-  positionNormalized -= sectionDetails.sectionStartSamples / (float)details.all.sectionLengthSamples;
-  displayMarker &= positionNormalized >= 0.0f; // still in prev
-  positionNormalized *= details.all.sectionLengthSamples / (float)sectionDetails.sectionLengthSamples;
-  displayMarker &= positionNormalized < 0.99f; // next one takes over
-  positionNormalized = std::clamp(positionNormalized, 0.0f, 1.0f);
-}
-
-void 
-EnvGraphProcessor::PostProcess(
-  FBGraphRenderState* state, FBModuleGraphData& /*data*/,
-  FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points)
-{
-  if (!params.detailGraphs)
-    return;
-
-  EnvDetails details = {};
-  GetEnvelopeDetails(state, params.exchange, params.exchangeVoice, details);
-  auto const& sectionDetails = details.GetSectionDetails(!params.detailGraphs? EnvSection::All: (EnvSection)params.graphIndex);
-  if (!sectionDetails.haveSection)
-  {
-    points = {};
-    return;
-  }
-
-  // details are against dsp sample rate,
-  // series is against gui sample rate
-  int start = (int)(sectionDetails.sectionStartSamples * params.guiSampleRate / params.hostSampleRate);
-  int length = (int)(sectionDetails.sectionLengthSamples * params.guiSampleRate / params.hostSampleRate);
-  points.l.erase(points.l.begin(), points.l.begin() + std::min(start, (int)points.l.size()));
-  points.l.erase(points.l.begin() + std::min(length, (int)points.l.size()), points.l.end());
 }
 
 void
@@ -369,16 +183,13 @@ EnvGraphProcessor::ProcessIndicators(
   FBGraphRenderState* state,
   FBModuleGraphProcessParams const& params, FBModuleGraphPoints& points)
 {
-  if (params.detailGraphs)
-    return;
-
   int totalSamplesAudio = 0;
   std::vector<int> stageLengthsAudio;
   auto const* exchangeFromDSP = GetEnvExchangeState(state, params.exchange, params.exchangeVoice);
 
   EnvDetails details = {};
   GetEnvelopeDetails(state, params.exchange, params.exchangeVoice, details);
-  stageLengthsAudio = details.all.stageLengths;
+  stageLengthsAudio = details.stageLengths;
   for (int i = 0; i < stageLengthsAudio.size(); i++)
   {
     if (exchangeFromDSP != nullptr &&
@@ -443,49 +254,29 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   GetEnvelopeDetails(graphData->renderState, false, -1, details);
 
   FBParamTopoIndices paramIndices;
-  int graphCount = detailGraphs ? 3 : 1;
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
-  for (int i = 0; i < graphCount; i++)
+
+  FBRenderModuleGraph(&processor, false, false, detailGraphs, 0);
+  FBTopoIndices modIndices = { (int)FFModuleType::Env, moduleSlot };
+  graphData->graphs[0].moduleSlot = moduleSlot;
+  graphData->graphs[0].moduleIndex = (int)FFModuleType::Env;
+
+  float maxVal = 0.0f;
+  for (int j = 0; j < graphData->graphs[0].primarySeries.l.size(); j++)
+    maxVal = std::max(maxVal, graphData->graphs[0].primarySeries.l[j]);
+  graphData->graphs[0].displayGainAsDb = false;
+  graphData->graphs[0].hasDefaultGainValue = true;
+  graphData->graphs[0].defaultGainValue = maxVal;
+
+  paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFEnvParam::Type, 0 } };
+  auto type = graphData->renderState->AudioParamList<FFEnvType>(paramIndices, false, -1);
+  graphData->graphs[0].title = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
+  graphData->graphs[0].title += ": " + FFEnvTypeToString(type);
+  graphData->graphs[0].defaultMainText = FBToStringSeconds(details.stagesLengthSeconds + details.smoothLengthSeconds, 3);
+  if (type != FFEnvType::Off)
   {
-    FBRenderModuleGraph(&processor, false, false, detailGraphs, i);
-    FBTopoIndices modIndices = { (int)FFModuleType::Env, moduleSlot };
-    graphData->graphs[i].moduleSlot = moduleSlot;
-    graphData->graphs[i].moduleIndex = (int)FFModuleType::Env;
-
-    float maxVal = 0.0f;
-    for (int j = 0; j < graphData->graphs[i].primarySeries.l.size(); j++)
-      maxVal = std::max(maxVal, graphData->graphs[i].primarySeries.l[j]);
-    graphData->graphs[i].displayGainAsDb = false;
-    graphData->graphs[i].hasDefaultGainValue = true;
-    graphData->graphs[i].defaultGainValue = maxVal;
-
-    if (!detailGraphs)
-    {
-      paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFEnvParam::Type, 0 } };
-      auto type = graphData->renderState->AudioParamList<FFEnvType>(paramIndices, false, -1);
-      graphData->graphs[i].title = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
-      graphData->graphs[i].title += ": " + FFEnvTypeToString(type);
-      graphData->graphs[i].defaultMainText = FBToStringSeconds(details.all.sectionLengthSeconds + details.smoothLengthSeconds, 3);
-      if (type != FFEnvType::Off)
-      {
-        paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFEnvParam::Sync, 0 } };
-        bool sync = graphData->renderState->AudioParamBool(paramIndices, false, -1);
-        graphData->graphs[i].title += std::string(", ") + (sync ? "BPM" : "Time");
-      }
-    }
-    else
-    {
-      auto const& sectionDetails = details.GetSectionDetails((EnvSection)i);
-      if (i == (int)EnvSection::AttackDecay)
-        graphData->graphs[i].title = "Att/Dcy";
-      else if (i == (int)EnvSection::Loop)
-        graphData->graphs[i].title = "Loop";
-      else if (i == (int)EnvSection::Release)
-        graphData->graphs[i].title = "Release";
-      else
-        FB_ASSERT(false);
-      graphData->graphs[i].title += sectionDetails.haveSection ? ": On" : ": Off";
-      graphData->graphs[i].defaultMainText = FBToStringSeconds(sectionDetails.sectionLengthSeconds, 3);
-    }
+    paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFEnvParam::Sync, 0 } };
+    bool sync = graphData->renderState->AudioParamBool(paramIndices, false, -1);
+    graphData->graphs[0].title += std::string(", ") + (sync ? "BPM" : "Time");
   }
 }

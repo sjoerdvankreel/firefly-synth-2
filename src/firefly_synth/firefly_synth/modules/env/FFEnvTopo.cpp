@@ -91,7 +91,7 @@ FFMakeEnvTopo()
   result->voice = true;
   result->name = "Env";
   result->slotCount = FFEnvCount;
-  result->detailGraphCount = 3;
+  result->detailGraphCount = 1;
   result->detailGraphUpperLowerText = true;
   result->slotFormatterOverrides = true; 
   result->graphRenderer = FFEnvRenderGraph;
