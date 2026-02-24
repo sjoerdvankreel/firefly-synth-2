@@ -237,47 +237,49 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
 }
 
 static Component*
-MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
+MakeEnvTab(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor)
 {
-  auto topo = plugGUI->HostContext()->Topo();
-  std::vector<int> columnSizes = {};
-  columnSizes.push_back(0);
-  for (int i = 0; i < FFEnvStageCount; i++)
-    columnSizes.push_back(0);
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1, 1 }, columnSizes);
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Stage Len"));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Level/Slope"));
-  grid->MarkSection({ { 0, 0 }, { 2, 1 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  for (int i = 0; i < FFEnvStageCount; i++)
-  {
-    auto upper = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
-    grid->Add(0, 1 + i, upper);
-    auto timeGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
-    auto time = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
-    timeGrid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, std::to_string(i + 1)));
-    timeGrid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, time, Slider::SliderStyle::RotaryVerticalDrag));
-    upper->Add(0, 0, timeGrid);
-    auto bars = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } });
-    upper->Add(0, 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bars));
-    auto lower = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 1, 1 });
-    grid->Add(1, 1 + i, lower);
-    auto level = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot} , { (int)FFEnvParam::StageLevel, i } });
-    lower->Add(0, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, level, Slider::SliderStyle::RotaryVerticalDrag));
-    auto slope = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } });
-    lower->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slope, Slider::SliderStyle::RotaryVerticalDrag));
-    grid->MarkSection({ { 0, 1 + i }, { 2, 1 } }, i % 2 == 0? FBGridSectionMark::DefaultBackgroundAlternateBorder : FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  }
-  return grid;
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0 });
+  grid->Add(0, 0, MakeEnvSectionMain(plugGUI, moduleSlot, msegEditor));
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Env, moduleSlot, margin);
 }
 
 static Component*
-MakeEnvTab(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor)
+MakeEnvDetail(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
-  grid->Add(0, 0, MakeEnvSectionMain(plugGUI, moduleSlot, msegEditor));
-  grid->Add(0, 1, MakeEnvSectionStage(plugGUI, moduleSlot));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Env, moduleSlot, margin);
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int>(6, 0), std::vector<int> { 0, 0, 1, 1, 1, 1, 1, 1, 1, 1 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Length"));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Level"));
+  grid->Add(2, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Slope"));
+  grid->Add(3, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Length"));
+  grid->Add(4, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Level"));
+  grid->Add(5, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Slope"));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "1-8"));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "1-8"));
+  grid->Add(2, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "1-8"));
+  grid->Add(3, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "9-16"));
+  grid->Add(4, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "9-16"));
+  grid->Add(5, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "9-16"));
+  for (int i = 0; i < FFEnvStageCount; i++)
+  {
+    int r = i >= 8 ? 3 : 0;
+    int c = i >= 8 ? i - 8 : i;
+    auto time = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
+    grid->Add(r + 0, c + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, time, Slider::SliderStyle::RotaryVerticalDrag));
+    auto bars = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } });
+    grid->Add(r + 0, c + 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bars));
+    auto level = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot} , { (int)FFEnvParam::StageLevel, i } });
+    grid->Add(r + 1, c + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, level, Slider::SliderStyle::RotaryVerticalDrag));
+    auto slope = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } });
+    grid->Add(r + 2, c + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slope, Slider::SliderStyle::RotaryVerticalDrag));
+  }
+  grid->MarkSection({ { 0, 0 }, { 1, 10 } }, FBGridSectionMark::AlternateBackground);
+  grid->MarkSection({ { 2, 0 }, { 1, 10 } }, FBGridSectionMark::AlternateBackground);
+  grid->MarkSection({ { 3, 0 }, { 1, 10 } }, FBGridSectionMark::AlternateBackground);
+  grid->MarkSection({ { 5, 0 }, { 1, 10 } }, FBGridSectionMark::AlternateBackground);
+  return grid;
 }
 
 Component*
@@ -350,7 +352,7 @@ FFMakeEnvDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1, 1 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, FBAsciiToUpper(name), FBLabelAlign::Right, FBLabelColors::PrimaryForeground));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, type));
-  //grid->Add(1, 0, 1, 2, MakeEnvDetail(plugGUI, moduleSlot));
+  grid->Add(1, 0, 1, 2, MakeEnvDetail(plugGUI, moduleSlot));
   grid->MarkSection({ { 0, 0 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground);
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, card);
