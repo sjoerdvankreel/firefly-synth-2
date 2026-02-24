@@ -304,7 +304,7 @@ FFDeserializationConverter::PostProcess(
         if(gOldKind[i][j] == "{348FED12-9753-4C48-9D21-BB8D21E036AB}") // svf
           if ((iter = svModeToEffectKind.find(gOldStVarMode[i][j])) != svModeToEffectKind.end())
           {
-            auto const* param = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::GEffect, i }, { (int)FFEffectParam::Kind } });
+            auto const* param = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::GEffect, i }, { (int)FFEffectParam::Kind, j } });
             auto norm = param->TextToNormalized(true, iter->second);
             if (norm.has_value())
               *paramValues[param->runtimeParamIndex] = norm.value();
@@ -312,7 +312,7 @@ FFDeserializationConverter::PostProcess(
         if (vOldKind[i][j] == "{348FED12-9753-4C48-9D21-BB8D21E036AB}") // svf
           if ((iter = svModeToEffectKind.find(vOldStVarMode[i][j])) != svModeToEffectKind.end())
           {
-            auto const* param = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::VEffect, i }, { (int)FFEffectParam::Kind } });
+            auto const* param = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::VEffect, i }, { (int)FFEffectParam::Kind, j } });
             auto norm = param->TextToNormalized(true, iter->second);
             if (norm.has_value())
               *paramValues[param->runtimeParamIndex] = norm.value();
