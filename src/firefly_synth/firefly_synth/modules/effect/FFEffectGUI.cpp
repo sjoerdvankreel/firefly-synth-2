@@ -125,18 +125,18 @@ static Component*
 MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot, int block)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, 0, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
   auto kind = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, block } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, kind, std::string(1, static_cast<char>('A' + block)), FBLabelColors::PrimaryBackground));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, kind));
   auto filterMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::FilterMode, block } });
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, filterMode));
+  grid->Add(1, 0, 1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, filterMode));
   auto clipMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::ClipMode, block } });
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, clipMode));
+  grid->Add(1, 0, 1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, clipMode));
   auto foldMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::FoldMode, block } });
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, foldMode));
+  grid->Add(1, 0, 1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, foldMode));
   auto skewMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::SkewMode, block } });
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewMode));
+  grid->Add(1, 0, 1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewMode));
 
   auto distMix = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistMix, block } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, distMix));
