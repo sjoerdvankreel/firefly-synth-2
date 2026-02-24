@@ -21,8 +21,7 @@ FFDeserializationConverter::OnParamNotFound(
   std::string const& oldModuleId, int oldModuleSlot,
   std::string const& oldParamId, int oldParamSlot,
   std::string& newModuleId, int& newModuleSlot,
-  std::string& newParamId, int& newParamSlot,
-  std::string& val) const
+  std::string& newParamId, int& newParamSlot) const
 {
   if (isGuiState)
     return false;
@@ -94,16 +93,6 @@ FFDeserializationConverter::OnParamNotFound(
           return true;
         }
       }
-    }
-  }
-
-  // 2.1.1 merged SVF mode into effect kind
-  if (OldVersion() < FBPlugVersion(2, 1, 1))
-  {
-    auto const& gEffectModule = Topo()->static_->modules[(int)FFModuleType::GEffect];
-    if (oldModuleId == gEffectModule.id)
-    {
-
     }
   }
 

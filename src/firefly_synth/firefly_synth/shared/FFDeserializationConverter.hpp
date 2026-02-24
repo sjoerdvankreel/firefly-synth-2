@@ -23,8 +23,7 @@ public:
     std::string const& oldModuleId, int oldModuleSlot,
     std::string const& oldParamId, int oldParamSlot,
     std::string& newModuleId, int& newModuleSlot,
-    std::string& newParamId, int& newParamSlot,
-    std::string& value) const override;
+    std::string& newParamId, int& newParamSlot) const override;
 
   bool OnParamListItemNotFound(
     bool isGuiState,
