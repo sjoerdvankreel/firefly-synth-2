@@ -584,11 +584,16 @@ FBRuntimeTopo::LoadParamStateFromVar(
       int newModuleSlot = -1;
       std::string newParamId = {};
       std::string newModuleId = {};
-      if (!converter->OnParamNotFound(
+      std::string stringVal = val.toString().toStdString();
+      if (converter->OnParamNotFound(
         isGuiState,
         oldModuleId.toString().toStdString(), static_cast<int>(oldModuleSlot), 
         oldParamId.toString().toStdString(), static_cast<int>(oldParamSlot),
-        newModuleId, newModuleSlot, newParamId, newParamSlot))
+        newModuleId, newModuleSlot, newParamId, newParamSlot, stringVal))
+      {
+        val = String(stringVal);
+      }
+      else
       {
         FB_LOG_ERROR("Failed to map old to new plugin parameter.");
         continue;
