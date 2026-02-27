@@ -264,7 +264,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   float maxVal = 0.0f;
   for (int j = 0; j < graphData->graphs[0].primarySeries.l.size(); j++)
     maxVal = std::max(maxVal, graphData->graphs[0].primarySeries.l[j]);
-  graphData->graphs[0].gridSizeY = detailGraphs? 16: -1;
+  graphData->graphs[0].gridSizeY = 16;
   graphData->graphs[0].displayGainAsDb = false;
   graphData->graphs[0].hasDefaultGainValue = true;
   graphData->graphs[0].defaultGainValue = maxVal;

@@ -240,12 +240,6 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       float y = graphBounds.getHeight() / (float)graphData.gridSizeY * r;
       g.drawLine((float)graphBounds.getX(), y, graphBounds.getX() + (float)graphBounds.getWidth(), y, 1.0f);
     }        
-    int gridSizeX = (int)std::round(getWidth() / (graphBounds.getHeight() / (float)graphData.gridSizeY));
-    for (int c = 1; c < gridSizeX; c++)
-    {
-      float x = graphBounds.getWidth() / (float)gridSizeX * c;
-      g.drawLine(x, (float)graphBounds.getY(), x, (float)graphBounds.getHeight(), 1.0f);
-    }
   }
 
   if (maxSizeAllSeries != 0)
