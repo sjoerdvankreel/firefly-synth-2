@@ -3,6 +3,7 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphTextComponent.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <chrono>
