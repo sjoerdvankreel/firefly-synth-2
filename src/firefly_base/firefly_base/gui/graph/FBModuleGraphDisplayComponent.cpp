@@ -103,9 +103,9 @@ FBModuleGraphDisplayComponent::PaintVerticalIndicator(
   auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
 
   float dashes[2] = { 4, 2 };
-  g.setColour(scheme.text2.withAlpha(0.5f));
+  g.setColour(scheme.text2.withAlpha(0.8f));
   if (!primarySeries)
-    g.setColour(scheme.text2.withAlpha(0.25f));
+    g.setColour(scheme.text2.withAlpha(0.4f));
   float x = PointXLocation(primarySeries, secondaryIndex, point / static_cast<float>(maxSizeAllSeries), true);
   float y0 = PointYLocation(primarySeries, secondaryIndex, 0.0f, false, false, absMaxValueAllSeries, true);
   float y1 = PointYLocation(primarySeries, secondaryIndex, absMaxValueAllSeries, false, false, absMaxValueAllSeries, true);
@@ -132,7 +132,7 @@ FBModuleGraphDisplayComponent::PaintMarker(
   if (_data->paintAsDisabled)
     color = color.darker(0.67f);
   if (!primarySeries)  
-    color = color.withAlpha(0.5f);
+    color = color.withAlpha(0.8f);
   g.setColour(color);
   auto xy = PointLocation(primarySeries, secondaryIndex, points, marker, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
 
