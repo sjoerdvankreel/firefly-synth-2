@@ -75,7 +75,7 @@ FBModuleGraphData::GetLimits(bool includePrimary, int& maxSizeAllSeries, float& 
 {
   float absMaxValueAllSeriesSecondary = 0.0f;
   maxSizeAllSeries = static_cast<int>(primarySeries.l.size());
-  float absMaxValueAllSeriesAll = std::max(absMaxValueAllSeriesAll, primarySeries.GetAbsMaxValue());
+  float absMaxValueAllSeriesAll = primarySeries.GetAbsMaxValue();
   for (int i = 0; i < secondarySeries.size(); i++)
   {
     float absMaxValueSecondary = secondarySeries[i].points.GetAbsMaxValue();
