@@ -15,15 +15,14 @@ public:
   OsciGraphProcessor(FBModuleGraphComponentData* componentData) :
   FBModuleGraphProcessor(componentData) {}
 
-  FFOsciProcessor& GetProcessor(FBModuleProcState& state);
   FFVoiceDSPState& GetVoiceDSPState(FBModuleProcState& state);
 
   FBModuleGraphPlotParams PlotParams(
     bool detailGraphs, int graphIndex) const override;
   FBSArray2<float, FBFixedBlockSamples, 2> const* StereoOutput(
-    void const* procState, FBModuleGraphStateParams const& params);
+    void const* procState, FBModuleGraphStateParams const& params) override;
   FBModuleProcExchangeStateBase const* ExchangeState(
-    void const* exchangeState, FBModuleGraphStateParams const& params);
+    void const* exchangeState, FBModuleGraphStateParams const& params) override;
 
   int Process(FBGraphRenderState* state,
     FBModuleGraphProcessParams const& params) override;
