@@ -203,7 +203,6 @@ FFEnvProcessor::Process(
   }
 
   int s = 0;
-  int loopStart = _loopStart == 0 ? -1 : _loopStart - 1;
   int loopEnd = _loopStart == 0 ? -1 : _loopStart - 1 + _loopLength;
   loopEnd = std::min(loopEnd, FFEnvStageCount);
   bool graphing = state.renderType != FBRenderType::Audio;
@@ -223,9 +222,6 @@ FFEnvProcessor::Process(
       output.Set(s, 0.0f);
 
   int stage = 0;
-  float outputLoop = 0.0f;
-  float outputAttack = 0.0f;
-  float outputRelease = 0.0f;
   while (stage < FFEnvStageCount)
   {
     bool stageReset = false;
@@ -269,13 +265,6 @@ FFEnvProcessor::Process(
       }
 
       output.Set(s, _smoother.NextScalar(_lastOverall));
-      if (stage >= releasePoint)
-        outputRelease = output.Get(s);
-      else if (loopStart != -1 && loopStart <= stage && stage < loopEnd)
-        outputLoop = output.Get(s);
-      else if (loopStart == -1 || stage < loopStart)
-        outputAttack = output.Get(s);
-
       bool isReleaseNow = s == releaseAt;
       s++;
 
