@@ -25,9 +25,9 @@ public:
   FBModuleGraphPlotParams PlotParams(
     bool detailGraphs, int graphIndex) const override;
   FBSArray<float, FBFixedBlockSamples> const* MonoOutput(
-    void const* procState, FBModuleGraphStateParams const& params);
+    void const* procState, FBModuleGraphStateParams const& params) override;
   FBModuleProcExchangeStateBase const* ExchangeState(
-    void const* exchangeState, FBModuleGraphStateParams const& params);
+    void const* exchangeState, FBModuleGraphStateParams const& params) override;
 
   int Process(FBGraphRenderState* state,
     FBModuleGraphProcessParams const& params) override;
