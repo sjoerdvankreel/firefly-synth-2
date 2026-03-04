@@ -2,6 +2,7 @@
 
 #include <firefly_base/gui/shared/FBAutoSize.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
+#include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBContentComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
@@ -160,7 +161,7 @@ public FBModuleSelector
 {
   int const _rows;
   int const _cols;
-  std::unique_ptr<FBMarginComponent> _margin = {};
+  std::unique_ptr<FBCardComponent> _card = {};
   std::unique_ptr<FBGridComponent> _mainGrid = {};
   std::unique_ptr<FBGridComponent> _selectGrid = {};
   std::unique_ptr<FBContentComponent> _content = {};
