@@ -249,7 +249,10 @@ FBSelectButton::FixedWidth(int /*height*/) const
 FBSelectLabel::
 FBSelectLabel(FBPlugGUI* plugGUI, std::string const& text, bool isTop, bool isBottom, bool isLeft, bool isRight):
 FBAutoSizeLabel(plugGUI, text),
-_isTop(isTop), _isBottom(isBottom), _isLeft(isLeft), _isRight(isRight) {}
+_isTop(isTop), _isBottom(isBottom), _isLeft(isLeft), _isRight(isRight)
+{
+  setBorderSize(BorderSize<int>({ 1, 0, 1, 0 }));
+}
 
 void
 FBSelectButton::mouseUp(const MouseEvent& event)
