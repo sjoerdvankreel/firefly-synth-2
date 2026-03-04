@@ -152,7 +152,7 @@ MakeEchoSectionMain(
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
   auto vTargetOrGTarget = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, vTargetOrGTarget, true, FBLabelColors::PrimaryBackground));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Target", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
   auto targetBox = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, vTargetOrGTarget, "Osc 4 PostMix");
   grid->Add(0, 1, targetBox);
   *targetBoxOut = targetBox;
@@ -165,6 +165,7 @@ MakeEchoSectionMain(
   auto gain = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Gain, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBackground);
   return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
 
@@ -214,7 +215,7 @@ MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
   auto on = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackOn, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Feedback", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
   auto mix = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackMix, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
@@ -228,6 +229,7 @@ MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
   auto amount = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackAmount, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, amount));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, Slider::SliderStyle::RotaryVerticalDrag));  
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBackground);
   return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
 
@@ -238,7 +240,7 @@ MakeEchoSectionReverb(FBPlugGUI* plugGUI, bool global)
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
   auto on = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbOn, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Reverb", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
   auto mix = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbMix, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
@@ -249,6 +251,7 @@ MakeEchoSectionReverb(FBPlugGUI* plugGUI, bool global)
   auto damp = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbDamp, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, damp));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, damp, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBackground);
   return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
 
