@@ -162,6 +162,8 @@ public FBModuleSelector
   int const _rows;
   int const _cols;
   std::unique_ptr<FBCardComponent> _card = {};
+  std::unique_ptr<FBMarginComponent> _marginSelect = {};
+  std::unique_ptr<FBMarginComponent> _marginContent = {};
   std::unique_ptr<FBGridComponent> _mainGrid = {};
   std::unique_ptr<FBGridComponent> _selectGrid = {};
   std::unique_ptr<FBContentComponent> _content = {};
