@@ -105,6 +105,11 @@
       "comment": "Matrix Top Voice",
       "componentId": "4982334C-FFE3-4335-9584-5E1EA167A0DC",
       "colorScheme": "Orange"
+    },
+    {
+      "comment": "Effect Selector",
+      "componentId": "DADE7470-E372-4A0D-9094-F769648103E8",
+      "colorScheme": "Orange"
     }
   ],
   "moduleColors_comment": "Override the default scheme per module. Slot can be -1 to apply to all module slots or gte 0 to apply to individual slots.",

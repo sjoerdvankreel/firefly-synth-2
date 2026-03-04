@@ -251,7 +251,7 @@ FFMakeEffectGUI(FBPlugGUI* plugGUI)
   select->AddLabel(1, 0, "GFX");
   for (int i = 0; i < FFEffectCount; i++)
     select->AddSelector(1, i + 1, std::to_string(i + 1), MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
-  return select;
+  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::EffectSelector, select);
 #if 0
   auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::FXSelectedTab, 0 } });
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
