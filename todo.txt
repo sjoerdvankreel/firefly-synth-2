@@ -18,7 +18,8 @@ v2.1.1
 [x] do OFF inside graphs
 [x] vs2026
 [x] merge stvarmode
-[ ] drop the env detail graphs
+[x] drop the env detail graphs
+[ ] drop the selected tabs gui params
 [ ] fix the build scripts for linux-arm
 [ ] hide disabled stuff when possible
 [ ] flash stuff on button click

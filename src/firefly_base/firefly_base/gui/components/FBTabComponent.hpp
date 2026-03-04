@@ -1,6 +1,9 @@
 #pragma once
 
 #include <firefly_base/gui/shared/FBAutoSize.hpp>
+#include <firefly_base/gui/controls/FBButton.hpp>
+#include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBContentComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 
@@ -104,4 +107,26 @@ public:
 
   juce::TabBarButton*
   createTabButton(const juce::String& tabName, int tabIndex) override;
+};
+
+class FBSelectComponent:
+public juce::Component
+{
+  FBPlugGUI* const _plugGUI;
+  std::unique_ptr<FBGridComponent> _mainGrid = {};
+  std::unique_ptr<FBGridComponent> _selectGrid = {};
+  std::unique_ptr<FBContentComponent> _content = {};
+  std::vector<std::unique_ptr<FBAutoSizeLabel>> _labels = {};
+  std::vector<std::unique_ptr<FBAutoSizeButton>> _buttons = {};
+
+  void Select(FBAutoSizeButton* button, juce::Component* component);
+
+public:
+  FBSelectComponent(
+    FBPlugGUI* plugGUI, 
+    std::vector<int> const& rows, std::vector<int> const& cols);
+
+  void resized() override;
+  void AddLabel(int row, int col, std::string const& text);
+  void AddSelector(int row, int col, std::string const& text, juce::Component* component);
 };

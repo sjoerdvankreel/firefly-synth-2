@@ -45,7 +45,6 @@ FBModuleTabBarButton::clicked(const ModifierKeys& modifiers)
   _plugGUI->ModuleSlotClicked(_moduleIndices.index, _moduleIndices.slot);
 }
 
-
 FBColorScheme const* 
 FBModuleTabBarButton::GetScheme(FBTheme const& theme) const
 {
@@ -193,7 +192,7 @@ FBModuleTabComponent::TabRightClicked(int tabIndex)
         staticModule.slotFormatter, staticModule.slotFormatterOverrides);
       subMenu.addItem(2 + i, name, moduleIndices.slot != i);
     }
-    menu.addSubMenu("Copy To", subMenu);
+    menu.addSubMenu("Copy To", subMenu); // TODO all of this
   }
   auto iter = PopupMenu::MenuItemIterator(extendedMenu);
   while (iter.next())
@@ -220,4 +219,52 @@ FBModuleTabComponent::TabRightClicked(int tabIndex)
       extendedMenuHandler(_plugGUI, moduleIndices, id);
     }
   });
+}
+
+FBSelectComponent::
+FBSelectComponent(FBPlugGUI* plugGUI, std::vector<int> const& rows, std::vector<int> const& cols):
+_plugGUI(plugGUI)
+{
+  _content = std::make_unique<FBContentComponent>();
+  _mainGrid = std::make_unique<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
+  _selectGrid = std::make_unique<FBGridComponent>(plugGUI, false, rows, cols);
+  _mainGrid->Add(0, 0, _selectGrid.get());
+  _mainGrid->Add(0, 1, _content.get());
+  addAndMakeVisible(_mainGrid.get());
+}
+
+void 
+FBSelectComponent::resized()
+{
+  _mainGrid->setBounds(getLocalBounds());
+  _mainGrid->resized();
+}
+
+void 
+FBSelectComponent::Select(FBAutoSizeButton* button, Component* component)
+{
+  for (int i = 0; i < _buttons.size(); i++)
+    _buttons[i]->setToggleState(false, dontSendNotification);
+  button->setToggleState(true, dontSendNotification);
+  _content->SetContent(component);
+}
+
+void 
+FBSelectComponent::AddLabel(int row, int col, std::string const& text)
+{
+  auto label = std::make_unique<FBAutoSizeLabel>(_plugGUI, text);
+  _selectGrid->Add(row, col, label.get());
+  _labels.push_back(std::move(label));
+}
+
+void
+FBSelectComponent::AddSelector(int row, int col, std::string const& text, juce::Component* component)
+{
+  auto button = std::make_unique<FBAutoSizeButton>(_plugGUI, text);
+  button->setToggleable(true);
+  button->onClick = [this, b = button.get(), component] { Select(b, component); };
+  _selectGrid->Add(row, col, button.get());
+  _buttons.push_back(std::move(button));
+  if (_buttons.size() == 1)
+    Select(_buttons[0].get(), component);
 }

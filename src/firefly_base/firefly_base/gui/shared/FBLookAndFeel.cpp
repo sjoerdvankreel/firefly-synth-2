@@ -685,6 +685,7 @@ FBLookAndFeel::drawButtonBackground(
   bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
   auto cornerSize = 5.0f;
+  shouldDrawButtonAsDown |= button.getToggleState() && button.findParentComponentOfClass<FBSelectComponent>();
   auto bounds = button.getLocalBounds().toFloat().reduced(3.0f, 3.0f);
   auto const& scheme = FindColorSchemeFor(button);
   g.setColour(scheme.buttonBackground.brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));

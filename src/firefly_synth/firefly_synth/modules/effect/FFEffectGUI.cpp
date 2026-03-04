@@ -244,7 +244,15 @@ Component*
 FFMakeEffectGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto topo = plugGUI->HostContext()->Topo();
+  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0 });
+  select->AddLabel(0, 0, "VFX");
+  for (int i = 0; i < FFEffectCount; i++)
+    select->AddSelector(0, i + 1, std::to_string(i + 1), MakeEffectTab(plugGUI, FFModuleType::VEffect, i));
+  select->AddLabel(1, 0, "GFX");
+  for (int i = 0; i < FFEffectCount; i++)
+    select->AddSelector(1, i + 1, std::to_string(i + 1), MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
+  return select;
+#if 0
   auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::FXSelectedTab, 0 } });
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
   tabs->SetTabSeparatorText(0, "VFX");
@@ -255,6 +263,7 @@ FFMakeEffectGUI(FBPlugGUI* plugGUI)
     tabs->AddModuleTab(true, false, { (int)FFModuleType::GEffect, i }, MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
   tabs->ActivateStoredSelectedTab();
   return tabs;
+#endif
 }
 
 Component*
