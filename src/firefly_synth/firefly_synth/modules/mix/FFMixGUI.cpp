@@ -46,6 +46,6 @@ FFMakeMixGUI(FBPlugGUI* plugGUI)
   tabs->SetTabSeparatorText(0, "Mix");
   tabs->AddModuleTab(false, true, { (int)FFModuleType::VMix, 0 }, FFMakeVMixGUITab(plugGUI));
   tabs->AddModuleTab(false, true, { (int)FFModuleType::GMix, 0 }, FFMakeGMixGUITab(plugGUI));
-  tabs->ActivateStoredSelectedTab();
+  tabs->ActivateStoredSelection();
   return tabs;
 }

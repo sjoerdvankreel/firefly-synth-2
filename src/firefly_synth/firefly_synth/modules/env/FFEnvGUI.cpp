@@ -300,7 +300,7 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
     tabs->AddModuleTab(true, false, { (int)FFModuleType::Env, i }, MakeEnvTab(plugGUI, i, &msegEditor));
     msegEditors.push_back(msegEditor);
   }
-  tabs->ActivateStoredSelectedTab();
+  tabs->ActivateStoredSelection();
 
   PopupMenu insertMenu;
   PopupMenu removeMenu;

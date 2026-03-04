@@ -244,26 +244,16 @@ Component*
 FFMakeEffectGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0 });
+  auto topo = plugGUI->HostContext()->Topo();
+  auto moduleParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::FXSelectedTab, 0 } });
+  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, moduleParam, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0 });
   select->AddLabel(0, 0, "VFX");
   for (int i = 0; i < FFEffectCount; i++)
-    select->AddSelector(0, i + 1, std::to_string(i + 1), MakeEffectTab(plugGUI, FFModuleType::VEffect, i));
+    select->AddSelector(0, i + 1, { (int)FFModuleType::VEffect, i }, std::to_string(i + 1), MakeEffectTab(plugGUI, FFModuleType::VEffect, i));
   select->AddLabel(1, 0, "GFX");
   for (int i = 0; i < FFEffectCount; i++)
-    select->AddSelector(1, i + 1, std::to_string(i + 1), MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
+    select->AddSelector(1, i + 1, { (int)FFModuleType::GEffect, i }, std::to_string(i + 1), MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
   return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::EffectSelector, select);
-#if 0
-  auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::FXSelectedTab, 0 } });
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
-  tabs->SetTabSeparatorText(0, "VFX");
-  for (int i = 0; i < FFEffectCount; i++)
-    tabs->AddModuleTab(true, false, { (int)FFModuleType::VEffect, i }, MakeEffectTab(plugGUI, FFModuleType::VEffect, i));
-  tabs->SetTabSeparatorText(FFEffectCount, "GFX");
-  for (int i = 0; i < FFEffectCount; i++)
-    tabs->AddModuleTab(true, false, { (int)FFModuleType::GEffect, i }, MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
-  tabs->ActivateStoredSelectedTab();
-  return tabs;
-#endif
 }
 
 Component*

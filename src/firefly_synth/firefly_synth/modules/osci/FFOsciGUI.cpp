@@ -422,7 +422,7 @@ FFMakeOsciGUI(FBPlugGUI* plugGUI)
   for (int i = 0; i < FFOsciCount; i++)
     tabs->AddModuleTab(true, false, { (int)FFModuleType::Osci, i }, MakeOsciTab(plugGUI, i));
   tabs->AddModuleTab(true, false, { (int)FFModuleType::OsciMod, 0 }, FFMakeOsciModTab(plugGUI));
-  tabs->ActivateStoredSelectedTab();
+  tabs->ActivateStoredSelection();
   return tabs;
 }
 

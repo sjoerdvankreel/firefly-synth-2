@@ -169,7 +169,7 @@ FFMakeLFOGUI(FBPlugGUI* plugGUI)
   tabs->SetTabSeparatorText(FFLFOCount, "GLFO");
   for (int i = 0; i < FFLFOCount; i++)
     tabs->AddModuleTab(true, false, { (int)FFModuleType::GLFO, i }, MakeLFOTab(plugGUI, FFModuleType::GLFO, i));
-  tabs->ActivateStoredSelectedTab();
+  tabs->ActivateStoredSelection();
   return tabs;
 }
 

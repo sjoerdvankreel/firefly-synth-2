@@ -386,7 +386,7 @@ FFMakeEchoGUI(FBPlugGUI* plugGUI)
   tabs->SetTabSeparatorText(0, "Echo");
   tabs->AddModuleTab(false, true, { (int)FFModuleType::VEcho, 0 }, MakeEchoTab(plugGUI, false));
   tabs->AddModuleTab(false, true, { (int)FFModuleType::GEcho, 0 }, MakeEchoTab(plugGUI, true));
-  tabs->ActivateStoredSelectedTab();
+  tabs->ActivateStoredSelection();
   return tabs;
 }
 

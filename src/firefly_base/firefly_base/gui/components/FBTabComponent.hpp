@@ -19,6 +19,25 @@ struct FBRuntimeGUIParam;
 inline int constexpr FBTabBarDepth = 20;
 inline int constexpr FBTabBarDepthBig = 26;
 
+class FBModuleSelector
+{
+protected:
+  FBPlugGUI* const _plugGUI;
+  FBRuntimeGUIParam const* const _param;
+  int _storedSelection = -1;
+  std::vector<FBTopoIndices> _moduleIndices = {};
+
+  FBModuleSelector(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param);
+  void SelectModuleGUI(int index);
+  void ShowModulePopupMenuFor(int index, juce::Component* clicked);
+
+public:
+  juce::PopupMenu extendedMenu = {};
+  std::function<void(FBPlugGUI* plugGUI, FBTopoIndices const&, int)> extendedMenuHandler = {};
+
+  virtual void ActivateStoredSelection() = 0;
+};
+
 class FBTabBarButton:
 public juce::TabBarButton
 {
@@ -61,7 +80,7 @@ public juce::TabbedComponent,
 public IFBHorizontalAutoSize
 {
 protected:
-  FBPlugGUI* const _plugGUI;
+  FBPlugGUI* const _tabPlugGUI;
   bool const _big;
 
 public:
@@ -77,17 +96,12 @@ public:
 };
 
 class FBModuleTabComponent:
-public FBAutoSizeTabComponent
-{
-  FBRuntimeGUIParam const* const _param;
-  int _storedSelectedTab = -1;
-  std::vector<FBTopoIndices> _moduleIndices = {};
+public FBAutoSizeTabComponent,
+public FBModuleSelector
+{  
   std::map<int, std::string> _tabSeparatorText = {};
 
 public:
-  juce::PopupMenu extendedMenu = {};
-  std::function<void(FBPlugGUI* plugGUI, FBTopoIndices const&, int)> extendedMenuHandler = {};
-
   FBModuleTabComponent(
     FBPlugGUI* plugGUI, 
     FBRuntimeGUIParam const* param);
@@ -97,36 +111,34 @@ public:
     FBTopoIndices const& moduleIndices,
     juce::Component* component);
   
-  void ActivateStoredSelectedTab();
   void TabRightClicked(int tabIndex);
   void SetTabSeparatorText(int tabIndex, std::string const& text);
+  void ActivateStoredSelection() override;
 
-  void currentTabChanged(
-    int newCurrentTabIndex, 
-    juce::String const& newCurrentTabName) override;
-
-  juce::TabBarButton*
-  createTabButton(const juce::String& tabName, int tabIndex) override;
+  juce::TabBarButton* createTabButton(const juce::String& tabName, int tabIndex) override;
+  void currentTabChanged(int newCurrentTabIndex, juce::String const& newCurrentTabName) override;
 };
 
 class FBSelectComponent:
-public juce::Component
+public juce::Component,
+public FBModuleSelector
 {
-  FBPlugGUI* const _plugGUI;
   std::unique_ptr<FBGridComponent> _mainGrid = {};
   std::unique_ptr<FBGridComponent> _selectGrid = {};
   std::unique_ptr<FBContentComponent> _content = {};
+  std::vector<juce::Component*> _components = {};
   std::vector<std::unique_ptr<FBAutoSizeLabel>> _labels = {};
   std::vector<std::unique_ptr<FBAutoSizeButton>> _buttons = {};
 
-  void Select(FBAutoSizeButton* button, juce::Component* component);
+  void Select(int index);
 
 public:
   FBSelectComponent(
-    FBPlugGUI* plugGUI, 
+    FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param,
     std::vector<int> const& rows, std::vector<int> const& cols);
 
   void resized() override;
+  void ActivateStoredSelection() override;
   void AddLabel(int row, int col, std::string const& text);
-  void AddSelector(int row, int col, std::string const& text, juce::Component* component);
+  void AddSelector(int row, int col, FBTopoIndices const& moduleIndices, std::string const& text, juce::Component* component);
 };
