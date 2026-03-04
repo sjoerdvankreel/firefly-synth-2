@@ -117,8 +117,7 @@ MakeEffectSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlo
   auto oversample = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Oversample, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, oversample));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, oversample));
-  grid->MarkSection({ { 0, 0 }, { 2, 2 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
-  return grid;
+  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
 
 static Component*
@@ -166,9 +165,7 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
   auto combPitchCoarseMin = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombPitchCoarseMin, block } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combPitchCoarseMin));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combPitchCoarseMin, Slider::SliderStyle::RotaryVerticalDrag));
-
-  grid->MarkSection({ { 0, 0 }, { 2, 4 } }, block % 2 != 0? FBGridSectionMark::DefaultBackgroundAlternateBorder : FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  return grid;
+  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
 
 static Component*
@@ -182,8 +179,7 @@ MakeEffectTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   grid->Add(0, 0, MakeEffectSectionMain(plugGUI, moduleType, moduleSlot));
   for(int i = 0; i < FFEffectBlockCount; i++)
     grid->Add(0, 1 + i, MakeEffectSectionBlock(plugGUI, moduleType, moduleSlot, i));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, moduleSlot, margin);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, moduleSlot, grid);
 }
 
 static Component*
