@@ -236,8 +236,9 @@ FBModuleTabComponent::AddModuleTab(
 }
 
 FBSelectButton::
-FBSelectButton(FBPlugGUI* plugGUI, std::string const& text):
-FBAutoSizeButton(plugGUI, text) { }
+FBSelectButton(FBPlugGUI* plugGUI, std::string const& text, bool isTop, bool isBottom, bool isLeft, bool isRight):
+FBAutoSizeButton(plugGUI, text),
+_isTop(isTop), _isBottom(isBottom), _isLeft(isLeft), _isRight(isRight) {}
 
 void
 FBSelectButton::mouseUp(const MouseEvent& event)
@@ -248,12 +249,14 @@ FBSelectButton::mouseUp(const MouseEvent& event)
 
 FBSelectComponent::
 FBSelectComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, std::vector<int> const& rows, std::vector<int> const& cols):
-FBModuleSelector(plugGUI, param)
+FBModuleSelector(plugGUI, param),
+_rows((int)rows.size()), _cols((int)cols.size())
 {
   _content = std::make_unique<FBContentComponent>();
   _mainGrid = std::make_unique<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   _selectGrid = std::make_unique<FBGridComponent>(plugGUI, false, rows, cols);
-  _mainGrid->Add(0, 0, _selectGrid.get());
+  _margin = std::make_unique<FBMarginComponent>(plugGUI, false, false, true, true, _selectGrid.get(), false);
+  _mainGrid->Add(0, 0, _margin.get());
   _mainGrid->Add(0, 1, _content.get());
   addAndMakeVisible(_mainGrid.get());
 }
@@ -304,7 +307,7 @@ void
 FBSelectComponent::AddSelector(int row, int col, FBTopoIndices const& moduleIndices, std::string const& text, juce::Component* component)
 {
   int index = (int)_buttons.size();
-  auto button = std::make_unique<FBSelectButton>(_plugGUI, text);
+  auto button = std::make_unique<FBSelectButton>(_plugGUI, text, row == 0, row == _rows - 1, col == 0, col == _cols - 1);
   button->setToggleable(true);
   button->onClick = [this, index] { Select(index); };
   button->addMouseListener(this, false);

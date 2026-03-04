@@ -122,15 +122,28 @@ public:
 class FBSelectButton:
 public FBAutoSizeButton
 {
+  bool const _isTop;
+  bool const _isBottom;
+  bool const _isLeft;
+  bool const _isRight;
+
 public:
-  FBSelectButton(FBPlugGUI* plugGUI, std::string const& text);
+  FBSelectButton(FBPlugGUI* plugGUI, std::string const& text, bool isTop, bool isBottom, bool isLeft, bool isRight);
   void mouseUp(const juce::MouseEvent& event) override;
+
+  bool IsTop() const { return _isTop; }
+  bool IsBottom() const { return _isBottom; }
+  bool IsLeft() const { return _isLeft; }
+  bool IsRight() const { return _isRight; }
 };
 
 class FBSelectComponent:
 public juce::Component,
 public FBModuleSelector
 {
+  int const _rows;
+  int const _cols;
+  std::unique_ptr<FBMarginComponent> _margin = {};
   std::unique_ptr<FBGridComponent> _mainGrid = {};
   std::unique_ptr<FBGridComponent> _selectGrid = {};
   std::unique_ptr<FBContentComponent> _content = {};

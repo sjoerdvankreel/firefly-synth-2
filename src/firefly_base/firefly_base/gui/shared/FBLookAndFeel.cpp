@@ -684,9 +684,16 @@ FBLookAndFeel::drawButtonBackground(
   const juce::Colour& /*backgroundColour*/,
   bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
+  bool isSelect = false;
+  if (auto selectButton = dynamic_cast<FBSelectButton*>(&button))
+  {
+    isSelect = true;
+    shouldDrawButtonAsDown |= button.getToggleState();
+  }
+
   auto cornerSize = 5.0f;
-  shouldDrawButtonAsDown |= button.getToggleState() && button.findParentComponentOfClass<FBSelectComponent>();
-  auto bounds = button.getLocalBounds().toFloat().reduced(3.0f, 3.0f);
+  auto fb = button.getLocalBounds().toFloat();
+  auto bounds = button.getLocalBounds().toFloat().reduced(isSelect? 0.0f: 3.0f);
   auto const& scheme = FindColorSchemeFor(button);
   g.setColour(scheme.buttonBackground.brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
   g.fillRoundedRectangle(bounds, cornerSize);
