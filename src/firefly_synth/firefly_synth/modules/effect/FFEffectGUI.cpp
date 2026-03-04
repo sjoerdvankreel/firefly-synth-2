@@ -253,6 +253,7 @@ FFMakeEffectGUI(FBPlugGUI* plugGUI)
   select->AddLabel(1, 0, "GFX");
   for (int i = 0; i < FFEffectCount; i++)
     select->AddSelector(1, i + 1, { (int)FFModuleType::GEffect, i }, std::to_string(i + 1), MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
+  select->ActivateStoredSelection();
   return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::EffectSelector, select);
 }
 
