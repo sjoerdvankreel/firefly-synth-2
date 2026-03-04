@@ -262,6 +262,15 @@ FBSelectComponent::ActivateStoredSelection()
 }
 
 void 
+FBSelectComponent::mouseUp(const MouseEvent& event)
+{
+  if(event.mods.isRightButtonDown())
+    for (int i = 0; i < _buttons.size(); i++)
+      if (event.eventComponent == _buttons[i].get())
+        ShowModulePopupMenuFor(i, _buttons[i].get());
+}
+
+void 
 FBSelectComponent::Select(int index)
 {
   for (int i = 0; i < _buttons.size(); i++)
@@ -283,11 +292,11 @@ FBSelectComponent::AddLabel(int row, int col, std::string const& text)
 void
 FBSelectComponent::AddSelector(int row, int col, FBTopoIndices const& moduleIndices, std::string const& text, juce::Component* component)
 {
-  // todo menu
   int index = (int)_buttons.size();
   auto button = std::make_unique<FBAutoSizeButton>(_plugGUI, text);
   button->setToggleable(true);
   button->onClick = [this, index] { Select(index); };
+  button->addMouseListener(this, false);
   _selectGrid->Add(row, col, button.get());
   _components.push_back(component);
   _buttons.push_back(std::move(button));

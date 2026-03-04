@@ -138,6 +138,8 @@ public:
     std::vector<int> const& rows, std::vector<int> const& cols);
 
   void resized() override;
+  void mouseUp(const juce::MouseEvent& event) override;
+
   void ActivateStoredSelection() override;
   void AddLabel(int row, int col, std::string const& text);
   void AddSelector(int row, int col, FBTopoIndices const& moduleIndices, std::string const& text, juce::Component* component);
