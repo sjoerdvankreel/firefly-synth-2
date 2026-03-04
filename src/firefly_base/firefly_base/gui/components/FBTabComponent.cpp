@@ -267,13 +267,13 @@ FBModuleSelector(plugGUI, param),
 _rows((int)rows.size()), _cols((int)cols.size())
 {
   _content = std::make_unique<FBContentComponent>();
-  _mainGrid = std::make_unique<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
+  _mainGrid = std::make_unique<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 }); // todo
   _selectGrid = std::make_unique<FBGridComponent>(plugGUI, false, rows, cols);
   _card = std::make_unique<FBCardComponent>(plugGUI, _selectGrid.get(), false);
   _marginSelect = std::make_unique<FBMarginComponent>(plugGUI, false, false, false, true, _card.get());
   _marginContent = std::make_unique<FBMarginComponent>(plugGUI, false, false, false, true, _content.get());
-  _mainGrid->Add(0, 0, _marginSelect.get());
-  _mainGrid->Add(0, 1, _marginContent.get());
+  _mainGrid->Add(0, 0, _marginContent.get());
+  _mainGrid->Add(0, 1, _marginSelect.get());
   addAndMakeVisible(_mainGrid.get());
 }
 
