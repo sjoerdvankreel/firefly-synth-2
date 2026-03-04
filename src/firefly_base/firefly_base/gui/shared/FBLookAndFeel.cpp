@@ -445,6 +445,7 @@ FBLookAndFeel::drawLabel(
     scheme = &FindColorSchemeFor(*cb);
   }
 
+  bool isSelect = false;
   auto colorText = scheme->text;
   auto selectLabel = dynamic_cast<FBSelectLabel*>(&label);
   auto tweakLabel = dynamic_cast<FBLastTweakedLabel*>(&label);
@@ -452,6 +453,7 @@ FBLookAndFeel::drawLabel(
   if (selectLabel)
   {
     Path p;
+    isSelect = true;
     auto cornerSize = 5.0f;
     bool isTop = selectLabel->IsTop();
     bool isBottom = selectLabel->IsBottom();
@@ -465,7 +467,7 @@ FBLookAndFeel::drawLabel(
       cornerSize, cornerSize,
       isTop && isLeft, isTop && isRight, isBottom && isLeft, isBottom && isRight);
 
-    g.setColour(scheme->buttonBackground);
+    g.setColour(scheme->sectionBackground);
     g.fillPath(p);
     g.setColour(scheme->primary);
     g.strokePath(p, PathStrokeType(1.0f));
@@ -503,8 +505,8 @@ FBLookAndFeel::drawLabel(
       }
     }
   }
-      
-  if (isCombo)
+   
+  if (isCombo || isSelect)
     colorText = scheme->primary;
   else if (label.findParentComponentOfClass<FBFileBrowserComponent>())
     colorText = scheme->text;
@@ -732,11 +734,13 @@ FBLookAndFeel::drawButtonBackground(
     isTop && isLeft, isTop && isRight, isBottom && isLeft, isBottom && isRight);
 
   auto const& scheme = FindColorSchemeFor(button);
-  g.setColour(scheme.buttonBackground.brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
+  auto background = isSelect ? scheme.sectionBackground : scheme.buttonBackground;
+  g.setColour(background.brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
   g.fillPath(p);
   g.setColour(scheme.primary);
   g.strokePath(p, PathStrokeType(1.0f));
-  if (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted)
+
+  if (!isSelect && (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted))
   {
     p = {};
     p.addRoundedRectangle(
