@@ -735,7 +735,7 @@ FBLookAndFeel::drawButtonBackground(
 
   auto const& scheme = FindColorSchemeFor(button);
   auto background = isSelect ? scheme.sectionBackground : scheme.buttonBackground;
-  g.setColour(background.brighter(shouldDrawButtonAsDown? 0.4f: 0.0f).withMultipliedAlpha(isSelect? 0.5f: 0.0f));
+  g.setColour(background.brighter(shouldDrawButtonAsDown? 0.4f: 0.0f).withMultipliedAlpha(isSelect? 0.5f: 1.0f));
   g.fillPath(p);
   g.setColour(scheme.primary);
   g.strokePath(p, PathStrokeType(1.0f));
