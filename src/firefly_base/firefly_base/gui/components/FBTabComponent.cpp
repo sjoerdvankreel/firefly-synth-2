@@ -240,6 +240,11 @@ FBSelectButton(FBPlugGUI* plugGUI, std::string const& text, bool isTop, bool isB
 FBAutoSizeButton(plugGUI, text),
 _isTop(isTop), _isBottom(isBottom), _isLeft(isLeft), _isRight(isRight) {}
 
+FBSelectLabel::
+FBSelectLabel(FBPlugGUI* plugGUI, std::string const& text, bool isTop, bool isBottom, bool isLeft, bool isRight):
+FBAutoSizeLabel(plugGUI, text),
+_isTop(isTop), _isBottom(isBottom), _isLeft(isLeft), _isRight(isRight) {}
+
 void
 FBSelectButton::mouseUp(const MouseEvent& event)
 {
@@ -298,7 +303,7 @@ FBSelectComponent::Select(int index)
 void 
 FBSelectComponent::AddLabel(int row, int col, std::string const& text)
 {
-  auto label = std::make_unique<FBAutoSizeLabel>(_plugGUI, text);
+  auto label = std::make_unique<FBSelectLabel>(_plugGUI, text, row == 0, row == _rows - 1, col == 0, col == _cols - 1);
   _selectGrid->Add(row, col, label.get());
   _labels.push_back(std::move(label));
 }

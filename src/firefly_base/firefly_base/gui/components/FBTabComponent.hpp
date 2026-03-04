@@ -137,6 +137,23 @@ public:
   bool IsRight() const { return _isRight; }
 };
 
+class FBSelectLabel:
+public FBAutoSizeLabel
+{
+  bool const _isTop;
+  bool const _isBottom;
+  bool const _isLeft;
+  bool const _isRight;
+
+public:
+  FBSelectLabel(FBPlugGUI* plugGUI, std::string const& text, bool isTop, bool isBottom, bool isLeft, bool isRight);
+
+  bool IsTop() const { return _isTop; }
+  bool IsBottom() const { return _isBottom; }
+  bool IsLeft() const { return _isLeft; }
+  bool IsRight() const { return _isRight; }
+};
+
 class FBSelectComponent:
 public juce::Component,
 public FBModuleSelector
@@ -148,7 +165,7 @@ public FBModuleSelector
   std::unique_ptr<FBGridComponent> _selectGrid = {};
   std::unique_ptr<FBContentComponent> _content = {};
   std::vector<juce::Component*> _components = {};
-  std::vector<std::unique_ptr<FBAutoSizeLabel>> _labels = {};
+  std::vector<std::unique_ptr<FBSelectLabel>> _labels = {};
   std::vector<std::unique_ptr<FBSelectButton>> _buttons = {};
 
   void Select(int index);

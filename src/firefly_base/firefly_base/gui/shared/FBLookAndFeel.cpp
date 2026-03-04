@@ -446,9 +446,31 @@ FBLookAndFeel::drawLabel(
   }
 
   auto colorText = scheme->text;
+  auto selectLabel = dynamic_cast<FBSelectLabel*>(&label);
   auto tweakLabel = dynamic_cast<FBLastTweakedLabel*>(&label);
   auto autoSizeLabel2 = dynamic_cast<FBAutoSizeLabel2*>(&label);
-  if (tweakLabel || autoSizeLabel2)
+  if (selectLabel)
+  {
+    Path p;
+    auto cornerSize = 5.0f;
+    bool isTop = selectLabel->IsTop();
+    bool isBottom = selectLabel->IsBottom();
+    bool isLeft = selectLabel->IsLeft();
+    bool isRight = selectLabel->IsRight();
+    auto bounds = label.getLocalBounds().toFloat();
+    p.addRoundedRectangle(
+      bounds.getX(), bounds.getY(),
+      bounds.getWidth() + (isRight ? 0.0f : 1.0f),
+      bounds.getHeight() + (isBottom ? 0.0f : 1.0f),
+      cornerSize, cornerSize,
+      isTop && isLeft, isTop && isRight, isBottom && isLeft, isBottom && isRight);
+
+    g.setColour(scheme->buttonBackground);
+    g.fillPath(p);
+    g.setColour(scheme->primary);
+    g.strokePath(p, PathStrokeType(1.0f));
+  }
+  else if (tweakLabel || autoSizeLabel2)
   {
     if (tweakLabel || autoSizeLabel2 && autoSizeLabel2->HasBackground())
     {
