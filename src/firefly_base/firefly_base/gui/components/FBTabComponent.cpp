@@ -260,7 +260,7 @@ _rows((int)rows.size()), _cols((int)cols.size())
   _content = std::make_unique<FBContentComponent>();
   _mainGrid = std::make_unique<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   _selectGrid = std::make_unique<FBGridComponent>(plugGUI, false, rows, cols);
-  _card = std::make_unique<FBCardComponent>(plugGUI, _selectGrid.get());
+  _card = std::make_unique<FBCardComponent>(plugGUI, _selectGrid.get(), false);
   _mainGrid->Add(0, 0, _card.get());
   _mainGrid->Add(0, 1, _content.get());
   addAndMakeVisible(_mainGrid.get());

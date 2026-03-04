@@ -13,9 +13,10 @@ public IFBVerticalAutoSize
 {
   FBPlugGUI* const _plugGUI;
   juce::Component* const _content;
+  bool const _margin;
 
 public: 
-  FBCardComponent(FBPlugGUI* plugGUI, juce::Component* content);
+  FBCardComponent(FBPlugGUI* plugGUI, juce::Component* content, bool margin = true);
   
   void resized() override;
   void paint(juce::Graphics& g) override;

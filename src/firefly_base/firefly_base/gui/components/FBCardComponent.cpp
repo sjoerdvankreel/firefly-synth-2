@@ -8,8 +8,8 @@ static int const CornerSize = 3;
 using namespace juce;
 
 FBCardComponent::
-FBCardComponent(FBPlugGUI* plugGUI, juce::Component* content):
-_plugGUI(plugGUI), _content(content)
+FBCardComponent(FBPlugGUI* plugGUI, juce::Component* content, bool margin):
+_plugGUI(plugGUI), _content(content), _margin(margin)
 {
   addAndMakeVisible(content);
 }
@@ -17,7 +17,7 @@ _plugGUI(plugGUI), _content(content)
 void 
 FBCardComponent::resized()
 {
-  _content->setBounds(getLocalBounds().reduced(CornerSize));
+  _content->setBounds(getLocalBounds().reduced(_margin? CornerSize: 0));
   _content->resized();
 }
 
