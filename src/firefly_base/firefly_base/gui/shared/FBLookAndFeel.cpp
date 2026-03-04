@@ -454,7 +454,7 @@ FBLookAndFeel::drawLabel(
   {
     Path p;
     isSelect = true;
-    auto cornerSize = 5.0f;
+    auto cornerSize = 3.0f;
     bool isTop = selectLabel->IsTop();
     bool isBottom = selectLabel->IsBottom();
     bool isLeft = selectLabel->IsLeft();
@@ -724,7 +724,7 @@ FBLookAndFeel::drawButtonBackground(
   }
 
   Path p;
-  auto cornerSize = 5.0f;
+  auto cornerSize = isSelect? 3.0f: 5.0f;
   auto bounds = button.getLocalBounds().toFloat().reduced(isSelect? 0.0f: 3.0f);
   p.addRoundedRectangle(
     bounds.getX(), bounds.getY(), 
