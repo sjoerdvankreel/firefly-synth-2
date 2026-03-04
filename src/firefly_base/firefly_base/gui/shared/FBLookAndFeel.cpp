@@ -703,7 +703,10 @@ FBLookAndFeel::drawButtonBackground(
   auto cornerSize = 5.0f;
   auto bounds = button.getLocalBounds().toFloat().reduced(isSelect? 0.0f: 3.0f);
   p.addRoundedRectangle(
-    bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), cornerSize, cornerSize, 
+    bounds.getX(), bounds.getY(), 
+    bounds.getWidth() + (isRight? 0.0f: 1.0f), 
+    bounds.getHeight() + (isBottom? 0.0f: 1.0f), 
+    cornerSize, cornerSize,
     isTop && isLeft, isTop && isRight, isBottom && isLeft, isBottom && isRight);
 
   auto const& scheme = FindColorSchemeFor(button);
@@ -713,6 +716,13 @@ FBLookAndFeel::drawButtonBackground(
   g.strokePath(p, PathStrokeType(1.0f));
   if (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted)
   {
+    p = {};
+    p.addRoundedRectangle(
+      bounds.getX(), bounds.getY(),
+      bounds.getWidth(),
+      bounds.getHeight(), 
+      cornerSize, cornerSize,
+      isTop && isLeft, isTop && isRight, isBottom && isLeft, isBottom && isRight);
     g.setColour(scheme.paramHighlight);
     g.strokePath(p, PathStrokeType(1.0f));
   }
