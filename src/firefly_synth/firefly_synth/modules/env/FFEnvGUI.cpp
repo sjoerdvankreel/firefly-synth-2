@@ -290,7 +290,7 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::EnvSelectedTab, 0 } });
   auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, moduleParam, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0, 0 });
-  select->AddLabel(0, 0, "Env");
+  select->AddLabel(0, 0, "ENV");
   select->AddSelector(1, 0, { (int)FFModuleType::Env, 0 }, "Amp", MakeEnvTab(plugGUI, FFAmpEnvSlot, &msegEditor));
   msegEditors.push_back(msegEditor);
   for (int i = FFEnvSlotOffset; i < FFEnvCount; i++)
