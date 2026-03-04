@@ -240,6 +240,12 @@ FBSelectButton(FBPlugGUI* plugGUI, std::string const& text, bool isTop, bool isB
 FBAutoSizeButton(plugGUI, text),
 _isTop(isTop), _isBottom(isBottom), _isLeft(isLeft), _isRight(isRight) {}
 
+int
+FBSelectButton::FixedWidth(int /*height*/) const
+{
+  return FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text) + 12;
+}
+
 FBSelectLabel::
 FBSelectLabel(FBPlugGUI* plugGUI, std::string const& text, bool isTop, bool isBottom, bool isLeft, bool isRight):
 FBAutoSizeLabel(plugGUI, text),

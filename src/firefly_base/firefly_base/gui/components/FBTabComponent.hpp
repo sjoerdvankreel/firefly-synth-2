@@ -136,6 +136,7 @@ public:
   bool IsBottom() const { return _isBottom; }
   bool IsLeft() const { return _isLeft; }
   bool IsRight() const { return _isRight; }
+  int FixedWidth(int height) const override;
 };
 
 class FBSelectLabel:

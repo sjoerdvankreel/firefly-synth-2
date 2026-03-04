@@ -15,6 +15,7 @@ public juce::TextButton,
 public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
+protected:
   FBPlugGUI* const _plugGUI;
   std::string const _text;
 public:
