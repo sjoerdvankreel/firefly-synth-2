@@ -684,25 +684,37 @@ FBLookAndFeel::drawButtonBackground(
   const juce::Colour& /*backgroundColour*/,
   bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
+  bool isTop = true;
+  bool isBottom = true;
+  bool isLeft = true;
+  bool isRight = true;
   bool isSelect = false;
   if (auto selectButton = dynamic_cast<FBSelectButton*>(&button))
   {
     isSelect = true;
+    isTop = selectButton->IsTop();
+    isBottom = selectButton->IsBottom();
+    isLeft = selectButton->IsLeft();
+    isRight = selectButton->IsRight();
     shouldDrawButtonAsDown |= button.getToggleState();
   }
 
+  Path p;
   auto cornerSize = 5.0f;
-  auto fb = button.getLocalBounds().toFloat();
   auto bounds = button.getLocalBounds().toFloat().reduced(isSelect? 0.0f: 3.0f);
+  p.addRoundedRectangle(
+    bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), cornerSize, cornerSize, 
+    isTop && isLeft, isTop && isRight, isBottom && isLeft, isBottom && isRight);
+
   auto const& scheme = FindColorSchemeFor(button);
   g.setColour(scheme.buttonBackground.brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
-  g.fillRoundedRectangle(bounds, cornerSize);
+  g.fillPath(p);
   g.setColour(scheme.primary);
-  g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
+  g.strokePath(p, PathStrokeType(1.0f));
   if (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted)
   {
     g.setColour(scheme.paramHighlight);
-    g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
+    g.strokePath(p, PathStrokeType(1.0f));
   }
 }
 
