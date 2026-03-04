@@ -604,8 +604,8 @@ FFMakeEchoTopo(bool global, bool isFx)
 
   auto& feedbackOn = result->params[(int)FFEchoParam::FeedbackOn];
   feedbackOn.mode = FBParamMode::Block;
-  feedbackOn.name = "Fdbk On";
-  feedbackOn.display = "Fdbk";
+  feedbackOn.name = "Feedback On";
+  feedbackOn.display = "Feedback";
   feedbackOn.slotCount = 1;
   feedbackOn.defaultText = "On";
   feedbackOn.id = prefix + "{E28CD2D5-59B4-4C77-830F-BC961239299C}";
@@ -676,7 +676,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   auto& feedbackDelayTime = result->params[(int)FFEchoParam::FeedbackDelayTime];
   feedbackDelayTime.mode = FBParamMode::Accurate;
   feedbackDelayTime.defaultText = "0.375";
-  feedbackDelayTime.display = "Dly";
+  feedbackDelayTime.display = "Delay";
   feedbackDelayTime.name = "Fdbk Dly Time";
   feedbackDelayTime.slotCount = 1;
   feedbackDelayTime.unit = "Sec";
@@ -698,7 +698,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   auto& feedbackDelayBars = result->params[(int)FFEchoParam::FeedbackDelayBars];
   feedbackDelayBars.mode = FBParamMode::Block;
   feedbackDelayBars.defaultText = "3/16";
-  feedbackDelayBars.display = "Dly";
+  feedbackDelayBars.display = "Delay";
   feedbackDelayBars.name = "Fdbk Dly Bars";
   feedbackDelayBars.slotCount = 1;
   feedbackDelayBars.unit = "Bars";
@@ -866,8 +866,8 @@ FFMakeEchoTopo(bool global, bool isFx)
 
   auto& reverbOn = result->params[(int)FFEchoParam::ReverbOn];
   reverbOn.mode = FBParamMode::Block;
-  reverbOn.name = "Rvrb On";
-  reverbOn.display = "Rvrb";
+  reverbOn.name = "Reverb On";
+  reverbOn.display = "Reverb";
   reverbOn.slotCount = 1;
   reverbOn.defaultText = "Off";
   reverbOn.id = prefix + "{935D11F3-1131-40DE-81E5-FC3DCDCBAE73}";
