@@ -90,6 +90,8 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->themedComponents[(int)FFThemedComponentId::EffectSelector].id = "{DADE7470-E372-4A0D-9094-F769648103E8}"; 
   result->themedComponents[(int)FFThemedComponentId::EchoSelector].name = "Echo Selector";
   result->themedComponents[(int)FFThemedComponentId::EchoSelector].id = "{2B123786-805A-42E9-A584-A37F80EC1D98}";
+  result->themedComponents[(int)FFThemedComponentId::LFOSelector].name = "LFO Selector";
+  result->themedComponents[(int)FFThemedComponentId::LFOSelector].id = "{B22DD050-62C0-4FB5-A42D-3496FA9CF510}";
 
   result->exchangeStateSize = sizeof(FFExchangeState);
   result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };

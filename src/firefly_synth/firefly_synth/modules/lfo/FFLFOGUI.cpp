@@ -161,16 +161,16 @@ FFMakeLFOGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::LFOSelectedTab, 0 } });
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
-  tabs->SetTabSeparatorText(0, "VLFO");
+  auto moduleParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::LFOSelectedTab, 0 } });
+  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, moduleParam, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0, 0, 0, 0, 0 });
+  select->AddLabel(0, 0, "VLFO");
   for (int i = 0; i < FFLFOCount; i++)
-    tabs->AddModuleTab(true, false, { (int)FFModuleType::VLFO, i }, MakeLFOTab(plugGUI, FFModuleType::VLFO, i));
-  tabs->SetTabSeparatorText(FFLFOCount, "GLFO");
+    select->AddSelector(0, i + 1, { (int)FFModuleType::VLFO, i }, std::to_string(i + 1), MakeLFOTab(plugGUI, FFModuleType::VLFO, i));
+  select->AddLabel(1, 0, "GLFO");
   for (int i = 0; i < FFLFOCount; i++)
-    tabs->AddModuleTab(true, false, { (int)FFModuleType::GLFO, i }, MakeLFOTab(plugGUI, FFModuleType::GLFO, i));
-  tabs->ActivateStoredSelection();
-  return tabs;
+    select->AddSelector(1, i + 1, { (int)FFModuleType::GLFO, i }, std::to_string(i + 1), MakeLFOTab(plugGUI, FFModuleType::GLFO, i));
+  select->ActivateStoredSelection();
+  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::LFOSelector, select);
 }
 
 Component*
