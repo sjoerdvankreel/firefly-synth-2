@@ -45,7 +45,8 @@ enum class FFThemedComponentId {
   MatrixTopGlobal,
   EffectSelector,
   EchoSelector,
-  LFOSelector
+  LFOSelector,
+  EnvSelector
 };
 
 enum class FFModuleType {

@@ -289,18 +289,20 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
   msegEditors.clear();
   FBMSEGEditor* msegEditor = nullptr;
   auto topo = plugGUI->HostContext()->Topo();
-  auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::EnvSelectedTab, 0 } });
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
-  tabs->SetTabSeparatorText(0, "Env");
-  tabs->AddModuleTab(true, false, { (int)FFModuleType::Env, FFAmpEnvSlot }, MakeEnvTab(plugGUI, FFAmpEnvSlot, &msegEditor));
+  auto moduleParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::EnvSelectedTab, 0 } });
+  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, moduleParam, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0, 0 });
+  select->AddLabel(0, 0, "Env");
+  select->AddSelector(1, 0, { (int)FFModuleType::Env, 0 }, "Amp", MakeEnvTab(plugGUI, FFAmpEnvSlot, &msegEditor));
   msegEditors.push_back(msegEditor);
   for (int i = FFEnvSlotOffset; i < FFEnvCount; i++)
   {
     msegEditor = nullptr;
-    tabs->AddModuleTab(true, false, { (int)FFModuleType::Env, i }, MakeEnvTab(plugGUI, i, &msegEditor));
+    int r = (i - 1) % 2;
+    int c = (i - 1) / 2 + 1;
+    select->AddSelector(r, c, { (int)FFModuleType::Env, i }, std::to_string(i), MakeEnvTab(plugGUI, i, &msegEditor));
     msegEditors.push_back(msegEditor);
   }
-  tabs->ActivateStoredSelection();
+  select->ActivateStoredSelection();
 
   PopupMenu insertMenu;
   PopupMenu removeMenu;
@@ -309,9 +311,9 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
     insertMenu.addItem(1000 + i, std::to_string(i + 1));
     removeMenu.addItem(2000 + i, std::to_string(i + 1));
   }
-  tabs->extendedMenu.addSubMenu("Remove Stage At", removeMenu);
-  tabs->extendedMenu.addSubMenu("Insert Stage Before", insertMenu);
-  tabs->extendedMenuHandler = [](FBPlugGUI* plugGUI, FBTopoIndices const& indices, int id) {
+  select->extendedMenu.addSubMenu("Remove Stage At", removeMenu);
+  select->extendedMenu.addSubMenu("Insert Stage Before", insertMenu);
+  select->extendedMenuHandler = [](FBPlugGUI* plugGUI, FBTopoIndices const& indices, int id) {
 
     std::vector<FFEnvParam> stageParams = {
       FFEnvParam::StageTime, FFEnvParam::StageBars,
@@ -338,7 +340,7 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
     }
   };
 
-  return tabs;
+  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::EnvSelector, select);
 }
 
 Component*
