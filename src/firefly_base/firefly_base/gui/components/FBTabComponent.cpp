@@ -235,6 +235,17 @@ FBModuleTabComponent::AddModuleTab(
   fbTabButton.centerText = centerText;
 }
 
+FBSelectButton::
+FBSelectButton(FBPlugGUI* plugGUI, std::string const& text):
+FBAutoSizeButton(plugGUI, text) { }
+
+void
+FBSelectButton::mouseUp(const MouseEvent& event)
+{
+  if (!event.mods.isRightButtonDown())
+    FBAutoSizeButton::mouseUp(event);
+}
+
 FBSelectComponent::
 FBSelectComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, std::vector<int> const& rows, std::vector<int> const& cols):
 FBModuleSelector(plugGUI, param)
@@ -293,7 +304,7 @@ void
 FBSelectComponent::AddSelector(int row, int col, FBTopoIndices const& moduleIndices, std::string const& text, juce::Component* component)
 {
   int index = (int)_buttons.size();
-  auto button = std::make_unique<FBAutoSizeButton>(_plugGUI, text);
+  auto button = std::make_unique<FBSelectButton>(_plugGUI, text);
   button->setToggleable(true);
   button->onClick = [this, index] { Select(index); };
   button->addMouseListener(this, false);

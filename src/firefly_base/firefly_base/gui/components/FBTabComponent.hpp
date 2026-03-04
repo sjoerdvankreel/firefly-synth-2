@@ -119,6 +119,14 @@ public:
   void currentTabChanged(int newCurrentTabIndex, juce::String const& newCurrentTabName) override;
 };
 
+class FBSelectButton:
+public FBAutoSizeButton
+{
+public:
+  FBSelectButton(FBPlugGUI* plugGUI, std::string const& text);
+  void mouseUp(const juce::MouseEvent& event) override;
+};
+
 class FBSelectComponent:
 public juce::Component,
 public FBModuleSelector
@@ -128,7 +136,7 @@ public FBModuleSelector
   std::unique_ptr<FBContentComponent> _content = {};
   std::vector<juce::Component*> _components = {};
   std::vector<std::unique_ptr<FBAutoSizeLabel>> _labels = {};
-  std::vector<std::unique_ptr<FBAutoSizeButton>> _buttons = {};
+  std::vector<std::unique_ptr<FBSelectButton>> _buttons = {};
 
   void Select(int index);
 
