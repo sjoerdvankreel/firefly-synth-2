@@ -81,7 +81,7 @@ MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot,
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0 });
   auto opType = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, block } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, opType, std::string(1, static_cast<char>('A' + block)), FBLabelColors::PrimaryBackground));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, std::string(1, static_cast<char>('A' + block)), FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
   auto waveMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::WaveMode, block } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, waveMode));
@@ -92,8 +92,8 @@ MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot,
   auto rateBars = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateBars, block } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, rateBars));
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, rateBars));  
-  grid->MarkSection({ { 0, 0 }, { 2, 3 } }, block % 2 == 0? FBGridSectionMark::DefaultBackgroundDefaultBorder : FBGridSectionMark::DefaultBackgroundAlternateBorder);
-  return grid;
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBackground);
+  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
 
 static Component*
@@ -107,8 +107,7 @@ MakeLFOTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   grid->Add(0, 0, MakeLFOSectionMain(plugGUI, moduleType, moduleSlot));
   for (int i = 0; i < FFLFOBlockCount; i++)
     grid->Add(0, 1 + i, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, i));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, moduleSlot, margin);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, moduleSlot, grid);
 }
 
 static Component*
