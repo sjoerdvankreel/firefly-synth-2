@@ -84,7 +84,7 @@ MakeOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   std::vector<int> autoSizeRowForCol = { 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, autoSizeRowForCol, autoSizeColForRow, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
   auto type = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Type, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type, true, FBLabelColors::PrimaryBackground));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Type", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
   grid->Add(0, 1, 1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
   auto coarse = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Coarse, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, coarse));
@@ -110,8 +110,8 @@ MakeOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto keyTrack = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::KeyTrack, 0 } });
   grid->Add(1, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, keyTrack));
   grid->Add(1, 9, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, keyTrack));
-  grid->MarkSection({ { 0, 0 }, { 2, 10 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
-  return grid;
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBackground);
+  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
 
 static Component*
@@ -120,7 +120,7 @@ MakeOsciSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   auto count = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::UniCount, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, count, true, FBLabelColors::PrimaryBackground));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Unison", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, count, Slider::SliderStyle::RotaryVerticalDrag));
   auto detune = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::UniDetune, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, detune));
@@ -137,8 +137,8 @@ MakeOsciSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
   auto random = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::UniRandom, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, random));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, random, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  return grid;
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBackground);
+  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
 
 static Component*
