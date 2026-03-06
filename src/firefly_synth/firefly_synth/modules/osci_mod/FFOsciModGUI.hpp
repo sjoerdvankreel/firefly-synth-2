@@ -5,4 +5,4 @@
 class FBPlugGUI;
 
 juce::Component*
-FFMakeOsciModGUI(FBPlugGUI* plugGUI);
+FFMakeOsciModTab(FBPlugGUI* plugGUI);

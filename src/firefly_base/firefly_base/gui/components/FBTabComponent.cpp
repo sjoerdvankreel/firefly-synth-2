@@ -16,11 +16,8 @@ FBModuleSelector::
 FBModuleSelector(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
 _plugGUI(plugGUI), _param(param)
 {
-  if (_param != nullptr)
-  {
-    double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(_param->runtimeParamIndex);
-    _storedSelection = _param->static_.Discrete().NormalizedToPlainFast((float)normalized);
-  }
+  double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(_param->runtimeParamIndex);
+  _storedSelection = _param->static_.Discrete().NormalizedToPlainFast((float)normalized);
 }
 
 void 
@@ -28,12 +25,9 @@ FBModuleSelector::SelectModuleGUI(int index)
 {
   auto const& indices = _moduleIndices[index];
   _plugGUI->ActiveModuleSlotChanged(indices.index, indices.slot);
-  if (_param != nullptr)
-  {
-    double normalized = _param->static_.Discrete().PlainToNormalizedFast(index);
-    _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
-    _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
-  }
+  double normalized = _param->static_.Discrete().PlainToNormalizedFast(index);
+  _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
+  _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
 }
 
 void 
@@ -176,6 +170,7 @@ FBModuleTabComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
 FBAutoSizeTabComponent(plugGUI),
 FBModuleSelector(plugGUI, param)
 {
+  assert(param != nullptr);
 }
 
 void

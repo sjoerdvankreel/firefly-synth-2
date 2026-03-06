@@ -6,7 +6,6 @@
 #include <firefly_synth/modules/lfo/FFLFOGUI.hpp>
 #include <firefly_synth/modules/mix/FFMixGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
-#include <firefly_synth/modules/osci_mod/FFOsciModGUI.hpp>
 #include <firefly_synth/modules/echo/FFEchoGUI.hpp>
 #include <firefly_synth/modules/other/FFOtherGUI.hpp>
 #include <firefly_synth/modules/other/FFOtherTopo.hpp>
@@ -393,15 +392,14 @@ FFPlugGUI::SetupGUI()
     _vEffectDetails[i] = FFMakeEffectDetailGUI(this, false, i);
   }
 
-  _main = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int>(8, 1), std::vector<int> { { 16, 5 } });
+  _main = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 16, 5 } });
   _main->Add(0, 0, 1, 2, _topModules);
   _main->Add(1, 0, 1, 1, FFMakeMixGUI(this));
   _main->Add(2, 0, 1, 1, FFMakeOsciGUI(this));
-  _main->Add(3, 0, 1, 1, FFMakeOsciModGUI(this));
-  _main->Add(4, 0, 1, 1, FFMakeEffectGUI(this));
-  _main->Add(5, 0, 1, 1, FFMakeEchoGUI(this));
-  _main->Add(6, 0, 1, 1, FFMakeLFOGUI(this));
-  _main->Add(7, 0, 1, 1, FFMakeEnvGUI(this, _msegEditors));
+  _main->Add(3, 0, 1, 1, FFMakeEffectGUI(this));
+  _main->Add(4, 0, 1, 1, FFMakeEchoGUI(this));
+  _main->Add(5, 0, 1, 1, FFMakeLFOGUI(this));
+  _main->Add(6, 0, 1, 1, FFMakeEnvGUI(this, _msegEditors));
   _main->Add(1, 1, 3, 1, _detailContent);
   _main->Add(4, 1, 3, 1, StoreComponent<FBMarginComponent>(this, true, true, false, true, 
       StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::DetailGraphs, _detailsGraph2)));
@@ -413,7 +411,7 @@ FFPlugGUI::SetupGUI()
   _mainTabChangedListener = std::make_unique<FFMainTabChangedListener>(this);
   _tabs->getTabbedButtonBar().addChangeListener(_mainTabChangedListener.get());
 
-  _container = StoreComponent<FBGridComponent>(this, false, 0, -1, std::vector<int> { { 6, 6, 24, 105 } }, std::vector<int> { { 1 } });
+  _container = StoreComponent<FBGridComponent>(this, false, 0, -1, std::vector<int> { { 6, 6, 24, 92 } }, std::vector<int> { { 1 } });
   _container->Add(0, 0, _outputOtherAndPatch);
   _container->Add(1, 0, _guiSettingsAndTweak);
   _container->Add(2, 0, _mainAndDetailGraphs);

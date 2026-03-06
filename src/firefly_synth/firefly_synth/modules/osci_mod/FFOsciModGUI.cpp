@@ -10,7 +10,6 @@
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/controls/FBMultiLineLabel.hpp>
-#include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
@@ -63,8 +62,8 @@ FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI)
   return grid;
 }
 
-static Component*
-MakeOsciModTab(FBPlugGUI* plugGUI)
+Component*
+FFMakeOsciModTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
@@ -72,14 +71,4 @@ MakeOsciModTab(FBPlugGUI* plugGUI)
   grid->Add(0, 1, FFMakeOsciModGUISectionMod(plugGUI));
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::OsciMod, 0, margin);
-}
-
-Component*
-FFMakeOsciModGUI(FBPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, nullptr);
-  tabs->AddModuleTab(true, false, { (int)FFModuleType::OsciMod, 0 }, MakeOsciModTab(plugGUI));
-  tabs->ActivateStoredSelection();
-  return tabs;
 }
