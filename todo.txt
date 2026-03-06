@@ -19,6 +19,7 @@ v2.1.1
 [x] vs2026
 [x] merge stvarmode
 [x] drop the env detail graphs
+[ ] drag a knob should switch the details
 [ ] drop the selected tabs gui params
 [ ] fix the build scripts for linux-arm
 [ ] hide disabled stuff when possible

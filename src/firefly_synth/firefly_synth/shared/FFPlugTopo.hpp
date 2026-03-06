@@ -46,7 +46,8 @@ enum class FFThemedComponentId {
   EffectSelector,
   EchoSelector,
   LFOSelector,
-  EnvSelector
+  EnvSelector,
+  OscSelector
 };
 
 enum class FFModuleType {

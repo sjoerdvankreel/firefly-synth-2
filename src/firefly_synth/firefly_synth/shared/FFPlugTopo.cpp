@@ -94,6 +94,8 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->themedComponents[(int)FFThemedComponentId::LFOSelector].id = "{B22DD050-62C0-4FB5-A42D-3496FA9CF510}";
   result->themedComponents[(int)FFThemedComponentId::EnvSelector].name = "Env Selector";
   result->themedComponents[(int)FFThemedComponentId::EnvSelector].id = "{37E2990B-F76C-4B12-A10A-E8E3155F5F10}";
+  result->themedComponents[(int)FFThemedComponentId::OscSelector].name = "Osc Selector";
+  result->themedComponents[(int)FFThemedComponentId::OscSelector].id = "{3D143E5D-F8A8-48E7-9E11-68A42A225CEA}";
 
   result->exchangeStateSize = sizeof(FFExchangeState);
   result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };

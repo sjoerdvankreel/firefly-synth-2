@@ -125,6 +125,11 @@
       "comment": "Env Selector",
       "componentId": "37E2990B-F76C-4B12-A10A-E8E3155F5F10",
       "colorScheme": "Orange"
+    },
+    {
+      "comment": "Osc Selector",
+      "componentId": "3D143E5D-F8A8-48E7-9E11-68A42A225CEA",
+      "colorScheme": "Orange"
     }
   ],
   "moduleColors_comment": "Override the default scheme per module. Slot can be -1 to apply to all module slots or gte 0 to apply to individual slots.",
