@@ -396,8 +396,7 @@ MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   grid->Add(0, 0, MakeOsciSectionMain(plugGUI, moduleSlot));
   grid->Add(0, 1, MakeOsciSectionUni(plugGUI, moduleSlot));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, margin);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Osci, moduleSlot, grid);
 }
 
 static Component*
