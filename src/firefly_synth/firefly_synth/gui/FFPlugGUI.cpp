@@ -395,15 +395,15 @@ FFPlugGUI::SetupGUI()
 
   _main = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int>(8, 1), std::vector<int> { { 16, 5 } });
   _main->Add(0, 0, 1, 2, _topModules);
-  _main->Add(1, 0, 1, 2, FFMakeMixGUI(this));
+  _main->Add(1, 0, 1, 1, FFMakeMixGUI(this));
   _main->Add(2, 0, 1, 1, FFMakeOsciGUI(this));
   _main->Add(3, 0, 1, 1, FFMakeOsciModGUI(this));
   _main->Add(4, 0, 1, 1, FFMakeEffectGUI(this));
   _main->Add(5, 0, 1, 1, FFMakeEchoGUI(this));
   _main->Add(6, 0, 1, 1, FFMakeLFOGUI(this));
   _main->Add(7, 0, 1, 1, FFMakeEnvGUI(this, _msegEditors));
-  _main->Add(2, 1, 3, 1, _detailContent);
-  _main->Add(5, 1, 3, 1, StoreComponent<FBMarginComponent>(this, true, true, false, true, 
+  _main->Add(1, 1, 3, 1, _detailContent);
+  _main->Add(4, 1, 3, 1, StoreComponent<FBMarginComponent>(this, true, true, false, true, 
       StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::DetailGraphs, _detailsGraph2)));
 
   _tabs = StoreComponent<FBAutoSizeTabComponent>(this, true);
