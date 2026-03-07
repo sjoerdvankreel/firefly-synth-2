@@ -35,11 +35,12 @@ FFMakeOsciModGUISectionMain(FBPlugGUI* plugGUI)
 }
 
 static Component*
-FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI, int block)
+FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI, int block, int slotStart)
 {
   std::vector<int> columnSizes = {};
   for (int i = 0; i <= block; i++)
   {
+    columnSizes.push_back(0);
     columnSizes.push_back(0);
     columnSizes.push_back(0);
     columnSizes.push_back(0);
@@ -48,15 +49,18 @@ FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI, int block)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, columnSizes);
   for (int i = 0; i <= block; i++)
   {
-    grid->Add(0, i * 3, 2, 1, plugGUI->StoreComponent<FBAutoSizeMultiLineLabel>(plugGUI, FFOsciModFormatSlotVertical(i), -2));
-    auto amMode = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::AMMode, i } });
-    grid->Add(0, i * 3 + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, amMode));
-    auto amMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::AMMix, i } });
-    grid->Add(0, i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amMix, Slider::SliderStyle::RotaryVerticalDrag));
-    auto fmOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::FMOn, i } });
-    grid->Add(1, i * 3 + 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, fmOn));
-    auto fmIndex = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::FMIndex, i } });
-    grid->Add(1, i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
+    int slot = slotStart + i;
+    grid->Add(0, i * 4, 2, 1, plugGUI->StoreComponent<FBAutoSizeMultiLineLabel>(plugGUI, FFOsciModFormatSlotVertical(slot), -2));
+    auto amMode = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::AMMode, slot } });
+    grid->Add(0, i * 4 + 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, amMode));
+    grid->Add(0, i * 4 + 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, amMode));
+    auto amMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::AMMix, slot } });
+    grid->Add(0, i * 4 + 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amMix, Slider::SliderStyle::RotaryVerticalDrag));
+    auto fmOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::FMOn, slot } });
+    grid->Add(1, i * 4 + 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmOn));
+    grid->Add(1, i * 4 + 2, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, fmOn));
+    auto fmIndex = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::FMIndex, slot } });
+    grid->Add(1, i * 4 + 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
   }
   return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
@@ -67,7 +71,8 @@ FFMakeOsciModTab(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0 });
   grid->Add(0, 0, FFMakeOsciModGUISectionMain(plugGUI));
-  for(int i = 0; i < 3; i++)
-    grid->Add(0, 1 + i, FFMakeOsciModGUISectionMod(plugGUI, i));
+  grid->Add(0, 1, FFMakeOsciModGUISectionMod(plugGUI, 0, 0));
+  grid->Add(0, 2, FFMakeOsciModGUISectionMod(plugGUI, 1, 1));
+  grid->Add(0, 3, FFMakeOsciModGUISectionMod(plugGUI, 2, 3));
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::OsciMod, 0, grid);
 }

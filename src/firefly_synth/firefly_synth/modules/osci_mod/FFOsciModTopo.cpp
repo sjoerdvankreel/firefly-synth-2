@@ -24,12 +24,12 @@ FFOsciModFormatSlotVertical(int slot)
 {
   switch (slot)
   {
-  case 0: return "1 AM\n\U00002193\n2 FM";
-  case 1: return "1 AM\n\U00002193\n3 FM";
-  case 2: return "2 AM\n\U00002193\n3 FM";
-  case 3: return "1 AM\n\U00002193\n4 FM";
-  case 4: return "2 AM\n\U00002193\n4 FM";
-  case 5: return "3 AM\n\U00002193\n4 FM";
+  case 0: return "1\n\U00002193\n2";
+  case 1: return "1\n\U00002193\n3";
+  case 2: return "2\n\U00002193\n3";
+  case 3: return "1\n\U00002193\n4";
+  case 4: return "2\n\U00002193\n4";
+  case 5: return "3\n\U00002193\n4";
   default: FB_ASSERT(false); return "";
   }
 }
@@ -77,6 +77,7 @@ FFMakeOsciModTopo()
   auto& amMode = result->params[(int)FFOsciModParam::AMMode];
   amMode.mode = FBParamMode::Block;
   amMode.name = "AM Mode";
+  amMode.display = "AM";
   amMode.defaultText = "Off";
   amMode.slotCount = FFOsciModSlotCount;
   amMode.id = "{AE135DBF-A88E-49A4-9205-08C908E6FC12}";
@@ -111,6 +112,7 @@ FFMakeOsciModTopo()
   auto& fmOn = result->params[(int)FFOsciModParam::FMOn];
   fmOn.mode = FBParamMode::Block;
   fmOn.name = "FM On";
+  fmOn.display = "FM";
   fmOn.defaultText = "Off";
   fmOn.slotCount = FFOsciModSlotCount;
   fmOn.id = "{E4F09B87-FBDB-4B72-B6E3-D64BE0733C3D}";
