@@ -28,5 +28,5 @@ FBAutoSizeMultiLineLabel::paint(Graphics& g)
   g.setFont(getLookAndFeel().getLabelFont(dummy));
   g.setColour(scheme.text);
   int y = static_cast<int>(std::ceil((getBounds().getHeight() - textSize.y) * 0.5f) + _vOffset);
-  g.drawMultiLineText(_text, 3, y, textSize.x, Justification::centredLeft);
+  g.drawMultiLineText(_text, 3, y, textSize.x + 4, Justification::centredLeft);
 }
