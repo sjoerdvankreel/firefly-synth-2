@@ -35,10 +35,10 @@ FFMakeOsciModGUISectionMain(FBPlugGUI* plugGUI)
 }
 
 static Component*
-FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI)
+FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI, int block)
 {
   std::vector<int> columnSizes = {};
-  for (int i = 0; i < FFOsciModSlotCount; i++)
+  for (int i = 0; i <= block; i++)
   {
     columnSizes.push_back(0);
     columnSizes.push_back(0);
@@ -46,7 +46,7 @@ FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI)
   }
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, columnSizes);
-  for (int i = 0; i < FFOsciModSlotCount; i++)
+  for (int i = 0; i <= block; i++)
   {
     grid->Add(0, i * 3, 2, 1, plugGUI->StoreComponent<FBAutoSizeMultiLineLabel>(plugGUI, FFOsciModFormatSlotVertical(i), -2));
     auto amMode = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::AMMode, i } });
@@ -58,18 +58,16 @@ FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI)
     auto fmIndex = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::FMIndex, i } });
     grid->Add(1, i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  grid->MarkSection({ { 0, 3 }, { 2, 6 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
-  grid->MarkSection({ { 0, 9 }, { 2, 9 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  return grid;
+  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
 
 Component*
 FFMakeOsciModTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0 });
   grid->Add(0, 0, FFMakeOsciModGUISectionMain(plugGUI));
-  grid->Add(0, 1, FFMakeOsciModGUISectionMod(plugGUI));
+  for(int i = 0; i < 3; i++)
+    grid->Add(0, 1 + i, FFMakeOsciModGUISectionMod(plugGUI, i));
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::OsciMod, 0, grid);
 }
