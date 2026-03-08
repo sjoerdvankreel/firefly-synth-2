@@ -94,8 +94,7 @@ MakeVMixSectionOsciAndVFXToOut(FBPlugGUI* plugGUI)
     auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::VFXToOut, e } });
     grid->Add(1, 1 + e, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ { 0, 0 }, { 2, FFOsciCount + 1 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  return grid;
+  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
 
 static Component*
@@ -120,8 +119,7 @@ MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(FBPlugGUI* plugGUI)
     auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::OsciMixToVFX, e } });
     grid->Add(1, 1 + e, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ { 0, 0 }, { 2, FFOsciCount + 1 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  return grid;
+  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
 
 static Component*
@@ -151,8 +149,7 @@ MakeVMixGUISectionAmpBalAndOsciMixToOut(FBPlugGUI* plugGUI)
   oscMixToOutGrid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Osc Mix\U00002192Out"));
   oscMixToOutGrid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, oscMixToOut, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(1, 4, oscMixToOutGrid);
-  grid->MarkSection({ { 0, 0 }, { 2, 5 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
-  return grid;
+  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
 
 static Component*
@@ -192,8 +189,7 @@ FFMakeVMixGUITab(FBPlugGUI* plugGUI)
   grid->Add(0, 0, MakeVMixGUISectionAmpBalAndOsciMixToOut(plugGUI));
   grid->Add(0, 1, MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(plugGUI));
   grid->Add(0, 2, MakeVMixSectionOsciAndVFXToOut(plugGUI));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::VMix, 0, margin);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::VMix, 0, grid);
 }
 
 Component*
