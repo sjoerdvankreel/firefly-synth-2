@@ -469,8 +469,8 @@ FBLookAndFeel::drawLabel(
 
     g.setColour(scheme->sectionBackground);
     g.fillPath(p);
-    g.setColour(scheme->primary);
-    g.strokePath(p, PathStrokeType(1.0f));
+    g.setColour(scheme->primary.withMultipliedAlpha(0.67f));
+    g.strokePath(p, PathStrokeType(2.0f));
   }
   else if (tweakLabel || autoSizeLabel2)
   {
@@ -737,8 +737,8 @@ FBLookAndFeel::drawButtonBackground(
   auto background = isSelect ? scheme.sectionBackground : scheme.buttonBackground;
   g.setColour(background.brighter(shouldDrawButtonAsDown? 0.4f: 0.0f).withMultipliedAlpha(isSelect? 0.5f: 1.0f));
   g.fillPath(p);
-  g.setColour(scheme.primary);
-  g.strokePath(p, PathStrokeType(1.0f));
+  g.setColour(scheme.primary.withMultipliedAlpha(isSelect ? 0.67f: 1.0f));
+  g.strokePath(p, PathStrokeType(isSelect? 2.0f: 1.0f));
 
   if (!isSelect && (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted))
   {
