@@ -59,6 +59,7 @@ FFMakeOsciModGUISectionMod(FBPlugGUI* plugGUI, int block, int slotStart)
     grid->Add(1, i * 4 + 2, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, fmOn));
     auto fmIndex = topo->audio.ParamAtTopo({ { (int)FFModuleType::OsciMod, 0 }, { (int)FFOsciModParam::FMIndex, slot } });
     grid->Add(1, i * 4 + 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->MarkSection({ { 0, i * 4 }, { 2, 1 } }, FBGridSectionMark::DefaultBackground);
   }
   return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
