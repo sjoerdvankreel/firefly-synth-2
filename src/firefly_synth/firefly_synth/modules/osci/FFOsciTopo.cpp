@@ -123,7 +123,7 @@ FFMakeOsciTopo()
 
   auto& keyTrack = result->params[(int)FFOsciParam::KeyTrack];
   keyTrack.mode = FBParamMode::Block;
-  keyTrack.name = "KTrk";
+  keyTrack.name = "KeyTrk";
   keyTrack.slotCount = 1;
   keyTrack.defaultText = "On";
   keyTrack.id = "{6A2E75A1-F84D-401D-98BB-7D78F13073EA}";
