@@ -130,6 +130,11 @@
       "comment": "Osc Selector",
       "componentId": "3D143E5D-F8A8-48E7-9E11-68A42A225CEA",
       "colorScheme": "Orange"
+    },
+    {
+      "comment": "Mix Selector",
+      "componentId": "B1B4E0FB-5A5F-4359-AE9A-D9EF5F83500A",
+      "colorScheme": "Orange"
     }
   ],
   "moduleColors_comment": "Override the default scheme per module. Slot can be -1 to apply to all module slots or gte 0 to apply to individual slots.",
