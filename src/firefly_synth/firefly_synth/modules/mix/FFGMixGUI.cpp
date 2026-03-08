@@ -9,6 +9,7 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
+#include <firefly_base/gui/controls/FBParamDisplay.hpp>
 #include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
@@ -190,10 +191,10 @@ FFMakeGMixDetailGUI(FBPlugGUI* plugGUI)
   auto topo = plugGUI->HostContext()->Topo();
   int index = topo->moduleTopoToRuntime.at({ (int)FFModuleType::GMix, 0 });
   auto name = topo->modules[index].name;
-  //auto target = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::AmpEnvTarget, 0 } });
+  auto amp = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::Amp, 0 } });
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1, 1 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, FBAsciiToUpper(name), FBLabelAlign::Right, FBLabelColors::PrimaryForeground));
-  //grid->Add(0, 1, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, target));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, amp));
   grid->Add(1, 0, 1, 2, MakeGMixDetail(plugGUI));
   grid->MarkSection({ { 0, 0 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground);
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
