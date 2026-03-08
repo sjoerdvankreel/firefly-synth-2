@@ -188,10 +188,10 @@ Component*
 FFMakeVMixGUITab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1 });
-  grid->Add(0, 0, MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(plugGUI));
-  grid->Add(0, 1, MakeVMixSectionOsciAndVFXToOut(plugGUI));
-  grid->Add(0, 2, MakeVMixGUISectionAmpBalAndOsciMixToOut(plugGUI));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1, 0, 0 });
+  grid->Add(0, 0, MakeVMixGUISectionAmpBalAndOsciMixToOut(plugGUI));
+  grid->Add(0, 1, MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(plugGUI));
+  grid->Add(0, 2, MakeVMixSectionOsciAndVFXToOut(plugGUI));
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::VMix, 0, margin);
 }
