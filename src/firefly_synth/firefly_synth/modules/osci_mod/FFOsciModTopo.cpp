@@ -42,6 +42,8 @@ FFMakeOsciModTopo()
   result->name = "Mod";
   result->slotCount = 1;
   result->detailGraphCount = FFOsciCount;
+  result->detailGraphUpperLowerText = true;
+  result->detailGraphLayout = FBModuleGraphLayout::Grid;
   result->graphRenderer = FFOsciRenderGraph;
   result->id = "{546F9D74-670A-463D-80B0-B4BBD061DA88}";
   result->params.resize((int)FFOsciModParam::Count);
