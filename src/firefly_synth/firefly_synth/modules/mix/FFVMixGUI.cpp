@@ -72,35 +72,6 @@ FFVMixAdjustParamModulationGUIBounds(
 }
 
 static Component*
-MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
-{
-  std::vector<int> columnSizes = {};
-  auto topo = plugGUI->HostContext()->Topo();
-  for (int i = 0; i < FFOsciCount / 2; i++)
-  {
-    columnSizes.push_back(0);
-    for (int j = 0; j < FFEffectCount; j++)
-      columnSizes.push_back(0);
-  }
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, columnSizes);
-  for (int o = 0; o < FFOsciCount; o++)
-  {
-    int row = o / 2;
-    int colStart = (o % 2) * (FFEffectCount + 1);
-    std::string name = "Osc " + std::to_string(o + 1) + "\U00002192VFX";
-    grid->Add(row, colStart, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, name));
-    for (int e = 0; e < FFEffectCount; e++)
-    {
-      int route = o * FFEffectCount + e;
-      auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::OsciToVFX, route } });
-      grid->Add(row, colStart + 1 + e, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
-    }
-  }
-  grid->MarkSection({ { 0, 0 }, { 2, FFVMixOsciToVFXCount / 2 + 2 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
-  return grid;
-}
-
-static Component*
 MakeVMixSectionOsciAndVFXToOut(FBPlugGUI* plugGUI)
 {
   std::vector<int> columnSizes = {};
@@ -216,12 +187,10 @@ Component*
 FFMakeVMixGUITab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 1 });
-  grid->Add(0, 0, MakeVMixSectionOsciToVFX(plugGUI));
-  grid->Add(0, 1, FFMakeMixGUISectionFXToFX(plugGUI, (int)FFModuleType::VMix, (int)FFVMixParam::VFXToVFX));
-  grid->Add(0, 2, MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(plugGUI));
-  grid->Add(0, 3, MakeVMixSectionOsciAndVFXToOut(plugGUI));
-  grid->Add(0, 4, MakeVMixGUISectionAmpBalAndOsciMixToOut(plugGUI));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1 });
+  grid->Add(0, 0, MakeVMixSectionOsciToOsciMixAndOsciMixToVFX(plugGUI));
+  grid->Add(0, 1, MakeVMixSectionOsciAndVFXToOut(plugGUI));
+  grid->Add(0, 2, MakeVMixGUISectionAmpBalAndOsciMixToOut(plugGUI));
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::VMix, 0, margin);
 }
