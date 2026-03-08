@@ -401,7 +401,7 @@ FFPlugGUI::SetupGUI()
   _main->Add(1, 1, 3, 1, _detailContent);
   _main->Add(4, 1, 3, 1, StoreComponent<FBMarginComponent>(this, true, true, false, true, 
       StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::DetailGraphs, _detailsGraph)));
-       
+        
   _tabs = StoreComponent<FBAutoSizeTabComponent>(this, true);
   _tabs->addTab("MAIN", Colours::black, StoreComponent<FBMarginComponent>(this, false, false, true, false, _main), false);
   _tabs->addTab("MATRIX", Colours::black, StoreComponent<FBMarginComponent>(this, false, false, true, false, _matrix), false);
