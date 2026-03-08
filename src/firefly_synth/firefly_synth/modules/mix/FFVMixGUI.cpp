@@ -10,6 +10,7 @@
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
+#include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
@@ -182,6 +183,12 @@ MakeVMixGUISectionAmpBalAndOsciMixToOut(FBPlugGUI* plugGUI)
   return grid;
 }
 
+static Component*
+MakeVMixDetail(FBPlugGUI* plugGUI)
+{
+  return plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "boo");
+}
+
 Component*
 FFMakeVMixGUITab(FBPlugGUI* plugGUI)
 {
@@ -193,5 +200,21 @@ FFMakeVMixGUITab(FBPlugGUI* plugGUI)
   grid->Add(0, 3, MakeVMixSectionOsciAndVFXToOut(plugGUI));
   grid->Add(0, 4, MakeVMixGUISectionAmpBalAndOsciMixToOut(plugGUI));
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::VMix, 0, margin);
+}
+
+Component*
+FFMakeVMixDetailGUI(FBPlugGUI* plugGUI)
+{ 
+  FB_LOG_ENTRY_EXIT();
+  auto topo = plugGUI->HostContext()->Topo();
+  int index = topo->moduleTopoToRuntime.at({ (int)FFModuleType::VMix, 0 });
+  auto name = topo->modules[index].name;
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1 }, std::vector<int> { 1, 1 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, FBAsciiToUpper(name), FBLabelAlign::Right, FBLabelColors::PrimaryForeground));
+  grid->Add(1, 0, 1, 2, MakeVMixDetail(plugGUI));
+  grid->MarkSection({ { 0, 0 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground);
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, card);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::VMix, 0, margin);
 }

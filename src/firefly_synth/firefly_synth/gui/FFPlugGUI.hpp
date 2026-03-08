@@ -62,6 +62,7 @@ public FBPlugGUI
   FBModuleGraphComponent* _echoMainGraph = {};
 
   FBContentComponent* _detailContent = {};
+  juce::Component* _vMixDetails = {};
   juce::Component* _vEchoDetails = {};
   juce::Component* _gEchoDetails = {};
   std::array<juce::Component*, FFEnvCount> _envDetails = {};

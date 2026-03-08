@@ -183,20 +183,20 @@
       "comment": "VMix",
       "moduleId": "5C91D5A0-3EC1-4142-935A-3FE83B60C04E",
       "moduleSlot": -1,
-      "colorScheme": "Red",
+      "colorScheme": "Orange",
       "audioParamColorSchemes_comment": "Override the module scheme per audio parameter. Slot can be -1 to apply to all parameter slots or gte 0 to apply to individual slots.",
       "audioParamColorSchemes": [
         {
           "comment": "Osci To Osci Mix",
           "paramId": "3EF9D095-1F5E-45BD-8B9E-55EEC321AA43",
           "paramSlot": -1,
-          "colorScheme": "Red"
+          "colorScheme": "Orange"
         },
         {
           "comment": "Osci To Osci Mix - override a single param slot",
           "paramId": "3EF9D095-1F5E-45BD-8B9E-55EEC321AA43",
           "paramSlot": 1,
-          "colorScheme": "Red"
+          "colorScheme": "Orange"
         }
       ]
     },
