@@ -45,8 +45,6 @@ FBParamControl(plugGUI, param, isThemed)
         _maxWidthText = text;
       }
     }
-  else
-    FB_ASSERT(false);
 
   double normalized = plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
   auto text = plugGUI->HostContext()->Topo()->audio.params[param->runtimeParamIndex].NormalizedToTextWithUnit(false, normalized);

@@ -257,8 +257,12 @@ FBPlugGUI::RepaintSlidersForAudioParam(FBParamTopoIndices const& indices)
 {
   int targetIndex = HostContext()->Topo()->audio.ParamAtTopo(indices)->runtimeParamIndex;
   int controlCount = GetControlCountForAudioParamIndex(targetIndex);
-  for(int i = 0; i < controlCount; i++)
-    dynamic_cast<FBParamSlider&>(*GetControlForAudioParamIndex(targetIndex, i)).repaint();
+  for (int i = 0; i < controlCount; i++)
+  {
+    auto control = GetControlForAudioParamIndex(targetIndex, i);
+    if(auto slider = dynamic_cast<FBParamSlider*>(control))
+      slider->repaint();
+  }
 }
 
 int 
