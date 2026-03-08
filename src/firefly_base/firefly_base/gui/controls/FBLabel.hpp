@@ -29,6 +29,7 @@ public juce::Label,
 public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
+protected:
   FBPlugGUI* const _plugGUI;
   std::string const _text;
   FBLabelColors const _colors;

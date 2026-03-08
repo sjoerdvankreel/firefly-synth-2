@@ -53,6 +53,7 @@ FFMakeOsciModTopo()
   auto& oversample = result->params[(int)FFOsciModParam::Oversample];
   oversample.mode = FBParamMode::Block;
   oversample.name = "Oversample";
+  oversample.display = "OverSmp";
   oversample.defaultText = "Off";
   oversample.slotCount = 1;
   oversample.id = "{2449CE02-EE0D-48E7-A716-E59633F279FB}";

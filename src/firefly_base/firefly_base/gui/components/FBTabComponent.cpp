@@ -243,7 +243,7 @@ _isTop(isTop), _isBottom(isBottom), _isLeft(isLeft), _isRight(isRight) {}
 int
 FBSelectButton::FixedWidth(int /*height*/) const
 {
-  return FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text) + 12;
+  return FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text) + 16;
 }
 
 FBSelectLabel::
@@ -252,6 +252,12 @@ FBAutoSizeLabel(plugGUI, text),
 _isTop(isTop), _isBottom(isBottom), _isLeft(isLeft), _isRight(isRight)
 {
   setBorderSize(BorderSize<int>({ 1, 0, 1, 0 }));
+}
+
+int
+FBSelectLabel::FixedWidth(int /*height*/) const
+{
+  return FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text) + 8;
 }
 
 void
