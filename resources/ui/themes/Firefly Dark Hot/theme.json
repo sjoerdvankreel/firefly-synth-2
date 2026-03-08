@@ -11,13 +11,13 @@
     "dimDisabled": 0.25,
     "text": "FFEEEEEE",
     "text2": "FFEEEEEE",
-    "primary": "FFFF0040",
+    "primary": "FF20A0FF",
     "background": "FF000000",
     "meterFill": "FFA0A0A0",
     "meterTrack": "FF505050",
     "meterAlert": "FFFFFFFF",
-    "headerText": "FFFF0040",
-    "headerBorder": "FFFF0040",
+    "headerText": "FF20A0FF",
+    "headerBorder": "FF20A0FF",
     "headerBackground": "FF181818",
     "graphGrid": "FF404040",
     "graphBorder": "20FFFFFF",
@@ -27,27 +27,27 @@
     "paramSecondary": "FF505050",
     "paramHighlight": "80FFFFFF",
     "paramBackground": "FF181818",
-    "sliderModBounds": "FF7F0020",
+    "sliderModBounds": "FF105080",
     "sliderEngineThumb": "80FFFFFF",
-    "alertWindowPrimary": "FFFF0040",
-    "fileBrowserPrimary": "FFFF0040",
-    "fileBrowserHighlight": "80FF0040",
-    "buttonBackground": "FF7F0020",
-    "activeTabBackground": "FF7F0020",
-    "gridAlternateBackground": "FF550015"
+    "alertWindowPrimary": "FF20A0FF",
+    "fileBrowserPrimary": "FF20A0FF",
+    "fileBrowserHighlight": "8020A0FF",
+    "buttonBackground": "FF105080",
+    "activeTabBackground": "FF105080",
+    "gridAlternateBackground": "FF082880"
   },
   "colorSchemes_comment": "Define color schemes to be referenced by modules, parameters, and non-module related component colors.",
   "colorSchemes": {
     "Red": {
       "comment": "Can override other stuff as well.",
-      "primary": "FFFF0040",
-      "headerText": "FFFF0040",
-      "headerBorder": "FFFF0040",
-      "meterAlert": "FFFF0040",
-      "sliderModBounds": "FF7F0020",
-      "buttonBackground": "FF7F0020",
-      "activeTabBackground": "FF7F0020",
-      "gridAlternateBackground": "FF550015"
+      "primary": "FF20A0FF",
+      "headerText": "FF20A0FF",
+      "headerBorder": "FF20A0FF",
+      "meterAlert": "FF20A0FF",
+      "sliderModBounds": "FF105080",
+      "buttonBackground": "FF105080",
+      "activeTabBackground": "FF105080",
+      "gridAlternateBackground": "FF082880"
     },
     "Orange": {
       "primary": "FFFF8020",
@@ -109,32 +109,32 @@
     {
       "comment": "Effect Selector",
       "componentId": "DADE7470-E372-4A0D-9094-F769648103E8",
-      "colorScheme": "Orange"
+      "colorScheme": "Red"
     },
     {
       "comment": "Echo Selector",
       "componentId": "2B123786-805A-42E9-A584-A37F80EC1D98",
-      "colorScheme": "Orange"
+      "colorScheme": "Red"
     },
     {
       "comment": "LFO Selector",
       "componentId": "B22DD050-62C0-4FB5-A42D-3496FA9CF510",
-      "colorScheme": "Orange"
+      "colorScheme": "Red"
     },
     {
       "comment": "Env Selector",
       "componentId": "37E2990B-F76C-4B12-A10A-E8E3155F5F10",
-      "colorScheme": "Orange"
+      "colorScheme": "Red"
     },
     {
       "comment": "Osc Selector",
       "componentId": "3D143E5D-F8A8-48E7-9E11-68A42A225CEA",
-      "colorScheme": "Orange"
+      "colorScheme": "Red"
     },
     {
       "comment": "Mix Selector",
       "componentId": "B1B4E0FB-5A5F-4359-AE9A-D9EF5F83500A",
-      "colorScheme": "Orange"
+      "colorScheme": "Red"
     }
   ],
   "moduleColors_comment": "Override the default scheme per module. Slot can be -1 to apply to all module slots or gte 0 to apply to individual slots.",
