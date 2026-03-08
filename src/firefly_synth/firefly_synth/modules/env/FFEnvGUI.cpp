@@ -174,34 +174,34 @@ static Component*
 MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, 0, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0 });
   auto type = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Type", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
-  auto release = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, release));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, release));
-  auto startLevel = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StartLevel, 0 } });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, startLevel));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, startLevel, Slider::SliderStyle::RotaryVerticalDrag));
-  auto smoothTime = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothTime, 0 } });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothTime));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::RotaryVerticalDrag));
-  auto smoothBars = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothBars, 0 } });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
   auto loopStart = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, loopStart));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopStart));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, loopStart));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopStart));
   auto loopLength = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, loopLength));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopLength));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, loopLength));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopLength));
+  auto release = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } });
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, release));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, release));
+  auto startLevel = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StartLevel, 0 } });
+  grid->Add(0, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, startLevel));
+  grid->Add(0, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, startLevel, Slider::SliderStyle::LinearHorizontal));
   auto sync = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
+  grid->Add(0, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
+  grid->Add(0, 11, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
+  auto smoothTime = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothTime, 0 } });
+  grid->Add(0, 12, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothTime));
+  grid->Add(0, 13, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::LinearHorizontal));
+  auto smoothBars = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothBars, 0 } });
+  grid->Add(0, 12, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
+  grid->Add(0, 13, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
   auto showMSEG = plugGUI->StoreComponent<FBParamValueLinkedButton>(plugGUI, type, "MSEG", [](int v) { return v != 0; });
   showMSEG->setTooltip("Show MSEG Editor");
-  grid->Add(1, 6, 1, 2, showMSEG);
+  grid->Add(0, 14, showMSEG);
 
   auto const& staticTopo = topo->static_->modules[(int)FFModuleType::Env];
   std::string title = staticTopo.slotFormatter(*topo->static_, moduleSlot);
@@ -239,7 +239,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
 static Component*
 MakeEnvTab(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1 });
   grid->Add(0, 0, MakeEnvSectionMain(plugGUI, moduleSlot, msegEditor));
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Env, moduleSlot, grid);
 }
