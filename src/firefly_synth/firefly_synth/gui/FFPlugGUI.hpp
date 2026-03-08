@@ -55,7 +55,6 @@ public FBPlugGUI
   FBGridComponent* _guiSettingsAndTweak = {};
 
   FBModuleGraphComponent* _detailsGraph = {};
-  FBModuleGraphComponent* _detailsGraph2 = {}; // TODO
   FBModuleGraphComponent* _fxMainGraph = {};
   FBModuleGraphComponent* _oscMainGraph = {};
   FBModuleGraphComponent* _envMainGraph = {};
