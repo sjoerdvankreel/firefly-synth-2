@@ -139,6 +139,8 @@ FFPlugGUI::SwitchDetailsSectionToModule(int index, int slot)
 {
   if (index == (int)FFModuleType::VMix)
     _detailContent->SetContent(_vMixDetails);
+  if (index == (int)FFModuleType::GMix)
+    _detailContent->SetContent(_gMixDetails);
   if (index == (int)FFModuleType::VEcho)
     _detailContent->SetContent(_vEchoDetails);
   if (index == (int)FFModuleType::GEcho)
@@ -370,6 +372,7 @@ FFPlugGUI::SetupGUI()
   _detailContent = StoreComponent<FBContentComponent>();
   _globalUni = FFMakeGlobalUniGUI(this, _graphRenderState.get(), &_fixedGraphs);
   _vMixDetails = FFMakeVMixDetailGUI(this);
+  _gMixDetails = FFMakeGMixDetailGUI(this);
   _gEchoDetails = FFMakeEchoDetailGUI(this, true);
   _vEchoDetails = FFMakeEchoDetailGUI(this, false);
   for (int i = 0; i < FFEnvCount; i++)
