@@ -257,7 +257,7 @@ _isTop(isTop), _isBottom(isBottom), _isLeft(isLeft), _isRight(isRight)
 int
 FBSelectLabel::FixedWidth(int /*height*/) const
 {
-  return FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text) + 8;
+  return FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text);
 }
 
 void
