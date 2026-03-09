@@ -38,7 +38,6 @@ MakeMasterSectionMain(FBPlugGUI* plugGUI)
   auto bendTarget = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::PitchBendTarget, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bendTarget));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bendTarget));
-  grid->MarkSection({ { 0, 0 }, { 2, 4 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
   return grid;
 }
 
@@ -61,25 +60,14 @@ MakeMasterSectionAux(FBPlugGUI* plugGUI)
     grid->Add(row, col * 2 + 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, aux));
     grid->Add(row, col * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, aux, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ { 0, 0 }, { 2, 2 * FFMasterAuxCount / 2 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
   return grid;
-}
-
-static Component*
-MakeMasterTab(FBPlugGUI* plugGUI)
-{
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
-  grid->Add(0, 0, MakeMasterSectionMain(plugGUI));
-  grid->Add(0, 1, MakeMasterSectionAux(plugGUI));
-  return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
 }
 
 Component*
 FFMakeMasterGUI(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>(plugGUI);
-  auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::Master].name;
-  tabs->AddTab(name, true, MakeMasterTab(plugGUI));
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Master, 0, tabs);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
+  grid->Add(0, 0, MakeMasterSectionMain(plugGUI));
+  grid->Add(0, 1, MakeMasterSectionAux(plugGUI));
+  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
