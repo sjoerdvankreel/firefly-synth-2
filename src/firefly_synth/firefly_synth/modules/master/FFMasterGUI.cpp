@@ -38,7 +38,8 @@ MakeMasterSectionMain(FBPlugGUI* plugGUI)
   auto bendTarget = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::PitchBendTarget, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bendTarget));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bendTarget));
-  return grid;
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, false, true, card);
 }
 
 static Component*
@@ -60,7 +61,8 @@ MakeMasterSectionAux(FBPlugGUI* plugGUI)
     grid->Add(row, col * 2 + 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, aux));
     grid->Add(row, col * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, aux, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  return grid;
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, false, true, card);
 }
 
 Component*
@@ -69,5 +71,5 @@ FFMakeMasterGUI(FBPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
   grid->Add(0, 0, MakeMasterSectionMain(plugGUI));
   grid->Add(0, 1, MakeMasterSectionAux(plugGUI));
-  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return grid;
 }

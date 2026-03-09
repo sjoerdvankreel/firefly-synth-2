@@ -90,7 +90,8 @@ MakeVoiceModuleSectionPitch(FBPlugGUI* plugGUI)
   auto lfo5ToFine = topo->audio.ParamAtTopo({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::LFO5ToFine, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lfo5ToFine));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lfo5ToFine, Slider::SliderStyle::RotaryVerticalDrag));
-  return grid;
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, false, true, card);
 }
 
 static Component*
@@ -120,7 +121,8 @@ MakeVoiceModuleSectionPorta(FBPlugGUI* plugGUI)
   auto ampRelease = topo->audio.ParamAtTopo({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::PortaSectionAmpRelease, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, ampRelease));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, ampRelease, Slider::SliderStyle::RotaryVerticalDrag));
-  return grid;
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, false, true, card);
 }
 
 Component*
@@ -129,5 +131,5 @@ FFMakeVoiceModuleGUI(FBPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   grid->Add(0, 0, MakeVoiceModuleSectionPitch(plugGUI));
   grid->Add(0, 1, MakeVoiceModuleSectionPorta(plugGUI));
-  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return grid;
 }
