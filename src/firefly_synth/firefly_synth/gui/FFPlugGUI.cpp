@@ -385,10 +385,12 @@ FFPlugGUI::SetupGUI()
     _vEffectDetails[i] = FFMakeEffectDetailGUI(this, false, i);
   }
 
+  _voiceMaster = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { 1 }, std::vector<int> { { 1, 0 } });
+  _voiceMaster->Add(0, 0, FFMakeVoiceModuleGUI(this));
+  _voiceMaster->Add(0, 1, FFMakeMasterGUI(this));
   _main = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { 2, 2, 2, 2, 2, 2, 1 }, std::vector<int> { { 21, 10, 9 } });
-  _main->Add(0, 0, FFMakeVoiceModuleGUI(this));
-  _main->Add(0, 1, FFMakeMasterGUI(this));
-  _main->Add(0, 2, FFMakeSettingsGUI(this));
+  _main->Add(0, 0, _voiceMaster);
+  _main->Add(0, 1, FFMakeSettingsGUI(this));
   _main->Add(1, 0, FFMakeMixGUI(this));
   _main->Add(2, 0, FFMakeOsciGUI(this));
   _main->Add(3, 0, FFMakeEffectGUI(this));
