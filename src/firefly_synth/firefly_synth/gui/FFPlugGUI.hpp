@@ -47,7 +47,6 @@ public FBPlugGUI
   juce::Component* _matrix = {};
   juce::Component* _globalUni = {};
   FBGridComponent* _container = {};
-  FBGridComponent* _topModules = {};
   FBAutoSizeTabComponent* _tabs = {};
   FBMarginComponent* _containerMargin = {};
   FBGridComponent* _mainAndDetailGraphs = {};
