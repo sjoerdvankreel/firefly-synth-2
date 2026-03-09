@@ -303,8 +303,9 @@ FBPlugGUI::UpdateExchangeStateTick()
     if (!params[i].static_.NonRealTime().IsStepped())
     {
       auto controlCount = GetControlCountForAudioParamIndex(i);
-      for(int j = 0; j < controlCount; j++)
-        dynamic_cast<FBParamSlider&>(*GetControlForAudioParamIndex(i, j)).UpdateExchangeState();
+      for (int j = 0; j < controlCount; j++)
+        if (auto ps = dynamic_cast<FBParamSlider*>(GetControlForAudioParamIndex(i, j)))
+          ps->UpdateExchangeState();
     }
 }
 
