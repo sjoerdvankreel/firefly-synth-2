@@ -767,15 +767,16 @@ FBLookAndFeel::drawButtonText(
   const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
   const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
 
+  bool isSelect = dynamic_cast<FBSelectButton*>(&button) != nullptr;
   const int fontHeight = roundToInt(font.getHeight() * 0.6f);
   const int leftIndent = jmin(fontHeight, 1 + cornerSize / (button.isConnectedOnLeft() ? 4 : 2));
   const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
-  const int textWidth = button.getWidth() - leftIndent - rightIndent;
+  const int textWidth = isSelect? button.getWidth(): button.getWidth() - leftIndent - rightIndent;
      
   if (textWidth > 0)
     g.drawText(button.getButtonText(),
-      leftIndent, yIndent, textWidth, button.getHeight() - yIndent * 2,
-      Justification::centred, false);
+      isSelect? 4: leftIndent, yIndent, textWidth, button.getHeight() - yIndent * 2,
+      isSelect? Justification::left: Justification::centred, false);
 }
 
 void
