@@ -515,7 +515,7 @@ FBLookAndFeel::drawLabel(
   g.setColour(colorText);
   auto textArea = getLabelBorderSize(label).subtractedFrom(label.getLocalBounds());
   if (isSelect)
-    textArea.removeFromLeft(1);
+    textArea.removeFromLeft(3);
   else if (hasBackground)
     textArea = textArea.reduced(5);
   else if (hasBackground2)
@@ -780,7 +780,7 @@ FBLookAndFeel::drawButtonText(
      
   if (textWidth > 0)
     g.drawText(button.getButtonText(),
-      isSelect? 4: leftIndent, yIndent, textWidth, button.getHeight() - yIndent * 2,
+      isSelect? 6: leftIndent, yIndent, textWidth, button.getHeight() - yIndent * 2,
       isSelect? Justification::left: Justification::centred, false);
 }
 
