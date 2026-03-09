@@ -514,7 +514,9 @@ FBLookAndFeel::drawLabel(
   g.setFont(getLabelFont(label));
   g.setColour(colorText);
   auto textArea = getLabelBorderSize(label).subtractedFrom(label.getLocalBounds());
-  if (hasBackground)
+  if (isSelect)
+    textArea.removeFromLeft(1);
+  else if (hasBackground)
     textArea = textArea.reduced(5);
   else if (hasBackground2)
   {
