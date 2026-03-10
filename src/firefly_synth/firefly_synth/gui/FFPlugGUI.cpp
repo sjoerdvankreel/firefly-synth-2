@@ -354,14 +354,11 @@ FFPlugGUI::SetupGUI()
   _mainGraphs->Add(0, 3, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _lfoMainGraph));
   _mainGraphs->Add(0, 4, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _envMainGraph));
 
-  _outputOtherAndPatch = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
-  _outputOtherAndPatch->Add(0, 0, FFMakeOutputGUI(this));
-  _outputOtherAndPatch->Add(0, 1, FFMakeOtherGUI(this));
-  _outputOtherAndPatch->Add(0, 2, FFMakePatchGUI(this));
-
-  _guiSettingsAndTweak = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 2, 1 } });
-  _guiSettingsAndTweak->Add(0, 0, FFMakeGUISettingsGUI(this));
-  _guiSettingsAndTweak->Add(0, 1, FFMakeTweakGUI(this));
+  _outputTweakPatchOther = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0, 0 } });
+  _outputTweakPatchOther->Add(0, 0, FFMakeOutputGUI(this));
+  _outputTweakPatchOther->Add(0, 1, FFMakeTweakGUI(this));
+  _outputTweakPatchOther->Add(0, 2, FFMakePatchGUI(this));
+  _outputTweakPatchOther->Add(0, 3, FFMakeOtherGUI(this));
 
   _matrix = FFMakeModMatrixGUI(this);
   _detailContent = StoreComponent<FBContentComponent>();
@@ -402,6 +399,7 @@ FFPlugGUI::SetupGUI()
 
   _settings = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 1, 1 } }, std::vector<int> { { 1 } });
   _settings->Add(0, 0, FFMakeSettingsGUI(this));
+  _settings->Add(1, 0, FFMakeGUISettingsGUI(this));
 
   _tabs = StoreComponent<FBAutoSizeTabComponent>(this, true);
   _tabs->addTab("MAIN", Colours::black, StoreComponent<FBMarginComponent>(this, false, false, true, false, _main), false);
@@ -412,8 +410,7 @@ FFPlugGUI::SetupGUI()
   _tabs->getTabbedButtonBar().addChangeListener(_mainTabChangedListener.get());
 
   _container = StoreComponent<FBGridComponent>(this, false, 0, -1, std::vector<int> { { 6, 6, 24, 80 } }, std::vector<int> { { 1 } });
-  _container->Add(0, 0, _outputOtherAndPatch);
-  _container->Add(1, 0, _guiSettingsAndTweak);
+  _container->Add(0, 0, _outputTweakPatchOther);
   _container->Add(2, 0, _mainGraphs);
   _container->Add(3, 0, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainSelector, _tabs));
 
