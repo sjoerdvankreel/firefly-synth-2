@@ -411,7 +411,7 @@ FFPlugGUI::SetupGUI()
 
   _container = StoreComponent<FBGridComponent>(this, false, 0, -1, std::vector<int> { { 6, 16, 80 } }, std::vector<int> { { 1 } });
   _container->Add(0, 0, _outputTweakPatchOther);
-  _container->Add(1, 0, _mainGraphs);
+  _container->Add(1, 0, StoreComponent<FBMarginComponent>(this, false, true, false, true, _mainGraphs));
   _container->Add(2, 0, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainSelector, _tabs));
 
   _osciParamListener = std::make_unique<FFOsciParamListener>(this);
