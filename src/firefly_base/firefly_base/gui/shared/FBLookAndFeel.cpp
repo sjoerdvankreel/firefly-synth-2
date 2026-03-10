@@ -160,10 +160,12 @@ FBLookAndFeel::DrawTabButtonPart(
   bool isMouseOver, bool /*isMouseDown*/,
   bool toggleState, bool centerText,
   bool isSeparator, std::string const& text,
-  Rectangle<int> const& activeArea)
+  Rectangle<int> const& activeArea_)
 {
   auto const& scheme = FindColorSchemeFor(button);
   bool isHeader = button.getTabbedButtonBar().getNumTabs() == 1;
+  auto activeArea = activeArea_;
+  activeArea.removeFromBottom(1);
 
   if (isSeparator)      
     g.setColour(scheme.paramSecondary);
