@@ -165,6 +165,7 @@ FBLookAndFeel::DrawTabButtonPart(
   auto const& scheme = FindColorSchemeFor(button);
   bool isHeader = button.getTabbedButtonBar().getNumTabs() == 1;
   auto activeArea = activeArea_;
+  activeArea.removeFromTop(1);
   activeArea.removeFromBottom(1);
 
   if (isSeparator)      
