@@ -44,6 +44,7 @@ public FBPlugGUI
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   FBGridComponent* _main = {};
+  FBGridComponent* _settings = {};
   juce::Component* _matrix = {};
   juce::Component* _globalUni = {};
   FBGridComponent* _container = {};
