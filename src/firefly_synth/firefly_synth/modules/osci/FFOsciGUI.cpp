@@ -419,8 +419,8 @@ FFMakeOsciGUI(FBPlugGUI* plugGUI)
   select->AddSelector(1, 0, { (int)FFModuleType::OsciMod, 0 }, "Mod", FFMakeOsciModTab(plugGUI));
   for (int i = 0; i < FFOsciCount; i++)
   {
-    int r = i % 2;
-    int c = i / 2 + 1;
+    int r = i / 2;
+    int c = 1 + i % 2;
     select->AddSelector(r, c, { (int)FFModuleType::Osci, i }, std::to_string(i + 1), MakeOsciTab(plugGUI, i));
   }
   select->ActivateStoredSelection();
