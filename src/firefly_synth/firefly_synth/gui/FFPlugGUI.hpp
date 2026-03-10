@@ -50,7 +50,7 @@ public FBPlugGUI
   FBGridComponent* _voiceMaster = {};
   FBAutoSizeTabComponent* _tabs = {};
   FBMarginComponent* _containerMargin = {};
-  FBGridComponent* _mainAndDetailGraphs = {};
+  FBGridComponent* _mainGraphs = {};
   FBGridComponent* _outputOtherAndPatch = {};
   FBGridComponent* _guiSettingsAndTweak = {};
 

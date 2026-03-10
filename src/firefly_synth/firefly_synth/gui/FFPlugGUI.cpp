@@ -347,12 +347,12 @@ FFPlugGUI::SetupGUI()
   _envMainGraph = StoreComponent<FBModuleGraphComponent>(this, false, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
   _lfoMainGraph = StoreComponent<FBModuleGraphComponent>(this, false, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
   _echoMainGraph = StoreComponent<FBModuleGraphComponent>(this, false, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
-  _mainAndDetailGraphs = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1, 1, 1, 1 } });
-  _mainAndDetailGraphs->Add(0, 0, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _oscMainGraph));
-  _mainAndDetailGraphs->Add(0, 1, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _fxMainGraph));
-  _mainAndDetailGraphs->Add(0, 2, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _echoMainGraph));
-  _mainAndDetailGraphs->Add(0, 3, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _lfoMainGraph));
-  _mainAndDetailGraphs->Add(0, 4, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _envMainGraph));
+  _mainGraphs = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1, 1, 1, 1 } });
+  _mainGraphs->Add(0, 0, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _oscMainGraph));
+  _mainGraphs->Add(0, 1, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _fxMainGraph));
+  _mainGraphs->Add(0, 2, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _echoMainGraph));
+  _mainGraphs->Add(0, 3, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _lfoMainGraph));
+  _mainGraphs->Add(0, 4, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _envMainGraph));
 
   _outputOtherAndPatch = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
   _outputOtherAndPatch->Add(0, 0, FFMakeOutputGUI(this));
@@ -411,7 +411,7 @@ FFPlugGUI::SetupGUI()
   _container = StoreComponent<FBGridComponent>(this, false, 0, -1, std::vector<int> { { 6, 6, 24, 92 } }, std::vector<int> { { 1 } });
   _container->Add(0, 0, _outputOtherAndPatch);
   _container->Add(1, 0, _guiSettingsAndTweak);
-  _container->Add(2, 0, _mainAndDetailGraphs);
+  _container->Add(2, 0, _mainGraphs);
   _container->Add(3, 0, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainSelector, _tabs));
 
   _osciParamListener = std::make_unique<FFOsciParamListener>(this);
