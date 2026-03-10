@@ -53,7 +53,6 @@ FFMakeOsciModTopo()
   auto& oversample = result->params[(int)FFOsciModParam::Oversample];
   oversample.mode = FBParamMode::Block;
   oversample.name = "Oversample";
-  oversample.display = "OvrSmp";
   oversample.defaultText = "Off";
   oversample.slotCount = 1;
   oversample.id = "{2449CE02-EE0D-48E7-A716-E59633F279FB}";
@@ -67,7 +66,6 @@ FFMakeOsciModTopo()
   auto& expoFM = result->params[(int)FFOsciModParam::ExpoFM];
   expoFM.mode = FBParamMode::Block;
   expoFM.name = "Exponential FM";
-  expoFM.display = "Expo FM";
   expoFM.defaultText = "Off";
   expoFM.slotCount = 1;
   expoFM.id = "{23FC415C-06AD-4ED3-8B29-08724D536096}";
