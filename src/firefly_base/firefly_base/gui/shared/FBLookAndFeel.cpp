@@ -170,7 +170,7 @@ FBLookAndFeel::DrawTabButtonPart(
   else if (toggleState || isHeader)
     g.setColour(scheme.activeTabBackground);
   else
-    g.setColour(scheme.paramBackground);
+    g.setColour(scheme.sectionBackground);
   g.fillRoundedRectangle(activeArea.toFloat(), 3.0f);
 
   if(isHeader || toggleState || isMouseOver)
