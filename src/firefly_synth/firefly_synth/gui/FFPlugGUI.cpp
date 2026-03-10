@@ -409,7 +409,7 @@ FFPlugGUI::SetupGUI()
   _mainTabChangedListener = std::make_unique<FFMainTabChangedListener>(this);
   _tabs->getTabbedButtonBar().addChangeListener(_mainTabChangedListener.get());
 
-  _container = StoreComponent<FBGridComponent>(this, false, 0, -1, std::vector<int> { { 6, 24, 80 } }, std::vector<int> { { 1 } });
+  _container = StoreComponent<FBGridComponent>(this, false, 0, -1, std::vector<int> { { 6, 16, 80 } }, std::vector<int> { { 1 } });
   _container->Add(0, 0, _outputTweakPatchOther);
   _container->Add(1, 0, _mainGraphs);
   _container->Add(2, 0, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainSelector, _tabs));
