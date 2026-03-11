@@ -804,11 +804,10 @@ FBPlugGUI::SetupOverlayGUI()
   auto overlayCloseSection = StoreComponent<FBMarginComponent>(this, false, true, true, true, overlayClose);
   _overlayGrid->Add(0, 2, overlayCloseSection);
 
-  _overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::AlternateBackgroundAlternateBorder);
   _overlayContent = StoreComponent<FBContentComponent>();
   _overlayInnerMargin = StoreComponent<FBMarginComponent>(this, true, true, true, true, _overlayContent);
   _overlayGrid->Add(1, 0, 1, 3, _overlayInnerMargin);
-  _overlayGrid->MarkSection({ { 1, 0 }, { 1, 3 } }, FBGridSectionMark::AlternateBorder);
+  _overlayCard = StoreComponent<FBCardComponent>(this, _overlayGrid);
   _overlayModule = StoreComponent<FBModuleComponent>(HostContext()->Topo());
   _overlayOuterMargin = StoreComponent<FBMarginComponent>(this, true, true, true, true, _overlayModule, true);
 }
@@ -843,7 +842,7 @@ FBPlugGUI::ShowOverlayComponent(
   _overlayOuterMargin->setBounds(x, y, w, h);
   _overlayCaption->setText(title, dontSendNotification);
   addAndMakeVisible(_overlayOuterMargin, 1);
-  _overlayModule->SetModuleContent(moduleIndex, moduleSlot, _overlayGrid);
+  _overlayModule->SetModuleContent(moduleIndex, moduleSlot, _overlayCard);
   _overlayOuterMargin->resized();
   _overlayComponent = overlay;
 }
