@@ -519,6 +519,8 @@ FBLookAndFeel::drawLabel(
     colorText = scheme->primary;
   else if (label.findParentComponentOfClass<FBFileBrowserComponent>())
     colorText = scheme->text;
+  else if (autoSizeLabel2 && autoSizeLabel2->IsPrimary())
+    colorText = scheme->primary;
 
   g.setFont(getLabelFont(label));
   g.setColour(colorText);

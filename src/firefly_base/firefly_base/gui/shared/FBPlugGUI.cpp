@@ -790,11 +790,11 @@ FBPlugGUI::SetupAboutBoxGUI()
 void
 FBPlugGUI::SetupOverlayGUI()
 {
-  _overlayGrid = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 1, 0 } });
-  _overlayCaption = StoreComponent<FBAutoSizeLabel2>(false, 200);
+  _overlayGrid = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 1 } });
+  _overlayCaption = StoreComponent<FBAutoSizeLabel2>(false, true, true, 200);
   _overlayGrid->Add(0, 0, _overlayCaption);
 
-  _overlayInitClose = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0 } }, std::vector<int> { { 0, 0 } });
+  _overlayInitClose = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0 } }, std::vector<int> { { 0, 0, 1 } });
   _overlayInitButton = StoreComponent<FBAutoSizeButton>(this, "Init");
   _overlayInitButton->onClick = [this] { _overlayInit(); };
   auto overlayInitSection = StoreComponent<FBMarginComponent>(this, false, false, true, true, _overlayInitButton);
@@ -805,11 +805,13 @@ FBPlugGUI::SetupOverlayGUI()
   auto overlayCloseSection = StoreComponent<FBMarginComponent>(this, false, true, true, true, overlayClose);
   _overlayInitClose->Add(0, 1, overlayCloseSection);
 
-  _overlayGrid->Add(0, 2, _overlayInitClose);
+  _overlayGrid->Add(0, 1, _overlayInitClose);
 
   _overlayContent = StoreComponent<FBContentComponent>();
   _overlayInnerMargin = StoreComponent<FBMarginComponent>(this, true, true, true, true, _overlayContent);
-  _overlayGrid->Add(1, 0, 1, 3, _overlayInnerMargin);
+  _overlayGrid->Add(1, 0, 1, 2, _overlayInnerMargin);
+  _overlayGrid->MarkSection({ { 0, 0 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground);
+
   _overlayCard = StoreComponent<FBCardComponent>(this, _overlayGrid);
   _overlayModule = StoreComponent<FBModuleComponent>(HostContext()->Topo());
   _overlayOuterMargin = StoreComponent<FBMarginComponent>(this, true, true, true, true, _overlayModule, true);

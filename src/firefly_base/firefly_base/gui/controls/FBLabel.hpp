@@ -46,13 +46,15 @@ public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
   bool const _hasBackground;
+  bool const _primary;
   int const _fixedWidth;
 
 public:
+  bool IsPrimary() { return _primary; }
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
 
-  FBAutoSizeLabel2(bool hasBackground, int fixedWidth);
+  FBAutoSizeLabel2(bool hasBackground, bool rightAlign, bool primary, int fixedWidth);
   bool HasBackground() const { return _hasBackground; }
 };
 

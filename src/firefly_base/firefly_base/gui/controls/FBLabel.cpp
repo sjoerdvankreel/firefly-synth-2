@@ -34,11 +34,16 @@ FBAutoSizeLabel::FixedWidth(int /*height*/) const
 }
 
 FBAutoSizeLabel2::
-FBAutoSizeLabel2(bool hasBackground, int fixedWidth) :
+FBAutoSizeLabel2(bool hasBackground, bool rightAlign, bool primary, int fixedWidth) :
 Label(),
 IFBHorizontalAutoSize(),
 _hasBackground(hasBackground),
-_fixedWidth(fixedWidth) { }
+_primary(primary),
+_fixedWidth(fixedWidth)
+{ 
+  if (rightAlign)
+    setJustificationType(Justification::right);
+}
 
 int
 FBAutoSizeLabel2::FixedHeight() const
