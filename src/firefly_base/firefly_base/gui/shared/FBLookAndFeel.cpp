@@ -549,6 +549,11 @@ FBLookAndFeel::drawToggleButton(
   auto bounds = Rectangle<float>(x, y, boxSize, boxSize);
   g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(bounds, 3.0f);
+  if (button.getToggleState())
+  {
+    g.setColour(scheme.primary.withAlpha(0.33f));
+    g.fillRoundedRectangle(bounds, 3.0f);
+  }
   g.setColour(scheme.paramSecondary);
   g.drawRoundedRectangle(bounds, 3.0f, 1.0f);
 
@@ -556,18 +561,12 @@ FBLookAndFeel::drawToggleButton(
   arc.addCentredArc(
     bounds.getCentreX(), bounds.getCentreY(), radius, radius,
     0.0f, 0.15f * FBPi, 1.85f * FBPi, true);
-  g.setColour(scheme.primary);
+  if (button.getToggleState())
+    g.setColour(scheme.primary);
+  else
+    g.setColour(scheme.paramSecondary.brighter());
   g.strokePath(arc, PathStrokeType(1.0f, PathStrokeType::curved, PathStrokeType::butt));
   g.drawLine(bounds.getCentreX(), bounds.getCentreY(), bounds.getCentreX(), y + 2.0f, 1.0f);
-
-#if 0
-  drawTickBox(g, button, x, ((float)button.getHeight() - tickWidth) * 0.5f,
-    tickWidth, tickWidth,
-    button.getToggleState(),
-    button.isEnabled(),
-    shouldDrawButtonAsHighlighted,
-    shouldDrawButtonAsDown);
-#endif
 }
 
 void
