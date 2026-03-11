@@ -331,7 +331,10 @@ FBLookAndFeel::drawPopupMenuBackgroundWithOptions(
   if (options.getTargetComponent() != nullptr)
     scheme = &FindColorSchemeFor(*options.getTargetComponent());
 
-  g.fillAll(scheme->paramBackground);
+  g.setColour(scheme->paramBackground);
+  g.fillRect(0, 0, width, height);
+  g.setGradientFill(ColourGradient(scheme->primary.withAlpha(0.15f), 0.0f, 0.0f, scheme->primary.withAlpha(0.0f), 0.0f, (float)height, false));
+  g.fillRect(0, 0, width, height);
   g.setColour(scheme->sectionBorder);
   g.drawRect(0, 0, width, height);
 }
