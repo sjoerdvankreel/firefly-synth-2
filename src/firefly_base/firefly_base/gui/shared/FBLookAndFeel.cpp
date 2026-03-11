@@ -594,23 +594,20 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   auto const& scheme = FindColorSchemeFor(box);
   Rectangle<int> boxBounds(2, 2, width - 4, height - 4);
 
+  auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
   g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
+  if (paramCombo && paramCombo->IsHighlightTweaked())
+  {
+    g.setColour(scheme.paramHighlight.withMultipliedAlpha(0.15f));
+    g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
+  }
   g.setColour(scheme.paramSecondary);
   g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
-  auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
-  if (paramCombo != nullptr)
+  if (paramCombo && paramCombo->IsFlashDisabling())
   {
-    if (paramCombo->IsHighlightTweaked())
-    {
-      g.setColour(scheme.paramHighlight);
-      g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
-    }
-    if (paramCombo->IsFlashDisabling())
-    {
-      g.setColour(Colours::white.withAlpha(0.5f));
-      g.fillRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize);
-    }
+    g.setColour(Colours::white.withAlpha(0.5f));
+    g.fillRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize);
   }
 }
 
