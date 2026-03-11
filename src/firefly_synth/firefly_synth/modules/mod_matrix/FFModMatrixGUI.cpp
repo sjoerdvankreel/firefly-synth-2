@@ -379,7 +379,7 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI, bool global, int offset, int count)
   std::vector<int> rowSizes(rowCount, 1);
   std::vector<int> autoSizeColForRow(rowSizes.size(), -1);
   std::vector<int> columnSizes = { 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 4, 0 };
-  std::vector<int> autoSizeRowForCol = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0 };
+  std::vector<int> autoSizeRowForCol = { 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, autoSizeRowForCol, autoSizeColForRow, rowSizes, columnSizes);
 
   AddMatrixHeaderRow(plugGUI, grid, global, 0);

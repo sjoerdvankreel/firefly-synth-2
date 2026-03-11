@@ -55,6 +55,7 @@ v2.1.1
 [ ] document all the theme changes
 [ ] check todos
 [ ] make it 2.2?
+[ ] drop font/size from the theme
 
 vnext
 [ ] do more easy access controls (and maybe more mod sources)
