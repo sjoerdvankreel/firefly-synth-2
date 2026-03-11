@@ -643,12 +643,12 @@ FBLookAndFeel::drawLinearSlider(
   minPoint = startPointFull;
   maxPoint = { kx, ky };
 
+  float sliderPosNorm = (sliderPos - (float)x) / width;
   auto paramSlider = dynamic_cast<FBParamSlider*>(&slider);
   if (paramSlider != nullptr)
     if (paramSlider->Param()->static_.NonRealTime().DisplayAsBipolar())
     {
       auto centerPoint = Point<float>((float)x + width * 0.5f, (float)y + (float)height * 0.5f);
-      float sliderPosNorm = (sliderPos - (float)x) / width;
       if (sliderPosNorm > 0.5f)
         minPoint = centerPoint;
       else
@@ -683,9 +683,11 @@ FBLookAndFeel::drawLinearSlider(
     auto paramActive = paramSlider->ParamActiveExchangeState();
     if (paramActive.active)
     {
-      DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, thumbW, thumbH, thumbY, paramActive.minValue);
+      if(std::abs(paramActive.minValue - sliderPosNorm) >= 0.01)
+        DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, thumbW, thumbH, thumbY, paramActive.minValue);
       if (paramSlider->Param()->static_.IsVoice())
-        DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, thumbW, thumbH, thumbY, paramActive.maxValue);
+        if (std::abs(paramActive.maxValue - sliderPosNorm) >= 0.01)
+          DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, thumbW, thumbH, thumbY, paramActive.maxValue);
     }
   }
 
