@@ -155,7 +155,7 @@ FBParamDisplayMeter::paint(Graphics& g)
     g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
   for (i = MeterBarCount - 3; i < _fillCount; i++)
   {  
-    g.setColour(scheme.meterAlert.withAlpha(0.33f * (1 + i - (MeterBarCount - 3))));
+    g.setColour(scheme.primary.withAlpha(0.33f * (1 + i - (MeterBarCount - 3))));
     g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
   }
 }

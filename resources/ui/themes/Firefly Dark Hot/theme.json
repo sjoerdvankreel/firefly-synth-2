@@ -14,7 +14,6 @@
     "background": "FF000000",
     "meterFill": "FFA0A0A0",
     "meterTrack": "FF505050",
-    "meterAlert": "FFFFFFFF",
     "headerText": "FF20A0FF",
     "headerBorder": "FF20A0FF",
     "headerBackground": "FF181818",
@@ -41,7 +40,6 @@
       "primary": "FF20A0FF",
       "headerText": "FF20A0FF",
       "headerBorder": "FF20A0FF",
-      "meterAlert": "FF20A0FF",
       "buttonBackground": "FF105080",
       "activeTabBackground": "FF105080",
       "gridAlternateBackground": "FF082880"

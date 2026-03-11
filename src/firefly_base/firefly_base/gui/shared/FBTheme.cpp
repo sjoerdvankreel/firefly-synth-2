@@ -242,10 +242,6 @@ ParseDefaultColorScheme(
     return false;
   result.meterTrack = Colour::fromString(obj->getProperty("meterTrack").toString());
 
-  if (!RequireStringProperty(obj, "meterAlert"))
-    return false;
-  result.meterAlert = Colour::fromString(obj->getProperty("meterAlert").toString());
-
   if (!RequireStringProperty(obj, "graphGrid"))
     return false;
   result.graphGrid = Colour::fromString(obj->getProperty("graphGrid").toString());
@@ -362,10 +358,6 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "meterTrack", present))
     return false;
   result.meterTrack = present ? Colour::fromString(obj->getProperty("meterTrack").toString()) : defaultScheme.meterTrack;
-
-  if (!OptionalStringProperty(obj, "meterAlert", present))
-    return false;
-  result.meterAlert = present ? Colour::fromString(obj->getProperty("meterAlert").toString()) : defaultScheme.meterAlert;
 
   if (!OptionalStringProperty(obj, "graphGrid", present))
     return false;

@@ -32,8 +32,9 @@ v2.1.1
 [x] detail editors not inline like detail graphs (bundle them?)
 [x] pretty knobs, graphs, combos, checks, buttons, popup menus
 [x] do the popup editors
+[x] lose graphSchemeFollowsModule
 [ ] clean up the theme stuff
-[ ] lose graphSchemeFollowsModule
+[ ] lose unisonSchemeFollowsModule
 [ ] recheck all the matrix names
 [ ] hunt down all the stuff thats a modification of ffa040
 [ ] check what scheme colors are being used
