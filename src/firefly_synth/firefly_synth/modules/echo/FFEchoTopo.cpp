@@ -587,8 +587,8 @@ FFMakeEchoTopo(bool global, bool isFx)
   auto& tapHPRes = result->params[(int)FFEchoParam::TapHPRes];
   tapHPRes.mode = FBParamMode::Accurate;
   tapHPRes.defaultText = "0";
-  tapHPRes.name = "Tap HP Res";
-  tapHPRes.display = "Res";
+  tapHPRes.name = "Tap HP Reso";
+  tapHPRes.display = "Reso";
   tapHPRes.slotCount = FFEchoTapCount;
   tapHPRes.unit = "%";
   tapHPRes.id = prefix + "{E8174982-FF15-4375-84BA-1C8AFBE8CF28}";
