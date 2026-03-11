@@ -104,11 +104,14 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
   for (int t = 0; t < FFEchoTapCount; t++)
   {
     grid->Add(t + 1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, std::to_string(t + 1), FBLabelAlign::Center));
-    grid->MarkSection({ { t + 1, 0 }, { 1, 1 } }, FBGridSectionMark::AlternateBackground);
+    if(t % 2 == 1)
+      grid->MarkSection({ { t + 1, 0 }, { 1, 1 } }, FBGridSectionMark::AlternateBackground);
 
     auto tapOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapOn, t } });
     grid->Add(1 + t, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tapOn));
-    grid->MarkSection({ { t + 1, 1 }, { 1, 1 } }, FBGridSectionMark::AlternateBackground);
+
+    if (t % 2 == 1)
+      grid->MarkSection({ { t + 1, 1 }, { 1, 1 } }, FBGridSectionMark::AlternateBackground);
 
     auto tapLevel = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLevel, t } });
     grid->Add(1 + t, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLevel, Slider::SliderStyle::RotaryVerticalDrag));
@@ -120,7 +123,9 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
     grid->Add(1 + t, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapBalance, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapXOver = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapXOver, t } });
     grid->Add(1 + t, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapXOver, Slider::SliderStyle::RotaryVerticalDrag));
-    grid->MarkSection({ { t + 1, 2 }, { 1, 4 } }, FBGridSectionMark::AlternateBackground);
+
+    if (t % 2 == 1)
+      grid->MarkSection({ { t + 1, 2 }, { 1, 4 } }, FBGridSectionMark::AlternateBackground);
 
     auto tapLpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLPOn, t } });
     grid->Add(1 + t, 6, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tapLpOn));
@@ -128,7 +133,9 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
     grid->Add(1 + t, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLpFreq, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapLpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLPRes, t } });
     grid->Add(1 + t, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLpRes, Slider::SliderStyle::RotaryVerticalDrag));
-    grid->MarkSection({ { t + 1, 6 }, { 1, 3 } }, FBGridSectionMark::AlternateBackground);
+
+    if (t % 2 == 1)
+      grid->MarkSection({ { t + 1, 6 }, { 1, 3 } }, FBGridSectionMark::AlternateBackground);
 
     auto tapHpOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapHPOn, t } });
     grid->Add(1 + t, 9, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tapHpOn));
@@ -136,7 +143,9 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
     grid->Add(1 + t, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpFreq, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapHpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapHPRes, t } });
     grid->Add(1 + t, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpRes, Slider::SliderStyle::RotaryVerticalDrag));
-    grid->MarkSection({ { t + 1, 9 }, { 1, 3 } }, FBGridSectionMark::AlternateBackground, { true, 3.0f, t == FFEchoTapCount - 1 ? 2 : 0 });
+
+    if (t % 2 == 1)
+      grid->MarkSection({ { t + 1, 9 }, { 1, 3 } }, FBGridSectionMark::AlternateBackground, { true, 3.0f, t == FFEchoTapCount - 1 ? 2 : 0 });
   }
 
   return grid;
