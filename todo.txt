@@ -24,27 +24,21 @@ v2.1.1
 [x] alternate-color the matrix rows et all
 [x] do a second row of graphs, main on top 1 for each module, detail on botton N for active main
 [x] hilite hover selector
+[x] hide disabled stuff when possible
+[x] drag a knob should switch the details
+[x] not paint as disabled ? is ugly, hilite might do the job?
+[x] do block-style (2row x 2col) tab headers to save on UI space
+[x] do some sort of primary indicator on the left (pitch, freq) and signal derived on the right (db, %) + primary derived (pitch, freq, length)
+[x] detail editors not inline like detail graphs (bundle them?)
 [ ] pretty knobs, graphs, combos, checks, buttons, more?
-[ ] flash buttons for disabled
-[ ] drag a knob should switch the details
-[ ] hide disabled stuff when possible
-[ ] flash stuff on button click
 [ ] do the popup editors
 [ ] profile the thing again
 [ ] lose graphSchemeFollowsModule
 [ ] recheck all the matrix names
-[ ] maybe drop the "gain" label for osci wave detail
-[ ] up the default fontsize once we have the room for it
 [ ] hunt down all the stuff thats a modification of ffa040
-[ ] make "show tweaked from xyz" into a button with menu for temporary hilite??
 [ ] check what scheme colors are being used
-[ ] hilite mouseover/active tab, not dim the others
 [ ] get rid off all the various primaryxyz theme values, stick to 1
-[ ] get rid of the rounded corners?
-[ ] not paint as disabled ? is ugly, hilite might do the job?
 [ ] do check the env + porta stuff
-[ ] store last selected patch folder in global settings on disk
-[ ] GLFO_N->X everywhere you can do VLFO_N->X
 [ ] cardcontainercomponent
 [ ] gui cpu load as an output param?
 [ ] gui FPS switch?
@@ -55,41 +49,22 @@ v2.1.1
 [ ] run debug build
 [ ] bigass bg image
 [ ] recheck all the container components, do we need em?
-[ ] gfx1->gfx 1
-[ ] up the fx slotcount + up the according env/lfo
 [ ] do to-echo easy access mods on stuff
-[ ] drop fx on param?
-[ ] drop scaletoallnormalized
-[ ] detail editors not inline like detail graphs (bundle them?)
-[ ] do FBModuleGraphData anyExchActive
-[ ] do some sort of primary indicator on the left (pitch, freq) and signal derived on the right (db, %) + primary derived (pitch, freq, length)
-[ ] osci ovsmp + new unison to own module
-[ ] fix up the env graph
-[ ] different init and clear patches
 [ ] checkboxes as round tick thingies
 [ ] after init, load, etc, should select the first graph of everything
 [ ] allow click + on first disabled matrix slot
 [ ] settings block out of main
-[ ] do block-style (2row x 2col) tab headers to save on UI space
-[ ] run a dbg build after all the graph stuff
-[ ] tooltips for time stuff in hz and seconds
-[ ] do all kinds of non-breaking stuff, break later
-[ ] do more easy access controls (and maybe more mod sources)
-[ ] click main module graph shows details
-[ ] not allcaps for graphs
-[ ] osc mod to own row (single)
-[ ] voice/master/settings to tabbed single row
-[ ] matrix/unison as popups?
-[ ] rework unison to matrix format (breaking) with same targets as voice matrix
 [ ] get rid of graphschemefollowsmodule
 [ ] update the manual for about box
 [ ] fixup all the other themes
 [ ] document all the theme changes
-[ ] fix the 1sec delay on plot visuals
 [ ] darken the bg when overlay/filepicker is active
 [ ] check todos
 
 vnext
+[ ] do more easy access controls (and maybe more mod sources)
+[ ] matrix/unison as popups?
+[ ] fix the 1sec delay on plot visuals
 [ ] programmatic dump screenshot?
 [ ] compressor
 [ ] fix the build scripts for linux-arm
@@ -98,6 +73,9 @@ vnext
 [ ] do mod rate/amt for multitap
 [ ] override all-osci unison
 [ ] bpexpo envelopes + docs
+[ ] GLFO_N->X everywhere you can do VLFO_N->X
+[ ] tooltips for time stuff in hz and seconds?
+[ ] store last selected patch folder in global settings on disk
 
 fix the string oversample bug already
 drop screenshot_theme_light_default (for the website) once fix the auto-screenshot

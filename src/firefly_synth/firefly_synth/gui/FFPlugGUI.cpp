@@ -249,6 +249,7 @@ FFPlugGUI::AudioParamNormalizedChangedFromUI(int index, double normalized)
   RequestFixedGraphsRerender(moduleIndex);
   auto tweakedIndices = HostContext()->Topo()->audio.params[index].topoIndices.module;
   RequestMainGraphsRerender(tweakedIndices.index, tweakedIndices.slot);
+  SwitchDetailsSectionToModule(tweakedIndices.index, tweakedIndices.slot);
 }
 
 void
