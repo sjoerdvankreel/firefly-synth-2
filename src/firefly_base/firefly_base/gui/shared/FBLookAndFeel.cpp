@@ -860,7 +860,7 @@ FBLookAndFeel::drawRotarySlider(
     modArc.addCentredArc(
       bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
       0.0f, (float)minAngle, (float)maxAngle, true);
-    g.setColour(scheme.sliderModBounds); 
+    g.setColour(scheme.primary.brighter()); 
     g.strokePath(modArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
   }
   
