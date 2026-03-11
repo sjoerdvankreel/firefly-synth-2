@@ -457,9 +457,8 @@ FBMSEGCanvas::paint(Graphics& g)
 
   auto lnf = FBGetLookAndFeelFor(_plugGUI);
   auto const& scheme = lnf->FindColorSchemeFor(*this);
-  g.fillAll(scheme.background);
-  g.setColour(scheme.graphBackground); 
-  g.fillRoundedRectangle(outerBounds.toFloat(), 2.0f * MSEGInnerPadding);
+  g.setColour(scheme.graphBackground.withMultipliedAlpha(0.5f)); 
+  g.fillRect(outerBounds.toFloat());
 
   _totalLengthTime = 0.0;
   _currentSegmentLengths.clear();
