@@ -144,8 +144,7 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
 
 static Component*
 MakeEchoSectionMain(
-  FBPlugGUI* plugGUI, bool global,
-  FBParamComboBox** targetBoxOut)
+  FBPlugGUI* plugGUI, bool global)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
@@ -154,7 +153,6 @@ MakeEchoSectionMain(
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Target", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
   auto targetBox = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, vTargetOrGTarget, "Osc 4 PostMix");
   grid->Add(0, 1, targetBox);
-  *targetBoxOut = targetBox;
   auto sync = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Sync, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
@@ -170,18 +168,16 @@ MakeEchoSectionMain(
 
 static Component*
 MakeEchoSectionTaps(
-  FBPlugGUI* plugGUI, bool global,
-  FBParamToggleButton** tapsOnToggle,
-  FBAutoSizeButton** showTapsEditor)
+  FBPlugGUI* plugGUI, bool global)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0 });
 
   auto tapsEditor = MakeEchoTapsEditor(plugGUI, global);
-  *showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Multi Tap");
-  (*showTapsEditor)->setTooltip("Show Taps Editor");
-  (*showTapsEditor)->onClick = [plugGUI, tapsEditor, global]() { 
+  auto showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Multi Tap");
+  showTapsEditor->setTooltip("Show Taps Editor");
+  showTapsEditor->onClick = [plugGUI, tapsEditor, global]() { 
     auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
     std::string title = std::string(global ? "G" : "V") + "Echo Multi Tap";
     dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, (int)moduleType, 0, tapsEditor, 400, 275, true, [plugGUI, global]() {
@@ -194,11 +190,11 @@ MakeEchoSectionTaps(
           plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
     });
   };
-  grid->Add(0, 0, *showTapsEditor);
+  grid->Add(0, 0, showTapsEditor);
 
   auto on = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapsOn, 0 } });
-  *tapsOnToggle = plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on);
-  grid->Add(0, 1, *tapsOnToggle);
+  auto tapsOnToggle = plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on);
+  grid->Add(0, 1, tapsOnToggle);
 
   auto mix = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapsMix, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::LinearHorizontal));
@@ -257,28 +253,15 @@ MakeEchoSectionReverb(FBPlugGUI* plugGUI, bool global)
 static Component*
 MakeEchoTab(FBPlugGUI* plugGUI, bool global)
 {
-  FBParamComboBox* echoTargetBox = {};
-  FBParamToggleButton* tapsOnToggle = {};
-  FBAutoSizeButton* showTapsEditorButton = {};
   std::vector<int> columnSizes = { 0, 0, 1, 1 };
-
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, columnSizes);
-  grid->Add(0, 0, MakeEchoSectionMain(plugGUI, global, &echoTargetBox));
-  grid->Add(0, 1, MakeEchoSectionTaps(plugGUI, global, &tapsOnToggle, &showTapsEditorButton));
+  grid->Add(0, 0, MakeEchoSectionMain(plugGUI, global));
+  grid->Add(0, 1, MakeEchoSectionTaps(plugGUI, global));
   grid->Add(0, 2, MakeEchoSectionFeedback(plugGUI, global));
   grid->Add(0, 3, MakeEchoSectionReverb(plugGUI, global));
-
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   FBParamTopoIndices tapsOnIndices = { { (int)moduleType, 0 }, { (int)FFEchoParam::TapsOn, 0 } };
   FBParamTopoIndices vTargetOrGTargetIndices = { { (int)moduleType, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
-  std::function<void()> updateTapEditEnabled = [plugGUI, showTapsEditorButton, vTargetOrGTargetIndices, tapsOnIndices]() {
-    bool tapsOn = plugGUI->HostContext()->GetAudioParamBool(tapsOnIndices);
-    bool echoOn = plugGUI->HostContext()->GetAudioParamList<int>(vTargetOrGTargetIndices) != 0;
-    showTapsEditorButton->setEnabled(echoOn && tapsOn); };
-  updateTapEditEnabled();
-
-  tapsOnToggle->onStateChange = updateTapEditEnabled;
-  echoTargetBox->onChange = updateTapEditEnabled;
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, 0, grid);
 }
 
