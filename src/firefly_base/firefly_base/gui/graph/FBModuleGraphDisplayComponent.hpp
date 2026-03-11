@@ -15,9 +15,6 @@ public juce::Component
   FBModuleGraphComponentData const* const _data;
   int const _graphIndex;
 
-  FBColorScheme const& FindColorSchemeFor(
-    int moduleIndex, int moduleSlot) const;
-
 public:
   void paint(juce::Graphics& g) override;
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBModuleGraphDisplayComponent);

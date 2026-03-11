@@ -23,26 +23,6 @@ _plugGUI(plugGUI),
 _data(data),
 _graphIndex(graphIndex) {}
 
-FBColorScheme const& 
-FBModuleGraphDisplayComponent::FindColorSchemeFor(
-  int moduleIndex, int moduleSlot) const
-{
-  auto fbLookAndFeel = FBGetLookAndFeelFor(_plugGUI);
-  auto const& theme = fbLookAndFeel->Theme();
-  if (theme.global.graphSchemeFollowsModule)
-  {
-    if (moduleIndex != -1 && moduleSlot != -1)
-      if (auto gui = findParentComponentOfClass<FBPlugGUI>())
-      {
-        int rtModuleIndex = gui->HostContext()->Topo()->moduleTopoToRuntime.at({ moduleIndex, moduleSlot });
-        auto moduleIter = theme.moduleColors.find(rtModuleIndex);
-        if (moduleIter != theme.moduleColors.end())
-          return theme.global.colorSchemes.at(moduleIter->second.colorScheme);
-      }
-  } 
-  return fbLookAndFeel->FindColorSchemeFor(*this);
-}  
-
 Point<float>
 FBModuleGraphDisplayComponent::PointLocation(
   bool primarySeries, int secondaryIndex,
@@ -99,9 +79,7 @@ FBModuleGraphDisplayComponent::PaintVerticalIndicator(
   bool primarySeries, int secondaryIndex, int point,
   int maxSizeAllSeries, float absMaxValueAllSeries)
 {
-  auto const& graphData = _data->graphs[_graphIndex];
-  auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
-
+  auto const& scheme = FBGetLookAndFeelFor(_plugGUI)->FindColorSchemeFor(*this);
   float dashes[2] = { 4, 2 };
   g.setColour(scheme.text2.withAlpha(0.8f));
   if (!primarySeries)
@@ -125,8 +103,7 @@ FBModuleGraphDisplayComponent::PaintMarker(
   if (points.size() == 0)
     return;
 
-  auto const& graphData = _data->graphs[_graphIndex];
-  auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
+  auto const& scheme = FBGetLookAndFeelFor(_plugGUI)->FindColorSchemeFor(*this);
 
   auto color = scheme.text2;
   if (_data->paintAsDisabled)
@@ -161,8 +138,7 @@ FBModuleGraphDisplayComponent::PaintSeries(
   if (points.empty())
     return;
 
-  auto const& graphData = _data->graphs[_graphIndex];
-  auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
+  auto const& scheme = FBGetLookAndFeelFor(_plugGUI)->FindColorSchemeFor(*this);
 
   Path fillPath;
   Path strokePath;
@@ -211,7 +187,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
   auto& graphData = _data->graphs[_graphIndex];
   auto const& primarySeries = graphData.primarySeries;
   auto const& secondarySeries = graphData.secondarySeries;
-  auto const& scheme = FindColorSchemeFor(graphData.moduleIndex, graphData.moduleSlot);
+  auto const& scheme = FBGetLookAndFeelFor(_plugGUI)->FindColorSchemeFor(*this);
   bool stereo = !primarySeries.r.empty();
   graphData.GetLimits(true, maxSizeAllSeries, absMaxValueAllSeries);
   absMaxValueAllSeries = std::max(1.0f, absMaxValueAllSeries);

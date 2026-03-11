@@ -572,10 +572,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     return false;
   result.global.resources.aboutBoxImageFileName = obj->getProperty("aboutBoxImageFileName").toString().toStdString();
 
-  if (!RequireBoolProperty(obj, "graphSchemeFollowsModule"))
-    return false;
-  result.global.graphSchemeFollowsModule = (bool)obj->getProperty("graphSchemeFollowsModule");
-
+  // todo drop this
   if (!RequireBoolProperty(obj, "unisonSchemeFollowsModule"))
     return false;
   result.global.unisonSchemeFollowsModule = (bool)obj->getProperty("unisonSchemeFollowsModule");
