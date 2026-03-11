@@ -230,10 +230,6 @@ ParseDefaultColorScheme(
     return false;
   result.activeTabBackground = Colour::fromString(obj->getProperty("activeTabBackground").toString());
 
-  if (!RequireStringProperty(obj, "gridAlternateBackground"))
-    return false;
-  result.gridAlternateBackground = Colour::fromString(obj->getProperty("gridAlternateBackground").toString());
-
   if (!RequireStringProperty(obj, "meterFill"))
     return false;
   result.meterFill = Colour::fromString(obj->getProperty("meterFill").toString());
@@ -253,14 +249,6 @@ ParseDefaultColorScheme(
   if (!RequireStringProperty(obj, "graphBackground"))
     return false;
   result.graphBackground = Colour::fromString(obj->getProperty("graphBackground").toString());
-
-  if (!RequireStringProperty(obj, "headerBorder"))
-    return false;
-  result.headerBorder = Colour::fromString(obj->getProperty("headerBorder").toString());
-
-  if (!RequireStringProperty(obj, "headerBackground"))
-    return false;
-  result.headerBackground = Colour::fromString(obj->getProperty("headerBackground").toString());
 
   if (!RequireStringProperty(obj, "sectionBorder"))
     return false;
@@ -343,10 +331,6 @@ ParseColorScheme(
     return false;
   result.activeTabBackground = present ? Colour::fromString(obj->getProperty("activeTabBackground").toString()) : defaultScheme.activeTabBackground;
     
-  if (!OptionalStringProperty(obj, "gridAlternateBackground", present))
-    return false;
-  result.gridAlternateBackground = present ? Colour::fromString(obj->getProperty("gridAlternateBackground").toString()) : defaultScheme.gridAlternateBackground;
-
   if (!OptionalStringProperty(obj, "meterFill", present))
     return false;
   result.meterFill = present ? Colour::fromString(obj->getProperty("meterFill").toString()) : defaultScheme.meterFill;
@@ -366,14 +350,6 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "graphBackground", present))
     return false;
   result.graphBackground = present ? Colour::fromString(obj->getProperty("graphBackground").toString()) : defaultScheme.graphBackground;
-
-  if (!OptionalStringProperty(obj, "headerBorder", present))
-    return false;
-  result.headerBorder = present ? Colour::fromString(obj->getProperty("headerBorder").toString()) : defaultScheme.headerBorder;
-
-  if (!OptionalStringProperty(obj, "headerBackground", present))
-    return false;
-  result.headerBackground = present ? Colour::fromString(obj->getProperty("headerBackground").toString()) : defaultScheme.headerBackground;
 
   if (!OptionalStringProperty(obj, "sectionBorder", present))
     return false;

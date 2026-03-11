@@ -39,8 +39,6 @@ struct FBColorScheme
   juce::Colour graphGrid = {};
   juce::Colour graphBorder = {};
   juce::Colour graphBackground = {};
-  juce::Colour headerBorder = {};
-  juce::Colour headerBackground = {};
   juce::Colour sectionBorder = {};
   juce::Colour sectionBackground = {};
   juce::Colour primary = {};
@@ -53,7 +51,6 @@ struct FBColorScheme
   juce::Colour fileBrowserHighlight = {};
   juce::Colour buttonBackground = {};
   juce::Colour activeTabBackground = {};
-  juce::Colour gridAlternateBackground = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme);
 };
 

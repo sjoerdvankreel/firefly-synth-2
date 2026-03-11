@@ -14,8 +14,6 @@
     "background": "FF000000",
     "meterFill": "FFA0A0A0",
     "meterTrack": "FF505050",
-    "headerBorder": "FF20A0FF",
-    "headerBackground": "FF181818",
     "graphGrid": "FF404040",
     "graphBorder": "20FFFFFF",
     "graphBackground": "FF181818",
@@ -29,25 +27,20 @@
     "fileBrowserPrimary": "FF20A0FF",
     "fileBrowserHighlight": "8020A0FF",
     "buttonBackground": "FF105080",
-    "activeTabBackground": "FF105080",
-    "gridAlternateBackground": "FF082880"
+    "activeTabBackground": "FF105080"
   },
   "colorSchemes_comment": "Define color schemes to be referenced by modules, parameters, and non-module related component colors.",
   "colorSchemes": {
     "Blue": {
       "comment": "Can override other stuff as well.",
       "primary": "FF20A0FF",
-      "headerBorder": "FF20A0FF",
       "buttonBackground": "FF105080",
-      "activeTabBackground": "FF105080",
-      "gridAlternateBackground": "FF082880"
+      "activeTabBackground": "FF105080"
     },
     "Orange": {
       "primary": "FFFF8020",
-      "headerBorder": "FFFF8020",
       "buttonBackground": "FF984C09",
-      "activeTabBackground": "FF984C09",
-      "gridAlternateBackground": "FF6D3606"
+      "activeTabBackground": "FF984C09"
     }
   },
   "componentColors_comment": "Overrides the default scheme for anything not related to a module.",
