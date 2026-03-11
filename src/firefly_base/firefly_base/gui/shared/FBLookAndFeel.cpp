@@ -542,22 +542,25 @@ FBLookAndFeel::drawToggleButton(
   bool /*shouldDrawButtonAsDown*/)
 {
   auto const& scheme = FindColorSchemeFor(button);
-  float boxSize = FBPrimaryHeight - 6;
+  float boxSize = FBPrimaryHeight - 6.0f;
+  float radius = (FBPrimaryHeight - 14.0f) * 0.5f;
   float x = (button.getWidth() - boxSize) * 0.5f;
   float y = (button.getHeight() - boxSize) * 0.5f;
+  auto bounds = Rectangle<float>(x, y, boxSize, boxSize);
   g.setColour(scheme.paramBackground);
-  g.fillRoundedRectangle(x, y, boxSize, boxSize, 3.0f);
+  g.fillRoundedRectangle(bounds, 3.0f);
   g.setColour(scheme.paramSecondary);
-  g.drawRoundedRectangle(x, y, boxSize, boxSize, 3.0f, 1.0f);
+  g.drawRoundedRectangle(bounds, 3.0f, 1.0f);
+
+  Path arc;
+  arc.addCentredArc(
+    bounds.getCentreX(), bounds.getCentreY(), radius, radius,
+    0.0f, 0.15f * FBPi, 1.85f * FBPi, true);
+  g.setColour(scheme.primary);
+  g.strokePath(arc, PathStrokeType(1.0f, PathStrokeType::curved, PathStrokeType::butt));
+  g.drawLine(bounds.getCentreX(), bounds.getCentreY(), bounds.getCentreX(), y + 2.0f, 1.0f);
 
 #if 0
-  Path backgroundArc;
-  backgroundArc.addCentredArc(
-    bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
-    0.0f, rotaryStartAngle, rotaryEndAngle, true);
-  g.setColour(scheme.paramBackground);
-  g.strokePath(backgroundArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
-
   drawTickBox(g, button, x, ((float)button.getHeight() - tickWidth) * 0.5f,
     tickWidth, tickWidth,
     button.getToggleState(),
