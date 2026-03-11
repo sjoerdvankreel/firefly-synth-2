@@ -40,18 +40,10 @@ v2.1.1
 [ ] check what scheme colors are being used
 [ ] get rid off all the various primaryxyz theme values, stick to 1
 [ ] do check the env + porta stuff
-[ ] cardcontainercomponent
-[ ] gui cpu load as an output param?
-[ ] gui FPS switch?
-[ ] re-un-shorten all the texts
 [ ] test the clap
 [ ] re-profile the gui
-[ ] DONT do other stuff beside GUI
 [ ] run debug build
 [ ] bigass bg image
-[ ] recheck all the container components, do we need em?
-[ ] do to-echo easy access mods on stuff
-[ ] checkboxes as round tick thingies
 [ ] after init, load, etc, should select the first graph of everything
 [ ] allow click + on first disabled matrix slot
 [ ] settings block out of main
