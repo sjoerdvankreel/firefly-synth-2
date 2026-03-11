@@ -36,22 +36,21 @@ v2.1.1
 [x] clean up the theme stuff
 [x] check what scheme colors are being used
 [x] do check the env + porta stuff
+[x] get rid off all the various primaryxyz theme values, stick to 1
+[x] settings block out of main
+[x] get rid of graphschemefollowsmodule
 [ ] after init, load, etc, should select the first graph of everything
 [ ] lose unisonSchemeFollowsModule
 [ ] recheck all the matrix names
 [ ] hunt down all the stuff thats a modification of ffa040
-[ ] get rid off all the various primaryxyz theme values, stick to 1
 [ ] test the clap
 [ ] re-profile the gui
 [ ] run debug build
 [ ] bigass bg image
 [ ] allow click + on first disabled matrix slot
-[ ] settings block out of main
-[ ] get rid of graphschemefollowsmodule
 [ ] update the manual for about box
 [ ] fixup all the other themes
 [ ] document all the theme changes
-[ ] darken the bg when overlay/filepicker is active
 [ ] check todos
 
 vnext
