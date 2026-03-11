@@ -140,18 +140,20 @@ FBLookAndFeel::DrawRotarySliderExchangeThumb(
   float rotaryStartAngle, float rotaryEndAngle, 
   float exchangeValue)
 {
-  auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(10);
+  auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(8);
   auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
   float skewed = (float)ConvertValueFromSkewed(slider.Param()->static_, exchangeValue);
   auto toAngle = rotaryStartAngle + skewed * (rotaryEndAngle - rotaryStartAngle);
-  auto lineW = jmin(8.0f, radius * 0.5f);
+  auto lineW = 2.0f;
   auto arcRadius = radius - lineW * 0.5f;
-  auto thumbWidth = lineW * 2.0f;
-  Point<float> thumbPoint(
+  Point<float> thumbPoint1(
     bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
+  Point<float> thumbPoint2(
+    bounds.getCentreX() + arcRadius * 0.5f * std::cos(toAngle - MathConstants<float>::halfPi),
+    bounds.getCentreY() + arcRadius * 0.5f * std::sin(toAngle - MathConstants<float>::halfPi));
   g.setColour(scheme.sliderEngineThumb);
-  g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
+  g.drawLine(thumbPoint1.getX(), thumbPoint1.getY(), thumbPoint2.getX(), thumbPoint2.getY(), 2.0f);
 }
 
 void
