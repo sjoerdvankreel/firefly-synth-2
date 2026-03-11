@@ -89,7 +89,7 @@ _fixedWidth(fixedWidth), _plugGUI(plugGUI)
   plugGUI->AddParamListener(this);
   addListener(this);
   setFont(lnf->GetFont());
-  setIndents(2, 8);
+  setIndents(3, 6);
   setPopupMenuEnabled(false);
 }
 

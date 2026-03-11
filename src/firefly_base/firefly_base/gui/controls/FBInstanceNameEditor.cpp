@@ -16,7 +16,7 @@ _fixedWidth(fixedWidth), _plugGUI(plugGUI)
   setText(_plugGUI->HostContext()->InstanceName(), dontSendNotification);
   addListener(this);
   setFont(lnf->GetFont());
-  setIndents(3, 7);
+  setIndents(3, 8);
   setPopupMenuEnabled(false);
 }
 
