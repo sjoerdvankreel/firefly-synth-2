@@ -809,11 +809,12 @@ FBLookAndFeel::drawRotarySlider(
     width = height;
 
   auto const& scheme = FindColorSchemeFor(slider);
-  auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(10);
-  auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
+  auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(8);
+  auto radius1 = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
+  auto radius2 = radius1 - 2.0f;
   auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
-  auto lineW = jmin(8.0f, radius * 0.5f);
-  auto arcRadius = radius - lineW * 0.5f;
+  auto lineW = 2.0f;
+  auto arcRadius = radius1 - lineW * 0.5f;
     
   Path backgroundArc;
   backgroundArc.addCentredArc(
@@ -821,6 +822,8 @@ FBLookAndFeel::drawRotarySlider(
     0.0f, rotaryStartAngle, rotaryEndAngle, true);
   g.setColour(scheme.paramBackground);
   g.strokePath(backgroundArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
+  g.setColour(scheme.paramSecondary);
+  g.fillEllipse(bounds.getCentreX() - radius2, bounds.getCentreY() - radius2, 2.0f * radius2, 2.0f * radius2);
 
   Path valueArc;
   float trackEndAngle = toAngle;
@@ -840,10 +843,11 @@ FBLookAndFeel::drawRotarySlider(
       }
     }
   }
+
   valueArc.addCentredArc(
     bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
     0.0f, trackStartAngle, trackEndAngle, true);
-  g.setColour(scheme.paramSecondary);
+  g.setColour(scheme.primary);
   g.strokePath(valueArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
 
   double minNorm;
@@ -871,18 +875,19 @@ FBLookAndFeel::drawRotarySlider(
     }
   }
 
-  auto thumbWidth = lineW * 2.0f;
-  Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
+  Point<float> thumbPoint1(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(scheme.primary);
-  g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
+  Point<float> thumbPoint2(bounds.getCentreX() + arcRadius * 0.5f * std::cos(toAngle - MathConstants<float>::halfPi),
+    bounds.getCentreY() + arcRadius * 0.5f * std::sin(toAngle - MathConstants<float>::halfPi));
+  g.setColour(scheme.paramSecondary.brighter());
+  g.drawLine(thumbPoint1.getX(), thumbPoint1.getY(), thumbPoint2.getX(), thumbPoint2.getY(), 2.0f);
 
   if (paramSlider != nullptr)
   { 
     if (paramSlider->IsHighlightTweaked())
     {         
       g.setColour(scheme.paramHighlight);
-      g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
+      //g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
     }
     if (paramSlider->IsFlashDisabling())
     {
