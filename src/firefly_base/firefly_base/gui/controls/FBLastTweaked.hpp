@@ -8,19 +8,15 @@ class FBLastTweakedLabel:
 public juce::Label,
 public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize,
-public IFBParamListener,
-public IFBThemeListener
+public IFBParamListener
 {
-  int _maxWidth = {};
   FBPlugGUI* const _plugGUI;
-
-  void CalculateMaxWidth();
+  int const _width;
 
 public:
   ~FBLastTweakedLabel();
-  FBLastTweakedLabel(FBPlugGUI* plugGUI);
+  FBLastTweakedLabel(FBPlugGUI* plugGUI, int width);
 
-  void ThemeChanged() override;
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
   void AudioParamChanged(int index, double normalized, bool changedFromUI) override;

@@ -22,24 +22,15 @@ IsTweakableParam(FBRuntimeTopo const* topo, int index)
 FBLastTweakedLabel::
 ~FBLastTweakedLabel()
 {
-  _plugGUI->RemoveThemeListener(this);
   _plugGUI->RemoveParamListener(this);
 }
 
 FBLastTweakedLabel::
-FBLastTweakedLabel(FBPlugGUI* plugGUI) :
-_plugGUI(plugGUI)
+FBLastTweakedLabel(FBPlugGUI* plugGUI, int width) :
+_plugGUI(plugGUI), _width(width)
 {
   setText("Tweak", dontSendNotification);
   plugGUI->AddParamListener(this);
-  plugGUI->AddThemeListener(this);
-  CalculateMaxWidth();  
-}
-
-void
-FBLastTweakedLabel::ThemeChanged()
-{
-  CalculateMaxWidth();
 }
 
 int
@@ -51,19 +42,7 @@ FBLastTweakedLabel::FixedHeight() const
 int
 FBLastTweakedLabel::FixedWidth(int /*height*/) const
 {
-  return getBorderSize().getLeftAndRight() + _maxWidth;
-}
-
-void
-FBLastTweakedLabel::CalculateMaxWidth()
-{
-  _maxWidth = 0;
-  auto lnf = FBGetLookAndFeelFor(_plugGUI);
-  auto const* topo = _plugGUI->HostContext()->Topo();
-  for (int i = 0; i < topo->audio.params.size(); i++)
-    if (IsTweakableParam(topo, i))
-      _maxWidth = std::max(_maxWidth,
-        lnf->GetStringWidthCached(topo->audio.params[i].displayName));
+  return getBorderSize().getLeftAndRight() + _width;
 }
 
 void 
@@ -85,11 +64,11 @@ FBLastTweakedLabel::AudioParamChanged(int index, double /*normalized*/, bool cha
   std::string const& moduleDisplay = staticModule.matrixName.size() ? staticModule.matrixName : module.name;
   std::string modulePlusFull = moduleDisplay + " " + fullName;
   std::string modulePlusTweak = moduleDisplay + " " + tweakName;
-  if(lnf->GetStringWidthCached(modulePlusFull) <= _maxWidth)
+  if(lnf->GetStringWidthCached(modulePlusFull) <= _width)
     setText(modulePlusFull, dontSendNotification);
-  else if (lnf->GetStringWidthCached(fullName) <= _maxWidth)
+  else if (lnf->GetStringWidthCached(fullName) <= _width)
     setText(fullName, dontSendNotification);
-  else if (lnf->GetStringWidthCached(modulePlusTweak) <= _maxWidth)
+  else if (lnf->GetStringWidthCached(modulePlusTweak) <= _width)
     setText(modulePlusTweak, dontSendNotification);
   else
     setText(tweakName, dontSendNotification);
