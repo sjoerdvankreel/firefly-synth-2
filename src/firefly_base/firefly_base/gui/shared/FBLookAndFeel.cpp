@@ -574,7 +574,8 @@ FBLookAndFeel::drawToggleButton(
     if (paramToggle->IsHighlightTweaked())
     {
       g.setColour(scheme.paramHighlight);
-      g.drawRoundedRectangle(bounds, 2.0f, 1.0f);
+      g.strokePath(arc, PathStrokeType(1.0f, PathStrokeType::curved, PathStrokeType::butt));
+      g.drawLine(bounds.getCentreX(), bounds.getCentreY(), bounds.getCentreX(), y + 2.0f, 1.0f);
     }
     if (paramToggle->IsFlashDisabling())
     {
