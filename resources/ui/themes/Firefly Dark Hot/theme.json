@@ -27,7 +27,6 @@
     "paramSecondary": "FF505050",
     "paramHighlight": "80FFFFFF",
     "paramBackground": "FF181818",
-    "sliderModBounds": "FF105080",
     "sliderEngineThumb": "80FFFFFF",
     "alertWindowPrimary": "FF20A0FF",
     "fileBrowserPrimary": "FF20A0FF",
@@ -44,7 +43,6 @@
       "headerText": "FF20A0FF",
       "headerBorder": "FF20A0FF",
       "meterAlert": "FF20A0FF",
-      "sliderModBounds": "FF105080",
       "buttonBackground": "FF105080",
       "activeTabBackground": "FF105080",
       "gridAlternateBackground": "FF082880"
@@ -53,7 +51,6 @@
       "primary": "FFFF8020",
       "headerText": "FFFF8020",
       "headerBorder": "FFFF8020",
-      "sliderModBounds": "FF984C09",
       "buttonBackground": "FF984C09",
       "activeTabBackground": "FF984C09",
       "gridAlternateBackground": "FF6D3606"

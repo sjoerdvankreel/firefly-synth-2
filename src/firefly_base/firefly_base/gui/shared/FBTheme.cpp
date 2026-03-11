@@ -302,10 +302,6 @@ ParseDefaultColorScheme(
     return false;
   result.paramBackground = Colour::fromString(obj->getProperty("paramBackground").toString());
 
-  if (!RequireStringProperty(obj, "sliderModBounds"))
-    return false;
-  result.sliderModBounds = Colour::fromString(obj->getProperty("sliderModBounds").toString());
-
   if (!RequireStringProperty(obj, "sliderEngineThumb"))
     return false;
   result.sliderEngineThumb = Colour::fromString(obj->getProperty("sliderEngineThumb").toString());
@@ -426,10 +422,6 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "paramBackground", present))
     return false;
   result.paramBackground = present ? Colour::fromString(obj->getProperty("paramBackground").toString()) : defaultScheme.paramBackground;
-
-  if (!OptionalStringProperty(obj, "sliderModBounds", present))
-    return false;
-  result.sliderModBounds = present ? Colour::fromString(obj->getProperty("sliderModBounds").toString()) : defaultScheme.sliderModBounds;
 
   if (!OptionalStringProperty(obj, "sliderEngineThumb", present))
     return false;

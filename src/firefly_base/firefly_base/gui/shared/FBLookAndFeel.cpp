@@ -671,7 +671,7 @@ FBLookAndFeel::drawLinearSlider(
     Point<float> endPointMod((float)(width * modMax + x), startPointMod.y);
     backgroundTrackMod.startNewSubPath(startPointMod);
     backgroundTrackMod.lineTo(endPointMod);
-    g.setColour(scheme.sliderModBounds);
+    g.setColour(scheme.primary.brighter());
     g.strokePath(backgroundTrackMod, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
   }
 
