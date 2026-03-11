@@ -65,7 +65,7 @@ _snapYCounts(snapYCounts)
   _controlGrid->Add(0, 6, _editYGridLabel.get());
   _controlGrid->Add(0, 7, _snapYCountCombo.get());
   _controlGrid->Add(0, 8, _controlFiller.get());
-  _controlGrid->MarkSection({ { 0, 0 }, { 1, 9 } });
+  _controlGrid->MarkSection({ { 0, 0 }, { 1, 9 } }, FBGridSectionMark::AlternateBackground);
   
   _grid = std::make_unique<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1, 0 }, std::vector<int> { 1 });
   _grid->Add(0, 0, _canvas.get());
