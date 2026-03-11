@@ -538,18 +538,31 @@ FBLookAndFeel::drawLabel(
 void
 FBLookAndFeel::drawToggleButton(
   Graphics& g, ToggleButton& button,
-  bool shouldDrawButtonAsHighlighted,
-  bool shouldDrawButtonAsDown)
+  bool /*shouldDrawButtonAsHighlighted*/,
+  bool /*shouldDrawButtonAsDown*/)
 {
-  auto fontSize = jmin(15.0f, (float)button.getHeight() * 0.75f);
-  auto tickWidth = fontSize * 1.1f;
-  float x = (button.getWidth() - tickWidth) * 0.5f;
+  auto const& scheme = FindColorSchemeFor(button);
+  float boxSize = FBPrimaryHeight - 6;
+  float x = (button.getWidth() - boxSize) * 0.5f;
+  float y = (button.getHeight() - boxSize) * 0.5f;
+  g.setColour(scheme.paramBackground);
+  g.fillRoundedRectangle(x, y, boxSize, boxSize, 3.0f);
+
+#if 0
+  Path backgroundArc;
+  backgroundArc.addCentredArc(
+    bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
+    0.0f, rotaryStartAngle, rotaryEndAngle, true);
+  g.setColour(scheme.paramBackground);
+  g.strokePath(backgroundArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
+
   drawTickBox(g, button, x, ((float)button.getHeight() - tickWidth) * 0.5f,
     tickWidth, tickWidth,
     button.getToggleState(),
     button.isEnabled(),
     shouldDrawButtonAsHighlighted,
     shouldDrawButtonAsDown);
+#endif
 }
 
 void

@@ -8,13 +8,13 @@ using namespace juce;
 int 
 FBAutoSizeToggleButton::FixedHeight() const
 {
-  return FBPrimaryHeight;
+  return FBPrimaryHeight - 6;
 }
 
 int 
 FBAutoSizeToggleButton::FixedWidth(int /*height*/) const
 {
-  return FBPrimaryHeight;
+  return FBPrimaryHeight - 6;
 }
 
 FBGUIParamToggleButton::
