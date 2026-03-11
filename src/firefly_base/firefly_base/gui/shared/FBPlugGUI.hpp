@@ -7,7 +7,6 @@
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
-#include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBFileBrowserComponent.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>

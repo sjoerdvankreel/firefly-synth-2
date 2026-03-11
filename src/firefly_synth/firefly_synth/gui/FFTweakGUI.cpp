@@ -8,7 +8,6 @@
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
-#include <firefly_base/gui/components/FBSectionComponent.hpp>
 
 using namespace juce;
 

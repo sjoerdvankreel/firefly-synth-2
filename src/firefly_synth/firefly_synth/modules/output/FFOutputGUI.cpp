@@ -12,7 +12,6 @@
 #include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
-#include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;

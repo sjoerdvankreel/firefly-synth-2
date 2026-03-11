@@ -19,19 +19,20 @@ v2.1.1
 [x] vs2026
 [x] merge stvarmode
 [x] drop the env detail graphs
+[x] drop sectioncomp
+[x] up the margins
+[x] alternate-color the matrix rows et all
+[x] do a second row of graphs, main on top 1 for each module, detail on botton N for active main
+[ ] pretty knobs, graphs, combos, checks, buttons, more?
 [ ] hilite hover selector
 [ ] flash buttons for disabled
-[ ] multicard
-[ ] drop sectioncomp
 [ ] drag a knob should switch the details
-[ ] fix the build scripts for linux-arm
 [ ] hide disabled stuff when possible
 [ ] flash stuff on button click
 [ ] do the popup editors
 [ ] profile the thing again
 [ ] lose graphSchemeFollowsModule
 [ ] recheck all the matrix names
-[ ] pretty knobs
 [ ] maybe drop the "gain" label for osci wave detail
 [ ] up the default fontsize once we have the room for it
 [ ] hunt down all the stuff thats a modification of ffa040
@@ -86,16 +87,12 @@ v2.1.1
 [ ] document all the theme changes
 [ ] fix the 1sec delay on plot visuals
 [ ] darken the bg when overlay/filepicker is active
-[ ] make some knobs stand out (2-row) like master PB
-[ ] do a second row of graphs, main on top 1 for each module, detail on botton N for active main
-[ ] just auto-fillup the last grid
-[ ] up the margins
-[ ] alternate-color the matrix rows et all
-[ ] pretty knobs, graphs, combos, checks, buttons, more?
-[ ] programmatic dump screenshot?
-[ ] compressor
 [ ] check todos
 
+vnext
+[ ] programmatic dump screenshot?
+[ ] compressor
+[ ] fix the build scripts for linux-arm
 [ ] add loop count param
 [ ] one phase LFO type
 [ ] do mod rate/amt for multitap

@@ -14,7 +14,6 @@
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
-#include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
          
 using namespace juce;
@@ -48,6 +47,5 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
       themeCombo->setSelectedItemIndex(i);
   grid->Add(0, 9, themeCombo);   
   grid->MarkSection({ { 0, 0 }, { 1, 10 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::GUISettings, 0, section);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::GUISettings, 0, grid);
 }
