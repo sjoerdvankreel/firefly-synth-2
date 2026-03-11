@@ -766,7 +766,7 @@ FBLookAndFeel::drawButtonBackground(
 
   Path p;
   auto cornerSize = isSelect? 3.0f: 5.0f;
-  auto bounds = button.getLocalBounds().toFloat().reduced(isSelect? 0.0f: 3.0f);
+  auto bounds = button.getLocalBounds().toFloat().reduced(isSelect? 0.0f: 1.0f, isSelect? 0.0f: 3.0f);
   p.addRoundedRectangle(
     bounds.getX(), bounds.getY(), 
     bounds.getWidth() + (isRight? 0.0f: 1.0f), 
@@ -817,8 +817,8 @@ FBLookAndFeel::drawButtonText(
 
   bool isSelect = dynamic_cast<FBSelectButton*>(&button) != nullptr;
   const int fontHeight = roundToInt(font.getHeight() * 0.6f);
-  const int leftIndent = jmin(fontHeight, 1 + cornerSize / (button.isConnectedOnLeft() ? 4 : 2));
-  const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
+  const int leftIndent = jmin(fontHeight, -1 + cornerSize / (button.isConnectedOnLeft() ? 4 : 2));
+  const int rightIndent = jmin(fontHeight, 1 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
   const int textWidth = isSelect? button.getWidth(): button.getWidth() - leftIndent - rightIndent;
      
   if (textWidth > 0)

@@ -26,7 +26,7 @@ FBAutoSizeButton::FixedHeight() const
 int 
 FBAutoSizeButton::FixedWidth(int /*height*/) const
 {
-  return FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text) + 16;
+  return FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text) + 14;
 }
 
 FBParamLinkedButton::
