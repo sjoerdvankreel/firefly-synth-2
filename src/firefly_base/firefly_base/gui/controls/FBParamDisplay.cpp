@@ -6,7 +6,7 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
-static int const MeterBarCount = 25;
+static int const MeterBarCount = 20;
 
 using namespace juce;
 
@@ -140,7 +140,7 @@ FBParamDisplayMeter::paint(Graphics& g)
   auto const& scheme = FBGetLookAndFeelFor(_plugGUI)->FindColorSchemeFor(*this);
 
   float const gapSize = 2.0f;
-  float const barHeight = 10.0f;
+  float const barHeight = 12.0f;
   int const gapCount = MeterBarCount - 1;
   float const totalGapSize = gapCount * gapSize;
   float const barY = (getLocalBounds().getHeight() - barHeight) * 0.5f;
