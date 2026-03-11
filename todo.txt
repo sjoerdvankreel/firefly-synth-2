@@ -33,18 +33,18 @@ v2.1.1
 [x] pretty knobs, graphs, combos, checks, buttons, popup menus
 [x] do the popup editors
 [x] lose graphSchemeFollowsModule
-[ ] clean up the theme stuff
+[x] clean up the theme stuff
+[x] check what scheme colors are being used
+[x] do check the env + porta stuff
+[ ] after init, load, etc, should select the first graph of everything
 [ ] lose unisonSchemeFollowsModule
 [ ] recheck all the matrix names
 [ ] hunt down all the stuff thats a modification of ffa040
-[ ] check what scheme colors are being used
 [ ] get rid off all the various primaryxyz theme values, stick to 1
-[ ] do check the env + porta stuff
 [ ] test the clap
 [ ] re-profile the gui
 [ ] run debug build
 [ ] bigass bg image
-[ ] after init, load, etc, should select the first graph of everything
 [ ] allow click + on first disabled matrix slot
 [ ] settings block out of main
 [ ] get rid of graphschemefollowsmodule
