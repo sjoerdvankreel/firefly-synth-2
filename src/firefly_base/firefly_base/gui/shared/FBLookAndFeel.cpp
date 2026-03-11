@@ -879,21 +879,17 @@ FBLookAndFeel::drawRotarySlider(
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
   Point<float> thumbPoint2(bounds.getCentreX() + arcRadius * 0.5f * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * 0.5f * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(scheme.paramSecondary.brighter());
+
+  if(paramSlider && paramSlider->IsHighlightTweaked())
+    g.setColour(scheme.primary);
+  else
+    g.setColour(scheme.paramSecondary.brighter());
   g.drawLine(thumbPoint1.getX(), thumbPoint1.getY(), thumbPoint2.getX(), thumbPoint2.getY(), 2.0f);
 
-  if (paramSlider != nullptr)
-  { 
-    if (paramSlider->IsHighlightTweaked())
-    {         
-      g.setColour(scheme.paramHighlight);
-      //g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
-    }
-    if (paramSlider->IsFlashDisabling())
-    {
-      g.setColour(Colours::white.withAlpha(0.5f));
-      g.fillEllipse(bounds.toFloat().reduced(0.5f, 0.5f));
-    }
+  if (paramSlider != nullptr && paramSlider->IsFlashDisabling())
+  {
+    g.setColour(Colours::white.withAlpha(0.5f));
+    g.fillEllipse(bounds.toFloat().reduced(0.5f, 0.5f));
   }
 }
 
