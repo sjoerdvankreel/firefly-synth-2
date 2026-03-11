@@ -22,5 +22,6 @@ FFMakeTweakGUI(FBPlugGUI* plugGUI)
   auto box = plugGUI->StoreComponent<FBLastTweakedTextBox>(plugGUI, 60);
   grid->Add(0, 2, plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, box));
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
-  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::LastTweaked, card);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, true, false, false, card);
+  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::LastTweaked, margin);
 }

@@ -8,6 +8,7 @@
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBFillerComponent.hpp>
@@ -64,7 +65,7 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
   preset->onClick = [plugGUI, preset]() { plugGUI->LoadPreset(preset); };
   grid->Add(0, 7, preset);
 
-  grid->MarkSection({ { 0, 0 }, { 1, 8 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
-  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::Patch, section);
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, true, false, false, card);
+  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::Patch, margin);
 }
