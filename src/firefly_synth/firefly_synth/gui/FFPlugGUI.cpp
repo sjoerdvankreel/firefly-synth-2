@@ -357,8 +357,8 @@ FFPlugGUI::SetupGUI()
   _outputTweakPatchOther = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0, 0 } });
   _outputTweakPatchOther->Add(0, 0, FFMakeOutputGUI(this));
   _outputTweakPatchOther->Add(0, 1, FFMakeTweakGUI(this));
-  _outputTweakPatchOther->Add(0, 2, FFMakePatchGUI(this));
-  _outputTweakPatchOther->Add(0, 3, FFMakeOtherGUI(this));
+  _outputTweakPatchOther->Add(0, 2, FFMakeOtherGUI(this));
+  _outputTweakPatchOther->Add(0, 3, FFMakePatchGUI(this));
 
   _matrix = FFMakeModMatrixGUI(this);
   _detailContent = StoreComponent<FBContentComponent>();
