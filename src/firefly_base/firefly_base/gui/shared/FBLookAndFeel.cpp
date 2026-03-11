@@ -547,6 +547,8 @@ FBLookAndFeel::drawToggleButton(
   float y = (button.getHeight() - boxSize) * 0.5f;
   g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(x, y, boxSize, boxSize, 3.0f);
+  g.setColour(scheme.paramSecondary);
+  g.drawRoundedRectangle(x, y, boxSize, boxSize, 3.0f, 1.0f);
 
 #if 0
   Path backgroundArc;
