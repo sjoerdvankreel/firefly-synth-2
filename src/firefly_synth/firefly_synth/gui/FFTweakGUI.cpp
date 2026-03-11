@@ -4,6 +4,7 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
+#include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
@@ -20,7 +21,6 @@ FFMakeTweakGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 1, plugGUI->StoreComponent<FBLastTweakedLabel>(plugGUI, 80));
   auto box = plugGUI->StoreComponent<FBLastTweakedTextBox>(plugGUI, 60);
   grid->Add(0, 2, plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, box));
-  grid->MarkSection({ { 0, 0 }, { 1, 3 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
-  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::LastTweaked, section);
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::LastTweaked, card);
 }
