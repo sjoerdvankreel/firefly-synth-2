@@ -23,8 +23,8 @@ v2.1.1
 [x] up the margins
 [x] alternate-color the matrix rows et all
 [x] do a second row of graphs, main on top 1 for each module, detail on botton N for active main
+[x] hilite hover selector
 [ ] pretty knobs, graphs, combos, checks, buttons, more?
-[ ] hilite hover selector
 [ ] flash buttons for disabled
 [ ] drag a knob should switch the details
 [ ] hide disabled stuff when possible
