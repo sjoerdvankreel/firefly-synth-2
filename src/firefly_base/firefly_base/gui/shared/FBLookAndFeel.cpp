@@ -189,7 +189,6 @@ FBLookAndFeel::DrawTabButtonPart(
   float length = area.getWidth();
   float depth = area.getHeight();   
 
-  // todo drop scheme.headerText
   auto textColor = scheme.text2;
   ::CreateTabTextLayout(button, length, textColor, GetFont(), centerText, text, textLayout);
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));

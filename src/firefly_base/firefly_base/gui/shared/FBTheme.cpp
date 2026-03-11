@@ -254,10 +254,6 @@ ParseDefaultColorScheme(
     return false;
   result.graphBackground = Colour::fromString(obj->getProperty("graphBackground").toString());
 
-  if (!RequireStringProperty(obj, "headerText"))
-    return false;
-  result.headerText = Colour::fromString(obj->getProperty("headerText").toString());
-
   if (!RequireStringProperty(obj, "headerBorder"))
     return false;
   result.headerBorder = Colour::fromString(obj->getProperty("headerBorder").toString());
@@ -371,10 +367,6 @@ ParseColorScheme(
     return false;
   result.graphBackground = present ? Colour::fromString(obj->getProperty("graphBackground").toString()) : defaultScheme.graphBackground;
 
-  if (!OptionalStringProperty(obj, "headerText", present))
-    return false;
-  result.headerText = present ? Colour::fromString(obj->getProperty("headerText").toString()) : defaultScheme.headerText;
-   
   if (!OptionalStringProperty(obj, "headerBorder", present))
     return false;
   result.headerBorder = present ? Colour::fromString(obj->getProperty("headerBorder").toString()) : defaultScheme.headerBorder;

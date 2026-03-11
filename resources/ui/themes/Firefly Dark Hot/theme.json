@@ -14,7 +14,6 @@
     "background": "FF000000",
     "meterFill": "FFA0A0A0",
     "meterTrack": "FF505050",
-    "headerText": "FF20A0FF",
     "headerBorder": "FF20A0FF",
     "headerBackground": "FF181818",
     "graphGrid": "FF404040",
@@ -38,7 +37,6 @@
     "Blue": {
       "comment": "Can override other stuff as well.",
       "primary": "FF20A0FF",
-      "headerText": "FF20A0FF",
       "headerBorder": "FF20A0FF",
       "buttonBackground": "FF105080",
       "activeTabBackground": "FF105080",
@@ -46,7 +44,6 @@
     },
     "Orange": {
       "primary": "FFFF8020",
-      "headerText": "FFFF8020",
       "headerBorder": "FFFF8020",
       "buttonBackground": "FF984C09",
       "activeTabBackground": "FF984C09",

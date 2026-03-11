@@ -39,7 +39,6 @@ struct FBColorScheme
   juce::Colour graphGrid = {};
   juce::Colour graphBorder = {};
   juce::Colour graphBackground = {};
-  juce::Colour headerText = {};
   juce::Colour headerBorder = {};
   juce::Colour headerBackground = {};
   juce::Colour sectionBorder = {};
