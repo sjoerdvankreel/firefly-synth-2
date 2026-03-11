@@ -386,12 +386,12 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI, bool global, int offset, int count)
   for (int r = 0; r < count; r++)
     AddMatrixSlotRow(plugGUI, grid, global, 1 + r, r + offset);
 
-  for(int r = 0; r < rowCount; r++)
+  for(int r = 1; r < rowCount; r += 2)
   {
-    grid->MarkSection({ { r, 0 }, { 1, 5 } }, FBGridSectionMark::DefaultBackground);
-    grid->MarkSection({ { r, 5 }, { 1, 4 } }, FBGridSectionMark::DefaultBackground);
-    grid->MarkSection({ { r, 9 }, { 1, 3 } }, FBGridSectionMark::DefaultBackground);
-    grid->MarkSection({ { r, 12 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground, { true, 3.0f, r == rowCount - 1 ? 2 : 0 });
+    grid->MarkSection({ { r, 0 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
+    grid->MarkSection({ { r, 5 }, { 1, 4 } }, FBGridSectionMark::AlternateBackground);
+    grid->MarkSection({ { r, 9 }, { 1, 3 } }, FBGridSectionMark::AlternateBackground);
+    grid->MarkSection({ { r, 12 }, { 1, 2 } }, FBGridSectionMark::AlternateBackground, { true, 3.0f, r == rowCount - 1 ? 2 : 0 });
   }
 
   return grid;
