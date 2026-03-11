@@ -140,6 +140,7 @@ private:
   FBAutoSizeButton* _overlayInitButton = {};
   FBCardComponent* _overlayCard = {};
   FBGridComponent* _overlayGrid = {};
+  FBGridComponent* _overlayInitClose = {};
   juce::Component* _overlayComponent = {};
   FBModuleComponent* _overlayModule = {};
   FBContentComponent* _overlayContent = {};
