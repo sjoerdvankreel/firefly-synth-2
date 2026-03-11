@@ -31,6 +31,7 @@ v2.1.1
 [x] do some sort of primary indicator on the left (pitch, freq) and signal derived on the right (db, %) + primary derived (pitch, freq, length)
 [x] detail editors not inline like detail graphs (bundle them?)
 [ ] pretty knobs, graphs, combos, checks, buttons, more?
+[ ] clean up the theme stuff
 [ ] do the popup editors
 [ ] profile the thing again
 [ ] lose graphSchemeFollowsModule
