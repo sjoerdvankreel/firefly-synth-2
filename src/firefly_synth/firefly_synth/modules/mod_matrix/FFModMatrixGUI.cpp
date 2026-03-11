@@ -224,16 +224,16 @@ MakeModMatrixTopGUI(FFPlugGUI* plugGUI)
 static void
 AddMatrixHeaderRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r)
 {
-  grid->Add(r, 0, 1, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, global? "Global": "Voice"));
-  grid->Add(r, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Op", FBLabelAlign::Left, FBLabelColors::PrimaryBackground));
-  grid->Add(r, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Source", FBLabelAlign::Left, FBLabelColors::PrimaryBackground));
+  grid->Add(r, 0, 1, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, global ? "Global" : "Voice"));
+  grid->Add(r, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Op"));
+  grid->Add(r, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Source"));
   grid->Add(r, 6, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Inv"));
   grid->Add(r, 7, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Lo"));
   grid->Add(r, 8, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Hi"));
-  grid->Add(r, 9, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Scale", FBLabelAlign::Left, FBLabelColors::PrimaryBackground));
+  grid->Add(r, 9, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Scale"));
   grid->Add(r, 10, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Min"));
   grid->Add(r, 11, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Max"));
-  grid->Add(r, 12, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Target", FBLabelAlign::Left, FBLabelColors::PrimaryBackground));
+  grid->Add(r, 12, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Target"));
   grid->Add(r, 13, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Amt"));
 }
 
@@ -386,7 +386,7 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI, bool global, int offset, int count)
   for (int r = 0; r < count; r++)
     AddMatrixSlotRow(plugGUI, grid, global, 1 + r, r + offset);
 
-  for(int r = 1; r < rowCount; r += 2)
+  for(int r = 0; r < rowCount; r += 2)
   {
     grid->MarkSection({ { r, 0 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
     grid->MarkSection({ { r, 5 }, { 1, 4 } }, FBGridSectionMark::AlternateBackground);
