@@ -599,7 +599,7 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
   if (paramCombo && paramCombo->IsHighlightTweaked())
   {
-    g.setColour(scheme.paramHighlight.withMultipliedAlpha(0.15f));
+    g.setColour(scheme.paramHighlight.withMultipliedAlpha(0.2f));
     g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
   }
   g.setColour(scheme.paramSecondary);
