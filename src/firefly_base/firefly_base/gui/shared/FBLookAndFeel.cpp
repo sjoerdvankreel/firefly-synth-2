@@ -567,6 +567,21 @@ FBLookAndFeel::drawToggleButton(
     g.setColour(scheme.paramSecondary.brighter());
   g.strokePath(arc, PathStrokeType(1.0f, PathStrokeType::curved, PathStrokeType::butt));
   g.drawLine(bounds.getCentreX(), bounds.getCentreY(), bounds.getCentreX(), y + 2.0f, 1.0f);
+
+  auto* paramToggle = dynamic_cast<FBParamToggleButton*>(&button);
+  if (paramToggle != nullptr)
+  {
+    if (paramToggle->IsHighlightTweaked())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.drawRoundedRectangle(bounds, 2.0f, 1.0f);
+    }
+    if (paramToggle->IsFlashDisabling())
+    {
+      g.setColour(Colours::white.withAlpha(0.5f));
+      g.fillRoundedRectangle(bounds, 2.0f);
+    }
+  }
 }
 
 void
