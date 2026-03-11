@@ -401,20 +401,27 @@ static Component*
 MakeModMatrixAllSlotsGUI(FFPlugGUI* plugGUI)
 {
   auto mainGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1 } });
-  auto leftGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
+  auto leftGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { { 5, 10 } }, std::vector<int> { { 1 } });
   leftGrid->Add(0, 0, 1, 1, plugGUI->StoreComponent<FBModuleComponent>(
     plugGUI->HostContext()->Topo(),
-    (int)FFModuleType::VMatrix, 0, MakeModMatrixSlotsGUI(plugGUI, false, 0, 14)));
-  mainGrid->Add(0, 0, plugGUI->StoreComponent<FBCardComponent>(plugGUI, leftGrid));
+    (int)FFModuleType::VMatrix, 0, plugGUI->StoreComponent<FBCardComponent>(
+      plugGUI, MakeModMatrixSlotsGUI(plugGUI, false, 0, 4))));
+  leftGrid->Add(1, 0, 1, 1, plugGUI->StoreComponent<FBModuleComponent>(
+    plugGUI->HostContext()->Topo(),
+    (int)FFModuleType::VMatrix, 0, plugGUI->StoreComponent<FBCardComponent>(
+      plugGUI, MakeModMatrixSlotsGUI(plugGUI, false, 4, 9))));
+  mainGrid->Add(0, 0, leftGrid);
   auto rightGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { { 5, 10 } }, std::vector<int> { { 1 } });
   rightGrid->Add(0, 0, plugGUI->StoreComponent<FBModuleComponent>(
     plugGUI->HostContext()->Topo(),
-    (int)FFModuleType::VMatrix, 0, MakeModMatrixSlotsGUI(plugGUI, false, 14, FFModMatrixVoiceMaxSlotCount - 14)));
+    (int)FFModuleType::VMatrix, 0, plugGUI->StoreComponent<FBCardComponent>(
+      plugGUI, MakeModMatrixSlotsGUI(plugGUI, false, 13, 4))));
   rightGrid->Add(1, 0, plugGUI->StoreComponent<FBModuleComponent>(
     plugGUI->HostContext()->Topo(),
-    (int)FFModuleType::GMatrix, 0, MakeModMatrixSlotsGUI(plugGUI, true, 0, FFModMatrixGlobalMaxSlotCount)));
-  mainGrid->Add(0, 1, plugGUI->StoreComponent<FBCardComponent>(plugGUI, rightGrid));
-  return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, mainGrid);
+    (int)FFModuleType::GMatrix, 0, plugGUI->StoreComponent<FBCardComponent>(
+      plugGUI, MakeModMatrixSlotsGUI(plugGUI, true, 0, 9))));
+  mainGrid->Add(0, 1, rightGrid);
+  return mainGrid;
 }
 
 Component*
