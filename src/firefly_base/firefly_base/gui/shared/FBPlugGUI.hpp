@@ -144,7 +144,6 @@ private:
   juce::Component* _overlayComponent = {};
   FBModuleComponent* _overlayModule = {};
   FBContentComponent* _overlayContent = {};
-  FBMarginComponent* _overlayInnerMargin = {};
   FBMarginComponent* _overlayOuterMargin = {};
 
   std::vector<FBTheme> _themes = {};

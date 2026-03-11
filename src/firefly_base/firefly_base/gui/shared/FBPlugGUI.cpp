@@ -808,8 +808,7 @@ FBPlugGUI::SetupOverlayGUI()
   _overlayGrid->Add(0, 1, _overlayInitClose);
 
   _overlayContent = StoreComponent<FBContentComponent>();
-  _overlayInnerMargin = StoreComponent<FBMarginComponent>(this, true, true, true, true, _overlayContent);
-  _overlayGrid->Add(1, 0, 1, 2, _overlayInnerMargin);
+  _overlayGrid->Add(1, 0, 1, 2, _overlayContent);
   _overlayGrid->MarkSection({ { 0, 0 }, { 1, 2 } }, FBGridSectionMark::DefaultBackground);
 
   _overlayCard = StoreComponent<FBCardComponent>(this, _overlayGrid);
