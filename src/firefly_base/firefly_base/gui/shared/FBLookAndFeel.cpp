@@ -871,9 +871,11 @@ FBLookAndFeel::drawRotarySlider(
     auto paramActive = paramSlider->ParamActiveExchangeState();
     if (paramActive.active)
     {
-      DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.minValue);
+      if(std::abs(sliderPos - paramActive.minValue) >= 0.01)
+        DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.minValue);
       if (paramSlider->Param()->static_.IsVoice())
-        DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
+        if (std::abs(sliderPos - paramActive.maxValue) >= 0.01)
+          DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
     }
   }
 
