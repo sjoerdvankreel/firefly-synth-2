@@ -209,7 +209,7 @@ MakeModMatrixGraphGUI(FFPlugGUI* plugGUI, FFModMatrixGraphType type, bool last)
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, last, false, true, card);
   return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::MatrixGraphs, margin);
 }
-
+ 
 static Component*
 MakeModMatrixTopGUI(FFPlugGUI* plugGUI)
 {
