@@ -1001,14 +1001,13 @@ FBLookAndFeel::drawTooltip(
     newCompIsParam |= dynamic_cast<FBGUIParamControl*>(newComp->findParentComponentOfClass<ComboBox>()) != nullptr;
   }
 
-  auto cornerSize = 3.0f;
   Rectangle<int> bounds(width, height);
-  g.setColour(scheme->background);
-  g.fillRect(bounds.toFloat());
   g.setColour(scheme->paramBackground);
-  g.fillRoundedRectangle(bounds.toFloat(), cornerSize);
-  g.setColour(scheme->primary);
-  g.drawRoundedRectangle(bounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+  g.fillRect(bounds.toFloat());
+  g.setGradientFill(ColourGradient(scheme->primary.withAlpha(0.15f), 0.0f, 0.0f, scheme->primary.withAlpha(0.0f), 0.0f, (float)height, false));
+  g.fillRect(bounds.toFloat());
+  g.setColour(scheme->sectionBorder);
+  g.drawRect(0, 0, width, height);
 
   int i = 0;
   float pad = 3.0f;
