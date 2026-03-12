@@ -205,9 +205,8 @@ MakeModMatrixSlotControlGUI(FFPlugGUI* plugGUI)
 static Component*
 MakeModMatrixGraphGUI(FFPlugGUI* plugGUI, FFModMatrixGraphType type, bool last)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, false, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FFModMatrixGraph>(plugGUI, type));
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, last, false, true, grid);
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, plugGUI->StoreComponent<FFModMatrixGraph>(plugGUI, type));
+  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, last, false, true, card);
   return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::MatrixGraphs, margin);
 }
 
