@@ -115,10 +115,8 @@ FFModMatrixGraph::paint(Graphics& g)
   auto bounds = outerBounds.toFloat().reduced(4.0f);
   auto lnf = FBGetLookAndFeelFor(_plugGUI);
   auto const& scheme = lnf->FindColorSchemeFor(*this);
-  g.setColour(scheme.graphBackground);
-  g.fillRoundedRectangle(outerBounds.toFloat(), 3.0f);
-  g.setColour(scheme.graphBorder);
-  g.drawRoundedRectangle(outerBounds.toFloat(), 3.0f, 2.0f);
+  g.setColour(scheme.graphBackground.withMultipliedAlpha(0.5f));
+  g.fillRoundedRectangle(bounds.toFloat(), 3.0f);
 
   bool graphIsBipolar = false;
   switch (_type)

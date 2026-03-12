@@ -37,7 +37,6 @@ struct FBColorScheme
   juce::Colour meterFill = {};
   juce::Colour meterTrack = {};
   juce::Colour graphGrid = {};
-  juce::Colour graphBorder = {};
   juce::Colour graphBackground = {};
   juce::Colour sectionBorder = {};
   juce::Colour sectionBackground = {};
