@@ -115,7 +115,6 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, slots));
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slots, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, slots));
-  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBackground);
   
   auto clean = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Clean");
   clean->setTooltip("Remove Inactive Slots");
@@ -186,6 +185,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
     plugGUI->HostContext()->ClearModuleAudioParams(moduleIndices);
   };
 
+  grid->MarkSection({ { 0, 0 }, { 1, 7 } }, FBGridSectionMark::DefaultBackground);
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, true, false, true, card);
   int componentId = global ? (int)FFThemedComponentId::MatrixTopGlobal : (int)FFThemedComponentId::MatrixTopVoice;
