@@ -106,8 +106,6 @@ FBModuleGraphDisplayComponent::PaintMarker(
   auto const& scheme = FBGetLookAndFeelFor(_plugGUI)->FindColorSchemeFor(*this);
 
   auto color = scheme.text2;
-  if (_data->paintAsDisabled)
-    color = color.darker(0.67f);
   if (!primarySeries)  
     color = color.withAlpha(0.8f);
   g.setColour(color);
@@ -171,8 +169,6 @@ FBModuleGraphDisplayComponent::PaintSeries(
     strokePath = strokePath.createPathWithRoundedCorners(10.0f);
   }
   auto graphColor = scheme.primary;
-  if (_data->paintAsDisabled)
-    graphColor = graphColor.darker(0.67f);
   g.setColour(graphColor.withMultipliedAlpha(primarySeries? 0.4f: 0.1f));
   g.fillPath(fillPath);
   g.setColour(graphColor.withMultipliedAlpha(primarySeries? 1.0f: 0.4f));

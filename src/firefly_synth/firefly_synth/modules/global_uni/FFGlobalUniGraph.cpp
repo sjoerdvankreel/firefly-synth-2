@@ -152,13 +152,6 @@ FFGlobalUniRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
   graphData->skipDrawOnEqualsPrimary = true;
   graphData->drawMarkersSelector = [](int) { return false; };
   graphData->renderState->ModuleProcState()->moduleSlot = 0;
-  graphData->paintAsDisabled = graphData->renderState->AudioParamList<FFModulationOpType>(
-    { { (int)FFModuleType::GlobalUni, 0 },
-    { (int)FFGlobalUniParam::OpType, graphData->fixedGraphIndex } }, false, -1) == FFModulationOpType::Off;
-  graphData->paintAsDisabled |= graphData->renderState->AudioParamList<FFGlobalUniMode>(
-    { { (int)FFModuleType::GlobalUni, 0 },
-    { (int)FFGlobalUniParam::Mode, graphData->fixedGraphIndex } }, false, -1) == FFGlobalUniMode::Off;
-
   processor.totalSamples = processor.PlotParams(detailGraphs, 0).sampleCount;
   FBRenderModuleGraph(&processor, true, false, detailGraphs, 0);
 }

@@ -67,7 +67,6 @@ struct FBModuleGraphComponentData final
   int pixelWidth = -1;
   int fixedGraphIndex = -1;
   int pointIndicatorSize = -1;
-  bool paintAsDisabled = false;
   bool fillPointIndicators = false;
   bool skipDrawOnEqualsPrimary = true;
   FBGraphRenderState* renderState = {};
