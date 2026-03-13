@@ -269,18 +269,6 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
     _voiceStartSnapshotNorm.voiceFadeTime[0] = FFSelectDualProcAccParamNormalized<Global>(params.voiceStart.voiceFadeTime[0], voice).CV().Get(state.voice->offsetInBlock);
     _voiceStartSnapshotNorm.voiceExtendTime[0] = FFSelectDualProcAccParamNormalized<Global>(params.voiceStart.voiceExtendTime[0], voice).CV().Get(state.voice->offsetInBlock);
 
-    if (!graph)
-    {
-      FBSArray<float, FBFixedBlockSamples> voiceFadeTimeBlock;
-      FBSArray<float, FBFixedBlockSamples> voiceExtendTimeBlock;
-      voiceFadeTimeBlock.Fill(_voiceStartSnapshotNorm.voiceFadeTime[0]);
-      voiceExtendTimeBlock.Fill(_voiceStartSnapshotNorm.voiceExtendTime[0]);
-      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoFade, false, voice, -1, voiceFadeTimeBlock);
-      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoExtend, false, voice, -1, voiceExtendTimeBlock);
-      _voiceStartSnapshotNorm.voiceFadeTime[0] = voiceFadeTimeBlock.Get(0);
-      _voiceStartSnapshotNorm.voiceExtendTime[0] = voiceExtendTimeBlock.Get(0);
-    }
-
     if (_sync)
     {
       _voiceFadeSamples = topo.NormalizedToBarsSamplesFast(
@@ -429,14 +417,10 @@ FFEchoProcessor<Global>::ProcessFeedback(
 
   FBSArray<float, FBFixedBlockSamples> mixNormModulated;
   FBSArray<float, FBFixedBlockSamples> amountNormModulated;
-  FBSArray<float, FBFixedBlockSamples> lpFreqNormModulated;
-  FBSArray<float, FBFixedBlockSamples> hpFreqNormModulated;
   FBSArray<float, FBFixedBlockSamples> delayTimeNormModulated;
 
   mixNormIn.CV().CopyTo(mixNormModulated);
   amountNormIn.CV().CopyTo(amountNormModulated);
-  lpFreqNormIn.CV().CopyTo(lpFreqNormModulated);
-  hpFreqNormIn.CV().CopyTo(hpFreqNormModulated);
   delayTimeNormIn.CV().CopyTo(delayTimeNormModulated);
 
   if constexpr (!Global)
@@ -444,8 +428,6 @@ FFEchoProcessor<Global>::ProcessFeedback(
     if (!graph)
     {
       procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoFdbkMix, false, voice, -1, mixNormModulated);
-      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoFdbkLPF, false, voice, -1, lpFreqNormModulated);
-      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoFdbkHPF, false, voice, -1, hpFreqNormModulated);
       procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoFdbkAmt, false, voice, -1, amountNormModulated);
       procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoFdbkDelay, false, voice, -1, delayTimeNormModulated);
     }
@@ -498,11 +480,11 @@ FFEchoProcessor<Global>::ProcessFeedback(
     float lpFreqPlain = 0.0f;
     if(_feedbackLPOn)
       lpFreqPlain = topo.NormalizedToLog2Fast(
-        FFEchoParam::FeedbackLPFreq, lpFreqNormModulated.Get(s));
+        FFEchoParam::FeedbackLPFreq, lpFreqNormIn.CV().Get(s));
     float hpFreqPlain = 0.0f;
     if(_feedbackHPOn)
       hpFreqPlain = topo.NormalizedToLog2Fast(
-        FFEchoParam::FeedbackHPFreq, hpFreqNormModulated.Get(s));
+        FFEchoParam::FeedbackHPFreq, hpFreqNormIn.CV().Get(s));
 
     float outLR[2];
     for (int c = 0; c < 2; c++)
@@ -554,8 +536,8 @@ FFEchoProcessor<Global>::ProcessFeedback(
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackModAmt[0], voice) = modAmtNorm.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackModRate[0], voice) = modRateNorm.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackMix[0], voice) = mixNormModulated.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackLPFreq[0], voice) = lpFreqNormModulated.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackHPFreq[0], voice) = hpFreqNormModulated.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackLPFreq[0], voice) = lpFreqNormIn.CV().Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackHPFreq[0], voice) = hpFreqNormIn.CV().Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackAmount[0], voice) = amountNormModulated.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.feedbackDelayTime[0], voice) = delayTimeNormModulated.Last();
 }
@@ -607,8 +589,6 @@ FFEchoProcessor<Global>::ProcessTaps(
         if (_tapOn[t])
         {
           procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoTapBal, false, voice, -1, tapBalNormModulated[t]);
-          procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoTapLPF, false, voice, -1, tapLPFreqNormModulated[t]);
-          procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoTapHPF, false, voice, -1, tapHPFreqNormModulated[t]);
           procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoTapDelay, false, voice, -1, tapDelayTimeNormModulated[t]);
 
           // set the param filter state equal to initial modulated param value for delay time
@@ -779,14 +759,10 @@ FFEchoProcessor<Global>::ProcessReverb(
   FBSArray<float, FBFixedBlockSamples> mixNormModulated;
   FBSArray<float, FBFixedBlockSamples> sizeNormModulated;
   FBSArray<float, FBFixedBlockSamples> dampNormModulated;
-  FBSArray<float, FBFixedBlockSamples> lpFreqNormModulated;
-  FBSArray<float, FBFixedBlockSamples> hpFreqNormModulated;
 
   mixNormIn.CV().CopyTo(mixNormModulated);
   sizeNormIn.CV().CopyTo(sizeNormModulated);
   dampNormIn.CV().CopyTo(dampNormModulated);
-  lpFreqNormIn.CV().CopyTo(lpFreqNormModulated);
-  hpFreqNormIn.CV().CopyTo(hpFreqNormModulated);
 
   if constexpr (!Global)
   {
@@ -795,8 +771,6 @@ FFEchoProcessor<Global>::ProcessReverb(
       procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbMix, false, voice, -1, mixNormModulated);
       procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbSize, false, voice, -1, sizeNormModulated);
       procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbDamp, false, voice, -1, dampNormModulated);
-      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbLPF, false, voice, -1, lpFreqNormModulated);
-      procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EchoReverbHPF, false, voice, -1, hpFreqNormModulated);
     }
   }
 
@@ -822,11 +796,11 @@ FFEchoProcessor<Global>::ProcessReverb(
     float lpFreqPlain = 0.0f;
     if (_reverbLPOn)
       lpFreqPlain = topo.NormalizedToLog2Fast(
-        FFEchoParam::ReverbLPFreq, lpFreqNormModulated.Get(s));
+        FFEchoParam::ReverbLPFreq, lpFreqNormIn.CV().Get(s));
     float hpFreqPlain = 0.0f;
     if (_reverbHPOn)
       hpFreqPlain = topo.NormalizedToLog2Fast(
-        FFEchoParam::ReverbHPFreq, hpFreqNormModulated.Get(s));
+        FFEchoParam::ReverbHPFreq, hpFreqNormIn.CV().Get(s));
     if (_graph)
     {
       lpFreqPlain *= _graphStVarFilterFreqMultiplier;
@@ -910,8 +884,8 @@ FFEchoProcessor<Global>::ProcessReverb(
   FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbMix[0], voice) = mixNormModulated.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbDamp[0], voice) = dampNormModulated.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbSize[0], voice) = sizeNormModulated.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbLPFreq[0], voice) = lpFreqNormModulated.Last();
-  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbHPFreq[0], voice) = hpFreqNormModulated.Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbLPFreq[0], voice) = lpFreqNormIn.CV().Last();
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbHPFreq[0], voice) = hpFreqNormIn.CV().Last();
 
   if constexpr (!Global)
   {

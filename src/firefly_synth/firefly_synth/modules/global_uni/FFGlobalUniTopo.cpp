@@ -53,10 +53,6 @@ FFParamToGlobalUniTarget(FBRuntimeTopo const* topo, int index)
     return FFGlobalUniTarget::LFOMax;
   if (indices.module.index == (int)FFModuleType::VLFO && indices.param.index == (int)FFLFOParam::Phase)
     return FFGlobalUniTarget::LFOPhaseOffset;
-  if (indices.module.index == (int)FFModuleType::VLFO && indices.param.index == (int)FFLFOParam::SkewAXAmt)
-    return FFGlobalUniTarget::LFOSkewAX;
-  if (indices.module.index == (int)FFModuleType::VLFO && indices.param.index == (int)FFLFOParam::SkewAYAmt)
-    return FFGlobalUniTarget::LFOSkewAY;
   if (indices.module.index == (int)FFModuleType::Env && indices.param.index == (int)FFEnvParam::StageSlope)
     return FFGlobalUniTarget::EnvSlope;
   if (indices.module.index == (int)FFModuleType::Env && indices.param.index == (int)FFEnvParam::StageTime)
@@ -75,40 +71,24 @@ FFParamToGlobalUniTarget(FBRuntimeTopo const* topo, int index)
     return (FFGlobalUniTarget)((int)FFGlobalUniTarget::VFXParamA + indices.param.slot);
   if (indices.module.index == (int)FFModuleType::VEffect && indices.param.index == (int)FFEffectParam::DistDrive)
     return (FFGlobalUniTarget)((int)FFGlobalUniTarget::VFXParamA + indices.param.slot);
-  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::VoiceExtendTime)
-    return FFGlobalUniTarget::EchoExtend;
-  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::VoiceFadeTime)
-    return FFGlobalUniTarget::EchoFade;
   if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::TapsMix)
     return FFGlobalUniTarget::EchoTapsMix;
   if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::TapBalance)
     return FFGlobalUniTarget::EchoTapBal;
   if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::TapDelayTime)
     return FFGlobalUniTarget::EchoTapDelay;
-  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::TapLPFreq)
-    return FFGlobalUniTarget::EchoTapLPF;
-  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::TapHPFreq)
-    return FFGlobalUniTarget::EchoTapHPF;
   if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::FeedbackDelayTime)
     return FFGlobalUniTarget::EchoFdbkDelay;
   if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::FeedbackMix)
     return FFGlobalUniTarget::EchoFdbkMix;
   if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::FeedbackAmount)
     return FFGlobalUniTarget::EchoFdbkAmt;
-  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::FeedbackLPFreq)
-    return FFGlobalUniTarget::EchoFdbkLPF;
-  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::FeedbackHPFreq)
-    return FFGlobalUniTarget::EchoFdbkHPF;
   if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::ReverbMix)
     return FFGlobalUniTarget::EchoReverbMix;
   if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::ReverbSize)
     return FFGlobalUniTarget::EchoReverbSize;
   if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::ReverbDamp)
     return FFGlobalUniTarget::EchoReverbDamp;
-  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::ReverbLPFreq)
-    return FFGlobalUniTarget::EchoReverbLPF;
-  if (indices.module.index == (int)FFModuleType::VEcho && indices.param.index == (int)FFEchoParam::ReverbHPFreq)
-    return FFGlobalUniTarget::EchoReverbHPF;
   return (FFGlobalUniTarget)-1;
 }
 
@@ -129,8 +109,6 @@ FFGlobalUniTargetToModule(FFGlobalUniTarget target)
   case FFGlobalUniTarget::LFORate: 
   case FFGlobalUniTarget::LFOMin: 
   case FFGlobalUniTarget::LFOMax:
-  case FFGlobalUniTarget::LFOSkewAX: 
-  case FFGlobalUniTarget::LFOSkewAY: 
   case FFGlobalUniTarget::LFOPhaseOffset: return FFModuleType::VLFO;
   case FFGlobalUniTarget::EnvSlope: 
   case FFGlobalUniTarget::EnvStretch: return FFModuleType::Env;
@@ -138,23 +116,15 @@ FFGlobalUniTargetToModule(FFGlobalUniTarget target)
   case FFGlobalUniTarget::VFXParamB: 
   case FFGlobalUniTarget::VFXParamC: 
   case FFGlobalUniTarget::VFXParamD: return FFModuleType::VEffect;
-  case FFGlobalUniTarget::EchoExtend: 
-  case FFGlobalUniTarget::EchoFade: 
   case FFGlobalUniTarget::EchoTapsMix:
   case FFGlobalUniTarget::EchoTapDelay:
   case FFGlobalUniTarget::EchoTapBal: 
-  case FFGlobalUniTarget::EchoTapLPF:
-  case FFGlobalUniTarget::EchoTapHPF:
   case FFGlobalUniTarget::EchoFdbkDelay: 
   case FFGlobalUniTarget::EchoFdbkMix: 
   case FFGlobalUniTarget::EchoFdbkAmt: 
-  case FFGlobalUniTarget::EchoFdbkLPF:
-  case FFGlobalUniTarget::EchoFdbkHPF:
   case FFGlobalUniTarget::EchoReverbMix: 
   case FFGlobalUniTarget::EchoReverbSize: 
-  case FFGlobalUniTarget::EchoReverbDamp: 
-  case FFGlobalUniTarget::EchoReverbLPF:
-  case FFGlobalUniTarget::EchoReverbHPF: return FFModuleType::VEcho;
+  case FFGlobalUniTarget::EchoReverbDamp: return FFModuleType::VEcho;
   default: FB_ASSERT(false); return (FFModuleType)-1;
   }
 }
@@ -176,8 +146,6 @@ FFGlobalUniTargetToString(FFGlobalUniTarget target)
   case FFGlobalUniTarget::LFORate: return "VLFO Rate";
   case FFGlobalUniTarget::LFOMin: return "VLFO Min";
   case FFGlobalUniTarget::LFOMax: return "VLFO Max";
-  case FFGlobalUniTarget::LFOSkewAX: return "VLFO SkewA X";
-  case FFGlobalUniTarget::LFOSkewAY: return "VLFO SkewA Y";
   case FFGlobalUniTarget::LFOPhaseOffset: return "VLFO Phase";
   case FFGlobalUniTarget::EnvSlope: return "Env Slope";
   case FFGlobalUniTarget::EnvStretch: return "Env Stretch";
@@ -185,23 +153,15 @@ FFGlobalUniTargetToString(FFGlobalUniTarget target)
   case FFGlobalUniTarget::VFXParamB: return "VFX Param B";
   case FFGlobalUniTarget::VFXParamC: return "VFX Param C";
   case FFGlobalUniTarget::VFXParamD: return "VFX Param D";
-  case FFGlobalUniTarget::EchoExtend: return "VEcho Extend";
-  case FFGlobalUniTarget::EchoFade: return "VEcho Fade";
   case FFGlobalUniTarget::EchoTapsMix: return "VEcho Taps Mix";
   case FFGlobalUniTarget::EchoTapDelay: return "VEcho Tap Dly";
   case FFGlobalUniTarget::EchoTapBal: return "VEcho Tap Bal";
-  case FFGlobalUniTarget::EchoTapLPF: return "VEcho Tap LPF";
-  case FFGlobalUniTarget::EchoTapHPF: return "VEcho Tap HPF";
   case FFGlobalUniTarget::EchoFdbkDelay: return "VEcho Fdbk Dly";
   case FFGlobalUniTarget::EchoFdbkMix: return "VEcho Fdbk Mix";
   case FFGlobalUniTarget::EchoFdbkAmt: return "VEcho Fdbk Amt";
-  case FFGlobalUniTarget::EchoFdbkLPF: return "VEcho Fdbk LPF";
-  case FFGlobalUniTarget::EchoFdbkHPF: return "VEcho Fdbk HPF";
   case FFGlobalUniTarget::EchoReverbMix: return "VEcho Rvrb Mix";
   case FFGlobalUniTarget::EchoReverbSize: return "VEcho Rvrb Size";
   case FFGlobalUniTarget::EchoReverbDamp: return "VEcho Rvrb Damp";
-  case FFGlobalUniTarget::EchoReverbLPF: return "VEcho Rvrb LPF";
-  case FFGlobalUniTarget::EchoReverbHPF: return "VEcho Rvrb HPF";
   default: FB_ASSERT(false); return "";
   }
 }
@@ -223,8 +183,6 @@ FFGlobalUniTargetByGUIOrder(FFGlobalUniTargetGUIOrder order)
   case FFGlobalUniTargetGUIOrder::LFORate: return FFGlobalUniTarget::LFORate;
   case FFGlobalUniTargetGUIOrder::LFOMin: return FFGlobalUniTarget::LFOMin;
   case FFGlobalUniTargetGUIOrder::LFOMax: return FFGlobalUniTarget::LFOMax;
-  case FFGlobalUniTargetGUIOrder::LFOSkewAX: return FFGlobalUniTarget::LFOSkewAX;
-  case FFGlobalUniTargetGUIOrder::LFOSkewAY: return FFGlobalUniTarget::LFOSkewAY;
   case FFGlobalUniTargetGUIOrder::LFOPhaseOffset: return FFGlobalUniTarget::LFOPhaseOffset;
   case FFGlobalUniTargetGUIOrder::EnvSlope: return FFGlobalUniTarget::EnvSlope;
   case FFGlobalUniTargetGUIOrder::EnvStretch: return FFGlobalUniTarget::EnvStretch;
@@ -232,23 +190,15 @@ FFGlobalUniTargetByGUIOrder(FFGlobalUniTargetGUIOrder order)
   case FFGlobalUniTargetGUIOrder::VFXParamB: return FFGlobalUniTarget::VFXParamB;
   case FFGlobalUniTargetGUIOrder::VFXParamC: return FFGlobalUniTarget::VFXParamC;
   case FFGlobalUniTargetGUIOrder::VFXParamD: return FFGlobalUniTarget::VFXParamD;
-  case FFGlobalUniTargetGUIOrder::EchoExtend: return FFGlobalUniTarget::EchoExtend;
-  case FFGlobalUniTargetGUIOrder::EchoFade: return FFGlobalUniTarget::EchoFade;
   case FFGlobalUniTargetGUIOrder::EchoTapsMix: return FFGlobalUniTarget::EchoTapsMix;
   case FFGlobalUniTargetGUIOrder::EchoTapDelay: return FFGlobalUniTarget::EchoTapDelay;
   case FFGlobalUniTargetGUIOrder::EchoTapBal: return FFGlobalUniTarget::EchoTapBal;
-  case FFGlobalUniTargetGUIOrder::EchoTapLPF: return FFGlobalUniTarget::EchoTapLPF;
-  case FFGlobalUniTargetGUIOrder::EchoTapHPF: return FFGlobalUniTarget::EchoTapHPF;
   case FFGlobalUniTargetGUIOrder::EchoFdbkDelay: return FFGlobalUniTarget::EchoFdbkDelay;
   case FFGlobalUniTargetGUIOrder::EchoFdbkMix: return FFGlobalUniTarget::EchoFdbkMix;
   case FFGlobalUniTargetGUIOrder::EchoFdbkAmt: return FFGlobalUniTarget::EchoFdbkAmt;
-  case FFGlobalUniTargetGUIOrder::EchoFdbkLPF: return FFGlobalUniTarget::EchoFdbkLPF;
-  case FFGlobalUniTargetGUIOrder::EchoFdbkHPF: return FFGlobalUniTarget::EchoFdbkHPF;
   case FFGlobalUniTargetGUIOrder::EchoReverbMix: return FFGlobalUniTarget::EchoReverbMix;
   case FFGlobalUniTargetGUIOrder::EchoReverbSize: return FFGlobalUniTarget::EchoReverbSize;
   case FFGlobalUniTargetGUIOrder::EchoReverbDamp: return FFGlobalUniTarget::EchoReverbDamp;
-  case FFGlobalUniTargetGUIOrder::EchoReverbLPF: return FFGlobalUniTarget::EchoReverbLPF;
-  case FFGlobalUniTargetGUIOrder::EchoReverbHPF: return FFGlobalUniTarget::EchoReverbHPF;
   default: FB_ASSERT(false); return {};
   }
 }
@@ -679,40 +629,6 @@ FFMakeGlobalUniTopo()
   manualLFOMax.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualLFOMax);
   SetManualParamEnabledWhen(manualLFOMax, FFGlobalUniTarget::LFOMax);
 
-  auto& manualLFOSkewAX = result->params[(int)FFGlobalUniParam::ManualLFOSkewAX];
-  manualLFOSkewAX.mode = FBParamMode::Accurate;
-  manualLFOSkewAX.defaultText = "50";
-  manualLFOSkewAX.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::LFOSkewAX, s); };
-  manualLFOSkewAX.slotFormatterOverrides = true;
-  manualLFOSkewAX.slotCount = FFGlobalUniMaxCount;
-  manualLFOSkewAX.unit = "%";
-  manualLFOSkewAX.id = "{5FABD18F-6F53-4532-AC77-7FC5882B2CD1}";
-  manualLFOSkewAX.name = "Manual LFO A Skew X";
-  manualLFOSkewAX.description = "Unison Manual Param LFO A Skew X";
-  manualLFOSkewAX.type = FBParamType::Identity;
-  auto selectManualLFOSkewAX = [](auto& module) { return &module.acc.manualLFOSkewAX; };
-  manualLFOSkewAX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualLFOSkewAX);
-  manualLFOSkewAX.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualLFOSkewAX);
-  manualLFOSkewAX.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualLFOSkewAX);
-  SetManualParamEnabledWhen(manualLFOSkewAX, FFGlobalUniTarget::LFOSkewAX);
-
-  auto& manualLFOSkewAY = result->params[(int)FFGlobalUniParam::ManualLFOSkewAY];
-  manualLFOSkewAY.mode = FBParamMode::Accurate;
-  manualLFOSkewAY.defaultText = "50";
-  manualLFOSkewAY.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::LFOSkewAY, s); };
-  manualLFOSkewAY.slotFormatterOverrides = true;
-  manualLFOSkewAY.slotCount = FFGlobalUniMaxCount;
-  manualLFOSkewAY.unit = "%";
-  manualLFOSkewAY.id = "{7C900D23-EC5F-483B-82A3-EB27E2DD9E66}";
-  manualLFOSkewAY.name = "Manual LFO A Skew Y";
-  manualLFOSkewAY.description = "Unison Manual Param LFO A Skew Y";
-  manualLFOSkewAY.type = FBParamType::Identity;
-  auto selectManualLFOSkewAY = [](auto& module) { return &module.acc.manualLFOSkewAY; };
-  manualLFOSkewAY.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualLFOSkewAY);
-  manualLFOSkewAY.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualLFOSkewAY);
-  manualLFOSkewAY.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualLFOSkewAY);
-  SetManualParamEnabledWhen(manualLFOSkewAY, FFGlobalUniTarget::LFOSkewAY);
-
   auto& manualLFOPhaseOffset = result->params[(int)FFGlobalUniParam::ManualLFOPhaseOffset];
   manualLFOPhaseOffset.mode = FBParamMode::VoiceStart;
   manualLFOPhaseOffset.defaultText = "0";
@@ -832,40 +748,6 @@ FFMakeGlobalUniTopo()
   manualEnvStretch.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEnvStretch);
   SetManualParamEnabledWhen(manualEnvStretch, FFGlobalUniTarget::EnvStretch);
 
-  auto& manualEchoExtend = result->params[(int)FFGlobalUniParam::ManualEchoExtend];
-  manualEchoExtend.mode = FBParamMode::VoiceStart;
-  manualEchoExtend.defaultText = "50";
-  manualEchoExtend.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoExtend, s); };
-  manualEchoExtend.slotFormatterOverrides = true;
-  manualEchoExtend.slotCount = FFGlobalUniMaxCount;
-  manualEchoExtend.unit = "%";
-  manualEchoExtend.id = "{B60645F1-F349-4911-AA11-218E188C0D1F}";
-  manualEchoExtend.name = "Manual VEcho Extend";
-  manualEchoExtend.description = "Unison Manual Param VEcho Extend";
-  manualEchoExtend.type = FBParamType::Identity;
-  auto selectManualEchoExtend = [](auto& module) { return &module.acc.manualEchoExtend; };
-  manualEchoExtend.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoExtend);
-  manualEchoExtend.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoExtend);
-  manualEchoExtend.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoExtend);
-  SetManualParamEnabledWhen(manualEchoExtend, FFGlobalUniTarget::EchoExtend);
-
-  auto& manualEchoFade = result->params[(int)FFGlobalUniParam::ManualEchoFade];
-  manualEchoFade.mode = FBParamMode::VoiceStart;
-  manualEchoFade.defaultText = "50";
-  manualEchoFade.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFade, s); };
-  manualEchoFade.slotFormatterOverrides = true;
-  manualEchoFade.slotCount = FFGlobalUniMaxCount;
-  manualEchoFade.unit = "%";
-  manualEchoFade.id = "{A9F81A4A-1FB3-418B-86F5-8F49C77934B7}";
-  manualEchoFade.name = "Manual VEcho Fade";
-  manualEchoFade.description = "Unison Manual Param VEcho Fade";
-  manualEchoFade.type = FBParamType::Identity;
-  auto selectManualEchoFade = [](auto& module) { return &module.acc.manualEchoFade; };
-  manualEchoFade.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoFade);
-  manualEchoFade.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoFade);
-  manualEchoFade.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoFade);
-  SetManualParamEnabledWhen(manualEchoFade, FFGlobalUniTarget::EchoFade);
-
   auto& manualEchoTapsMix = result->params[(int)FFGlobalUniParam::ManualEchoTapsMix];
   manualEchoTapsMix.mode = FBParamMode::Accurate;
   manualEchoTapsMix.defaultText = "50";
@@ -917,40 +799,6 @@ FFMakeGlobalUniTopo()
   manualEchoTapBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoTapBal);
   SetManualParamEnabledWhen(manualEchoTapBal, FFGlobalUniTarget::EchoTapBal);
 
-  auto& manualEchoTapLPF = result->params[(int)FFGlobalUniParam::ManualEchoTapLPF];
-  manualEchoTapLPF.mode = FBParamMode::Accurate;
-  manualEchoTapLPF.defaultText = "50";
-  manualEchoTapLPF.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapLPF, s); };
-  manualEchoTapLPF.slotFormatterOverrides = true;
-  manualEchoTapLPF.slotCount = FFGlobalUniMaxCount;
-  manualEchoTapLPF.unit = "%";
-  manualEchoTapLPF.id = "{47E81F03-58DC-4A04-9534-5E1A04E1C150}";
-  manualEchoTapLPF.name = "Manual VEcho Tap LP Frequency";
-  manualEchoTapLPF.description = "Unison Manual Param VEcho Tap LP Frequency";
-  manualEchoTapLPF.type = FBParamType::Identity;
-  auto selectManualEchoTapLPF = [](auto& module) { return &module.acc.manualEchoTapLPF; };
-  manualEchoTapLPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoTapLPF);
-  manualEchoTapLPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoTapLPF);
-  manualEchoTapLPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoTapLPF);
-  SetManualParamEnabledWhen(manualEchoTapLPF, FFGlobalUniTarget::EchoTapLPF);
-
-  auto& manualEchoTapHPF = result->params[(int)FFGlobalUniParam::ManualEchoTapHPF];
-  manualEchoTapHPF.mode = FBParamMode::Accurate;
-  manualEchoTapHPF.defaultText = "50";
-  manualEchoTapHPF.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoTapHPF, s); };
-  manualEchoTapHPF.slotFormatterOverrides = true;
-  manualEchoTapHPF.slotCount = FFGlobalUniMaxCount;
-  manualEchoTapHPF.unit = "%";
-  manualEchoTapHPF.id = "{61C0E876-6480-421F-A5BB-EA9A616751FB}";
-  manualEchoTapHPF.name = "Manual VEcho Tap HP Frequency";
-  manualEchoTapHPF.description = "Unison Manual Param VEcho Tap HP Frequency";
-  manualEchoTapHPF.type = FBParamType::Identity;
-  auto selectManualEchoTapHPF = [](auto& module) { return &module.acc.manualEchoTapHPF; };
-  manualEchoTapHPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoTapHPF);
-  manualEchoTapHPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoTapHPF);
-  manualEchoTapHPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoTapHPF);
-  SetManualParamEnabledWhen(manualEchoTapHPF, FFGlobalUniTarget::EchoTapHPF);
-
   auto& manualEchoFdbkDelay = result->params[(int)FFGlobalUniParam::ManualEchoFdbkDelay];
   manualEchoFdbkDelay.mode = FBParamMode::Accurate;
   manualEchoFdbkDelay.defaultText = "50";
@@ -1000,41 +848,7 @@ FFMakeGlobalUniTopo()
   manualEchoFdbkAmt.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoFdbkAmt);
   manualEchoFdbkAmt.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoFdbkAmt);
   manualEchoFdbkAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoFdbkAmt);
-  SetManualParamEnabledWhen(manualEchoFdbkAmt, FFGlobalUniTarget::EchoFdbkAmt);
-
-  auto& manualEchoFdbkLPF = result->params[(int)FFGlobalUniParam::ManualEchoFdbkLPF];
-  manualEchoFdbkLPF.mode = FBParamMode::Accurate;
-  manualEchoFdbkLPF.defaultText = "50";
-  manualEchoFdbkLPF.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFdbkLPF, s); };
-  manualEchoFdbkLPF.slotFormatterOverrides = true;
-  manualEchoFdbkLPF.slotCount = FFGlobalUniMaxCount;
-  manualEchoFdbkLPF.unit = "%";
-  manualEchoFdbkLPF.id = "{7F92602A-61F7-42E8-AAE7-9C931B9200E2}";
-  manualEchoFdbkLPF.name = "Manual VEcho Feedback LP Frequency";
-  manualEchoFdbkLPF.description = "Unison Manual Param VEcho Feedback LP Frequency";
-  manualEchoFdbkLPF.type = FBParamType::Identity;
-  auto selectManualEchoFdbkLPF = [](auto& module) { return &module.acc.manualEchoFdbkLPF; };
-  manualEchoFdbkLPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoFdbkLPF);
-  manualEchoFdbkLPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoFdbkLPF);
-  manualEchoFdbkLPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoFdbkLPF);
-  SetManualParamEnabledWhen(manualEchoFdbkLPF, FFGlobalUniTarget::EchoFdbkLPF);
-
-  auto& manualEchoFdbkHPF = result->params[(int)FFGlobalUniParam::ManualEchoFdbkHPF];
-  manualEchoFdbkHPF.mode = FBParamMode::Accurate;
-  manualEchoFdbkHPF.defaultText = "50";
-  manualEchoFdbkHPF.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoFdbkHPF, s); };
-  manualEchoFdbkHPF.slotFormatterOverrides = true;
-  manualEchoFdbkHPF.slotCount = FFGlobalUniMaxCount;
-  manualEchoFdbkHPF.unit = "%";
-  manualEchoFdbkHPF.id = "{089575E1-8167-46F7-80C7-86BA739693A8}";
-  manualEchoFdbkHPF.name = "Manual VEcho Feedback HP Frequency";
-  manualEchoFdbkHPF.description = "Unison Manual Param VEcho Feedback HP Frequency";
-  manualEchoFdbkHPF.type = FBParamType::Identity;
-  auto selectManualEchoFdbkHPF = [](auto& module) { return &module.acc.manualEchoFdbkHPF; };
-  manualEchoFdbkHPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoFdbkHPF);
-  manualEchoFdbkHPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoFdbkHPF);
-  manualEchoFdbkHPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoFdbkHPF);
-  SetManualParamEnabledWhen(manualEchoFdbkHPF, FFGlobalUniTarget::EchoFdbkHPF);
+  SetManualParamEnabledWhen(manualEchoFdbkAmt, FFGlobalUniTarget::EchoFdbkAmt);   
 
   auto& manualEchoReverbMix = result->params[(int)FFGlobalUniParam::ManualEchoReverbMix];
   manualEchoReverbMix.mode = FBParamMode::Accurate;
@@ -1086,40 +900,6 @@ FFMakeGlobalUniTopo()
   manualEchoReverbDamp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoReverbDamp);
   manualEchoReverbDamp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoReverbDamp);
   SetManualParamEnabledWhen(manualEchoReverbDamp, FFGlobalUniTarget::EchoReverbDamp);
-
-  auto& manualEchoReverbLPF = result->params[(int)FFGlobalUniParam::ManualEchoReverbLPF];
-  manualEchoReverbLPF.mode = FBParamMode::Accurate;
-  manualEchoReverbLPF.defaultText = "50";
-  manualEchoReverbLPF.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoReverbLPF, s); };
-  manualEchoReverbLPF.slotFormatterOverrides = true;
-  manualEchoReverbLPF.slotCount = FFGlobalUniMaxCount;
-  manualEchoReverbLPF.unit = "%";
-  manualEchoReverbLPF.id = "{64120E13-8778-42CF-8A7D-EB3EC175DA15}";
-  manualEchoReverbLPF.name = "Manual VEcho Reverb LP Frequency";
-  manualEchoReverbLPF.description = "Unison Manual Param VEcho Reverb LP Frequency";
-  manualEchoReverbLPF.type = FBParamType::Identity;
-  auto selectManualEchoReverbLPF = [](auto& module) { return &module.acc.manualEchoReverbLPF; };
-  manualEchoReverbLPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoReverbLPF);
-  manualEchoReverbLPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoReverbLPF);
-  manualEchoReverbLPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoReverbLPF);
-  SetManualParamEnabledWhen(manualEchoReverbLPF, FFGlobalUniTarget::EchoReverbLPF);
-
-  auto& manualEchoReverbHPF = result->params[(int)FFGlobalUniParam::ManualEchoReverbHPF];
-  manualEchoReverbHPF.mode = FBParamMode::Accurate;
-  manualEchoReverbHPF.defaultText = "50";
-  manualEchoReverbHPF.slotFormatter = [](auto const&, auto, int s) { return ManualSlotFormatter(FFGlobalUniTarget::EchoReverbHPF, s); };
-  manualEchoReverbHPF.slotFormatterOverrides = true;
-  manualEchoReverbHPF.slotCount = FFGlobalUniMaxCount;
-  manualEchoReverbHPF.unit = "%";
-  manualEchoReverbHPF.id = "{87EC2DB4-38C8-4EB3-9A1E-E2BABD327BF7}";
-  manualEchoReverbHPF.name = "Manual VEcho Reverb HP Frequency";
-  manualEchoReverbHPF.description = "Unison Manual Param VEcho Reverb HP Frequency";
-  manualEchoReverbHPF.type = FBParamType::Identity;
-  auto selectManualEchoReverbHPF = [](auto& module) { return &module.acc.manualEchoReverbHPF; };
-  manualEchoReverbHPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectManualEchoReverbHPF);
-  manualEchoReverbHPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectManualEchoReverbHPF);
-  manualEchoReverbHPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectManualEchoReverbHPF);
-  SetManualParamEnabledWhen(manualEchoReverbHPF, FFGlobalUniTarget::EchoReverbHPF);
-
+  
   return result;
 }
