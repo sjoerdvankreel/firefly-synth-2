@@ -55,25 +55,12 @@ FBGridComponent::Add(int row, int col, Component* child)
 }
 
 void 
-FBGridComponent::MarkSection(FBGridSection const& section)
-{
-  MarkSection(section, FBGridSectionMark::DefaultBackground);
-}
-
-void 
 FBGridComponent::MarkSection(FBGridSection const& section, FBGridSectionMark mark)
 {
-  MarkSection(section, mark, {});
-}
-
-void 
-FBGridComponent::MarkSection(FBGridSection const& section, FBGridSectionMark mark, FBGridSectionDetails const& details)
-{
-  FBGridSectionMarkDetails sectionMarkDetails = {};
-  sectionMarkDetails.mark = mark;
-  sectionMarkDetails.details = details;
-  sectionMarkDetails.section = section;
-  _sectionMarkDetails.push_back(sectionMarkDetails);
+  FBGridSectionAndMark sectionAndMark = {};
+  sectionAndMark.mark = mark;
+  sectionAndMark.section = section;
+  _sectionsAndMarks.push_back(sectionAndMark);
 }
 
 int
@@ -250,57 +237,44 @@ FBGridComponent::paint(Graphics& g)
   x0 = x1 = y0 = y1 = -1.0f;
 
   auto fbLookAndFeel = FBGetLookAndFeelFor(_plugGUI);
-  for (int i = 0; i < _sectionMarkDetails.size(); i++)
+  for (int i = 0; i < _sectionsAndMarks.size(); i++)
   {      
     for (int j = 0; j < _grid.items.size(); j++)
     {
-      if (_grid.items[j].row.start.getNumber() == _sectionMarkDetails[i].section.pos.row + 1)
+      if (_grid.items[j].row.start.getNumber() == _sectionsAndMarks[i].section.pos.row + 1)
         y0 = static_cast<float>(_grid.items[j].associatedComponent->getY());
-      if (_grid.items[j].column.start.getNumber() == _sectionMarkDetails[i].section.pos.col + 1)
+      if (_grid.items[j].column.start.getNumber() == _sectionsAndMarks[i].section.pos.col + 1)
         x0 = static_cast<float>(_grid.items[j].associatedComponent->getX());
-      if (_grid.items[j].row.end.getNumber() == _sectionMarkDetails[i].section.pos.row + _sectionMarkDetails[i].section.span.row + 1)
+      if (_grid.items[j].row.end.getNumber() == _sectionsAndMarks[i].section.pos.row + _sectionsAndMarks[i].section.span.row + 1)
         y1 = static_cast<float>(_grid.items[j].associatedComponent->getBottom());
-      if (_grid.items[j].column.end.getNumber() == _sectionMarkDetails[i].section.pos.col + _sectionMarkDetails[i].section.span.col + 1)
+      if (_grid.items[j].column.end.getNumber() == _sectionsAndMarks[i].section.pos.col + _sectionsAndMarks[i].section.span.col + 1)
         x1 = static_cast<float>(_grid.items[j].associatedComponent->getRight());
     }
-    float subtractR = (float)_sectionMarkDetails[i].details.marginR; // todo get rid of it
-    if (_sectionMarkDetails[i].mark == FBGridSectionMark::DefaultBackground ||
-      _sectionMarkDetails[i].mark == FBGridSectionMark::DefaultBackgroundDefaultBorder ||
-      _sectionMarkDetails[i].mark == FBGridSectionMark::DefaultBackgroundAlternateBorder)
+    if (_sectionsAndMarks[i].mark == FBGridSectionMark::DefaultBackground ||
+      _sectionsAndMarks[i].mark == FBGridSectionMark::DefaultBackgroundDefaultBorder ||
+      _sectionsAndMarks[i].mark == FBGridSectionMark::DefaultBackgroundAlternateBorder)
     {
       g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).sectionBackground);
-      if (_sectionMarkDetails[i].details.roundCorners)
-        g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionMarkDetails[i].details.cornerSize);
-      else
-        g.fillRect(x0, y0, x1 - x0 - subtractR, y1 - y0);
+      g.fillRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 3.0f);
     }
-    if (_sectionMarkDetails[i].mark == FBGridSectionMark::AlternateBackground ||
-      _sectionMarkDetails[i].mark == FBGridSectionMark::AlternateBackgroundAlternateBorder)
+    if (_sectionsAndMarks[i].mark == FBGridSectionMark::AlternateBackground ||
+      _sectionsAndMarks[i].mark == FBGridSectionMark::AlternateBackgroundAlternateBorder)
     {
       g.setColour(Colours::white.withAlpha(0.1f));
-      if (_sectionMarkDetails[i].details.roundCorners)
-        g.fillRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionMarkDetails[i].details.cornerSize);
-      else
-        g.fillRect(x0, y0, x1 - x0 - subtractR, y1 - y0);
+      g.fillRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 3.0f);
     }
-    if (_sectionMarkDetails[i].mark == FBGridSectionMark::AlternateBorder ||
-      _sectionMarkDetails[i].mark == FBGridSectionMark::DefaultBackgroundAlternateBorder ||
-      _sectionMarkDetails[i].mark == FBGridSectionMark::AlternateBackgroundAlternateBorder)
+    if (_sectionsAndMarks[i].mark == FBGridSectionMark::AlternateBorder ||
+      _sectionsAndMarks[i].mark == FBGridSectionMark::DefaultBackgroundAlternateBorder ||
+      _sectionsAndMarks[i].mark == FBGridSectionMark::AlternateBackgroundAlternateBorder)
     {
       g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).primary.withAlpha(0.25f));
-      if (_sectionMarkDetails[i].details.roundCorners)
-        g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionMarkDetails[i].details.cornerSize, lineThickness);
-      else
-        g.drawRect(x0, y0, x1 - x0 - subtractR, y1 - y0, lineThickness);
+      g.drawRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 3.0f, lineThickness);
     }
-    if (_sectionMarkDetails[i].mark == FBGridSectionMark::DefaultBorder ||
-      _sectionMarkDetails[i].mark == FBGridSectionMark::DefaultBackgroundDefaultBorder)
+    if (_sectionsAndMarks[i].mark == FBGridSectionMark::DefaultBorder ||
+      _sectionsAndMarks[i].mark == FBGridSectionMark::DefaultBackgroundDefaultBorder)
     {
       g.setColour(fbLookAndFeel->FindColorSchemeFor(*this).sectionBorder.withAlpha(0.125f));
-      if (_sectionMarkDetails[i].details.roundCorners)
-        g.drawRoundedRectangle(x0, y0, x1 - x0 - subtractR, y1 - y0, _sectionMarkDetails[i].details.cornerSize, lineThickness);
-      else
-        g.drawRect(x0, y0, x1 - x0 - subtractR, y1 - y0, lineThickness);
+      g.drawRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 3.0f, lineThickness);
     }      
   }
 }

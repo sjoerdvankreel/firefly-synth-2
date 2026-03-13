@@ -145,7 +145,7 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
     grid->Add(1 + t, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpRes, Slider::SliderStyle::RotaryVerticalDrag));
 
     if (t % 2 == 1)
-      grid->MarkSection({ { t + 1, 9 }, { 1, 3 } }, FBGridSectionMark::AlternateBackground, { true, 3.0f, t == FFEchoTapCount - 1 ? 2 : 0 });
+      grid->MarkSection({ { t + 1, 9 }, { 1, 3 } }, FBGridSectionMark::AlternateBackground);
   }
 
   return grid;
