@@ -246,8 +246,10 @@ FFMakeGlobalUniGUI(
   topGrid->Add(0, 1, MakeGlobalUniInit(plugGUI));
   auto topComponent = plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::GlobalUniTop, topGrid);
   auto bottomGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1 } });
-  bottomGrid->Add(0, 0, plugGUI->StoreComponent<FBCardComponent>(
-    plugGUI, MakeGlobalUniContent(plugGUI, graphRenderState, 0, fixedGraphs)));
+  bottomGrid->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(
+    plugGUI, false, true, false, false,
+      plugGUI->StoreComponent<FBCardComponent>(
+      plugGUI, MakeGlobalUniContent(plugGUI, graphRenderState, 0, fixedGraphs))));
   bottomGrid->Add(0, 1, plugGUI->StoreComponent<FBCardComponent>(
     plugGUI, MakeGlobalUniContent(plugGUI, graphRenderState, (int)FFGlobalUniTarget::Count / 2, fixedGraphs)));
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, false, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1 } });
