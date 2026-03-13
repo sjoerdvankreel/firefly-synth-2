@@ -97,7 +97,12 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
 
     int rows = 0;
     int cols = 0;
-    if (_layout == FBModuleGraphLayout::LeftToRight)
+    if (_fixedToRuntimeModuleIndex != -1)
+    {
+      rows = 1;
+      cols = 1;
+    }
+    else if (_layout == FBModuleGraphLayout::LeftToRight)
     {
       rows = 1;
       cols = graphCount;
@@ -130,7 +135,12 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
     {
       std::unique_ptr<FBGridComponent> displayAndTextGrid = {};
       auto display = std::make_unique<FBModuleGraphDisplayComponent>(_plugGUI, _data.get(), i);
-      if (detailGraphUpperLowerText)
+      if (_fixedToRuntimeModuleIndex != -1)
+      {
+        displayAndTextGrid = std::make_unique<FBGridComponent>(_plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1 });
+        displayAndTextGrid->Add(0, 0, display.get());
+      }
+      else if (detailGraphUpperLowerText)
       {
         auto upperText = std::make_unique<FBModuleGraphTextComponent>(_plugGUI, _data.get(), i, FBModuleGraphTextType::TitleGain);
         auto lowerText = std::make_unique<FBModuleGraphTextComponent>(_plugGUI, _data.get(), i, FBModuleGraphTextType::Main);
