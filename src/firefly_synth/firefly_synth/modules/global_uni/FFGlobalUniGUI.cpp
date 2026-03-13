@@ -257,8 +257,7 @@ FFMakeGlobalUniGUI(
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, false, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, false, true, topComponent));
   grid->Add(1, 0, bottomGrid);
-  auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, false, true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::GlobalUni, 0, margin);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::GlobalUni, 0, grid);
 }
 
 bool
