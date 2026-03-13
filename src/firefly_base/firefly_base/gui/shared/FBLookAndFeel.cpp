@@ -490,24 +490,9 @@ FBLookAndFeel::drawLabel(
   else
   {
     auto autoSizeLabel = dynamic_cast<FBAutoSizeLabel*>(&label);
-    if (autoSizeLabel)
+    if (autoSizeLabel && autoSizeLabel->Colors() == FBLabelColors::PrimaryForeground)
     {
-      if (autoSizeLabel->Colors() == FBLabelColors::PrimaryBackground)
-      {
-        hasBackground2 = true; // todo get rid of this crap
-        g.setColour(scheme->primary.darker(1.0f));
-        auto newRect = Rectangle<int>(
-          label.getLocalBounds().getX(),
-          label.getLocalBounds().getY() + 2,
-          label.getLocalBounds().getWidth(),
-          label.getLocalBounds().getHeight() - 4);
-        g.fillRoundedRectangle(newRect.toFloat(), 2.0f);
-        colorText = scheme->text2;
-      }
-      else if (autoSizeLabel->Colors() == FBLabelColors::PrimaryForeground)
-      {
-        colorText = scheme->primary;
-      }
+      colorText = scheme->primary;
     }
   }
    
@@ -724,7 +709,7 @@ FBLookAndFeel::drawLinearSlider(
     }
   }
 
-  g.setColour(scheme.primary); // todo get rid of the paint disabled everywhere
+  g.setColour(scheme.primary);
   g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
   g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
   if (paramSlider != nullptr)

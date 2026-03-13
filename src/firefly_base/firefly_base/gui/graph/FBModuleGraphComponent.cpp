@@ -170,7 +170,7 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
   float fps = FBGUIFPS;
   auto now = high_resolution_clock::now();
   auto elapsedMillis = duration_cast<milliseconds>(now - _updated);
-  if (_getCurrentRenderType() == FBGUIRenderType::Basic) // todo get rid of it
+  if (_getCurrentRenderType() == FBGUIRenderType::Basic)
     fps = 1;
   if (elapsedMillis.count() < 1000.0 / fps)
     return;

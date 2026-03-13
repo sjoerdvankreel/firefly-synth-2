@@ -20,8 +20,7 @@ enum class FBLabelAlign
 enum class FBLabelColors
 {
   Regular,
-  PrimaryForeground,
-  PrimaryBackground
+  PrimaryForeground
 };
 
 class FBAutoSizeLabel:
