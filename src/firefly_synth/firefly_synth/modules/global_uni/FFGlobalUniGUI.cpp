@@ -129,14 +129,15 @@ MakeGlobalUniContent(
 
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, rowSizes, columnSizes);
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Target"));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Target", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
   auto mode0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, 0 } });
   grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, mode0->static_.display, FBLabelAlign::Left, FBLabelColors::PrimaryBackground));
   auto opType0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, opType0->static_.name));
   grid->Add(0, 3, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Out"));
   grid->Add(0, 4, plugGUI->StoreComponent<FBFillerComponent>(2, 2));
-  grid->MarkSection({ { 0, 0 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBackground);
+  grid->MarkSection({ { 0, 1 }, { 1, 4 } }, FBGridSectionMark::AlternateBackground);
 
   auto spread0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, 0 } });
   grid->Add(0, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, spread0->static_.display, FBLabelAlign::Left, FBLabelColors::PrimaryBackground));
