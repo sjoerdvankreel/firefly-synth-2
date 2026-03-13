@@ -52,7 +52,6 @@ v2.1.1
 [ ] document all the theme changes
 [ ] make it 2.2?
 [ ] drop font/size from the theme
-[ ] screwed up the perf
 [ ] fix up the uni gui
 
 vnext
