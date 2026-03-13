@@ -90,11 +90,11 @@ MakeGlobalUniVoices(
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 0, 0, 0 });
   auto voiceCount = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::VoiceCount, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceCount, true, FBLabelColors::PrimaryBackground));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Voices", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceCount, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, voiceCount));
-  grid->MarkSection({ { 0, 0, }, { 1, 3 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
-  return grid;
+  grid->MarkSection({ { 0, 0, }, { 1, 3 } }, FBGridSectionMark::DefaultBackground);
+  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
  
 static Component*
@@ -107,8 +107,7 @@ MakeGlobalUniInit(
   initButton->setTooltip("Set To Defaults");
   grid->Add(0, 1, initButton);
   initButton->onClick = [plugGUI]() { GlobalUniInit(plugGUI); };
-  grid->MarkSection({ { 0, 0, }, { 1, 2 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
-  return grid;
+  return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
 
 static Component* 
