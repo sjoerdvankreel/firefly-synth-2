@@ -72,7 +72,6 @@ struct FBThemeGlobal
   int fontSize = {};
   std::string name = {};
   FBThemeResources resources = {};
-  bool unisonSchemeFollowsModule = {}; // todo lose this
   FBColorScheme defaultColorScheme = {};
   std::map<std::string, FBColorScheme> colorSchemes = {};
   std::map<std::string, FBComponentColors> componentColors = {};

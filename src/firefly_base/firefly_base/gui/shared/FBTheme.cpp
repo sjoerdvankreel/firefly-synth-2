@@ -77,21 +77,6 @@ RequireDoubleProperty(
 }
 
 static bool
-RequireBoolProperty(
-  DynamicObject const* obj,
-  String const& name)
-{
-  if (!RequireProperty(obj, name))
-    return false;
-  if (!obj->getProperty(name).isBool())
-  {
-    FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not a boolean.");
-    return false;
-  }
-  return true;
-}
-
-static bool
 RequireStringProperty(
   DynamicObject const* obj, 
   String const& name)
@@ -523,11 +508,6 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
   if (!RequireStringProperty(obj, "aboutBoxImageFileName"))
     return false;
   result.global.resources.aboutBoxImageFileName = obj->getProperty("aboutBoxImageFileName").toString().toStdString();
-
-  // todo drop this
-  if (!RequireBoolProperty(obj, "unisonSchemeFollowsModule"))
-    return false;
-  result.global.unisonSchemeFollowsModule = (bool)obj->getProperty("unisonSchemeFollowsModule");
 
   if (!RequireObjectProperty(obj, "defaultColorScheme"))
     return false;

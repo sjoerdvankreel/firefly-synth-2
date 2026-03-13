@@ -78,22 +78,6 @@ _topo(topo)
   addAndMakeVisible(content);
 }
 
-FBModuleComponent::
-FBModuleComponent(
-  FBRuntimeTopo const* topo, 
-  int moduleIndex, int moduleSlot, 
-  std::function<bool(FBTheme const&)> const& followModule, 
-  juce::Component* content):
-Component(),
-_moduleSlot(moduleSlot),
-_moduleIndex(moduleIndex),
-_content(content),
-_topo(topo),
-_followModule(followModule)
-{
-  addAndMakeVisible(content);
-}
-
 void
 FBModuleComponent::resized()
 {
@@ -141,8 +125,6 @@ FBModuleComponent::FixedWidth(int height) const
 FBColorScheme const*
 FBModuleComponent::GetScheme(FBTheme const& theme) const
 {
-  if (_followModule != nullptr && !_followModule(theme))
-    return nullptr;
   int rtModuleIndex = _topo->moduleTopoToRuntime.at({ ModuleIndex(), ModuleSlot() });
   auto moduleIter = theme.moduleColors.find(rtModuleIndex);
   if (moduleIter != theme.moduleColors.end())

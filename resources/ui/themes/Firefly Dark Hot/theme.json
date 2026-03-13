@@ -3,7 +3,6 @@
   "fontSize": 13,
   "fontFileName": "Satoshi-Bold.ttf",
   "aboutBoxImageFileName": "about.png",
-  "unisonSchemeFollowsModule": false,
   "defaultColorScheme_comment": "Fallback scheme, any other scheme can override individual settings.",
   "defaultColorScheme": {
     "graphAlpha": 0.6,

@@ -162,30 +162,14 @@ MakeGlobalUniContent(
     int guiRow = r + 1;
     int targetIndex = (int)FFGlobalUniTargetByGUIOrder((FFGlobalUniTargetGUIOrder)(offset + r));
     auto targetName = FFGlobalUniTargetToString((FFGlobalUniTarget)targetIndex);
-    grid->Add(guiRow, 0, plugGUI->StoreComponent<FBModuleComponent>(
-      plugGUI->HostContext()->Topo(),
-      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
-      [](FBTheme const& t) { return t.global.unisonSchemeFollowsModule; },
-      plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, targetName)));
+    grid->Add(guiRow, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, targetName));
     auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::Mode, targetIndex } });
-    grid->Add(guiRow, 1, plugGUI->StoreComponent<FBModuleComponent>( 
-      plugGUI->HostContext()->Topo(),  
-      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
-      [](FBTheme const& t) { return t.global.unisonSchemeFollowsModule; },
-      plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode, "", false)));
+    grid->Add(guiRow, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode, "", false));
     auto opType = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::OpType, targetIndex } });
-    grid->Add(guiRow, 2, plugGUI->StoreComponent<FBModuleComponent>(
-      plugGUI->HostContext()->Topo(),
-      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
-      [](FBTheme const& t) { return t.global.unisonSchemeFollowsModule; },
-      plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType, "", false)));
+    grid->Add(guiRow, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType, "", false));
     int moduleRuntimeIndex = topo->moduleTopoToRuntime.at({ (int)FFModuleType::GlobalUni, 0 });
     auto uniGraph = plugGUI->StoreComponent<FBModuleGraphComponent>(plugGUI, false, graphRenderState, moduleRuntimeIndex, targetIndex, [plugGUI]() { return plugGUI->GetRenderType(true); });
-    grid->Add(guiRow, 3, plugGUI->StoreComponent<FBModuleComponent>(
-      plugGUI->HostContext()->Topo(),
-      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
-      [](FBTheme const& t) { return t.global.unisonSchemeFollowsModule; },
-      uniGraph));
+    grid->Add(guiRow, 3, uniGraph);
     fixedGraphs->push_back(uniGraph);
     grid->Add(guiRow, 4, plugGUI->StoreComponent<FBFillerComponent>(2, 2)); 
 
@@ -193,35 +177,15 @@ MakeGlobalUniContent(
       grid->MarkSection({ { guiRow, 0 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
 
     auto spread = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, targetIndex } });
-    grid->Add(guiRow, 5, plugGUI->StoreComponent<FBModuleComponent>(
-      plugGUI->HostContext()->Topo(),
-      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
-      [](FBTheme const& t) { return t.global.unisonSchemeFollowsModule; },
-      plugGUI->StoreComponent<FBParamSlider>(plugGUI, spread, Slider::SliderStyle::RotaryVerticalDrag, false)));
+    grid->Add(guiRow, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, spread, Slider::SliderStyle::RotaryVerticalDrag, false));
     auto skew = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSkew, targetIndex } });
-    grid->Add(guiRow, 6, plugGUI->StoreComponent<FBModuleComponent>(
-      plugGUI->HostContext()->Topo(),
-      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
-      [](FBTheme const& t) { return t.global.unisonSchemeFollowsModule; },
-      plugGUI->StoreComponent<FBParamSlider>(plugGUI, skew, Slider::SliderStyle::RotaryVerticalDrag, false)));
+    grid->Add(guiRow, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skew, Slider::SliderStyle::RotaryVerticalDrag, false));
     auto random = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRand, targetIndex } });
-    grid->Add(guiRow, 7, plugGUI->StoreComponent<FBModuleComponent>(
-      plugGUI->HostContext()->Topo(),
-      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
-      [](FBTheme const& t) { return t.global.unisonSchemeFollowsModule; },
-      plugGUI->StoreComponent<FBParamSlider>(plugGUI, random, Slider::SliderStyle::RotaryVerticalDrag, false)));
+    grid->Add(guiRow, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, random, Slider::SliderStyle::RotaryVerticalDrag, false));
     auto seed = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandSeed, targetIndex } });
-    grid->Add(guiRow, 8, plugGUI->StoreComponent<FBModuleComponent>(
-      plugGUI->HostContext()->Topo(),
-      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
-      [](FBTheme const& t) { return t.global.unisonSchemeFollowsModule; },
-      plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag, false)));
+    grid->Add(guiRow, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag, false));
     auto free = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandFree, targetIndex } });
-    grid->Add(guiRow, 9, plugGUI->StoreComponent<FBModuleComponent>(
-      plugGUI->HostContext()->Topo(),
-      (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
-      [](FBTheme const& t) { return t.global.unisonSchemeFollowsModule; },
-      plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, free, false)));
+    grid->Add(guiRow, 9, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, free, false));
 
     if (r % 2 == 1)
       grid->MarkSection({ { guiRow, 5 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
@@ -229,11 +193,7 @@ MakeGlobalUniContent(
     for (int p = 0; p < FFGlobalUniMaxCount; p++)
     {
       auto param = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::ManualFirst + targetIndex, p } });
-      grid->Add(guiRow, p + 1 + 9, plugGUI->StoreComponent<FBModuleComponent>(
-        plugGUI->HostContext()->Topo(),
-        (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
-        [](FBTheme const& t) { return t.global.unisonSchemeFollowsModule; },
-        plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag, false)));
+      grid->Add(guiRow, p + 1 + 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag, false));
     }
 
     if(r %2 == 1)
