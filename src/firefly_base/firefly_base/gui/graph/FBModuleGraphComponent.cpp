@@ -161,7 +161,7 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
       }
 
       auto card = std::make_unique<FBCardComponent>(_plugGUI, displayAndTextGrid.get());
-      _grid->Add(r, c, card.get());
+      _grid->Add(r, c, _fixedToRuntimeModuleIndex != -1? (Component*)displayAndTextGrid.get(): card.get());
       _cards.emplace_back(std::move(card));
       _displays.emplace_back(std::move(display));
       _displayAndTextGrids.emplace_back(std::move(displayAndTextGrid));

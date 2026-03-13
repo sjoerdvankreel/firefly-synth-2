@@ -123,9 +123,10 @@ MakeGlobalUniContent(
   for (int i = 0; i < uniTargetCount / 2; i++)
     rowSizes.push_back(1);
   auto columnSizes = std::vector<int>();
-  columnSizes.push_back(1);
+  columnSizes.push_back(2);
   for(int i = 0; i < FFGlobalUniMaxCount + 9; i++)
     columnSizes.push_back(0);
+  columnSizes[3] = 1;
 
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, rowSizes, columnSizes);
