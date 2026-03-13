@@ -223,7 +223,7 @@ MakeModMatrixTopGUI(FFPlugGUI* plugGUI)
 static void
 AddMatrixHeaderRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r)
 {
-  grid->Add(r, 0, 1, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, global ? "Global" : "Voice"));
+  grid->Add(r, 0, 1, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, global ? "Global" : "Voice", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
   grid->Add(r, 4, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Op"));
   grid->Add(r, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Source"));
   grid->Add(r, 6, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Inv"));
@@ -234,6 +234,7 @@ AddMatrixHeaderRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r
   grid->Add(r, 11, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Max"));
   grid->Add(r, 12, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Target"));
   grid->Add(r, 13, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Amt"));
+  grid->MarkSection({ { r, 0 }, { 1, 4 } }, FBGridSectionMark::DefaultBackground);
 }
 
 static void
@@ -390,7 +391,10 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI, bool global, int offset, int count)
 
   for(int r = 0; r < rowCount; r += 2)
   {
-    grid->MarkSection({ { r, 0 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
+    if(r == 0)
+      grid->MarkSection({ { r, 4 }, { 1, 1 } }, FBGridSectionMark::AlternateBackground);
+    else
+      grid->MarkSection({ { r, 0 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
     grid->MarkSection({ { r, 5 }, { 1, 4 } }, FBGridSectionMark::AlternateBackground);
     grid->MarkSection({ { r, 9 }, { 1, 3 } }, FBGridSectionMark::AlternateBackground);
     grid->MarkSection({ { r, 12 }, { 1, 2 } }, FBGridSectionMark::AlternateBackground, { true, 3.0f, r == rowCount - 1 ? 2 : 0 });
