@@ -136,7 +136,7 @@ MakeGlobalUniContent(
   grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, opType0->static_.name));
   grid->Add(0, 3, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Out"));
   grid->Add(0, 4, plugGUI->StoreComponent<FBFillerComponent>(2, 2));
-  grid->MarkSection({ { 0, 0 }, { 1, 5 } });
+  grid->MarkSection({ { 0, 0 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
 
   auto spread0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, 0 } });
   grid->Add(0, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, spread0->static_.display, FBLabelAlign::Left, FBLabelColors::PrimaryBackground));
@@ -148,11 +148,11 @@ MakeGlobalUniContent(
   grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, seed0->static_.display));
   auto free0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoRandFree, 0 } });
   grid->Add(0, 9, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, free0->static_.display));
-  grid->MarkSection({ { 0, 5 }, { 1, 5 } });
+  grid->MarkSection({ { 0, 5 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
 
   for (int i = 0; i < FFGlobalUniMaxCount; i++)
     grid->Add(0, i + 1 + 9, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, std::to_string(i + 1), FBLabelAlign::Center, FBLabelColors::PrimaryBackground));
-  grid->MarkSection({ { 0, 1 + 9 }, { 1, FFGlobalUniMaxCount } });
+  grid->MarkSection({ { 0, 1 + 9 }, { 1, FFGlobalUniMaxCount } }, FBGridSectionMark::AlternateBackground);
 
   for (int r = 0; r < uniTargetCount / 2; r++)
   {
@@ -185,7 +185,9 @@ MakeGlobalUniContent(
       uniGraph));
     fixedGraphs->push_back(uniGraph);
     grid->Add(guiRow, 4, plugGUI->StoreComponent<FBFillerComponent>(2, 2)); 
-    grid->MarkSection({ { guiRow, 0 }, { 1, 5 } });
+
+    if (r % 2 == 1)
+      grid->MarkSection({ { guiRow, 0 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
 
     auto spread = topo->audio.ParamAtTopo({ { (int)FFModuleType::GlobalUni, 0 }, { (int)FFGlobalUniParam::AutoSpread, targetIndex } });
     grid->Add(guiRow, 5, plugGUI->StoreComponent<FBModuleComponent>(
@@ -217,7 +219,9 @@ MakeGlobalUniContent(
       (int)FFGlobalUniTargetToModule((FFGlobalUniTarget)targetIndex), 0,
       [](FBTheme const& t) { return t.global.unisonSchemeFollowsModule; },
       plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, free, false)));
-    grid->MarkSection({ { guiRow, 5 }, { 1, 5 } });
+
+    if (r % 2 == 1)
+      grid->MarkSection({ { guiRow, 5 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
 
     for (int p = 0; p < FFGlobalUniMaxCount; p++)
     {
@@ -228,7 +232,9 @@ MakeGlobalUniContent(
         [](FBTheme const& t) { return t.global.unisonSchemeFollowsModule; },
         plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag, false)));
     }
-    grid->MarkSection({ { guiRow, 1 + 9 }, { 1, FFGlobalUniMaxCount } }, FBGridSectionMark::DefaultBackground, { true, 3.0f, r == uniTargetCount / 2 - 1 ? 2 : 0 });
+
+    if(r %2 == 1)
+      grid->MarkSection({ { guiRow, 1 + 9 }, { 1, FFGlobalUniMaxCount } }, FBGridSectionMark::AlternateBackground);
   }
  
   return grid;
