@@ -53,6 +53,7 @@ v2.1.1
 [ ] make it 2.2?
 [ ] drop font/size from the theme
 [ ] screwed up the perf
+[ ] fix up the uni gui
 
 vnext
 [ ] do more easy access controls (and maybe more mod sources)
