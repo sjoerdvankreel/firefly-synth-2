@@ -19,7 +19,7 @@ FFMakeSettingsTopo(bool isFx)
   hostSmoothTime.storeInPatch = false;
   hostSmoothTime.mode = FBParamMode::Block;
   hostSmoothTime.defaultText = "2";
-  hostSmoothTime.name = "MIDI/Automation Smoothing";
+  hostSmoothTime.name = "MIDI/Auto Smth";
   hostSmoothTime.slotCount = 1;
   hostSmoothTime.unit = "Ms";
   hostSmoothTime.id = "{C0FEF40D-573A-4F3C-A51C-5906EAE28694}";
