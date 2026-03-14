@@ -25,7 +25,7 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0 }, std::vector<int> { 0, 0, 0, 0, 1 });
   grid->Add(0, 0, 1, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "GUI", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
-  grid->MarkSection({ { 0, 0 }, { 1, 5 } }, FBGridSectionMark::DefaultBackground);
+  grid->MarkSection({ { 0, 0 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
 
   auto hilightMod = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightMod, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightMod));
