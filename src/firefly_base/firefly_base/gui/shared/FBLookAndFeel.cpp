@@ -530,7 +530,7 @@ FBLookAndFeel::drawToggleButton(
   auto const& scheme = FindColorSchemeFor(button);
   float boxSize = FBPrimaryHeight - 6.0f;
   float radius = (FBPrimaryHeight - 14.0f) * 0.5f;
-  float x = (button.getWidth() - boxSize) * 0.5f;
+  float x = 1.0f;
   float y = (button.getHeight() - boxSize) * 0.5f;
   auto bounds = Rectangle<float>(x, y, boxSize, boxSize);
   g.setColour(scheme.paramBackground);
