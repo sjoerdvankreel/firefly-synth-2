@@ -13,7 +13,6 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
-#include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
          
 using namespace juce;

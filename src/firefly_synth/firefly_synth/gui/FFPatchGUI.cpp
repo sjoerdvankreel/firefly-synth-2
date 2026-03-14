@@ -11,7 +11,6 @@
 #include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
-#include <firefly_base/gui/components/FBFillerComponent.hpp>
 
 using namespace juce;
 
