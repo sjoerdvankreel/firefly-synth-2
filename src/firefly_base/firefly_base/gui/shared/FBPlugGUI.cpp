@@ -794,16 +794,14 @@ FBPlugGUI::SetupOverlayGUI()
   _overlayGrid->Add(0, 0, _overlayCaption);
 
   _overlayInitClose = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0 } }, std::vector<int> { { 0, 0, 1 } });
-  _overlayInitButton = StoreComponent<FBAutoSizeButton>(this, "Init");
-  _overlayInitButton->onClick = [this] { _overlayInit(); };
-  auto overlayInitSection = StoreComponent<FBMarginComponent>(this, false, false, true, true, _overlayInitButton);
-  _overlayInitClose->Add(0, 0, overlayInitSection);
-
   auto overlayClose = StoreComponent<FBAutoSizeButton>(this, "Close");
   overlayClose->onClick = [this] { HideOverlayComponent(); };
   auto overlayCloseSection = StoreComponent<FBMarginComponent>(this, false, true, true, true, overlayClose);
-  _overlayInitClose->Add(0, 1, overlayCloseSection);
-
+  _overlayInitClose->Add(0, 0, overlayCloseSection);
+  _overlayInitButton = StoreComponent<FBAutoSizeButton>(this, "Init");
+  _overlayInitButton->onClick = [this] { _overlayInit(); };
+  auto overlayInitSection = StoreComponent<FBMarginComponent>(this, false, false, true, true, _overlayInitButton);
+  _overlayInitClose->Add(0, 1, overlayInitSection);
   _overlayGrid->Add(0, 1, _overlayInitClose);
 
   _overlayContent = StoreComponent<FBContentComponent>();
