@@ -21,21 +21,18 @@ Component*
 FFMakeSettingsGUIMain(FBPlugGUI* plugGUI)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0 }, std::vector<int> { 0, 0, 0, 0, 1 });
-  grid->Add(0, 0, 1, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Engine", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
-  grid->MarkSection({ { 0, 0 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
-
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0 }, std::vector<int> { 0, 0, 0, 0, 0, 1 });
+  grid->Add(0, 0, 1, 6, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Engine", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
+  grid->MarkSection({ { 0, 0 }, { 1, 6 } }, FBGridSectionMark::AlternateBackground);
   auto receiveNotes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::ReceiveNotes, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, receiveNotes));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, receiveNotes));
   auto softClip = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::AutoSoftClip, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, softClip));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, softClip));
-
   auto smooth = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::HostSmoothTime, 0 } });
-  grid->Add(2, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smooth));
-  grid->Add(2, 1, 1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::LinearHorizontal));
-
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smooth));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::LinearHorizontal));
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Settings, 0, card);
 }
