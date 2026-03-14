@@ -17,8 +17,8 @@
 
 using namespace juce;
 
-static Component*
-MakeSettingsSectionMain(FBPlugGUI* plugGUI)
+Component*
+FFMakeSettingsGUIMain(FBPlugGUI* plugGUI)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0 });
@@ -31,12 +31,12 @@ MakeSettingsSectionMain(FBPlugGUI* plugGUI)
   auto softClip = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::AutoSoftClip, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, softClip));
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, softClip));
-  grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::DefaultBackgroundAlternateBorder);
-  return grid;
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Settings, 0, card);
 }
 
-static Component*
-MakeSettingsSectionTuning(FBPlugGUI* plugGUI)
+Component*
+FFMakeSettingsGUITuning(FBPlugGUI* plugGUI)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
@@ -58,25 +58,6 @@ MakeSettingsSectionTuning(FBPlugGUI* plugGUI)
   auto tuneVoiceMatrix = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneVoiceMatrix, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneVoiceMatrix));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneVoiceMatrix));
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  return grid;
-}
-
-static Component*
-MakeSettingsTab(FBPlugGUI* plugGUI)
-{
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
-  grid->Add(0, 0, MakeSettingsSectionMain(plugGUI));
-  grid->Add(0, 1, MakeSettingsSectionTuning(plugGUI));
-  return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, true, true, true, true, grid);
-}
-
-Component*
-FFMakeSettingsGUI(FBPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>(plugGUI);
-  auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::Settings].name;
-  tabs->AddTab(name, true, MakeSettingsTab(plugGUI));
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Settings, 0, tabs);
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Settings, 0, card);
 }

@@ -398,15 +398,16 @@ FFPlugGUI::SetupGUI()
       StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::DetailGraphs, _detailsGraph)));
   _main->Add(3, 1, 4, 1, _detailContent);
 
-  _settings = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 1, 1 } }, std::vector<int> { { 1 } });
-  _settings->Add(0, 0, FFMakeSettingsGUI(this));
-  _settings->Add(1, 0, FFMakeGUISettingsGUI(this));
+  _settings = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 1, 1, 1 } }, std::vector<int> { { 1 } });
+  _settings->Add(0, 0, FFMakeGUISettingsGUI(this));
+  _settings->Add(1, 0, FFMakeSettingsGUIMain(this));
+  _settings->Add(2, 0, FFMakeSettingsGUITuning(this));
 
   _tabs = StoreComponent<FBAutoSizeTabComponent>(this, true);
   _tabs->addTab("MAIN", Colours::black, StoreComponent<FBMarginComponent>(this, false, false, true, false, _main), false);
   _tabs->addTab("MATRIX", Colours::black, StoreComponent<FBMarginComponent>(this, false, false, true, false, _matrix), false);
   _tabs->addTab("UNISON", Colours::black, StoreComponent<FBMarginComponent>(this, false, false, true, false, _globalUni), false);
-  _tabs->addTab("SETTINGS", Colours::black, StoreComponent<FBMarginComponent>(this, false, false, true, false, _settings), false);
+  _tabs->addTab("SETTINGS", Colours::black, StoreComponent<FBMarginComponent>(this, false, true, true, false, _settings), false);
   _mainTabChangedListener = std::make_unique<FFMainTabChangedListener>(this);
   _tabs->getTabbedButtonBar().addChangeListener(_mainTabChangedListener.get());
 

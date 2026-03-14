@@ -11,8 +11,9 @@
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
-#include <firefly_base/gui/components/FBThemingComponent.hpp>
+#include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
          
 using namespace juce;
@@ -45,6 +46,6 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
     if (plugGUI->Themes()[i].global.name == plugGUI->HostContext()->ThemeName())
       themeCombo->setSelectedItemIndex(i);
   grid->Add(0, 9, themeCombo);   
-  grid->MarkSection({ { 0, 0 }, { 1, 10 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::GUISettings, 0, grid);
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::GUISettings, 0, card);
 }
