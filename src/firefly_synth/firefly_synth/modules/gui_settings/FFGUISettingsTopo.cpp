@@ -29,7 +29,7 @@ FFMakeGUISettingsTopo()
   guiUserScale.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
 
   auto& guiHilightMod = result->guiParams[(int)FFGUISettingsGUIParam::HilightMod];
-  guiHilightMod.name = "Show Knob Modulation Bounds";
+  guiHilightMod.name = "Show Mod Bounds";
   guiHilightMod.slotCount = 1;
   guiHilightMod.defaultText = "On";
   guiHilightMod.id = "{193F0F95-D4D2-46A5-A978-C8740E0C08B3}";
@@ -39,7 +39,7 @@ FFMakeGUISettingsTopo()
   guiHilightMod.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiHilightMod);
    
   auto& guiHilightTweakMode = result->guiParams[(int)FFGUISettingsGUIParam::HilightTweakMode];
-  guiHilightTweakMode.name = "Show Knob Tweaked From";
+  guiHilightTweakMode.name = "Show Tweaked From";
   guiHilightTweakMode.slotCount = 1;
   guiHilightTweakMode.defaultText = "Off";
   guiHilightTweakMode.id = "{486DAE85-F8CC-4825-ACEA-D13D3D8A6933}"; 
@@ -55,7 +55,7 @@ FFMakeGUISettingsTopo()
 
   auto& guiKnobVisualsMode = result->guiParams[(int)FFGUISettingsGUIParam::KnobVisualsMode];
   guiKnobVisualsMode.defaultText = "If Focus";
-  guiKnobVisualsMode.name = "Show Knob Engine Positions";
+  guiKnobVisualsMode.name = "Engine Knob Visuals";
   guiKnobVisualsMode.slotCount = 1;
   guiKnobVisualsMode.id = "{75702E18-0499-45ED-935E-A1BC1D0348C3}";
   guiKnobVisualsMode.description = "Highlight Engine Parameter State";
@@ -69,7 +69,7 @@ FFMakeGUISettingsTopo()
 
   auto& guiGraphVisualsMode = result->guiParams[(int)FFGUISettingsGUIParam::GraphVisualsMode];
   guiGraphVisualsMode.defaultText = "If Focus";
-  guiGraphVisualsMode.name = "Plot Graph Engine State";
+  guiGraphVisualsMode.name = "Engine Plot Visuals";
   guiGraphVisualsMode.slotCount = 1;
   guiGraphVisualsMode.id = "{6C5F2DC2-C796-444C-8D43-077708580609}";
   guiGraphVisualsMode.description = "Show Engine State In Graph Plots";
