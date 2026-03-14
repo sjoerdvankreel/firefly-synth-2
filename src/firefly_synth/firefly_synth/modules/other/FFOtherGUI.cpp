@@ -2,6 +2,8 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/other/FFOtherGUI.hpp>
 #include <firefly_synth/modules/other/FFOtherTopo.hpp>
+#include <firefly_synth/modules/settings/FFSettingsGUI.hpp>
+#include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
@@ -19,7 +21,11 @@ using namespace juce;
 static Component*
 MakeSettingsGUI(FFPlugGUI* plugGUI)
 {
-  return plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "henk");
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0 }, std::vector<int> { 1 });
+  grid->Add(0, 0, FFMakeGUISettingsGUI(plugGUI));
+  grid->Add(1, 0, FFMakeSettingsGUIMain(plugGUI));
+  grid->Add(2, 0, FFMakeSettingsGUITuning(plugGUI));
+  return grid;
 }
 
 Component*
