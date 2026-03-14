@@ -282,7 +282,7 @@ FBLookAndFeel::fillTextEditorBackground(
     primary = scheme.fileBrowserPrimary;
   g.setColour(scheme.paramBackground);
   float y = isInstance ? 4.0f : 2.0f;
-  auto bounds = te.getBounds().toFloat().withY(y).withHeight(24.0f).withWidth(width - 4.0f);
+  auto bounds = te.getBounds().toFloat().withX(2.0).withY(y).withHeight(24.0f).withWidth(width - 6.0f);
   g.fillRoundedRectangle(bounds, 5.0f);
   g.setColour(primary);
   g.drawRoundedRectangle(bounds, 5.0f, 1.0f);

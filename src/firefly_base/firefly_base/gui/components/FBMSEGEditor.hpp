@@ -22,7 +22,6 @@ public juce::Component
   std::unique_ptr<FBMSEGCanvas> _canvas = {};
   std::unique_ptr<FBGridComponent> _grid = {};
   std::unique_ptr<FBGridComponent> _controlGrid = {};
-  std::unique_ptr<FBFillerComponent> _controlFiller = {};
 
   std::unique_ptr<FBAutoSizeLabel> _editXLabel = {};
   std::unique_ptr<FBAutoSizeLabel> _editXGridLabel = {};
