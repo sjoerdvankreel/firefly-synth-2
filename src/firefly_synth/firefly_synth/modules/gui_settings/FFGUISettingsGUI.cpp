@@ -23,7 +23,7 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0, 0, 1 }, std::vector<int> { 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0, 0, 1 }, std::vector<int> { 0, 0 });
   auto hilightMod = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightMod, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightMod));
   grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, hilightMod));
@@ -37,9 +37,11 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   grid->Add(3, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, graphVisualsMode));
   grid->Add(3, 1, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, graphVisualsMode));
   grid->Add(4, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Theme"));
-  auto themeCombo = plugGUI->StoreComponent<ComboBox>();
+
+  PopupMenu themeMenu = {};
   for (int i = 0; i < plugGUI->Themes().size(); i++)
-    themeCombo->addItem(plugGUI->Themes()[i].global.name, i + 1);
+    themeMenu.addItem(i + 1, plugGUI->Themes()[i].global.name);
+  auto themeCombo = plugGUI->StoreComponent<FBAutoSizeComboBox>(plugGUI, themeMenu);
   themeCombo->onChange = [plugGUI, themeCombo] { 
     plugGUI->SwitchTheme(themeCombo->getText().toStdString()); };
   for (int i = 0; i < plugGUI->Themes().size(); i++)
