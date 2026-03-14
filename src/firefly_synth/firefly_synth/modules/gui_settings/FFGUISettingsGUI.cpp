@@ -31,7 +31,10 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightMod));
   grid->Add(1, 1, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, hilightMod));
 
-  grid->Add(2, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Theme"));
+  auto hilightTweakMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightTweakMode, 0 } });
+  grid->Add(2, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightTweakMode));
+  grid->Add(2, 1, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, hilightTweakMode));
+  grid->Add(2, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Theme"));
   PopupMenu themeMenu = {};
   for (int i = 0; i < plugGUI->Themes().size(); i++)
     themeMenu.addItem(i + 1, plugGUI->Themes()[i].global.name);
@@ -41,11 +44,8 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   for (int i = 0; i < plugGUI->Themes().size(); i++)
     if (plugGUI->Themes()[i].global.name == plugGUI->HostContext()->ThemeName())
       themeCombo->setSelectedItemIndex(i);
-  grid->Add(2, 1, themeCombo);
+  grid->Add(2, 3, themeCombo);
 
-  auto hilightTweakMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightTweakMode, 0 } });
-  grid->Add(2, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightTweakMode));
-  grid->Add(2, 3, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, hilightTweakMode));
   auto knobVisualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::KnobVisualsMode, 0 } });
   grid->Add(3, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, knobVisualsMode));
   grid->Add(3, 1, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, knobVisualsMode));
