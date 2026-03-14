@@ -43,17 +43,15 @@ v2.1.1
 [x] cut down unison routes
 [x] lose unisonSchemeFollowsModule
 [x] fix up the uni gui
+[x] drop filler comp
+[x] recheck all the matrix names
 [ ] fix aboutbox
-[ ] recheck all the matrix names
 [ ] test the clap
 [ ] re-profile the gui
 [ ] run debug build
 [ ] update the manual for about box
 [ ] fixup all the other themes
 [ ] document all the theme changes
-[ ] make it 2.2?
-[ ] drop font/size from the theme
-[ ] drop filler comp
 
 vnext
 [ ] do more easy access controls (and maybe more mod sources)
