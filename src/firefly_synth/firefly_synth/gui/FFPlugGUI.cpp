@@ -398,7 +398,7 @@ FFPlugGUI::SetupGUI()
       StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::DetailGraphs, _detailsGraph)));
   _main->Add(3, 1, 4, 1, _detailContent);
 
-  _settings = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 1, 1, 1 } }, std::vector<int> { { 1 } });
+  _settings = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0, 0, 0 } }, std::vector<int> { { 1 } });
   _settings->Add(0, 0, FFMakeGUISettingsGUI(this));
   _settings->Add(1, 0, FFMakeSettingsGUIMain(this));
   _settings->Add(2, 0, FFMakeSettingsGUITuning(this));
