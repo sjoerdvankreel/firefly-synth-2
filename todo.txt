@@ -42,6 +42,7 @@ v2.1.1
 [x] cut down matrix routes
 [x] cut down unison routes
 [x] lose unisonSchemeFollowsModule
+[x] fix up the uni gui
 [ ] fix aboutbox
 [ ] recheck all the matrix names
 [ ] test the clap
@@ -52,7 +53,6 @@ v2.1.1
 [ ] document all the theme changes
 [ ] make it 2.2?
 [ ] drop font/size from the theme
-[ ] fix up the uni gui
 [ ] drop filler comp
 
 vnext

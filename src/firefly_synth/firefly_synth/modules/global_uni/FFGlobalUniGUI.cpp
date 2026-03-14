@@ -102,7 +102,6 @@ MakeGlobalUniInit(
   FBPlugGUI* plugGUI)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { 1, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBFillerComponent>(1, 1));
   auto initButton = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Init");
   initButton->setTooltip("Set To Defaults");
   grid->Add(0, 1, initButton);
