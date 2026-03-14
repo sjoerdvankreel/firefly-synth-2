@@ -16,6 +16,12 @@
 
 using namespace juce;
 
+static Component*
+MakeSettingsGUI(FFPlugGUI* plugGUI)
+{
+  return plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "henk");
+}
+
 Component*
 FFMakeOtherGUI(FFPlugGUI* plugGUI)
 {
@@ -25,7 +31,12 @@ FFMakeOtherGUI(FFPlugGUI* plugGUI)
   plugGUI->onInstanceNameChanged = [instanceNameEditor](auto const& name) { instanceNameEditor->setText(name, false); };
   grid->Add(0, 0, instanceNameEditor);
   auto settingsButton = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Settings");
+  auto settingsGUI = MakeSettingsGUI(plugGUI);
   settingsButton->setTooltip("GUI/Engine/Microtuning Settings");
+  settingsButton->onClick = [plugGUI, settingsGUI]() {
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Settings", (int)FFModuleType::Other, 0, settingsGUI, 400, 275, false, []() {});
+  };
+
   grid->Add(0, 1, settingsButton);
   auto panicButton = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Panic");
   panicButton->setTooltip("Reset Voices And Delay Lines"); 
