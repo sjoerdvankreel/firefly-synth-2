@@ -269,8 +269,6 @@ MakeEchoTab(FBPlugGUI* plugGUI, bool global)
   grid->Add(0, 2, MakeEchoSectionFeedback(plugGUI, global));
   grid->Add(0, 3, MakeEchoSectionReverb(plugGUI, global));
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
-  FBParamTopoIndices tapsOnIndices = { { (int)moduleType, 0 }, { (int)FFEchoParam::TapsOn, 0 } };
-  FBParamTopoIndices vTargetOrGTargetIndices = { { (int)moduleType, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)moduleType, 0, grid);
 }
 
