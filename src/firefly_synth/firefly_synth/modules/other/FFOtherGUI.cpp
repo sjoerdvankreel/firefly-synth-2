@@ -20,14 +20,17 @@ Component*
 FFMakeOtherGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 0 } );
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0 } );
   auto instanceNameEditor = plugGUI->StoreComponent<FBInstanceNameEditor>(plugGUI, 100);
   plugGUI->onInstanceNameChanged = [instanceNameEditor](auto const& name) { instanceNameEditor->setText(name, false); };
   grid->Add(0, 0, instanceNameEditor);
+  auto settingsButton = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Settings");
+  settingsButton->setTooltip("GUI/Engine/Microtuning Settings");
+  grid->Add(0, 1, settingsButton);
   auto panicButton = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Panic");
   panicButton->setTooltip("Reset Voices And Delay Lines"); 
   panicButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushAudio(); };
-  grid->Add(0, 1, panicButton);
+  grid->Add(0, 2, panicButton);
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, true, false, false, card);
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Other, 0, margin);
