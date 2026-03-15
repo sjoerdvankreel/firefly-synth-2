@@ -619,7 +619,8 @@ Osc mix to out: controls how much the internal osci mixer stage contributes to t
 ## Global mixer
 Controls the signal path of the global audio engine.
 
-![image](screen_manual_gmix.png)
+![image](screen_manual_gmix1.png)
+![image](screen_manual_gmix2.png)
 
 * Voice Mix to GFX:<br/>
 Routes the voice mixdown to the global effect (GFX) section.
