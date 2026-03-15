@@ -434,7 +434,7 @@ Comes with regular load-from/save-to-file, init patch to defaults, and load fact
 * Session: revert the patch state to the time the DAW session was loaded.
 * Reload: revert the patch state to the last time a patch was loaded from file, preset, or default values (init patch).
 
-# Detail Graph plots
+### Graph plots
 ![image](screen_manual_graph_plot_fx.png)
 ![image](screen_manual_graph_plot_osc.png)
 ![image](screen_manual_graph_plot_echo.png)
