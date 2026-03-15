@@ -420,6 +420,9 @@ The MTS-ESP indicator shows whether an MTS-ESP master is connected.
 Free-form text input.<br/>
 Comes in handy when you have multiple plugin windows open and are wondering which one is kick/bass/synth etc.
 
+### Settings button
+Show GUI, audio engine and microtuning settings.
+
 ### Panic button
 Kills all active voices and flushes delay lines.<br/>
 Comes in handy for stuck notes or when you managed to fill the delay lines with garbage.
