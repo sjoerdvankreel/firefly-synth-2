@@ -434,20 +434,6 @@ Comes with regular load-from/save-to-file, init patch to defaults, and load fact
 * Session: revert the patch state to the time the DAW session was loaded.
 * Reload: revert the patch state to the last time a patch was loaded from file, preset, or default values (init patch).
 
-<a id="E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B"></a>
-### GUI settings
-* Show modulation bounds:<br/>
-Highlights the minimum and maximum values currently applied to a parameter by the mod matrix, global unison, and direct modulators.
-* Show tweaked from:<br/>
-Highlights the parameters that differ from either default values, last loaded DAW session state, or last loaded patch state.
-* Knob visuals from engine:<br/>
-Highlights a parameters current audio engine state.<br/>
-For per-voice parameters, takes into account the minimum and maximum values across all voices.
-* Plot visuals from engine:<br/>
-Draws the current state of the audio engine into the graph plots, taking all modulation into account.<br/>
-For per-voice modules, this is an additional line per voice.<br/>
-When off, graph plots reflect only the current state of the parameters as shown in the GUI.
-
 ### Graph plots
 ![image](screen_manual_graph_plot_fx.png)
 ![image](screen_manual_graph_plot_osc.png)
@@ -465,6 +451,65 @@ For some module types like envelope and lfo, it will also show a (per-voice) pos
 Note: for VST3, this feature relies on the host being able to deal with VST3's data exchange interfaces.<br/>
 Most Win and Mac hosts can do this, but at time of writing, only Reaper is good on Linux.<br/>
 CLAP should be good everywhere.
+
+# Settings
+
+<a id="E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B"></a>
+## GUI settings
+* Show modulation bounds:<br/>
+Highlights the minimum and maximum values currently applied to a parameter by the mod matrix, global unison, and direct modulators.
+* Show tweaked from:<br/>
+Highlights the parameters that differ from either default values, last loaded DAW session state, or last loaded patch state.
+* Knob visuals from engine:<br/>
+Highlights a parameters current audio engine state.<br/>
+For per-voice parameters, takes into account the minimum and maximum values across all voices.
+* Plot visuals from engine:<br/>
+Draws the current state of the audio engine into the graph plots, taking all modulation into account.<br/>
+For per-voice modules, this is an additional line per voice.<br/>
+When off, graph plots reflect only the current state of the parameters as shown in the GUI.
+
+<a id="3689411E-F31C-4F8C-BE3D-6F87938A1A1B"></a>
+## Settings
+![image](screen_manual_settings.png)
+
+Receive MIDI notes controls whether the plugin kicks off a new voice on incoming midi note on messages.<br/>
+This is enabled by default for the instrument version of the plug and disabled by default for the fx version.<br/>
+Some hosts allow to send midi notes to an fx plugin, others do not.<br/>
+If possible, you can do nice things like keyboard tracking global filters in the fx build.
+
+"Receive MIDI notes" is a bit of a misnomer.<br/>
+The plugin receives any note the host sends to it.<br/>
+In the global matrix source, Last/Low/High Key etc will just work, even with Receive Notes disabled.<br/>
+
+The MIDI and automation smoothing control parameter can be used to smooth sudden changes in incoming MIDI and automation events.<br/>
+This parameter affects CLAP modulation events as well.<br/>
+
+Soft clip: this clips the master output if it's over 0/12/24 dB.<br/>
+When enabled, the plug won't produce audio outside of that range (which causes distortion if it would have done so with this option disabled).<br/>
+By default it's set to +12dB (so clip at 400%). <br/>
+The whole reason it's there is to prevent your host-of-choice from automuting the plugin, but obviously you should not rely on it.
+
+Microtuning controls:<br/>
+These allow some control over what settings that make up the pitch are applied in the tuned or untuned parts of pitch calculation.<br/>
+Incoming MIDI notes are always part of the retuned pitch.
+
+* Tuning:<br/>
+When on, enables microtuning.<br/>
+Requires an MTS-ESP master to be connected.
+* Tune On Note:<br/>
+When on, microtuning is applied at incoming MIDI.<br/>
+When off, microtuning is applied continuously.<br/>
+When on, the "tune master pitchbend" switch has no effect for voice-level tuning, but it does still affect the master pitch sources in the global mod matrix.
+* Master pitch bend:<br/>
+Includes master PB in either the tuned or untuned part of pitch calculations.<br/>
+When off, setting master PB to +12 semis results in 1 octave up (so, double the frequency).<br/>
+When on, and master PB is set to +12 semis, playing C4 results in the exact same pitch as playing C5 with microtuning enabled (and master PB set to 0).
+* Voice coarse:<br/>
+Includes voice coarse pitch parameter in either the tuned or untuned part of pitch calculations.<br/>
+This is primarily intended to cooperate with global unison, which can alter the coarse pitch of individual voices.
+* Tune master matrix/tune voice matrix:<br/>
+These affect whether voice-level pitch and global last/low/high-key pitch sources in the matrix are retuned.<br/>
+See the matrix section for more details.
 
 # Modules
 
@@ -530,49 +575,6 @@ Pitchtracking sources (see Modulation System):
 * Pitch Bend (adjusted for Bend Range, does NOT track microtuning)
 * Last/Low/High Key Pitch and Low/High Velocity Pitch + smoothed versions (react to Settings MIDI/Automation smoothing):<br/>
 These DO track microtuning and include the PB component as well.
-
-<a id="3689411E-F31C-4F8C-BE3D-6F87938A1A1B"></a>
-## Settings
-![image](screen_manual_settings.png)
-
-Receive MIDI notes controls whether the plugin kicks off a new voice on incoming midi note on messages.<br/>
-This is enabled by default for the instrument version of the plug and disabled by default for the fx version.<br/>
-Some hosts allow to send midi notes to an fx plugin, others do not.<br/>
-If possible, you can do nice things like keyboard tracking global filters in the fx build.
-
-"Receive MIDI notes" is a bit of a misnomer.<br/>
-The plugin receives any note the host sends to it.<br/>
-In the global matrix source, Last/Low/High Key etc will just work, even with Receive Notes disabled.<br/>
-
-The MIDI and automation smoothing control parameter can be used to smooth sudden changes in incoming MIDI and automation events.<br/>
-This parameter affects CLAP modulation events as well.<br/>
-
-Soft clip: this clips the master output if it's over 0/12/24 dB.<br/>
-When enabled, the plug won't produce audio outside of that range (which causes distortion if it would have done so with this option disabled).<br/>
-By default it's set to +12dB (so clip at 400%). <br/>
-The whole reason it's there is to prevent your host-of-choice from automuting the plugin, but obviously you should not rely on it.
-
-Microtuning controls:<br/>
-These allow some control over what settings that make up the pitch are applied in the tuned or untuned parts of pitch calculation.<br/>
-Incoming MIDI notes are always part of the retuned pitch.
-
-* Tuning:<br/>
-When on, enables microtuning.<br/>
-Requires an MTS-ESP master to be connected.
-* Tune On Note:<br/>
-When on, microtuning is applied at incoming MIDI.<br/>
-When off, microtuning is applied continuously.<br/>
-When on, the "tune master pitchbend" switch has no effect for voice-level tuning, but it does still affect the master pitch sources in the global mod matrix.
-* Master pitch bend:<br/>
-Includes master PB in either the tuned or untuned part of pitch calculations.<br/>
-When off, setting master PB to +12 semis results in 1 octave up (so, double the frequency).<br/>
-When on, and master PB is set to +12 semis, playing C4 results in the exact same pitch as playing C5 with microtuning enabled (and master PB set to 0).
-* Voice coarse:<br/>
-Includes voice coarse pitch parameter in either the tuned or untuned part of pitch calculations.<br/>
-This is primarily intended to cooperate with global unison, which can alter the coarse pitch of individual voices.
-* Tune master matrix/tune voice matrix:<br/>
-These affect whether voice-level pitch and global last/low/high-key pitch sources in the matrix are retuned.<br/>
-See the matrix section for more details.
 
 <a id="5C91D5A0-3EC1-4142-935A-3FE83B60C04E"></a>
 ## Voice mixer
