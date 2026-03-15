@@ -407,7 +407,7 @@ All colors are specified as ARGB hex.
 ## Top section
 Contains everything that is not directly related to generating audio.
 
-![image](screenshot_manual_top.png)
+![image](screen_manual_top.png)
 
 ### Last tweaked
 Shows the name of the last tweaked parameter as well as a textbox that allows for precise-editing that parameters value.
@@ -446,9 +446,9 @@ For per-voice modules, this is an additional line per voice.<br/>
 When off, graph plots reflect only the current state of the parameters as shown in the GUI.
 
 ### Graph plots
-![image](screenshot_manual_graph_plot_fx.png)
-![image](screenshot_manual_graph_plot_osc.png)
-![image](screenshot_manual_graph_plot_env.png)
+![image](screen_manual_graph_plot_fx.png)
+![image](screen_manual_graph_plot_osc.png)
+![image](screen_manual_graph_plot_env.png)
 
 Most modules provide some graph plots.<br/>
 F.e. oscilloscope or filter frequency response plot.<br/>
@@ -473,7 +473,7 @@ It contains all parameters for oscillators, filters, effects, envelopes and LFOs
 ## Voice
 Contains controls affecting an entire voice (all per-voice oscillators and filters).
 
-![image](screenshot_manual_voice.png)
+![image](screen_manual_voice.png)
 
 Pitch section: coarse pitch with envelope modulation amount and fine pitch with LFO modulation amount.<br/>
 Portamento section: allows selection of regular (on) mode (constant pitch, variable time) or automatic mode (constant time, variable pitch) and optional tempo-syncing.<br/>
@@ -505,7 +505,7 @@ Pitchtracking sources (see Modulation System):
 Contains controls affecting the plugin as a whole.<br/>
 These parameters control all voices together as well as affect global filters and effects.
 
-![image](screenshot_manual_master.png)
+![image](screen_manual_master.png)
 
 Pitchbend together with bend range sets the base pitch for the entire plugin.<br/>
 By default it is set to control everything, but it can also target specific oscillators.<br/>
@@ -530,7 +530,7 @@ These DO track microtuning and include the PB component as well.
 
 <a id="3689411E-F31C-4F8C-BE3D-6F87938A1A1B"></a>
 ## Settings
-![image](screenshot_manual_settings.png)
+![image](screen_manual_settings.png)
 
 Receive MIDI notes controls whether the plugin kicks off a new voice on incoming midi note on messages.<br/>
 This is enabled by default for the instrument version of the plug and disabled by default for the fx version.<br/>
@@ -575,7 +575,7 @@ See the matrix section for more details.
 ## Voice mixer
 Controls the signal path of the per-voice audio engine.
 
-![image](screenshot_manual_vmix.png)
+![image](screen_manual_vmix.png)
 
 * Oscillator to voice FX:<br/>
 Routes the output of individual oscillators to the per-voice effect (VFX) section.
@@ -613,7 +613,7 @@ Osc mix to out: controls how much the internal osci mixer stage contributes to t
 ## Global mixer
 Controls the signal path of the global audio engine.
 
-![image](screenshot_manual_gmix.png)
+![image](screen_manual_gmix.png)
 
 * Voice Mix to GFX:<br/>
 Routes the voice mixdown to the global effect (GFX) section.
@@ -637,7 +637,7 @@ Likewise the balance control is global stereo balance with an optional LFO appli
 <a id="73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6"></a>
 ## Oscillator
 
-![image](screenshot_manual_osci.png)
+![image](screen_manual_osci.png)
 
 The graph plot for oscillators is an oscilloscope.<br/>
 For engine visualization, plots higher notes (relative to C4) as shorter and lower notes as longer.
@@ -780,7 +780,7 @@ FF2 does not support true stereo oscillators before the unison stage.
 <a id="546F9D74-670A-463D-80B0-B4BBD061DA88"></a>
 ## Oscillator Oversampling and Cross-modulation
 
-![image](screenshot_manual_osci_mod.png)
+![image](screen_manual_osci_mod.png)
 
 Each oscillator can modulate all those after it.<br/>
 So, 1 can modulate 2/3/4, 2 can modulate 2/3 and 3 can modulate 4.
@@ -799,7 +799,7 @@ Exponential (on): modulator controls the carriers pitch. Causes pitch-drift.
 ## Voice FX and Global FX
 Effect module with 4 subslots, each slot can be a state variable filter, comb filter, or waveshaper.
 
-![image](screenshot_manual_fx.png)
+![image](screen_manual_fx.png)
 
 Oversampling applies to the module as a whole, so all 4 subslots together.<br/>
 Tracking key sets the root key (offset from C4) against which all filters are keyboard-tracked.<br/>
@@ -862,7 +862,7 @@ Choice of unipolar and bipolar modes with continuous amount control.
 <a id="VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
 ## Voice Echo and Global Echo
 
-![image](screenshot_manual_echo.png)
+![image](screen_manual_echo.png)
 
 Echo module with multitap delay, feedback delay and reverb subslots.<br/>
 There is at most one of each, but the processing order is customizable.<br/>
@@ -916,7 +916,7 @@ So your 500 millisecond voice (by voice amp envelope) gets extended by that much
 So, when your oscis hit silence (by voice envelope), allows another 5 seconds of full scale echo followed by 5 seconds of fade-out echo.
 
 ### Multi tap delay
-![image](screenshot_manual_echo_multitap.png)
+![image](screen_manual_echo_multitap.png)
 
 * 8-tap delay line with full control over each taps individual parameters.
 * Per-tap delay time (or bars), level, stereo balance and stereo crossover.
@@ -946,7 +946,7 @@ Implementation based on [https://github.com/sinshu/freeverb](https://github.com/
 ## Voice LFO and Global LFO
 LFO module with 3 subslots and optional tempo-syncing.
 
-![image](screenshot_manual_lfo.png)
+![image](screen_manual_lfo.png)
 
 The LFO output is that of the 3 slots combined.<br/>
 The individual slot outputs are also available as sources in the mod matrix.
@@ -1014,7 +1014,7 @@ Bipolar preserves the vertical center point, unipolar does not.
 ## Envelope
 16-stage per-voice envelope generator with customizable loop and release points.
 
-![image](screenshot_manual_env.png)
+![image](screen_manual_env.png)
 
 Envelopes can be looping, releaseing, or both (or neither).<br/>
 Either linear or exponential, comes with visual MSEG editor.<br/>
@@ -1052,7 +1052,7 @@ Also unlike the editor, stage controls have a regular context menu attached to t
 ### MSEG editor
 Construct the envelope by dragging and clicking around.
 
-![image](screenshot_manual_env_mseg.png)
+![image](screen_manual_env_mseg.png)
 
 * Drag the start point up/down to control the initial level
 * Drag a slope point around (exponential mode) to control the stage slope.
@@ -1111,7 +1111,7 @@ Does not include microtuning.
 For per-voice, provides on-note (ON Master, ON GLFO etc) versions of global sources (this is just sample-and-hold).<br/>
 See per-module CV outputs for a description of available matrix sources.
 
-![image](screenshot_manual_matrix.png)
+![image](screen_manual_matrix.png)
 
 Unlike FF1 there is no distiction between CV-to-Audio and CV-to-CV anymore.<br/>
 Anything goes, provided the source module comes before (in processing order) the target module (see Signal Flow).<br/>
@@ -1163,7 +1163,7 @@ Each spawned voice in this case becomes part of the same global unison group.<br
 See also per-group on-note-random sources in the mod matrix / voice-note module.<br/>
 Global unison-spawned voices are otherwise not "special" - they each come out of the 64 available voices.<br/>
 
-![image](screenshot_manual_unison.png)
+![image](screen_manual_unison.png)
 
 Global unison is as much a global-level feature as it is a voice-level feature.<br/>
 The idea is to build up a voice "spectrum" (f.e. 25%, 50%, 75% with 50% being center)<br/>
