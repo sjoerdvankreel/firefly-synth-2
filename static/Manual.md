@@ -515,7 +515,7 @@ See the matrix section for more details.
 
 All modules are contained within the Main tab.<br/>
 This is the primary screen for patch design.<br/>
-It contains all parameters for oscillators, filters, effects, envelopes and LFOs as well as all audio routing controls and high-level parameters like microtuning and portamento controls.
+It contains all parameters for oscillators, filters, effects, envelopes and LFOs as well as all audio routing controls and high-level parameters like pitchbend and portamento controls.
 
 <a id="AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8"></a>
 ## Voice
