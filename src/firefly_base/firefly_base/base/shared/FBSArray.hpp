@@ -17,7 +17,7 @@ public:
   explicit FBSArray(FBBatch<T> val) { Fill(val); }
   explicit FBSArray(T val) { Fill(FBBatch<T>(val)); }
 
-  void NaNCheck() const;
+  void SanityCheck() const;
   template <int Times> void UpsampleStretch();
 
   T First() const { return _data[0]; }
@@ -69,11 +69,14 @@ FBSArray<T, N>::StoreDoubleToFloat(int pos, FBBatch<double> val)  const
 
 template <class T, int N>
 inline void
-FBSArray<T, N>::NaNCheck() const
+FBSArray<T, N>::SanityCheck() const
 {
 #ifndef NDEBUG
   for (int i = 0; i < N; i++)
+  {
     FB_ASSERT(!std::isnan(Get(i)));
+    FB_ASSERT(!std::isinf(Get(i)));
+  }
 #endif
 }
 
@@ -93,13 +96,13 @@ FBSArray<T, N>::UpsampleStretch()
 
 template <class T>
 inline void
-FBBatchNaNCheck(FBBatch<T> vec)
+FBBatchSanityCheck(FBBatch<T> vec)
 {
   (void)vec;
 #ifndef NDEBUG
   FBSArray<float, FBSIMDTraits<T>::Size> check;
   check.Store(0, vec);
-  check.NaNCheck();
+  check.SanityCheck();
 #endif
 }
 
@@ -110,7 +113,7 @@ class alignas(FBSIMDTraits<T>::Align) FBSArray2
 public:
   FBSArray<T, N1>& operator[](int i) { return _data[i]; }
   FBSArray<T, N1> const& operator[](int i) const { return _data[i]; }
-  void NaNCheck() const { for (int i = 0; i < N2; i++) _data[i].NaNCheck(); }
+  void SanityCheck() const { for (int i = 0; i < N2; i++) _data[i].SanityCheck(); }
   void Fill(FBBatch<T> val) { for (int i = 0; i < N2; i++) _data[i].Fill(val); }
   void Mul(FBSArray<T, N1> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Mul(rhs); }
   void Div(FBSArray<T, N1> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Div(rhs); }

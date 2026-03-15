@@ -28,6 +28,7 @@ class FFEnvProcessor final
   int _smoothSamples = 0;
   int _lengthSamples = 0;
   int _positionSamples = 0;
+  int _grampSamplesTotal = 0;
   int _lengthSamplesUpToRelease = 0;
   float _lastOverall = 0.0f;
   float _lastBeforeRelease = 0.0f;
@@ -46,6 +47,6 @@ class FFEnvProcessor final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
-  void BeginVoice(FBModuleProcState& state, FFEnvExchangeState const* exchangeFromDSP, bool graph);
   int Process(FBModuleProcState& state, FFEnvExchangeState const* exchangeFromDSP, bool graph, int releaseAt);
+  void BeginVoice(FBModuleProcState& state, FFEnvExchangeState const* exchangeFromDSP, bool graph, bool mainGraph, int graphSamples);
 };

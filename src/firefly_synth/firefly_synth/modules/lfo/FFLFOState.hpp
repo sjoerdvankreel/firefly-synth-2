@@ -13,24 +13,35 @@
 
 struct FBStaticModule; 
 template <bool Global>
-struct LFOGraphRenderData;
+class LFOGraphProcessor;
 
 struct alignas(FBSIMDAlign) FFLFOExchangeState final:
-public FBModuleProcMultiExchangeState<FFLFOBlockCount + 1>
+public FBModuleProcMultiExchangeState<FFLFOBlockCount>
 {
+  int lengthSamplesAll = {};
+  int positionSamplesAll = {};
+  std::array<float, FFLFOBlockCount> rates = {};
   std::array<float, FFLFOBlockCount> phases = {};
+  std::array<float, FFLFOBlockCount> outputs = {};
   std::array<float, FFLFOBlockCount> uniNoiseLastDraw = {};
   std::array<float, FFLFOBlockCount> normNoiseLastDraw = {};
   std::array<float, FFLFOBlockCount> smoothUniNoiseLastDraw = {};
   std::array<float, FFLFOBlockCount> smoothNormNoiseLastDraw = {};
+
+  int LengthSamples(bool detailGraphs, int graphIndex) const override
+  { return detailGraphs? lengthSamples[graphIndex]: lengthSamplesAll; }
+  bool ShouldGraph(bool detailGraphs, int graphIndex) const override
+  { return boolIsActive != 0 && (detailGraphs? (positionSamples[graphIndex] < lengthSamples[graphIndex]): (positionSamplesAll < lengthSamplesAll)); }
+  float PositionNormalized(bool detailGraphs, int graphIndex) const override
+  { return detailGraphs? (positionSamples[graphIndex] / static_cast<float>(lengthSamples[graphIndex])): (positionSamplesAll / static_cast<float>(lengthSamplesAll)); }
 };
 
 class alignas(FBSIMDAlign) FFLFODSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
-  friend struct LFOGraphRenderData<true>;
-  friend struct LFOGraphRenderData<false>;
+  friend class LFOGraphProcessor<true>;
+  friend class LFOGraphProcessor<false>;
   std::unique_ptr<FFLFOProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFLFODSPState);

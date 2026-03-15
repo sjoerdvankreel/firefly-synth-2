@@ -16,6 +16,24 @@
 
 using namespace juce::dsp;
 
+static inline FFStateVariableFilterMode
+EffectKindToSVFMode(FFEffectKind kind)
+{
+  switch (kind)
+  {
+  case FFEffectKind::LPF: return FFStateVariableFilterMode::LPF;
+  case FFEffectKind::BPF: return FFStateVariableFilterMode::BPF;
+  case FFEffectKind::HPF: return FFStateVariableFilterMode::HPF;
+  case FFEffectKind::BSF: return FFStateVariableFilterMode::BSF;
+  case FFEffectKind::APF: return FFStateVariableFilterMode::APF;
+  case FFEffectKind::PEQ: return FFStateVariableFilterMode::PEQ;
+  case FFEffectKind::BLL: return FFStateVariableFilterMode::BLL;
+  case FFEffectKind::LSH: return FFStateVariableFilterMode::LSH;
+  case FFEffectKind::HSH: return FFStateVariableFilterMode::HSH;
+  default: FB_ASSERT(false); return {};
+  }
+}
+
 static inline FBBatch<float>
 FoldBack(FBBatch<float> in)
 {
@@ -88,8 +106,7 @@ FFEffectProcessor::AllocOnDemandBuffers(
   {
     auto kind = moduleTopo.NormalizedToListFast<FFEffectKind>(FFEffectParam::Kind,
       FFSelectDualProcBlockParamNormalizedGlobal<Global>(kindNorm[i]));
-    if (graph || (
-      kind == FFEffectKind::Comb || kind == FFEffectKind::CombPlus || kind == FFEffectKind::CombMin))
+    if (graph || FFEffectKindIsComb(kind))
       _combFilters[i].AllocBuffers(state->MemoryPool(), sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier); 
   }
 }
@@ -97,7 +114,9 @@ FFEffectProcessor::AllocOnDemandBuffers(
 template <bool Global>
 void
 FFEffectProcessor::BeginVoiceOrBlock(
-  FBModuleProcState& state, bool graph, int graphIndex, int graphSampleCount)
+  FBModuleProcState& state, 
+  bool graph, bool detailGraphs,
+  int graphIndex, int graphSampleCount)
 {
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -110,7 +129,6 @@ FFEffectProcessor::BeginVoiceOrBlock(
   auto const& clipModeNorm = params.block.clipMode;
   auto const& foldModeNorm = params.block.foldMode;
   auto const& skewModeNorm = params.block.skewMode;
-  auto const& stVarModeNorm = params.block.stVarMode;
   auto const& filterModeNorm = params.block.filterMode;
   float onNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.on[0], voice);
   float oversampleNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.oversample[0], voice);
@@ -131,7 +149,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
 
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
-    bool blockActive = !graph || graphIndex == i || graphIndex == FFEffectBlockCount;
+    bool blockActive = !graph || graphIndex == i || !detailGraphs;
     _kind[i] = !blockActive? FFEffectKind::Off: topo.NormalizedToListFast<FFEffectKind>(
       FFEffectParam::Kind, 
       FFSelectDualProcBlockParamNormalized<Global>(kindNorm[i], voice));
@@ -144,9 +162,6 @@ FFEffectProcessor::BeginVoiceOrBlock(
     _skewMode[i] = topo.NormalizedToListFast<FFEffectSkewMode>(
       FFEffectParam::SkewMode, 
       FFSelectDualProcBlockParamNormalized<Global>(skewModeNorm[i], voice));
-    _stVarMode[i] = topo.NormalizedToListFast<FFStateVariableFilterMode>(
-      FFEffectParam::StVarMode, 
-      FFSelectDualProcBlockParamNormalized<Global>(stVarModeNorm[i], voice));
     _filterMode[i] = topo.NormalizedToListFast<FFEffectFilterMode>(
       FFEffectParam::FilterMode,
       FFSelectDualProcBlockParamNormalized<Global>(filterModeNorm[i], voice));
@@ -267,7 +282,7 @@ FFEffectProcessor::Process(
     trackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFEffectParam::TrackingKey, trackingKeyNorm, s));
     for (int i = 0; i < FFEffectBlockCount; i++)
     {
-      if (_kind[i] == FFEffectKind::StVar)
+      if (FFEffectKindIsSVF(_kind[i]))
       {
         stVarResPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::StVarRes,
           FFSelectDualProcAccParamNormalized<Global>(stVarResNorm[i], voice), s));
@@ -349,9 +364,7 @@ FFEffectProcessor::Process(
 
         stVarRealFreqPlain[i].Store(s, realFreqPlain);
       }
-      else if (_kind[i] == FFEffectKind::Comb ||
-        _kind[i] == FFEffectKind::CombPlus ||
-        _kind[i] == FFEffectKind::CombMin)
+      else if (FFEffectKindIsComb(_kind[i]))
       {
         combKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombKeyTrk,
           FFSelectDualProcAccParamNormalized<Global>(combKeyTrkNorm[i], voice), s));
@@ -517,7 +530,7 @@ FFEffectProcessor::Process(
           combRealFreqPlusPlain[i].Store(s, realFreqPlain);
         }
       }
-      else if (_kind[i] == FFEffectKind::Clip || _kind[i] == FFEffectKind::Fold || _kind[i] == FFEffectKind::Skew)
+      else if (FFEffectKindIsShaper(_kind[i]))
       {
         distAmtPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistAmt,
           FFSelectDualProcAccParamNormalized<Global>(distAmtNorm[i], voice), s));
@@ -559,16 +572,14 @@ FFEffectProcessor::Process(
     trackingKeyPlain.UpsampleStretch<FFEffectOversampleTimes>();
     for (int i = 0; i < FFEffectBlockCount; i++)
     {
-      if (_kind[i] == FFEffectKind::StVar)
+      if (FFEffectKindIsSVF(_kind[i]))
       {
         stVarResPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         stVarGainPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         stVarKeyTrkPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         stVarRealFreqPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
       }
-      else if (_kind[i] == FFEffectKind::Comb ||
-        _kind[i] == FFEffectKind::CombPlus ||
-        _kind[i] == FFEffectKind::CombMin)
+      else if (FFEffectKindIsComb(_kind[i]))
       {
         combKeyTrkPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         if (_kind[i] == FFEffectKind::Comb ||
@@ -584,7 +595,7 @@ FFEffectProcessor::Process(
           combRealFreqPlusPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         }
       }
-      else if (_kind[i] == FFEffectKind::Clip || _kind[i] == FFEffectKind::Fold || _kind[i] == FFEffectKind::Skew)
+      else if (FFEffectKindIsShaper(_kind[i]))
       {
         distAmtPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         distMixPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
@@ -614,10 +625,19 @@ FFEffectProcessor::Process(
         oversampled[c].Set(s, oversampledBlock.getSample(c, s));
   }
 
+  FFEffectExchangeState* exchangeDSP = nullptr;
   float oversampledRate = _oversampleTimes * sampleRate;
-  for(int i = 0; i < FFEffectBlockCount; i++)
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if(exchangeToGUI != nullptr)
+    exchangeDSP = FFSelectDualState<Global>(
+      [exchangeToGUI, &state]() { return &exchangeToGUI->global.gEffect[state.moduleSlot]; },
+      [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vEffect[state.moduleSlot]; });
+  for (int i = 0; i < FFEffectBlockCount; i++)
+  {
     switch (_kind[i])
     {
+    case FFEffectKind::Off:
+      break;
     case FFEffectKind::Fold:
       ProcessFold(i, oversampled, distMixPlain, distBiasPlain, distDrivePlain);
       break;
@@ -626,9 +646,6 @@ FFEffectProcessor::Process(
       break;
     case FFEffectKind::Skew:
       ProcessSkew(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
-      break;
-    case FFEffectKind::StVar:
-      ProcessStVar<Global>(i, oversampledRate, oversampled, stVarResPlain, stVarRealFreqPlain, stVarGainPlain);
       break;
     case FFEffectKind::Comb:
       ProcessComb<Global, true, true>(i, oversampledRate, oversampled, combResMinPlain, combResPlusPlain, combRealFreqMinPlain, combRealFreqPlusPlain);
@@ -640,8 +657,13 @@ FFEffectProcessor::Process(
       ProcessComb<Global, false, true>(i, oversampledRate, oversampled, combResMinPlain, combResPlusPlain, combRealFreqMinPlain, combRealFreqPlusPlain);
       break;
     default:
+      FB_ASSERT(FFEffectKindIsSVF(_kind[i]));
+      ProcessStVar<Global>(i, oversampledRate, oversampled, stVarResPlain, stVarRealFreqPlain, stVarGainPlain);
       break;
     }
+    if(exchangeDSP != nullptr)
+      exchangeDSP->outputs[i] = std::max(std::abs(oversampled[0].Get(0)), std::abs(oversampled[1].Get(0)));
+  }
 
   if(_oversampleTimes == 1)
     for (int c = 0; c < 2; c++)
@@ -659,19 +681,24 @@ FFEffectProcessor::Process(
     _oversampler.processSamplesDown(outputBlock);
   }
 
-  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
   {
     _graphSamplesProcessed += FBFixedBlockSamples;
     return std::clamp(_graphSampleCount - _graphSamplesProcessed, 0, FBFixedBlockSamples);
   }
 
-  auto& exchangeDSP = *FFSelectDualState<Global>(
-    [exchangeToGUI, &state]() { return &exchangeToGUI->global.gEffect[state.moduleSlot]; },
-    [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vEffect[state.moduleSlot]; });
-  exchangeDSP.boolIsActive = 1;
-  exchangeDSP.basePitch = _basePitch.Get(FBFixedBlockSamples - 1);
-  exchangeDSP.lengthSamples = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
+  exchangeDSP->boolIsActive = 1;
+  exchangeDSP->basePitch = _basePitch.Get(FBFixedBlockSamples - 1);
+  exchangeDSP->lengthSamples = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
+  exchangeDSP->output = std::max(std::abs(output[0].Get(0)), std::abs(output[1].Get(0)));
+
+  for (int i = 0; i < FFEffectBlockCount; i++)
+  {
+    exchangeDSP->shaperDrives[i] = distDrivePlain[i].First();
+    exchangeDSP->stVarFreqs[i] = stVarRealFreqPlain[i].First();
+    exchangeDSP->combMinFreqs[i] = combRealFreqMinPlain[i].First();
+    exchangeDSP->combPlusFreqs[i] = combRealFreqPlusPlain[i].First();
+  }
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gEffect[state.moduleSlot]; },
@@ -680,10 +707,10 @@ FFEffectProcessor::Process(
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
     // Need to translate filter freqs/pitches back to normalized because keytracking is applied on plain, not normalized.
-    if (_on && _kind[i] == FFEffectKind::StVar && _filterMode[i] == FFEffectFilterMode::Freq)
+    if (_on && FFEffectKindIsSVF(_kind[i]) && _filterMode[i] == FFEffectFilterMode::Freq)
       FFSelectDualExchangeState<Global>(exchangeParams.acc.stVarFreqFreq[i], voice) =
         topo.params[(int)FFEffectParam::StVarFreqFreq].Log2().PlainToNormalizedFast(stVarFreqFreqPlain[i].Get(FBFixedBlockSamples - 1));
-    if (_on && _kind[i] == FFEffectKind::StVar && _filterMode[i] != FFEffectFilterMode::Freq)
+    if (_on && FFEffectKindIsSVF(_kind[i]) && _filterMode[i] != FFEffectFilterMode::Freq)
       FFSelectDualExchangeState<Global>(exchangeParams.acc.stVarPitchCoarse[i], voice) =
       topo.params[(int)FFEffectParam::StVarPitchCoarse].Linear().PlainToNormalizedFast(stVarPitchCoarsePlain[i].Get(FBFixedBlockSamples - 1));
     if (_on && (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombMin) && _filterMode[i] == FFEffectFilterMode::Freq)
@@ -755,7 +782,7 @@ FFEffectProcessor::ProcessStVar(
     auto res = stVarResPlain[block].Get(s);
     auto freq = stVarFreqPlain[block].Get(s);
     auto gain = stVarGainPlain[block].Get(s);
-    _stVarFilters[block].Set(_stVarMode[block], oversampledRate, freq, res, gain);
+    _stVarFilters[block].Set(EffectKindToSVFMode(_kind[block]), oversampledRate, freq, res, gain);
     for (int c = 0; c < 2; c++)
       oversampled[c].Set(s, static_cast<float>(_stVarFilters[block].Next(c, oversampled[c].Get(s))));
   }
@@ -909,8 +936,8 @@ FFEffectProcessor::ProcessFold(
   }
 }
 
-template void FFEffectProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, bool, int, int);
-template void FFEffectProcessor::BeginVoiceOrBlock<false>(FBModuleProcState&, bool, int, int);
+template void FFEffectProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, bool, bool, int, int);
+template void FFEffectProcessor::BeginVoiceOrBlock<false>(FBModuleProcState&, bool, bool, int, int);
 template int FFEffectProcessor::Process<true>(FBModuleProcState&, FFEffectExchangeState const*, bool);
 template int FFEffectProcessor::Process<false>(FBModuleProcState&, FFEffectExchangeState const*, bool);
 template void FFEffectProcessor::AllocOnDemandBuffers<true>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);

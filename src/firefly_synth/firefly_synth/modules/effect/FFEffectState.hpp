@@ -13,20 +13,25 @@
 struct FBStaticModule;
 
 template <bool Global>
-struct EffectGraphRenderData;
+class EffectGraphProcessor;
 
 struct alignas(FBSIMDAlign) FFEffectExchangeState final:
 public FBModuleProcSingleExchangeState
 {
   float basePitch = {};
+  std::array<float, FFEffectBlockCount> outputs = {};
+  std::array<float, FFEffectBlockCount> shaperDrives = {};
+  std::array<float, FFEffectBlockCount> stVarFreqs = {};
+  std::array<float, FFEffectBlockCount> combMinFreqs = {};
+  std::array<float, FFEffectBlockCount> combPlusFreqs = {};
 };
 
 class alignas(FBSIMDAlign) FFEffectDSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
-  friend struct EffectGraphRenderData<true>;
-  friend struct EffectGraphRenderData<false>;
+  friend class EffectGraphProcessor<true>;
+  friend class EffectGraphProcessor<false>;
   std::unique_ptr<FFEffectProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectDSPState);
@@ -47,7 +52,6 @@ class alignas(alignof(TBlock)) FFEffectBlockParamState final
   std::array<TBlock, FFEffectBlockCount> clipMode = {};
   std::array<TBlock, FFEffectBlockCount> foldMode = {};
   std::array<TBlock, FFEffectBlockCount> skewMode = {};
-  std::array<TBlock, FFEffectBlockCount> stVarMode = {};
   std::array<TBlock, FFEffectBlockCount> filterMode = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectBlockParamState);

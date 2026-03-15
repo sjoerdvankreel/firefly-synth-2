@@ -156,7 +156,7 @@ FBGraphRenderState::PrepareForRenderPrimaryVoice()
 }
 
 double
-FBGraphRenderState::GetAudioParamNormalized(
+FBGraphRenderState::AudioParamNormalized(
   FBParamTopoIndices const& indices,
   bool exchange, int exchangeVoice) const
 {
@@ -173,7 +173,7 @@ FBGraphRenderState::AudioParamBool(
   FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
+  double normalized = AudioParamNormalized(indices, exchange, exchangeVoice);
   return param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(normalized));
 }
 
@@ -182,8 +182,17 @@ FBGraphRenderState::AudioParamDiscrete(
   FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
+  double normalized = AudioParamNormalized(indices, exchange, exchangeVoice);
   return param->static_.Discrete().NormalizedToPlainFast(static_cast<float>(normalized));
+}
+
+float
+FBGraphRenderState::AudioParamLog2(
+  FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const
+{
+  auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
+  double normalized = AudioParamNormalized(indices, exchange, exchangeVoice);
+  return param->static_.Log2().NormalizedToPlainFast(static_cast<float>(normalized));
 }
 
 float
@@ -191,8 +200,17 @@ FBGraphRenderState::AudioParamLinear(
   FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
+  double normalized = AudioParamNormalized(indices, exchange, exchangeVoice);
   return param->static_.Linear().NormalizedToPlainFast(static_cast<float>(normalized));
+}
+
+float
+FBGraphRenderState::AudioParamIdentity(
+  FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const
+{
+  auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
+  double normalized = AudioParamNormalized(indices, exchange, exchangeVoice);
+  return param->static_.Identity().NormalizedToPlainFast(static_cast<float>(normalized));
 }
 
 int
@@ -200,7 +218,7 @@ FBGraphRenderState::AudioParamLinearTimeSamples(
   FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
+  double normalized = AudioParamNormalized(indices, exchange, exchangeVoice);
   return param->static_.Linear().NormalizedTimeToSamplesFast(static_cast<float>(normalized), sampleRate);
 }
 
@@ -209,7 +227,7 @@ FBGraphRenderState::AudioParamLinearFreqSamples(
   FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
+  double normalized = AudioParamNormalized(indices, exchange, exchangeVoice);
   return param->static_.Linear().NormalizedFreqToSamplesFast(static_cast<float>(normalized), sampleRate);
 }
 
@@ -218,7 +236,7 @@ FBGraphRenderState::AudioParamBarsSamples(
   FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate, float bpm) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
+  double normalized = AudioParamNormalized(indices, exchange, exchangeVoice);
   return param->static_.Bars().NormalizedToSamplesFast(static_cast<float>(normalized), sampleRate, bpm);
 }
 

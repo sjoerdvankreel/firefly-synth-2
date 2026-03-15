@@ -4,6 +4,7 @@
 #include <firefly_base/gui/shared/FBTheme.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
+#include <unordered_map>
 
 class FBParamSlider;
 
@@ -11,6 +12,9 @@ class FBLookAndFeel:
 public juce::LookAndFeel_V4
 {
   FBTheme _theme = {};
+  juce::Typeface::Ptr _typeface = {};
+  juce::Font _font = juce::Font(juce::FontOptions());
+  mutable std::unordered_map<std::string, juce::Point<int>> _stringSizeCache = {};
 
   void DrawLinearSliderExchangeThumb(
     juce::Graphics& g, FBParamSlider& slider, FBColorScheme const& scheme,
@@ -36,6 +40,18 @@ public:
 
   void SetTheme(FBTheme const& theme);
   FBTheme const& Theme() const { return _theme; }
+  juce::Point<int> GetStringSizeCached(std::string const& text) const;
+
+  juce::Font const& GetFont() const { return _font; }
+  int GetFontHeight() const { return Theme().global.fontSize; }
+  int GetStandardPopupMenuItemHeight() const { return GetFontHeight() + 10; }
+  int GetStringWidthCached(std::string const& text) const { return GetStringSizeCached(text).x; }
+
+  juce::Font getPopupMenuFont() override { return GetFont(); }
+  juce::Font getLabelFont(juce::Label&) override { return GetFont(); }
+  juce::Font getComboBoxFont(juce::ComboBox&) override { return GetFont(); }
+  juce::Font getSliderPopupFont(juce::Slider&) override { return GetFont(); }
+  juce::Font getTextButtonFont(juce::TextButton&, int)  override { return GetFont(); }
 
   juce::BorderSize<int> getLabelBorderSize(
     juce::Label&) override;
@@ -140,10 +156,4 @@ public:
   void drawButtonBackground(
     juce::Graphics& g, juce::Button& button, const juce::Colour& backgroundColour,
     bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
-
-  juce::Font getPopupMenuFont() override { return FBGUIGetFont(); }
-  juce::Font getLabelFont(juce::Label&) override { return FBGUIGetFont(); }
-  juce::Font getComboBoxFont(juce::ComboBox&) override { return FBGUIGetFont(); }
-  juce::Font getSliderPopupFont(juce::Slider&) override { return FBGUIGetFont(); }
-  juce::Font getTextButtonFont(juce::TextButton&, int)  override { return FBGUIGetFont(); }
 };

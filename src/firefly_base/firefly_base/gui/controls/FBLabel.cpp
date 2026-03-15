@@ -1,46 +1,54 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 using namespace juce;
 
 FBAutoSizeLabel::
-FBAutoSizeLabel(std::string const& text, bool centred, bool isPrimary, bool small):
+FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, FBLabelAlign align, FBLabelColors colors):
 Label(),
 IFBHorizontalAutoSize(),
-_textWidth(FBGUIGetStringWidthCached(text)),
-_isPrimary(isPrimary),
-_small(small)
+_plugGUI(plugGUI),
+_text(text),
+_colors(colors)
 {
   setText(text, dontSendNotification);
   setBorderSize({ 1, 2, 1, 2 });
-  if (centred)
+  if (align == FBLabelAlign::Center)
     setJustificationType(Justification::centred);
+  if (align == FBLabelAlign::Right)
+    setJustificationType(Justification::centredRight);
 }
 
 int 
 FBAutoSizeLabel::FixedHeight() const
 {
-  return 20;
+  return FBPrimaryHeight;
 }
 
 int 
 FBAutoSizeLabel::FixedWidth(int /*height*/) const
 {
-  return getBorderSize().getLeftAndRight() + _textWidth + (_isPrimary? 2: 0);
+  return getBorderSize().getLeftAndRight() + FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text);
 }
 
 FBAutoSizeLabel2::
-FBAutoSizeLabel2(bool hasBackground, int fixedWidth) :
+FBAutoSizeLabel2(bool hasBackground, bool rightAlign, bool primary, int fixedWidth) :
 Label(),
 IFBHorizontalAutoSize(),
 _hasBackground(hasBackground),
-_fixedWidth(fixedWidth) { }
+_primary(primary),
+_fixedWidth(fixedWidth)
+{ 
+  if (rightAlign)
+    setJustificationType(Justification::right);
+}
 
 int
 FBAutoSizeLabel2::FixedHeight() const
 {
-  return 20;
+  return FBPrimaryHeight;
 }
 
 int
@@ -50,8 +58,8 @@ FBAutoSizeLabel2::FixedWidth(int /*height*/) const
 }
 
 FBGUIParamLabel::
-FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed, bool isPrimary) :
-FBAutoSizeLabel(param->displayName, false, isPrimary),
+FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed, FBLabelColors colors) :
+FBAutoSizeLabel(plugGUI, param->displayName, FBLabelAlign::Left, colors),
 FBGUIParamComponent(plugGUI, param, isThemed) {}
 
 void
@@ -61,8 +69,8 @@ FBGUIParamLabel::parentHierarchyChanged()
 }
 
 FBParamLabel::
-FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed, bool isPrimary):
-FBAutoSizeLabel(param->displayName, false, isPrimary),
+FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed, FBLabelColors colors):
+FBAutoSizeLabel(plugGUI, param->displayName, FBLabelAlign::Left, colors),
 FBParamComponent(plugGUI, param, isThemed) {}
 
 void 
@@ -72,8 +80,8 @@ FBParamLabel::parentHierarchyChanged()
 }
 
 FBParamLinkedLabel::
-FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isPrimary, std::string text):
-FBAutoSizeLabel(text, false, isPrimary),
+FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string text, FBLabelColors colors):
+FBAutoSizeLabel(plugGUI, text, FBLabelAlign::Left, colors),
 FBParamsDependent(plugGUI, param->topoIndices.param.slot, param->topoIndices.module, param->static_.dependencies) {}
 
 void 

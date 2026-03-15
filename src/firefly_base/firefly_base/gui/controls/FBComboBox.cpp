@@ -1,5 +1,6 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
@@ -27,24 +28,37 @@ FBComboMenuCloseListener::menuItemTriggered()
 }
 
 FBAutoSizeComboBox::
-FBAutoSizeComboBox(PopupMenu const& rootMenu, std::string minimumWidthText):
-ComboBox()
+~FBAutoSizeComboBox()
+{
+  _plugGUIPrivate->RemoveThemeListener(this);
+}
+
+FBAutoSizeComboBox::
+FBAutoSizeComboBox(FBPlugGUI* plugGUI, PopupMenu const& rootMenu, std::string minWidthText):
+ComboBox(),
+_plugGUIPrivate(plugGUI),
+_minWidthText(minWidthText)
 {
   *getRootMenu() = rootMenu;
+  _plugGUIPrivate->AddThemeListener(this);
+  CalculateMaxWidth();
+
   PopupMenu::MenuItemIterator iter(*getRootMenu(), true);
-  _maxTextWidth = FBGUIGetStringWidthCached(minimumWidthText);
-  for (int i = 0; i < getNumItems(); i++)
-    _maxTextWidth = std::max(_maxTextWidth, 
-      FBGUIGetStringWidthCached(getItemText(i).toStdString()));
   while (iter.next())
     if (!iter.getItem().subMenu)
       iter.getItem().customCallback = new FBComboMenuCloseListener(this, iter.getItem().itemID);
 }
 
+void
+FBAutoSizeComboBox::ThemeChanged()
+{
+  CalculateMaxWidth();
+}
+
 int 
 FBAutoSizeComboBox::FixedHeight() const
 {
-  return 24;
+  return FBPrimaryHeight;
 }
 
 int
@@ -53,9 +67,20 @@ FBAutoSizeComboBox::FixedWidth(int /*height*/) const
   return _maxTextWidth + 14;
 }
 
+void
+FBAutoSizeComboBox::CalculateMaxWidth()
+{
+  auto lnf = FBGetLookAndFeelFor(_plugGUIPrivate);
+  PopupMenu::MenuItemIterator iter(*getRootMenu(), true);
+  _maxTextWidth = lnf->GetStringWidthCached(_minWidthText);
+  for (int i = 0; i < getNumItems(); i++)
+    _maxTextWidth = std::max(_maxTextWidth,
+      lnf->GetStringWidthCached(getItemText(i).toStdString()));
+}
+
 FBGUIParamComboBox::
 FBGUIParamComboBox(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, std::string minimumWidthText, bool isThemed):
-FBAutoSizeComboBox(param->static_.ItemsNonRealTime().MakePopupMenu(param->topoIndices.module.index), minimumWidthText),
+FBAutoSizeComboBox(plugGUI, param->static_.ItemsNonRealTime().MakePopupMenu(param->topoIndices.module.index), minimumWidthText),
 FBGUIParamControl(plugGUI, param, isThemed)
 {
   SetValueNormalized(plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex));
@@ -99,7 +124,7 @@ FBGUIParamComboBox::valueChanged(Value& /*value*/)
 
 FBParamComboBox::
 FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string minimumWidthText, bool isThemed) :
-FBAutoSizeComboBox(param->static_.ItemsNonRealTime().MakePopupMenu(param->topoIndices.module.index), minimumWidthText),
+FBAutoSizeComboBox(plugGUI, param->static_.ItemsNonRealTime().MakePopupMenu(param->topoIndices.module.index), minimumWidthText),
 FBParamControl(plugGUI, param, isThemed)
 {
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex));

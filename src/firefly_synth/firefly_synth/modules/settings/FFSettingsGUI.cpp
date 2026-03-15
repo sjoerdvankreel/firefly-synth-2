@@ -13,72 +13,55 @@
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
-#include <firefly_base/gui/components/FBFillerComponent.hpp>
-#include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
 
-static Component*
-MakeSettingsSectionMain(FBPlugGUI* plugGUI)
+Component*
+FFMakeSettingsGUIMain(FBPlugGUI* plugGUI)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0 }, std::vector<int> { 0, 0, 0, 0, 0, 1 });
+  grid->Add(0, 0, 1, 6, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Engine", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
+  grid->MarkSection({ { 0, 0 }, { 1, 6 } }, FBGridSectionMark::AlternateBackground);
   auto receiveNotes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::ReceiveNotes, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, receiveNotes));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, receiveNotes));
-  auto smooth = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::HostSmoothTime, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smooth));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, receiveNotes));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, receiveNotes));
   auto softClip = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::AutoSoftClip, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, softClip));
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, softClip));
-  grid->MarkSection({ { 0, 0 }, { 2, 3 } }, FBGridSectionMark::BackgroundAndAlternate);
-  return grid;
-}
-
-static Component*
-MakeSettingsSectionTuning(FBPlugGUI* plugGUI)
-{
-  auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
-  auto tuning = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::Tuning, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuning, true, true));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuning));
-  auto tuneOnNote = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneOnNote, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneOnNote));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneOnNote));
-  auto tuneMasterPB = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneMasterPB, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneMasterPB));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneMasterPB));
-  auto tuneVoiceCoarse = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneVoiceCoarse, 0 } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneVoiceCoarse));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneVoiceCoarse));
-  auto tuneMasterMatrix = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneMasterMatrix, 0 } });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneMasterMatrix));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneMasterMatrix));
-  auto tuneVoiceMatrix = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneVoiceMatrix, 0 } });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneVoiceMatrix));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneVoiceMatrix));
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } }, FBGridSectionMark::BackgroundAndBorder);
-  return grid;
-}
-
-static Component*
-MakeSettingsTab(FBPlugGUI* plugGUI)
-{
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
-  grid->Add(0, 0, MakeSettingsSectionMain(plugGUI));
-  grid->Add(0, 1, MakeSettingsSectionTuning(plugGUI));
-  return plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, softClip));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, softClip));
+  auto smooth = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::HostSmoothTime, 0 } });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smooth));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::LinearHorizontal));
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Settings, 0, card);
 }
 
 Component*
-FFMakeSettingsGUI(FBPlugGUI* plugGUI)
+FFMakeSettingsGUITuning(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>(plugGUI);
-  auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::Settings].name;
-  tabs->AddTab(name, true, MakeSettingsTab(plugGUI));
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Settings, 0, tabs);
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 1 });
+  grid->Add(0, 0, 1, 7, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Tuning", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
+  grid->MarkSection({ { 0, 0 }, { 1, 7 } }, FBGridSectionMark::AlternateBackground);
+  auto tuning = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::Tuning, 0 } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuning, true, FBLabelColors::PrimaryForeground));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuning));
+  auto tuneOnNote = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneOnNote, 0 } });
+  grid->Add(2, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneOnNote));
+  grid->Add(2, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneOnNote));
+  auto tuneMasterPB = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneMasterPB, 0 } });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneMasterPB));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneMasterPB));
+  auto tuneVoiceCoarse = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneVoiceCoarse, 0 } });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneVoiceCoarse));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneVoiceCoarse));
+  auto tuneMasterMatrix = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneMasterMatrix, 0 } });
+  grid->Add(2, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneMasterMatrix));
+  grid->Add(2, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneMasterMatrix));
+  auto tuneVoiceMatrix = topo->audio.ParamAtTopo({ { (int)FFModuleType::Settings, 0 }, { (int)FFSettingsParam::TuneVoiceMatrix, 0 } });
+  grid->Add(2, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuneVoiceMatrix));
+  grid->Add(2, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tuneVoiceMatrix));
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Settings, 0, card);
 }

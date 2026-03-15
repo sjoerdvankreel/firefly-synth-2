@@ -43,10 +43,10 @@ struct FFGUIState final
 
 struct alignas(FBSIMDAlign) FFGlobalExchangeState final
 {
+  std::array<FFEchoExchangeState, 1> gEcho = {};
   std::array<FFLFOExchangeState, FFLFOCount> gLFO = {};
   std::array<FFGlobalUniExchangeState, 1> globalUni = {};
   std::array<FBModuleProcSingleExchangeState, 1> gMix = {};
-  std::array<FBModuleProcSingleExchangeState, 1> gEcho = {};
   std::array<FBModuleProcSingleExchangeState, 1> other = {};
   std::array<FBModuleProcSingleExchangeState, 1> master = {};
   std::array<FBModuleProcSingleExchangeState, 1> output = {};
@@ -58,12 +58,12 @@ struct alignas(FBSIMDAlign) FFGlobalExchangeState final
 
 struct alignas(FBSIMDAlign) FFVoiceExchangeState final
 {
+  std::array<FFEchoExchangeState, 1> vEcho = {};
   std::array<FFEnvExchangeState, FFEnvCount> env = {};
   std::array<FFLFOExchangeState, FFLFOCount> vLFO = {};
   std::array<FFOsciExchangeState, FFOsciCount> osci = {};
   std::array<FFEffectExchangeState, FFEffectCount> vEffect = {};
   std::array<FBModuleProcSingleExchangeState, 1> vMix = {};
-  std::array<FBModuleProcSingleExchangeState, 1> vEcho = {};
   std::array<FBModuleProcSingleExchangeState, 1> vMatrix = {};
   std::array<FBModuleProcSingleExchangeState, 1> osciMod = {};
   std::array<FBModuleProcSingleExchangeState, 1> voiceModule = {};

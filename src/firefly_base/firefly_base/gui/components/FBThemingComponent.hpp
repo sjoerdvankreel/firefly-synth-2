@@ -23,9 +23,9 @@ public IFBHorizontalAutoSize,
 public IFBVerticalAutoSize,
 public IFBThemingComponent
 {
+  FBPlugGUI* const _plugGUI;
   int _componentId;
   juce::Component* _content;
-  FBRuntimeTopo const* const _topo;
 
 public:
   void resized() override;
@@ -36,7 +36,7 @@ public:
   FBColorScheme const* GetScheme(FBTheme const& theme) const override;
 
   int ComponentId() const { return _componentId; }
-  FBThemedComponent(FBRuntimeTopo const* topo, int componentId, juce::Component* content);
+  FBThemedComponent(FBPlugGUI* plugGUI, int componentId, juce::Component* content);
 };
 
 // Tags another component with module topo.
@@ -51,7 +51,6 @@ public IFBThemingComponent
   int _moduleIndex = -1;
   juce::Component* _content = nullptr;
   FBRuntimeTopo const* const _topo;
-  std::function<bool(FBTheme const&)> _followModule = {};
 
 public:
   int ModuleSlot() const { return _moduleSlot; }
@@ -64,6 +63,5 @@ public:
 
   FBModuleComponent(FBRuntimeTopo const* topo);
   FBModuleComponent(FBRuntimeTopo const* topo, int moduleIndex, int moduleSlot, juce::Component* content);
-  FBModuleComponent(FBRuntimeTopo const* topo, int moduleIndex, int moduleSlot, std::function<bool(FBTheme const&)> const& followModule, juce::Component* content);
   void SetModuleContent(int moduleIndex, int moduleSlot, juce::Component* content);
 };

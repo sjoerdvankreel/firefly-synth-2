@@ -15,15 +15,16 @@ struct FBStaticModule;
 struct alignas(FBSIMDAlign) FFOsciExchangeState final:
 public FBModuleProcSingleExchangeState
 {
+  float voiceBasePitch = {};
+  float osciEffectivePitch = {};
   std::array<float, FFOsciUniMaxCount> phases = {};
-  float basePitch = {};
 };
 
 class alignas(FBSIMDAlign) FFOsciDSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
-  friend struct OsciGraphRenderData;
+  friend class OsciGraphProcessor;
   std::unique_ptr<FFOsciProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);

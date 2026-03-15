@@ -71,7 +71,7 @@ FFMakeSettingsTopo(bool isFx)
   auto& tuning = result->params[(int)FFSettingsParam::Tuning];
   tuning.storeInPatch = false;
   tuning.mode = FBParamMode::Block;
-  tuning.name = "Tuning";
+  tuning.name = "Enable Tuning";
   tuning.slotCount = 1;
   tuning.defaultText = "Off";
   tuning.id = "{7192D8E2-235B-46FA-93B6-BBE75F1088FD}";
@@ -86,7 +86,6 @@ FFMakeSettingsTopo(bool isFx)
   tuneOnNote.storeInPatch = false;
   tuneOnNote.mode = FBParamMode::Block;
   tuneOnNote.name = "Tune On Note";
-  tuneOnNote.display = "On Note";
   tuneOnNote.slotCount = 1;
   tuneOnNote.defaultText = "Off";
   tuneOnNote.id = "{12E81BF9-8123-4B7C-B1F6-976D0D7FE20A}";
@@ -101,8 +100,8 @@ FFMakeSettingsTopo(bool isFx)
   auto& tuneMasterPB = result->params[(int)FFSettingsParam::TuneMasterPB];
   tuneMasterPB.storeInPatch = false;
   tuneMasterPB.mode = FBParamMode::Block;
-  tuneMasterPB.name = "Tune Master PB";
-  tuneMasterPB.display = "Master PB";
+  tuneMasterPB.name = "Tune Master Pitch Bend";
+  tuneMasterPB.display = "Master Pitch Bend";
   tuneMasterPB.slotCount = 1;
   tuneMasterPB.defaultText = "Off";
   tuneMasterPB.id = "{EBBE4E94-C14C-4CE1-B70B-BE26E17EA155}";

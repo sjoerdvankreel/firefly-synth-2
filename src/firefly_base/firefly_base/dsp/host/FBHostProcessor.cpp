@@ -16,6 +16,7 @@
 #include <firefly_base/dsp/buffer/FBHostToPlugProcessor.hpp>
 #include <firefly_base/dsp/buffer/FBPlugToHostProcessor.hpp>
 
+#include <juce_audio_basics/juce_audio_basics.h>
 #include <chrono>
 #include <utility>
 
@@ -100,13 +101,14 @@ void
 FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostOutputBlock& output)
 {
+  juce::ScopedNoDenormals noDenormals;
+
   auto processBeginTime = std::chrono::high_resolution_clock::now();
 
   _plugIn.bpm = input.bpm;
   _plugIn.prevRoundCpuUsage = _prevRoundCpuUsage;
   _plugIn.projectTimeSamples = input.projectTimeSamples;
 
-  auto denormalState = FBDisableDenormal(); 
   for (auto const& be : input.blockAuto)
     _procState->Params()[be.param].Value(be.normalized);
 
@@ -130,7 +132,7 @@ FBHostProcessor::ProcessHost(
     {
       if (_exchangeState->Modules()[m] != nullptr)
         for (int v = 0; v < FBMaxVoices; v++)
-        _exchangeState->Modules()[m]->Voice()[v]->boolIsActive = 0;
+          _exchangeState->Modules()[m]->Voice()[v]->boolIsActive = 0;
     }
   }
 
@@ -225,8 +227,6 @@ FBHostProcessor::ProcessHost(
           _exchangeState->Params()[i].Voice()[v] =
           _procState->Params()[i].VoiceBlock().Voice()[v];
     }
-
-  FBRestoreDenormal(denormalState);
 
   auto processEndTime = std::chrono::high_resolution_clock::now();
   auto processDuration = std::chrono::duration_cast<std::chrono::microseconds>(processEndTime - processBeginTime);

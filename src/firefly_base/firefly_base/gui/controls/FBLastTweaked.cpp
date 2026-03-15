@@ -26,29 +26,23 @@ FBLastTweakedLabel::
 }
 
 FBLastTweakedLabel::
-FBLastTweakedLabel(FBPlugGUI* plugGUI) :
-_plugGUI(plugGUI)
+FBLastTweakedLabel(FBPlugGUI* plugGUI, int width) :
+_plugGUI(plugGUI), _width(width)
 {
   setText("Tweak", dontSendNotification);
   plugGUI->AddParamListener(this);
-
-  auto const* topo = plugGUI->HostContext()->Topo();
-  for (int i = 0; i < topo->audio.params.size(); i++)
-    if (IsTweakableParam(topo, i))
-      _maxWidth = std::max(_maxWidth, 
-        FBGUIGetStringWidthCached(topo->audio.params[i].displayName));
 }
 
 int
 FBLastTweakedLabel::FixedHeight() const
 {
-  return 20;
+  return FBPrimaryHeight;
 }
 
 int
 FBLastTweakedLabel::FixedWidth(int /*height*/) const
 {
-  return getBorderSize().getLeftAndRight() + _maxWidth;
+  return getBorderSize().getLeftAndRight() + _width;
 }
 
 void 
@@ -61,6 +55,7 @@ FBLastTweakedLabel::AudioParamChanged(int index, double /*normalized*/, bool cha
   if (!IsTweakableParam(topo, index))
     return;
 
+  auto lnf = FBGetLookAndFeelFor(_plugGUI);
   auto const& param = topo->audio.params[index];
   auto const& module = topo->modules[param.runtimeModuleIndex];
   auto const& staticModule = topo->static_->modules[module.topoIndices.index];
@@ -69,11 +64,11 @@ FBLastTweakedLabel::AudioParamChanged(int index, double /*normalized*/, bool cha
   std::string const& moduleDisplay = staticModule.matrixName.size() ? staticModule.matrixName : module.name;
   std::string modulePlusFull = moduleDisplay + " " + fullName;
   std::string modulePlusTweak = moduleDisplay + " " + tweakName;
-  if(FBGUIGetStringWidthCached(modulePlusFull) <= _maxWidth)
+  if(lnf->GetStringWidthCached(modulePlusFull) <= _width)
     setText(modulePlusFull, dontSendNotification);
-  else if (FBGUIGetStringWidthCached(fullName) <= _maxWidth)
+  else if (lnf->GetStringWidthCached(fullName) <= _width)
     setText(fullName, dontSendNotification);
-  else if (FBGUIGetStringWidthCached(modulePlusTweak) <= _maxWidth)
+  else if (lnf->GetStringWidthCached(modulePlusTweak) <= _width)
     setText(modulePlusTweak, dontSendNotification);
   else
     setText(tweakName, dontSendNotification);
@@ -89,18 +84,19 @@ FBLastTweakedTextBox::
 FBLastTweakedTextBox(FBPlugGUI* plugGUI, int fixedWidth):
 _fixedWidth(fixedWidth), _plugGUI(plugGUI)
 {
+  auto lnf = FBGetLookAndFeelFor(plugGUI);
   setText("Knob...", dontSendNotification);
   plugGUI->AddParamListener(this);
   addListener(this);
-  setFont(FBGUIGetFont());
-  setIndents(2, 8);
+  setFont(lnf->GetFont());
+  setIndents(3, 6);
   setPopupMenuEnabled(false);
 }
 
 int
 FBLastTweakedTextBox::FixedHeight() const
 {
-  return 24;
+  return FBPrimaryHeight;
 }
 
 int
@@ -112,7 +108,7 @@ FBLastTweakedTextBox::FixedWidth(int /*height*/) const
 void 
 FBLastTweakedTextBox::paint(Graphics& g)
 {
-  auto const& scheme = FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this);
+  auto const& scheme = FBGetLookAndFeelFor(_plugGUI)->FindColorSchemeFor(*this);
   setColour(TextEditor::textColourId, scheme.primary);
   applyFontToAllText(getFont());
   TextEditor::paint(g);

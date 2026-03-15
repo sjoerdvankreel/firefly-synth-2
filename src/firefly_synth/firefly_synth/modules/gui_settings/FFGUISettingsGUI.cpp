@@ -11,10 +11,9 @@
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
-#include <firefly_base/gui/components/FBThemingComponent.hpp>
+#include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
-#include <firefly_base/gui/components/FBFillerComponent.hpp>
-#include <firefly_base/gui/components/FBSectionComponent.hpp>
+#include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
          
 using namespace juce;
@@ -24,30 +23,36 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0 }, std::vector<int> { 0, 0, 0, 0, 1 });
+  grid->Add(0, 0, 1, 5, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "GUI", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
+  grid->MarkSection({ { 0, 0 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
+
   auto hilightMod = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightMod, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightMod));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, hilightMod));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightMod));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, hilightMod));
+
   auto hilightTweakMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::HilightTweakMode, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightTweakMode));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, hilightTweakMode));
-  auto knobVisualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::KnobVisualsMode, 0 } });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, knobVisualsMode));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, knobVisualsMode));
-  auto graphVisualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::GraphVisualsMode, 0 } });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, graphVisualsMode));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, graphVisualsMode));
-  grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>("Theme"));
-  auto themeCombo = plugGUI->StoreComponent<ComboBox>();
+  grid->Add(2, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, hilightTweakMode));
+  grid->Add(2, 1, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, hilightTweakMode));
+  grid->Add(2, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Theme"));
+  PopupMenu themeMenu = {};
   for (int i = 0; i < plugGUI->Themes().size(); i++)
-    themeCombo->addItem(plugGUI->Themes()[i].name, i + 1);
-  themeCombo->onChange = [plugGUI, themeCombo] { 
+    themeMenu.addItem(i + 1, plugGUI->Themes()[i].global.name);
+  auto themeCombo = plugGUI->StoreComponent<FBAutoSizeComboBox>(plugGUI, themeMenu);
+  themeCombo->onChange = [plugGUI, themeCombo] {
     plugGUI->SwitchTheme(themeCombo->getText().toStdString()); };
   for (int i = 0; i < plugGUI->Themes().size(); i++)
-    if (plugGUI->Themes()[i].name == plugGUI->HostContext()->ThemeName())
+    if (plugGUI->Themes()[i].global.name == plugGUI->HostContext()->ThemeName())
       themeCombo->setSelectedItemIndex(i);
-  grid->Add(0, 9, themeCombo);   
-  grid->MarkSection({ { 0, 0 }, { 1, 10 } }, FBGridSectionMark::BackgroundAndBorder);
-  auto section = plugGUI->StoreComponent<FBSectionComponent>(true, grid);
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::GUISettings, 0, section);
+  grid->Add(2, 3, themeCombo);
+
+  auto knobVisualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::KnobVisualsMode, 0 } });
+  grid->Add(3, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, knobVisualsMode));
+  grid->Add(3, 1, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, knobVisualsMode));
+  auto graphVisualsMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::GraphVisualsMode, 0 } });
+  grid->Add(3, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, graphVisualsMode));
+  grid->Add(3, 3, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, graphVisualsMode));
+
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::GUISettings, 0, card);
 }

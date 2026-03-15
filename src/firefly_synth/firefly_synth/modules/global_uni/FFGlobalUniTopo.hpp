@@ -15,24 +15,22 @@ enum class FFGlobalUniMode { Off, Manual, AutoLinear, AutoExp };
 enum class FFGlobalUniTarget {
   VoiceCoarse, VoiceFine, VMixAmp, VMixBal,
   OscGain, OscPan, OscCoarse, OscFine, OscPhaseOffset,
-  LFORate, LFOMin, LFOMax, LFOSkewAX, LFOSkewAY, LFOPhaseOffset,
+  LFORate, LFOMin, LFOMax, LFOPhaseOffset,
   VFXParamA, VFXParamB, VFXParamC, VFXParamD,
   EnvSlope, EnvStretch,
-  EchoExtend, EchoFade, 
-  EchoTapsMix, EchoTapDelay, EchoTapBal, EchoTapLPF, EchoTapHPF,
-  EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt, EchoFdbkLPF, EchoFdbkHPF,
-  EchoReverbMix, EchoReverbSize, EchoReverbDamp, EchoReverbLPF, EchoReverbHPF, Count };
+  EchoTapsMix, EchoTapDelay, EchoTapBal,
+  EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt,
+  EchoReverbMix, EchoReverbSize, EchoReverbDamp, Count };
 
 enum class FFGlobalUniTargetGUIOrder {
   VoiceCoarse, VoiceFine, VMixAmp, VMixBal,
-  LFORate, LFOMin, LFOMax, LFOSkewAX, LFOSkewAY, LFOPhaseOffset,
+  LFORate, LFOMin, LFOMax, LFOPhaseOffset,
   EnvSlope, EnvStretch,
   OscGain, OscPan, OscCoarse, OscFine, OscPhaseOffset,
   VFXParamA, VFXParamB, VFXParamC, VFXParamD,
-  EchoExtend, EchoFade,
-  EchoTapsMix, EchoTapDelay, EchoTapBal, EchoTapLPF, EchoTapHPF,
-  EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt, EchoFdbkLPF, EchoFdbkHPF,
-  EchoReverbMix, EchoReverbSize, EchoReverbDamp, EchoReverbLPF, EchoReverbHPF, Count
+  EchoTapsMix, EchoTapDelay, EchoTapBal,
+  EchoFdbkDelay, EchoFdbkMix, EchoFdbkAmt,
+  EchoReverbMix, EchoReverbSize, EchoReverbDamp, Count
 };
 
 FFModuleType
@@ -53,13 +51,12 @@ enum class FFGlobalUniParam {
   // by voice dimension (need different control types per param like bipolar yes/no)
   ManualVoiceCoarse, ManualFirst = ManualVoiceCoarse, ManualVoiceFine, ManualVMixAmp, ManualVMixBal,
   ManualOscGain, ManualOscPan, ManualOscCoarse, ManualOscFine, ManualOscPhaseOffset,
-  ManualLFORate, ManualLFOMin, ManualLFOMax, ManualLFOSkewAX, ManualLFOSkewAY, ManualLFOPhaseOffset,
+  ManualLFORate, ManualLFOMin, ManualLFOMax, ManualLFOPhaseOffset,
   ManualVFXParamA, ManualVFXParamB, ManualVFXParamC, ManualVFXParamD,
   ManualEnvSlope, ManualEnvStretch,
-  ManualEchoExtend, ManualEchoFade,
-  ManualEchoTapsMix, ManualEchoTapDelay, ManualEchoTapBal, ManualEchoTapLPF, ManualEchoTapHPF,
-  ManualEchoFdbkDelay, ManualEchoFdbkMix, ManualEchoFdbkAmt, ManualEchoFdbkLPF, ManualEchoFdbkHPF,
-  ManualEchoReverbMix, ManualEchoReverbSize, ManualEchoReverbDamp, ManualEchoReverbLPF, ManualEchoReverbHPF,
-  ManualLast = ManualEchoReverbHPF,
+  ManualEchoTapsMix, ManualEchoTapDelay, ManualEchoTapBal,
+  ManualEchoFdbkDelay, ManualEchoFdbkMix, ManualEchoFdbkAmt,
+  ManualEchoReverbMix, ManualEchoReverbSize, ManualEchoReverbDamp,
+  ManualLast = ManualEchoReverbDamp,
   Count };
 std::unique_ptr<FBStaticModule> FFMakeGlobalUniTopo();

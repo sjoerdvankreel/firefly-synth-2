@@ -22,20 +22,6 @@ FFLFOWaveModeToString(int mode)
 {
   switch (mode)
   {
-  case FFTrigSin: return "Sin";
-  case FFTrigCos: return "Cos";
-  case FFTrigSin2: return "SnSn";
-  case FFTrigCos2: return "CsCs";
-  case FFTrigSinCos: return "SnCs";
-  case FFTrigCosSin: return "CsSn";
-  case FFTrigSin3: return "SnSnSn";
-  case FFTrigCos3: return "CsCsCs";
-  case FFTrigSn2Cs: return "SnSnCs";
-  case FFTrigCs2Sn: return "CsCsSn";
-  case FFTrigSnCs2: return "SnCsCs";
-  case FFTrigCsSn2: return "CsSnSn";
-  case FFTrigSnCsSn: return "SnCsSn";
-  case FFTrigCsSnCs: return "CsSnCs";
   case FFLFOWaveModeSaw: return "Saw";
   case FFLFOWaveModeTri: return "Tri";
   case FFLFOWaveModeSqr: return "Sqr";
@@ -47,7 +33,7 @@ FFLFOWaveModeToString(int mode)
   case FFLFOWaveModeNormSmooth: return "SmthNrm";
   case FFLFOWaveModeFreeUniSmooth: return "SmthUniF";
   case FFLFOWaveModeFreeNormSmooth: return "SmthNrmF";
-  default: FB_ASSERT(false); return {};
+  default: return FFTrigFunctionToString((FFTrigFunction)mode);
   }
 }
 
@@ -65,7 +51,8 @@ FFMakeLFOTopo(bool global)
   result->voice = !global;
   result->name = global ? "GLFO" : "VLFO";
   result->slotCount = FFLFOCount;
-  result->graphCount = FFLFOBlockCount + 1;
+  result->detailGraphCount = FFLFOBlockCount;
+  result->detailGraphLayout = FBModuleGraphLayout::TopToBottom;
   result->graphRenderer = global ? FFLFORenderGraph<true> : FFLFORenderGraph<false>;
   result->id = prefix + "{6E9EC930-5391-41BB-9EDA-C9B79F3BE745}";
   result->params.resize((int)FFLFOParam::Count);
@@ -413,6 +400,7 @@ FFMakeLFOTopo(bool global)
   skewAXAmt.mode = FBParamMode::Accurate;
   skewAXAmt.defaultText = "0";
   skewAXAmt.name = "Skew A X Amt";
+  skewAXAmt.display = "Amt";
   skewAXAmt.slotCount = 1;
   skewAXAmt.unit = "%";
   skewAXAmt.id = prefix + "{49209170-5BA6-4B96-8E60-79A287680EAD}";
@@ -451,6 +439,7 @@ FFMakeLFOTopo(bool global)
   skewAYAmt.mode = FBParamMode::Accurate;
   skewAYAmt.defaultText = "0";
   skewAYAmt.name = "Skew A Y Amt";
+  skewAYAmt.display = "Amt";
   skewAYAmt.slotCount = 1;
   skewAYAmt.unit = "%";
   skewAYAmt.id = prefix + "{E8E4BD9E-7E2A-4B26-AA42-87157C5246BF}";

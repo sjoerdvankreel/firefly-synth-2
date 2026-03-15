@@ -35,14 +35,20 @@ inline constexpr char FFPlugOnlineManualLocation[] = "https://github.com/sjoerdv
 
 enum class FFThemedComponentId {
   Patch,
-  Graphs,
-  Header,
+  MainGraphs,
+  DetailGraphs,
   LastTweaked,
   GlobalUniTop,
   MainSelector,
   MatrixGraphs,
   MatrixTopVoice,
-  MatrixTopGlobal
+  MatrixTopGlobal,
+  EffectSelector,
+  EchoSelector,
+  LFOSelector,
+  EnvSelector,
+  OscSelector,
+  MixSelector
 };
 
 enum class FFModuleType {

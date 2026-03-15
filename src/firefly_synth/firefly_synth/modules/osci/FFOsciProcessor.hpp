@@ -20,7 +20,7 @@ class FBAccParamState;
 struct FBModuleProcState;
 struct FFOsciExchangeState;
 
-inline float constexpr FFOsciStringMinFreq = 20.0f;
+inline float constexpr FFOsciStringMinFreq = 8.0f;
 
 inline int
 OsciModStartSlot(int osciSlot)

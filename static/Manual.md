@@ -309,6 +309,7 @@ Right-click on some empty space to show the generic context menu.
 * Show manual: shows this document.
 * Show log folder: open the directory containing the logfile.
 * Show plugin folder: open the plugin root folder (stores themes and presets alongside the plugin binary itself).
+* About: shows plug version, format and cpu architecture.
 * Copy/paste patch: allows copy/paste across plugin instances.
 * Dump topology: save a description of the plugins internals to a text file.<br/>
 This is primarily meant to help in creating theme files which rely on internal identifiers which are printed in this document.<br/>
@@ -330,7 +331,7 @@ Right-click on an audio parameter:
 
 ## Theming
 This section is only of interest if you want to customize theming.<br/>
-FF2 themes are folders containing a json file named theme.json and an image file named header.png.<br/>
+FF2 themes are folders containing a json file named theme.json, an image file for the about box, and a font file.<br/>
 Right-click to show the generic context menu and click "show plugin folder" to open the plugin directory.<br/>
 Themes are in Contents/Resources/ui/themes.<br/>
 
@@ -367,12 +368,8 @@ The main structure is set up as follows:
 
 And these are the field details:
 * name: unique id / gui display name
-* graphSchemeFollowsModule:<br/>
-If true, main graphs are painted according to their module colors.<br/>
-If false, according to Graphs component colors.
-* unisonSchemeFollowsModule:<br/>
-If true, global unison parameters are painted according to their module colors.<br/>
-If false, according to Unison module colors.
+* fontSize/fontFileName: font settings.
+* aboutBoxImageFileName: image file name for about box.
 * defaultColorScheme:<br/>
 This is the fallback/default scheme.<br/>
 All colors are specified as ARGB hex.
@@ -381,21 +378,18 @@ All colors are specified as ARGB hex.
   * text, text2: mainly used for labels and graph texts.
   * primary: what makes it stand out. Used for various things like graphs, buttons, combo texts, sliders etc.
   * background: background for the GUI as a whole and pop-up windows.
-  * meterFill/meterTrack/meterAlert: for the meters in the output section.
-  * graphGrid/graphBackground/graphBorder: only used for painting graphs (all of them)
-  * headerText/headerBorder/headerBackground: for tab headers when there is only 1 tab.
+  * meterFill/meterTrack: for the meters in the output section.
+  * graphGrid/graphBackground: only used for painting graphs (all of them)
   * sectionBorder/sectionBackground: mainly used for module sections, but other stuff as well.
   * paramSecondary/paramBackground: used for menu separators, check/comboboxes, slider tracks, and more.
   * paramHighlight: "show tweaked from" option and more.
   * paramFlashDisabling: when a parameter is flashing because it's disabling another parameter.
-  * sliderModBounds: highlight for "Show mod bounds" option.
   * sliderEngineThumb: highlight for "Engine Knob Visuals" option.
   * alertWindowPrimary: when a messagebox pops up.
   * fileBrowserPrimary: file browser buttons and more.
   * fileBrowserHighlight: file browser treeview selection and scrollbar.
   * buttonBackground: it's for buttons.
   * activeTabBackground: selected tab background.
-  * gridAlternateBackground: used for various things f.e. overlay headers.
 * colorSchemes: named color schemes. Can override anything from the default.
 * componentColors: named components (top graphs, last tweaked etc). Can override default color scheme.
   * componentId: component identifier, see topology.
@@ -413,7 +407,7 @@ All colors are specified as ARGB hex.
 ## Top section
 Contains everything that is not directly related to generating audio.
 
-![image](screenshot_manual_top.png)
+![image](screen_manual_top.png)
 
 ### Last tweaked
 Shows the name of the last tweaked parameter as well as a textbox that allows for precise-editing that parameters value.
@@ -426,6 +420,9 @@ The MTS-ESP indicator shows whether an MTS-ESP master is connected.
 Free-form text input.<br/>
 Comes in handy when you have multiple plugin windows open and are wondering which one is kick/bass/synth etc.
 
+### Settings button
+Show GUI, audio engine and microtuning settings.
+
 ### Panic button
 Kills all active voices and flushes delay lines.<br/>
 Comes in handy for stuck notes or when you managed to fill the delay lines with garbage.
@@ -437,24 +434,10 @@ Comes with regular load-from/save-to-file, init patch to defaults, and load fact
 * Session: revert the patch state to the time the DAW session was loaded.
 * Reload: revert the patch state to the last time a patch was loaded from file, preset, or default values (init patch).
 
-<a id="E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B"></a>
-### GUI settings
-* Show modulation bounds:<br/>
-Highlights the minimum and maximum values currently applied to a parameter by the mod matrix, global unison, and direct modulators.
-* Show tweaked from:<br/>
-Highlights the parameters that differ from either default values, last loaded DAW session state, or last loaded patch state.
-* Knob visuals from engine:<br/>
-Highlights a parameters current audio engine state.<br/>
-For per-voice parameters, takes into account the minimum and maximum values across all voices.
-* Plot visuals from engine:<br/>
-Draws the current state of the audio engine into the graph plots, taking all modulation into account.<br/>
-For per-voice modules, this is an additional line per voice.<br/>
-When off, graph plots reflect only the current state of the parameters as shown in the GUI.
-
 ### Graph plots
-![image](screenshot_manual_graph_plot_fx.png)
-![image](screenshot_manual_graph_plot_osc.png)
-![image](screenshot_manual_graph_plot_env.png)
+![image](screen_manual_graph_plot_fx.png)
+![image](screen_manual_graph_plot_osc.png)
+![image](screen_manual_graph_plot_echo.png)
 
 Most modules provide some graph plots.<br/>
 F.e. oscilloscope or filter frequency response plot.<br/>
@@ -469,75 +452,26 @@ Note: for VST3, this feature relies on the host being able to deal with VST3's d
 Most Win and Mac hosts can do this, but at time of writing, only Reaper is good on Linux.<br/>
 CLAP should be good everywhere.
 
-# Modules
+# Settings
 
-All modules are contained within the Main tab.<br/>
-This is the primary screen for patch design.<br/>
-It contains all parameters for oscillators, filters, effects, envelopes and LFOs as well as all audio routing controls and high-level parameters like microtuning and portamento controls.
+![image](screen_manual_settings.png)
 
-<a id="AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8"></a>
-## Voice
-Contains controls affecting an entire voice (all per-voice oscillators and filters).
-
-![image](screenshot_manual_voice.png)
-
-Pitch section: coarse pitch with envelope modulation amount and fine pitch with LFO modulation amount.<br/>
-Portamento section: allows selection of regular (on) mode (constant pitch, variable time) or automatic mode (constant time, variable pitch) and optional tempo-syncing.<br/>
-
-Because FF2 does not provide monophonic mode, the portamento controls also come with the option to shorten the per-voice amp envelope attack and release sections.
-Best illustrated with an example:
-* Set portamento mode to "Section"
-* Set both Amp Attack and Amp Release to 25%
-* Play A-B-C-[pause]-D-E-F
-* Attack time of A and D is normal.
-* Release time of C and F is normal.
-* Attack times of B, C, E, and F are shortened.
-* Release times of A, B, D, and E are shortened.
-
-This feature works strictly by tracking note-on/off events.<br/>
-Section "shortening" will kick in only for overlapping notes, or notes that are both triggered and released at the exact same time.
-
-### CV Outputs
-* Fine Pitch Raw (control signal value 0..1)
-
-Pitchtracking sources (see Modulation System):
-* Fine Pitch (does not track microtuning)
-* Coarse Pitch (does not track microtuning)
-* Portamento Offset (does not track microtuning)
-* Voice Pitch (tracks voice key, fine/coarse pitch, portamento, master PB and microtuning)
-
-<a id="83AA98D4-9D12-4D61-81A4-4FAA935EDF5D"></a>
-## Master
-Contains controls affecting the plugin as a whole.<br/>
-These parameters control all voices together as well as affect global filters and effects.
-
-![image](screenshot_manual_master.png)
-
-Pitchbend together with bend range sets the base pitch for the entire plugin.<br/>
-By default it is set to control everything, but it can also target specific oscillators.<br/>
-By default, MIDI pitchbend is set to modulate master pitchbend at full scale, but this can be changed in the mod matrix.
-
-Likewise, modwheel is by default modulated by MIDI modwheel at full scale by the matrix.<br/>
-Modwheel doesn't control anything unless you set up the matrix to do so.
-
-There are 4 auxiliary parameters which also don't target anything by default.<br/>
-Use the mod matrix to assign modulation targets to them.<br/>
-This is useful for controlling the mod amount of other sources or controlling multiple parameters at once.
-
-### CV Outputs
-* Modwheel
-* 4x Auxiliary control
-* Pitch Bend Raw (control signal value 0..1)
-
-Pitchtracking sources (see Modulation System):
-* Pitch Bend (adjusted for Bend Range, does NOT track microtuning)
-* Last/Low/High Key Pitch and Low/High Velocity Pitch + smoothed versions (react to Settings MIDI/Automation smoothing):<br/>
-These DO track microtuning and include the PB component as well.
+<a id="E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B"></a>
+## GUI settings
+* Show modulation bounds:<br/>
+Highlights the minimum and maximum values currently applied to a parameter by the mod matrix, global unison, and direct modulators.
+* Show tweaked from:<br/>
+Highlights the parameters that differ from either default values, last loaded DAW session state, or last loaded patch state.
+* Knob visuals from engine:<br/>
+Highlights a parameters current audio engine state.<br/>
+For per-voice parameters, takes into account the minimum and maximum values across all voices.
+* Plot visuals from engine:<br/>
+Draws the current state of the audio engine into the graph plots, taking all modulation into account.<br/>
+For per-voice modules, this is an additional line per voice.<br/>
+When off, graph plots reflect only the current state of the parameters as shown in the GUI.
 
 <a id="3689411E-F31C-4F8C-BE3D-6F87938A1A1B"></a>
-## Settings
-![image](screenshot_manual_settings.png)
-
+## Audio Settings
 Receive MIDI notes controls whether the plugin kicks off a new voice on incoming midi note on messages.<br/>
 This is enabled by default for the instrument version of the plug and disabled by default for the fx version.<br/>
 Some hosts allow to send midi notes to an fx plugin, others do not.<br/>
@@ -577,11 +511,77 @@ This is primarily intended to cooperate with global unison, which can alter the 
 These affect whether voice-level pitch and global last/low/high-key pitch sources in the matrix are retuned.<br/>
 See the matrix section for more details.
 
+# Modules
+
+All modules are contained within the Main tab.<br/>
+This is the primary screen for patch design.<br/>
+It contains all parameters for oscillators, filters, effects, envelopes and LFOs as well as all audio routing controls and high-level parameters like pitchbend and portamento controls.
+
+<a id="AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8"></a>
+## Voice
+Contains controls affecting an entire voice (all per-voice oscillators and filters).
+
+![image](screen_manual_voice.png)
+
+Pitch section: coarse pitch with envelope modulation amount and fine pitch with LFO modulation amount.<br/>
+Portamento section: allows selection of regular (on) mode (constant pitch, variable time) or automatic mode (constant time, variable pitch) and optional tempo-syncing.<br/>
+
+Because FF2 does not provide monophonic mode, the portamento controls also come with the option to shorten the per-voice amp envelope attack and release sections.
+Best illustrated with an example:
+* Set portamento mode to "Section"
+* Set both Amp Attack and Amp Release to 25%
+* Play A-B-C-[pause]-D-E-F
+* Attack time of A and D is normal.
+* Release time of C and F is normal.
+* Attack times of B, C, E, and F are shortened.
+* Release times of A, B, D, and E are shortened.
+
+This feature works strictly by tracking note-on/off events.<br/>
+Section "shortening" will kick in only for overlapping notes, or notes that are both triggered and released at the exact same time.
+
+### CV Outputs
+* Fine Pitch Raw (control signal value 0..1)
+
+Pitchtracking sources (see Modulation System):
+* Fine Pitch (does not track microtuning)
+* Coarse Pitch (does not track microtuning)
+* Portamento Offset (does not track microtuning)
+* Voice Pitch (tracks voice key, fine/coarse pitch, portamento, master PB and microtuning)
+
+<a id="83AA98D4-9D12-4D61-81A4-4FAA935EDF5D"></a>
+## Master
+Contains controls affecting the plugin as a whole.<br/>
+These parameters control all voices together as well as affect global filters and effects.
+
+![image](screen_manual_master.png)
+
+Pitchbend together with bend range sets the base pitch for the entire plugin.<br/>
+By default it is set to control everything, but it can also target specific oscillators.<br/>
+By default, MIDI pitchbend is set to modulate master pitchbend at full scale, but this can be changed in the mod matrix.
+
+Likewise, modwheel is by default modulated by MIDI modwheel at full scale by the matrix.<br/>
+Modwheel doesn't control anything unless you set up the matrix to do so.
+
+There are 4 auxiliary parameters which also don't target anything by default.<br/>
+Use the mod matrix to assign modulation targets to them.<br/>
+This is useful for controlling the mod amount of other sources or controlling multiple parameters at once.
+
+### CV Outputs
+* Modwheel
+* 4x Auxiliary control
+* Pitch Bend Raw (control signal value 0..1)
+
+Pitchtracking sources (see Modulation System):
+* Pitch Bend (adjusted for Bend Range, does NOT track microtuning)
+* Last/Low/High Key Pitch and Low/High Velocity Pitch + smoothed versions (react to Settings MIDI/Automation smoothing):<br/>
+These DO track microtuning and include the PB component as well.
+
 <a id="5C91D5A0-3EC1-4142-935A-3FE83B60C04E"></a>
 ## Voice mixer
 Controls the signal path of the per-voice audio engine.
 
-![image](screenshot_manual_vmix.png)
+![image](screen_manual_vmix1.png)
+![image](screen_manual_vmix2.png)
 
 * Oscillator to voice FX:<br/>
 Routes the output of individual oscillators to the per-voice effect (VFX) section.
@@ -619,7 +619,8 @@ Osc mix to out: controls how much the internal osci mixer stage contributes to t
 ## Global mixer
 Controls the signal path of the global audio engine.
 
-![image](screenshot_manual_gmix.png)
+![image](screen_manual_gmix1.png)
+![image](screen_manual_gmix2.png)
 
 * Voice Mix to GFX:<br/>
 Routes the voice mixdown to the global effect (GFX) section.
@@ -643,7 +644,8 @@ Likewise the balance control is global stereo balance with an optional LFO appli
 <a id="73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6"></a>
 ## Oscillator
 
-![image](screenshot_manual_osci.png)
+![image](screen_manual_osci1.png)
+![image](screen_manual_osci2.png)
 
 The graph plot for oscillators is an oscilloscope.<br/>
 For engine visualization, plots higher notes (relative to C4) as shorter and lower notes as longer.
@@ -786,7 +788,7 @@ FF2 does not support true stereo oscillators before the unison stage.
 <a id="546F9D74-670A-463D-80B0-B4BBD061DA88"></a>
 ## Oscillator Oversampling and Cross-modulation
 
-![image](screenshot_manual_osci_mod.png)
+![image](screen_manual_osci_mod.png)
 
 Each oscillator can modulate all those after it.<br/>
 So, 1 can modulate 2/3/4, 2 can modulate 2/3 and 3 can modulate 4.
@@ -805,7 +807,8 @@ Exponential (on): modulator controls the carriers pitch. Causes pitch-drift.
 ## Voice FX and Global FX
 Effect module with 4 subslots, each slot can be a state variable filter, comb filter, or waveshaper.
 
-![image](screenshot_manual_fx.png)
+![image](screen_manual_fx1.png)
+![image](screen_manual_fx2.png)
 
 Oversampling applies to the module as a whole, so all 4 subslots together.<br/>
 Tracking key sets the root key (offset from C4) against which all filters are keyboard-tracked.<br/>
@@ -868,7 +871,8 @@ Choice of unipolar and bipolar modes with continuous amount control.
 <a id="VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
 ## Voice Echo and Global Echo
 
-![image](screenshot_manual_echo.png)
+![image](screen_manual_echo1.png)
+![image](screen_manual_echo2.png)
 
 Echo module with multitap delay, feedback delay and reverb subslots.<br/>
 There is at most one of each, but the processing order is customizable.<br/>
@@ -922,7 +926,7 @@ So your 500 millisecond voice (by voice amp envelope) gets extended by that much
 So, when your oscis hit silence (by voice envelope), allows another 5 seconds of full scale echo followed by 5 seconds of fade-out echo.
 
 ### Multi tap delay
-![image](screenshot_manual_echo_multitap.png)
+![image](screen_manual_echo_multitap.png)
 
 * 8-tap delay line with full control over each taps individual parameters.
 * Per-tap delay time (or bars), level, stereo balance and stereo crossover.
@@ -952,7 +956,8 @@ Implementation based on [https://github.com/sinshu/freeverb](https://github.com/
 ## Voice LFO and Global LFO
 LFO module with 3 subslots and optional tempo-syncing.
 
-![image](screenshot_manual_lfo.png)
+![image](screen_manual_lfo1.png)
+![image](screen_manual_lfo2.png)
 
 The LFO output is that of the 3 slots combined.<br/>
 The individual slot outputs are also available as sources in the mod matrix.
@@ -1020,7 +1025,8 @@ Bipolar preserves the vertical center point, unipolar does not.
 ## Envelope
 16-stage per-voice envelope generator with customizable loop and release points.
 
-![image](screenshot_manual_env.png)
+![image](screen_manual_env1.png)
+![image](screen_manual_env2.png)
 
 Envelopes can be looping, releaseing, or both (or neither).<br/>
 Either linear or exponential, comes with visual MSEG editor.<br/>
@@ -1058,7 +1064,7 @@ Also unlike the editor, stage controls have a regular context menu attached to t
 ### MSEG editor
 Construct the envelope by dragging and clicking around.
 
-![image](screenshot_manual_env_mseg.png)
+![image](screen_manual_env_mseg.png)
 
 * Drag the start point up/down to control the initial level
 * Drag a slope point around (exponential mode) to control the stage slope.
@@ -1117,7 +1123,7 @@ Does not include microtuning.
 For per-voice, provides on-note (ON Master, ON GLFO etc) versions of global sources (this is just sample-and-hold).<br/>
 See per-module CV outputs for a description of available matrix sources.
 
-![image](screenshot_manual_matrix.png)
+![image](screen_manual_matrix.png)
 
 Unlike FF1 there is no distiction between CV-to-Audio and CV-to-CV anymore.<br/>
 Anything goes, provided the source module comes before (in processing order) the target module (see Signal Flow).<br/>
@@ -1169,7 +1175,7 @@ Each spawned voice in this case becomes part of the same global unison group.<br
 See also per-group on-note-random sources in the mod matrix / voice-note module.<br/>
 Global unison-spawned voices are otherwise not "special" - they each come out of the 64 available voices.<br/>
 
-![image](screenshot_manual_unison.png)
+![image](screen_manual_unison.png)
 
 Global unison is as much a global-level feature as it is a voice-level feature.<br/>
 The idea is to build up a voice "spectrum" (f.e. 25%, 50%, 75% with 50% being center)<br/>

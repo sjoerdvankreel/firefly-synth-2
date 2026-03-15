@@ -10,12 +10,12 @@ public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize,
 public IFBParamListener
 {
-  int _maxWidth = {};
   FBPlugGUI* const _plugGUI;
+  int const _width;
 
 public:
   ~FBLastTweakedLabel();
-  FBLastTweakedLabel(FBPlugGUI* plugGUI);
+  FBLastTweakedLabel(FBPlugGUI* plugGUI, int width);
 
   int FixedHeight() const override;
   int FixedWidth(int height) const override;

@@ -6,7 +6,6 @@
 #include <firefly_base/gui/components/FBMSEGModel.hpp>
 #include <firefly_base/gui/components/FBMSEGCanvas.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
-#include <firefly_base/gui/components/FBFillerComponent.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <functional>
@@ -22,7 +21,6 @@ public juce::Component
   std::unique_ptr<FBMSEGCanvas> _canvas = {};
   std::unique_ptr<FBGridComponent> _grid = {};
   std::unique_ptr<FBGridComponent> _controlGrid = {};
-  std::unique_ptr<FBFillerComponent> _controlFiller = {};
 
   std::unique_ptr<FBAutoSizeLabel> _editXLabel = {};
   std::unique_ptr<FBAutoSizeLabel> _editXGridLabel = {};

@@ -7,14 +7,17 @@
 #include <map>
 #include <vector>
 
+class FBPlugGUI;
+
 enum class FBGridSectionMark
 {
-  Background,
-  Border,
-  Alternate,
-  BackgroundAndBorder,
-  BackgroundAndAlternate,
-  AlternateAndAlternate
+  DefaultBackground,
+  DefaultBorder,
+  AlternateBackground,
+  AlternateBorder,
+  DefaultBackgroundDefaultBorder,
+  DefaultBackgroundAlternateBorder,
+  AlternateBackgroundAlternateBorder
 };
 
 struct FBGridCell final
@@ -32,8 +35,6 @@ struct FBGridSection final
 
 struct FBGridSectionAndMark final 
 {
-  int marginR = 0;
-  float cornerSize = 3.0f;
   FBGridSection section = {};
   FBGridSectionMark mark = {};
 };
@@ -50,6 +51,7 @@ public juce::Component,
 public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
+  FBPlugGUI* const _plugGUI;
   bool const _rowColGap;
   std::vector<int> const _rows;
   std::vector<int> const _cols;
@@ -73,12 +75,12 @@ public:
   void Add(int row, int col, juce::Component* child);
   void Remove(int row, int col, juce::Component* child);
   void Add(int row, int col, int rowSpan, int colSpan, juce::Component* child);
-  void MarkSection(FBGridSection const& section, FBGridSectionMark mark = FBGridSectionMark::Background, float cornerSize = 3.0f, int marginR = 0);
+  void MarkSection(FBGridSection const& section, FBGridSectionMark mark);
 
   FBGridComponent() = delete;
-  FBGridComponent(bool rowColGap, int rows, int cols);
-  FBGridComponent(bool rowColGap, std::vector<int> const& rows, std::vector<int> const& cols);
-  FBGridComponent(bool rowColGap, int autoSizeRow, int autoSizeCol, int rows, int cols);
-  FBGridComponent(bool rowColGap, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols);
-  FBGridComponent(bool rowColGap, std::vector<int> const& autoSizeRowForCol, std::vector<int> const& autoSizeColForRow, std::vector<int> const& rows, std::vector<int> const& cols);
+  FBGridComponent(FBPlugGUI* plugGUI, bool rowColGap, int rows, int cols);
+  FBGridComponent(FBPlugGUI* plugGUI, bool rowColGap, std::vector<int> const& rows, std::vector<int> const& cols);
+  FBGridComponent(FBPlugGUI* plugGUI, bool rowColGap, int autoSizeRow, int autoSizeCol, int rows, int cols);
+  FBGridComponent(FBPlugGUI* plugGUI, bool rowColGap, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols);
+  FBGridComponent(FBPlugGUI* plugGUI, bool rowColGap, std::vector<int> const& autoSizeRowForCol, std::vector<int> const& autoSizeColForRow, std::vector<int> const& rows, std::vector<int> const& cols);
 };

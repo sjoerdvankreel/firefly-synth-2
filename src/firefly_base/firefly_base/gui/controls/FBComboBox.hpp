@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBAutoSize.hpp>
 #include <firefly_base/gui/shared/FBParamComponent.hpp>
 
@@ -12,15 +13,24 @@ struct FBRuntimeGUIParam;
 class FBAutoSizeComboBox:
 public juce::ComboBox,
 public IFBVerticalAutoSize,
-public IFBHorizontalAutoSize
+public IFBHorizontalAutoSize,
+public IFBThemeListener
 {
+  // clashes with ParamsDependent because of multiple inheritance for some stuff
+  FBPlugGUI* const _plugGUIPrivate;
+
+  std::string const _minWidthText;
   int _maxTextWidth = 0;
+  void CalculateMaxWidth();
 
 public:
+  ~FBAutoSizeComboBox();
+  FBAutoSizeComboBox(FBPlugGUI* plugGUI, juce::PopupMenu const& rootMenu, std::string minWidthText = {});
+
+  void ThemeChanged() override;
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
   virtual void OnPopupMenuClosing(int /*itemResultId*/) {}
-  FBAutoSizeComboBox(juce::PopupMenu const& rootMenu, std::string minimumWidthText = {});
 };
 
 class FBGUIParamComboBox final:

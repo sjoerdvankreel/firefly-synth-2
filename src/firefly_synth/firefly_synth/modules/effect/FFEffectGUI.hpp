@@ -20,5 +20,8 @@ public:
 
 juce::Component*
 FFMakeEffectGUI(FBPlugGUI* plugGUI);
+juce::Component*
+FFMakeEffectDetailGUI(FBPlugGUI* plugGUI, bool global, int moduleSlot);
+
 bool FFEffectAdjustParamModulationGUIBounds(
 FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm);

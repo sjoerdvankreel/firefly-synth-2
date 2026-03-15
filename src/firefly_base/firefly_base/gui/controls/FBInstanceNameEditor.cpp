@@ -12,17 +12,18 @@ FBInstanceNameEditor::
 FBInstanceNameEditor(FBPlugGUI* plugGUI, int fixedWidth):
 _fixedWidth(fixedWidth), _plugGUI(plugGUI)
 {
+  auto lnf = FBGetLookAndFeelFor(plugGUI);
   setText(_plugGUI->HostContext()->InstanceName(), dontSendNotification);
   addListener(this);
-  setFont(FBGUIGetFont());
-  setIndents(3, 10);
+  setFont(lnf->GetFont());
+  setIndents(3, 8);
   setPopupMenuEnabled(false);
 }
 
 int
 FBInstanceNameEditor::FixedHeight() const
 {
-  return 24;
+  return FBPrimaryHeight;
 }
 
 int
@@ -34,7 +35,7 @@ FBInstanceNameEditor::FixedWidth(int /*height*/) const
 void 
 FBInstanceNameEditor::paint(Graphics& g)
 {
-  auto const& scheme = FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this);
+  auto const& scheme = FBGetLookAndFeelFor(_plugGUI)->FindColorSchemeFor(*this);
   setColour(TextEditor::textColourId, scheme.primary);
   applyFontToAllText(getFont());
   TextEditor::paint(g);

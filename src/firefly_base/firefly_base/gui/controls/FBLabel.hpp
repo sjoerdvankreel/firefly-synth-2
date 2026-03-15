@@ -10,20 +10,33 @@ class FBPlugGUI;
 struct FBRuntimeParam;
 struct FBRuntimeGUIParam;
 
+enum class FBLabelAlign
+{
+  Left,
+  Right,
+  Center
+};
+
+enum class FBLabelColors
+{
+  Regular,
+  PrimaryForeground
+};
+
 class FBAutoSizeLabel:
 public juce::Label,
 public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
-  int const _textWidth;
-  bool const _isPrimary;
-  bool const _small;
+protected:
+  FBPlugGUI* const _plugGUI;
+  std::string const _text;
+  FBLabelColors const _colors;
 public:
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
-  bool Small() const { return _small; }
-  bool IsPrimary() const { return _isPrimary; }
-  FBAutoSizeLabel(std::string const& text, bool centred = false, bool isPrimary = false, bool small = false);
+  FBLabelColors Colors() const { return _colors; }
+  FBAutoSizeLabel(FBPlugGUI* plugGUI, std::string const& text, FBLabelAlign align = {}, FBLabelColors colors = {});
 };
 
 class FBAutoSizeLabel2:
@@ -32,13 +45,15 @@ public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
   bool const _hasBackground;
+  bool const _primary;
   int const _fixedWidth;
 
 public:
+  bool IsPrimary() { return _primary; }
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
 
-  FBAutoSizeLabel2(bool hasBackground, int fixedWidth);
+  FBAutoSizeLabel2(bool hasBackground, bool rightAlign, bool primary, int fixedWidth);
   bool HasBackground() const { return _hasBackground; }
 };
 
@@ -48,7 +63,7 @@ public FBGUIParamComponent
 {
 public:
   void parentHierarchyChanged() override;
-  FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed = true, bool isPrimary = false);
+  FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, bool isThemed = true, FBLabelColors colors = {});
 };
 
 class FBParamLabel final:
@@ -57,7 +72,7 @@ public FBParamComponent
 {
 public:
   void parentHierarchyChanged() override;
-  FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed = true, bool isPrimary = false);
+  FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isThemed = true, FBLabelColors colors = {});
 };
 
 class FBParamLinkedLabel final:
@@ -67,5 +82,5 @@ public FBParamsDependent
   std::string const _text;
 public:
   void parentHierarchyChanged() override;
-  FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, bool isPrimary, std::string text);
+  FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string text, FBLabelColors colors = {});
 };

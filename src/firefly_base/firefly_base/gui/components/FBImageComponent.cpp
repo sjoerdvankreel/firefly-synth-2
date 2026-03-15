@@ -13,12 +13,11 @@ FBImageComponent::
 
 FBImageComponent::
 FBImageComponent(
-  FBPlugGUI* plugGUI, int width,
-  std::string const& resourceName, 
-  RectanglePlacement placement):
+  FBPlugGUI* plugGUI, FBThemeResourceId resourceId,
+  int width, RectanglePlacement placement):
 _plugGUI(plugGUI),
+_resourceId(resourceId),
 _width(width),
-_resourceName(resourceName),
 _placement(placement)
 {
   _plugGUI->AddThemeListener(this);
@@ -48,8 +47,10 @@ FBImageComponent::ThemeChanged()
 std::string 
 FBImageComponent::GetCurrentImagePath() const
 {
-  auto folderName = FBGetLookAndFeelFor(this)->Theme().folderName;
-  String path((FBGetResourcesFolderPath() / "ui" / "themes" / folderName / _resourceName).string());
+  auto const& theme = FBGetLookAndFeelFor(_plugGUI)->Theme();
+  auto resourceName = theme.global.resources.GetResourceName(_resourceId);
+  auto folderName = theme.global.resources.GetResourceName(FBThemeResourceId::FolderName);
+  String path((FBGetThemesFolderPath() / folderName / resourceName).string());
   FB_ASSERT(juce::File(String(path)).existsAsFile());
   return path.toStdString();
 }

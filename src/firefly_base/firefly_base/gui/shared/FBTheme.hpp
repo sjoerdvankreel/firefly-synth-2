@@ -10,36 +10,46 @@
 struct FBTheme;
 struct FBRuntimeTopo;
 
+// Needs some indirection here and there to prevent use-before-load stuff.
+enum class FBThemeResourceId
+{
+  FolderName,
+  FontFileName,
+  AboutBoxImageFileName
+};
+
+struct FBThemeResources
+{
+  std::string folderName = {};
+  std::string fontFileName = {};
+  std::string aboutBoxImageFileName = {};
+
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBThemeResources);
+  std::string GetResourceName(FBThemeResourceId resourceId) const;
+};
+
 struct FBColorScheme
 {
   float graphAlpha = {};
-  float dimDisabled = {};
   juce::Colour text = {};
   juce::Colour text2 = {};
   juce::Colour background = {};
   juce::Colour meterFill = {};
   juce::Colour meterTrack = {};
-  juce::Colour meterAlert = {};
   juce::Colour graphGrid = {};
-  juce::Colour graphBorder = {};
   juce::Colour graphBackground = {};
-  juce::Colour headerText = {};
-  juce::Colour headerBorder = {};
-  juce::Colour headerBackground = {};
   juce::Colour sectionBorder = {};
   juce::Colour sectionBackground = {};
   juce::Colour primary = {};
   juce::Colour paramSecondary = {};
   juce::Colour paramHighlight = {};
   juce::Colour paramBackground = {};
-  juce::Colour sliderModBounds = {};
   juce::Colour sliderEngineThumb = {};
   juce::Colour alertWindowPrimary = {};
   juce::Colour fileBrowserPrimary = {};
   juce::Colour fileBrowserHighlight = {};
   juce::Colour buttonBackground = {};
   juce::Colour activeTabBackground = {};
-  juce::Colour gridAlternateBackground = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBColorScheme);
 };
 
@@ -57,16 +67,22 @@ struct FBModuleColors
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBModuleColors);
 };
 
-struct FBTheme
+struct FBThemeGlobal
 {
+  int fontSize = {};
   std::string name = {};
-  std::string folderName = {};
-  bool graphSchemeFollowsModule = {};
-  bool unisonSchemeFollowsModule = {};
+  FBThemeResources resources = {};
   FBColorScheme defaultColorScheme = {};
-  std::map<int, FBModuleColors> moduleColors = {}; // runtime module index
   std::map<std::string, FBColorScheme> colorSchemes = {};
   std::map<std::string, FBComponentColors> componentColors = {};
+
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBThemeGlobal);
+};
+
+struct FBTheme
+{
+  FBThemeGlobal global = {};
+  std::map<int, FBModuleColors> moduleColors = {}; // runtime module index
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBTheme);
 };
 

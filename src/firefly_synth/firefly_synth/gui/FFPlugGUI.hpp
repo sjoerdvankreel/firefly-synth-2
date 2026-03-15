@@ -8,11 +8,15 @@
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/global_uni/FFGlobalUniGUI.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleGUI.hpp>
+#include <firefly_synth/shared/FFPlugTopo.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBMarginComponent.hpp>
+#include <firefly_base/gui/components/FBContentComponent.hpp>
 
+#include <array>
 #include <memory>
 #include <vector>
 
@@ -43,13 +47,31 @@ public FBPlugGUI
   juce::Component* _matrix = {};
   juce::Component* _globalUni = {};
   FBGridComponent* _container = {};
-  FBGridComponent* _topModules = {};
+  FBGridComponent* _voiceMaster = {};
   FBAutoSizeTabComponent* _tabs = {};
-  FBGridComponent* _headerAndGraph = {};
-  FBGridComponent* _outputOtherAndPatch = {};
-  FBGridComponent* _guiSettingsAndTweak = {};
+  FBMarginComponent* _containerMargin = {};
+  FBGridComponent* _mainGraphs = {};
+  FBGridComponent* _outputTweakPatchOther = {};
 
-  FBModuleGraphComponent* _mainGraph = {};
+  FBModuleGraphComponent* _detailsGraph = {};
+  FBModuleGraphComponent* _fxMainGraph = {};
+  FBModuleGraphComponent* _oscMainGraph = {};
+  FBModuleGraphComponent* _envMainGraph = {};
+  FBModuleGraphComponent* _lfoMainGraph = {};
+  FBModuleGraphComponent* _echoMainGraph = {};
+
+  FBContentComponent* _detailContent = {};
+  juce::Component* _vMixDetails = {};
+  juce::Component* _gMixDetails = {};
+  juce::Component* _vEchoDetails = {};
+  juce::Component* _gEchoDetails = {};
+  std::array<juce::Component*, FFEnvCount> _envDetails = {};
+  std::array<juce::Component*, FFLFOCount> _vLFODetails = {};
+  std::array<juce::Component*, FFLFOCount> _gLFODetails = {};
+  std::array<juce::Component*, FFOsciCount> _osciDetails = {};
+  std::array<juce::Component*, FFEffectCount> _vEffectDetails = {};
+  std::array<juce::Component*, FFEffectCount> _gEffectDetails = {};
+
   std::vector<FBMSEGEditor*> _msegEditors = {};
   std::vector<FBModuleGraphComponent*> _fixedGraphs = {};
   std::unique_ptr<FFEnvParamListener> _envParamListener = {};
@@ -69,6 +91,7 @@ public FBPlugGUI
   FBParamModulationBoundsSource GetParamModulationBounds(int index, double& minNorm, double& maxNorm) const override;
 
 protected:
+  void ForceReLayout() override;
   void AfterPatchChanged() override;
   void BeforePatchChanged() override;
   void UpdateExchangeStateTick() override;
@@ -83,8 +106,10 @@ public:
   FFPlugGUI(FBHostGUIContext* hostContext);
 
   void FlushAudio();
+  void SwitchGraphsToModule(int index, int slot);
   void RequestFixedGraphsRerender(int moduleIndex);
-  void SwitchMainGraphToModule(int index, int slot);
+  void RequestMainGraphsRerender(int index, int slot);
+  void SwitchDetailsSectionToModule(int index, int slot);
 
   void resized() override;
   void OnPatchLoaded() override;

@@ -11,6 +11,7 @@
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
 #include <xsimd/xsimd.hpp>
+#include <algorithm>
 
 static inline float const StringDCBlockFreq = 20.0f;
 
@@ -98,7 +99,10 @@ FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
     if (graph)
       _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize());
     else
-      _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() * _oversampleTimes / FFOsciOversampleTimes);
+      _stringUniState[u].delayLine.Reset(
+        std::min(
+          _stringUniState[u].delayLine.MaxBufferSize(),
+          (int)std::ceil(_stringUniState[u].delayLine.MaxBufferSize() * (float)_oversampleTimes / FFOsciOversampleTimes)));
     for (int p = 0; p < _stringPoles; p++)
       _stringUniState[u].colorFilterBuffer.Set(p, StringDraw(u));
   }
@@ -306,8 +310,9 @@ FFOsciProcessor::ProcessString(
       FBSArray<float, FBSIMDFloatCount> uniFreqArray(uniFreqBatch);
       for (int u = ub; u < ub + FBSIMDFloatCount && u < _uniCount; u++)
       {
-        float uniFreq = uniFreqArray.Get(u - ub);
-        _stringUniState[u].delayLine.Delay(0, oversampledRate / uniFreq);
+        float wantedUniFreq = uniFreqArray.Get(u - ub);
+        float clampedUniFreq = std::max(wantedUniFreq, FFOsciStringMinFreq);
+        _stringUniState[u].delayLine.Delay(0, oversampledRate / clampedUniFreq);
         float thisVal = _stringUniState[u].delayLine.GetLinearInterpolate(0);
         _stringUniState[u].delayLine.Pop();
         float prevVal = _stringUniState[u].prevDelayVal;
@@ -316,7 +321,7 @@ FFOsciProcessor::ProcessString(
         newVal *= realFeedback;
         _stringUniState[u].prevDelayVal = newVal;
 
-        double dNextVal = StringNext(u, oversampledRate, uniFreq, excite, color, x, y);
+        double dNextVal = StringNext(u, oversampledRate, clampedUniFreq, excite, color, x, y);
         if (_stringHPOn)
           dNextVal = _stringHPFilter.Next(u, dNextVal);
         if (_stringLPOn)

@@ -115,7 +115,7 @@ FBLookAndFeel::FindColorSchemeFor(
         return *s;
     current = current->getParentComponent();
   }
-  return Theme().defaultColorScheme;
+  return Theme().global.defaultColorScheme;
 }
 
 void 
@@ -140,18 +140,17 @@ FBLookAndFeel::DrawRotarySliderExchangeThumb(
   float rotaryStartAngle, float rotaryEndAngle, 
   float exchangeValue)
 {
-  auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(10);
+  auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(8);
   auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
   float skewed = (float)ConvertValueFromSkewed(slider.Param()->static_, exchangeValue);
   auto toAngle = rotaryStartAngle + skewed * (rotaryEndAngle - rotaryStartAngle);
-  auto lineW = jmin(8.0f, radius * 0.5f);
+  auto lineW = 2.0f;
   auto arcRadius = radius - lineW * 0.5f;
-  auto thumbWidth = lineW * 2.0f;
   Point<float> thumbPoint(
     bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
   g.setColour(scheme.sliderEngineThumb);
-  g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
+  g.fillEllipse(thumbPoint.getX() - 3.0f, thumbPoint.getY() - 3.0f, 6.0f, 6.0f);
 }
 
 void
@@ -160,24 +159,23 @@ FBLookAndFeel::DrawTabButtonPart(
   bool isMouseOver, bool /*isMouseDown*/,
   bool toggleState, bool centerText,
   bool isSeparator, std::string const& text,
-  Rectangle<int> const& activeArea)
+  Rectangle<int> const& activeArea_)
 {
-  bool isHeader = button.getTabbedButtonBar().getNumTabs() == 1;
-
   auto const& scheme = FindColorSchemeFor(button);
-  if (isHeader)
-    g.setColour(scheme.headerBackground);
-  else if (isSeparator)      
+  bool isHeader = button.getTabbedButtonBar().getNumTabs() == 1;
+  auto activeArea = activeArea_;
+  activeArea.removeFromTop(1);
+  activeArea.removeFromBottom(1);
+
+  if (isSeparator)      
     g.setColour(scheme.paramSecondary);
-  else if (toggleState)
+  else if (toggleState || isHeader)
     g.setColour(scheme.activeTabBackground);
   else
     g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(activeArea.toFloat(), 3.0f);
 
-  if (isHeader)
-    g.setColour(scheme.headerBorder);
-  else if(toggleState || isMouseOver)
+  if(isHeader || toggleState || isMouseOver)
     g.setColour(scheme.primary);
   else
     g.setColour(scheme.sectionBorder);  
@@ -187,8 +185,9 @@ FBLookAndFeel::DrawTabButtonPart(
   const Rectangle<float> area(activeArea.toFloat());
   float length = area.getWidth();
   float depth = area.getHeight();   
-  auto textColor = isHeader? scheme.headerText: scheme.text2.darker(isSeparator || isMouseOver || toggleState ? 0.0f : scheme.dimDisabled);
-  ::CreateTabTextLayout(button, length, textColor, FBGUIGetFont(), centerText, text, textLayout);
+
+  auto textColor = scheme.text2;
+  ::CreateTabTextLayout(button, length, textColor, GetFont(), centerText, text, textLayout);
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));
   textLayout.draw(g, Rectangle<float>(length, depth));
 }
@@ -196,14 +195,33 @@ FBLookAndFeel::DrawTabButtonPart(
 void 
 FBLookAndFeel::SetTheme(FBTheme const& theme) 
 { 
-  _theme = FBTheme(theme); 
-  setColour(ScrollBar::ColourIds::thumbColourId, theme.defaultColorScheme.fileBrowserHighlight);
-  setColour(AlertWindow::ColourIds::textColourId, theme.defaultColorScheme.alertWindowPrimary);
-  setColour(AlertWindow::ColourIds::backgroundColourId, theme.defaultColorScheme.sectionBackground);
-  setColour(DirectoryContentsDisplayComponent::ColourIds::textColourId, theme.defaultColorScheme.text);
-  setColour(DirectoryContentsDisplayComponent::ColourIds::highlightedTextColourId, theme.defaultColorScheme.text2);
-  setColour(DirectoryContentsDisplayComponent::ColourIds::highlightColourId, theme.defaultColorScheme.fileBrowserHighlight);
+  _stringSizeCache = {};
+  _theme = FBTheme(theme);
+  auto fontPath = FBGetThemesFolderPath() / theme.global.resources.folderName / theme.global.resources.fontFileName;
+  auto fontBytes = FBReadFile(fontPath);
+  _typeface = Typeface::createSystemTypefaceFor(fontBytes.data(), fontBytes.size());
+  _font = Font(FontOptions(_typeface)).withHeight((float)_theme.global.fontSize);
+  setColour(ScrollBar::ColourIds::thumbColourId, theme.global.defaultColorScheme.fileBrowserHighlight);
+  setColour(AlertWindow::ColourIds::textColourId, theme.global.defaultColorScheme.alertWindowPrimary);
+  setColour(AlertWindow::ColourIds::backgroundColourId, theme.global.defaultColorScheme.sectionBackground);
+  setColour(DirectoryContentsDisplayComponent::ColourIds::textColourId, theme.global.defaultColorScheme.text);
+  setColour(DirectoryContentsDisplayComponent::ColourIds::highlightedTextColourId, theme.global.defaultColorScheme.text2);
+  setColour(DirectoryContentsDisplayComponent::ColourIds::highlightColourId, theme.global.defaultColorScheme.fileBrowserHighlight);
 }   
+
+Point<int> 
+FBLookAndFeel::GetStringSizeCached(std::string const& text) const
+{
+  auto iter = _stringSizeCache.find(text);
+  if (iter != _stringSizeCache.end())
+    return iter->second;
+  auto bounds = TextLayout::getStringBounds(_font, text);
+  auto result = juce::Point<int>(
+    static_cast<int>(std::ceil(bounds.getWidth())),
+    static_cast<int>(std::ceil(bounds.getHeight())));
+  _stringSizeCache[text] = result;
+  return result;
+}
     
 BorderSize<int> 
 FBLookAndFeel::getLabelBorderSize(
@@ -263,10 +281,11 @@ FBLookAndFeel::fillTextEditorBackground(
   if (te.findParentComponentOfClass<FBFileBrowserComponent>())
     primary = scheme.fileBrowserPrimary;
   g.setColour(scheme.paramBackground);
-  float y = isInstance ? 5.0f : 3.0f;
-  g.fillRoundedRectangle(te.getBounds().toFloat().withY(y).withHeight(24.0f).withWidth(width - 3.0f), 5.0f);
+  float y = isInstance ? 4.0f : 2.0f;
+  auto bounds = te.getBounds().toFloat().withX(2.0).withY(y).withHeight(24.0f).withWidth(width - 6.0f);
+  g.fillRoundedRectangle(bounds, 5.0f);
   g.setColour(primary);
-  g.drawRoundedRectangle(te.getBounds().toFloat().withY(y).withHeight(24.0f).withWidth(width - 3.0f), 5.0f, 1.0f);
+  g.drawRoundedRectangle(bounds, 5.0f, 1.0f);
 }
 
 void 
@@ -304,11 +323,14 @@ FBLookAndFeel::drawPopupMenuBackgroundWithOptions(
   int width, int height,
   const PopupMenu::Options& options)
 {
-  FBColorScheme const* scheme = &Theme().defaultColorScheme;
+  FBColorScheme const* scheme = &Theme().global.defaultColorScheme;
   if (options.getTargetComponent() != nullptr)
     scheme = &FindColorSchemeFor(*options.getTargetComponent());
 
-  g.fillAll(scheme->paramBackground);
+  g.setColour(scheme->paramBackground);
+  g.fillRect(0, 0, width, height);
+  g.setGradientFill(ColourGradient(scheme->primary.withAlpha(0.15f), 0.0f, 0.0f, scheme->primary.withAlpha(0.0f), 0.0f, (float)height, false));
+  g.fillRect(0, 0, width, height);
   g.setColour(scheme->sectionBorder);
   g.drawRect(0, 0, width, height);
 }
@@ -320,7 +342,7 @@ FBLookAndFeel::drawPopupMenuItemWithOptions(
   const PopupMenu::Item& item,
   const PopupMenu::Options& options)
 {
-  FBColorScheme const* scheme = &Theme().defaultColorScheme;
+  FBColorScheme const* scheme = &Theme().global.defaultColorScheme;
   if (options.getTopLevelTargetComponent() != nullptr)
     scheme = &FindColorSchemeFor(*options.getTopLevelTargetComponent());
 
@@ -350,7 +372,7 @@ FBLookAndFeel::drawPopupMenuItem(
   const String& /*shortcutKeyText*/,
   const Drawable* /*icon*/, const Colour* const textColourToUse)
 {
-  auto const& scheme = Theme().defaultColorScheme;
+  auto const& scheme = Theme().global.defaultColorScheme;
   Colour textColor = scheme.text2;
   Colour selectedColor = textColourToUse != nullptr ? *textColourToUse : scheme.text2;
 
@@ -381,7 +403,7 @@ FBLookAndFeel::drawPopupMenuItem(
   if (font.getHeight() > maxFontHeight)
     font.setHeight(maxFontHeight);
 
-  g.setFont(font.withHeight(FBGUIGetPopupMenuFontHeightFloat()));
+  g.setFont(font.withHeight((float)GetFontHeight()));
   auto iconArea = r.removeFromLeft(roundToInt(maxFontHeight)).toFloat();
   if (isTicked)
   {
@@ -419,7 +441,6 @@ FBLookAndFeel::drawLabel(
 
   bool isCombo = false;
   ComboBox* cb = nullptr;
-  bool small = false;
   bool hasBackground = false;
   bool hasBackground2 = false;
   auto const* scheme = &FindColorSchemeFor(label);
@@ -429,10 +450,34 @@ FBLookAndFeel::drawLabel(
     scheme = &FindColorSchemeFor(*cb);
   }
 
+  bool isSelect = false;
   auto colorText = scheme->text;
+  auto selectLabel = dynamic_cast<FBSelectLabel*>(&label);
   auto tweakLabel = dynamic_cast<FBLastTweakedLabel*>(&label);
   auto autoSizeLabel2 = dynamic_cast<FBAutoSizeLabel2*>(&label);
-  if (tweakLabel || autoSizeLabel2)
+  if (selectLabel)
+  {
+    Path p;
+    isSelect = true;
+    auto cornerSize = 3.0f;
+    bool isTop = selectLabel->IsTop();
+    bool isBottom = selectLabel->IsBottom();
+    bool isLeft = selectLabel->IsLeft();
+    bool isRight = selectLabel->IsRight();
+    auto bounds = label.getLocalBounds().toFloat();
+    p.addRoundedRectangle(
+      bounds.getX(), bounds.getY(),
+      bounds.getWidth() + (isRight ? 0.0f : 1.0f),
+      bounds.getHeight() + (isBottom ? 0.0f : 1.0f),
+      cornerSize, cornerSize,
+      isTop && isLeft, isTop && isRight, isBottom && isLeft, isBottom && isRight);
+
+    g.setColour(scheme->sectionBackground);
+    g.fillPath(p);
+    g.setColour(scheme->primary.withMultipliedAlpha(0.67f));
+    g.strokePath(p, PathStrokeType(2.0f));
+  }
+  else if (tweakLabel || autoSizeLabel2)
   {
     if (tweakLabel || autoSizeLabel2 && autoSizeLabel2->HasBackground())
     {
@@ -445,37 +490,32 @@ FBLookAndFeel::drawLabel(
   else
   {
     auto autoSizeLabel = dynamic_cast<FBAutoSizeLabel*>(&label);
-    if (autoSizeLabel && autoSizeLabel->IsPrimary())
+    if (autoSizeLabel && autoSizeLabel->Colors() == FBLabelColors::PrimaryForeground)
     {
-      hasBackground2 = true;
-      small = autoSizeLabel->Small();
-      g.setColour(scheme->primary.darker(1.0f));
-      auto newRect = Rectangle<int>(
-        label.getLocalBounds().getX() + 2,
-        label.getLocalBounds().getY() + 2,
-        label.getLocalBounds().getWidth() - 2 - (small? 4: 0),
-        label.getLocalBounds().getHeight() - 4);
-      g.fillRoundedRectangle(newRect.toFloat(), 2.0f);
-      colorText = scheme->text2;
+      colorText = scheme->primary;
     }
   }
-      
-  if (isCombo)
-    colorText = scheme->primary.darker(cb->isEnabled() ? 0.0f : scheme->dimDisabled);
+   
+  if (isCombo || isSelect)
+    colorText = scheme->primary;
   else if (label.findParentComponentOfClass<FBFileBrowserComponent>())
     colorText = scheme->text;
+  else if (autoSizeLabel2 && autoSizeLabel2->IsPrimary())
+    colorText = scheme->primary;
 
   g.setFont(getLabelFont(label));
   g.setColour(colorText);
   auto textArea = getLabelBorderSize(label).subtractedFrom(label.getLocalBounds());
-  if (hasBackground)
+  if (isSelect)
+    textArea.removeFromLeft(3);
+  else if (hasBackground)
     textArea = textArea.reduced(5);
   else if (hasBackground2)
   {
     textArea = Rectangle<int>(
-      textArea.getX() + 2,
+      textArea.getX(),
       textArea.getY() + 2,
-      textArea.getWidth() - 2 - (small? 4: 0),
+      textArea.getWidth(),
       textArea.getHeight() - 4);
   }
   g.drawText(label.getText(), textArea, label.getJustificationType(), false);
@@ -484,18 +524,51 @@ FBLookAndFeel::drawLabel(
 void
 FBLookAndFeel::drawToggleButton(
   Graphics& g, ToggleButton& button,
-  bool shouldDrawButtonAsHighlighted,
-  bool shouldDrawButtonAsDown)
+  bool /*shouldDrawButtonAsHighlighted*/,
+  bool /*shouldDrawButtonAsDown*/)
 {
-  auto fontSize = jmin(15.0f, (float)button.getHeight() * 0.75f);
-  auto tickWidth = fontSize * 1.1f;
-  float x = (button.getWidth() - tickWidth) * 0.5f;
-  drawTickBox(g, button, x, ((float)button.getHeight() - tickWidth) * 0.5f,
-    tickWidth, tickWidth,
-    button.getToggleState(),
-    button.isEnabled(),
-    shouldDrawButtonAsHighlighted,
-    shouldDrawButtonAsDown);
+  auto const& scheme = FindColorSchemeFor(button);
+  float boxSize = FBPrimaryHeight - 6.0f;
+  float radius = (FBPrimaryHeight - 14.0f) * 0.5f;
+  float x = 1.0f;
+  float y = (button.getHeight() - boxSize) * 0.5f;
+  auto bounds = Rectangle<float>(x, y, boxSize, boxSize);
+  g.setColour(scheme.paramBackground);
+  g.fillRoundedRectangle(bounds, 3.0f);
+  if (button.getToggleState())
+  {
+    g.setColour(scheme.primary.withAlpha(0.33f));
+    g.fillRoundedRectangle(bounds, 3.0f);
+  }
+  g.setColour(scheme.paramSecondary);
+  g.drawRoundedRectangle(bounds, 3.0f, 1.0f);
+
+  Path arc;
+  arc.addCentredArc(
+    bounds.getCentreX(), bounds.getCentreY(), radius, radius,
+    0.0f, 0.15f * FBPi, 1.85f * FBPi, true);
+  if (button.getToggleState())
+    g.setColour(scheme.primary);
+  else
+    g.setColour(scheme.paramSecondary.brighter());
+  g.strokePath(arc, PathStrokeType(1.0f, PathStrokeType::curved, PathStrokeType::butt));
+  g.drawLine(bounds.getCentreX(), bounds.getCentreY(), bounds.getCentreX(), y + 2.0f, 1.0f);
+
+  auto* paramToggle = dynamic_cast<FBParamToggleButton*>(&button);
+  if (paramToggle != nullptr)
+  {
+    if (paramToggle->IsHighlightTweaked())
+    {
+      g.setColour(scheme.paramHighlight);
+      g.strokePath(arc, PathStrokeType(1.0f, PathStrokeType::curved, PathStrokeType::butt));
+      g.drawLine(bounds.getCentreX(), bounds.getCentreY(), bounds.getCentreX(), y + 2.0f, 1.0f);
+    }
+    if (paramToggle->IsFlashDisabling())
+    {
+      g.setColour(Colours::white.withAlpha(0.5f));
+      g.fillRoundedRectangle(bounds, 2.0f);
+    }
+  }
 }
 
 void
@@ -507,23 +580,20 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   auto const& scheme = FindColorSchemeFor(box);
   Rectangle<int> boxBounds(2, 2, width - 4, height - 4);
 
+  auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
   g.setColour(scheme.paramBackground);
   g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
+  if (paramCombo && paramCombo->IsHighlightTweaked())
+  {
+    g.setColour(scheme.paramHighlight.withMultipliedAlpha(0.2f));
+    g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
+  }
   g.setColour(scheme.paramSecondary);
   g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
-  auto* paramCombo = dynamic_cast<FBParamComboBox*>(&box);
-  if (paramCombo != nullptr)
+  if (paramCombo && paramCombo->IsFlashDisabling())
   {
-    if (paramCombo->IsFlashDisabling())
-    {
-      g.setColour(scheme.primary.withMultipliedAlpha(0.5f));
-      g.fillRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize);
-    }
-    if (paramCombo->IsHighlightTweaked())
-    {
-      g.setColour(scheme.paramHighlight);
-      g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
-    }
+    g.setColour(Colours::white.withAlpha(0.5f));
+    g.fillRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize);
   }
 }
 
@@ -546,21 +616,21 @@ FBLookAndFeel::drawTickBox(
   auto* paramToggle = dynamic_cast<FBParamToggleButton*>(&component);
   if (paramToggle != nullptr)
   {
-    if (paramToggle->IsFlashDisabling())
-    {
-      g.setColour(scheme.primary.withMultipliedAlpha(0.5f));
-      g.fillRoundedRectangle(tickBounds, 2.0f);
-    }
     if (paramToggle->IsHighlightTweaked())
     {
       g.setColour(scheme.paramHighlight);
       g.drawRoundedRectangle(tickBounds, 2.0f, 1.0f);
     }
+    if (paramToggle->IsFlashDisabling())
+    {
+      g.setColour(Colours::white.withAlpha(0.5f));
+      g.fillRoundedRectangle(tickBounds, 2.0f);
+    }
   }
 
   if (ticked)
   {
-    g.setColour(scheme.primary.darker(component.isEnabled()? 0.0f: scheme.dimDisabled));
+    g.setColour(scheme.primary);
     DrawCross(g, tickBounds.reduced(6.0f, 6.0f));
   }
 }
@@ -591,12 +661,12 @@ FBLookAndFeel::drawLinearSlider(
   minPoint = startPointFull;
   maxPoint = { kx, ky };
 
+  float sliderPosNorm = (sliderPos - (float)x) / width;
   auto paramSlider = dynamic_cast<FBParamSlider*>(&slider);
   if (paramSlider != nullptr)
     if (paramSlider->Param()->static_.NonRealTime().DisplayAsBipolar())
     {
       auto centerPoint = Point<float>((float)x + width * 0.5f, (float)y + (float)height * 0.5f);
-      float sliderPosNorm = (sliderPos - (float)x) / width;
       if (sliderPosNorm > 0.5f)
         minPoint = centerPoint;
       else
@@ -619,7 +689,7 @@ FBLookAndFeel::drawLinearSlider(
     Point<float> endPointMod((float)(width * modMax + x), startPointMod.y);
     backgroundTrackMod.startNewSubPath(startPointMod);
     backgroundTrackMod.lineTo(endPointMod);
-    g.setColour(scheme.sliderModBounds);
+    g.setColour(scheme.primary.brighter());
     g.strokePath(backgroundTrackMod, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
   }
 
@@ -631,27 +701,29 @@ FBLookAndFeel::drawLinearSlider(
     auto paramActive = paramSlider->ParamActiveExchangeState();
     if (paramActive.active)
     {
-      DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, thumbW, thumbH, thumbY, paramActive.minValue);
+      if(std::abs(paramActive.minValue - sliderPosNorm) >= 0.01)
+        DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, thumbW, thumbH, thumbY, paramActive.minValue);
       if (paramSlider->Param()->static_.IsVoice())
-        DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, thumbW, thumbH, thumbY, paramActive.maxValue);
+        if (std::abs(paramActive.maxValue - sliderPosNorm) >= 0.01)
+          DrawLinearSliderExchangeThumb(g, *paramSlider, scheme, thumbW, thumbH, thumbY, paramActive.maxValue);
     }
   }
 
-  g.setColour(scheme.primary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
+  g.setColour(scheme.primary);
   g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
   g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
   if (paramSlider != nullptr)
   {
-    if (paramSlider->IsFlashDisabling())
-    {
-      g.setColour(scheme.primary.withMultipliedAlpha(0.5f));
-      g.fillRoundedRectangle((float)x, thumbY, (float)width, thumbH, 2.0f);
-    }
     if (paramSlider->IsHighlightTweaked())
     {
       g.setColour(scheme.paramHighlight);
       g.fillRoundedRectangle(kx - thumbW, thumbY, thumbW, thumbH, 2.0f);
       g.fillRoundedRectangle(kx, thumbY, thumbW, thumbH, 2.0f);
+    }
+    if (paramSlider->IsFlashDisabling())
+    {
+      g.setColour(Colours::white.withAlpha(0.5f));
+      g.fillRoundedRectangle((float)x, thumbY, (float)width, thumbH, 2.0f);
     }
   }
 }
@@ -662,17 +734,56 @@ FBLookAndFeel::drawButtonBackground(
   const juce::Colour& /*backgroundColour*/,
   bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
-  auto cornerSize = 5.0f;
-  auto bounds = button.getLocalBounds().toFloat().reduced(3.0f, 3.0f);
-  auto const& scheme = FindColorSchemeFor(button);
-  g.setColour(scheme.buttonBackground.brighter(shouldDrawButtonAsDown? 0.4f: 0.0f));
-  g.fillRoundedRectangle(bounds, cornerSize);
-  g.setColour(scheme.primary);
-  g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
-  if (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted)
+  bool isTop = true;
+  bool isBottom = true;
+  bool isLeft = true;
+  bool isRight = true;
+  bool isSelect = false;
+  if (auto selectButton = dynamic_cast<FBSelectButton*>(&button))
   {
+    isSelect = true;
+    isTop = selectButton->IsTop();
+    isBottom = selectButton->IsBottom();
+    isLeft = selectButton->IsLeft();
+    isRight = selectButton->IsRight();
+    shouldDrawButtonAsDown |= button.getToggleState();
+  }
+
+  Path p;
+  auto cornerSize = isSelect? 3.0f: 5.0f;
+  auto bounds = button.getLocalBounds().toFloat().reduced(isSelect? 0.0f: 1.0f, isSelect? 0.0f: 3.0f);
+  p.addRoundedRectangle(
+    bounds.getX(), bounds.getY(), 
+    bounds.getWidth() + (isRight? 0.0f: 1.0f), 
+    bounds.getHeight() + (isBottom? 0.0f: 1.0f), 
+    cornerSize, cornerSize,
+    isTop && isLeft, isTop && isRight, isBottom && isLeft, isBottom && isRight);
+
+  auto const& scheme = FindColorSchemeFor(button);
+  auto background = isSelect ? scheme.sectionBackground : scheme.buttonBackground;
+  if (isSelect && shouldDrawButtonAsDown)
+    g.setColour(scheme.primary.withMultipliedAlpha(0.5f));
+  else if (isSelect && shouldDrawButtonAsHighlighted)
+    g.setColour(scheme.primary.withMultipliedAlpha(0.25f));
+  else if(!button.isEnabled())
+    g.setColour(background.darker());
+  else
+    g.setColour(background.brighter(shouldDrawButtonAsDown ? 0.4f : 0.0f));
+  g.fillPath(p);
+  g.setColour(scheme.primary.withMultipliedAlpha(isSelect ? 0.67f: 1.0f));
+  g.strokePath(p, PathStrokeType(isSelect? 2.0f: 1.0f));
+
+  if (!isSelect && (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted))
+  {
+    p = {};
+    p.addRoundedRectangle(
+      bounds.getX(), bounds.getY(),
+      bounds.getWidth(),
+      bounds.getHeight(), 
+      cornerSize, cornerSize,
+      isTop && isLeft, isTop && isRight, isBottom && isLeft, isBottom && isRight);
     g.setColour(scheme.paramHighlight);
-    g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
+    g.strokePath(p, PathStrokeType(1.0f));
   }
 }
 
@@ -684,20 +795,21 @@ FBLookAndFeel::drawButtonText(
   auto const& scheme = FindColorSchemeFor(button);
   Font font(getTextButtonFont(button, button.getHeight()));
   g.setFont(font);
-  g.setColour(button.isEnabled() ? scheme.text2 : scheme.text2.darker(scheme.dimDisabled));
+  g.setColour(scheme.text2);
 
   const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
   const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
 
+  bool isSelect = dynamic_cast<FBSelectButton*>(&button) != nullptr;
   const int fontHeight = roundToInt(font.getHeight() * 0.6f);
-  const int leftIndent = jmin(fontHeight, 1 + cornerSize / (button.isConnectedOnLeft() ? 4 : 2));
-  const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
-  const int textWidth = button.getWidth() - leftIndent - rightIndent;
+  const int leftIndent = jmin(fontHeight, -1 + cornerSize / (button.isConnectedOnLeft() ? 4 : 2));
+  const int rightIndent = jmin(fontHeight, 1 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
+  const int textWidth = isSelect? button.getWidth(): button.getWidth() - leftIndent - rightIndent;
      
   if (textWidth > 0)
     g.drawText(button.getButtonText(),
-      leftIndent, yIndent, textWidth, button.getHeight() - yIndent * 2,
-      Justification::centred, false);
+      isSelect? 6: leftIndent, yIndent, textWidth, button.getHeight() - yIndent * 2,
+      isSelect? Justification::left: Justification::centred, false);
 }
 
 void
@@ -712,12 +824,17 @@ FBLookAndFeel::drawRotarySlider(
   width += 12;
   height += 12;
 
+  FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
+  if (paramSlider && !paramSlider->DrawAtCenter() && width > height)
+    width = height;
+
   auto const& scheme = FindColorSchemeFor(slider);
-  auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(10);
-  auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
+  auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(8);
+  auto radius1 = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
+  auto radius2 = radius1 - 2.0f;
   auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
-  auto lineW = jmin(8.0f, radius * 0.5f);
-  auto arcRadius = radius - lineW * 0.5f;
+  auto lineW = 2.0f;
+  auto arcRadius = radius1 - lineW * 0.5f;
     
   Path backgroundArc;
   backgroundArc.addCentredArc(
@@ -725,6 +842,8 @@ FBLookAndFeel::drawRotarySlider(
     0.0f, rotaryStartAngle, rotaryEndAngle, true);
   g.setColour(scheme.paramBackground);
   g.strokePath(backgroundArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
+  g.setColour(scheme.paramSecondary);
+  g.fillEllipse(bounds.getCentreX() - radius2, bounds.getCentreY() - radius2, 2.0f * radius2, 2.0f * radius2);
 
   Path valueArc;
   float trackEndAngle = toAngle;
@@ -744,10 +863,11 @@ FBLookAndFeel::drawRotarySlider(
       }
     }
   }
+
   valueArc.addCentredArc(
     bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
     0.0f, trackStartAngle, trackEndAngle, true);
-  g.setColour(scheme.paramSecondary);
+  g.setColour(scheme.primary);
   g.strokePath(valueArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
 
   double minNorm;
@@ -760,41 +880,39 @@ FBLookAndFeel::drawRotarySlider(
     modArc.addCentredArc(
       bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
       0.0f, (float)minAngle, (float)maxAngle, true);
-    g.setColour(scheme.sliderModBounds); 
+    g.setColour(scheme.primary.brighter()); 
     g.strokePath(modArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::butt));
   }
-
-  FBParamSlider* paramSlider = dynamic_cast<FBParamSlider*>(&slider);
+  
   if (paramSlider != nullptr)
   {
     auto paramActive = paramSlider->ParamActiveExchangeState();
     if (paramActive.active)
     {
-      DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.minValue);
+      if(std::abs(sliderPos - paramActive.minValue) >= 0.01)
+        DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.minValue);
       if (paramSlider->Param()->static_.IsVoice())
-        DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
+        if (std::abs(sliderPos - paramActive.maxValue) >= 0.01)
+          DrawRotarySliderExchangeThumb(g, *paramSlider, scheme, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
     }
   }
 
-  auto thumbWidth = lineW * 2.0f;
-  Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
+  Point<float> thumbPoint1(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(scheme.primary.darker(slider.isEnabled()? 0.0f: scheme.dimDisabled));
-  g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
+  Point<float> thumbPoint2(bounds.getCentreX() + arcRadius * 0.5f * std::cos(toAngle - MathConstants<float>::halfPi),
+    bounds.getCentreY() + arcRadius * 0.5f * std::sin(toAngle - MathConstants<float>::halfPi));
 
-  if (paramSlider != nullptr)
-  { 
-    if (paramSlider->IsFlashDisabling())
-    {
-      g.setColour(scheme.primary.withMultipliedAlpha(0.5f));
-      g.fillEllipse(bounds.toFloat().reduced(0.5f, 0.5f));
-    }
-    if (paramSlider->IsHighlightTweaked())
-    {
-      g.setColour(scheme.paramHighlight);
-      g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
-    }
-  } 
+  if(paramSlider && paramSlider->IsHighlightTweaked())
+    g.setColour(scheme.primary);
+  else
+    g.setColour(scheme.paramSecondary.brighter());
+  g.drawLine(thumbPoint1.getX(), thumbPoint1.getY(), thumbPoint2.getX(), thumbPoint2.getY(), 2.0f);
+
+  if (paramSlider != nullptr && paramSlider->IsFlashDisabling())
+  {
+    g.setColour(Colours::white.withAlpha(0.5f));
+    g.fillEllipse(bounds.toFloat().reduced(0.5f, 0.5f));
+  }
 }
 
 juce::Rectangle<int> 
@@ -808,7 +926,7 @@ FBLookAndFeel::getTooltipBounds(
   float th = 0.0f;
   float tw = 0.0f;
   float fontSize = 13.0f;
-  float textHeight = FBGUIGetFontHeightFloat() + 2.0f;
+  float textHeight = GetFontHeight() + 2.0f;
   auto lines = FBStringSplit(trimmed.toStdString(), "\r\n");
   auto font = Font(FontOptions(fontSize, Font::bold).withMetricsKind(getDefaultMetricsKind()));
   for (int i = 0; i < lines.size(); i++)
@@ -856,7 +974,7 @@ FBLookAndFeel::drawTooltip(
   // Tooltip window doesnt provide the target component, so wing it.
   // Won't be 100% accurate, but worst that can happen is we pick up the wrong color scheme.
   bool newCompIsParam = false;
-  auto const* scheme = &Theme().defaultColorScheme;
+  auto const* scheme = &Theme().global.defaultColorScheme;
   const auto mouseSource = Desktop::getInstance().getMainMouseSource();
   auto* newComp = mouseSource.isTouch() ? nullptr : mouseSource.getComponentUnderMouse();
   if (newComp != nullptr)
@@ -868,20 +986,19 @@ FBLookAndFeel::drawTooltip(
     newCompIsParam |= dynamic_cast<FBGUIParamControl*>(newComp->findParentComponentOfClass<ComboBox>()) != nullptr;
   }
 
-  auto cornerSize = 3.0f;
   Rectangle<int> bounds(width, height);
-  g.setColour(scheme->background);
-  g.fillRect(bounds.toFloat());
   g.setColour(scheme->paramBackground);
-  g.fillRoundedRectangle(bounds.toFloat(), cornerSize);
-  g.setColour(scheme->primary);
-  g.drawRoundedRectangle(bounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+  g.fillRect(bounds.toFloat());
+  g.setGradientFill(ColourGradient(scheme->primary.withAlpha(0.15f), 0.0f, 0.0f, scheme->primary.withAlpha(0.0f), 0.0f, (float)height, false));
+  g.fillRect(bounds.toFloat());
+  g.setColour(scheme->sectionBorder);
+  g.drawRect(0, 0, width, height);
 
   int i = 0;
   float pad = 3.0f;
   float fontSize = 13.0f;
   auto trimmed = text.trim();
-  float textHeight = FBGUIGetFontHeightFloat() + 2.0f;
+  float textHeight = GetFontHeight() + 2.0f;
   auto lines = FBStringSplit(trimmed.toStdString(), "\r\n");
   auto textBounds = Rectangle<float>(pad, pad, width - 2.0f * pad, textHeight);
   g.setFont(Font(FontOptions(fontSize, Font::bold).withMetricsKind(getDefaultMetricsKind())));

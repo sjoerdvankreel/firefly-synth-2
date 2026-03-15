@@ -21,8 +21,8 @@ FBParamComponent::GetScheme(FBTheme const& theme) const
     int rtParamIndex = Param()->runtimeParamIndex;
     auto paramIter = moduleIter->second.audioParamColorSchemes.find(rtParamIndex);
     if (paramIter == moduleIter->second.audioParamColorSchemes.end())
-      return &theme.colorSchemes.at(moduleIter->second.colorScheme);
-    return &theme.colorSchemes.at(paramIter->second);
+      return &theme.global.colorSchemes.at(moduleIter->second.colorScheme);
+    return &theme.global.colorSchemes.at(paramIter->second);
   }
   return nullptr;
 }
@@ -45,8 +45,8 @@ FBGUIParamComponent::GetScheme(FBTheme const& theme) const
     int rtParamIndex = Param()->runtimeParamIndex;
     auto paramIter = moduleIter->second.guiParamColorSchemes.find(rtParamIndex);
     if (paramIter == moduleIter->second.guiParamColorSchemes.end())
-      return &theme.colorSchemes.at(moduleIter->second.colorScheme);
-    return &theme.colorSchemes.at(paramIter->second);
+      return &theme.global.colorSchemes.at(moduleIter->second.colorScheme);
+    return &theme.global.colorSchemes.at(paramIter->second);
   }
   return nullptr;
 }

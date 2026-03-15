@@ -9,8 +9,8 @@ FFOsciFMFormatRatioSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 {
   switch (itemSlot)
   {
-  case 0: return "2:1";
-  case 1: return "3:2";
+  case 0: return "Op2:Op1";
+  case 1: return "Op3:Op2";
   default: FB_ASSERT(false); return "";
   }
 }
@@ -59,7 +59,9 @@ FFMakeOsciTopo()
   result->voice = true;
   result->name = "Osc";
   result->slotCount = FFOsciCount;
-  result->graphCount = FFOsciCount;
+  result->detailGraphCount = FFOsciCount;
+  result->detailGraphUpperLowerText = true;
+  result->detailGraphLayout = FBModuleGraphLayout::Grid;
   result->graphRenderer = FFOsciRenderGraph;
   result->id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
   result->params.resize((int)FFOsciParam::Count);
@@ -121,7 +123,7 @@ FFMakeOsciTopo()
 
   auto& keyTrack = result->params[(int)FFOsciParam::KeyTrack];
   keyTrack.mode = FBParamMode::Block;
-  keyTrack.name = "KTrk";
+  keyTrack.name = "KeyTrk";
   keyTrack.slotCount = 1;
   keyTrack.defaultText = "On";
   keyTrack.id = "{6A2E75A1-F84D-401D-98BB-7D78F13073EA}";
@@ -381,8 +383,8 @@ FFMakeOsciTopo()
   auto& wavePWMode = result->params[(int)FFOsciParam::WavePWMode];
   wavePWMode.mode = FBParamMode::Block;
   wavePWMode.defaultText = "Off";
-  wavePWMode.name = "PW Mode";
-  wavePWMode.display = "PW";
+  wavePWMode.name = "PWM Mode";
+  wavePWMode.display = "PWM";
   wavePWMode.slotFormatDisplay = true;
   wavePWMode.slotCount = FFOsciWavePWCount;
   wavePWMode.slotFormatter = FFFormatBlockSlot;
@@ -447,7 +449,7 @@ FFMakeOsciTopo()
   waveHSMode.mode = FBParamMode::Block;
   waveHSMode.defaultText = "Off";
   waveHSMode.name = "Hard Sync Mode";
-  waveHSMode.display = "HSync";
+  waveHSMode.display = "Hard Sync";
   waveHSMode.slotFormatDisplay = true;
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";
@@ -641,11 +643,11 @@ FFMakeOsciTopo()
   auto& fmRatioMode = result->params[(int)FFOsciParam::FMRatioMode];
   fmRatioMode.mode = FBParamMode::Block;
   fmRatioMode.defaultText = "Ratio";
-  fmRatioMode.name = "FM Ratio Mode";
-  fmRatioMode.display = "Ratio";
+  fmRatioMode.name = "FM Ratio/Free";
+  fmRatioMode.display = "Ratio/Free";
   fmRatioMode.slotCount = 1;
   fmRatioMode.id = "{40838341-6882-4BF8-813F-BA5B89B3042F}";
-  fmRatioMode.description = "FM Oscillator C:M Ratio Mode";
+  fmRatioMode.description = "FM Oscillator C:M Ratio/Free";
   fmRatioMode.type = FBParamType::List;
   fmRatioMode.List().items = {
     { "{A6E83AA7-9DA3-4ECA-90DE-BCA123B48203}", "Ratio" },
@@ -845,7 +847,7 @@ FFMakeOsciTopo()
   stringLPFreq.mode = FBParamMode::Accurate;
   stringLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
   stringLPFreq.name = "String LP Freq";
-  stringLPFreq.display = "Frq";
+  stringLPFreq.display = "Freq";
   stringLPFreq.slotCount = 1;
   stringLPFreq.unit = "Hz";
   stringLPFreq.id = "{F8865388-AD37-4A9F-92DC-9AAB62BCF04E}";
@@ -861,8 +863,8 @@ FFMakeOsciTopo()
   auto& stringLPRes = result->params[(int)FFOsciParam::StringLPRes];
   stringLPRes.mode = FBParamMode::Accurate;
   stringLPRes.defaultText = "0";
-  stringLPRes.name = "String LP Res";
-  stringLPRes.display = "Res";
+  stringLPRes.name = "String LP Reso";
+  stringLPRes.display = "Reso";
   stringLPRes.slotCount = 1;
   stringLPRes.unit = "%";
   stringLPRes.id = "{A0FF6017-BF7D-446C-91E6-8893A696D2BA}";
@@ -877,8 +879,8 @@ FFMakeOsciTopo()
   auto& stringLPKTrk = result->params[(int)FFOsciParam::StringLPKTrk];
   stringLPKTrk.mode = FBParamMode::Accurate;
   stringLPKTrk.defaultText = "0";
-  stringLPKTrk.name = "String LP KTrk";
-  stringLPKTrk.display = "KTrk";
+  stringLPKTrk.name = "String LP KeyTrk";
+  stringLPKTrk.display = "KeyTrk";
   stringLPKTrk.slotCount = 1;
   stringLPKTrk.unit = "%";
   stringLPKTrk.id = "{C6EFCD36-256A-4F2C-B772-D5966460E893}";
@@ -912,7 +914,7 @@ FFMakeOsciTopo()
   stringHPFreq.mode = FBParamMode::Accurate;
   stringHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   stringHPFreq.name = "String HP Freq";
-  stringHPFreq.display = "Frq";
+  stringHPFreq.display = "Freq";
   stringHPFreq.slotCount = 1;
   stringHPFreq.unit = "Hz";
   stringHPFreq.id = "{1753A4C9-BE63-4079-A875-59C35F3BC584}";
@@ -928,8 +930,8 @@ FFMakeOsciTopo()
   auto& stringHPRes = result->params[(int)FFOsciParam::StringHPRes];
   stringHPRes.mode = FBParamMode::Accurate;
   stringHPRes.defaultText = "0";
-  stringHPRes.name = "String HP Res";
-  stringHPRes.display = "Res";
+  stringHPRes.name = "String HP Reso";
+  stringHPRes.display = "Reso";
   stringHPRes.slotCount = 1;
   stringHPRes.unit = "%";
   stringHPRes.id = "{164AD99E-1C52-4302-8032-4E02F7A43224}";
@@ -944,8 +946,8 @@ FFMakeOsciTopo()
   auto& stringHPKTrk = result->params[(int)FFOsciParam::StringHPKTrk];
   stringHPKTrk.mode = FBParamMode::Accurate;
   stringHPKTrk.defaultText = "0";
-  stringHPKTrk.name = "String HP KTrk";
-  stringHPKTrk.display = "KTrk";
+  stringHPKTrk.name = "String HP KeyTrk";
+  stringHPKTrk.display = "KeyTrk";
   stringHPKTrk.slotCount = 1;
   stringHPKTrk.unit = "%";
   stringHPKTrk.id = "{61BA0D46-9BC3-496C-A004-671F3465142E}";
@@ -979,8 +981,8 @@ FFMakeOsciTopo()
   auto& stringDampKTrk = result->params[(int)FFOsciParam::StringDampKTrk];
   stringDampKTrk.mode = FBParamMode::Accurate;
   stringDampKTrk.defaultText = "0";
-  stringDampKTrk.name = "String Damp KTrk";
-  stringDampKTrk.display = "KTrk";
+  stringDampKTrk.name = "String Damp KeyTrk";
+  stringDampKTrk.display = "KeyTrk";
   stringDampKTrk.slotCount = 1;
   stringDampKTrk.unit = "%";
   stringDampKTrk.id = "{5B4F67F9-30E9-482C-922A-33F5CB7F5A1F}";
@@ -998,8 +1000,8 @@ FFMakeOsciTopo()
   auto& stringFeedback = result->params[(int)FFOsciParam::StringFeedback];
   stringFeedback.mode = FBParamMode::Accurate;
   stringFeedback.defaultText = "100";
-  stringFeedback.name = "String Fdbk";
-  stringFeedback.display = "Fdbk";
+  stringFeedback.name = "String Feedback";
+  stringFeedback.display = "Feedback";
   stringFeedback.slotCount = 1;
   stringFeedback.unit = "%";
   stringFeedback.id = "{280B9667-8DA5-4DD6-B7CD-695DF38AA857}";
@@ -1014,8 +1016,8 @@ FFMakeOsciTopo()
   auto& stringFeedbackKTrk = result->params[(int)FFOsciParam::StringFeedbackKTrk];
   stringFeedbackKTrk.mode = FBParamMode::Accurate;
   stringFeedbackKTrk.defaultText = "0";
-  stringFeedbackKTrk.name = "String Fdbk KTrk";
-  stringFeedbackKTrk.display = "KTrk";
+  stringFeedbackKTrk.name = "String Feedback KeyTrk";
+  stringFeedbackKTrk.display = "KeyTrk";
   stringFeedbackKTrk.slotCount = 1;
   stringFeedbackKTrk.unit = "%";
   stringFeedbackKTrk.id = "{239389B7-52BC-437F-909C-184621F69E79}";
@@ -1067,7 +1069,7 @@ FFMakeOsciTopo()
   extAudioLPFreq.mode = FBParamMode::Accurate;
   extAudioLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
   extAudioLPFreq.name = "Ext Audio LP Freq";
-  extAudioLPFreq.display = "Frq";
+  extAudioLPFreq.display = "Freq";
   extAudioLPFreq.slotCount = 1;
   extAudioLPFreq.unit = "Hz";
   extAudioLPFreq.id = "{E2C27D74-394C-4CB3-98C2-9EBBCDE23B6D}";
@@ -1083,8 +1085,8 @@ FFMakeOsciTopo()
   auto& extAudioLPRes = result->params[(int)FFOsciParam::ExtAudioLPRes];
   extAudioLPRes.mode = FBParamMode::Accurate;
   extAudioLPRes.defaultText = "0";
-  extAudioLPRes.name = "Ext Audio LP Res";
-  extAudioLPRes.display = "Res";
+  extAudioLPRes.name = "Ext Audio LP Reso";
+  extAudioLPRes.display = "Reso";
   extAudioLPRes.slotCount = 1;
   extAudioLPRes.unit = "%";
   extAudioLPRes.id = "{CFDA83CE-8D58-43E9-ADA8-DD67E2074B1E}";
@@ -1115,7 +1117,7 @@ FFMakeOsciTopo()
   extAudioHPFreq.mode = FBParamMode::Accurate;
   extAudioHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   extAudioHPFreq.name = "Ext Audio HP Freq";
-  extAudioHPFreq.display = "Frq";
+  extAudioHPFreq.display = "Freq";
   extAudioHPFreq.slotCount = 1;
   extAudioHPFreq.unit = "Hz";
   extAudioHPFreq.id = "{FE65BB51-F63B-464F-91B2-7E8732ADF9CC}";
@@ -1131,8 +1133,8 @@ FFMakeOsciTopo()
   auto& extAudioHPRes = result->params[(int)FFOsciParam::ExtAudioHPRes];
   extAudioHPRes.mode = FBParamMode::Accurate;
   extAudioHPRes.defaultText = "0";
-  extAudioHPRes.name = "Ext Audio HP Res";
-  extAudioHPRes.display = "Res";
+  extAudioHPRes.name = "Ext Audio HP Reso";
+  extAudioHPRes.display = "Reso";
   extAudioHPRes.slotCount = 1;
   extAudioHPRes.unit = "%";
   extAudioHPRes.id = "{F9F7A9FE-5D3D-45A9-A15D-19D80634DF10}";

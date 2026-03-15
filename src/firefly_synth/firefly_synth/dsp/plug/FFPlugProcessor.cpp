@@ -58,7 +58,7 @@ FFPlugProcessor::ProcessGEcho(
   auto& globalDSP = _procState->dsp.global;
   state.moduleSlot = 0;
   inout.CopyTo(globalDSP.gEcho.input);
-  globalDSP.gEcho.processor->BeginVoiceOrBlock(state, false, -1, -1);
+  globalDSP.gEcho.processor->BeginVoiceOrBlock(state, false, false, -1, -1);
   globalDSP.gEcho.processor->Process(state, false, -1);
   globalDSP.gEcho.output.CopyTo(inout);
 }
@@ -203,7 +203,7 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   for (int i = 0; i < FFLFOCount; i++)
   {
     state.moduleSlot = i;
-    globalDSP.gLFO[i].processor->BeginVoiceOrBlock<true>(state, nullptr, false, -1, -1);
+    globalDSP.gLFO[i].processor->BeginVoiceOrBlock<true>(state, nullptr, false, false, -1, -1);
     globalDSP.gLFO[i].processor->Process<true>(state, false);
     ApplyGlobalModulation(state, { (int)FFModuleType::GLFO, i });
   }
@@ -284,7 +284,7 @@ FFPlugProcessor::ProcessPostVoice(
       ProcessGEcho(state, globalDSP.gEffect[i].input);
     
     state.moduleSlot = i; // gecho changes it!
-    globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(state, false, -1, -1);
+    globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(state, false, false, -1, -1);
     globalDSP.gEffect[i].processor->Process<true>(state, nullptr, false);
 
     if (gEchoTarget == FFGEchoTarget::FX1Out && i == 0 ||

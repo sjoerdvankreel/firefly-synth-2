@@ -1,5 +1,6 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
@@ -7,10 +8,11 @@
 using namespace juce;
 
 FBAutoSizeButton::
-FBAutoSizeButton(std::string const& text):
+FBAutoSizeButton(FBPlugGUI* plugGUI, std::string const& text):
 TextButton(),
 IFBHorizontalAutoSize(),
-_textWidth(FBGUIGetStringWidthCached(text))
+_plugGUI(plugGUI),
+_text(text)
 {
   setButtonText(text);
 }
@@ -18,18 +20,18 @@ _textWidth(FBGUIGetStringWidthCached(text))
 int 
 FBAutoSizeButton::FixedHeight() const
 {
-  return 24;
+  return FBPrimaryHeight;
 }
 
 int 
 FBAutoSizeButton::FixedWidth(int /*height*/) const
 {
-  return _textWidth + 16;
+  return FBGetLookAndFeelFor(_plugGUI)->GetStringWidthCached(_text) + 14;
 }
 
 FBParamLinkedButton::
 FBParamLinkedButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string const& text):
-FBAutoSizeButton(text),
+FBAutoSizeButton(plugGUI, text),
 FBParamsDependent(plugGUI, param->topoIndices.param.slot, param->topoIndices.module, param->static_.dependencies) {}
 
 void
@@ -48,7 +50,7 @@ FBParamValueLinkedButton::
 FBParamValueLinkedButton(
   FBPlugGUI* plugGUI, FBRuntimeParam const* param,
   std::string const& text, std::function<bool(int)> enabledIf):
-FBAutoSizeButton(text),
+FBAutoSizeButton(plugGUI, text),
 _plugGUI(plugGUI),
 _param(param),
 _enabledIf(enabledIf)

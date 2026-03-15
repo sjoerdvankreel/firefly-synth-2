@@ -55,25 +55,25 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   auto result = std::make_unique<FFStaticTopo>();
   result->meta = FFPlugMeta(format, isFX);
   result->maxUndoSize = 15;
-  result->guiWidth = 1280;
-  result->guiAspectRatioWidth = 128;
-  result->guiAspectRatioHeight = 69;
+  result->guiWidth = 1300;
+  result->guiAspectRatioWidth = 80;
+  result->guiAspectRatioHeight = 35;
   result->patchExtension = "ff2preset";    
   result->patchFilterName = "FF2 Presets";                            
-  result->defaultThemeName = "Firefly Dark Hot";          
+  result->defaultThemeName = "Firefly Default";            
   result->guiUserScaleModule = (int)FFModuleType::GUISettings;
   result->guiUserScaleParam = (int)FFGUISettingsGUIParam::UserScale;
   result->guiFactory = [](FBHostGUIContext* hostContext) { 
     return std::make_unique<FFPlugGUI>(hostContext); };
   result->deserializationConverterFactory = [](FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo) { 
     return std::make_unique<FFDeserializationConverter>(oldVersion, topo); };
- 
+  
   result->themedComponents[(int)FFThemedComponentId::Patch].name = "Patch";
   result->themedComponents[(int)FFThemedComponentId::Patch].id = "{878D9B5E-D11E-485D-8B57-5CAC8C8B612A}";
-  result->themedComponents[(int)FFThemedComponentId::Graphs].name = "Graphs";
-  result->themedComponents[(int)FFThemedComponentId::Graphs].id = "{8DFD2F0E-A796-4570-B319-DCE1F0931DC9}";
-  result->themedComponents[(int)FFThemedComponentId::Header].name = "Header";
-  result->themedComponents[(int)FFThemedComponentId::Header].id = "{F2424A69-41E5-4554-BCC0-4CBA334C26D6}";
+  result->themedComponents[(int)FFThemedComponentId::MainGraphs].name = "Main Graphs";
+  result->themedComponents[(int)FFThemedComponentId::MainGraphs].id = "{8DFD2F0E-A796-4570-B319-DCE1F0931DC9}";
+  result->themedComponents[(int)FFThemedComponentId::DetailGraphs].name = "Detail Graphs";
+  result->themedComponents[(int)FFThemedComponentId::DetailGraphs].id = "{40286909-D60C-4BB8-B48B-12DAE59883CC}";
   result->themedComponents[(int)FFThemedComponentId::LastTweaked].name = "Last Tweaked";
   result->themedComponents[(int)FFThemedComponentId::LastTweaked].id = "{12937840-F39D-4041-986F-911005EC6C58}";
   result->themedComponents[(int)FFThemedComponentId::GlobalUniTop].name = "Unison Top";
@@ -86,6 +86,18 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->themedComponents[(int)FFThemedComponentId::MatrixTopVoice].id = "{4982334C-FFE3-4335-9584-5E1EA167A0DC}";
   result->themedComponents[(int)FFThemedComponentId::MatrixTopGlobal].name = "Matrix Top Global";
   result->themedComponents[(int)FFThemedComponentId::MatrixTopGlobal].id = "{BE80B21E-B18E-4D47-8C81-BF58A5497DF6}";
+  result->themedComponents[(int)FFThemedComponentId::EffectSelector].name = "Effect Selector";
+  result->themedComponents[(int)FFThemedComponentId::EffectSelector].id = "{DADE7470-E372-4A0D-9094-F769648103E8}"; 
+  result->themedComponents[(int)FFThemedComponentId::EchoSelector].name = "Echo Selector";
+  result->themedComponents[(int)FFThemedComponentId::EchoSelector].id = "{2B123786-805A-42E9-A584-A37F80EC1D98}";
+  result->themedComponents[(int)FFThemedComponentId::LFOSelector].name = "LFO Selector";
+  result->themedComponents[(int)FFThemedComponentId::LFOSelector].id = "{B22DD050-62C0-4FB5-A42D-3496FA9CF510}";
+  result->themedComponents[(int)FFThemedComponentId::EnvSelector].name = "Env Selector";
+  result->themedComponents[(int)FFThemedComponentId::EnvSelector].id = "{37E2990B-F76C-4B12-A10A-E8E3155F5F10}";
+  result->themedComponents[(int)FFThemedComponentId::OscSelector].name = "Osc Selector";
+  result->themedComponents[(int)FFThemedComponentId::OscSelector].id = "{3D143E5D-F8A8-48E7-9E11-68A42A225CEA}";
+  result->themedComponents[(int)FFThemedComponentId::MixSelector].name = "Mix Selector";
+  result->themedComponents[(int)FFThemedComponentId::MixSelector].id = "{B1B4E0FB-5A5F-4359-AE9A-D9EF5F83500A}";
    
   result->exchangeStateSize = sizeof(FFExchangeState);
   result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };

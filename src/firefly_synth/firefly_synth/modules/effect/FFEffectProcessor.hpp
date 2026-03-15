@@ -29,7 +29,6 @@ class FFEffectProcessor final
   std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};
   std::array<FFEffectSkewMode, FFEffectBlockCount> _skewMode = {};
   std::array<FFEffectFilterMode, FFEffectBlockCount> _filterMode = {};
-  std::array<FFStateVariableFilterMode, FFEffectBlockCount> _stVarMode = {};
 
   bool _graph = {};
   int _graphSampleCount = {};
@@ -99,7 +98,8 @@ public:
 
   template <bool Global>
   void BeginVoiceOrBlock(
-    FBModuleProcState& state, bool graph,
+    FBModuleProcState& state, 
+    bool graph, bool detailGraphs,
     int graphIndex, int graphSampleCount);
   template <bool Global>
   int Process(

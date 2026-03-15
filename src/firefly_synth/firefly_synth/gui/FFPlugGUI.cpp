@@ -1,7 +1,6 @@
 #include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/gui/FFPatchGUI.hpp>
 #include <firefly_synth/gui/FFTweakGUI.hpp>
-#include <firefly_synth/gui/FFHeaderGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/lfo/FFLFOGUI.hpp>
@@ -24,12 +23,12 @@
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBGraphRenderState.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphComponent.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
-#include <firefly_base/gui/components/FBModuleGraphComponent.hpp>
 
 using namespace juce;
 
@@ -55,7 +54,7 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
   // needs to be before SetupGUI()
   bool found = false;
   for(int i = 0; i < Themes().size(); i++)
-    if (Themes()[i].name == HostContext()->ThemeName())
+    if (Themes()[i].global.name == HostContext()->ThemeName())
     {
       SwitchTheme(HostContext()->ThemeName());
       found = true;
@@ -66,6 +65,21 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
   SetupGUI();
   InitAllDependencies();
   resized();
+}
+
+void 
+FFPlugGUI::ForceReLayout()
+{
+  // called after the theme changed
+  // because of custom font size this may change the size of labels etc very deep in the visual tree
+  // without affecting their parent size
+  // plain resized() doesnt cut it, so just whack it here
+
+  auto bounds = getLocalBounds();
+  getChildComponent(0)->setBounds(0, 0, bounds.getWidth() / 2, bounds.getHeight() / 2);
+  getChildComponent(0)->resized();
+  getChildComponent(0)->setBounds(bounds);
+  getChildComponent(0)->resized();
 }
 
 void
@@ -121,11 +135,62 @@ FFPlugGUI::RequestFixedGraphsRerender(int moduleIndex)
 }
 
 void
+FFPlugGUI::SwitchDetailsSectionToModule(int index, int slot)
+{
+  if (index == (int)FFModuleType::VMix)
+    _detailContent->SetContent(_vMixDetails);
+  if (index == (int)FFModuleType::GMix)
+    _detailContent->SetContent(_gMixDetails);
+  if (index == (int)FFModuleType::VEcho)
+    _detailContent->SetContent(_vEchoDetails);
+  if (index == (int)FFModuleType::GEcho)
+    _detailContent->SetContent(_gEchoDetails);
+  if (index == (int)FFModuleType::Env)
+    _detailContent->SetContent(_envDetails[slot]);
+  if (index == (int)FFModuleType::Osci)
+    _detailContent->SetContent(_osciDetails[slot]);
+  if (index == (int)FFModuleType::VLFO)
+    _detailContent->SetContent(_vLFODetails[slot]);
+  if (index == (int)FFModuleType::GLFO)
+    _detailContent->SetContent(_gLFODetails[slot]);
+  if (index == (int)FFModuleType::VEffect)
+    _detailContent->SetContent(_vEffectDetails[slot]);
+  if (index == (int)FFModuleType::GEffect)
+    _detailContent->SetContent(_gEffectDetails[slot]);
+}
+
+void 
+FFPlugGUI::RequestMainGraphsRerender(int index, int slot)
+{
+  if (index == -1)
+  {
+    _fxMainGraph->RequestRerender(_fxMainGraph->TweakedModuleByUI());
+    _oscMainGraph->RequestRerender(_oscMainGraph->TweakedModuleByUI());
+    _envMainGraph->RequestRerender(_envMainGraph->TweakedModuleByUI());
+    _lfoMainGraph->RequestRerender(_lfoMainGraph->TweakedModuleByUI());
+    _echoMainGraph->RequestRerender(_echoMainGraph->TweakedModuleByUI());
+    return;
+  }
+
+  if (index == (int)FFModuleType::Env)
+    _envMainGraph->RequestRerender(HostContext()->Topo()->moduleTopoToRuntime.at({ index, slot }));
+  if (index == (int)FFModuleType::Osci)
+    _oscMainGraph->RequestRerender(HostContext()->Topo()->moduleTopoToRuntime.at({ index, slot }));
+  if (index == (int)FFModuleType::VEffect || index == (int)FFModuleType::GEffect)
+    _fxMainGraph->RequestRerender(HostContext()->Topo()->moduleTopoToRuntime.at({ index, slot }));
+  if (index == (int)FFModuleType::VLFO || index == (int)FFModuleType::GLFO)
+    _lfoMainGraph->RequestRerender(HostContext()->Topo()->moduleTopoToRuntime.at({ index, slot }));
+  if (index == (int)FFModuleType::VEcho || index == (int)FFModuleType::GEcho)
+    _echoMainGraph->RequestRerender(HostContext()->Topo()->moduleTopoToRuntime.at({ index, slot }));
+}
+
+void
 FFPlugGUI::UpdateExchangeStateTick()
 {
   FBPlugGUI::UpdateExchangeStateTick();
-  _mainGraph->RequestRerender(_mainGraph->TweakedModuleByUI());
   RequestFixedGraphsRerender(-1);
+  RequestMainGraphsRerender(-1, -1);
+  _detailsGraph->RequestRerender(_detailsGraph->TweakedModuleByUI());
 }
 
 void
@@ -136,22 +201,25 @@ FFPlugGUI::resized()
 }
 
 void
-FFPlugGUI::SwitchMainGraphToModule(int index, int slot)
+FFPlugGUI::SwitchGraphsToModule(int index, int slot)
 {
   auto topo = HostContext()->Topo()->ModuleAtTopo({ index, slot });
-  _mainGraph->RequestRerender(topo->runtimeModuleIndex);
+  _detailsGraph->RequestRerender(topo->runtimeModuleIndex);
+  RequestMainGraphsRerender(index, slot);
 }
 
 void 
 FFPlugGUI::ModuleSlotClicked(int index, int slot)
 {
-  SwitchMainGraphToModule(index, slot);
+  SwitchGraphsToModule(index, slot);
+  SwitchDetailsSectionToModule(index, slot);
 }
 
 void
 FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
 {
-  SwitchMainGraphToModule(index, slot);
+  SwitchGraphsToModule(index, slot);
+  SwitchDetailsSectionToModule(index, slot);
 }
 
 void 
@@ -159,8 +227,10 @@ FFPlugGUI::GUIParamNormalizedChanged(int index, double normalized)
 {
   FBPlugGUI::GUIParamNormalizedChanged(index, normalized);
   int moduleIndex = HostContext()->Topo()->gui.params[index].runtimeModuleIndex;
-  _mainGraph->RequestRerender(moduleIndex);
+  _detailsGraph->RequestRerender(moduleIndex);
   RequestFixedGraphsRerender(moduleIndex);
+  auto tweakedIndices = HostContext()->Topo()->gui.params[index].topoIndices.module;
+  RequestMainGraphsRerender(tweakedIndices.index, tweakedIndices.slot);
 
   FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0}, {(int)FFGUISettingsGUIParam::HilightTweakMode, 0 } };
   if (index == HostContext()->Topo()->gui.ParamAtTopo(indices)->runtimeParamIndex)
@@ -175,8 +245,11 @@ FFPlugGUI::AudioParamNormalizedChangedFromUI(int index, double normalized)
 {
   FBPlugGUI::AudioParamNormalizedChangedFromUI(index, normalized);
   int moduleIndex = HostContext()->Topo()->audio.params[index].runtimeModuleIndex;
-  _mainGraph->RequestRerender(moduleIndex);
+  _detailsGraph->RequestRerender(moduleIndex);
   RequestFixedGraphsRerender(moduleIndex);
+  auto tweakedIndices = HostContext()->Topo()->audio.params[index].topoIndices.module;
+  RequestMainGraphsRerender(tweakedIndices.index, tweakedIndices.slot);
+  SwitchDetailsSectionToModule(tweakedIndices.index, tweakedIndices.slot);
 }
 
 void
@@ -185,9 +258,11 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
   FBPlugGUI::AudioParamNormalizedChangedFromHost(index, normalized);
   if (HostContext()->Topo()->audio.params[index].static_.mode == FBParamMode::Output)
     return;
+  auto tweakedIndices = HostContext()->Topo()->audio.params[index].topoIndices.module;
+  RequestMainGraphsRerender(tweakedIndices.index, tweakedIndices.slot);
   int tweakedModule = HostContext()->Topo()->audio.params[index].runtimeModuleIndex;
-  if (_mainGraph->TweakedModuleByUI() == tweakedModule)
-    _mainGraph->RequestRerender(_mainGraph->TweakedModuleByUI());
+  if (_detailsGraph->TweakedModuleByUI() == tweakedModule)
+    _detailsGraph->RequestRerender(_detailsGraph->TweakedModuleByUI());
   RequestFixedGraphsRerender(tweakedModule);
 }
 
@@ -267,48 +342,73 @@ FFPlugGUI::SetupGUI()
 {
   FB_LOG_ENTRY_EXIT();
 
-  _mainGraph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
-  _headerAndGraph = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
-  _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
-  _headerAndGraph->Add(0, 1, StoreComponent<FBThemedComponent>(HostContext()->Topo(), (int)FFThemedComponentId::Graphs, _mainGraph));
+  _detailsGraph = StoreComponent<FBModuleGraphComponent>(this, true, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
+  _fxMainGraph = StoreComponent<FBModuleGraphComponent>(this, false, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
+  _oscMainGraph = StoreComponent<FBModuleGraphComponent>(this, false, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
+  _envMainGraph = StoreComponent<FBModuleGraphComponent>(this, false, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
+  _lfoMainGraph = StoreComponent<FBModuleGraphComponent>(this, false, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
+  _echoMainGraph = StoreComponent<FBModuleGraphComponent>(this, false, _graphRenderState.get(), -1, -1, [this]() { return GetRenderType(true); });
+  _mainGraphs = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1, 1, 1, 1 } });
+  _mainGraphs->Add(0, 0, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _oscMainGraph));
+  _mainGraphs->Add(0, 1, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _fxMainGraph));
+  _mainGraphs->Add(0, 2, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _echoMainGraph));
+  _mainGraphs->Add(0, 3, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _lfoMainGraph));
+  _mainGraphs->Add(0, 4, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainGraphs, _envMainGraph));
 
-  _outputOtherAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
-  _outputOtherAndPatch->Add(0, 0, FFMakeOutputGUI(this));
-  _outputOtherAndPatch->Add(0, 1, FFMakeOtherGUI(this));
-  _outputOtherAndPatch->Add(0, 2, FFMakePatchGUI(this));
-
-  _guiSettingsAndTweak = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 2, 1 } });
-  _guiSettingsAndTweak->Add(0, 0, FFMakeGUISettingsGUI(this));
-  _guiSettingsAndTweak->Add(0, 1, FFMakeTweakGUI(this));
-
-  _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1, 0 } });
-  _topModules->Add(0, 0, FFMakeVoiceModuleGUI(this));
-  _topModules->Add(0, 1, FFMakeMasterGUI(this));
-  _topModules->Add(0, 2, FFMakeSettingsGUI(this));
+  _outputTweakPatchOther = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0, 0 } });
+  _outputTweakPatchOther->Add(0, 0, FFMakeOutputGUI(this));
+  _outputTweakPatchOther->Add(0, 1, FFMakeTweakGUI(this));
+  _outputTweakPatchOther->Add(0, 2, FFMakeOtherGUI(this));
+  _outputTweakPatchOther->Add(0, 3, FFMakePatchGUI(this));
 
   _matrix = FFMakeModMatrixGUI(this);
+  _detailContent = StoreComponent<FBContentComponent>();
   _globalUni = FFMakeGlobalUniGUI(this, _graphRenderState.get(), &_fixedGraphs);
-  _main = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 1 } });
-  _main->Add(0, 0, _topModules);
+  _vMixDetails = FFMakeVMixDetailGUI(this);
+  _gMixDetails = FFMakeGMixDetailGUI(this);
+  _gEchoDetails = FFMakeEchoDetailGUI(this, true);
+  _vEchoDetails = FFMakeEchoDetailGUI(this, false);
+  for (int i = 0; i < FFEnvCount; i++)
+    _envDetails[i] = FFMakeEnvDetailGUI(this, i);
+  for (int i = 0; i < FFOsciCount; i++)
+    _osciDetails[i] = FFMakeOsciDetailGUI(this, i);
+  for (int i = 0; i < FFLFOCount; i++)
+  {
+    _gLFODetails[i] = FFMakeLFODetailGUI(this, true, i);
+    _vLFODetails[i] = FFMakeLFODetailGUI(this, false, i);
+  }
+  for (int i = 0; i < FFEffectCount; i++)
+  {
+    _gEffectDetails[i] = FFMakeEffectDetailGUI(this, true, i);
+    _vEffectDetails[i] = FFMakeEffectDetailGUI(this, false, i);
+  }
+
+  _voiceMaster = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { 1 }, std::vector<int> { { 1, 0 } });
+  _voiceMaster->Add(0, 0, FFMakeVoiceModuleGUI(this));
+  _voiceMaster->Add(0, 1, FFMakeMasterGUI(this));
+  _main = StoreComponent<FBGridComponent>(this, false, -1, -1, std::vector<int> { 2, 2, 2, 2, 2, 2, 1 }, std::vector<int> { { 21, 10 } });
+  _main->Add(0, 0, _voiceMaster);
   _main->Add(1, 0, FFMakeMixGUI(this));
   _main->Add(2, 0, FFMakeOsciGUI(this));
   _main->Add(3, 0, FFMakeEffectGUI(this));
   _main->Add(4, 0, FFMakeEchoGUI(this));
   _main->Add(5, 0, FFMakeLFOGUI(this));
   _main->Add(6, 0, FFMakeEnvGUI(this, _msegEditors));
+  _main->Add(0, 1, 3, 1, StoreComponent<FBMarginComponent>(this, true, true, false, true, 
+      StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::DetailGraphs, _detailsGraph)));
+  _main->Add(3, 1, 4, 1, _detailContent);
 
   _tabs = StoreComponent<FBAutoSizeTabComponent>(this, true);
-  _tabs->addTab("MAIN", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _main), false);
-  _tabs->addTab("MATRIX", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _matrix), false);
-  _tabs->addTab("UNISON", Colours::black, StoreComponent<FBMarginComponent>(false, false, true, false, _globalUni), false);
+  _tabs->addTab("MAIN", Colours::black, StoreComponent<FBMarginComponent>(this, false, false, true, false, _main), false);
+  _tabs->addTab("MATRIX", Colours::black, StoreComponent<FBMarginComponent>(this, false, false, true, false, _matrix), false);
+  _tabs->addTab("UNISON", Colours::black, StoreComponent<FBMarginComponent>(this, false, false, true, false, _globalUni), false);
   _mainTabChangedListener = std::make_unique<FFMainTabChangedListener>(this);
   _tabs->getTabbedButtonBar().addChangeListener(_mainTabChangedListener.get());
 
-  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 6, 6, 9, 92 } }, std::vector<int> { { 1 } });
-  _container->Add(0, 0, _outputOtherAndPatch);
-  _container->Add(1, 0, _guiSettingsAndTweak);
-  _container->Add(2, 0, _headerAndGraph);
-  _container->Add(3, 0, StoreComponent<FBThemedComponent>(HostContext()->Topo(), (int)FFThemedComponentId::MainSelector, _tabs));
+  _container = StoreComponent<FBGridComponent>(this, false, 0, -1, std::vector<int> { { 7, 15, 80 } }, std::vector<int> { { 1 } });
+  _container->Add(0, 0, StoreComponent<FBMarginComponent>(this, false, false, false, true, _outputTweakPatchOther));
+  _container->Add(1, 0, StoreComponent<FBMarginComponent>(this, false, true, false, true, _mainGraphs));
+  _container->Add(2, 0, StoreComponent<FBThemedComponent>(this, (int)FFThemedComponentId::MainSelector, _tabs));
 
   _osciParamListener = std::make_unique<FFOsciParamListener>(this);
   _vMixParamListener = std::make_unique<FFVMixParamListener>(this);
@@ -319,5 +419,6 @@ FFPlugGUI::SetupGUI()
   _voiceModuleParamListener = std::make_unique<FFVoiceModuleParamListener>(this);
   _envParamListener = std::make_unique<FFEnvParamListener>(this, _msegEditors);
 
-  addAndMakeVisible(_container);
+  _containerMargin = StoreComponent<FBMarginComponent>(this, true, true, true, true, _container);
+  addAndMakeVisible(_containerMargin);
 }

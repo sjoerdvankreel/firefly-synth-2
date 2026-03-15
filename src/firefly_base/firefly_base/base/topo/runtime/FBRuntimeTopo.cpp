@@ -12,14 +12,6 @@
 
 using namespace juce;
 
-struct OldParamInfo
-{
-  int tag = {};
-  int index = {};
-  std::string id = {};
-  std::string name = {};
-};
-
 static std::string const 
 Magic = "{84A1EBED-4BE5-47F2-8E53-13B965628974}";
 
@@ -502,7 +494,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
       *container.Params()[p] = static_cast<float>(defaultNormalized);
   }
 
-  std::vector<OldParamInfo> oldParamInfos = {};
+  std::vector<FBOldParamInfo> oldParamInfos = {};
   auto converter = static_->deserializationConverterFactory(loadingVersion, this);
   for (int sp = 0; sp < state.size(); sp++)
   {
@@ -525,12 +517,13 @@ FBRuntimeTopo::LoadParamStateFromVar(
       FB_LOG_ERROR("Plugin param state is missing value.");
       return false;
     }
-    var val = param->getProperty("val");
-    if (!val.isString())
+    
+    if (!param->getProperty("val").isString())
     {
       FB_LOG_ERROR("Plugin param state value is not a string.");
       return false;
     }
+    std::string val = param->getProperty("val").toString().toStdString();
 
     if (!param->hasProperty("name"))
     {
@@ -544,42 +537,48 @@ FBRuntimeTopo::LoadParamStateFromVar(
       return false;
     }
 
-    std::unordered_map<int, int>::const_iterator iter;
+    var oldModuleId = param->getProperty("moduleId");
+    if (!oldModuleId.isString())
+    {
+      FB_LOG_ERROR("Old module id is not a string.");
+      continue;
+    }
+    var oldModuleSlot = param->getProperty("moduleSlot");
+    if (!oldModuleSlot.isInt())
+    {
+      FB_LOG_ERROR("Old module slot is not an int.");
+      continue;
+    }
+    var oldParamId = param->getProperty("paramId");
+    if (!oldParamId.isString())
+    {
+      FB_LOG_ERROR("Old param id is not a string.");
+      continue;
+    }
+    var oldParamSlot = param->getProperty("paramSlot");
+    if (!oldParamSlot.isInt())
+    {
+      FB_LOG_ERROR("Old param slot is not an int.");
+      continue;
+    }
+
     int oldTag = FBMakeStableHash(id.toString().toStdString());
-    OldParamInfo oldParamInfo = {};
+    FBOldParamInfo oldParamInfo = {};
     oldParamInfo.index = sp;
+    oldParamInfo.value = val;
     oldParamInfo.tag = oldTag;
+    oldParamInfo.paramSlot = oldParamSlot;
+    oldParamInfo.moduleSlot = oldModuleSlot;
     oldParamInfo.id = id.toString().toStdString();
     oldParamInfo.name = paramName.toString().toStdString();
+    oldParamInfo.paramId = oldParamId.toString().toStdString();
+    oldParamInfo.moduleId = oldModuleId.toString().toStdString();
     oldParamInfos.push_back(oldParamInfo);
 
+    std::unordered_map<int, int>::const_iterator iter;
     if ((iter = params.paramTagToIndex.find(oldTag)) == params.paramTagToIndex.end())
     {
       FB_LOG_WARN("Unknown plugin parameter: '" + id.toString().toStdString() + "', trying to map old to new.");
-      var oldModuleId = param->getProperty("moduleId");
-      if (!oldModuleId.isString())
-      {
-        FB_LOG_ERROR("Old module id is not a string.");
-        continue;
-      }
-      var oldModuleSlot = param->getProperty("moduleSlot");
-      if (!oldModuleSlot.isInt())
-      {
-        FB_LOG_ERROR("Old module slot is not an int.");
-        continue;
-      }
-      var oldParamId = param->getProperty("paramId");
-      if (!oldParamId.isString())
-      {
-        FB_LOG_ERROR("Old param id is not a string.");
-        continue;
-      }
-      var oldParamSlot = param->getProperty("paramSlot");
-      if (!oldParamSlot.isInt())
-      {
-        FB_LOG_ERROR("Old param slot is not an int.");
-        continue;
-      }
       int newParamSlot = -1;
       int newModuleSlot = -1;
       std::string newParamId = {};
@@ -604,7 +603,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
     }
 
     auto const& topo = params.params[iter->second];
-    auto normalized = topo.TextToNormalized(true, val.toString().toStdString());
+    auto normalized = topo.TextToNormalized(true, val);
     if (!normalized)
     {
       int paramSlot = topo.topoIndices.param.slot;
@@ -616,7 +615,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
         "Invalid param value found for " +
         moduleId + ", param " +
         paramId + ": " +
-        val.toString().toStdString());
+        val);
 
       if (topo.Static().type == FBParamType::List)
       {
@@ -624,10 +623,10 @@ FBRuntimeTopo::LoadParamStateFromVar(
         std::string newParamValue = {};
         if (converter->OnParamListItemNotFound(isGuiState,
           moduleId, moduleSlot, paramId, paramSlot,
-          val.toString().toStdString(), newParamValue))
+          val, newParamValue))
         {
           normalized = topo.TextToNormalized(true, newParamValue);
-          FB_LOG_INFO("Mapped old to new list-valued parameter value: " + val.toString().toStdString() + " to " + newParamValue + ".");
+          FB_LOG_INFO("Mapped old to new list-valued parameter value: " + val + " to " + newParamValue + ".");
         }
         else
         {
@@ -657,7 +656,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
   }
 
   FB_LOG_INFO("Start deserialization post-processing.");
-  converter->PostProcess(isGuiState, container.Params());
+  converter->PostProcess(isGuiState, oldParamInfos, container.Params());
   FB_LOG_INFO("End deserialization post-processing.");
 
   bool found = false;

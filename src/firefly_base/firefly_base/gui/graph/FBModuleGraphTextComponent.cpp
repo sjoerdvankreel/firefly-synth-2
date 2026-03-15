@@ -1,0 +1,77 @@
+#include <firefly_base/gui/shared/FBLookAndFeel.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphComponentData.hpp>
+#include <firefly_base/gui/graph/FBModuleGraphTextComponent.hpp>
+
+using namespace juce;
+
+static int const GainSlidingWindowSize = 10;
+
+FBModuleGraphTextComponent::
+FBModuleGraphTextComponent(
+  FBPlugGUI* plugGUI, 
+  FBModuleGraphComponentData const* data, 
+  int graphIndex, 
+  FBModuleGraphTextType textType):
+_plugGUI(plugGUI), _data(data), 
+_graphIndex(graphIndex), _textType(textType) {}
+
+int 
+FBModuleGraphTextComponent::FixedHeight() const
+{
+  auto lnf = FBGetLookAndFeelFor(_plugGUI);
+  return lnf->GetFontHeight() + 4;
+}
+
+void 
+FBModuleGraphTextComponent::paint(Graphics& g)
+{
+  float fps = 10.0f; // no need to run at 60, it distracts
+  auto now = std::chrono::high_resolution_clock::now();
+  auto elapsedMillis = duration_cast<std::chrono::milliseconds>(now - _updated);
+  if (elapsedMillis.count() >= 1000.0 / fps)
+  {
+    _updated = now;
+    auto const& gd = _data->graphs[_graphIndex];
+    _mainText.clear();
+    _mainText.append((gd.anyExchangeActive && gd.exchangeMainText.size()) ? gd.exchangeMainText : gd.defaultMainText);
+
+    float gain = 0.0f;
+    bool haveGain = false;
+    _titleAndGainText.clear();
+    _titleAndGainText.append(gd.title);
+    if (gd.anyExchangeActive)
+    {
+      haveGain = true;
+      gain = gd.exchangeGainValue;
+    }
+    else
+    {
+      gain = gd.defaultGainValue;
+      haveGain = gd.hasDefaultGainValue;
+      _gainSlidingWindow.clear();
+    }
+    if (haveGain)
+    {
+      _gainSlidingWindow.push_back(gain);
+      if (_gainSlidingWindow.size() > GainSlidingWindowSize)
+        _gainSlidingWindow.erase(_gainSlidingWindow.begin());
+      float maxGain = 0.0f;
+      for (int i = 0; i < _gainSlidingWindow.size(); i++)
+        maxGain = std::max(maxGain, std::abs(_gainSlidingWindow[i]));
+      _titleAndGainText.append(", ");
+      if(gd.displayGainAsDb)
+        _titleAndGainText.append(FBGainToStringDb(maxGain, 2));
+      else
+        _titleAndGainText.append(FBToStringPercent(maxGain, 2));
+    }
+  }
+
+  auto lnf = FBGetLookAndFeelFor(_plugGUI);
+  auto const& scheme = lnf->FindColorSchemeFor(*this);
+  g.setColour(scheme.text);
+  g.setFont(lnf->GetFont());
+  if(_textType == FBModuleGraphTextType::TitleGain || _textType == FBModuleGraphTextType::Both)
+    g.drawText(_titleAndGainText, getLocalBounds(), Justification::centredLeft, false);
+  if (_textType == FBModuleGraphTextType::Main || _textType == FBModuleGraphTextType::Both)
+    g.drawText(_mainText, getLocalBounds(), Justification::centredRight, false);
+}

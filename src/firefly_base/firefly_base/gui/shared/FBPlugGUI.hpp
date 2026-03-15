@@ -7,7 +7,6 @@
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
-#include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBFileBrowserComponent.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -19,6 +18,8 @@
 #include <unordered_set>
 
 class FBParamControl;
+class FBCardComponent;
+class FBAutoSizeButton;
 class IFBThemeListener;
 class IFBParamListener;
 class FBGUIParamControl;
@@ -26,6 +27,7 @@ class FBParamsDependent;
 class FBHostGUIContext;
 class FBMarginComponent;
 class FBContentComponent;
+class FBStackingComponent;
 struct FBParamTopoIndices;
 
 // Well here goes my nice distinction between plug and base library again.
@@ -76,7 +78,7 @@ public:
     std::string const& title,
     int moduleIndex, int moduleSlot,
     juce::Component* overlay,
-    int w, int h, bool vCenter,
+    int w, int h, bool hasInit,
     std::function<void()> init);
 
   void AddThemeListener(IFBThemeListener* listener);
@@ -119,6 +121,7 @@ protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
   FBPlugGUI(FBHostGUIContext* hostContext);
 
+  virtual void ForceReLayout() = 0;
   virtual void AfterPatchChanged() = 0;
   virtual void BeforePatchChanged() = 0;
   virtual void UpdateExchangeStateTick() = 0;
@@ -134,11 +137,13 @@ private:
 
   juce::Label* _overlayCaption = {};
   std::function<void()> _overlayInit = {};
+  FBAutoSizeButton* _overlayInitButton = {};
+  FBCardComponent* _overlayCard = {};
   FBGridComponent* _overlayGrid = {};
+  FBGridComponent* _overlayInitClose = {};
   juce::Component* _overlayComponent = {};
   FBModuleComponent* _overlayModule = {};
   FBContentComponent* _overlayContent = {};
-  FBMarginComponent* _overlayInnerMargin = {};
   FBMarginComponent* _overlayOuterMargin = {};
 
   std::vector<FBTheme> _themes = {};
@@ -150,6 +155,7 @@ private:
   std::unique_ptr<FBFileBrowserComponent> _saveTopologyBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _saveParamListBrowser = {};
 
+  FBStackingComponent* _aboutBoxStack = {};
   juce::TooltipWindow* _tooltipWindow = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
   std::unordered_map<int, int> _guiParamIndexToComponent = {};
@@ -160,12 +166,14 @@ private:
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsVisibleDependents = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsEnabledDependents = {};
 
+  void ShowAboutBox();
   void ShowLogFolder();
   void ShowPluginFolder();
   void DumpTopologyToFile();
   void DumpParamListToFile();
 
   void SetupOverlayGUI();
+  void SetupAboutBoxGUI();
   void GUIParamNormalizedChanged(int index);
   void AudioParamNormalizedChanged(int index);
 

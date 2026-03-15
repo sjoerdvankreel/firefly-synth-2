@@ -1,4 +1,5 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
@@ -7,11 +8,11 @@
 using namespace juce;
 
 FBThemedComponent::
-FBThemedComponent(FBRuntimeTopo const* topo, int componentId, Component* content):
+FBThemedComponent(FBPlugGUI* plugGUI, int componentId, Component* content):
 Component(),
+_plugGUI(plugGUI),
 _componentId(componentId),
-_content(content),
-_topo(topo)
+_content(content)
 {
   addAndMakeVisible(content);
 }
@@ -19,7 +20,7 @@ _topo(topo)
 void 
 FBThemedComponent::paint(Graphics& g)
 {
-  g.fillAll(FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this).background);
+  g.fillAll(FBGetLookAndFeelFor(_plugGUI)->FindColorSchemeFor(*this).background);
 }
 
 void
@@ -46,12 +47,13 @@ FBThemedComponent::FixedWidth(int height) const
 FBColorScheme const*
 FBThemedComponent::GetScheme(FBTheme const& theme) const
 {
-  auto componentIter = _topo->static_->themedComponents.find(ComponentId());
-  if (componentIter != _topo->static_->themedComponents.end())
+  auto topo = _plugGUI->HostContext()->Topo();
+  auto componentIter = topo->static_->themedComponents.find(ComponentId());
+  if (componentIter != topo->static_->themedComponents.end())
   {
-    auto schemeIter = theme.componentColors.find(FBCleanTopoId(componentIter->second.id));
-    if (schemeIter != theme.componentColors.end())
-      return &theme.colorSchemes.at(schemeIter->second.colorScheme);
+    auto schemeIter = theme.global.componentColors.find(FBCleanTopoId(componentIter->second.id));
+    if (schemeIter != theme.global.componentColors.end())
+      return &theme.global.colorSchemes.at(schemeIter->second.colorScheme);
   }
   return nullptr;
 }
@@ -72,22 +74,6 @@ _moduleSlot(moduleSlot),
 _moduleIndex(moduleIndex),
 _content(content),
 _topo(topo)
-{
-  addAndMakeVisible(content);
-}
-
-FBModuleComponent::
-FBModuleComponent(
-  FBRuntimeTopo const* topo, 
-  int moduleIndex, int moduleSlot, 
-  std::function<bool(FBTheme const&)> const& followModule, 
-  juce::Component* content):
-Component(),
-_moduleSlot(moduleSlot),
-_moduleIndex(moduleIndex),
-_content(content),
-_topo(topo),
-_followModule(followModule)
 {
   addAndMakeVisible(content);
 }
@@ -139,11 +125,9 @@ FBModuleComponent::FixedWidth(int height) const
 FBColorScheme const*
 FBModuleComponent::GetScheme(FBTheme const& theme) const
 {
-  if (_followModule != nullptr && !_followModule(theme))
-    return nullptr;
   int rtModuleIndex = _topo->moduleTopoToRuntime.at({ ModuleIndex(), ModuleSlot() });
   auto moduleIter = theme.moduleColors.find(rtModuleIndex);
   if (moduleIter != theme.moduleColors.end())
-    return &theme.colorSchemes.at(moduleIter->second.colorScheme);
+    return &theme.global.colorSchemes.at(moduleIter->second.colorScheme);
   return nullptr;
 }

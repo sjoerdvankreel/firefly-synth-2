@@ -455,10 +455,10 @@ FBMSEGCanvas::paint(Graphics& g)
   auto const outerBounds = getLocalBounds().reduced(MSEGOuterPadding);
   auto const innerBounds = outerBounds.reduced(MSEGInnerPadding);
 
-  auto const& scheme = FBGetLookAndFeelFor(this)->FindColorSchemeFor(*this);
-  g.fillAll(scheme.background);
-  g.setColour(scheme.graphBackground); 
-  g.fillRoundedRectangle(outerBounds.toFloat(), 2.0f * MSEGInnerPadding);
+  auto lnf = FBGetLookAndFeelFor(_plugGUI);
+  auto const& scheme = lnf->FindColorSchemeFor(*this);
+  g.setColour(scheme.graphBackground.withMultipliedAlpha(0.5f)); 
+  g.fillRect(outerBounds.toFloat());
 
   _totalLengthTime = 0.0;
   _currentSegmentLengths.clear();
@@ -553,7 +553,7 @@ FBMSEGCanvas::paint(Graphics& g)
   if (_currentPointsScreen.size() == 0)
   {
     g.setColour(scheme.text2.withAlpha(0.5f));
-    g.setFont(FBGUIGetFont().withHeight(20.0f));
+    g.setFont(lnf->GetFont().withHeight(20.0f));
     g.drawText("OFF", innerBounds, Justification::centred, false);
     return;
   }
@@ -561,7 +561,7 @@ FBMSEGCanvas::paint(Graphics& g)
   path.lineTo(_currentPointsScreen[_currentPointsScreen.size() - 1].getX(), zeroPointScreenY);
   path.closeSubPath();
   
-  auto fillColor = scheme.primary.darker(_model.enabled ? 0.0f : scheme.dimDisabled);
+  auto fillColor = scheme.primary;
   g.setColour(fillColor.withAlpha(scheme.graphAlpha));
   g.fillPath(path);
   g.setColour(fillColor);

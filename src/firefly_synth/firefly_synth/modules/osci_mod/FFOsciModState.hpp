@@ -18,7 +18,7 @@ inline int constexpr FFOsciFixedBlockOversamples = FBFixedBlockSamples * FFOsciO
 class alignas(FBSIMDAlign) FFOsciModDSPState final
 {
   friend class FFVoiceProcessor;
-  friend struct OsciGraphRenderData;
+  friend class OsciGraphProcessor;
   std::unique_ptr<FFOsciModProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciModDSPState);

@@ -19,7 +19,7 @@ FFVoiceProcessor::ProcessVEcho(
   auto& voiceDSP = state.ProcAs<FFProcState>()->dsp.voice[voice];
   state.moduleSlot = 0;
   if (_firstRoundThisVoice)
-    voiceDSP.vEcho.processor->BeginVoiceOrBlock(state, false, -1, -1);
+    voiceDSP.vEcho.processor->BeginVoiceOrBlock(state, false, false, -1, -1);
   inout.CopyTo(voiceDSP.vEcho.input);
   int vEchoProcessed = voiceDSP.vEcho.processor->Process(state, false, ampEnvFinishedAt);
   voiceDSP.vEcho.output.CopyTo(inout);
@@ -119,7 +119,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
   state.moduleSlot = FFAmpEnvSlot;
   if (_firstRoundThisVoice)
-    voiceDSP.env[FFAmpEnvSlot].processor->BeginVoice(state, nullptr, false);
+    voiceDSP.env[FFAmpEnvSlot].processor->BeginVoice(state, nullptr, false, false, 0);
   int ampEnvProcessed = voiceDSP.env[FFAmpEnvSlot].processor->Process(state, nullptr, false, releaseAt);
   bool voiceFinished = ampEnvProcessed != FBFixedBlockSamples;
   _ampEnvFinishedPrevRound |= voiceFinished;
@@ -131,7 +131,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   {
     state.moduleSlot = i + FFEnvSlotOffset;
     if(_firstRoundThisVoice)
-      voiceDSP.env[i + FFEnvSlotOffset].processor->BeginVoice(state, nullptr, false);
+      voiceDSP.env[i + FFEnvSlotOffset].processor->BeginVoice(state, nullptr, false, false, 0);
     voiceDSP.env[i + FFEnvSlotOffset].processor->Process(state, nullptr, false, releaseAt);
     state.moduleSlot = 0;
     procState->dsp.voice[voice].vMatrix.processor->ModSourceCleared(state, { (int)FFModuleType::Env, i + FFEnvSlotOffset });
@@ -139,7 +139,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
     state.moduleSlot = i;
     if(_firstRoundThisVoice)
-      voiceDSP.vLFO[i].processor->BeginVoiceOrBlock<false>(state, nullptr, false, -1, -1);
+      voiceDSP.vLFO[i].processor->BeginVoiceOrBlock<false>(state, nullptr, false, false, -1, -1);
     voiceDSP.vLFO[i].processor->Process<false>(state, false);
     state.moduleSlot = 0;
     procState->dsp.voice[voice].vMatrix.processor->ModSourceCleared(state, { (int)FFModuleType::VLFO, i });
@@ -235,7 +235,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
     state.moduleSlot = i;
     if (_firstRoundThisVoice)
-      voiceDSP.vEffect[i].processor->BeginVoiceOrBlock<false>(state, false, -1, -1);
+      voiceDSP.vEffect[i].processor->BeginVoiceOrBlock<false>(state, false, false, -1, -1);
 
     if (_ampEnvTarget == FFVMixAmpEnvTarget::VFXIn)
       voiceDSP.vEffect[i].input.Mul(ampPlainModulated);

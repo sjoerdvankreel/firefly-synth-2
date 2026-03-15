@@ -22,3 +22,5 @@ public:
 
 juce::Component*
 FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors);
+juce::Component*
+FFMakeEnvDetailGUI(FBPlugGUI* plugGUI, int moduleSlot);

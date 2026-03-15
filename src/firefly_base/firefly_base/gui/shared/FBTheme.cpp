@@ -28,14 +28,8 @@ struct FBModuleColorsJson
 
 struct FBThemeJson
 {
-  std::string name = {};
-  std::string folderName = {};
-  bool graphSchemeFollowsModule = {};
-  bool unisonSchemeFollowsModule = {};
-  FBColorScheme defaultColorScheme = {};
+  FBThemeGlobal global = {};
   std::vector<FBModuleColorsJson> moduleColors = {};
-  std::map<std::string, FBColorScheme> colorSchemes = {};
-  std::map<std::string, FBComponentColors> componentColors = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBThemeJson);
 };
 
@@ -77,21 +71,6 @@ RequireDoubleProperty(
   if (!obj->getProperty(name).isDouble())
   {
     FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not a double.");
-    return false;
-  }
-  return true;
-}
-
-static bool
-RequireBoolProperty(
-  DynamicObject const* obj,
-  String const& name)
-{
-  if (!RequireProperty(obj, name))
-    return false;
-  if (!obj->getProperty(name).isBool())
-  {
-    FB_LOG_ERROR("Json property '" + name.toStdString() + "' is not a boolean.");
     return false;
   }
   return true;
@@ -203,15 +182,6 @@ ParseDefaultColorScheme(
 {
   result = {};
 
-  if (!RequireDoubleProperty(obj, "dimDisabled"))
-    return false;
-  result.dimDisabled = (float)(double)obj->getProperty("dimDisabled");
-  if (result.dimDisabled < 0.0 || result.dimDisabled > 1.0)
-  {
-    FB_LOG_ERROR("Dim disabled should be between 0 and 1.");
-    return false;
-  }
-
   if (!RequireDoubleProperty(obj, "graphAlpha"))
     return false;
   result.graphAlpha = (float)(double)obj->getProperty("graphAlpha");
@@ -245,10 +215,6 @@ ParseDefaultColorScheme(
     return false;
   result.activeTabBackground = Colour::fromString(obj->getProperty("activeTabBackground").toString());
 
-  if (!RequireStringProperty(obj, "gridAlternateBackground"))
-    return false;
-  result.gridAlternateBackground = Colour::fromString(obj->getProperty("gridAlternateBackground").toString());
-
   if (!RequireStringProperty(obj, "meterFill"))
     return false;
   result.meterFill = Colour::fromString(obj->getProperty("meterFill").toString());
@@ -257,33 +223,13 @@ ParseDefaultColorScheme(
     return false;
   result.meterTrack = Colour::fromString(obj->getProperty("meterTrack").toString());
 
-  if (!RequireStringProperty(obj, "meterAlert"))
-    return false;
-  result.meterAlert = Colour::fromString(obj->getProperty("meterAlert").toString());
-
   if (!RequireStringProperty(obj, "graphGrid"))
     return false;
   result.graphGrid = Colour::fromString(obj->getProperty("graphGrid").toString());
   
-  if (!RequireStringProperty(obj, "graphBorder"))
-    return false;
-  result.graphBorder = Colour::fromString(obj->getProperty("graphBorder").toString());
-
   if (!RequireStringProperty(obj, "graphBackground"))
     return false;
   result.graphBackground = Colour::fromString(obj->getProperty("graphBackground").toString());
-
-  if (!RequireStringProperty(obj, "headerText"))
-    return false;
-  result.headerText = Colour::fromString(obj->getProperty("headerText").toString());
-
-  if (!RequireStringProperty(obj, "headerBorder"))
-    return false;
-  result.headerBorder = Colour::fromString(obj->getProperty("headerBorder").toString());
-
-  if (!RequireStringProperty(obj, "headerBackground"))
-    return false;
-  result.headerBackground = Colour::fromString(obj->getProperty("headerBackground").toString());
 
   if (!RequireStringProperty(obj, "sectionBorder"))
     return false;
@@ -317,10 +263,6 @@ ParseDefaultColorScheme(
     return false;
   result.paramBackground = Colour::fromString(obj->getProperty("paramBackground").toString());
 
-  if (!RequireStringProperty(obj, "sliderModBounds"))
-    return false;
-  result.sliderModBounds = Colour::fromString(obj->getProperty("sliderModBounds").toString());
-
   if (!RequireStringProperty(obj, "sliderEngineThumb"))
     return false;
   result.sliderEngineThumb = Colour::fromString(obj->getProperty("sliderEngineThumb").toString());
@@ -336,15 +278,6 @@ ParseColorScheme(
 {
   result = {};
   bool present = false;
-
-  if (!OptionalDoubleProperty(obj, "dimDisabled", present))
-    return false;
-  result.dimDisabled = present ? (float)(double)obj->getProperty("dimDisabled") : defaultScheme.dimDisabled;
-  if (result.dimDisabled < 0.0 || result.dimDisabled > 1.0)
-  {
-    FB_LOG_ERROR("Dim disabled should be between 0 and 1.");
-    return false;
-  }
 
   if (!OptionalDoubleProperty(obj, "graphAlpha", present))
     return false;
@@ -379,10 +312,6 @@ ParseColorScheme(
     return false;
   result.activeTabBackground = present ? Colour::fromString(obj->getProperty("activeTabBackground").toString()) : defaultScheme.activeTabBackground;
     
-  if (!OptionalStringProperty(obj, "gridAlternateBackground", present))
-    return false;
-  result.gridAlternateBackground = present ? Colour::fromString(obj->getProperty("gridAlternateBackground").toString()) : defaultScheme.gridAlternateBackground;
-
   if (!OptionalStringProperty(obj, "meterFill", present))
     return false;
   result.meterFill = present ? Colour::fromString(obj->getProperty("meterFill").toString()) : defaultScheme.meterFill;
@@ -391,33 +320,13 @@ ParseColorScheme(
     return false;
   result.meterTrack = present ? Colour::fromString(obj->getProperty("meterTrack").toString()) : defaultScheme.meterTrack;
 
-  if (!OptionalStringProperty(obj, "meterAlert", present))
-    return false;
-  result.meterAlert = present ? Colour::fromString(obj->getProperty("meterAlert").toString()) : defaultScheme.meterAlert;
-
   if (!OptionalStringProperty(obj, "graphGrid", present))
     return false;
   result.graphGrid = present ? Colour::fromString(obj->getProperty("graphGrid").toString()) : defaultScheme.graphGrid;
 
-  if (!OptionalStringProperty(obj, "graphBorder", present))
-    return false;
-  result.graphBorder = present ? Colour::fromString(obj->getProperty("graphBorder").toString()) : defaultScheme.graphBorder;
-
   if (!OptionalStringProperty(obj, "graphBackground", present))
     return false;
   result.graphBackground = present ? Colour::fromString(obj->getProperty("graphBackground").toString()) : defaultScheme.graphBackground;
-
-  if (!OptionalStringProperty(obj, "headerText", present))
-    return false;
-  result.headerText = present ? Colour::fromString(obj->getProperty("headerText").toString()) : defaultScheme.headerText;
-   
-  if (!OptionalStringProperty(obj, "headerBorder", present))
-    return false;
-  result.headerBorder = present ? Colour::fromString(obj->getProperty("headerBorder").toString()) : defaultScheme.headerBorder;
-
-  if (!OptionalStringProperty(obj, "headerBackground", present))
-    return false;
-  result.headerBackground = present ? Colour::fromString(obj->getProperty("headerBackground").toString()) : defaultScheme.headerBackground;
 
   if (!OptionalStringProperty(obj, "sectionBorder", present))
     return false;
@@ -450,10 +359,6 @@ ParseColorScheme(
   if (!OptionalStringProperty(obj, "paramBackground", present))
     return false;
   result.paramBackground = present ? Colour::fromString(obj->getProperty("paramBackground").toString()) : defaultScheme.paramBackground;
-
-  if (!OptionalStringProperty(obj, "sliderModBounds", present))
-    return false;
-  result.sliderModBounds = present ? Colour::fromString(obj->getProperty("sliderModBounds").toString()) : defaultScheme.sliderModBounds;
 
   if (!OptionalStringProperty(obj, "sliderEngineThumb", present))
     return false;
@@ -588,26 +493,30 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     return false;
   DynamicObject const* obj = json.getDynamicObject();
 
+  if (!RequireIntProperty(obj, "fontSize"))
+    return false;
+  result.global.fontSize = (int)obj->getProperty("fontSize");
+
   if (!RequireStringProperty(obj, "name"))
     return false;
-  result.name = obj->getProperty("name").toString().toStdString();
+  result.global.name = obj->getProperty("name").toString().toStdString();
 
-  if (!RequireBoolProperty(obj, "graphSchemeFollowsModule"))
+  if (!RequireStringProperty(obj, "fontFileName"))
     return false;
-  result.graphSchemeFollowsModule = (bool)obj->getProperty("graphSchemeFollowsModule");
+  result.global.resources.fontFileName = obj->getProperty("fontFileName").toString().toStdString();
 
-  if (!RequireBoolProperty(obj, "unisonSchemeFollowsModule"))
+  if (!RequireStringProperty(obj, "aboutBoxImageFileName"))
     return false;
-  result.unisonSchemeFollowsModule = (bool)obj->getProperty("unisonSchemeFollowsModule");
+  result.global.resources.aboutBoxImageFileName = obj->getProperty("aboutBoxImageFileName").toString().toStdString();
 
   if (!RequireObjectProperty(obj, "defaultColorScheme"))
     return false;
-  if (!ParseDefaultColorScheme(obj->getProperty("defaultColorScheme").getDynamicObject(), result.defaultColorScheme))
+  if (!ParseDefaultColorScheme(obj->getProperty("defaultColorScheme").getDynamicObject(), result.global.defaultColorScheme))
     return false;
 
   if (!RequireObjectProperty(obj, "colorSchemes"))
     return false;
-  if (!ParseColorSchemesJson(obj->getProperty("colorSchemes").getDynamicObject(), result.defaultColorScheme, result.colorSchemes))
+  if (!ParseColorSchemesJson(obj->getProperty("colorSchemes").getDynamicObject(), result.global.defaultColorScheme, result.global.colorSchemes))
     return false;
 
   if (!RequireArrayProperty(obj, "moduleColors"))
@@ -625,13 +534,13 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
       return false;
     if (!RequireStringProperty(componentColorObj, "colorScheme"))
       return false;
-    result.componentColors[componentColorObj->getProperty("componentId").toString().toStdString()].colorScheme =
+    result.global.componentColors[componentColorObj->getProperty("componentId").toString().toStdString()].colorScheme =
       componentColorObj->getProperty("colorScheme").toString().toStdString();
   }
 
-  for (auto const& kv: result.componentColors)
+  for (auto const& kv: result.global.componentColors)
   {
-    if (result.colorSchemes.find(kv.second.colorScheme) == result.colorSchemes.end())
+    if (result.global.colorSchemes.find(kv.second.colorScheme) == result.global.colorSchemes.end())
     {
       FB_LOG_ERROR("Color scheme '" + kv.second.colorScheme + "' not found.");
       return false;
@@ -641,7 +550,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
   for(int i = 0; i < result.moduleColors.size(); i++)
   {
     auto const& moduleScheme = result.moduleColors[i].colorScheme;
-    if (result.colorSchemes.find(moduleScheme) == result.colorSchemes.end())
+    if (result.global.colorSchemes.find(moduleScheme) == result.global.colorSchemes.end())
     {
       FB_LOG_ERROR("Color scheme '" + moduleScheme + "' not found.");
       return false;
@@ -649,7 +558,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     for(int j = 0; j < result.moduleColors[i].guiParamColorSchemes.size(); j++)
     {
       auto const& paramScheme = result.moduleColors[i].guiParamColorSchemes[j].colorScheme;
-      if (result.colorSchemes.find(paramScheme) == result.colorSchemes.end())
+      if (result.global.colorSchemes.find(paramScheme) == result.global.colorSchemes.end())
       {
         FB_LOG_ERROR("Color scheme '" + paramScheme + "' not found.");
         return false;
@@ -658,7 +567,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     for (int j = 0; j < result.moduleColors[i].audioParamColorSchemes.size(); j++)
     {
       auto const& paramScheme = result.moduleColors[i].audioParamColorSchemes[j].colorScheme;
-      if (result.colorSchemes.find(paramScheme) == result.colorSchemes.end())
+      if (result.global.colorSchemes.find(paramScheme) == result.global.colorSchemes.end())
       {
         FB_LOG_ERROR("Color scheme '" + paramScheme + "' not found.");
         return false;
@@ -672,7 +581,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
 static std::vector<FBThemeJson>
 LoadThemeJsons()
 {
-  std::filesystem::path themeRoot(FBGetResourcesFolderPath() / "ui" / "themes");
+  std::filesystem::path themeRoot(FBGetThemesFolderPath());
   if (!std::filesystem::exists(themeRoot))
     return {};
 
@@ -701,14 +610,14 @@ LoadThemeJsons()
           {
             bool foundName = false;
             for (int j = 0; j < result.size(); j++)
-              if (result[j].name == themeJson.name)
+              if (result[j].global.name == themeJson.global.name)
               {
                 foundName = true;
                 break;
               }
             if (!foundName)
             {
-              themeJson.folderName = file.getParentDirectory().getFileName().toStdString();
+              themeJson.global.resources.folderName = file.getParentDirectory().getFileName().toStdString();
               result.push_back(themeJson);
             }
           }
@@ -801,16 +710,29 @@ MakeTheme(
   FBTheme& theme)
 {
   theme = {};  
-  theme.name = themeJson.name;
-  theme.folderName = themeJson.folderName;
-  for (auto const& kv : themeJson.colorSchemes)
-    theme.colorSchemes[kv.first] = FBColorScheme(kv.second);
-  theme.componentColors = themeJson.componentColors;
-  theme.graphSchemeFollowsModule = themeJson.graphSchemeFollowsModule;
-  theme.unisonSchemeFollowsModule = themeJson.unisonSchemeFollowsModule;
-  theme.defaultColorScheme = FBColorScheme(themeJson.defaultColorScheme);  
+  theme.global = FBThemeGlobal(themeJson.global);
 
-  for (auto const& kv : theme.componentColors)
+  auto fontFile = File((
+    FBGetThemesFolderPath() / 
+    std::filesystem::path(theme.global.resources.folderName) /
+    std::filesystem::path(theme.global.resources.fontFileName)).string());
+  if(!fontFile.existsAsFile())
+  {
+    FB_LOG_ERROR("Cannot find font file '" + fontFile.getFullPathName().toStdString() + "'.");
+    return false;
+  }
+
+  auto aboutBoxImageFile = File((
+    FBGetThemesFolderPath() /
+    std::filesystem::path(theme.global.resources.folderName) /
+    std::filesystem::path(theme.global.resources.aboutBoxImageFileName)).string());
+  if (!aboutBoxImageFile.existsAsFile())
+  {
+    FB_LOG_ERROR("Cannot find image file '" + aboutBoxImageFile.getFullPathName().toStdString() + "'.");
+    return false;
+  }
+
+  for (auto const& kv : theme.global.componentColors)
   {
     bool found = false;
     for (int i = 0; i < topo->static_->themedComponents.size(); i++)
@@ -859,6 +781,18 @@ MakeTheme(
   return true;
 }
 
+std::string
+FBThemeResources::GetResourceName(FBThemeResourceId resourceId) const
+{
+  switch (resourceId)
+  {
+  case FBThemeResourceId::FolderName: return folderName;
+  case FBThemeResourceId::FontFileName: return fontFileName;
+  case FBThemeResourceId::AboutBoxImageFileName: return aboutBoxImageFileName;
+  default: FB_ASSERT(false); return {};
+  }
+}
+
 std::vector<FBTheme>
 FBLoadThemes(FBRuntimeTopo const* topo)
 {
@@ -871,6 +805,6 @@ FBLoadThemes(FBRuntimeTopo const* topo)
     if (MakeTheme(topo, themeJsons[i], theme))
       result.push_back(theme);
   }
-  std::sort(result.begin(), result.end(), [](auto const& l, auto const& r) { return l.name < r.name; });
+  std::sort(result.begin(), result.end(), [](auto const& l, auto const& r) { return l.global.name < r.global.name; });
   return result;
 }

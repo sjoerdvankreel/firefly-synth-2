@@ -6,6 +6,13 @@
 
 class FBPlugGUI;
 
+class FBStackingComponent:
+public juce::Component
+{
+public:
+  void resized() override;
+};
+
 class FBContentComponent:
 public juce::Component,
 public IFBHorizontalAutoSize,

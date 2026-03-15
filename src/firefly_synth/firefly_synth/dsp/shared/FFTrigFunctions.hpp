@@ -2,14 +2,17 @@
 
 #include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
+#include <string>
 
 enum FFTrigFunction {
   FFTrigSin, FFTrigCos, 
   FFTrigSin2, FFTrigCos2, FFTrigSinCos, FFTrigCosSin, 
   FFTrigSin3, FFTrigCos3, FFTrigSn2Cs, FFTrigCs2Sn,
   FFTrigSnCs2, FFTrigCsSn2, FFTrigSnCsSn, FFTrigCsSnCs,
-  FFTrigCount 
-};
+  FFTrigCount };
+
+std::string
+FFTrigFunctionToString(FFTrigFunction fun);
 
 inline FBBatch<float>
 FFCalcTrigSin(FBBatch<float> in)

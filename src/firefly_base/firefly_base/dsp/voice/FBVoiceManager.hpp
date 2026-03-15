@@ -16,6 +16,7 @@ struct FBVoiceInfo final
 {
   int slot = {};
   int offsetInBlock = {};
+  std::uint64_t num = {}; // "age" as a counter, lower is older
   FBNoteEvent event = {};
   FBVoiceState state = {};
 

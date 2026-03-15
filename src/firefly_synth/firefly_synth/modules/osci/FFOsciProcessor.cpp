@@ -218,7 +218,7 @@ FFOsciProcessor::Process(
   if (graph)
   {
     if (exchangeFromDSP != nullptr)
-      voiceBasePitch.Fill(FBBatch<float>(exchangeFromDSP->basePitch));
+      voiceBasePitch.Fill(FBBatch<float>(exchangeFromDSP->voiceBasePitch));
     else
       voiceBasePitch.Fill(FBBatch<float>(60.0f));
   }
@@ -344,7 +344,7 @@ FFOsciProcessor::Process(
       output[1].Add(s, uniPanning * uniMono * xsimd::sqrt(panning));
     }
   }
-  output.NaNCheck();
+  output.SanityCheck();
 
   _firstProcess = false;
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
@@ -362,8 +362,10 @@ FFOsciProcessor::Process(
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
   exchangeDSP.boolIsActive = 1;
-  exchangeDSP.basePitch = voiceBasePitch.Get(FBFixedBlockSamples - 1);
+  exchangeDSP.osciEffectivePitch = basePitchPlain.Get(0);
+  exchangeDSP.voiceBasePitch = voiceBasePitch.Get(FBFixedBlockSamples - 1);
   exchangeDSP.lengthSamples = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
+  exchangeDSP.output = std::max(std::abs(output[0].Get(0)), std::abs(output[1].Get(0)));
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.envToGain[0][voice] = envToGain.Last();

@@ -40,7 +40,7 @@ public FBModuleProcSingleExchangeState
 class alignas(FBSIMDAlign) FFEnvDSPState final
 {
   friend class FFVoiceProcessor;
-  friend struct EnvGraphRenderData;
+  friend class EnvGraphProcessor;
   std::unique_ptr<FFEnvProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEnvDSPState);

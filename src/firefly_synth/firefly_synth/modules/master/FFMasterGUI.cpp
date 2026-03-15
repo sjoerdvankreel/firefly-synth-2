@@ -12,10 +12,8 @@
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
-#include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
-#include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
@@ -25,7 +23,7 @@ MakeMasterSectionMain(FBPlugGUI* plugGUI)
 {
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> columnSizes = { 0, 0, 0, 1 };
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, columnSizes);
   auto bend = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::PitchBend, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bend));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, bend, Slider::SliderStyle::RotaryVerticalDrag));
@@ -38,8 +36,8 @@ MakeMasterSectionMain(FBPlugGUI* plugGUI)
   auto bendTarget = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::PitchBendTarget, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bendTarget));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bendTarget));
-  grid->MarkSection({ { 0, 0 }, { 2, 4 } }, FBGridSectionMark::BackgroundAndAlternate);
-  return grid;
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, false, true, card);
 }
 
 static Component*
@@ -52,7 +50,7 @@ MakeMasterSectionAux(FBPlugGUI* plugGUI)
     columnSizes.push_back(0);
     columnSizes.push_back(0);
   }
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, columnSizes);
   for (int i = 0; i < FFMasterAuxCount; i++)
   {
     int row = i / (FFMasterAuxCount / 2);
@@ -61,25 +59,15 @@ MakeMasterSectionAux(FBPlugGUI* plugGUI)
     grid->Add(row, col * 2 + 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, aux));
     grid->Add(row, col * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, aux, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ { 0, 0 }, { 2, 2 * FFMasterAuxCount / 2 } }, FBGridSectionMark::BackgroundAndBorder);
-  return grid;
-}
-
-static Component*
-MakeMasterTab(FBPlugGUI* plugGUI)
-{
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
-  grid->Add(0, 0, MakeMasterSectionMain(plugGUI));
-  grid->Add(0, 1, MakeMasterSectionAux(plugGUI));
-  return plugGUI->StoreComponent<FBMarginComponent>(true, true, true, true, grid);
+  auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, false, true, card);
 }
 
 Component*
 FFMakeMasterGUI(FBPlugGUI* plugGUI)
 {
-  FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>(plugGUI);
-  auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::Master].name;
-  tabs->AddTab(name, true, MakeMasterTab(plugGUI));
-  return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::Master, 0, tabs);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
+  grid->Add(0, 0, MakeMasterSectionMain(plugGUI));
+  grid->Add(0, 1, MakeMasterSectionAux(plugGUI));
+  return grid;
 }

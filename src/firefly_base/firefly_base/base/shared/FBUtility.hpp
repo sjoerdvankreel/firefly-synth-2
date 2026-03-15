@@ -9,18 +9,10 @@
 #include <optional>
 #include <filesystem>
 
-#if (defined __APPLE__) && defined(__aarch64__)
-#define FB_APPLE_AARCH64 1
+#if defined(__aarch64__)
+#define FB_AARCH64 1
 #else
-#define FB_APPLE_AARCH64 0
-#endif
-
-#if FB_APPLE_AARCH64
-#include <fenv.h>
-struct FBDenormalState { fenv_t env; bool wasApplied; };
-#else
-#include <immintrin.h>
-struct FBDenormalState { std::uint32_t ftz; std::uint32_t daz; };
+#define FB_AARCH64 0
 #endif
 
 struct FBStaticTopoMeta;
@@ -80,14 +72,22 @@ inline int const FBDefaultDisplayPrecision = 3;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(x); \
   x() = default
 
+std::string
+FBPitchToStringNotes(float pitch);
+std::string
+FBToStringHz(float val, int precision);
+std::string
+FBToStringPercent(float val, int precision);
+std::string
+FBToStringSeconds(float val, int precision);
+std::string
+FBGainToStringDb(float gain, int precision);
+std::string
+FBPitchToStringSemis(float coarse, float fine, int precision, bool unit);
+
 // Remove { and } for use in json and urls.
 std::string
 FBCleanTopoId(std::string const& topoId);
-
-FBDenormalState
-FBDisableDenormal();
-void 
-FBRestoreDenormal(FBDenormalState state);
 
 // Oh c'mon cpp, don't make me resort to ICU when i *know* input is in ascii.
 std::string
@@ -112,7 +112,9 @@ std::filesystem::path
 FBGetUserDataFolder();
 std::filesystem::path
 FBGetUserPluginDataFolder(FBStaticTopoMeta const& meta);
-std::filesystem::path 
-FBGetResourcesFolderPath();
 std::filesystem::path
 FBGetPluginContentsFolderPath();
+std::filesystem::path
+FBGetThemesFolderPath();
+std::filesystem::path
+FBGetPresetsFolderPath();

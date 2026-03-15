@@ -13,8 +13,14 @@ enum class FFEffectSkewMode { Uni, Bi };
 enum class FFEffectClipMode { Hard, TanH, Sin, TSQ, Cube, Inv, Exp  };
 enum class FFEffectFilterMode { Freq, Pitch, Track };
 
+std::string FFEffectFoldModeToString(FFEffectFoldMode mode);
+std::string FFEffectSkewModeToString(FFEffectSkewMode mode);
+std::string FFEffectClipModeToString(FFEffectClipMode mode);
+std::string FFEffectFilterModeToString(FFEffectFilterMode mode);
+
 enum class FFEffectKind { 
-  Off, StVar, 
+  Off, 
+  LPF, BPF, HPF, BSF, APF, PEQ, BLL, LSH, HSH,
   Comb, CombPlus, CombMin,
   Clip, Fold, Skew };
 std::string FFEffectKindToString(FFEffectKind kind);
@@ -22,5 +28,73 @@ std::string FFEffectKindToString(FFEffectKind kind);
 enum class FFEffectParam { On, Oversample, TrackingKey, LastKeySmoothTime, 
   Kind, EnvAmt, LFOAmt, FilterMode,
   CombKeyTrk, CombFreqFreqPlus, CombPitchCoarsePlus, CombResPlus, CombFreqFreqMin, CombPitchCoarseMin, CombResMin, 
-  StVarMode, StVarKeyTrak, StVarFreqFreq, StVarPitchCoarse, StVarRes, StVarGain,  
+  StVarKeyTrak, StVarFreqFreq, StVarPitchCoarse, StVarRes, StVarGain,  
   ClipMode, FoldMode, SkewMode, DistDrive, DistMix, DistBias, DistAmt, Count };
+
+inline bool
+FFEffectKindIsShaper(FFEffectKind kind)
+{
+  switch (kind)
+  {
+  case FFEffectKind::Clip:
+  case FFEffectKind::Skew:
+  case FFEffectKind::Fold:
+    return true;
+  default:
+    return false;
+  }
+}
+
+inline bool 
+FFEffectKindIsComb(FFEffectKind kind)
+{
+  switch (kind)
+  {
+  case FFEffectKind::Comb:
+  case FFEffectKind::CombPlus:
+  case FFEffectKind::CombMin:
+    return true;
+  default:
+    return false;
+  }
+}
+
+inline bool
+FFEffectKindIsSVF(FFEffectKind kind)
+{
+  switch (kind)
+  {
+  case FFEffectKind::LPF:
+  case FFEffectKind::BPF:
+  case FFEffectKind::HPF:
+  case FFEffectKind::BSF:
+  case FFEffectKind::APF:
+  case FFEffectKind::PEQ:
+  case FFEffectKind::BLL:
+  case FFEffectKind::LSH:
+  case FFEffectKind::HSH:
+    return true;
+  default:
+    return false;
+  }
+}
+
+inline bool
+FFEffectKindIsSVFWithGain(FFEffectKind kind)
+{
+  switch (kind)
+  {
+  case FFEffectKind::BLL:
+  case FFEffectKind::LSH:
+  case FFEffectKind::HSH:
+    return true;
+  default:
+    return false;
+  }
+}
+
+inline bool
+FFEffectKindIsFilter(FFEffectKind kind)
+{
+  return FFEffectKindIsComb(kind) || FFEffectKindIsSVF(kind);
+}

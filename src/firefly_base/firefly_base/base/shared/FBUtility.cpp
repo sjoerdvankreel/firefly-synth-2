@@ -8,6 +8,83 @@
 
 using namespace juce;
 
+// turns out this is expensive to construct
+static std::locale const CLocale("C");
+
+std::string
+FBToStringHz(float val, int precision)
+{
+  return FBFormatDoubleCLocale(val, precision) + " Hz";
+}
+
+std::string
+FBToStringSeconds(float val, int precision)
+{
+  return FBFormatDoubleCLocale(val, precision) + " Sec";
+}
+
+std::string
+FBToStringPercent(float val, int precision)
+{
+  return FBFormatDoubleCLocale(val * 100.0f, precision) + " %";
+}
+
+std::string
+FBGainToStringDb(float gain, int precision)
+{
+  float db = 20.0f * std::log10(gain);
+  return FBFormatDoubleCLocale(db, precision) + " dB";
+}
+
+std::string
+FBPitchToStringSemis(float coarse, float fine, int precision, bool unit)
+{
+  std::string result = FBFormatDoubleCLocale(coarse + fine, precision);
+  if (coarse + fine >= 0.0f)
+    result = "+" + result;
+  if (unit)
+    result += " Semis";
+  return result;
+}
+
+std::string
+FBPitchToStringNotes(float pitch)
+{
+  int whole = (int)pitch;
+  float frac = pitch - whole;
+  if (frac > 0.5f)
+  {
+    whole += 1;
+    frac -= 1.0f;
+  }
+  int oct = whole / 12;
+  while (whole < 0)
+    whole += 12;
+  int note = whole % 12;
+  std::string noteText = {};
+  switch (note)
+  {
+  case 0: noteText = "C-"; break;
+  case 1: noteText = "C#"; break;
+  case 2: noteText = "D-"; break;
+  case 3: noteText = "D#"; break;
+  case 4: noteText = "E-"; break;
+  case 5: noteText = "F-"; break;
+  case 6: noteText = "F#"; break;
+  case 7: noteText = "G-"; break;
+  case 8: noteText = "G#"; break;
+  case 9: noteText = "A-"; break;
+  case 10: noteText = "A#"; break;
+  case 11: noteText = "B-"; break;
+  default: FB_ASSERT(false); break;
+  }
+  std::string result = noteText + std::to_string(oct);
+  std::string cents = std::to_string((int)(frac * 100.0f));
+  if (!cents.starts_with('-'))
+    cents = "+" + cents;
+  return result + cents;
+}
+
 std::string
 FBCleanTopoId(std::string const& topoId)
 {
@@ -55,8 +132,16 @@ FBFormatDoubleCLocale(double val)
 std::string
 FBFormatDoubleCLocale(double val, int precision)
 {
+  // rounding to fixed
+  int multiplier = 1;
+  for (int i = 0; i < precision; i++)
+    multiplier *= 10;
+  val *= multiplier;
+  val = std::round(val);
+  val /= multiplier;
+
   std::stringstream ss;
-  ss.imbue(std::locale("C"));
+  ss.imbue(CLocale);
   ss << std::fixed;
   ss.precision(precision);
   ss << val;
@@ -76,37 +161,6 @@ FBStringToDoubleOptCLocale(std::string const& text)
     return std::nullopt;
   }
   return result;
-}
-
-void
-FBRestoreDenormal(FBDenormalState state)
-{
-#if FB_APPLE_AARCH64
-  if (state.wasApplied)
-    fesetenv(&state.env);
-#else
-  _MM_SET_FLUSH_ZERO_MODE(state.ftz);
-  _MM_SET_DENORMALS_ZERO_MODE(state.daz);
-#endif
-}
-
-FBDenormalState
-FBDisableDenormal()
-{
-#if FB_APPLE_AARCH64
-  FBDenormalState result = {};
-  result.wasApplied = fegetenv(&result.env) == 0;
-  if (result.wasApplied)
-    result.wasApplied = fesetenv(FE_DFL_DISABLE_DENORMS_ENV) == 0;
-  return result;
-#else
-  FBDenormalState result;
-  result.ftz = _MM_GET_FLUSH_ZERO_MODE();
-  result.daz = _MM_GET_DENORMALS_ZERO_MODE();
-  _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
-  _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
-  return result;
-#endif
 }
 
 std::filesystem::path
@@ -138,9 +192,15 @@ FBGetPluginContentsFolderPath()
 }
 
 std::filesystem::path
-FBGetResourcesFolderPath()
+FBGetThemesFolderPath()
 {
-  return FBGetPluginContentsFolderPath() / "Resources";
+  return FBGetPluginContentsFolderPath() / "Resources" / "ui" / "themes";
+}
+
+std::filesystem::path
+FBGetPresetsFolderPath()
+{
+  return FBGetPluginContentsFolderPath() / "Resources" / "presets";
 }
 
 std::vector<std::uint8_t>

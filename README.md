@@ -166,46 +166,24 @@ You have to download the zip to get at the PolyBLEP source for all waveforms.
 
 ## Main
 
-<img alt="Screenshot Main" src="static/screenshot_main.png"/>
+<img alt="Screenshot Main" src="static/screen_main.png"/>
 
 ## Matrix
 
-<img alt="Screenshot Matrix" src="static/screenshot_matrix.png"/>
+<img alt="Screenshot Matrix" src="static/screen_matrix.png"/>
 
 ## Unison
 
-<img alt="Screenshot Unison" src="static/screenshot_unison.png"/>
+<img alt="Screenshot Unison" src="static/screen_unison.png"/>
 
 ## Multi-Tap Delay
 
-<img alt="Screenshot Multitap" src="static/screenshot_multitap.png"/>
+<img alt="Screenshot Multitap" src="static/screen_multitap.png"/>
 
 ## MSEG
 
-<img alt="Screenshot MSEG" src="static/screenshot_mseg.png"/>
+<img alt="Screenshot MSEG" src="static/screen_mseg.png"/>
 
-## Themes
+## Settings
 
-### Dark Hot
-
-<img alt="Screenshot Theme Dark Hot" src="static/screenshot_theme_dark_hot.png"/>
-
-### Dark Cold
-
-<img alt="Screenshot Theme Dark Cold" src="static/screenshot_theme_dark_cold.png"/>
-
-### Dark Both
-
-<img alt="Screenshot Theme Dark Both" src="static/screenshot_theme_dark_both.png"/>
-
-### Light Hot
-
-<img alt="Screenshot Theme Light Hot" src="static/screenshot_theme_light_hot.png"/>
-
-### Light Cold
-
-<img alt="Screenshot Theme Light Cold" src="static/screenshot_theme_light_cold.png"/>
-
-### Light Both
-
-<img alt="Screenshot Theme Light Both" src="static/screenshot_theme_light_both.png"/>
+<img alt="Screenshot MSEG" src="static/screen_settings.png"/>

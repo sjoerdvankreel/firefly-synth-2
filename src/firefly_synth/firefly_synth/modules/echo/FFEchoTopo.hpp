@@ -8,6 +8,9 @@ inline int constexpr FFEchoTapCount = 8;
 inline int constexpr FFEchoMaxSeconds = 10;
 std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global, bool isFx);
 
+enum class FFEchoModule {
+  Taps, Feedback, Reverb, Count };
+
 enum class FFGEchoTarget {
   Off, MixIn, MixOut, VoiceMix, ExtAudio,
   FX1In, FX1Out, FX2In, FX2Out,
@@ -24,12 +27,11 @@ enum class FFVEchoTarget {
   FX3In, FX3Out, FX4In, FX4Out };
 std::string FFVEchoTargetToString(FFVEchoTarget target);
 
-enum class FFEchoModule {
-  Taps, Feedback, Reverb, Count };
 enum class FFEchoOrder {
   TapsToFeedbackToReverb, TapsToReverbToFeedback,
   FeedbackToTapsToReverb, FeedbackToReverbToTaps,
   ReverbToTapsToFeedback, ReverbToFeedbackToTaps };
+std::string FFEchoOrderToString(FFEchoOrder order);
 
 enum class FFEchoParam {
   VTargetOrGTarget, Order, Gain, Sync,

@@ -1,6 +1,24 @@
+vnext
+[ ] do more easy access controls (and maybe more mod sources)
+[ ] after init, load, etc, should select the first graph of everything
+[ ] matrix/unison as popups?
+[ ] fix the 1sec delay on plot visuals
+[ ] programmatic dump screenshot?
+[ ] compressor
+[ ] fix the build scripts for linux-arm
+[ ] add loop count param
+[ ] one phase LFO type
+[ ] do mod rate/amt for multitap
+[ ] override all-osci unison
+[ ] bpexpo envelopes + docs
+[ ] GLFO_N->X everywhere you can do VLFO_N->X
+[ ] tooltips for time stuff in hz and seconds?
+[ ] store last selected patch folder in global settings on disk
+[ ] allow click + on first disabled matrix slot
+
+fix the string oversample bug already
 drop screenshot_theme_light_default (for the website) once fix the auto-screenshot
 also probably make the images on the website bigger somehow
-programmatic dump screenshot?
 allow more margin/padding, the borders clip
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo

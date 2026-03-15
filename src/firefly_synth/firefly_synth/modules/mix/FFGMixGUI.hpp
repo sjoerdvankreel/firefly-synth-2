@@ -20,5 +20,7 @@ public:
 
 juce::Component*
 FFMakeGMixGUITab(FBPlugGUI* plugGUI);
+juce::Component*
+FFMakeGMixDetailGUI(FBPlugGUI* plugGUI);
 bool FFGMixAdjustParamModulationGUIBounds(
 FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm);

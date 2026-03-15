@@ -18,7 +18,7 @@ public FBModuleProcSingleExchangeState
 {
   ~FFGlobalUniExchangeState() = default;
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalUniExchangeState);
-  bool ShouldGraph(int /*graphIndex*/) const override { return boolIsActive != 0; }
+  bool ShouldGraph(bool /*detailGraphs*/, int /*graphIndex*/) const override { return boolIsActive != 0; }
 };
 
 class alignas(FBSIMDAlign) FFGlobalUniDSPState final

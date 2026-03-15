@@ -24,12 +24,12 @@ FFOsciModFormatSlotVertical(int slot)
 {
   switch (slot)
   {
-  case 0: return "1 AM\n\U00002193\n2 FM";
-  case 1: return "1 AM\n\U00002193\n3 FM";
-  case 2: return "2 AM\n\U00002193\n3 FM";
-  case 3: return "1 AM\n\U00002193\n4 FM";
-  case 4: return "2 AM\n\U00002193\n4 FM";
-  case 5: return "3 AM\n\U00002193\n4 FM";
+  case 0: return "1\n\U00002193\n2";
+  case 1: return "1\n\U00002193\n3";
+  case 2: return "2\n\U00002193\n3";
+  case 3: return "1\n\U00002193\n4";
+  case 4: return "2\n\U00002193\n4";
+  case 5: return "3\n\U00002193\n4";
   default: FB_ASSERT(false); return "";
   }
 }
@@ -41,8 +41,9 @@ FFMakeOsciModTopo()
   result->voice = true;
   result->name = "Mod";
   result->slotCount = 1;
-  result->graphCount = FFOsciCount;
-  result->graphCount = FFOsciCount;
+  result->detailGraphCount = FFOsciCount;
+  result->detailGraphUpperLowerText = true;
+  result->detailGraphLayout = FBModuleGraphLayout::Grid;
   result->graphRenderer = FFOsciRenderGraph;
   result->id = "{546F9D74-670A-463D-80B0-B4BBD061DA88}";
   result->params.resize((int)FFOsciModParam::Count);
@@ -51,7 +52,7 @@ FFMakeOsciModTopo()
    
   auto& oversample = result->params[(int)FFOsciModParam::Oversample];
   oversample.mode = FBParamMode::Block;
-  oversample.name = "4X Oversample";
+  oversample.name = "Oversample";
   oversample.defaultText = "Off";
   oversample.slotCount = 1;
   oversample.id = "{2449CE02-EE0D-48E7-A716-E59633F279FB}";
@@ -78,6 +79,7 @@ FFMakeOsciModTopo()
   auto& amMode = result->params[(int)FFOsciModParam::AMMode];
   amMode.mode = FBParamMode::Block;
   amMode.name = "AM Mode";
+  amMode.display = "AM";
   amMode.defaultText = "Off";
   amMode.slotCount = FFOsciModSlotCount;
   amMode.id = "{AE135DBF-A88E-49A4-9205-08C908E6FC12}";
@@ -112,6 +114,7 @@ FFMakeOsciModTopo()
   auto& fmOn = result->params[(int)FFOsciModParam::FMOn];
   fmOn.mode = FBParamMode::Block;
   fmOn.name = "FM On";
+  fmOn.display = "FM";
   fmOn.defaultText = "Off";
   fmOn.slotCount = FFOsciModSlotCount;
   fmOn.id = "{E4F09B87-FBDB-4B72-B6E3-D64BE0733C3D}";
