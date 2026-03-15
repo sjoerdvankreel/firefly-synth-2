@@ -51,11 +51,11 @@ v2.1.1
 [x] run debug build
 [x] test the clap
 [x] demo_keytrack_by_matrix_voice => matrix slot count converter
-[ ] converter for guni
-[ ] demo_microtuning_global => mts nfr
-[ ] demo_microtuning_voice => mts nfr
+[x] converter for guni
+[x] demo_microtuning_global => mts nfr
+[x] demo_microtuning_voice => mts nfr
+[x] update the manual for about box
 [ ] document all the theme changes
-[ ] update the manual for about box
 
 vnext
 [ ] do more easy access controls (and maybe more mod sources)

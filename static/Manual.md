@@ -331,7 +331,7 @@ Right-click on an audio parameter:
 
 ## Theming
 This section is only of interest if you want to customize theming.<br/>
-FF2 themes are folders containing a json file named theme.json and an image file named header.png.<br/>
+FF2 themes are folders containing a json file named theme.json, an image file for the about box, and a font file.<br/>
 Right-click to show the generic context menu and click "show plugin folder" to open the plugin directory.<br/>
 Themes are in Contents/Resources/ui/themes.<br/>
 
@@ -368,12 +368,8 @@ The main structure is set up as follows:
 
 And these are the field details:
 * name: unique id / gui display name
-* graphSchemeFollowsModule:<br/>
-If true, main graphs are painted according to their module colors.<br/>
-If false, according to Graphs component colors.
-* unisonSchemeFollowsModule:<br/>
-If true, global unison parameters are painted according to their module colors.<br/>
-If false, according to Unison module colors.
+* fontSize/fontFileName: font settings.
+* aboutBoxImageFileName: image file name for about box.
 * defaultColorScheme:<br/>
 This is the fallback/default scheme.<br/>
 All colors are specified as ARGB hex.
@@ -382,21 +378,18 @@ All colors are specified as ARGB hex.
   * text, text2: mainly used for labels and graph texts.
   * primary: what makes it stand out. Used for various things like graphs, buttons, combo texts, sliders etc.
   * background: background for the GUI as a whole and pop-up windows.
-  * meterFill/meterTrack/meterAlert: for the meters in the output section.
-  * graphGrid/graphBackground/graphBorder: only used for painting graphs (all of them)
-  * headerText/headerBorder/headerBackground: for tab headers when there is only 1 tab.
+  * meterFill/meterTrack: for the meters in the output section.
+  * graphGrid/graphBackground: only used for painting graphs (all of them)
   * sectionBorder/sectionBackground: mainly used for module sections, but other stuff as well.
   * paramSecondary/paramBackground: used for menu separators, check/comboboxes, slider tracks, and more.
   * paramHighlight: "show tweaked from" option and more.
   * paramFlashDisabling: when a parameter is flashing because it's disabling another parameter.
-  * sliderModBounds: highlight for "Show mod bounds" option.
   * sliderEngineThumb: highlight for "Engine Knob Visuals" option.
   * alertWindowPrimary: when a messagebox pops up.
   * fileBrowserPrimary: file browser buttons and more.
   * fileBrowserHighlight: file browser treeview selection and scrollbar.
   * buttonBackground: it's for buttons.
   * activeTabBackground: selected tab background.
-  * gridAlternateBackground: used for various things f.e. overlay headers.
 * colorSchemes: named color schemes. Can override anything from the default.
 * componentColors: named components (top graphs, last tweaked etc). Can override default color scheme.
   * componentId: component identifier, see topology.
