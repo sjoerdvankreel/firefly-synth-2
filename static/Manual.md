@@ -309,6 +309,7 @@ Right-click on some empty space to show the generic context menu.
 * Show manual: shows this document.
 * Show log folder: open the directory containing the logfile.
 * Show plugin folder: open the plugin root folder (stores themes and presets alongside the plugin binary itself).
+* About: shows plug version, format and cpu architecture.
 * Copy/paste patch: allows copy/paste across plugin instances.
 * Dump topology: save a description of the plugins internals to a text file.<br/>
 This is primarily meant to help in creating theme files which rely on internal identifiers which are printed in this document.<br/>
