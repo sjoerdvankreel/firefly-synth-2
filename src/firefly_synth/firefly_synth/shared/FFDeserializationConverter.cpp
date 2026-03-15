@@ -5,6 +5,7 @@
 #include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/settings/FFSettingsTopo.hpp>
+#include <firefly_synth/modules/global_uni/FFGlobalUniTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -270,6 +271,59 @@ FFDeserializationConverter::PostProcess(
         int oldSlots = std::stoi(oldState[i].value);
         if (oldSlots > FFModMatrixGlobalMaxSlotCount)
           *paramValues[globalParam->runtimeParamIndex] = 1.0;
+      }
+    }
+  }
+
+  // 2.1.1 - dropped some global uni targets
+  if (OldVersion() < FBPlugVersion(2, 1, 1))
+  {
+    auto const& globalUniModule = Topo()->static_->modules[(int)FFModuleType::GlobalUni];
+    auto const& modeParam = globalUniModule.params[(int)FFGlobalUniParam::Mode];
+#if 0
+    auto const& opTypeParam = globalUniModule.params[(int)FFGlobalUniParam::OpType];
+    auto const& autoSpreadParam = globalUniModule.params[(int)FFGlobalUniParam::AutoSpread];
+    auto const& autoSkewParam = globalUniModule.params[(int)FFGlobalUniParam::AutoSkew];
+    auto const& autoRandParam = globalUniModule.params[(int)FFGlobalUniParam::AutoRand];
+    auto const& autoSeedParam = globalUniModule.params[(int)FFGlobalUniParam::AutoRandSeed];
+    auto const& autoFreeParam = globalUniModule.params[(int)FFGlobalUniParam::AutoRandFree];
+#endif 
+
+    auto applyIfSlotMatch = [this, &globalUniModule, &paramValues](
+        auto const& oldSlotState, int paramIndex, int oldSlot, int newSlot) 
+    {
+      auto const& param = globalUniModule.params[paramIndex];
+      if (oldSlotState.paramSlot == oldSlot)
+      {
+        auto oldVal = param.TextToNormalized(true, 0, oldSlotState.value);
+        if(oldVal.has_value())
+          *paramValues[Topo()->audio.paramTopoToRuntime[(int)FFModuleType::GlobalUni][0][paramIndex][newSlot]] = oldVal.value();
+      }
+    };
+
+    for (int i = 0; i < oldState.size(); i++)
+    {
+      if (oldState[i].moduleId == globalUniModule.id)
+      {
+        if (oldState[i].paramId == modeParam.id)
+        {
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 14, 12);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 15, 13);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 16, 14);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 17, 15);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 18, 16);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 19, 17);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 20, 18);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 23, 19);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 24, 20);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 25, 21);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 28, 22);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 29, 23);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 30, 24);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 33, 25);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 34, 26);
+          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 35, 27);
+        }
       }
     }
   }
