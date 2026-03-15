@@ -47,11 +47,11 @@ v2.1.1
 [x] recheck all the matrix names
 [x] fix aboutbox
 [x] re-profile the gui
+[x] fixup all the other themes
 [ ] test the clap
 [ ] run debug build
-[ ] update the manual for about box
-[ ] fixup all the other themes
 [ ] document all the theme changes
+[ ] update the manual for about box
 
 vnext
 [ ] do more easy access controls (and maybe more mod sources)
