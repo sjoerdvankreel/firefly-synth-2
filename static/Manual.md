@@ -454,6 +454,8 @@ CLAP should be good everywhere.
 
 # Settings
 
+![image](screen_manual_settings.png)
+
 <a id="E3F0E2B7-436C-4278-8E4F-BE86E3A9A76B"></a>
 ## GUI settings
 * Show modulation bounds:<br/>
@@ -469,9 +471,7 @@ For per-voice modules, this is an additional line per voice.<br/>
 When off, graph plots reflect only the current state of the parameters as shown in the GUI.
 
 <a id="3689411E-F31C-4F8C-BE3D-6F87938A1A1B"></a>
-## Settings
-![image](screen_manual_settings.png)
-
+## Audio Settings
 Receive MIDI notes controls whether the plugin kicks off a new voice on incoming midi note on messages.<br/>
 This is enabled by default for the instrument version of the plug and disabled by default for the fx version.<br/>
 Some hosts allow to send midi notes to an fx plugin, others do not.<br/>
