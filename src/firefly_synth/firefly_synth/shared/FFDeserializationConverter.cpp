@@ -280,14 +280,12 @@ FFDeserializationConverter::PostProcess(
   {
     auto const& globalUniModule = Topo()->static_->modules[(int)FFModuleType::GlobalUni];
     auto const& modeParam = globalUniModule.params[(int)FFGlobalUniParam::Mode];
-#if 0
     auto const& opTypeParam = globalUniModule.params[(int)FFGlobalUniParam::OpType];
     auto const& autoSpreadParam = globalUniModule.params[(int)FFGlobalUniParam::AutoSpread];
     auto const& autoSkewParam = globalUniModule.params[(int)FFGlobalUniParam::AutoSkew];
     auto const& autoRandParam = globalUniModule.params[(int)FFGlobalUniParam::AutoRand];
     auto const& autoSeedParam = globalUniModule.params[(int)FFGlobalUniParam::AutoRandSeed];
     auto const& autoFreeParam = globalUniModule.params[(int)FFGlobalUniParam::AutoRandFree];
-#endif 
 
     auto applyIfSlotMatch = [this, &globalUniModule, &paramValues](
         auto const& oldSlotState, int paramIndex, int oldSlot, int newSlot) 
@@ -301,29 +299,43 @@ FFDeserializationConverter::PostProcess(
       }
     };
 
+    auto applyAllIfSlotMatch = [&applyIfSlotMatch](auto const& oldSlotState, int paramIndex) {
+      applyIfSlotMatch(oldSlotState, paramIndex, 14, 12);
+      applyIfSlotMatch(oldSlotState, paramIndex, 15, 13);
+      applyIfSlotMatch(oldSlotState, paramIndex, 16, 14);
+      applyIfSlotMatch(oldSlotState, paramIndex, 17, 15);
+      applyIfSlotMatch(oldSlotState, paramIndex, 18, 16);
+      applyIfSlotMatch(oldSlotState, paramIndex, 19, 17);
+      applyIfSlotMatch(oldSlotState, paramIndex, 20, 18);
+      applyIfSlotMatch(oldSlotState, paramIndex, 23, 19);
+      applyIfSlotMatch(oldSlotState, paramIndex, 24, 20);
+      applyIfSlotMatch(oldSlotState, paramIndex, 25, 21);
+      applyIfSlotMatch(oldSlotState, paramIndex, 28, 22);
+      applyIfSlotMatch(oldSlotState, paramIndex, 29, 23);
+      applyIfSlotMatch(oldSlotState, paramIndex, 30, 24);
+      applyIfSlotMatch(oldSlotState, paramIndex, 33, 25);
+      applyIfSlotMatch(oldSlotState, paramIndex, 34, 26);
+      applyIfSlotMatch(oldSlotState, paramIndex, 35, 27);
+    };
+
     for (int i = 0; i < oldState.size(); i++)
     {
       if (oldState[i].moduleId == globalUniModule.id)
       {
         if (oldState[i].paramId == modeParam.id)
-        {
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 14, 12);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 15, 13);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 16, 14);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 17, 15);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 18, 16);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 19, 17);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 20, 18);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 23, 19);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 24, 20);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 25, 21);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 28, 22);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 29, 23);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 30, 24);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 33, 25);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 34, 26);
-          applyIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode, 35, 27);
-        }
+          applyAllIfSlotMatch(oldState[i], (int)FFGlobalUniParam::Mode);
+        if (oldState[i].paramId == opTypeParam.id)
+          applyAllIfSlotMatch(oldState[i], (int)FFGlobalUniParam::OpType);
+        if (oldState[i].paramId == autoSpreadParam.id)
+          applyAllIfSlotMatch(oldState[i], (int)FFGlobalUniParam::AutoSpread);
+        if (oldState[i].paramId == autoSkewParam.id)
+          applyAllIfSlotMatch(oldState[i], (int)FFGlobalUniParam::AutoSkew);
+        if (oldState[i].paramId == autoRandParam.id)
+          applyAllIfSlotMatch(oldState[i], (int)FFGlobalUniParam::AutoRand);
+        if (oldState[i].paramId == autoSeedParam.id)
+          applyAllIfSlotMatch(oldState[i], (int)FFGlobalUniParam::AutoRandSeed);
+        if (oldState[i].paramId == autoFreeParam.id)
+          applyAllIfSlotMatch(oldState[i], (int)FFGlobalUniParam::AutoSkew);
       }
     }
   }
