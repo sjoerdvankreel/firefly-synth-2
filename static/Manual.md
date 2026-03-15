@@ -871,7 +871,8 @@ Choice of unipolar and bipolar modes with continuous amount control.
 <a id="VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
 ## Voice Echo and Global Echo
 
-![image](screen_manual_echo.png)
+![image](screen_manual_echo1.png)
+![image](screen_manual_echo2.png)
 
 Echo module with multitap delay, feedback delay and reverb subslots.<br/>
 There is at most one of each, but the processing order is customizable.<br/>
