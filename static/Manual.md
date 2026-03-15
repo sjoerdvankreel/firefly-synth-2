@@ -1025,7 +1025,8 @@ Bipolar preserves the vertical center point, unipolar does not.
 ## Envelope
 16-stage per-voice envelope generator with customizable loop and release points.
 
-![image](screen_manual_env.png)
+![image](screen_manual_env1.png)
+![image](screen_manual_env2.png)
 
 Envelopes can be looping, releaseing, or both (or neither).<br/>
 Either linear or exponential, comes with visual MSEG editor.<br/>
