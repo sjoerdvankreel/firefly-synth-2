@@ -1,3 +1,9 @@
+March 15, 2026 - v2.1.1.
+
+- Major UI overhaul.
+- Breaking change: dropped voice matrix from 25 to 17 slots and global matrix from 12 to 9 to fit the new UI.
+- Breaking change: dropped 10 global unison targets to fit the new UI: vecho extend/fade, LFO A skew X/Y, multitap/feedback delay/reverb LPF/HPF.
+
 January 11, 2026 - v2.1.0.
 
 - Bugfix: flush-audio on patch change was broken.
