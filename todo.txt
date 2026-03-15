@@ -50,8 +50,8 @@ v2.1.1
 [x] fixup all the other themes
 [x] run debug build
 [x] test the clap
+[x] demo_keytrack_by_matrix_voice => matrix slot count converter
 [ ] converter for guni
-[ ] demo_keytrack_by_matrix_voice => matrix slot count converter
 [ ] demo_microtuning_global => mts nfr
 [ ] demo_microtuning_voice => mts nfr
 [ ] document all the theme changes

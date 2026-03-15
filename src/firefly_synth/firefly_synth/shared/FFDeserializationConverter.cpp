@@ -252,6 +252,28 @@ FFDeserializationConverter::PostProcess(
       *paramValues[rtParamIndex] = offVal.value();
   }
 
+  // 2.1.1 - clamped down matrix routes
+  if (OldVersion() < FBPlugVersion(2, 1, 1))
+  {
+    auto voiceParam = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::VMatrix, 0 }, { (int)FFModMatrixParam::Slots, 0 } });
+    auto globalParam = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::GMatrix, 0 }, { (int)FFModMatrixParam::Slots, 0 } });
+    for (int i = 0; i < oldState.size(); i++)
+    {
+      if (oldState[i].id == voiceParam->id)
+      {
+        int oldSlots = std::stoi(oldState[i].value);
+        if (oldSlots > FFModMatrixVoiceMaxSlotCount)
+          *paramValues[voiceParam->runtimeParamIndex] = 1.0;
+      }
+      if (oldState[i].id == globalParam->id)
+      {
+        int oldSlots = std::stoi(oldState[i].value);
+        if (oldSlots > FFModMatrixGlobalMaxSlotCount)
+          *paramValues[globalParam->runtimeParamIndex] = 1.0;
+      }
+    }
+  }
+
   // 2.1.1 - moved SVF mode into effect kind.
   if (OldVersion() < FBPlugVersion(2, 1, 1))
   {
