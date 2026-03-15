@@ -40,7 +40,7 @@ FFMakeOtherGUI(FFPlugGUI* plugGUI)
   auto settingsGUI = MakeSettingsGUI(plugGUI);
   settingsButton->setTooltip("GUI/Engine/Microtuning Settings");
   settingsButton->onClick = [plugGUI, settingsGUI]() {
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Settings", (int)FFModuleType::Other, 0, settingsGUI, 600, 400, false, []() {});
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Settings", (int)FFModuleType::Other, 0, settingsGUI, 400, 300, false, []() {});
   };
 
   grid->Add(0, 1, settingsButton);
