@@ -580,7 +580,8 @@ These DO track microtuning and include the PB component as well.
 ## Voice mixer
 Controls the signal path of the per-voice audio engine.
 
-![image](screen_manual_vmix.png)
+![image](screen_manual_vmix1.png)
+![image](screen_manual_vmix2.png)
 
 * Oscillator to voice FX:<br/>
 Routes the output of individual oscillators to the per-voice effect (VFX) section.
