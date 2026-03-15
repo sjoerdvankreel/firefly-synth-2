@@ -38,8 +38,8 @@
 * Customizeable loop and release points
 
 # Extensive matrix module
-* 25 per-voice and 12 global slots
+* 17 per-voice and 9 global slots
 
 # Extensive global unison module
-* 38 targetable per-voice parameters
+* 28 per-voice parameters
 * Optional full manual control over per-voice parameter positioning
