@@ -335,7 +335,7 @@ FFDeserializationConverter::PostProcess(
         if (oldState[i].paramId == autoSeedParam.id)
           applyAllIfSlotMatch(oldState[i], (int)FFGlobalUniParam::AutoRandSeed);
         if (oldState[i].paramId == autoFreeParam.id)
-          applyAllIfSlotMatch(oldState[i], (int)FFGlobalUniParam::AutoSkew);
+          applyAllIfSlotMatch(oldState[i], (int)FFGlobalUniParam::AutoRandFree);
       }
     }
   }
