@@ -114,6 +114,9 @@ You have to download the zip to get at the PolyBLEP source for all waveforms.
 * Short 1
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_short_01.mp3)
 [renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_short_01.xrns)
+* Short 2
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_short_02.mp3)
+[renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_short_02.xrns)
 
 ## Feature demos
 * Plucked strings
