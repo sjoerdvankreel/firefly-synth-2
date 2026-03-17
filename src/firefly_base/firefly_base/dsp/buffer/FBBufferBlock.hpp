@@ -25,7 +25,8 @@ public:
 
 struct FBBufferInputBlock final
 {
-  FBBufferAudioBlock audio = {};
+  FBBufferAudioBlock mainAudio = {};
+  FBBufferAudioBlock sidechainAudio = {};
   std::vector<FBNoteEvent> noteEvents = {};
   std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};
   std::vector<FBMIDIEvent> midiByMessageThenCCThenSample = {};
@@ -40,8 +41,9 @@ struct FBFixedInputBlock final
   std::vector<FBMIDIEvent> midiByMessageThenCCThenSample = {};
   std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};
   
-  FBSArray2<float, FBFixedBlockSamples, 2> audio = {};
   std::array<bool, FBFixedBlockSamples> anyNoteIsOn = {};
+  FBSArray2<float, FBFixedBlockSamples, 2> mainAudio = {};
+  FBSArray2<float, FBFixedBlockSamples, 2> sidechainAudio = {};
   FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>> noteMatrixRaw = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedInputBlock);
 };

@@ -71,13 +71,17 @@ FBHostToPlugProcessor()
 FBFixedInputBlock*
 FBHostToPlugProcessor::ProcessToPlug()
 {
-  if (_buffer.audio.Count() < FBFixedBlockSamples)
+  if (_buffer.mainAudio.Count() < FBFixedBlockSamples)
     return nullptr;
 
   for (int ch = 0; ch < 2; ch++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      _fixed.audio[ch].Set(s, _buffer.audio[ch][s]);
-  _buffer.audio.Drop(FBFixedBlockSamples);
+    {
+      _fixed.mainAudio[ch].Set(s, _buffer.mainAudio[ch][s]);
+      _fixed.sidechainAudio[ch].Set(s, _buffer.sidechainAudio[ch][s]);
+    }
+  _buffer.mainAudio.Drop(FBFixedBlockSamples);
+  _buffer.sidechainAudio.Drop(FBFixedBlockSamples);
   GatherAccToFixed(_buffer.noteEvents, _fixed.noteEvents);
   GatherAccToFixed(_buffer.accAutoByParamThenSample, _fixed.accAutoByParamThenSample);
   GatherAccToFixed(_buffer.midiByMessageThenCCThenSample, _fixed.midiByMessageThenCCThenSample);
@@ -91,18 +95,19 @@ FBHostToPlugProcessor::BufferFromHost(FBHostInputBlock const& hostBlock)
   for (int e = 0; e < hostBlock.noteEvents.size(); e++)
   {
     FBNoteEvent event = hostBlock.noteEvents[e];
-    event.pos += _buffer.audio.Count();
+    event.pos += _buffer.mainAudio.Count();
     _buffer.noteEvents.push_back(event);
   }
 
   GatherAccFromHost(
     hostBlock.accAutoByParamThenSample, _buffer.accAutoByParamThenSample,
-    FBAccAutoEventIsSameStream, _buffer.audio.Count());
+    FBAccAutoEventIsSameStream, _buffer.mainAudio.Count());
   GatherAccFromHost(
     hostBlock.midiByMessageThenCCThenSample, _buffer.midiByMessageThenCCThenSample,
-    FBMIDIEventIsSameStream, _buffer.audio.Count());
+    FBMIDIEventIsSameStream, _buffer.mainAudio.Count());
   GatherAccFromHost(
     hostBlock.accModByParamThenNoteThenSample, _buffer.accModByParamThenNoteThenSample,
-    FBAccModEventIsSameStream, _buffer.audio.Count());
-  _buffer.audio.AppendHostAudio(hostBlock.audio);
+    FBAccModEventIsSameStream, _buffer.mainAudio.Count());
+  _buffer.mainAudio.AppendHostAudio(hostBlock.mainAudio);
+  _buffer.sidechainAudio.AppendHostAudio(hostBlock.sidechainAudio);
 }

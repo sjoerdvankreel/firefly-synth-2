@@ -140,7 +140,8 @@ FBHostProcessor::ProcessHost(
   _hostToPlug->BufferFromHost(input);
   while ((fixedIn = _hostToPlug->ProcessToPlug()) != nullptr)
   {
-    _plugIn.audio = &fixedIn->audio;
+    _plugIn.mainAudio = &fixedIn->mainAudio;
+    _plugIn.sidechainAudio = &fixedIn->sidechainAudio;
     _plugIn.noteEvents = &fixedIn->noteEvents;
     _plugIn.anyNoteIsOn = &fixedIn->anyNoteIsOn;
     _plugIn.noteMatrixRaw = &fixedIn->noteMatrixRaw;

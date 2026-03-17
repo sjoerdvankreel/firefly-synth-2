@@ -413,10 +413,20 @@ FBCLAPPlugin::process(
     _output.audio = FBHostAudioBlock(process->audio_outputs[0].data32, process->frames_count);
 
     float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
-    if (process->audio_inputs_count != 1)
-      _input.audio = FBHostAudioBlock(zeroIn, process->frames_count);
+    _input.mainAudio = FBHostAudioBlock(zeroIn, process->frames_count);
+    _input.sidechainAudio = FBHostAudioBlock(zeroIn, process->frames_count);
+    if (!_topo->static_->meta.isFx)
+    {
+      if (process->audio_inputs_count > 0)
+        _input.sidechainAudio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
+    }
     else
-      _input.audio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
+    {
+      if (process->audio_inputs_count > 0)
+        _input.mainAudio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
+      if (process->audio_inputs_count > 1)
+        _input.sidechainAudio = FBHostAudioBlock(process->audio_inputs[1].data32, process->frames_count);
+    }
 
     _hostProcessor->ProcessHost(_input, _output);
     _exchangeStateQueue->TryEnqueue(_exchangeToGUIState->Raw());
