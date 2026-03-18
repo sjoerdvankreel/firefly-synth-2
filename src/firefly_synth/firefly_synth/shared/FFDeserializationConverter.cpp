@@ -418,6 +418,10 @@ FFDeserializationConverter::PostProcess(
       auto const& audioInToOut = gMixModule.params[(int)FFGMixParam::AudioInToOut];
       auto const& audioInToGFX = gMixModule.params[(int)FFGMixParam::AudioInToGFX];
       auto const& sidechainToGFX = gMixModule.params[(int)FFGMixParam::SidechainToGFX];
+
+      auto const& gEchoModule = Topo()->static_->modules[(int)FFModuleType::GEcho];
+      auto const& gEchoTarget = gEchoModule.params[(int)FFEchoParam::VTargetOrGTarget];
+
       for (int i = 0; i < oldState.size(); i++)
       {
         if (oldState[i].moduleId == gMixModule.id)
@@ -437,14 +441,29 @@ FFDeserializationConverter::PostProcess(
               *paramValues[param->runtimeParamIndex] = norm.value();
           }
         }
-        auto const* oldToOutParam = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::AudioInToOut, 0 } });
-        *paramValues[oldToOutParam->runtimeParamIndex] = 0.0;
-        for (int j = 0; j < audioInToGFX.slotCount; j++)
+        if (oldState[i].moduleId == gEchoModule.id)
         {
-          auto const* oldToGFXParam = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::AudioInToGFX, j } });
-          *paramValues[oldToGFXParam->runtimeParamIndex] = 0.0;
+          if (oldState[i].paramId == gEchoTarget.id)
+          {
+            if (oldState[i].value == "{746FE368-54F7-4BCA-A883-9B3C40163C84}")
+            {
+              auto const* param = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } });
+              auto norm = param->TextToNormalized(true, "{02F1846A-E2BC-4A84-AD91-C64B5F51B2DB}");
+              if (norm.has_value())
+                *paramValues[param->runtimeParamIndex] = norm.value();
+            }
+          }
         }
       }
+
+      auto const* oldToOutParam = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::AudioInToOut, 0 } });
+      *paramValues[oldToOutParam->runtimeParamIndex] = 0.0;
+      for (int j = 0; j < audioInToGFX.slotCount; j++)
+      {
+        auto const* oldToGFXParam = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::AudioInToGFX, j } });
+        *paramValues[oldToGFXParam->runtimeParamIndex] = 0.0;
+      }
+
     }
   }
 }
