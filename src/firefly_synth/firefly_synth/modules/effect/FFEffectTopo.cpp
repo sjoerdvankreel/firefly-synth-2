@@ -764,7 +764,6 @@ FFMakeEffectTopo(bool global)
   distAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::ClipMode },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::Skew || vs[1] == (int)FFEffectKind::Clip && vs[2] == (int)FFEffectClipMode::Exp); });
 
-  //CompSide, CompThreshold, CompRatio, CompAttack, CompRelease, CompLookahead, CompKnee,
   auto& compMode = result->params[(int)FFEffectParam::CompMode];
   compMode.mode = FBParamMode::Block;
   compMode.defaultText = "Peak";
@@ -935,6 +934,29 @@ FFMakeEffectTopo(bool global)
     [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
   compRMSSize.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::CompMode },
     [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor && vs[2] == (int)FFEffectCompMode::RMS; });
+
+  auto& compSide = result->params[(int)FFEffectParam::CompSide];
+  compSide.mode = FBParamMode::Block;
+  compSide.defaultText = "Off";
+  compSide.name = "Comp Sidechain";
+  compSide.display = "Side";
+  compSide.slotCount = FFEffectBlockCount;
+  compSide.slotFormatter = FFFormatBlockSlot;
+  compSide.id = prefix + "{E72C3234-F8DD-4EEE-A7C2-31C26FDD2EA2}";
+  compSide.description = "Compressor Sidechain";
+  compSide.type = FBParamType::List;
+  compSide.List().items = {
+    { prefix + "{F09A2B85-C0F9-4C9F-864A-FF3FF0400F85}", "Off "} };
+  auto selectCompSide = [](auto& module) { return &module.block.compSide; };
+  compSide.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompSide);
+  compSide.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompSide);
+  compSide.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompSide);
+  compSide.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompSide);
+  compSide.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompSide);
+  compSide.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compSide.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
 
   return result;
 }
