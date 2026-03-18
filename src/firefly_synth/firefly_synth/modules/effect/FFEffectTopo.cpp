@@ -886,5 +886,30 @@ FFMakeEffectTopo(bool global)
   compRelease.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
 
+  auto& compKnee = result->params[(int)FFEffectParam::CompKnee];
+  compKnee.mode = FBParamMode::Accurate;
+  compKnee.defaultText = "100";
+  compKnee.name = "Comp Knee";
+  compKnee.display = "Knee";
+  compKnee.unit = "%";
+  compKnee.slotCount = FFEffectBlockCount;
+  compKnee.slotFormatter = FFFormatBlockSlot;
+  compKnee.id = prefix + "{198616E6-C9AB-4D38-A9DB-9389C74A7A4F}";
+  compKnee.description = "Compressor Knee";
+  compKnee.type = FBParamType::Linear;
+  compKnee.Linear().min = 1.0f;
+  compKnee.Linear().max = 8.0f;
+  compKnee.Linear().displayMultiplier = 100.0f;
+  auto selectCompKnee = [](auto& module) { return &module.acc.compKnee; };
+  compKnee.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompKnee);
+  compKnee.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompKnee);
+  compKnee.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompKnee);
+  compKnee.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompKnee);
+  compKnee.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompKnee);
+  compKnee.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compKnee.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
+
   return result;
 }

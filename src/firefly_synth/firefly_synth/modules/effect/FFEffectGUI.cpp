@@ -237,6 +237,9 @@ MakeEffectDetail(FBPlugGUI* plugGUI, bool global, int moduleSlot)
     auto distAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistAmt, i } });
     grid->Add(1 + i, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, distAmt));
     grid->Add(1 + i, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distAmt, Slider::SliderStyle::RotaryVerticalDrag));
+    auto compKnee = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CompKnee, i } });
+    grid->Add(1 + i, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, compKnee));
+    grid->Add(1 + i, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, compKnee, Slider::SliderStyle::RotaryVerticalDrag));
     auto stVarRes = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarRes, i } });
     grid->Add(1 + i, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarRes));
     grid->Add(1 + i, 9, 1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarRes, Slider::SliderStyle::LinearHorizontal));
