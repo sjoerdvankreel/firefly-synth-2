@@ -83,6 +83,7 @@ class alignas(alignof(TAccurate)) FFEffectAccParamState final
   std::array<TAccurate, FFEffectBlockCount> combFreqFreqPlus = {};
   std::array<TAccurate, FFEffectBlockCount> combPitchCoarseMin = {};
   std::array<TAccurate, FFEffectBlockCount> combPitchCoarsePlus = {};
+  std::array<TAccurate, FFEffectBlockCount> compRatio = {};
   std::array<TAccurate, FFEffectBlockCount> compThreshold = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectAccParamState);

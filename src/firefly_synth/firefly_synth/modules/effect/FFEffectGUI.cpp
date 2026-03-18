@@ -174,6 +174,9 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
   auto compThreshold = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CompThreshold, block } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, compThreshold));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, compThreshold, style));
+  auto compRatio = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CompRatio, block } });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, compRatio));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, compRatio, style));
 
   grid->MarkSection({ { 0, 0 }, { 2, 1 } }, FBGridSectionMark::DefaultBackground);
   return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);

@@ -810,5 +810,27 @@ FFMakeEffectTopo(bool global)
   compThreshold.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
 
+  auto& compRatio = result->params[(int)FFEffectParam::CompRatio];
+  compRatio.mode = FBParamMode::Accurate;
+  compRatio.unit = "%";
+  compRatio.defaultText = "25";
+  compRatio.name = "Comp Ratio";
+  compRatio.display = "Ratio";
+  compRatio.slotCount = FFEffectBlockCount;
+  compRatio.slotFormatter = FFFormatBlockSlot;
+  compRatio.id = prefix + "{F8DEB5FF-4A33-4D64-A459-CB40EFBF5128}";
+  compRatio.description = "Compressor Ratio";
+  compRatio.type = FBParamType::Identity;
+  auto selectCompRatio = [](auto& module) { return &module.acc.compRatio; };
+  compRatio.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompRatio);
+  compRatio.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompRatio);
+  compRatio.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompRatio);
+  compRatio.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompRatio);
+  compRatio.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompRatio);
+  compRatio.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compRatio.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
+
   return result;
 }
