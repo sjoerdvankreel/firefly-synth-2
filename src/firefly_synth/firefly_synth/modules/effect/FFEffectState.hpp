@@ -57,6 +57,7 @@ class alignas(alignof(TBlock)) FFEffectBlockParamState final
   std::array<TBlock, FFEffectBlockCount> compMode = {};
   std::array<TBlock, FFEffectBlockCount> compAttack = {};
   std::array<TBlock, FFEffectBlockCount> compRelease = {};
+  std::array<TBlock, FFEffectBlockCount> compRMSSize = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectBlockParamState);
 };

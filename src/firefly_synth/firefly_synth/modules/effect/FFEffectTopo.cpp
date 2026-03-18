@@ -911,5 +911,30 @@ FFMakeEffectTopo(bool global)
   compKnee.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
 
+  auto& compRMSSize = result->params[(int)FFEffectParam::CompRMSSize];
+  compRMSSize.mode = FBParamMode::Block;
+  compRMSSize.defaultText = "5";
+  compRMSSize.display = "RMS";
+  compRMSSize.name = "RMS Size";
+  compRMSSize.slotCount = FFEffectBlockCount;
+  compRMSSize.unit = "Ms";
+  compRMSSize.id = prefix + "{A1D63E6A-F8BB-4801-8EE3-655A5D7970F5}";
+  compRMSSize.description = "Compressor RMS Size";
+  compRMSSize.type = FBParamType::Linear;
+  compRMSSize.Linear().min = 0.0f;
+  compRMSSize.Linear().max = 1.0f;
+  compRMSSize.Linear().editSkewFactor = 0.5f;
+  compRMSSize.Linear().displayMultiplier = 1000;
+  auto selectCompRMSSize = [](auto& module) { return &module.block.compRMSSize; };
+  compRMSSize.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompRMSSize);
+  compRMSSize.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompRMSSize);
+  compRMSSize.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompRMSSize);
+  compRMSSize.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompRMSSize);
+  compRMSSize.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompRMSSize);
+  compRMSSize.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compRMSSize.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::CompMode },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor && vs[2] == (int)FFEffectCompMode::RMS; });
+
   return result;
 }

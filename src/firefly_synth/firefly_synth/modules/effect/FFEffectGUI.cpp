@@ -249,6 +249,9 @@ MakeEffectDetail(FBPlugGUI* plugGUI, bool global, int moduleSlot)
     auto combResPlus = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombResPlus, i } });
     grid->Add(1 + i, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combResPlus));
     grid->Add(1 + i, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combResPlus, Slider::SliderStyle::RotaryVerticalDrag, true, false));
+    auto compRMSSize = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CompRMSSize, i } });
+    grid->Add(1 + i, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, compRMSSize));
+    grid->Add(1 + i, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, compRMSSize, Slider::SliderStyle::RotaryVerticalDrag));
     auto combResMin = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombResMin, i } });
     grid->Add(1 + i, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combResMin));
     grid->Add(1 + i, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combResMin, Slider::SliderStyle::RotaryVerticalDrag));
