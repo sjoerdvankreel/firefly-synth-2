@@ -222,6 +222,12 @@ MakeEffectDetail(FBPlugGUI* plugGUI, bool global, int moduleSlot)
     auto envAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::EnvAmt, i } });
     grid->Add(1 + i, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, envAmt));
     grid->Add(1 + i, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, envAmt, Slider::SliderStyle::RotaryVerticalDrag));
+    auto compAttack = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CompAttack, i } });
+    grid->Add(1 + i, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, compAttack));
+    grid->Add(1 + i, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, compAttack, Slider::SliderStyle::RotaryVerticalDrag));
+    auto compRelease = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CompRelease, i } });
+    grid->Add(1 + i, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, compRelease));
+    grid->Add(1 + i, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, compRelease, Slider::SliderStyle::RotaryVerticalDrag));
     auto stVarKeyTrak = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarKeyTrak, i } });
     grid->Add(1 + i, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarKeyTrak));
     grid->Add(1 + i, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarKeyTrak, Slider::SliderStyle::RotaryVerticalDrag));
