@@ -42,6 +42,7 @@ FFMakeGMixTopo(bool isFx)
   dummyToggle.mode = FBParamMode::Fake;
   dummyToggle.defaultText = "Off";
   dummyToggle.name = "Dummy Toggle";
+  dummyToggle.description = "Dummy Toggle";
   dummyToggle.slotCount = 1;
   dummyToggle.id = "{C1EB5E5F-D4E4-43CC-B2B6-6BB3E1D79296}";
   dummyToggle.type = FBParamType::Boolean;
