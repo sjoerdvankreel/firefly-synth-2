@@ -40,6 +40,11 @@ _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_ca
   _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
+  _plugIn.mainAudio = &_firstRound.mainAudio;
+  _plugIn.sidechainAudio = &_firstRound.sidechainAudio;
+  _plugIn.noteEvents = &_firstRound.noteEvents;
+  _plugIn.anyNoteIsOn = &_firstRound.anyNoteIsOn;
+  _plugIn.noteMatrixRaw = &_firstRound.noteMatrixRaw;
   _plug->AllocOnDemandBuffers(_topo, _procState);
 }
 
