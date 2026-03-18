@@ -9,10 +9,12 @@ inline int constexpr FFEffectBlockCount = 4; // must be <= lfo count and env cou
 std::unique_ptr<FBStaticModule> FFMakeEffectTopo(bool global);
 
 enum FFEffectFoldMode { FFEffectFoldModeFold = FFTrigCount };
+enum class FFEffectCompMode { Peak, RMS };
 enum class FFEffectSkewMode { Uni, Bi };
 enum class FFEffectClipMode { Hard, TanH, Sin, TSQ, Cube, Inv, Exp  };
 enum class FFEffectFilterMode { Freq, Pitch, Track };
 
+std::string FFEffectCompModeToString(FFEffectCompMode mode);
 std::string FFEffectFoldModeToString(FFEffectFoldMode mode);
 std::string FFEffectSkewModeToString(FFEffectSkewMode mode);
 std::string FFEffectClipModeToString(FFEffectClipMode mode);
@@ -30,7 +32,9 @@ enum class FFEffectParam { On, Oversample, TrackingKey, LastKeySmoothTime,
   Kind, EnvAmt, LFOAmt, FilterMode,
   CombKeyTrk, CombFreqFreqPlus, CombPitchCoarsePlus, CombResPlus, CombFreqFreqMin, CombPitchCoarseMin, CombResMin, 
   StVarKeyTrak, StVarFreqFreq, StVarPitchCoarse, StVarRes, StVarGain,  
-  ClipMode, FoldMode, SkewMode, DistDrive, DistMix, DistBias, DistAmt, Count };
+  ClipMode, FoldMode, SkewMode, DistDrive, DistMix, DistBias, DistAmt, 
+  CompMode, CompThreshold, //CompRMSSize, CompSide, CompRatio, CompAttack, CompRelease, CompLookahead, CompKnee,
+  Count };
 
 inline bool
 FFEffectKindIsShaper(FFEffectKind kind)

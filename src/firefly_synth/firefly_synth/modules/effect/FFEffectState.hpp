@@ -24,6 +24,7 @@ public FBModuleProcSingleExchangeState
   std::array<float, FFEffectBlockCount> stVarFreqs = {};
   std::array<float, FFEffectBlockCount> combMinFreqs = {};
   std::array<float, FFEffectBlockCount> combPlusFreqs = {};
+  // todo
 };
 
 class alignas(FBSIMDAlign) FFEffectDSPState final
@@ -53,6 +54,7 @@ class alignas(alignof(TBlock)) FFEffectBlockParamState final
   std::array<TBlock, FFEffectBlockCount> foldMode = {};
   std::array<TBlock, FFEffectBlockCount> skewMode = {};
   std::array<TBlock, FFEffectBlockCount> filterMode = {};
+  std::array<TBlock, FFEffectBlockCount> compMode = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectBlockParamState);
 };
@@ -81,6 +83,7 @@ class alignas(alignof(TAccurate)) FFEffectAccParamState final
   std::array<TAccurate, FFEffectBlockCount> combFreqFreqPlus = {};
   std::array<TAccurate, FFEffectBlockCount> combPitchCoarseMin = {};
   std::array<TAccurate, FFEffectBlockCount> combPitchCoarsePlus = {};
+  std::array<TAccurate, FFEffectBlockCount> compThreshold = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectAccParamState);
 };

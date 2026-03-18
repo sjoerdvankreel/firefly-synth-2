@@ -81,6 +81,17 @@ FFEffectFoldModeToString(FFEffectFoldMode mode)
   }
 }
 
+std::string
+FFEffectCompModeToString(FFEffectCompMode mode)
+{
+  switch (mode)
+  {
+  case FFEffectCompMode::RMS: return "RMS";
+  case FFEffectCompMode::Peak: return "Peak";
+  default: FB_ASSERT(false); return {};
+  }
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeEffectTopo(bool global)
 {
@@ -748,6 +759,56 @@ FFMakeEffectTopo(bool global)
     [](auto const& vs) { return FFEffectKindIsShaper((FFEffectKind)vs[0]); });
   distAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::ClipMode },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::Skew || vs[1] == (int)FFEffectKind::Clip && vs[2] == (int)FFEffectClipMode::Exp); });
+
+  //CompSide, CompThreshold, CompRatio, CompAttack, CompRelease, CompLookahead, CompKnee,
+  auto& compMode = result->params[(int)FFEffectParam::CompMode];
+  compMode.mode = FBParamMode::Block;
+  compMode.defaultText = "Peak";
+  compMode.name = "Comp Mode";
+  compMode.display = "Mode";
+  compMode.slotCount = FFEffectBlockCount;
+  compMode.slotFormatter = FFFormatBlockSlot;
+  compMode.id = prefix + "{2EA47F66-A7ED-4C9E-92C7-611C2FAB82A6}";
+  compMode.description = "Compressor Mode";
+  compMode.type = FBParamType::List;
+  compMode.List().items = {
+    { prefix + "{85B141BB-46F8-4E8F-A24B-585160FA5CE3}", FFEffectCompModeToString(FFEffectCompMode::Peak) },
+    { prefix + "{63FD8FCE-450E-46AF-95D6-804E05336919}", FFEffectCompModeToString(FFEffectCompMode::RMS) } };
+  auto selectCompMode = [](auto& module) { return &module.block.compMode; };
+  compMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompMode);
+  compMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompMode);
+  compMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompMode);
+  compMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompMode);
+  compMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompMode);
+  compMode.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compMode.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
+
+  auto& compThreshold = result->params[(int)FFEffectParam::CompThreshold];
+  compThreshold.mode = FBParamMode::Accurate;
+  compThreshold.defaultText = "100";
+  compThreshold.name = "Comp Threshold";
+  compThreshold.display = "Threshold";
+  compThreshold.unit = "%";
+  compThreshold.slotCount = FFEffectBlockCount;
+  compThreshold.slotFormatter = FFFormatBlockSlot;
+  compThreshold.id = prefix + "{12F6A492-5B00-4B4B-95D3-2BF1909036FD}";
+  compThreshold.description = "Compressor Threshold";
+  compThreshold.type = FBParamType::Linear;
+  compThreshold.Linear().min = 0.0f;
+  compThreshold.Linear().max = 2.0f;
+  compThreshold.Linear().displayMultiplier = 100.0f;
+  auto selectCompThreshold = [](auto& module) { return &module.acc.compThreshold; };
+  compThreshold.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompThreshold);
+  compThreshold.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompThreshold);
+  compThreshold.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompThreshold);
+  compThreshold.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompThreshold);
+  compThreshold.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompThreshold);
+  compThreshold.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compThreshold.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
 
   return result;
 }
