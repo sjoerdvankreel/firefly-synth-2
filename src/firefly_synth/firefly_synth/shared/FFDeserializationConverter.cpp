@@ -417,6 +417,7 @@ FFDeserializationConverter::PostProcess(
       auto const& gMixModule = Topo()->static_->modules[(int)FFModuleType::GMix];
       auto const& audioInToOut = gMixModule.params[(int)FFGMixParam::AudioInToOut];
       auto const& audioInToGFX = gMixModule.params[(int)FFGMixParam::AudioInToGFX];
+      auto const& sidechainToGFX = gMixModule.params[(int)FFGMixParam::SidechainToGFX];
       for (int i = 0; i < oldState.size(); i++)
       {
         if (oldState[i].moduleId == gMixModule.id)
@@ -428,9 +429,9 @@ FFDeserializationConverter::PostProcess(
             if (norm.has_value())
               *paramValues[param->runtimeParamIndex] = norm.value();
           }
-          if (oldState[i].paramId == audioInToGFX.id && oldState[i].paramSlot < audioInToGFX.slotCount)
+          if (oldState[i].paramId == audioInToGFX.id && oldState[i].paramSlot < sidechainToGFX.slotCount)
           {
-            auto const* param = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::AudioInToGFX, oldState[i].paramSlot}});
+            auto const* param = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::SidechainToGFX, oldState[i].paramSlot}});
             auto norm = param->TextToNormalized(true, oldState[i].value);
             if (norm.has_value())
               *paramValues[param->runtimeParamIndex] = norm.value();
