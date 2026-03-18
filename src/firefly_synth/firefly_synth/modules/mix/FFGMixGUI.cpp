@@ -88,7 +88,7 @@ MakeGMixSectionGFXToOut(FBPlugGUI* plugGUI)
 }
 
 static Component*
-MakeGMixGUISectionVoiceAndExtAudioToOut(FBPlugGUI* plugGUI)
+MakeGMixGUISectionVoiceAndSidechainToOut(FBPlugGUI* plugGUI)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1 });
@@ -165,7 +165,7 @@ FFMakeGMixGUITab(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 3, 2, 4 });
   grid->Add(0, 0, MakeGMixGUISectionAmpBal(plugGUI));
-  grid->Add(0, 1, MakeGMixGUISectionVoiceAndExtAudioToOut(plugGUI));
+  grid->Add(0, 1, MakeGMixGUISectionVoiceAndSidechainToOut(plugGUI));
   grid->Add(0, 2, MakeGMixSectionGFXToOut(plugGUI));
   return plugGUI->StoreComponent<FBModuleComponent>(plugGUI->HostContext()->Topo(), (int)FFModuleType::GMix, 0, grid);
 }
