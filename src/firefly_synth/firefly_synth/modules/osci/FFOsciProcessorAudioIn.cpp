@@ -11,7 +11,7 @@
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
 void 
-FFOsciProcessor::BeginVoiceExtAudio(
+FFOsciProcessor::BeginVoiceAudioIn(
   FBModuleProcState& state)
 {
   (void)state;
@@ -20,17 +20,17 @@ FFOsciProcessor::BeginVoiceExtAudio(
   auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
 
-  float extAudioLPOnNorm = params.block.extAudioLPOn[0].Voice()[voice];
-  float extAudioHPOnNorm = params.block.extAudioHPOn[0].Voice()[voice];
-  _extAudioLPOn = topo.NormalizedToBoolFast(FFOsciParam::ExtAudioLPOn, extAudioLPOnNorm);
-  _extAudioHPOn = topo.NormalizedToBoolFast(FFOsciParam::ExtAudioHPOn, extAudioHPOnNorm);
+  float audioInLPOnNorm = params.block.audioInLPOn[0].Voice()[voice];
+  float audioInHPOnNorm = params.block.audioInHPOn[0].Voice()[voice];
+  _extAudioLPOn = topo.NormalizedToBoolFast(FFOsciParam::AudioInLPOn, audioInLPOnNorm);
+  _extAudioHPOn = topo.NormalizedToBoolFast(FFOsciParam::AudioInHPOn, audioInHPOnNorm);
 
   _extAudioLPFilter.Reset();
   _extAudioHPFilter.Reset();
 }
 
 void 
-FFOsciProcessor::ProcessExtAudio(
+FFOsciProcessor::ProcessAudioIn(
   FBModuleProcState& state)
 {
   int voice = state.voice->slot;
@@ -42,12 +42,12 @@ FFOsciProcessor::ProcessExtAudio(
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
   auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
 
-  auto const& extAudioLPResNorm = procParams.acc.extAudioLPRes[0].Voice()[voice];
-  auto const& extAudioHPResNorm = procParams.acc.extAudioHPRes[0].Voice()[voice];
-  auto const& extAudioLPFreqNorm = procParams.acc.extAudioLPFreq[0].Voice()[voice];
-  auto const& extAudioHPFreqNorm = procParams.acc.extAudioHPFreq[0].Voice()[voice];
-  auto const& extAudioInputBalNorm = procParams.acc.extAudioInputBal[0].Voice()[voice];
-  auto const& extAudioInputGainNorm = procParams.acc.extAudioInputGain[0].Voice()[voice];
+  auto const& audioInLPResNorm = procParams.acc.audioInLPRes[0].Voice()[voice];
+  auto const& audioInHPResNorm = procParams.acc.audioInHPRes[0].Voice()[voice];
+  auto const& audioInLPFreqNorm = procParams.acc.audioInLPFreq[0].Voice()[voice];
+  auto const& audioInHPFreqNorm = procParams.acc.audioInHPFreq[0].Voice()[voice];
+  auto const& audioInBalNorm = procParams.acc.audioInBal[0].Voice()[voice];
+  auto const& audioInGainNorm = procParams.acc.audioInGain[0].Voice()[voice];
 
   FBSArray2<float, FBFixedBlockSamples, 2> audioIn;
   if (!_graph)
@@ -85,14 +85,14 @@ FFOsciProcessor::ProcessExtAudio(
   {
     float audioInL = audioIn[0].Get(s);
     float audioInR = audioIn[1].Get(s);
-    float inputBal = topo.NormalizedToLinearFast(FFOsciParam::ExtAudioInputBal, extAudioInputBalNorm.CV().Get(s));
-    float inputGain = topo.NormalizedToLinearFast(FFOsciParam::ExtAudioInputGain, extAudioInputGainNorm.CV().Get(s));
+    float inputBal = topo.NormalizedToLinearFast(FFOsciParam::AudioInBal, audioInBalNorm.CV().Get(s));
+    float inputGain = topo.NormalizedToLinearFast(FFOsciParam::AudioInGain, audioInGainNorm.CV().Get(s));
     audioInMono.Set(s, ((audioInL * FBStereoBalance(0, inputBal)) + (audioInR * FBStereoBalance(1, inputBal))) * inputGain);
 
     if (_extAudioLPOn)
     {
-      float lpFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::ExtAudioLPFreq, extAudioLPFreqNorm.CV().Get(s));
-      float lpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::ExtAudioLPRes, extAudioLPResNorm.CV().Get(s));
+      float lpFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::AudioInLPFreq, audioInLPFreqNorm.CV().Get(s));
+      float lpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::AudioInLPRes, audioInLPResNorm.CV().Get(s));
       lpFreqPlain *= _graphStVarFilterFreqMultiplier;
       _extAudioLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0f);
       audioInMono.Set(s, (float)_extAudioLPFilter.Next(0, audioInMono.Get(s)));
@@ -100,8 +100,8 @@ FFOsciProcessor::ProcessExtAudio(
 
     if (_extAudioHPOn)
     {
-      float hpFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::ExtAudioHPFreq, extAudioHPFreqNorm.CV().Get(s));
-      float hpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::ExtAudioHPRes, extAudioHPResNorm.CV().Get(s));
+      float hpFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::AudioInHPFreq, audioInHPFreqNorm.CV().Get(s));
+      float hpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::AudioInHPRes, audioInHPResNorm.CV().Get(s));
       hpFreqPlain *= _graphStVarFilterFreqMultiplier;
       _extAudioHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0f);
       audioInMono.Set(s, (float)_extAudioHPFilter.Next(0, audioInMono.Get(s)));
@@ -129,10 +129,10 @@ FFOsciProcessor::ProcessExtAudio(
   if (exchangeToGUI == nullptr)
     return;
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
-  exchangeParams.acc.extAudioLPRes[0][voice] = extAudioLPResNorm.Last();
-  exchangeParams.acc.extAudioHPRes[0][voice] = extAudioHPResNorm.Last();
-  exchangeParams.acc.extAudioLPFreq[0][voice] = extAudioLPFreqNorm.Last();
-  exchangeParams.acc.extAudioHPFreq[0][voice] = extAudioHPFreqNorm.Last();
-  exchangeParams.acc.extAudioInputBal[0][voice] = extAudioInputBalNorm.Last();
-  exchangeParams.acc.extAudioInputGain[0][voice] = extAudioInputGainNorm.Last();
+  exchangeParams.acc.audioInLPRes[0][voice] = audioInLPResNorm.Last();
+  exchangeParams.acc.audioInHPRes[0][voice] = audioInHPResNorm.Last();
+  exchangeParams.acc.audioInLPFreq[0][voice] = audioInLPFreqNorm.Last();
+  exchangeParams.acc.audioInHPFreq[0][voice] = audioInHPFreqNorm.Last();
+  exchangeParams.acc.audioInBal[0][voice] = audioInBalNorm.Last();
+  exchangeParams.acc.audioInGain[0][voice] = audioInGainNorm.Last();
 }
