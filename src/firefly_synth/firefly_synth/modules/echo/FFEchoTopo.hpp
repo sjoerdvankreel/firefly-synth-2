@@ -12,7 +12,8 @@ enum class FFEchoModule {
   Taps, Feedback, Reverb, Count };
 
 enum class FFGEchoTarget {
-  Off, MixIn, MixOut, VoiceMix, ExtAudio,
+  Off, MixIn, MixOut, VoiceMix, 
+  AudioIn, Sidechain,
   FX1In, FX1Out, FX2In, FX2Out,
   FX3In, FX3Out, FX4In, FX4Out };
 std::string FFGEchoTargetToString(FFGEchoTarget target);

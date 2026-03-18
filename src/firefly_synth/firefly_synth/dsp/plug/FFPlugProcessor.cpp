@@ -261,8 +261,10 @@ FFPlugProcessor::ProcessPostVoice(
 
   if (gEchoTarget == FFGEchoTarget::VoiceMix)
     ProcessGEcho(state, voiceMixdown);
-  if (gEchoTarget == FFGEchoTarget::ExtAudio) // TODO
+  if (gEchoTarget == FFGEchoTarget::AudioIn)
     ProcessGEcho(state, mainAudioIn);
+  if (gEchoTarget == FFGEchoTarget::Sidechain)
+    ProcessGEcho(state, sidechainAudioIn);
 
   for (int i = 0; i < FFEffectCount; i++)
   {
