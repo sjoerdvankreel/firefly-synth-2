@@ -1050,6 +1050,24 @@ FFMakeOsciTopo()
   stringTrackingKey.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringTrackingKey);
   stringTrackingKey.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
+  auto& audioInSource = result->params[(int)FFOsciParam::AudioInSource];
+  audioInSource.mode = FBParamMode::Block;
+  audioInSource.defaultText = "Audio In";
+  audioInSource.name = "Audio In Source";
+  audioInSource.description = "Audio In Oscillator Source";
+  audioInSource.display = "Source";
+  audioInSource.slotCount = 1;
+  audioInSource.id = "{A060B56C-48DF-48DD-9619-B97E3ADAE4F7}";
+  audioInSource.type = FBParamType::List;
+  audioInSource.List().items = {
+    { "{5D3FE4DD-E582-4075-AC0E-5DC01EE62F9A}", "Audio In" },
+    { "{E6F341FB-D093-461F-B4B8-48C389C3B25D}", "Sidechain" } };
+  auto selectAudioInSource = [](auto& module) { return &module.block.audioInSource; };
+  audioInSource.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAudioInSource);
+  audioInSource.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectAudioInSource);
+  audioInSource.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAudioInSource);
+  audioInSource.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::AudioIn; });
+
   auto& audioInLPOn = result->params[(int)FFOsciParam::AudioInLPOn];
   audioInLPOn.mode = FBParamMode::Block;
   audioInLPOn.name = "Audio In LP On";

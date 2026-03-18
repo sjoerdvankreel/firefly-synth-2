@@ -57,6 +57,7 @@ class alignas(alignof(TBlock)) FFOsciBlockParamState final
   std::array<TBlock, 1> stringPoles = {};
   std::array<TBlock, 1> audioInLPOn = {};
   std::array<TBlock, 1> audioInHPOn = {};
+  std::array<TBlock, 1> audioInSource = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockParamState);
 };
