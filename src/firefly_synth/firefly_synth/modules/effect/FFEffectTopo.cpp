@@ -946,7 +946,8 @@ FFMakeEffectTopo(bool global)
   compSide.description = "Compressor Sidechain";
   compSide.type = FBParamType::List;
   compSide.List().items = {
-    { prefix + "{F09A2B85-C0F9-4C9F-864A-FF3FF0400F85}", "Off "} };
+    { prefix + "{F09A2B85-C0F9-4C9F-864A-FF3FF0400F85}", "Off" },
+    { prefix + "{87C616FA-AC8D-4BD6-ACAC-FCBE0224A4DF}", "Off2" } };
   auto selectCompSide = [](auto& module) { return &module.block.compSide; };
   compSide.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompSide);
   compSide.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompSide);
