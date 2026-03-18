@@ -841,7 +841,7 @@ FFMakeEffectTopo(bool global)
   compAttack.defaultText = "3";
   compAttack.display = "Attack";
   compAttack.name = "Comp Attack";
-  compAttack.slotCount = 1;
+  compAttack.slotCount = FFEffectBlockCount;
   compAttack.unit = "Ms";
   compAttack.id = prefix + "{EBA15417-C159-4B31-BC14-BE31AFE04EED}";
   compAttack.description = "Compressor Attack Time";
@@ -866,7 +866,7 @@ FFMakeEffectTopo(bool global)
   compRelease.defaultText = "100";
   compRelease.display = "Release";
   compRelease.name = "Comp Release";
-  compRelease.slotCount = 1;
+  compRelease.slotCount = FFEffectBlockCount;
   compRelease.unit = "Ms";
   compRelease.id = prefix + "{02783FD0-E646-4282-A0F8-E2CC865AF11D}";
   compRelease.description = "Compressor Release Time";
