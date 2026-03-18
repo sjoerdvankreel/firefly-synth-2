@@ -37,6 +37,19 @@ FFMakeGMixTopo(bool isFx)
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gMix; });
   auto selectModule = [](auto& state) { return &state.global.gMix; };
 
+  // need something to tie the audio in visibility to
+  auto& dummyToggle = result->params[(int)FFGMixParam::DummyToggle];
+  dummyToggle.mode = FBParamMode::Fake;
+  dummyToggle.defaultText = "Off";
+  dummyToggle.name = "Dummy Toggle";
+  dummyToggle.slotCount = 1;
+  dummyToggle.id = "{C1EB5E5F-D4E4-43CC-B2B6-6BB3E1D79296}";
+  dummyToggle.type = FBParamType::Boolean;
+  auto selectDummyToggle = [](auto& module) { return &module.block.dummyToggle; };
+  dummyToggle.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDummyToggle);
+  dummyToggle.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectDummyToggle);
+  dummyToggle.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDummyToggle);
+
   auto& amp = result->params[(int)FFGMixParam::Amp];
   amp.mode = FBParamMode::Accurate;
   amp.defaultText = "50";
@@ -131,7 +144,7 @@ FFMakeGMixTopo(bool isFx)
   audioInToGFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAudioInToGFX);
   audioInToGFX.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAudioInToGFX);
   audioInToGFX.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAudioInToGFX);
-  audioInToGFX.dependencies.visible.audio.WhenSimple({ (int)FFGMixParam::AudioInToGFX }, [isFx](auto const&) { return isFx; });
+  audioInToGFX.dependencies.visible.audio.WhenSimple({ (int)FFGMixParam::DummyToggle }, [isFx](auto const&) { return isFx; });
 
   auto& sidechainToGFX = result->params[(int)FFGMixParam::SidechainToGFX];
   sidechainToGFX.mode = FBParamMode::Accurate;
@@ -192,7 +205,7 @@ FFMakeGMixTopo(bool isFx)
   audioInToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAudioInToOut);
   audioInToOut.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAudioInToOut);
   audioInToOut.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAudioInToOut);
-  audioInToOut.dependencies.visible.audio.WhenSimple({ (int)FFGMixParam::AudioInToOut }, [isFx](auto const&) { return isFx; });
+  audioInToOut.dependencies.visible.audio.WhenSimple({ (int)FFGMixParam::DummyToggle }, [isFx](auto const&) { return isFx; });
 
   auto& sidechainToOut = result->params[(int)FFGMixParam::SidechainToOut];
   sidechainToOut.mode = FBParamMode::Accurate;

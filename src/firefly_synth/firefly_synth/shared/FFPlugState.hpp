@@ -113,8 +113,8 @@ struct alignas(alignof(TAccurate)) FFGlobalParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalParamState);
   std::array<FFOtherParamState<TBlock>, 1> other = {};
-  std::array<FFGMixParamState<TAccurate>, 1> gMix = {};
   std::array<FFSettingsParamState<TBlock>, 1> settings = {};
+  std::array<FFGMixParamState<TBlock, TAccurate>, 1> gMix = {};
   std::array<FFEchoParamState<TBlock, TAccurate>, 1> gEcho = {};
   std::array<FFMasterParamState<TBlock, TAccurate>, 1> master = {};
   std::array<FFOutputParamState<TBlock, TAccurate>, 1> output = {};
