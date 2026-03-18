@@ -55,8 +55,8 @@ class alignas(alignof(TBlock)) FFOsciBlockParamState final
   std::array<TBlock, 1> stringHPOn = {};
   std::array<TBlock, 1> stringSeed = {};
   std::array<TBlock, 1> stringPoles = {};
-  std::array<TBlock, 1> extAudioLPOn = {};
-  std::array<TBlock, 1> extAudioHPOn = {};
+  std::array<TBlock, 1> audioInLPOn = {};
+  std::array<TBlock, 1> audioInHPOn = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockParamState);
 };
@@ -99,12 +99,12 @@ class alignas(alignof(TAccurate)) FFOsciAccParamState final
   std::array<TAccurate, 1> stringFeedback = {};
   std::array<TAccurate, 1> stringFeedbackKTrk = {};
   std::array<TAccurate, 1> stringTrackingKey = {};
-  std::array<TAccurate, 1> extAudioLPRes = {};
-  std::array<TAccurate, 1> extAudioHPRes = {};
-  std::array<TAccurate, 1> extAudioLPFreq = {};
-  std::array<TAccurate, 1> extAudioHPFreq = {};
-  std::array<TAccurate, 1> extAudioInputBal = {};
-  std::array<TAccurate, 1> extAudioInputGain = {};
+  std::array<TAccurate, 1> audioInBal = {};
+  std::array<TAccurate, 1> audioInGain = {};
+  std::array<TAccurate, 1> audioInLPRes = {};
+  std::array<TAccurate, 1> audioInHPRes = {};
+  std::array<TAccurate, 1> audioInLPFreq = {};
+  std::array<TAccurate, 1> audioInHPFreq = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamState);
 };

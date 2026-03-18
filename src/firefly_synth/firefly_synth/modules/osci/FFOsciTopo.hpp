@@ -11,7 +11,7 @@ enum class FFOsciStringMode { Uni, Norm };
 enum class FFOsciFMRatioMode { Ratio, Free };
 
 enum class FFOsciType { 
-  Off, Wave, FM, String, ExtAudio };
+  Off, Wave, FM, String, AudioIn };
 std::string FFOsciTypeToString(FFOsciType type);
 
 enum class FFOsciWaveDSFMode { Off, Over, BW };
@@ -42,7 +42,7 @@ enum class FFOsciParam {
   StringLPOn, StringLPFreq, StringLPRes, StringLPKTrk,
   StringHPOn, StringHPFreq, StringHPRes, StringHPKTrk,
   StringDamp, StringDampKTrk, StringFeedback, StringFeedbackKTrk, 
-  ExtAudioInputGain, ExtAudioInputBal,
-  ExtAudioLPOn, ExtAudioLPFreq, ExtAudioLPRes,
-  ExtAudioHPOn, ExtAudioHPFreq, ExtAudioHPRes,
+  AudioInGain, AudioInBal,
+  AudioInLPOn, AudioInLPFreq, AudioInLPRes,
+  AudioInHPOn, AudioInHPFreq, AudioInHPRes,
   Count };
