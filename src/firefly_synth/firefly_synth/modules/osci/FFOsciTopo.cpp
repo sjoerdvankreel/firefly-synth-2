@@ -53,7 +53,7 @@ FFOsciTypeToString(FFOsciType type)
 }
 
 std::unique_ptr<FBStaticModule>
-FFMakeOsciTopo()
+FFMakeOsciTopo(bool isFx)
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
@@ -1052,7 +1052,7 @@ FFMakeOsciTopo()
 
   auto& audioInSource = result->params[(int)FFOsciParam::AudioInSource];
   audioInSource.mode = FBParamMode::Block;
-  audioInSource.defaultText = "Audio In";
+  audioInSource.defaultText = isFx? "Audio In": "Sidechain";
   audioInSource.name = "Audio In Source";
   audioInSource.description = "Audio In Oscillator Source";
   audioInSource.display = "Source";

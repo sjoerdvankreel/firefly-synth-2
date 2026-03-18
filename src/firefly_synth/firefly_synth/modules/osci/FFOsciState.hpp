@@ -37,7 +37,7 @@ template <class TBlock>
 class alignas(alignof(TBlock)) FFOsciBlockParamState final
 {
   friend class FFOsciProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo(bool);
   std::array<TBlock, 1> type = {};
   std::array<TBlock, 1> keyTrack = {};
   std::array<TBlock, 1> uniCount = {};
@@ -66,7 +66,7 @@ template <class TAccurate>
 class alignas(alignof(TAccurate)) FFOsciAccParamState final
 {
   friend class FFOsciProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo(bool);
   std::array<TAccurate, 1> pan = {};
   std::array<TAccurate, 1> gain = {};
   std::array<TAccurate, 1> envToGain = {};
@@ -114,7 +114,7 @@ template <class TBlock, class TAccurate>
 class alignas(alignof(TAccurate)) FFOsciParamState final
 {
   friend class FFOsciProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo(bool);
   FFOsciAccParamState<TAccurate> acc = {};
   FFOsciBlockParamState<TBlock> block = {};
   FFOsciVoiceStartParamState<TAccurate> voiceStart = {};

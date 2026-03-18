@@ -40,7 +40,7 @@ FFGEchoTargetToString(FFGEchoTarget target)
   case FFGEchoTarget::MixIn: return "GMix In";
   case FFGEchoTarget::MixOut: return "GMix Out";
   case FFGEchoTarget::VoiceMix: return "VMix";
-  case FFGEchoTarget::AudioIn: return "Audio In"; // todo convert
+  case FFGEchoTarget::AudioIn: return "Audio In";
   case FFGEchoTarget::Sidechain: return "Sidechain";
   case FFGEchoTarget::FX1In: return "GFX1 In";
   case FFGEchoTarget::FX1Out: return "GFX1 Out";

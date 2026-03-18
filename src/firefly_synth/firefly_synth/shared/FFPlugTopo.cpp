@@ -121,7 +121,7 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->modules[(int)FFModuleType::Other] = std::move(*FFMakeOtherTopo());
   result->modules[(int)FFModuleType::GUISettings] = std::move(*FFMakeGUISettingsTopo());
   result->modules[(int)FFModuleType::Settings] = std::move(*FFMakeSettingsTopo(isFX));
-  result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
+  result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo(isFX));
   result->modules[(int)FFModuleType::OsciMod] = std::move(*FFMakeOsciModTopo());
   result->modules[(int)FFModuleType::VNote] = std::move(*FFMakeVNoteTopo());
   result->modules[(int)FFModuleType::VEffect] = std::move(*FFMakeEffectTopo(false));

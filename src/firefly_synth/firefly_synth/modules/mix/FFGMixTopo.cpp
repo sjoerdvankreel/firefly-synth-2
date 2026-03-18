@@ -129,7 +129,6 @@ FFMakeGMixTopo(bool isFx)
   voiceToGFX.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectVoiceToGFX);
   voiceToGFX.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoiceToGFX);
 
-  // todo convert for synth
   auto& audioInToGFX = result->params[(int)FFGMixParam::AudioInToGFX];
   audioInToGFX.mode = FBParamMode::Accurate;
   audioInToGFX.defaultText = "0";

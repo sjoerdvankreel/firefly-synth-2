@@ -62,6 +62,7 @@ class FFOsciProcessor final
 
   bool _audioInLPOn = {};
   bool _audioInHPOn = {};
+  FFOsciAudioInSource _audioInSource = {};
 
   int _stringSeed = {};
   int _stringPoles = {};

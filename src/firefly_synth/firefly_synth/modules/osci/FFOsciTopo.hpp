@@ -4,7 +4,7 @@
 #include <string>
 
 struct FBStaticModule;
-std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
+std::unique_ptr<FBStaticModule> FFMakeOsciTopo(bool isFx);
 
 enum class FFOsciFMMode { Linear, Exp };
 enum class FFOsciStringMode { Uni, Norm };

@@ -22,8 +22,10 @@ FFOsciProcessor::BeginVoiceAudioIn(
 
   float audioInLPOnNorm = params.block.audioInLPOn[0].Voice()[voice];
   float audioInHPOnNorm = params.block.audioInHPOn[0].Voice()[voice];
+  float audioInSourceNorm = params.block.audioInSource[0].Voice()[voice];
   _audioInLPOn = topo.NormalizedToBoolFast(FFOsciParam::AudioInLPOn, audioInLPOnNorm);
   _audioInHPOn = topo.NormalizedToBoolFast(FFOsciParam::AudioInHPOn, audioInHPOnNorm);
+  _audioInSource = topo.NormalizedToListFast<FFOsciAudioInSource>(FFOsciParam::AudioInSource, audioInSourceNorm);
 
   _audioInLPFilter.Reset();
   _audioInHPFilter.Reset();
@@ -53,12 +55,10 @@ FFOsciProcessor::ProcessAudioIn(
   if (!_graph)
   {
     // Not graphing - we may have actual audio input.
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-    {
-      // TODO
-      audioIn[0].Set(s, (*state.input->mainAudio)[0].Get(s));
-      audioIn[1].Set(s, (*state.input->mainAudio)[1].Get(s));
-    }
+    if(_audioInSource == FFOsciAudioInSource::AudioIn)
+      state.input->mainAudio->CopyTo(audioIn);
+    else
+      state.input->sidechainAudio->CopyTo(audioIn);
   }
   else
   {
