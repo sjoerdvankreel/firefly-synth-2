@@ -92,6 +92,42 @@ FFEffectCompModeToString(FFEffectCompMode mode)
   }
 }
 
+std::string 
+FFVEffectCompSideToString(FFVEffectCompSide side)
+{
+  switch (side)
+  {
+  case FFVEffectCompSide::Off: return "Off";
+  case FFVEffectCompSide::AudioIn: return "Audio In";
+  case FFVEffectCompSide::Sidechain: return "Sidechain";
+  case FFVEffectCompSide::OscMix: return "Osc Mix";
+  case FFVEffectCompSide::Osc1: return "Osc 1";
+  case FFVEffectCompSide::Osc2: return "Osc 2";
+  case FFVEffectCompSide::Osc3: return "Osc 3";
+  case FFVEffectCompSide::Osc4: return "Osc 4";
+  case FFVEffectCompSide::FX1: return "VFX 1";
+  case FFVEffectCompSide::FX2: return "VFX 2";
+  case FFVEffectCompSide::FX3: return "VFX 3";
+  default: FB_ASSERT(false); return {};
+  }
+}
+
+std::string 
+FFGEffectCompSideToString(FFGEffectCompSide side)
+{
+  switch (side)
+  {
+  case FFGEffectCompSide::Off: return "Off";
+  case FFGEffectCompSide::AudioIn: return "Audio In";
+  case FFGEffectCompSide::Sidechain: return "Sidechain";
+  case FFGEffectCompSide::VMix: return "VMix";
+  case FFGEffectCompSide::FX1: return "GFX 1";
+  case FFGEffectCompSide::FX2: return "GFX 2";
+  case FFGEffectCompSide::FX3: return "GFX 3";
+  default: FB_ASSERT(false); return {};
+  }
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeEffectTopo(bool global)
 {
@@ -945,9 +981,28 @@ FFMakeEffectTopo(bool global)
   compVSideOrGSide.id = prefix + "{E72C3234-F8DD-4EEE-A7C2-31C26FDD2EA2}";
   compVSideOrGSide.description = "Compressor Sidechain";
   compVSideOrGSide.type = FBParamType::List;
-  compVSideOrGSide.List().items = {
-    { prefix + "{F09A2B85-C0F9-4C9F-864A-FF3FF0400F85}", "Off" },
-    { prefix + "{87C616FA-AC8D-4BD6-ACAC-FCBE0224A4DF}", "Off2" } };
+  if (global)
+    compVSideOrGSide.List().items = {
+      { prefix + "{8C37166E-DA71-4BA4-9ADF-B948DD35BE37}", FFGEffectCompSideToString(FFGEffectCompSide::Off) },
+      { prefix + "{8C72FECF-8721-4157-8AAE-4D321F61033A}", FFGEffectCompSideToString(FFGEffectCompSide::AudioIn) },
+      { prefix + "{F704A8A1-9E48-493F-BF44-74BC5DA2FA2A}", FFGEffectCompSideToString(FFGEffectCompSide::Sidechain) },
+      { prefix + "{320EAC20-83E1-4817-8E48-BC0409D738F4}", FFGEffectCompSideToString(FFGEffectCompSide::VMix) },
+      { prefix + "{2817E796-DCA3-4737-9653-64E6F6E906A2}", FFGEffectCompSideToString(FFGEffectCompSide::FX1) },
+      { prefix + "{61457B80-DEBB-4129-970F-D69D5DD80FFD}", FFGEffectCompSideToString(FFGEffectCompSide::FX2) },
+      { prefix + "{24396073-0731-4B27-80A4-34121CCBA601}", FFGEffectCompSideToString(FFGEffectCompSide::FX3) } };
+  else
+    compVSideOrGSide.List().items = {
+      { prefix + "{5DD03567-DFE8-4B31-B852-86EA792DA59B}", FFVEffectCompSideToString(FFVEffectCompSide::Off) },
+      { prefix + "{56BBC410-30CD-4CA9-ABE7-80F100595409}", FFVEffectCompSideToString(FFVEffectCompSide::AudioIn) },
+      { prefix + "{F572BBA5-9CC3-4535-965C-0ED58CE7ABE6}", FFVEffectCompSideToString(FFVEffectCompSide::Sidechain) },
+      { prefix + "{04C086B6-0EBA-4AD4-A671-852C8C7CA3CE}", FFVEffectCompSideToString(FFVEffectCompSide::OscMix) },
+      { prefix + "{80BC7E48-C21A-45CD-A117-D2CBBF932D4F}", FFVEffectCompSideToString(FFVEffectCompSide::Osc1) },
+      { prefix + "{2004DBF6-E283-4739-9EEB-A052C0729AC4}", FFVEffectCompSideToString(FFVEffectCompSide::Osc2) },
+      { prefix + "{9B43C310-C7F4-449B-B22F-B5D38172F084}", FFVEffectCompSideToString(FFVEffectCompSide::Osc3) },
+      { prefix + "{9508FB0B-07F6-4197-A97E-AEC73FA37569}", FFVEffectCompSideToString(FFVEffectCompSide::Osc4) },
+      { prefix + "{5B654DD1-3FA2-4B41-9B83-E2C832BA77F2}", FFVEffectCompSideToString(FFVEffectCompSide::FX1) },
+      { prefix + "{77F1BDA9-F228-45AB-8A7B-6A78A9EE01CF}", FFVEffectCompSideToString(FFVEffectCompSide::FX2) },
+      { prefix + "{74D30B36-5B8A-4AB5-B6A9-32AD5FEF6393}", FFVEffectCompSideToString(FFVEffectCompSide::FX3) } };
   auto selectCompVSideOrGSide = [](auto& module) { return &module.block.compVSideOrGSide; };
   compVSideOrGSide.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompVSideOrGSide);
   compVSideOrGSide.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompVSideOrGSide);

@@ -8,6 +8,18 @@ struct FBStaticModule;
 inline int constexpr FFEffectBlockCount = 4; // must be <= lfo count and env count minus amp env for easy access mod
 std::unique_ptr<FBStaticModule> FFMakeEffectTopo(bool global);
 
+enum class FFVEffectCompSide {
+  Off, AudioIn, Sidechain, OscMix,
+  Osc1, Osc2, Osc3, Osc4,
+  FX1, FX2, FX3 };
+
+enum class FFGEffectCompSide {
+  Off, AudioIn, Sidechain, VMix,
+  FX1, FX2, FX3 };
+
+std::string FFVEffectCompSideToString(FFVEffectCompSide side);
+std::string FFGEffectCompSideToString(FFGEffectCompSide side);
+
 enum FFEffectFoldMode { FFEffectFoldModeFold = FFTrigCount };
 enum class FFEffectCompMode { Peak, RMS };
 enum class FFEffectSkewMode { Uni, Bi };
