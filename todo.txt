@@ -1,5 +1,6 @@
 v2.1.2
 [ ] sidechain for fx
+[ ] fix the pdc
 [ ] fix all the extaudio stuff
 [ ] compressor
 [ ] retest all the sidechain tests
