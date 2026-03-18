@@ -60,8 +60,8 @@ class FFOsciProcessor final
   float _uniOffsetPlain = {};
   float _uniRandomPlain = {};
 
-  bool _extAudioLPOn = {};
-  bool _extAudioHPOn = {};
+  bool _audioInLPOn = {};
+  bool _audioInHPOn = {};
 
   int _stringSeed = {};
   int _stringPoles = {};
@@ -100,8 +100,8 @@ class FFOsciProcessor final
   juce::dsp::AudioBlock<float> _downsampledBlock = {};
   std::array<float*, FFOsciUniMaxCount> _downsampledChannelPtrs = {};
 
-  FFStateVariableFilter<1> _extAudioLPFilter = {};
-  FFStateVariableFilter<1> _extAudioHPFilter = {};
+  FFStateVariableFilter<1> _audioInLPFilter = {};
+  FFStateVariableFilter<1> _audioInHPFilter = {};
 
   FFStateVariableFilter<FFOsciUniMaxCount> _stringLPFilter = {};
   FFStateVariableFilter<FFOsciUniMaxCount> _stringHPFilter = {};

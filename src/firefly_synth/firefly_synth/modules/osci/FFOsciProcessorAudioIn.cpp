@@ -22,11 +22,11 @@ FFOsciProcessor::BeginVoiceAudioIn(
 
   float audioInLPOnNorm = params.block.audioInLPOn[0].Voice()[voice];
   float audioInHPOnNorm = params.block.audioInHPOn[0].Voice()[voice];
-  _extAudioLPOn = topo.NormalizedToBoolFast(FFOsciParam::AudioInLPOn, audioInLPOnNorm);
-  _extAudioHPOn = topo.NormalizedToBoolFast(FFOsciParam::AudioInHPOn, audioInHPOnNorm);
+  _audioInLPOn = topo.NormalizedToBoolFast(FFOsciParam::AudioInLPOn, audioInLPOnNorm);
+  _audioInHPOn = topo.NormalizedToBoolFast(FFOsciParam::AudioInHPOn, audioInHPOnNorm);
 
-  _extAudioLPFilter.Reset();
-  _extAudioHPFilter.Reset();
+  _audioInLPFilter.Reset();
+  _audioInHPFilter.Reset();
 }
 
 void 
@@ -89,22 +89,22 @@ FFOsciProcessor::ProcessAudioIn(
     float inputGain = topo.NormalizedToLinearFast(FFOsciParam::AudioInGain, audioInGainNorm.CV().Get(s));
     audioInMono.Set(s, ((audioInL * FBStereoBalance(0, inputBal)) + (audioInR * FBStereoBalance(1, inputBal))) * inputGain);
 
-    if (_extAudioLPOn)
+    if (_audioInLPOn)
     {
       float lpFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::AudioInLPFreq, audioInLPFreqNorm.CV().Get(s));
       float lpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::AudioInLPRes, audioInLPResNorm.CV().Get(s));
       lpFreqPlain *= _graphStVarFilterFreqMultiplier;
-      _extAudioLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0f);
-      audioInMono.Set(s, (float)_extAudioLPFilter.Next(0, audioInMono.Get(s)));
+      _audioInLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0f);
+      audioInMono.Set(s, (float)_audioInLPFilter.Next(0, audioInMono.Get(s)));
     }
 
-    if (_extAudioHPOn)
+    if (_audioInHPOn)
     {
       float hpFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::AudioInHPFreq, audioInHPFreqNorm.CV().Get(s));
       float hpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::AudioInHPRes, audioInHPResNorm.CV().Get(s));
       hpFreqPlain *= _graphStVarFilterFreqMultiplier;
-      _extAudioHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0f);
-      audioInMono.Set(s, (float)_extAudioHPFilter.Next(0, audioInMono.Get(s)));
+      _audioInHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0f);
+      audioInMono.Set(s, (float)_audioInHPFilter.Next(0, audioInMono.Get(s)));
     }
   }
 
