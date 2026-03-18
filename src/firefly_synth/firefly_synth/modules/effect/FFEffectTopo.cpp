@@ -66,6 +66,7 @@ FFEffectKindToString(FFEffectKind kind)
   case FFEffectKind::HSH: return "HSH";
   case FFEffectKind::CombMin: return "Comb-";
   case FFEffectKind::CombPlus: return "Comb+";
+  case FFEffectKind::Compressor: return "Comp";
   default: FB_ASSERT(false); return {};
   }
 }
@@ -197,10 +198,12 @@ FFMakeEffectTopo(bool global)
     { "{37005D34-E2E4-4CCD-8783-135952515B41}", FFEffectKindToString(FFEffectKind::CombMin) },
     { "{FD072A47-EE67-4091-A687-7168B69A6E89}", FFEffectKindToString(FFEffectKind::Clip) },
     { "{06334343-5264-489E-ADF9-20ADCEF983FC}", FFEffectKindToString(FFEffectKind::Fold) },
-    { "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", FFEffectKindToString(FFEffectKind::Skew) } };
+    { "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", FFEffectKindToString(FFEffectKind::Skew) },
+    { "{C5D903AD-8621-4A6A-9408-3441239CD395}", FFEffectKindToString(FFEffectKind::Compressor) } };
   kind.List().submenuStart[(int)FFEffectKind::Off] = "Off";
   kind.List().submenuStart[(int)FFEffectKind::LPF] = "Filter";
   kind.List().submenuStart[(int)FFEffectKind::Clip] = "Shape";
+  kind.List().submenuStart[(int)FFEffectKind::Compressor] = "Other";
   auto selectKind = [](auto& module) { return &module.block.kind; };
   kind.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectKind);
   kind.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectKind);
@@ -673,9 +676,9 @@ FFMakeEffectTopo(bool global)
   distDrive.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectDistDrive);
   distDrive.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectDistDrive);
   distDrive.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return FFEffectKindIsShaper((FFEffectKind)vs[0]); });
   distDrive.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] != 0 && vs[1] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return vs[0] != 0 && FFEffectKindIsShaper((FFEffectKind)vs[1]); });
 
   auto& distMix = result->params[(int)FFEffectParam::DistMix];
   distMix.mode = FBParamMode::Accurate;
@@ -695,9 +698,9 @@ FFMakeEffectTopo(bool global)
   distMix.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectDistMix);
   distMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectDistMix);
   distMix.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return FFEffectKindIsShaper((FFEffectKind)vs[0]); });
   distMix.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] != 0 && vs[1] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return vs[0] != 0 && FFEffectKindIsShaper((FFEffectKind)vs[1]); });
 
   auto& distBias = result->params[(int)FFEffectParam::DistBias];
   distBias.mode = FBParamMode::Accurate;
@@ -720,9 +723,9 @@ FFMakeEffectTopo(bool global)
   distBias.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectDistBias);
   distBias.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectDistBias);
   distBias.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return FFEffectKindIsShaper((FFEffectKind)vs[0]); });
   distBias.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] != 0 && vs[1] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return vs[0] != 0 && FFEffectKindIsShaper((FFEffectKind)vs[1]); });
 
   auto& distAmt = result->params[(int)FFEffectParam::DistAmt];
   distAmt.mode = FBParamMode::Accurate;
@@ -742,7 +745,7 @@ FFMakeEffectTopo(bool global)
   distAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectDistAmt);
   distAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectDistAmt);
   distAmt.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return FFEffectKindIsShaper((FFEffectKind)vs[0]); });
   distAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::ClipMode },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::Skew || vs[1] == (int)FFEffectKind::Clip && vs[2] == (int)FFEffectClipMode::Exp); });
 

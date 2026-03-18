@@ -170,7 +170,7 @@ EffectGraphProcessor<Global>::PostProcess(
   FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, params.graphIndex } };
   auto kind = state->AudioParamList<FFEffectKind>(indices, params.exchange, params.exchangeVoice);
 
-  points.bipolar = !params.detailGraphs || (kind == FFEffectKind::Clip || kind == FFEffectKind::Fold || kind == FFEffectKind::Skew);
+  points.bipolar = !params.detailGraphs || FFEffectKindIsShaper(kind);
   points.plotLogStart = 20.0f;
   points.plotLogEnd = 20000.0f;
   points.plotLogarithmic = !points.bipolar;

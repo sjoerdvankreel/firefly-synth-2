@@ -22,7 +22,8 @@ enum class FFEffectKind {
   Off, 
   LPF, BPF, HPF, BSF, APF, PEQ, BLL, LSH, HSH,
   Comb, CombPlus, CombMin,
-  Clip, Fold, Skew };
+  Clip, Fold, Skew,
+  Compressor };
 std::string FFEffectKindToString(FFEffectKind kind);
 
 enum class FFEffectParam { On, Oversample, TrackingKey, LastKeySmoothTime, 
