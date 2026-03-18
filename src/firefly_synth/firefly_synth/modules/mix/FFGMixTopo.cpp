@@ -12,10 +12,17 @@ FormatVoiceMixToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
 }
 
 static std::string
-FormatExtAudioToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
+FormatAudioInToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
 {
   std::string fxName = "GFX " + std::to_string(mixSlot + 1);
-  return std::string("Ext Audio\U00002192" + fxName);
+  return std::string("Audio In\U00002192" + fxName);
+}
+
+static std::string
+FormatSidechainToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
+{
+  std::string fxName = "GFX " + std::to_string(mixSlot + 1);
+  return std::string("Sidechain\U00002192" + fxName);
 }
 
 std::unique_ptr<FBStaticModule>
@@ -108,21 +115,39 @@ FFMakeGMixTopo(bool isFx)
   voiceToGFX.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectVoiceToGFX);
   voiceToGFX.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoiceToGFX);
 
-  auto& extAudioToGFX = result->params[(int)FFGMixParam::ExtAudioToGFX];
-  extAudioToGFX.mode = FBParamMode::Accurate;
-  extAudioToGFX.defaultText = "0";
-  extAudioToGFX.name = "Ext Audio To GFX";
-  extAudioToGFX.slotCount = FFEffectCount;
-  extAudioToGFX.unit = "%";
-  extAudioToGFX.id = "{20FB04D5-30A4-4AE8-9D8B-7CF039DC5A12}";
-  extAudioToGFX.description = "Route External Audio To Global FX";
-  extAudioToGFX.slotFormatter = FormatExtAudioToGFXSlot;
-  extAudioToGFX.slotFormatterOverrides = true;
-  extAudioToGFX.type = FBParamType::Identity;
-  auto selectExtAudioToGFX = [](auto& module) { return &module.acc.extAudioToGFX; };
-  extAudioToGFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioToGFX);
-  extAudioToGFX.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioToGFX);
-  extAudioToGFX.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioToGFX);
+  // todo convert for synth
+  auto& audioInToGFX = result->params[(int)FFGMixParam::AudioInToGFX];
+  audioInToGFX.mode = FBParamMode::Accurate;
+  audioInToGFX.defaultText = "0";
+  audioInToGFX.name = "Audio In To GFX";
+  audioInToGFX.slotCount = FFEffectCount;
+  audioInToGFX.unit = "%";
+  audioInToGFX.id = "{20FB04D5-30A4-4AE8-9D8B-7CF039DC5A12}";
+  audioInToGFX.description = "Route Audio In To Global FX";
+  audioInToGFX.slotFormatter = FormatAudioInToGFXSlot;
+  audioInToGFX.slotFormatterOverrides = true;
+  audioInToGFX.type = FBParamType::Identity;
+  auto selectAudioInToGFX = [](auto& module) { return &module.acc.audioInToGFX; };
+  audioInToGFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAudioInToGFX);
+  audioInToGFX.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAudioInToGFX);
+  audioInToGFX.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAudioInToGFX);
+  audioInToGFX.dependencies.visible.audio.WhenSimple({ (int)FFGMixParam::AudioInToGFX }, [isFx](auto const&) { return isFx; });
+
+  auto& sidechainToGFX = result->params[(int)FFGMixParam::SidechainToGFX];
+  sidechainToGFX.mode = FBParamMode::Accurate;
+  sidechainToGFX.defaultText = "0";
+  sidechainToGFX.name = "Sidechain To GFX";
+  sidechainToGFX.slotCount = FFEffectCount;
+  sidechainToGFX.unit = "%";
+  sidechainToGFX.id = "{00DC72E9-88D5-4156-BB38-D394CBE9C40B}";
+  sidechainToGFX.description = "Route Sidechain To Global FX";
+  sidechainToGFX.slotFormatter = FormatSidechainToGFXSlot;
+  sidechainToGFX.slotFormatterOverrides = true;
+  sidechainToGFX.type = FBParamType::Identity;
+  auto selectSidechainToGFX = [](auto& module) { return &module.acc.sidechainToGFX; };
+  sidechainToGFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSidechainToGFX);
+  sidechainToGFX.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectSidechainToGFX);
+  sidechainToGFX.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSidechainToGFX);
 
   auto& gfxToGFX = result->params[(int)FFGMixParam::GFXToGFX];
   gfxToGFX.mode = FBParamMode::Accurate;
@@ -154,19 +179,34 @@ FFMakeGMixTopo(bool isFx)
   voiceToOut.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectVoiceToOut);
   voiceToOut.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoiceToOut);
 
-  auto& extAudioToOut = result->params[(int)FFGMixParam::ExtAudioToOut];
-  extAudioToOut.mode = FBParamMode::Accurate;
-  extAudioToOut.defaultText = isFx? "100": "0";
-  extAudioToOut.name = "Ext Audio\U00002192Out";
-  extAudioToOut.slotCount = 1;
-  extAudioToOut.unit = "%";
-  extAudioToOut.id = "{5037D6CD-CB68-42E5-AD48-2B3BA8FAB213}";
-  extAudioToOut.description = "Route External Audio To Master Output";
-  extAudioToOut.type = FBParamType::Identity;
-  auto selectExtAudioToOut = [](auto& module) { return &module.acc.extAudioToOut; };
-  extAudioToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExtAudioToOut);
-  extAudioToOut.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectExtAudioToOut);
-  extAudioToOut.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExtAudioToOut);
+  auto& audioInToOut = result->params[(int)FFGMixParam::AudioInToOut];
+  audioInToOut.mode = FBParamMode::Accurate;
+  audioInToOut.defaultText = isFx? "100": "0";
+  audioInToOut.name = "Audio In\U00002192Out";
+  audioInToOut.slotCount = 1;
+  audioInToOut.unit = "%";
+  audioInToOut.id = "{5037D6CD-CB68-42E5-AD48-2B3BA8FAB213}";
+  audioInToOut.description = "Route Audio In To Master Output";
+  audioInToOut.type = FBParamType::Identity;
+  auto selectAudioInToOut = [](auto& module) { return &module.acc.audioInToOut; };
+  audioInToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAudioInToOut);
+  audioInToOut.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAudioInToOut);
+  audioInToOut.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAudioInToOut);
+  audioInToOut.dependencies.visible.audio.WhenSimple({ (int)FFGMixParam::AudioInToOut }, [isFx](auto const&) { return isFx; });
+
+  auto& sidechainToOut = result->params[(int)FFGMixParam::SidechainToOut];
+  sidechainToOut.mode = FBParamMode::Accurate;
+  sidechainToOut.defaultText = "0";
+  sidechainToOut.name = "Sidechain\U00002192Out";
+  sidechainToOut.slotCount = 1;
+  sidechainToOut.unit = "%";
+  sidechainToOut.id = "{A6D11F6A-716C-40F5-8B3A-117581D4D64E}";
+  sidechainToOut.description = "Route Sidechain To Master Output";
+  sidechainToOut.type = FBParamType::Identity;
+  auto selectSidechainToOut = [](auto& module) { return &module.acc.sidechainToOut; };
+  sidechainToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSidechainToOut);
+  sidechainToOut.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectSidechainToOut);
+  sidechainToOut.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSidechainToOut);
 
   auto& gfxToOut = result->params[(int)FFGMixParam::GFXToOut];
   gfxToOut.mode = FBParamMode::Accurate;

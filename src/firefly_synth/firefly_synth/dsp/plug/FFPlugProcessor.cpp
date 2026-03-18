@@ -254,21 +254,25 @@ FFPlugProcessor::ProcessPostVoice(
   for (int v: input.voiceManager->ActiveAndReturnedVoices())
     voiceMixdown.Add(_procState->dsp.voice[v].output);
 
-  FBSArray2<float, FBFixedBlockSamples, 2> extAudio = {};
-  input.audio->CopyTo(extAudio);
+  FBSArray2<float, FBFixedBlockSamples, 2> mainAudioIn = {};
+  FBSArray2<float, FBFixedBlockSamples, 2> sidechainAudioIn = {};
+  input.mainAudio->CopyTo(mainAudioIn);
+  input.sidechainAudio->CopyTo(sidechainAudioIn);
 
   if (gEchoTarget == FFGEchoTarget::VoiceMix)
     ProcessGEcho(state, voiceMixdown);
-  if (gEchoTarget == FFGEchoTarget::ExtAudio)
-    ProcessGEcho(state, extAudio);
+  if (gEchoTarget == FFGEchoTarget::ExtAudio) // TODO
+    ProcessGEcho(state, mainAudioIn);
 
   for (int i = 0; i < FFEffectCount; i++)
   {
     globalDSP.gEffect[i].input.Fill(0.0f);
     auto const& voiceToGFXNorm = gMix.acc.voiceToGFX[i].Global().CV();
-    auto const& extAudioToGFXNorm = gMix.acc.extAudioToGFX[i].Global().CV();
-    globalDSP.gEffect[i].input.AddMul(extAudio, extAudioToGFXNorm);
+    auto const& audioInToGFXNorm = gMix.acc.audioInToGFX[i].Global().CV();
+    auto const& sidechainToGFXNorm = gMix.acc.sidechainToGFX[i].Global().CV();
     globalDSP.gEffect[i].input.AddMul(voiceMixdown, voiceToGFXNorm);
+    globalDSP.gEffect[i].input.AddMul(mainAudioIn, audioInToGFXNorm);
+    globalDSP.gEffect[i].input.AddMul(sidechainAudioIn, sidechainToGFXNorm);
     for (int r = 0; r < FFMixFXToFXCount; r++)
       if (FFMixFXToFXGetTargetSlot(r) == i)
       {
@@ -296,9 +300,11 @@ FFPlugProcessor::ProcessPostVoice(
 
   output.audio.Fill(0.0f);
   auto const& voiceToOutNorm = gMix.acc.voiceToOut[0].Global().CV();
-  auto const& extAudioToOutNorm = gMix.acc.extAudioToOut[0].Global().CV();
-  output.audio.AddMul(extAudio, extAudioToOutNorm);
+  auto const& audioInToOutNorm = gMix.acc.audioInToOut[0].Global().CV();
+  auto const& sidechainToOutNorm = gMix.acc.sidechainToOut[0].Global().CV();
   output.audio.AddMul(voiceMixdown, voiceToOutNorm);
+  output.audio.AddMul(mainAudioIn, audioInToOutNorm);
+  output.audio.AddMul(sidechainAudioIn, sidechainToOutNorm);
   for (int i = 0; i < FFEffectCount; i++)
   {
     auto const& gfxToOutNorm = gMix.acc.GFXToOut[i].Global().CV();
@@ -357,14 +363,16 @@ FFPlugProcessor::ProcessPostVoice(
   exchangeParams.acc.lfo5ToAmp[0] = lfo5ToAmpNorm.Last();
   exchangeParams.acc.lfo6ToBal[0] = lfo6ToBalNorm.Last();
   exchangeParams.acc.voiceToOut[0] = gMix.acc.voiceToOut[0].Global().CV().Last();
-  exchangeParams.acc.extAudioToOut[0] = gMix.acc.extAudioToOut[0].Global().CV().Last();
+  exchangeParams.acc.audioInToOut[0] = gMix.acc.audioInToOut[0].Global().CV().Last();
+  exchangeParams.acc.sidechainToOut[0] = gMix.acc.sidechainToOut[0].Global().CV().Last();
   for (int r = 0; r < FFMixFXToFXCount; r++)
     exchangeParams.acc.GFXToGFX[r] = gMix.acc.GFXToGFX[r].Global().CV().Last();
   for (int r = 0; r < FFEffectCount; r++)
   {
     exchangeParams.acc.GFXToOut[r] = gMix.acc.GFXToOut[r].Global().CV().Last();
     exchangeParams.acc.voiceToGFX[r] = gMix.acc.voiceToGFX[r].Global().CV().Last();
-    exchangeParams.acc.extAudioToGFX[r] = gMix.acc.extAudioToGFX[r].Global().CV().Last();
+    exchangeParams.acc.audioInToGFX[r] = gMix.acc.audioInToGFX[r].Global().CV().Last();
+    exchangeParams.acc.sidechainToGFX[r] = gMix.acc.sidechainToGFX[r].Global().CV().Last();
   }
   
   globalDSP.gMatrix.processor->EndModulationBlock(state);

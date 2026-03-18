@@ -91,13 +91,16 @@ static Component*
 MakeGMixGUISectionVoiceAndExtAudioToOut(FBPlugGUI* plugGUI)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 1 });
   auto voiceMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::VoiceToOut, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "VMix\U00002192Out", FBLabelAlign::Left, FBLabelColors::PrimaryForeground));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceMix, Slider::SliderStyle::LinearHorizontal));
-  auto extAudioMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::ExtAudioToOut, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, extAudioMix));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, extAudioMix, Slider::SliderStyle::LinearHorizontal));
+  auto audioInToOut = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::AudioInToOut, 0 } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, audioInToOut));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, audioInToOut, Slider::SliderStyle::RotaryVerticalDrag));
+  auto sidechainToOut = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::SidechainToOut, 0 } });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sidechainToOut));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, sidechainToOut, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBackground);
   return plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
 }
@@ -127,25 +130,28 @@ static Component*
 MakeGMixDetail(FBPlugGUI* plugGUI)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 0, 0, 0, 0, 0 }, std::vector<int> { 0, 1, 1, 1, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 0, 0, 0, 0, 0, 0 }, std::vector<int> { 0, 1, 1, 1, 1 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "VMix\U00002192GFX"));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Ext Audio\U00002192GFX"));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Audio In\U00002192GFX"));
+  grid->Add(2, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Sidechain\U00002192GFX"));
   for (int e = 0; e < FFEffectCount; e++)
   {
     auto voiceToGFX = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::VoiceToGFX, e } });
     grid->Add(0, 1 + e, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceToGFX, Slider::SliderStyle::LinearHorizontal));
-    auto extAudioToGFX = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::ExtAudioToGFX, e } });
-    grid->Add(1, 1 + e, plugGUI->StoreComponent<FBParamSlider>(plugGUI, extAudioToGFX, Slider::SliderStyle::LinearHorizontal));
+    auto audioInToGFX = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::AudioInToGFX, e } });
+    grid->Add(1, 1 + e, plugGUI->StoreComponent<FBParamSlider>(plugGUI, audioInToGFX, Slider::SliderStyle::LinearHorizontal));
+    auto sidechainToGFX = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::SidechainToGFX, e } });
+    grid->Add(2, 1 + e, plugGUI->StoreComponent<FBParamSlider>(plugGUI, sidechainToGFX, Slider::SliderStyle::LinearHorizontal));
   }
   for (int s = 0; s < FFMixFXToFXCount; s++)
   {
-    int row = 2 + s / 2;
+    int row = 3 + s / 2;
     int col = s % 2;
     auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0}, { (int)FFGMixParam::GFXToGFX, s } });
     grid->Add(row, col * 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
     grid->Add(row, col * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::LinearHorizontal));
   }
-  for (int i = 0; i < 2 + 3; i += 2)
+  for (int i = 0; i < 3 + 3; i += 2)
     grid->MarkSection({ { i, 0 }, { 1, 5 } }, FBGridSectionMark::AlternateBackground);
   return grid;
 }

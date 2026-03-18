@@ -55,8 +55,9 @@ FFOsciProcessor::ProcessExtAudio(
     // Not graphing - we may have actual audio input.
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      audioIn[0].Set(s, (*state.input->audio)[0].Get(s));
-      audioIn[1].Set(s, (*state.input->audio)[1].Get(s));
+      // TODO
+      audioIn[0].Set(s, (*state.input->mainAudio)[0].Get(s));
+      audioIn[1].Set(s, (*state.input->mainAudio)[1].Get(s));
     }
   }
   else
