@@ -4,10 +4,10 @@ v2.1.2
 [x] sidechain for fx
 [x] fix all the extaudio stuff
 [x] retest all the sidechain tests
+[x] todo easy access->no
 [ ] fix the pdc
 [ ] compressor
 [ ] todo oversample
-[ ] todo easy access
 
 vnext
 [ ] do more easy access controls (and maybe more mod sources)
