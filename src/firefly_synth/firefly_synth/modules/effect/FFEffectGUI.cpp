@@ -255,9 +255,9 @@ MakeEffectDetail(FBPlugGUI* plugGUI, bool global, int moduleSlot)
     auto combResMin = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombResMin, i } });
     grid->Add(1 + i, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combResMin));
     grid->Add(1 + i, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combResMin, Slider::SliderStyle::RotaryVerticalDrag));
-    auto compSide = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CompSide, i } });
-    grid->Add(1 + i, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, compSide));
-    grid->Add(1 + i, 11, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, compSide));
+    auto compVSideOrGSide = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CompVSideOrGSide, i } });
+    grid->Add(1 + i, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, compVSideOrGSide));
+    grid->Add(1 + i, 11, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, compVSideOrGSide));
   }
 
   for (int i = 0; i < 5; i += 2)

@@ -33,7 +33,7 @@ enum class FFEffectParam { On, Oversample, TrackingKey, LastKeySmoothTime,
   CombKeyTrk, CombFreqFreqPlus, CombPitchCoarsePlus, CombResPlus, CombFreqFreqMin, CombPitchCoarseMin, CombResMin, 
   StVarKeyTrak, StVarFreqFreq, StVarPitchCoarse, StVarRes, StVarGain,  
   ClipMode, FoldMode, SkewMode, DistDrive, DistMix, DistBias, DistAmt, 
-  CompMode, CompThreshold, CompRatio, CompAttack, CompRelease, CompKnee, CompRMSSize, CompSide,
+  CompMode, CompThreshold, CompRatio, CompAttack, CompRelease, CompKnee, CompRMSSize, CompVSideOrGSide,
   Count };
 
 inline bool
