@@ -648,17 +648,17 @@ FFEffectProcessor::Process(
       ProcessSkew(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
       break;
     case FFEffectKind::Comb:
-      ProcessComb<Global, true, true>(i, oversampledRate, oversampled, combResMinPlain, combResPlusPlain, combRealFreqMinPlain, combRealFreqPlusPlain);
+      ProcessComb<true, true>(i, oversampledRate, oversampled, combResMinPlain, combResPlusPlain, combRealFreqMinPlain, combRealFreqPlusPlain);
       break;
     case FFEffectKind::CombPlus:
-      ProcessComb<Global, true, false>(i, oversampledRate, oversampled, combResMinPlain, combResPlusPlain, combRealFreqMinPlain, combRealFreqPlusPlain);
+      ProcessComb<true, false>(i, oversampledRate, oversampled, combResMinPlain, combResPlusPlain, combRealFreqMinPlain, combRealFreqPlusPlain);
       break;
     case FFEffectKind::CombMin:
-      ProcessComb<Global, false, true>(i, oversampledRate, oversampled, combResMinPlain, combResPlusPlain, combRealFreqMinPlain, combRealFreqPlusPlain);
+      ProcessComb<false, true>(i, oversampledRate, oversampled, combResMinPlain, combResPlusPlain, combRealFreqMinPlain, combRealFreqPlusPlain);
       break;
     default:
       FB_ASSERT(FFEffectKindIsSVF(_kind[i]));
-      ProcessStVar<Global>(i, oversampledRate, oversampled, stVarResPlain, stVarRealFreqPlain, stVarGainPlain);
+      ProcessStVar(i, oversampledRate, oversampled, stVarResPlain, stVarRealFreqPlain, stVarGainPlain);
       break;
     }
     if(exchangeDSP != nullptr)
@@ -742,7 +742,7 @@ FFEffectProcessor::Process(
   return FBFixedBlockSamples;
 }
 
-template <bool Global, bool PlusOn, bool MinOn>
+template <bool PlusOn, bool MinOn>
 void
 FFEffectProcessor::ProcessComb(
   int block, float oversampledRate,
@@ -767,7 +767,6 @@ FFEffectProcessor::ProcessComb(
   }
 }
 
-template <bool Global>
 void
 FFEffectProcessor::ProcessStVar(
   int block, float oversampledRate,

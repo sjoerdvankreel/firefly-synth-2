@@ -30,7 +30,6 @@ vnext
 fix the string oversample bug already
 drop screenshot_theme_light_default (for the website) once fix the auto-screenshot
 also probably make the images on the website bigger somehow
-allow more margin/padding, the borders clip
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo
 do display disabled/impossible items different in the mod matrix

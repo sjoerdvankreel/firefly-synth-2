@@ -45,7 +45,7 @@ class FFEffectProcessor final
   template <bool Global>
   FBBatch<float> NextBasePitchBatch(int pos);
 
-  template <bool Global, bool PlusOn, bool MinOn>
+  template <bool PlusOn, bool MinOn>
   void ProcessComb(
     int block, float oversampledRate,
     FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
@@ -54,7 +54,6 @@ class FFEffectProcessor final
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqMinPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqPlusPlain);
 
-  template <bool Global>
   void ProcessStVar(
     int block, float oversampledRate,
     FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
