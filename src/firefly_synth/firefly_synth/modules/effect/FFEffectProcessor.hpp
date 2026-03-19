@@ -30,6 +30,13 @@ class FFEffectProcessor final
   std::array<FFEffectSkewMode, FFEffectBlockCount> _skewMode = {};
   std::array<FFEffectFilterMode, FFEffectBlockCount> _filterMode = {};
 
+  std::array<float, FFEffectBlockCount> _compAttack = {};
+  std::array<float, FFEffectBlockCount> _compRelease = {};
+  std::array<float, FFEffectBlockCount> _compRMSSize = {};
+  std::array<FFEffectCompMode, FFEffectBlockCount> _compMode = {};
+  std::array<FFVEffectCompSide, FFEffectBlockCount> _vCompSide = {};
+  std::array<FFGEffectCompSide, FFEffectBlockCount> _gCompSide = {};
+
   bool _graph = {};
   int _graphSampleCount = {};
   int _graphSamplesProcessed = {};
@@ -83,6 +90,13 @@ class FFEffectProcessor final
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
+
+  void ProcessCompress(
+    int block, float oversampledRate,
+    FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compThresholdPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compRatioPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compKneePlain);
 
 public:
   FFEffectProcessor();

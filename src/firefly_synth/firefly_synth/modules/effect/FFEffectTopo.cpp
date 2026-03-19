@@ -957,7 +957,7 @@ FFMakeEffectTopo(bool global)
   compRMSSize.description = "Compressor RMS Size";
   compRMSSize.type = FBParamType::Linear;
   compRMSSize.Linear().min = 0.0f;
-  compRMSSize.Linear().max = 1.0f;
+  compRMSSize.Linear().max = 0.5f;
   compRMSSize.Linear().editSkewFactor = 0.5f;
   compRMSSize.Linear().displayMultiplier = 1000;
   auto selectCompRMSSize = [](auto& module) { return &module.block.compRMSSize; };
