@@ -1036,7 +1036,7 @@ FFEffectProcessor::ProcessCompress(
       detector[c].Store(s, oversampled[c].Load(s));
   for (int s = 0; s < totalSamples; s ++)
   {
-    float ratio = compThresholdPlain[block].Get(s);
+    float ratio = compRatioPlain[block].Get(s);
     float threshold = compThresholdPlain[block].Get(s);
     float measure = std::max(std::abs(detector[0].Get(s)), detector[1].Get(s));
     if (measure > threshold)
