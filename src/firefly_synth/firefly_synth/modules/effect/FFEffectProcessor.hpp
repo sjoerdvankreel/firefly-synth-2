@@ -20,10 +20,25 @@ inline int constexpr FFEffectOversampleFactor = 2;
 inline int constexpr FFEffectOversampleTimes = 1 << FFEffectOversampleFactor;
 inline int constexpr FFEffectFixedBlockOversamples = FBFixedBlockSamples * FFEffectOversampleTimes;
 
+enum class FFEffectCompStage
+{
+  Off,
+  Attack,
+  Release
+};
+
 class FFEffectProcessor final
 {
   bool _on = {};
   int _oversampleTimes = {};
+  std::array<float, FFEffectBlockCount> _compApplyCurrent = {};
+  std::array<FFEffectCompStage, FFEffectBlockCount> _compStage = {};
+  std::array<int, FFEffectBlockCount> _compStageSamplesOversampled = {};
+  std::array<int, FFEffectBlockCount> _compAttackSamplesOversampled = {};
+  std::array<int, FFEffectBlockCount> _compReleaseSamplesOversampled = {};
+  std::array<int, FFEffectBlockCount> _prevCompAttackSamplesOversampled = {};
+  std::array<int, FFEffectBlockCount> _prevCompReleaseSamplesOversampled = {};
+
   std::array<FFEffectKind, FFEffectBlockCount> _kind = {};
   std::array<FFEffectClipMode, FFEffectBlockCount> _clipMode = {};
   std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};

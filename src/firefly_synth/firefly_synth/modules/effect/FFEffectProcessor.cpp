@@ -120,6 +120,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
 {
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
+  float sampleRate = state.input->sampleRate;
   auto const& params = *FFSelectDualState<Global>(
     [procState, &state]() { return &procState->param.global.gEffect[state.moduleSlot]; },
     [procState, &state]() { return &procState->param.voice.vEffect[state.moduleSlot]; });
@@ -193,6 +194,28 @@ FFEffectProcessor::BeginVoiceOrBlock(
     _compRMSSize[i] = topo.NormalizedToLinearFast(
       FFEffectParam::CompRMSSize,
       FFSelectDualProcBlockParamNormalized<Global>(compRMSSizeNorm[i], voice));
+
+    _compAttackSamplesOversampled[i] = FBTimeToSamples(_compAttack[i], sampleRate * _oversampleTimes);
+    _compReleaseSamplesOversampled[i] = FBTimeToSamples(_compRelease[i], sampleRate * _oversampleTimes);
+
+    if constexpr (!Global)
+    {
+      _compApplyCurrent[i] = 0.0f;
+      _compStageSamplesOversampled[i] = 0;
+      _compStage[i] = FFEffectCompStage::Off;
+    }
+    else
+    {
+      if (_prevCompAttackSamplesOversampled[i] != _compAttackSamplesOversampled[i] ||
+        _prevCompReleaseSamplesOversampled[i] != _compReleaseSamplesOversampled[i])
+      {
+        _compApplyCurrent[i] = 0.0f;
+        _compStageSamplesOversampled[i] = 0;
+        _compStage[i] = FFEffectCompStage::Off;
+        _prevCompAttackSamplesOversampled[i] = _compAttackSamplesOversampled[i];
+        _prevCompReleaseSamplesOversampled[i] = _compReleaseSamplesOversampled[i];
+      }
+    }
 
     if constexpr(Global)
       if (!graph)
@@ -1007,11 +1030,23 @@ FFEffectProcessor::ProcessCompress(
   (void)compKneePlain;
 
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2> detector;
   for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
-  {
-    auto threshold = compThresholdPlain[block].Load(s);
     for (int c = 0; c < 2; c++)
-      oversampled[c].Store(s, oversampled[c].Load(s) * threshold);
+      detector[c].Store(s, oversampled[c].Load(s));
+  for (int s = 0; s < totalSamples; s ++)
+  {
+    float ratio = compThresholdPlain[block].Get(s);
+    float threshold = compThresholdPlain[block].Get(s);
+    float measure = std::max(std::abs(detector[0].Get(s)), detector[1].Get(s));
+    if (measure > threshold)
+    {
+      float gain = 1.0f / (1.0f + ratio * (measure / threshold - 1.0f));
+      for (int c = 0; c < 2; c++)
+      {
+        oversampled[c].Set(s, oversampled[c].Get(s) * gain);
+      }
+    }
   }
 }
 
