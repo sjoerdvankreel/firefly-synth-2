@@ -31,13 +31,13 @@ class FFEffectProcessor final
 {
   bool _on = {};
   int _oversampleTimes = {};
-  std::array<float, FFEffectBlockCount> _compApplyCurrent = {};
   std::array<FFEffectCompStage, FFEffectBlockCount> _compStage = {};
-  std::array<int, FFEffectBlockCount> _compStageSamplesOversampled = {};
   std::array<int, FFEffectBlockCount> _compAttackSamplesOversampled = {};
   std::array<int, FFEffectBlockCount> _compReleaseSamplesOversampled = {};
   std::array<int, FFEffectBlockCount> _prevCompAttackSamplesOversampled = {};
   std::array<int, FFEffectBlockCount> _prevCompReleaseSamplesOversampled = {};
+  std::array<int, FFEffectBlockCount> _compAttackPositionSamplesOversampled = {};
+  std::array<int, FFEffectBlockCount> _compReleasePositionSamplesOversampled = {};
 
   std::array<FFEffectKind, FFEffectBlockCount> _kind = {};
   std::array<FFEffectClipMode, FFEffectBlockCount> _clipMode = {};

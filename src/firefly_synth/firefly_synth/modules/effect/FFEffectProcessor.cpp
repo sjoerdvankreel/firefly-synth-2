@@ -200,18 +200,18 @@ FFEffectProcessor::BeginVoiceOrBlock(
 
     if constexpr (!Global)
     {
-      _compApplyCurrent[i] = 0.0f;
-      _compStageSamplesOversampled[i] = 0;
       _compStage[i] = FFEffectCompStage::Off;
+      _compAttackPositionSamplesOversampled[i] = 0;
+      _compReleasePositionSamplesOversampled[i] = 0;
     }
     else
     {
       if (_prevCompAttackSamplesOversampled[i] != _compAttackSamplesOversampled[i] ||
         _prevCompReleaseSamplesOversampled[i] != _compReleaseSamplesOversampled[i])
       {
-        _compApplyCurrent[i] = 0.0f;
-        _compStageSamplesOversampled[i] = 0;
         _compStage[i] = FFEffectCompStage::Off;
+        _compAttackPositionSamplesOversampled[i] = 0;
+        _compReleasePositionSamplesOversampled[i] = 0;
         _prevCompAttackSamplesOversampled[i] = _compAttackSamplesOversampled[i];
         _prevCompReleaseSamplesOversampled[i] = _compReleaseSamplesOversampled[i];
       }
@@ -1034,17 +1034,69 @@ FFEffectProcessor::ProcessCompress(
   for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
     for (int c = 0; c < 2; c++)
       detector[c].Store(s, oversampled[c].Load(s));
-  for (int s = 0; s < totalSamples; s ++)
+
+  for (int s = 0; s < totalSamples; s++)
   {
     float ratio = compRatioPlain[block].Get(s);
     float threshold = compThresholdPlain[block].Get(s);
     float measure = std::max(std::abs(detector[0].Get(s)), detector[1].Get(s));
     if (measure > threshold)
     {
-      float gain = 1.0f / (1.0f + ratio * (measure / threshold - 1.0f));
-      for (int c = 0; c < 2; c++)
+      float env;
+      if (_compStage[block] == FFEffectCompStage::Off)
+        env = 1.0f;
+      else if (_compStage[block] == FFEffectCompStage::Attack)
+        env = _compAttackPositionSamplesOversampled[block] / (float)_compAttackSamplesOversampled[block];
+      else if (_compStage[block] == FFEffectCompStage::Release)
+        env = 1.0f - _compReleasePositionSamplesOversampled[block] / (float)_compReleaseSamplesOversampled[block];
+      else
+        FB_ASSERT(false);
+
+      if (_compStage[block] == FFEffectCompStage::Off)
       {
+        _compStage[block] = FFEffectCompStage::Attack;
+        _compAttackPositionSamplesOversampled[block] = 0;
+        _compReleasePositionSamplesOversampled[block] = 0;
+      }
+      else if (_compStage[block] == FFEffectCompStage::Attack)
+      {
+        _compStage[block] = FFEffectCompStage::Attack;
+        _compReleasePositionSamplesOversampled[block] = 0;
+      }
+      else if (_compStage[block] == FFEffectCompStage::Release)
+      {
+        _compStage[block] = FFEffectCompStage::Attack;
+        float releasePos = _compReleasePositionSamplesOversampled[block] / (float)_compReleaseSamplesOversampled[block];
+        _compAttackPositionSamplesOversampled[block] = (int)((1.0f - releasePos) * _compAttackSamplesOversampled[block]);
+      }
+
+      float gain = 1.0f / (1.0f + ratio * (measure / threshold - 1.0f));
+      gain = (1.0f - env) + env * gain;
+      for (int c = 0; c < 2; c++)
         oversampled[c].Set(s, oversampled[c].Get(s) * gain);
+    }
+
+    // todo oversample
+    if (_compStage[block] == FFEffectCompStage::Attack)
+    {
+      if (_compAttackPositionSamplesOversampled[block] < _compAttackSamplesOversampled[block])
+        _compAttackPositionSamplesOversampled[block]++;
+      if (_compAttackPositionSamplesOversampled[block] == _compAttackSamplesOversampled[block])
+      {
+        _compStage[block] = FFEffectCompStage::Release;
+        _compAttackPositionSamplesOversampled[block] = 0;
+        _compReleasePositionSamplesOversampled[block] = 0;
+      }
+    }
+    if (_compStage[block] == FFEffectCompStage::Release)
+    {
+      if (_compReleasePositionSamplesOversampled[block] < _compReleaseSamplesOversampled[block])
+        _compReleasePositionSamplesOversampled[block]++;
+      if (_compReleasePositionSamplesOversampled[block] == _compReleaseSamplesOversampled[block])
+      {
+        _compStage[block] = FFEffectCompStage::Off;
+        _compAttackPositionSamplesOversampled[block] = 0;
+        _compReleasePositionSamplesOversampled[block] = 0;
       }
     }
   }
