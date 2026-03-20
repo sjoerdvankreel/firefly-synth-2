@@ -1042,7 +1042,7 @@ FFEffectProcessor::ProcessCompress(
     float measure = std::max(std::abs(detector[0].Get(s)), detector[1].Get(s));
     if (measure > threshold)
     {
-      float env;
+      float env = 0.0f;
       if (_compStage[block] == FFEffectCompStage::Off)
         env = 1.0f;
       else if (_compStage[block] == FFEffectCompStage::Attack)
