@@ -1071,7 +1071,8 @@ FFEffectProcessor::ProcessCompress(
       }
 
       float gain = 1.0f / (1.0f + ratio * (measure / threshold - 1.0f));
-      gain = (1.0f - env) + env * gain;
+      if(!_graph)
+        gain = (1.0f - env) + env * gain;
       for (int c = 0; c < 2; c++)
         oversampled[c].Set(s, oversampled[c].Get(s) * gain);
     }

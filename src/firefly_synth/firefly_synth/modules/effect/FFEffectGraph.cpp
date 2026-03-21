@@ -170,7 +170,7 @@ EffectGraphProcessor<Global>::PostProcess(
   FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, params.graphIndex } };
   auto kind = state->AudioParamList<FFEffectKind>(indices, params.exchange, params.exchangeVoice);
 
-  points.bipolar = !params.detailGraphs || FFEffectKindIsShaper(kind);
+  points.bipolar = !params.detailGraphs || FFEffectKindIsShaper(kind) || kind == FFEffectKind::Compressor;
   points.plotLogStart = 20.0f;
   points.plotLogEnd = 20000.0f;
   points.plotLogarithmic = !points.bipolar;
@@ -286,12 +286,14 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)moduleType;
     graphData->graphs[i].displayGainAsDb = true;
-    graphData->graphs[i].ScaleToSelfNormalized();
+
+    FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } };
+    auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
+    if(!detailGraphs || kind != FFEffectKind::Compressor)
+      graphData->graphs[i].ScaleToSelfNormalized();
 
     if (detailGraphs)
     {
-      FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } };
-      auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
       indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::FilterMode, i } };
       auto filterMode = renderState->AudioParamList<FFEffectFilterMode>(indices, false, -1);
       indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistDrive, i } };
@@ -355,7 +357,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     }
     else
     {
-      FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Oversample, 0 } };
+      indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Oversample, 0 } };
       bool oversample = renderState->AudioParamBool(indices, false, -1);
       graphData->graphs[i].title = moduleName + ": " + (on ? "On" : "Off");
       if (on && oversample)
