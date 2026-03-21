@@ -32,6 +32,7 @@ class FFEffectProcessor final
   bool _on = {};
   int _oversampleTimes = {};
   std::array<float, FFEffectBlockCount> _compEnvs = {};
+  std::array<float, FFEffectBlockCount> _compEnvStart = {};
   std::array<FFEffectCompStage, FFEffectBlockCount> _compStage = {};
   std::array<int, FFEffectBlockCount> _compAttackSamplesOversampled = {};
   std::array<int, FFEffectBlockCount> _compReleaseSamplesOversampled = {};

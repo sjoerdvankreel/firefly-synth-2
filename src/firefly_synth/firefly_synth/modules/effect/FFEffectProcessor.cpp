@@ -201,6 +201,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
     if constexpr (!Global)
     {
       _compEnvs[i] = 0.0f;
+      _compEnvStart[i] = 0.0f;
       _compStage[i] = FFEffectCompStage::Off;
       _compAttackPositionSamplesOversampled[i] = 0;
       _compReleasePositionSamplesOversampled[i] = 0;
@@ -211,6 +212,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
         _prevCompReleaseSamplesOversampled[i] != _compReleaseSamplesOversampled[i])
       {
         _compEnvs[i] = 0.0f;
+        _compEnvStart[i] = 0.0f;
         _compStage[i] = FFEffectCompStage::Off;
         _compAttackPositionSamplesOversampled[i] = 0;
         _compReleasePositionSamplesOversampled[i] = 0;
@@ -1046,6 +1048,7 @@ FFEffectProcessor::ProcessCompress(
     {
       if (_compStage[block] == FFEffectCompStage::Off)
       {
+        _compEnvStart[block] = 0.0f;
         _compStage[block] = FFEffectCompStage::Attack;
         _compAttackPositionSamplesOversampled[block] = 0;
         _compReleasePositionSamplesOversampled[block] = 0;
@@ -1057,11 +1060,10 @@ FFEffectProcessor::ProcessCompress(
       }
       else if (_compStage[block] == FFEffectCompStage::Release)
       {
-        /*
         _compStage[block] = FFEffectCompStage::Attack;
         float releasePos = _compReleasePositionSamplesOversampled[block] / (float)_compReleaseSamplesOversampled[block];
-        _compAttackPositionSamplesOversampled[block] = (int)((1.0f - releasePos) * _compAttackSamplesOversampled[block]);
-        */
+        _compEnvStart[block] = 1.0f - releasePos;
+        _compAttackPositionSamplesOversampled[block] = 0;
       }
 
       float gain = 1.0f / (1.0f + ratio * (measure / threshold - 1.0f));
@@ -1076,7 +1078,7 @@ FFEffectProcessor::ProcessCompress(
     {
       if (_compAttackPositionSamplesOversampled[block] < _compAttackSamplesOversampled[block])
         _compAttackPositionSamplesOversampled[block]++;
-      if (_compAttackPositionSamplesOversampled[block] == _compAttackSamplesOversampled[block])
+      if (_compAttackPositionSamplesOversampled[block] >= _compAttackSamplesOversampled[block])
       {
         _compStage[block] = FFEffectCompStage::Release;
         _compAttackPositionSamplesOversampled[block] = 0;
@@ -1087,7 +1089,7 @@ FFEffectProcessor::ProcessCompress(
     {
       if (_compReleasePositionSamplesOversampled[block] < _compReleaseSamplesOversampled[block])
         _compReleasePositionSamplesOversampled[block]++;
-      if (_compReleasePositionSamplesOversampled[block] == _compReleaseSamplesOversampled[block])
+      if (_compReleasePositionSamplesOversampled[block] >= _compReleaseSamplesOversampled[block])
       {
         _compStage[block] = FFEffectCompStage::Off;
         _compAttackPositionSamplesOversampled[block] = 0;
@@ -1097,7 +1099,7 @@ FFEffectProcessor::ProcessCompress(
     if (_compStage[block] == FFEffectCompStage::Off)
       _compEnvs[block] = 0.0f;
     else if (_compStage[block] == FFEffectCompStage::Attack)
-      _compEnvs[block] = _compAttackPositionSamplesOversampled[block] / (float)_compAttackSamplesOversampled[block];
+      _compEnvs[block] = _compEnvStart[block] + (1.0f - _compEnvStart[block]) * _compAttackPositionSamplesOversampled[block] / (float)_compAttackSamplesOversampled[block];
     else if (_compStage[block] == FFEffectCompStage::Release)
       _compEnvs[block] = 1.0f - _compReleasePositionSamplesOversampled[block] / (float)_compReleaseSamplesOversampled[block];
     else
