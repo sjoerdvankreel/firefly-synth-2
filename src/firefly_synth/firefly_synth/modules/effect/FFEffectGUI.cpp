@@ -44,7 +44,6 @@ FFEffectParamListener::AudioParamChanged(
     return;
   if (indices.param.index == (int)FFEffectParam::EnvAmt || indices.param.index == (int)FFEffectParam::LFOAmt)
   {
-    // TODO
     _plugGUI->RepaintSlidersForAudioParam({ { indices.module.index, indices.module.slot }, { (int)FFEffectParam::DistDrive, indices.param.slot } });
     _plugGUI->RepaintSlidersForAudioParam({ { indices.module.index, indices.module.slot }, { (int)FFEffectParam::StVarFreqFreq, indices.param.slot } });
     _plugGUI->RepaintSlidersForAudioParam({ { indices.module.index, indices.module.slot }, { (int)FFEffectParam::StVarPitchCoarse, indices.param.slot } });
@@ -64,7 +63,6 @@ FFEffectAdjustParamModulationGUIBounds(
   if (staticIndex != (int)FFModuleType::VEffect && staticIndex != (int)FFModuleType::GEffect)
     return false;
 
-  // TODO
   if (rtParam.topoIndices.param.index == (int)FFEffectParam::DistDrive ||
     rtParam.topoIndices.param.index == (int)FFEffectParam::StVarFreqFreq ||
     rtParam.topoIndices.param.index == (int)FFEffectParam::StVarPitchCoarse ||
