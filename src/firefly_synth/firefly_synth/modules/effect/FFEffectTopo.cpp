@@ -882,7 +882,7 @@ FFMakeEffectTopo(bool global)
   compAttack.description = "Compressor Attack Time";
   compAttack.type = FBParamType::Linear;
   compAttack.Linear().min = 0.0f;
-  compAttack.Linear().max = 0.5f;
+  compAttack.Linear().max = 5.0f;//todo
   compAttack.Linear().editSkewFactor = 0.5f;
   compAttack.Linear().displayMultiplier = 1000;
   auto selectCompAttack = [](auto& module) { return &module.block.compAttack; };

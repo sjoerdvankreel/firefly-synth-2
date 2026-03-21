@@ -200,6 +200,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
 
     if constexpr (!Global)
     {
+      _compEnvs[i] = 0.0f;
       _compStage[i] = FFEffectCompStage::Off;
       _compAttackPositionSamplesOversampled[i] = 0;
       _compReleasePositionSamplesOversampled[i] = 0;
@@ -209,6 +210,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
       if (_prevCompAttackSamplesOversampled[i] != _compAttackSamplesOversampled[i] ||
         _prevCompReleaseSamplesOversampled[i] != _compReleaseSamplesOversampled[i])
       {
+        _compEnvs[i] = 0.0f;
         _compStage[i] = FFEffectCompStage::Off;
         _compAttackPositionSamplesOversampled[i] = 0;
         _compReleasePositionSamplesOversampled[i] = 0;
@@ -773,7 +775,7 @@ FFEffectProcessor::Process(
     exchangeDSP->stVarFreqs[i] = stVarRealFreqPlain[i].First();
     exchangeDSP->combMinFreqs[i] = combRealFreqMinPlain[i].First();
     exchangeDSP->combPlusFreqs[i] = combRealFreqPlusPlain[i].First();
-    // TODO
+    exchangeDSP->compEnvs[i] = _compEnvs[i];
   }
 
   auto& exchangeParams = *FFSelectDualState<Global>(
@@ -1042,16 +1044,6 @@ FFEffectProcessor::ProcessCompress(
     float measure = std::max(std::abs(detector[0].Get(s)), detector[1].Get(s));
     if (measure > threshold)
     {
-      float env = 0.0f;
-      if (_compStage[block] == FFEffectCompStage::Off)
-        env = 1.0f;
-      else if (_compStage[block] == FFEffectCompStage::Attack)
-        env = _compAttackPositionSamplesOversampled[block] / (float)_compAttackSamplesOversampled[block];
-      else if (_compStage[block] == FFEffectCompStage::Release)
-        env = 1.0f - _compReleasePositionSamplesOversampled[block] / (float)_compReleaseSamplesOversampled[block];
-      else
-        FB_ASSERT(false);
-
       if (_compStage[block] == FFEffectCompStage::Off)
       {
         _compStage[block] = FFEffectCompStage::Attack;
@@ -1065,14 +1057,16 @@ FFEffectProcessor::ProcessCompress(
       }
       else if (_compStage[block] == FFEffectCompStage::Release)
       {
+        /*
         _compStage[block] = FFEffectCompStage::Attack;
         float releasePos = _compReleasePositionSamplesOversampled[block] / (float)_compReleaseSamplesOversampled[block];
         _compAttackPositionSamplesOversampled[block] = (int)((1.0f - releasePos) * _compAttackSamplesOversampled[block]);
+        */
       }
 
       float gain = 1.0f / (1.0f + ratio * (measure / threshold - 1.0f));
       if(!_graph)
-        gain = (1.0f - env) + env * gain;
+        gain = (1.0f - _compEnvs[block]) + _compEnvs[block] * gain;
       for (int c = 0; c < 2; c++)
         oversampled[c].Set(s, oversampled[c].Get(s) * gain);
     }
@@ -1100,6 +1094,14 @@ FFEffectProcessor::ProcessCompress(
         _compReleasePositionSamplesOversampled[block] = 0;
       }
     }
+    if (_compStage[block] == FFEffectCompStage::Off)
+      _compEnvs[block] = 0.0f;
+    else if (_compStage[block] == FFEffectCompStage::Attack)
+      _compEnvs[block] = _compAttackPositionSamplesOversampled[block] / (float)_compAttackSamplesOversampled[block];
+    else if (_compStage[block] == FFEffectCompStage::Release)
+      _compEnvs[block] = 1.0f - _compReleasePositionSamplesOversampled[block] / (float)_compReleaseSamplesOversampled[block];
+    else
+      FB_ASSERT(false);
   }
 }
 

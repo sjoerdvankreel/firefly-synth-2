@@ -216,9 +216,7 @@ EffectGraphProcessor<Global>::ProcessExchangeState(
     data.exchangeMainText = FBFormatDoubleCLocale(effectExchange->combPlusFreqs[params.graphIndex], 2) + " / " +
       FBToStringHz(effectExchange->combMinFreqs[params.graphIndex], 2);
   else if (kind == FFEffectKind::Compressor)
-  {
-    // TODO
-  }
+    data.exchangeMainText = FBToStringPercent(effectExchange->compEnvs[params.graphIndex], 2) + " Env";
   else
     FB_ASSERT(kind == FFEffectKind::Off);
 }
@@ -353,6 +351,15 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
         indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::SkewMode, i } };
         auto mode = renderState->AudioParamList<FFEffectSkewMode>(indices, false, -1);
         graphData->graphs[i].title += ", " + FFEffectSkewModeToString(mode);
+      }
+      if (kind == FFEffectKind::Compressor)
+      {
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CompThreshold, i } };
+        auto compThreshold = renderState->AudioParamLinear(indices, false, -1);
+        graphData->graphs[i].defaultMainText = FBToStringPercent(compThreshold, 2) + " Threshold";
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CompMode, i } };
+        auto compMode = renderState->AudioParamList<FFEffectCompMode>(indices, false, -1);
+        graphData->graphs[i].title += ", " + FFEffectCompModeToString(compMode);
       }
     }
     else
