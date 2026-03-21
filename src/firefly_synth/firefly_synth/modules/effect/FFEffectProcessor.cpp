@@ -1041,7 +1041,7 @@ FFEffectProcessor::ProcessCompress(
 
   for (int s = 0; s < totalSamples; s++)
   {
-    float knee = compKneePlain[block].Get(s);
+    //float knee = compKneePlain[block].Get(s);
     float ratio = compRatioPlain[block].Get(s);
     float threshold = compThresholdPlain[block].Get(s);
     float measure = std::max(std::abs(detector[0].Get(s)), detector[1].Get(s));
@@ -1068,6 +1068,15 @@ FFEffectProcessor::ProcessCompress(
       }
     }
 
+    if (measure >= threshold)
+    {
+      float y = threshold + (measure - threshold) * (1.0f - ratio);
+      float gain = y / measure;
+      for (int c = 0; c < 2; c++)
+        oversampled[c].Set(s, oversampled[c].Get(s) * gain);
+    }
+
+#if false
     float thresholdStart = threshold - knee * threshold;
     float thresholdEnd = threshold + knee * threshold;
     if(measure >= thresholdStart)
@@ -1075,8 +1084,11 @@ FFEffectProcessor::ProcessCompress(
       float gain = 1.0f / (1.0f + ratio * (measure / threshold - 1.0f));
       if (measure <= thresholdEnd)
       {
-        float pos = (measure - thresholdStart) / (thresholdEnd - thresholdStart);
-        gain = (1.0f - pos) + pos * gain;
+        //float pos = (measure - thresholdStart) / (thresholdEnd - thresholdStart);
+        float R = ratio;
+        float T = threshold;
+        float W = knee;
+        gain = gain + (1.0f / R - 1.0f) * (gain - T + W / 2.0f) * (gain - T + W / 2.0f) / (2.0f * W);
       }
 
       if(!_graph)
@@ -1084,6 +1096,7 @@ FFEffectProcessor::ProcessCompress(
       for (int c = 0; c < 2; c++)
         oversampled[c].Set(s, oversampled[c].Get(s) * gain);
     }
+#endif
 
     // todo oversample
     if (_compStage[block] == FFEffectCompStage::Attack)
