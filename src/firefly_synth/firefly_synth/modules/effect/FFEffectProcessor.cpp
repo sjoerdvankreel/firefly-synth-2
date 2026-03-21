@@ -1041,7 +1041,7 @@ FFEffectProcessor::ProcessCompress(
 
   for (int s = 0; s < totalSamples; s++)
   {
-    //float knee = compKneePlain[block].Get(s);
+    float knee = compKneePlain[block].Get(s);
     float ratio = compRatioPlain[block].Get(s);
     float threshold = compThresholdPlain[block].Get(s);
     float measure = std::max(std::abs(detector[0].Get(s)), detector[1].Get(s));
@@ -1068,10 +1068,25 @@ FFEffectProcessor::ProcessCompress(
       }
     }
 
-    if (measure >= threshold)
+    float thresholdStart = threshold - knee * threshold;
+    float thresholdEnd = threshold + knee * threshold;
+    if (measure >= thresholdStart)
     {
-      float y = threshold + (measure - threshold) * (1.0f - ratio);
-      float gain = y / measure;
+      float gain = 0.0f;
+      if (measure >= thresholdEnd)
+      {
+        float y = threshold + (measure - threshold) * (1.0f - ratio);
+        gain = y / measure;
+      }
+      else
+      {
+        //float y1 = thresholdStart + (measure - thresholdStart) * (1.0f - ratio);
+        float y2 = thresholdEnd + (measure - thresholdEnd) * (1.0f - ratio);
+        float pos = (measure - thresholdStart) / (thresholdEnd - thresholdStart);
+        float gainStart = 1.0f;// y1 / measure;
+        float gainEnd = y2 / measure;
+        gain = gainStart + pos * (gainEnd - gainStart);
+      }
       for (int c = 0; c < 2; c++)
         oversampled[c].Set(s, oversampled[c].Get(s) * gain);
     }
