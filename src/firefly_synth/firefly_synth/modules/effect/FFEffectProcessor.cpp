@@ -628,7 +628,7 @@ FFEffectProcessor::Process(
           FFSelectDualProcAccParamNormalized<Global>(compThresholdNorm[i], voice), s));
         compRatioPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::CompRatio,
           FFSelectDualProcAccParamNormalized<Global>(compRatioNorm[i], voice), s));
-        compKneePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CompKnee,
+        compKneePlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::CompKnee,
           FFSelectDualProcAccParamNormalized<Global>(compKneeNorm[i], voice), s));
       }
       else
@@ -1041,6 +1041,7 @@ FFEffectProcessor::ProcessCompress(
 
   for (int s = 0; s < totalSamples; s++)
   {
+    float knee = compKneePlain[block].Get(s);
     float ratio = compRatioPlain[block].Get(s);
     float threshold = compThresholdPlain[block].Get(s);
     float measure = std::max(std::abs(detector[0].Get(s)), detector[1].Get(s));
@@ -1065,8 +1066,19 @@ FFEffectProcessor::ProcessCompress(
         _compEnvStart[block] = 1.0f - releasePos;
         _compAttackPositionSamplesOversampled[block] = 0;
       }
+    }
 
+    float thresholdStart = threshold - knee * threshold;
+    float thresholdEnd = threshold + knee * threshold;
+    if(measure >= thresholdStart)
+    {
       float gain = 1.0f / (1.0f + ratio * (measure / threshold - 1.0f));
+      if (measure <= thresholdEnd)
+      {
+        float pos = (measure - thresholdStart) / (thresholdEnd - thresholdStart);
+        gain = (1.0f - pos) + pos * gain;
+      }
+
       if(!_graph)
         gain = (1.0f - _compEnvs[block]) + _compEnvs[block] * gain;
       for (int c = 0; c < 2; c++)
