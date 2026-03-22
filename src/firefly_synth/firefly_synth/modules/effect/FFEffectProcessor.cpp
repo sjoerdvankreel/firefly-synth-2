@@ -1048,6 +1048,8 @@ FFEffectProcessor::ProcessCompress(
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compRatioPlain,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compKneePlain)
 {
+  oversampled.SanityCheck();
+
   bool haveSide = true;
   auto procState = state.ProcAs<FFProcState>();
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
@@ -1186,7 +1188,7 @@ FFEffectProcessor::ProcessCompress(
     if (measureDb >= thresholdStartDb)
     {
       float yDb = 0.0f;
-      float thresholdEndDb = thresholdDb + kneeDb * 0.5f;      
+      float thresholdEndDb = thresholdDb + kneeDb * 0.5f;
       if (measureDb <= thresholdEndDb)
       {
         float z = (measureDb - thresholdDb + kneeDb * 0.5f);
@@ -1200,8 +1202,11 @@ FFEffectProcessor::ProcessCompress(
       if (!_graph)
         gain = (1.0f - _compEnvs[block]) + _compEnvs[block] * gain;
       for (int c = 0; c < 2; c++)
+      {
+        FB_ASSERT(!std::isnan(gain));
         oversampled[c].Set(s, oversampled[c].Get(s) * gain);
-    }
+      }
+    }    
 
     if (_compStage[block] == FFEffectCompStage::Attack)
     {
@@ -1234,6 +1239,8 @@ FFEffectProcessor::ProcessCompress(
     else
       FB_ASSERT(false);
   }
+
+  oversampled.SanityCheck();
 }
 
 template void FFEffectProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, bool, bool, int, int);
