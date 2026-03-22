@@ -1068,27 +1068,23 @@ FFEffectProcessor::ProcessCompress(
       }
     }
 
-    float ratioInv = 1.0f / (1.0f - ratio);
     float measureDb = 20.0f * std::log10(measure);
     float thresholdDb = 20.0f * std::log10(threshold);
     float thresholdStartDb = thresholdDb - kneeDb * 0.5f;
     if (measureDb >= thresholdStartDb)
     {
-      float gain = 0.0f;
+      float yDb = 0.0f;
       float thresholdEndDb = thresholdDb + kneeDb * 0.5f;      
       if (measureDb <= thresholdEndDb)
       {
         float z = (measureDb - thresholdDb + kneeDb * 0.5f);
-        float yDb = measureDb + (1.0f / ratioInv - 1.0f) * z * z / (2.0f * kneeDb);
-        float y = std::pow(10.0f, yDb / 20.0f);
-        gain = y / measure;
+        yDb = measureDb - ratio * z * z / (2.0f * kneeDb);
       }
       else
       {
-        float yDb = thresholdDb + (measureDb - thresholdDb) * (1.0f - ratio);
-        float y = std::pow(10.0f, yDb / 20.0f);
-        gain = y / measure;
+        yDb = thresholdDb + (measureDb - thresholdDb) * (1.0f - ratio);
       }
+      float gain = std::pow(10.0f, yDb / 20.0f) / measure;
       for (int c = 0; c < 2; c++)
         oversampled[c].Set(s, oversampled[c].Get(s) * gain);
     }
