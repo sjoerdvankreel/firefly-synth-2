@@ -80,6 +80,8 @@ FFEffectProcessor::ReleaseOnDemandBuffers(
   {
     _combFilters[i].ReleaseBuffers(state->MemoryPool());
     state->MemoryPool()->Return(_compRMSWindows[i]);
+    _compRMSTotal[i] = 0.0f;
+    _compRMSWindowsPos[i] = 0;
     _compRMSWindows[i] = nullptr;
     _compRMSWindowsSamples[i] = 0;
   }
@@ -120,6 +122,8 @@ FFEffectProcessor::AllocOnDemandBuffers(
       int samples = (int)std::ceil(rmsWindowSize * sampleRate);
       _compRMSWindows[i] = (float*)state->MemoryPool()->Lease(samples * sizeof(float));
       _compRMSWindowsSamples[i] = samples;
+      _compRMSWindowsPos[i] = 0;
+      _compRMSTotal[i] = 0.0f;
     }
   }
 }
@@ -230,6 +234,8 @@ FFEffectProcessor::BeginVoiceOrBlock(
       _compReleasePositionSamplesOversampled[i] = 0;
       if(_compRMSWindows[i] != nullptr)
         std::memset(_compRMSWindows[i], 0, sizeof(float) * _compRMSWindowsSamples[i]);
+      _compRMSWindowsPos[i] = 0;
+      _compRMSTotal[i] = 0.0f;
 
       _prevCompMode[i] = _compMode[i];
       _prevGCompSide[i] = _gCompSide[i];
@@ -1055,6 +1061,16 @@ FFEffectProcessor::ProcessCompress(
     float kneeDb = compKneePlain[block].Get(s);
     float threshold = compThresholdPlain[block].Get(s);
     float measure = std::max(std::abs(detector[0].Get(s)), detector[1].Get(s));
+    if (_compMode[block] == FFEffectCompMode::RMS)
+    {
+      _compRMSTotal[block] -= _compRMSWindows[block][_compRMSWindowsPos[block]];
+      _compRMSTotal[block] += measure * measure;
+      _compRMSWindows[block][_compRMSWindowsPos[block]] = measure * measure;
+      _compRMSWindowsPos[block]++;
+      _compRMSWindowsPos[block] %= _compRMSWindowsSamples[block];
+      measure = std::sqrt(_compRMSTotal[block] / (float)_compRMSWindowsSamples[block]);
+    }
+
     if (measure > threshold)
     {
       if (_compStage[block] == FFEffectCompStage::Off)

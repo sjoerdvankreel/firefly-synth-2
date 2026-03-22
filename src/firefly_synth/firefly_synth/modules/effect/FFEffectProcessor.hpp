@@ -39,7 +39,9 @@ class FFEffectProcessor final
   std::array<int, FFEffectBlockCount> _compAttackPositionSamplesOversampled = {};
   std::array<int, FFEffectBlockCount> _compReleasePositionSamplesOversampled = {};
   // https://stackoverflow.com/questions/10990618/calculate-rolling-moving-average-in-c
+  std::array<float, FFEffectBlockCount> _compRMSTotal = {};
   std::array<float*, FFEffectBlockCount> _compRMSWindows = {};
+  std::array<int, FFEffectBlockCount> _compRMSWindowsPos = {};
   std::array<int, FFEffectBlockCount> _compRMSWindowsSamples = {};
   
   std::array<float, FFEffectBlockCount> _prevCompRMSSize = {};
