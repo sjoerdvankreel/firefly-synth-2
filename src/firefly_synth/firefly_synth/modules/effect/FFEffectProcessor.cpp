@@ -1072,20 +1072,13 @@ FFEffectProcessor::ProcessCompress(
     float thresholdEnd = threshold + knee * threshold;
     if (measure >= thresholdStart)
     {
-      float gain = 0.0f;
-      if (measure >= thresholdEnd)
+      float y = threshold + (measure - threshold) * (1.0f - ratio);
+      float gain = y / measure;
+      if (measure <= thresholdEnd)
       {
-        float y = threshold + (measure - threshold) * (1.0f - ratio);
-        gain = y / measure;
-      }
-      else
-      {
-        //float y1 = thresholdStart + (measure - thresholdStart) * (1.0f - ratio);
-        float y2 = thresholdEnd + (measure - thresholdEnd) * (1.0f - ratio);
+        float gainStart = thresholdStart / measure;
         float pos = (measure - thresholdStart) / (thresholdEnd - thresholdStart);
-        float gainStart = 1.0f;// y1 / measure;
-        float gainEnd = y2 / measure;
-        gain = gainStart + pos * (gainEnd - gainStart);
+        gain = (1.0f - pos) * gainStart + pos * gain;
       }
       for (int c = 0; c < 2; c++)
         oversampled[c].Set(s, oversampled[c].Get(s) * gain);
