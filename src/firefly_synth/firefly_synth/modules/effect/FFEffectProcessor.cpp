@@ -1060,7 +1060,7 @@ FFEffectProcessor::ProcessCompress(
     float kneeDb = compKneePlain[block].Get(s);
     float threshold = compThresholdPlain[block].Get(s);
     float measure = std::max(std::abs(detector[0].Get(s)), detector[1].Get(s));
-    if (_compMode[block] == FFEffectCompMode::RMS)
+    if (!_graph && _compMode[block] == FFEffectCompMode::RMS)
     {
       _compRMSTotal[block] -= _compRMSWindows[block][_compRMSWindowsPos[block]];
       _compRMSTotal[block] += measure * measure;
