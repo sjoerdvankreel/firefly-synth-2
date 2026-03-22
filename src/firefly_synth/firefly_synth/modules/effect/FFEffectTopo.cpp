@@ -926,12 +926,14 @@ FFMakeEffectTopo(bool global)
   compKnee.defaultText = "0";
   compKnee.name = "Comp Knee";
   compKnee.display = "Knee";
-  compKnee.unit = "%";
+  compKnee.unit = "dB";
   compKnee.slotCount = FFEffectBlockCount;
   compKnee.slotFormatter = FFFormatBlockSlot;
   compKnee.id = prefix + "{198616E6-C9AB-4D38-A9DB-9389C74A7A4F}";
   compKnee.description = "Compressor Knee";
-  compKnee.type = FBParamType::Identity;
+  compKnee.type = FBParamType::Linear;
+  compKnee.Linear().min = 0.0f;
+  compKnee.Linear().max = 24.0f;
   auto selectCompKnee = [](auto& module) { return &module.acc.compKnee; };
   compKnee.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompKnee);
   compKnee.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompKnee);

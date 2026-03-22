@@ -628,7 +628,7 @@ FFEffectProcessor::Process(
           FFSelectDualProcAccParamNormalized<Global>(compThresholdNorm[i], voice), s));
         compRatioPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::CompRatio,
           FFSelectDualProcAccParamNormalized<Global>(compRatioNorm[i], voice), s));
-        compKneePlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::CompKnee,
+        compKneePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CompKnee,
           FFSelectDualProcAccParamNormalized<Global>(compKneeNorm[i], voice), s));
       }
       else
@@ -1042,7 +1042,7 @@ FFEffectProcessor::ProcessCompress(
   for (int s = 0; s < totalSamples; s++)
   {
     float ratio = compRatioPlain[block].Get(s);
-    float knee = compKneePlain[block].Get(s) * 0.99f;
+    float kneeDb = compKneePlain[block].Get(s);
     float threshold = compThresholdPlain[block].Get(s);
     float measure = std::max(std::abs(detector[0].Get(s)), detector[1].Get(s));
     if (measure > threshold)
@@ -1068,17 +1068,25 @@ FFEffectProcessor::ProcessCompress(
       }
     }
 
-    float thresholdStart = threshold - knee * threshold;
-    float thresholdEnd = threshold + knee * threshold;
-    if (measure >= thresholdStart)
+    float ratioInv = 1.0f / (1.0f - ratio);
+    float measureDb = 20.0f * std::log10(measure);
+    float thresholdDb = 20.0f * std::log10(threshold);
+    float thresholdStartDb = thresholdDb - kneeDb * 0.5f;
+    if (measureDb >= thresholdStartDb)
     {
-      float y = threshold + (measure - threshold) * (1.0f - ratio);
-      float gain = y / measure;
-      if (measure <= thresholdEnd)
+      float gain = 0.0f;
+      float thresholdEndDb = thresholdDb + kneeDb * 0.5f;      
+      if (measureDb <= thresholdEndDb)
       {
-        float gainStart = thresholdStart / measure;
-        float pos = (measure - thresholdStart) / (thresholdEnd - thresholdStart);
-        gain = (1.0f - pos) * gainStart + pos * gain;
+        float z = (measureDb - thresholdDb + kneeDb * 0.5f);
+        float yDb = measureDb + (1.0f / ratioInv - 1.0f) * z * z / (2.0f * kneeDb);
+        float y = std::pow(10.0f, yDb / 20.0f);
+        gain = y / measure;
+      }
+      else
+      {
+        float y = threshold + (measure - threshold) * (1.0f - ratio);
+        gain = y / measure;
       }
       for (int c = 0; c < 2; c++)
         oversampled[c].Set(s, oversampled[c].Get(s) * gain);
