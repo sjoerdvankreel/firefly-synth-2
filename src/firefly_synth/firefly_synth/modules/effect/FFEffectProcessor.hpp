@@ -109,7 +109,7 @@ class FFEffectProcessor final
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
 
   void ProcessCompress(
-    int block, float oversampledRate,
+    int block,
     FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compThresholdPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compRatioPlain,

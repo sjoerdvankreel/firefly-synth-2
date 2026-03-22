@@ -733,7 +733,7 @@ FFEffectProcessor::Process(
       ProcessComb<false, true>(i, oversampledRate, oversampled, combResMinPlain, combResPlusPlain, combRealFreqMinPlain, combRealFreqPlusPlain);
       break;
     case FFEffectKind::Compressor:
-      ProcessCompress(i, oversampledRate, oversampled, compThresholdPlain, compRatioPlain, compKneePlain);
+      ProcessCompress(i, oversampled, compThresholdPlain, compRatioPlain, compKneePlain);
       break;
     default:
       FB_ASSERT(FFEffectKindIsSVF(_kind[i]));
@@ -1020,19 +1020,12 @@ FFEffectProcessor::ProcessFold(
 
 void 
 FFEffectProcessor::ProcessCompress(
-  int block, float oversampledRate,
+  int block,
   FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compThresholdPlain,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compRatioPlain,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compKneePlain)
 {
-  (void)block;
-  (void)oversampledRate;
-  (void)oversampled;
-  (void)compThresholdPlain;
-  (void)compRatioPlain;
-  (void)compKneePlain;
-
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   FBSArray2<float, FFEffectFixedBlockOversamples, 2> detector;
   for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
@@ -1085,31 +1078,11 @@ FFEffectProcessor::ProcessCompress(
         yDb = thresholdDb + (measureDb - thresholdDb) * (1.0f - ratio);
       }
       float gain = std::pow(10.0f, yDb / 20.0f) / measure;
-      for (int c = 0; c < 2; c++)
-        oversampled[c].Set(s, oversampled[c].Get(s) * gain);
-    }
-
-#if false
-    float thresholdStart = threshold - knee * threshold;
-    float thresholdEnd = threshold + knee * threshold;
-    if(measure >= thresholdStart)
-    {
-      float gain = 1.0f / (1.0f + ratio * (measure / threshold - 1.0f));
-      if (measure <= thresholdEnd)
-      {
-        //float pos = (measure - thresholdStart) / (thresholdEnd - thresholdStart);
-        float R = ratio;
-        float T = threshold;
-        float W = knee;
-        gain = gain + (1.0f / R - 1.0f) * (gain - T + W / 2.0f) * (gain - T + W / 2.0f) / (2.0f * W);
-      }
-
-      if(!_graph)
+      if (!_graph)
         gain = (1.0f - _compEnvs[block]) + _compEnvs[block] * gain;
       for (int c = 0; c < 2; c++)
         oversampled[c].Set(s, oversampled[c].Get(s) * gain);
     }
-#endif
 
     // todo oversample
     if (_compStage[block] == FFEffectCompStage::Attack)
