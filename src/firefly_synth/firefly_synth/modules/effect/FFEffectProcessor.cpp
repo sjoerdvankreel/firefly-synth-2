@@ -1069,6 +1069,13 @@ FFEffectProcessor::ProcessCompress(
       _compRMSWindowsPos[block]++;
       _compRMSWindowsPos[block] %= _compRMSWindowsSamples[block];
       measure = std::sqrt(_compRMSTotal[block] / (float)_compRMSWindowsSamples[block]);
+      if (std::abs(measure - prevmesTODO) > 0.01)
+      {
+        int zzzz = 0;
+        (void)zzzz;
+        zzzz++;
+      }
+      prevmesTODO = measure;
     }
 
     if (measure > threshold)
