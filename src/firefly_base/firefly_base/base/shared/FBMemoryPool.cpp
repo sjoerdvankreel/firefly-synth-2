@@ -3,6 +3,9 @@
 void 
 FBMemoryPool::Return(void* ptr)
 {
+  if (ptr == nullptr)
+    return;
+
   auto iter1 = _ptrToSize.find(ptr);
   FB_ASSERT(iter1 != _ptrToSize.end());
   auto iter2 = _storage.find(iter1->second);

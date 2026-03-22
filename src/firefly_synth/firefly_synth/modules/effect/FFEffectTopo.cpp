@@ -955,8 +955,8 @@ FFMakeEffectTopo(bool global)
   compRMSSize.id = prefix + "{A1D63E6A-F8BB-4801-8EE3-655A5D7970F5}";
   compRMSSize.description = "Compressor RMS Size";
   compRMSSize.type = FBParamType::Linear;
-  compRMSSize.Linear().min = 0.0f;
-  compRMSSize.Linear().max = 0.5f;
+  compRMSSize.Linear().min = 0.001f;
+  compRMSSize.Linear().max = 0.1f;
   compRMSSize.Linear().editSkewFactor = 0.5f;
   compRMSSize.Linear().displayMultiplier = 1000;
   auto selectCompRMSSize = [](auto& module) { return &module.block.compRMSSize; };

@@ -77,7 +77,12 @@ FFEffectProcessor::ReleaseOnDemandBuffers(
   FBRuntimeTopo const*, FBProcStateContainer* state)
 {
   for (int i = 0; i < FFEffectBlockCount; i++)
+  {
     _combFilters[i].ReleaseBuffers(state->MemoryPool());
+    state->MemoryPool()->Return(_compRMSWindows[i]);
+    _compRMSWindows[i] = nullptr;
+    _compRMSWindowsSamples[i] = 0;
+  }
 }
 
 template <bool Global>
@@ -108,6 +113,14 @@ FFEffectProcessor::AllocOnDemandBuffers(
       FFSelectDualProcBlockParamNormalizedGlobal<Global>(kindNorm[i]));
     if (graph || FFEffectKindIsComb(kind))
       _combFilters[i].AllocBuffers(state->MemoryPool(), sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier); 
+    if (kind == FFEffectKind::Compressor)
+    {
+      float rmsWindowSize = moduleTopo.NormalizedToLinearFast(FFEffectParam::CompRMSSize,
+        FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.compRMSSize[i]));
+      int samples = (int)std::ceil(rmsWindowSize * sampleRate);
+      _compRMSWindows[i] = (float*)state->MemoryPool()->Lease(samples * sizeof(float));
+      _compRMSWindowsSamples[i] = samples;
+    }
   }
 }
 
@@ -198,27 +211,31 @@ FFEffectProcessor::BeginVoiceOrBlock(
     _compAttackSamplesOversampled[i] = FBTimeToSamples(_compAttack[i], sampleRate * _oversampleTimes);
     _compReleaseSamplesOversampled[i] = FBTimeToSamples(_compRelease[i], sampleRate * _oversampleTimes);
 
-    if constexpr (!Global)
+    bool shouldInit = true;
+    if constexpr (Global)
+    {
+      shouldInit =
+        _prevCompMode[i] != _compMode[i] ||
+        _prevGCompSide[i] != _gCompSide[i] ||
+        _prevCompRMSSize[i] != _compRMSSize[i] ||
+        _prevCompAttackSamplesOversampled[i] != _compAttackSamplesOversampled[i] ||
+        _prevCompReleaseSamplesOversampled[i] != _compReleaseSamplesOversampled[i];
+    }
+    if (shouldInit)
     {
       _compEnvs[i] = 0.0f;
       _compEnvStart[i] = 0.0f;
       _compStage[i] = FFEffectCompStage::Off;
       _compAttackPositionSamplesOversampled[i] = 0;
       _compReleasePositionSamplesOversampled[i] = 0;
-    }
-    else
-    {
-      if (_prevCompAttackSamplesOversampled[i] != _compAttackSamplesOversampled[i] ||
-        _prevCompReleaseSamplesOversampled[i] != _compReleaseSamplesOversampled[i])
-      {
-        _compEnvs[i] = 0.0f;
-        _compEnvStart[i] = 0.0f;
-        _compStage[i] = FFEffectCompStage::Off;
-        _compAttackPositionSamplesOversampled[i] = 0;
-        _compReleasePositionSamplesOversampled[i] = 0;
-        _prevCompAttackSamplesOversampled[i] = _compAttackSamplesOversampled[i];
-        _prevCompReleaseSamplesOversampled[i] = _compReleaseSamplesOversampled[i];
-      }
+      if(_compRMSWindows[i] != nullptr)
+        std::memset(_compRMSWindows[i], 0, sizeof(float) * _compRMSWindowsSamples[i]);
+
+      _prevCompMode[i] = _compMode[i];
+      _prevGCompSide[i] = _gCompSide[i];
+      _prevCompRMSSize[i] = _compRMSSize[i];
+      _prevCompAttackSamplesOversampled[i] = _compAttackSamplesOversampled[i];
+      _prevCompReleaseSamplesOversampled[i] = _compReleaseSamplesOversampled[i];
     }
 
     if constexpr(Global)
