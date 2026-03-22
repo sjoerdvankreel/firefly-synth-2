@@ -1056,8 +1056,9 @@ FFEffectProcessor::ProcessCompress(
   FBSArray2<float, FBFixedBlockSamples, 2> sideDetector = {};
   FBSArray2<float, FFEffectFixedBlockOversamples, 2> detector = {};
 
-  if (global && _gCompSide[block] == FFGEffectCompSide::Off ||
-    !global && _vCompSide[block] == FFVEffectCompSide::Off)
+  if (_graph || (
+    global && _gCompSide[block] == FFGEffectCompSide::Off ||
+    !global && _vCompSide[block] == FFVEffectCompSide::Off))
   {
     haveSide = false;
     for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)

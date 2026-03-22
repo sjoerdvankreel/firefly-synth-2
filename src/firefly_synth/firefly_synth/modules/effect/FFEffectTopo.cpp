@@ -835,7 +835,7 @@ FFMakeEffectTopo(bool global)
   compThreshold.id = prefix + "{12F6A492-5B00-4B4B-95D3-2BF1909036FD}";
   compThreshold.description = "Compressor Threshold";
   compThreshold.type = FBParamType::Linear;
-  compThreshold.Linear().min = 0.0f;
+  compThreshold.Linear().min = 0.01f;
   compThreshold.Linear().max = 2.0f;
   compThreshold.Linear().displayMultiplier = 100.0f;
   auto selectCompThreshold = [](auto& module) { return &module.acc.compThreshold; };
@@ -923,7 +923,7 @@ FFMakeEffectTopo(bool global)
 
   auto& compKnee = result->params[(int)FFEffectParam::CompKnee];
   compKnee.mode = FBParamMode::Accurate;
-  compKnee.defaultText = "0";
+  compKnee.defaultText = "0.01";
   compKnee.name = "Comp Knee";
   compKnee.display = "Knee";
   compKnee.unit = "dB";
@@ -932,7 +932,7 @@ FFMakeEffectTopo(bool global)
   compKnee.id = prefix + "{198616E6-C9AB-4D38-A9DB-9389C74A7A4F}";
   compKnee.description = "Compressor Knee";
   compKnee.type = FBParamType::Linear;
-  compKnee.Linear().min = 0.0f;
+  compKnee.Linear().min = 0.01f;
   compKnee.Linear().max = 24.0f;
   auto selectCompKnee = [](auto& module) { return &module.acc.compKnee; };
   compKnee.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompKnee);
