@@ -1085,7 +1085,8 @@ FFEffectProcessor::ProcessCompress(
       }
       else
       {
-        float y = threshold + (measure - threshold) * (1.0f - ratio);
+        float yDb = thresholdDb + (measureDb - thresholdDb) * (1.0f - ratio);
+        float y = std::pow(10.0f, yDb / 20.0f);
         gain = y / measure;
       }
       for (int c = 0; c < 2; c++)
