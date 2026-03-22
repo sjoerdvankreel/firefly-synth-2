@@ -118,9 +118,12 @@ FFEffectProcessor::AllocOnDemandBuffers(
       float rmsWindowSize = moduleTopo.NormalizedToLinearFast(FFEffectParam::CompRMSSize,
         FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.compRMSSize[i]));
       int samples = (int)std::ceil(rmsWindowSize * sampleRate);
-      _compRMSTotal[i] = 0.0f;
-      _compRMSWindowsPos[i] = 0;
-      _compRMSWindows[i] = std::vector<float>(samples, 0.0f);
+      if ((int)_compRMSWindows[i].size() != samples)
+      {
+        _compRMSTotal[i] = 0.0f;
+        _compRMSWindowsPos[i] = 0;
+        _compRMSWindows[i] = std::vector<float>(samples, 0.0f);
+      }
     }
   }
 }
@@ -1065,13 +1068,6 @@ FFEffectProcessor::ProcessCompress(
       _compRMSWindowsPos[block]++;
       _compRMSWindowsPos[block] %= (int)_compRMSWindows[block].size();
       measure = std::sqrt(_compRMSTotal[block] / (float)_compRMSWindows[block].size());
-      if (std::abs(measure - prevmesTODO) > 0.01)
-      {
-        int zzzz = 0;
-        (void)zzzz;
-        zzzz++;
-      }
-      prevmesTODO = measure;
     }
 
     if (measure > threshold)

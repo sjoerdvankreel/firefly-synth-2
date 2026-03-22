@@ -31,7 +31,6 @@ class FFEffectProcessor final
 {
   bool _on = {};
   int _oversampleTimes = {};
-  float prevmesTODO=0;
   std::array<float, FFEffectBlockCount> _compEnvs = {};
   std::array<float, FFEffectBlockCount> _compEnvStart = {};
   std::array<FFEffectCompStage, FFEffectBlockCount> _compStage = {};
