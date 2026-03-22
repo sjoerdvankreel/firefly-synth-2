@@ -755,7 +755,7 @@ FFEffectProcessor::Process(
       ProcessComb<false, true>(i, oversampledRate, oversampled, combResMinPlain, combResPlusPlain, combRealFreqMinPlain, combRealFreqPlusPlain);
       break;
     case FFEffectKind::Compressor:
-      ProcessCompress(i, oversampled, compThresholdPlain, compRatioPlain, compKneePlain);
+      ProcessCompress(i, Global, state, oversampled, compThresholdPlain, compRatioPlain, compKneePlain);
       break;
     default:
       FB_ASSERT(FFEffectKindIsSVF(_kind[i]));
@@ -1042,17 +1042,104 @@ FFEffectProcessor::ProcessFold(
 
 void 
 FFEffectProcessor::ProcessCompress(
-  int block,
+  int block, bool global, FBModuleProcState const& state,
   FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compThresholdPlain,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compRatioPlain,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compKneePlain)
 {
+  bool haveSide = true;
+  auto procState = state.ProcAs<FFProcState>();
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
-  FBSArray2<float, FFEffectFixedBlockOversamples, 2> detector;
-  for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
-    for (int c = 0; c < 2; c++)
-      detector[c].Store(s, oversampled[c].Load(s));
+  FBSArray2<float, FBFixedBlockSamples, 2> sideDetector = {};
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2> detector = {};
+
+  if (global && _gCompSide[block] == FFGEffectCompSide::Off ||
+    !global && _vCompSide[block] == FFVEffectCompSide::Off)
+  {
+    haveSide = false;
+    for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
+      for (int c = 0; c < 2; c++)
+        detector[c].Store(s, oversampled[c].Load(s));
+  }
+  else if (global)
+  {
+    switch (_gCompSide[block])
+    {
+    case FFGEffectCompSide::AudioIn:
+      state.input->mainAudio->CopyTo(sideDetector);
+      break;
+    case FFGEffectCompSide::Sidechain:
+      state.input->sidechainAudio->CopyTo(sideDetector);
+      break;
+    case FFGEffectCompSide::VMix:
+      // TODO
+      break;
+    case FFGEffectCompSide::FX1:
+      procState->dsp.global.gEffect[0].output.CopyTo(sideDetector);
+      break;
+    case FFGEffectCompSide::FX2:
+      procState->dsp.global.gEffect[1].output.CopyTo(sideDetector);
+      break;
+    case FFGEffectCompSide::FX3:
+      procState->dsp.global.gEffect[2].output.CopyTo(sideDetector);
+      break;
+    default:
+      FB_ASSERT(false);
+      break;
+    }
+  }
+  else
+  {
+    switch (_vCompSide[block])
+    {
+    case FFVEffectCompSide::AudioIn:
+      state.input->mainAudio->CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::Sidechain:
+      state.input->sidechainAudio->CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::OscMix:
+      // TODO
+      break;
+    case FFVEffectCompSide::Osc1:
+      procState->dsp.voice[state.voice->slot].osci[0].output.CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::Osc2:
+      procState->dsp.voice[state.voice->slot].osci[1].output.CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::Osc3:
+      procState->dsp.voice[state.voice->slot].osci[2].output.CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::Osc4:
+      procState->dsp.voice[state.voice->slot].osci[3].output.CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::FX1:
+      procState->dsp.voice[state.voice->slot].vEffect[0].output.CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::FX2:
+      procState->dsp.voice[state.voice->slot].vEffect[1].output.CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::FX3:
+      procState->dsp.voice[state.voice->slot].vEffect[2].output.CopyTo(sideDetector);
+      break;
+    default:
+      FB_ASSERT(false);
+      break;
+    }
+  }
+
+  if (haveSide)
+  {
+    for (int i = 0; i < FBFixedBlockSamples; i++)
+      for (int c = 0; c < 2; c++)
+        detector[c].Set(i, sideDetector[c].Get(i));
+    if (_oversampleTimes != 1)
+    {
+      detector[0].UpsampleStretch<FFEffectOversampleTimes>();
+      detector[1].UpsampleStretch<FFEffectOversampleTimes>();
+    }
+  }
 
   for (int s = 0; s < totalSamples; s++)
   {
@@ -1116,7 +1203,6 @@ FFEffectProcessor::ProcessCompress(
         oversampled[c].Set(s, oversampled[c].Get(s) * gain);
     }
 
-    // todo oversample
     if (_compStage[block] == FFEffectCompStage::Attack)
     {
       if (_compAttackPositionSamplesOversampled[block] < _compAttackSamplesOversampled[block])
