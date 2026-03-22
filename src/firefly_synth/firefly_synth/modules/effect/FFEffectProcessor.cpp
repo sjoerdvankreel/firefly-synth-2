@@ -79,11 +79,9 @@ FFEffectProcessor::ReleaseOnDemandBuffers(
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
     _combFilters[i].ReleaseBuffers(state->MemoryPool());
-    state->MemoryPool()->Return(_compRMSWindows[i]);
     _compRMSTotal[i] = 0.0f;
     _compRMSWindowsPos[i] = 0;
-    _compRMSWindows[i] = nullptr;
-    _compRMSWindowsSamples[i] = 0;
+    _compRMSWindows[i] = std::vector<float>();
   }
 }
 
@@ -120,10 +118,9 @@ FFEffectProcessor::AllocOnDemandBuffers(
       float rmsWindowSize = moduleTopo.NormalizedToLinearFast(FFEffectParam::CompRMSSize,
         FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.compRMSSize[i]));
       int samples = (int)std::ceil(rmsWindowSize * sampleRate);
-      _compRMSWindows[i] = (float*)state->MemoryPool()->Lease(samples * sizeof(float));
-      _compRMSWindowsSamples[i] = samples;
-      _compRMSWindowsPos[i] = 0;
       _compRMSTotal[i] = 0.0f;
+      _compRMSWindowsPos[i] = 0;
+      _compRMSWindows[i] = std::vector<float>(samples, 0.0f);
     }
   }
 }
@@ -232,10 +229,9 @@ FFEffectProcessor::BeginVoiceOrBlock(
       _compStage[i] = FFEffectCompStage::Off;
       _compAttackPositionSamplesOversampled[i] = 0;
       _compReleasePositionSamplesOversampled[i] = 0;
-      if(_compRMSWindows[i] != nullptr)
-        std::memset(_compRMSWindows[i], 0, sizeof(float) * _compRMSWindowsSamples[i]);
-      _compRMSWindowsPos[i] = 0;
       _compRMSTotal[i] = 0.0f;
+      _compRMSWindowsPos[i] = 0;
+      std::fill(_compRMSWindows[i].begin(), _compRMSWindows[i].end(), 0.0f);
 
       _prevCompMode[i] = _compMode[i];
       _prevGCompSide[i] = _gCompSide[i];
@@ -1067,8 +1063,8 @@ FFEffectProcessor::ProcessCompress(
       _compRMSTotal[block] += measure * measure;
       _compRMSWindows[block][_compRMSWindowsPos[block]] = measure * measure;
       _compRMSWindowsPos[block]++;
-      _compRMSWindowsPos[block] %= _compRMSWindowsSamples[block];
-      measure = std::sqrt(_compRMSTotal[block] / (float)_compRMSWindowsSamples[block]);
+      _compRMSWindowsPos[block] %= (int)_compRMSWindows[block].size();
+      measure = std::sqrt(_compRMSTotal[block] / (float)_compRMSWindows[block].size());
       if (std::abs(measure - prevmesTODO) > 0.01)
       {
         int zzzz = 0;
