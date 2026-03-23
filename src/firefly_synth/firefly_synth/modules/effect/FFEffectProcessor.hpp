@@ -31,6 +31,8 @@ class FFEffectProcessor final
 {
   bool _on = {};
   int _oversampleTimes = {};
+
+#if false
   std::array<float, FFEffectBlockCount> _compEnvs = {};
   std::array<float, FFEffectBlockCount> _compEnvStart = {};
   std::array<FFEffectCompStage, FFEffectBlockCount> _compStage = {};
@@ -49,18 +51,19 @@ class FFEffectProcessor final
   std::array<int, FFEffectBlockCount> _prevCompAttackSamplesOversampled = {};
   std::array<int, FFEffectBlockCount> _prevCompReleaseSamplesOversampled = {};
 
-  std::array<FFEffectKind, FFEffectBlockCount> _kind = {};
-  std::array<FFEffectClipMode, FFEffectBlockCount> _clipMode = {};
-  std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};
-  std::array<FFEffectSkewMode, FFEffectBlockCount> _skewMode = {};
-  std::array<FFEffectFilterMode, FFEffectBlockCount> _filterMode = {};
-
   std::array<float, FFEffectBlockCount> _compAttack = {};
   std::array<float, FFEffectBlockCount> _compRelease = {};
   std::array<float, FFEffectBlockCount> _compRMSSize = {};
   std::array<FFEffectCompMode, FFEffectBlockCount> _compMode = {};
   std::array<FFVEffectCompSide, FFEffectBlockCount> _vCompSide = {};
   std::array<FFGEffectCompSide, FFEffectBlockCount> _gCompSide = {};
+#endif
+
+  std::array<FFEffectKind, FFEffectBlockCount> _kind = {};
+  std::array<FFEffectClipMode, FFEffectBlockCount> _clipMode = {};
+  std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};
+  std::array<FFEffectSkewMode, FFEffectBlockCount> _skewMode = {};
+  std::array<FFEffectFilterMode, FFEffectBlockCount> _filterMode = {};
 
   bool _graph = {};
   int _graphSampleCount = {};
