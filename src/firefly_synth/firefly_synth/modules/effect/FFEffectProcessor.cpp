@@ -668,7 +668,7 @@ FFEffectProcessor::Process(
       {
         compThresholdPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CompThreshold,
           FFSelectDualProcAccParamNormalized<Global>(compThresholdNorm[i], voice), s));
-        compRatioPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::CompRatio,
+        compRatioPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CompRatio,
           FFSelectDualProcAccParamNormalized<Global>(compRatioNorm[i], voice), s));
         compKneePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CompKnee,
           FFSelectDualProcAccParamNormalized<Global>(compKneeNorm[i], voice), s));
@@ -1093,7 +1093,7 @@ FFEffectProcessor::ProcessCompress(
     else
       _compEnvStateDb[block] = overDb + _compEnvCoeffRelease[block] * (_compEnvStateDb[block] - overDb);
     overDb = _compEnvStateDb[block] - dcOffset;
-    float ratio = 4.0f; // todo
+    float ratio = 1.0f / (1.0f - compRatioPlain[block].Get(s));
     float gainReductionDb = overDb * (ratio - 1.0f);	
     float gainReduction = std::pow(10.0f, -gainReductionDb / 20.0f);
     oversampled[0].Set(s, oversampled[0].Get(s) * gainReduction);
