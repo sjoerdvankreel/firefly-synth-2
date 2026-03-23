@@ -1091,10 +1091,8 @@ FFEffectProcessor::ProcessCompress(
     float kneeDb = compKneePlain[block].Get(s);
     float measure = std::max(std::abs(oversampled[0].Get(s)), oversampled[1].Get(s));
     float measureDb = 20.0f * std::log10(measure + dcOffset);
-    float thresholdDbCenter = 20.0f * std::log10(compThresholdPlain[block].Get(s));
-    float thresholdDbLow = thresholdDbCenter - kneeDb * 0.5f;
-    float thresholdDbHi = thresholdDbCenter + kneeDb * 0.5f;
-    float overDb = std::max(0.0f, measureDb - thresholdDbLow) + dcOffset;
+    float thresholdDb = 20.0f * std::log10(compThresholdPlain[block].Get(s));
+    float overDb = std::max(0.0f, measureDb - thresholdDb) + dcOffset;
     if (overDb > _compEnvStateDb[block])
       _compEnvStateDb[block] = overDb + _compEnvCoeffAttack[block] * (_compEnvStateDb[block] - overDb);
     else
@@ -1102,8 +1100,11 @@ FFEffectProcessor::ProcessCompress(
     overDb = _compEnvStateDb[block] - dcOffset;
     float ratio = 1.0f / (1.0f - compRatioPlain[block].Get(s));
     float gainReductionDb = overDb * (ratio - 1.0f);	
-    if (overDb < thresholdDbHi - thresholdDbLow)
-      gainReductionDb *= overDb / (thresholdDbHi - thresholdDbLow);
+    
+    // TODO I just can't figure out how to center the knee around threshold.
+    if (overDb < kneeDb)
+      gainReductionDb *= overDb / kneeDb;
+
     float gainReduction = std::pow(10.0f, -gainReductionDb / 20.0f);
     oversampled[0].Set(s, oversampled[0].Get(s) * gainReduction);
     oversampled[1].Set(s, oversampled[1].Get(s) * gainReduction);
