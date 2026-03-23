@@ -228,10 +228,11 @@ FFEffectProcessor::BeginVoiceOrBlock(
     _compReleaseSamplesOversampled[i] = FBTimeToSamples(_compRelease[i], sampleRate * _oversampleTimes);
 #endif
 
-    bool shouldInit = true;
+    bool shouldInitComp = true;
     if constexpr (Global)
     {
-      shouldInit =
+      shouldInitComp =
+        _prevOverSampleTimes != _oversampleTimes ||
         _prevCompAttackTime[i] != _compAttackTime[i] ||
         _prevCompReleaseTime[i] != _compReleaseTime[i];
 #if false // TODO
@@ -243,8 +244,11 @@ FFEffectProcessor::BeginVoiceOrBlock(
         _prevCompReleaseSamplesOversampled[i] != _compReleaseSamplesOversampled[i];
 #endif
     }
-    if (shouldInit)
+    if (shouldInitComp)
     {
+      _prevOverSampleTimes = _oversampleTimes;
+      _prevCompAttackTime[i] = _compAttackTime[i];
+      _prevCompReleaseTime[i] = _compReleaseTime[i];
 #if false // TODO
       _compEnvs[i] = 0.0f;
       _compEnvStart[i] = 0.0f;

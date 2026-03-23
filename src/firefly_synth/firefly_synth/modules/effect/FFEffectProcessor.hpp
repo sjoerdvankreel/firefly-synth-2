@@ -31,7 +31,7 @@ class FFEffectProcessor final
 {
   bool _on = {};
   int _oversampleTimes = {};
-
+  int _prevOverSampleTimes = {};
   std::array<float, FFEffectBlockCount> _compEnvStateDb = {};
   std::array<float, FFEffectBlockCount> _compAttackTime = {};
   std::array<float, FFEffectBlockCount> _compReleaseTime = {};
