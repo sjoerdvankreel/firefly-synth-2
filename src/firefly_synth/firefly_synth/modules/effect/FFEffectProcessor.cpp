@@ -140,10 +140,8 @@ FFEffectProcessor::BeginVoiceOrBlock(
   int graphIndex, int graphSampleCount)
 {
   auto* procState = state.ProcAs<FFProcState>();
-  int voice = state.voice == nullptr ? -1 : state.voice->slot;
-#if false // TODO
   float sampleRate = state.input->sampleRate;
-#endif
+  int voice = state.voice == nullptr ? -1 : state.voice->slot;
   auto const& params = *FFSelectDualState<Global>(
     [procState, &state]() { return &procState->param.global.gEffect[state.moduleSlot]; },
     [procState, &state]() { return &procState->param.voice.vEffect[state.moduleSlot]; });
@@ -155,10 +153,10 @@ FFEffectProcessor::BeginVoiceOrBlock(
   auto const& skewModeNorm = params.block.skewMode;
   auto const& filterModeNorm = params.block.filterMode;
 
-#if false // TODO
-  auto const& compModeNorm = params.block.compMode;
   auto const& compAttackNorm = params.block.compAttack;
   auto const& compReleaseNorm = params.block.compRelease;
+#if false // TODO
+  auto const& compModeNorm = params.block.compMode;
   auto const& compRMSSizeNorm = params.block.compRMSSize;
   auto const& compVSideOrGSideNorm = params.block.compVSideOrGSide;
 #endif
@@ -199,6 +197,15 @@ FFEffectProcessor::BeginVoiceOrBlock(
       FFEffectParam::FilterMode,
       FFSelectDualProcBlockParamNormalized<Global>(filterModeNorm[i], voice));
 
+    _compAttackTime[i] = topo.NormalizedToLinearFast(
+      FFEffectParam::CompAttack,
+      FFSelectDualProcBlockParamNormalized<Global>(compAttackNorm[i], voice));
+    _compReleaseTime[i] = topo.NormalizedToLinearFast(
+      FFEffectParam::CompRelease,
+      FFSelectDualProcBlockParamNormalized<Global>(compReleaseNorm[i], voice));
+    _compEnvCoeffAttack[i] = std::exp(-1 / (_compAttackTime[i] * sampleRate * _oversampleTimes));
+    _compEnvCoeffRelease[i] = std::exp(-1 / (_compReleaseTime[i] * sampleRate * _oversampleTimes));
+
 #if false // TODO
     _compMode[i] = topo.NormalizedToListFast<FFEffectCompMode>(
       FFEffectParam::CompMode,      
@@ -211,12 +218,6 @@ FFEffectProcessor::BeginVoiceOrBlock(
       _vCompSide[i] = topo.NormalizedToListFast<FFVEffectCompSide>(
         FFEffectParam::CompVSideOrGSide,
         FFSelectDualProcBlockParamNormalized<Global>(compVSideOrGSideNorm[i], voice));
-    _compAttack[i] = topo.NormalizedToLinearFast(
-      FFEffectParam::CompAttack,
-        FFSelectDualProcBlockParamNormalized<Global>(compAttackNorm[i], voice));
-    _compRelease[i] = topo.NormalizedToLinearFast(
-      FFEffectParam::CompRelease,
-      FFSelectDualProcBlockParamNormalized<Global>(compReleaseNorm[i], voice));
     _compRMSSize[i] = topo.NormalizedToLinearFast(
       FFEffectParam::CompRMSSize,
       FFSelectDualProcBlockParamNormalized<Global>(compRMSSizeNorm[i], voice));
@@ -230,6 +231,9 @@ FFEffectProcessor::BeginVoiceOrBlock(
     bool shouldInit = true;
     if constexpr (Global)
     {
+      shouldInit =
+        _prevCompAttackTime[i] != _compAttackTime[i] ||
+        _prevCompReleaseTime[i] != _compReleaseTime[i];
 #if false // TODO
       shouldInit =
         _prevCompMode[i] != _compMode[i] ||
@@ -1074,6 +1078,27 @@ FFEffectProcessor::ProcessCompress(
   (void)compThresholdPlain;
   (void)compRatioPlain;
   (void)compKneePlain;
+
+  // todo not per sample
+  const float dcOffset = 1.0e-10;
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  for (int s = 0; s < totalSamples; s++)
+  {
+    float measure = std::max(std::abs(oversampled[0].Get(s)), oversampled[1].Get(s));
+    float measureDb = 20.0f * std::log10(measure + dcOffset);
+    float thresholdDb = 20.0f * std::log10(compThresholdPlain[block].Get(s));
+    float overDb = std::max(0.0f, measureDb - thresholdDb) + dcOffset;
+    if (overDb > _compEnvStateDb[block])
+      _compEnvStateDb[block] = overDb + _compEnvCoeffAttack[block] * (_compEnvStateDb[block] - overDb);
+    else
+      _compEnvStateDb[block] = overDb + _compEnvCoeffRelease[block] * (_compEnvStateDb[block] - overDb);
+    overDb = _compEnvStateDb[block] - dcOffset;
+    float ratio = 4.0f; // todo
+    float gainReductionDb = overDb * (ratio - 1.0f);	
+    float gainReduction = std::pow(10.0f, -gainReductionDb / 20.0f);
+    oversampled[0].Set(s, oversampled[0].Get(s) * gainReduction);
+    oversampled[1].Set(s, oversampled[1].Get(s) * gainReduction);
+  }
 
 #if false // TODO
   oversampled.SanityCheck();

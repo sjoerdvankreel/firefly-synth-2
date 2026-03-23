@@ -32,12 +32,18 @@ class FFEffectProcessor final
   bool _on = {};
   int _oversampleTimes = {};
 
+  std::array<float, FFEffectBlockCount> _compEnvStateDb = {};
+  std::array<float, FFEffectBlockCount> _compAttackTime = {};
+  std::array<float, FFEffectBlockCount> _compReleaseTime = {};
+  std::array<float, FFEffectBlockCount> _compEnvCoeffAttack = {};
+  std::array<float, FFEffectBlockCount> _compEnvCoeffRelease = {};
+  std::array<float, FFEffectBlockCount> _prevCompAttackTime = {};
+  std::array<float, FFEffectBlockCount> _prevCompReleaseTime = {};
+
 #if false
   std::array<float, FFEffectBlockCount> _compEnvs = {};
   std::array<float, FFEffectBlockCount> _compEnvStart = {};
   std::array<FFEffectCompStage, FFEffectBlockCount> _compStage = {};
-  std::array<int, FFEffectBlockCount> _compAttackSamplesOversampled = {};
-  std::array<int, FFEffectBlockCount> _compReleaseSamplesOversampled = {};
   std::array<int, FFEffectBlockCount> _compAttackPositionSamplesOversampled = {};
   std::array<int, FFEffectBlockCount> _compReleasePositionSamplesOversampled = {};
   // https://stackoverflow.com/questions/10990618/calculate-rolling-moving-average-in-c
