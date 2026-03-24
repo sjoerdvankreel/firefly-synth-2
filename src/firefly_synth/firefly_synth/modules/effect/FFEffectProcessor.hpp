@@ -151,7 +151,7 @@ public:
 
 private:
   float sampleRate{ 0.0f };
-  bool prepared;
+  bool prepared = {};
 
   float knee{ 0.0f }, kneeHalf{ 0.0f };
   float threshold{ -10.0f };
@@ -165,8 +165,8 @@ private:
   //state juce::variable
   float state{ 0.0f };
 
-  float alphaAttack;
-  float alphaRelease;
+  float alphaAttack = {};
+  float alphaRelease = {};
 };
 
 
