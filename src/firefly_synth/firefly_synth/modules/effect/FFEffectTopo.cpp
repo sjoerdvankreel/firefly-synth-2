@@ -825,7 +825,7 @@ FFMakeEffectTopo(bool global)
     [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
 
   auto& compThreshold = result->params[(int)FFEffectParam::CompThreshold];
-  compThreshold.mode = FBParamMode::Accurate;
+  compThreshold.mode = FBParamMode::Block;
   compThreshold.defaultText = "100";
   compThreshold.name = "Comp Threshold";
   compThreshold.display = "Threshold";
@@ -850,7 +850,7 @@ FFMakeEffectTopo(bool global)
     [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
 
   auto& compRatio = result->params[(int)FFEffectParam::CompRatio];
-  compRatio.mode = FBParamMode::Accurate;
+  compRatio.mode = FBParamMode::Block;
   compRatio.unit = "%";
   compRatio.defaultText = "75";
   compRatio.name = "Comp Ratio";
@@ -925,7 +925,7 @@ FFMakeEffectTopo(bool global)
     [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
 
   auto& compKnee = result->params[(int)FFEffectParam::CompKnee];
-  compKnee.mode = FBParamMode::Accurate;
+  compKnee.mode = FBParamMode::Block;
   compKnee.defaultText = "0.01";
   compKnee.name = "Comp Knee";
   compKnee.display = "Knee";
