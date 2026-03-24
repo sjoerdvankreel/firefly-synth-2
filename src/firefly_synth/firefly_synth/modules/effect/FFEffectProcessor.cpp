@@ -79,11 +79,9 @@ FFEffectProcessor::ReleaseOnDemandBuffers(
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
     _combFilters[i].ReleaseBuffers(state->MemoryPool());
-#if false // TODO
     _compRMSTotal[i] = 0.0f;
     _compRMSWindowsPos[i] = 0;
     _compRMSWindows[i] = std::vector<float>();
-#endif    
   }
 }
 
@@ -117,7 +115,6 @@ FFEffectProcessor::AllocOnDemandBuffers(
       _combFilters[i].AllocBuffers(state->MemoryPool(), sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier); 
     if (kind == FFEffectKind::Compressor)
     {
-#if false // TODO
       float rmsWindowSize = moduleTopo.NormalizedToLinearFast(FFEffectParam::CompRMSSize,
         FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.compRMSSize[i]));
       int samples = (int)std::ceil(rmsWindowSize * sampleRate);
@@ -127,7 +124,6 @@ FFEffectProcessor::AllocOnDemandBuffers(
         _compRMSWindowsPos[i] = 0;
         _compRMSWindows[i] = std::vector<float>(samples, 0.0f);
       }
-#endif
     }
   }
 }
@@ -158,11 +154,9 @@ FFEffectProcessor::BeginVoiceOrBlock(
   auto const& compAttackNorm = params.block.compAttack;
   auto const& compReleaseNorm = params.block.compRelease;
   auto const& compThresholdNorm = params.block.compThreshold;
-#if false // TODO
   auto const& compModeNorm = params.block.compMode;
   auto const& compRMSSizeNorm = params.block.compRMSSize;
-  auto const& compVSideOrGSideNorm = params.block.compVSideOrGSide;
-#endif
+  // TODO auto const& compVSideOrGSideNorm = params.block.compVSideOrGSide;
 
   float onNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.on[0], voice);
   float oversampleNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.oversample[0], voice);
@@ -204,6 +198,12 @@ FFEffectProcessor::BeginVoiceOrBlock(
       FFSelectDualProcBlockParamNormalized<Global>(compKneeNorm[i], voice));
     _compRatio[i] = topo.NormalizedToLinearFast(FFEffectParam::CompRatio,
       FFSelectDualProcBlockParamNormalized<Global>(compRatioNorm[i], voice));
+    _compMode[i] = topo.NormalizedToListFast<FFEffectCompMode>(
+      FFEffectParam::CompMode,
+      FFSelectDualProcBlockParamNormalized<Global>(compModeNorm[i], voice));
+    _compRMSSize[i] = topo.NormalizedToLinearFast(
+      FFEffectParam::CompRMSSize,
+      FFSelectDualProcBlockParamNormalized<Global>(compRMSSizeNorm[i], voice));
     _compThresholdDb[i] = topo.NormalizedToLinearFast(FFEffectParam::CompThreshold,
       FFSelectDualProcBlockParamNormalized<Global>(compThresholdNorm[i], voice));
     _compThresholdDb[i] = 20.0f * std::log10(_compThresholdDb[i]);
@@ -223,9 +223,6 @@ FFEffectProcessor::BeginVoiceOrBlock(
     _compEnvCoeffRelease[i] = std::exp(-1.0f / (compReleaseTime * sampleRate * _oversampleTimes));
 
 #if false // TODO
-    _compMode[i] = topo.NormalizedToListFast<FFEffectCompMode>(
-      FFEffectParam::CompMode,      
-      FFSelectDualProcBlockParamNormalized<Global>(compModeNorm[i], voice));
     if constexpr(Global)
       _gCompSide[i] = topo.NormalizedToListFast<FFGEffectCompSide>(
         FFEffectParam::CompVSideOrGSide,
@@ -234,53 +231,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
       _vCompSide[i] = topo.NormalizedToListFast<FFVEffectCompSide>(
         FFEffectParam::CompVSideOrGSide,
         FFSelectDualProcBlockParamNormalized<Global>(compVSideOrGSideNorm[i], voice));
-    _compRMSSize[i] = topo.NormalizedToLinearFast(
-      FFEffectParam::CompRMSSize,
-      FFSelectDualProcBlockParamNormalized<Global>(compRMSSizeNorm[i], voice));
-#endif
-
-#if false // TODO
-    _compAttackSamplesOversampled[i] = FBTimeToSamples(_compAttack[i], sampleRate * _oversampleTimes);
-    _compReleaseSamplesOversampled[i] = FBTimeToSamples(_compRelease[i], sampleRate * _oversampleTimes);
-#endif
-
-
-#if false // TODO
-    bool shouldInitComp = true;
-    if constexpr (Global)
-    {
-      shouldInitComp =
-        _prevOverSampleTimes != _oversampleTimes ||
-        _prevCompAttackTime[i] != _compAttackTime[i] ||
-        _prevCompReleaseTime[i] != _compReleaseTime[i];
-      shouldInit =
-        _prevCompMode[i] != _compMode[i] ||
-        _prevGCompSide[i] != _gCompSide[i] ||
-        _prevCompRMSSize[i] != _compRMSSize[i] ||
-        _prevCompAttackSamplesOversampled[i] != _compAttackSamplesOversampled[i] ||
-        _prevCompReleaseSamplesOversampled[i] != _compReleaseSamplesOversampled[i];
-    }
-    if (shouldInitComp)
-    {
-      _prevOverSampleTimes = _oversampleTimes;
-      _prevCompAttackTime[i] = _compAttackTime[i];
-      _prevCompReleaseTime[i] = _compReleaseTime[i];
-      _compEnvs[i] = 0.0f;
-      _compEnvStart[i] = 0.0f;
-      _compStage[i] = FFEffectCompStage::Off;
-      _compAttackPositionSamplesOversampled[i] = 0;
-      _compReleasePositionSamplesOversampled[i] = 0;
-      _compRMSTotal[i] = 0.0f;
-      _compRMSWindowsPos[i] = 0;
-      std::fill(_compRMSWindows[i].begin(), _compRMSWindows[i].end(), 0.0f);
-
-      _prevCompMode[i] = _compMode[i];
-      _prevGCompSide[i] = _gCompSide[i];
-      _prevCompRMSSize[i] = _compRMSSize[i];
-      _prevCompAttackSamplesOversampled[i] = _compAttackSamplesOversampled[i];
-      _prevCompReleaseSamplesOversampled[i] = _compReleaseSamplesOversampled[i];
-    }
-#endif
+#endif 
 
     if constexpr(Global)
       if (!graph)
@@ -1071,6 +1022,16 @@ FFEffectProcessor::ProcessCompress(
   for (int s = 0; s < totalSamples; s++)
   {
     float measure = std::max(std::abs(oversampled[0].Get(s)), oversampled[1].Get(s));
+    if (!_graph && _compMode[block] == FFEffectCompMode::RMS)
+    {
+      _compRMSTotal[block] -= _compRMSWindows[block][_compRMSWindowsPos[block]];
+      _compRMSTotal[block] += measure * measure;
+      _compRMSWindows[block][_compRMSWindowsPos[block]] = measure * measure;
+      _compRMSWindowsPos[block]++;
+      _compRMSWindowsPos[block] %= (int)_compRMSWindows[block].size();
+      measure = std::sqrt(_compRMSTotal[block] / (float)_compRMSWindows[block].size());
+    }
+
     float measureDb = 20.0f * std::log10(measure);
     float overDb = measureDb - _compThresholdDb[block];
     float ratio = 1.0f / (1.0f - _compRatio[block] * 0.5f);

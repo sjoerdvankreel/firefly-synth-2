@@ -31,11 +31,14 @@ class FFEffectProcessor final
   std::array<float, FFEffectBlockCount> _compEnvCoeffAttack = {};
   std::array<float, FFEffectBlockCount> _compEnvCoeffRelease = {};
 
-#if false
   // https://stackoverflow.com/questions/10990618/calculate-rolling-moving-average-in-c
+  std::array<float, FFEffectBlockCount> _compRMSSize = {};
   std::array<float, FFEffectBlockCount> _compRMSTotal = {};
   std::array<int, FFEffectBlockCount> _compRMSWindowsPos = {};
+  std::array<FFEffectCompMode, FFEffectBlockCount> _compMode = {};
   std::array<std::vector<float>, FFEffectBlockCount> _compRMSWindows = {};
+
+#if false
 
   std::array<float, FFEffectBlockCount> _prevCompRMSSize = {};
   std::array<FFEffectCompMode, FFEffectBlockCount> _prevCompMode = {};
@@ -43,8 +46,6 @@ class FFEffectProcessor final
 
   std::array<float, FFEffectBlockCount> _compAttack = {};
   std::array<float, FFEffectBlockCount> _compRelease = {};
-  std::array<float, FFEffectBlockCount> _compRMSSize = {};
-  std::array<FFEffectCompMode, FFEffectBlockCount> _compMode = {};
   std::array<FFVEffectCompSide, FFEffectBlockCount> _vCompSide = {};
   std::array<FFGEffectCompSide, FFEffectBlockCount> _gCompSide = {};
 #endif
