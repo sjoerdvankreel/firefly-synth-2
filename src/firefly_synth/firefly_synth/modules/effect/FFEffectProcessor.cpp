@@ -768,9 +768,7 @@ FFEffectProcessor::Process(
     exchangeDSP->stVarFreqs[i] = stVarRealFreqPlain[i].First();
     exchangeDSP->combMinFreqs[i] = combRealFreqMinPlain[i].First();
     exchangeDSP->combPlusFreqs[i] = combRealFreqPlusPlain[i].First();
-#if false // TODO
-    exchangeDSP->compEnvs[i] = _compEnvs[i];
-#endif
+    exchangeDSP->compGainReduction[i] = _compGainReduction[i];
   }
 
   auto& exchangeParams = *FFSelectDualState<Global>(
@@ -1010,6 +1008,7 @@ FFEffectProcessor::ProcessFold(
 
 // basic algo https://github.com/jonathonracz/GoatMix/tree/master/GoatMix/Source/External/SimpleComp
 // soft knee https://github.com/tu-studio/IEMPluginSuite/blob/master/resources/Compressor.h
+// rolling RMS https://stackoverflow.com/questions/10990618/calculate-rolling-moving-average-in-c
 void 
 FFEffectProcessor::ProcessCompress(
   int block, bool global, FBModuleProcState const& state,
@@ -1052,6 +1051,7 @@ FFEffectProcessor::ProcessCompress(
     float gainReduction = std::pow(10.0f, -gainReductionDb / 20.0f);
     oversampled[0].Set(s, oversampled[0].Get(s) * gainReduction);
     oversampled[1].Set(s, oversampled[1].Get(s) * gainReduction);
+    _compGainReduction[block] = gainReductionDb;
   }
 
 #if false // TODO

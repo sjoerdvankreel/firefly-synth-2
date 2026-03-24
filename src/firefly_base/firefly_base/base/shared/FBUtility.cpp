@@ -18,6 +18,12 @@ FBToStringHz(float val, int precision)
 }
 
 std::string
+FBToStringDb(float val, int precision)
+{
+  return FBFormatDoubleCLocale(val, precision) + " dB";
+}
+
+std::string
 FBToStringSeconds(float val, int precision)
 {
   return FBFormatDoubleCLocale(val, precision) + " Sec";

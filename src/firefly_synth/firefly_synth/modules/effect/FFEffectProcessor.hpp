@@ -24,19 +24,6 @@ class FFEffectProcessor final
 {
   bool _on = {};
   int _oversampleTimes = {};
-  std::array<float, FFEffectBlockCount> _compRatio = {};
-  std::array<float, FFEffectBlockCount> _compKneeDb = {};
-  std::array<float, FFEffectBlockCount> _compEnvStateDb = {};
-  std::array<float, FFEffectBlockCount> _compThresholdDb = {};
-  std::array<float, FFEffectBlockCount> _compEnvCoeffAttack = {};
-  std::array<float, FFEffectBlockCount> _compEnvCoeffRelease = {};
-
-  // https://stackoverflow.com/questions/10990618/calculate-rolling-moving-average-in-c
-  std::array<float, FFEffectBlockCount> _compRMSSize = {};
-  std::array<float, FFEffectBlockCount> _compRMSTotal = {};
-  std::array<int, FFEffectBlockCount> _compRMSWindowsPos = {};
-  std::array<FFEffectCompMode, FFEffectBlockCount> _compMode = {};
-  std::array<std::vector<float>, FFEffectBlockCount> _compRMSWindows = {};
 
 #if false
 
@@ -55,6 +42,20 @@ class FFEffectProcessor final
   std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};
   std::array<FFEffectSkewMode, FFEffectBlockCount> _skewMode = {};
   std::array<FFEffectFilterMode, FFEffectBlockCount> _filterMode = {};
+
+  // well heck, compressors are difficult
+  std::array<float, FFEffectBlockCount> _compRatio = {};
+  std::array<float, FFEffectBlockCount> _compKneeDb = {};
+  std::array<float, FFEffectBlockCount> _compEnvStateDb = {};
+  std::array<float, FFEffectBlockCount> _compThresholdDb = {};
+  std::array<float, FFEffectBlockCount> _compGainReduction = {};
+  std::array<float, FFEffectBlockCount> _compEnvCoeffAttack = {};
+  std::array<float, FFEffectBlockCount> _compEnvCoeffRelease = {};
+  std::array<float, FFEffectBlockCount> _compRMSSize = {};
+  std::array<float, FFEffectBlockCount> _compRMSTotal = {};
+  std::array<int, FFEffectBlockCount> _compRMSWindowsPos = {};
+  std::array<FFEffectCompMode, FFEffectBlockCount> _compMode = {};
+  std::array<std::vector<float>, FFEffectBlockCount> _compRMSWindows = {};
 
   bool _graph = {};
   int _graphSampleCount = {};

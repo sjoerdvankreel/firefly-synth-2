@@ -24,7 +24,7 @@ public FBModuleProcSingleExchangeState
   std::array<float, FFEffectBlockCount> stVarFreqs = {};
   std::array<float, FFEffectBlockCount> combMinFreqs = {};
   std::array<float, FFEffectBlockCount> combPlusFreqs = {};
-   // TODO
+  std::array<float, FFEffectBlockCount> compGainReduction = {};
 };
 
 class alignas(FBSIMDAlign) FFEffectDSPState final
