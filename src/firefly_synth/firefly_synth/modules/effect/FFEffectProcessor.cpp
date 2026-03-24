@@ -77,7 +77,14 @@ FFEffectProcessor::ReleaseOnDemandBuffers(
   FBRuntimeTopo const*, FBProcStateContainer* state)
 {
   for (int i = 0; i < FFEffectBlockCount; i++)
+  {
     _combFilters[i].ReleaseBuffers(state->MemoryPool());
+#if false // TODO
+    _compRMSTotal[i] = 0.0f;
+    _compRMSWindowsPos[i] = 0;
+    _compRMSWindows[i] = std::vector<float>();
+#endif    
+  }
 }
 
 template <bool Global>
@@ -108,6 +115,20 @@ FFEffectProcessor::AllocOnDemandBuffers(
       FFSelectDualProcBlockParamNormalizedGlobal<Global>(kindNorm[i]));
     if (graph || FFEffectKindIsComb(kind))
       _combFilters[i].AllocBuffers(state->MemoryPool(), sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier); 
+    if (kind == FFEffectKind::Compressor)
+    {
+#if false // TODO
+      float rmsWindowSize = moduleTopo.NormalizedToLinearFast(FFEffectParam::CompRMSSize,
+        FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.compRMSSize[i]));
+      int samples = (int)std::ceil(rmsWindowSize * sampleRate);
+      if ((int)_compRMSWindows[i].size() != samples)
+      {
+        _compRMSTotal[i] = 0.0f;
+        _compRMSWindowsPos[i] = 0;
+        _compRMSWindows[i] = std::vector<float>(samples, 0.0f);
+      }
+#endif
+    }
   }
 }
 
@@ -119,6 +140,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
   int graphIndex, int graphSampleCount)
 {
   auto* procState = state.ProcAs<FFProcState>();
+  float sampleRate = state.input->sampleRate;
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
   auto const& params = *FFSelectDualState<Global>(
     [procState, &state]() { return &procState->param.global.gEffect[state.moduleSlot]; },
@@ -130,6 +152,14 @@ FFEffectProcessor::BeginVoiceOrBlock(
   auto const& foldModeNorm = params.block.foldMode;
   auto const& skewModeNorm = params.block.skewMode;
   auto const& filterModeNorm = params.block.filterMode;
+
+  auto const& compAttackNorm = params.block.compAttack;
+  auto const& compReleaseNorm = params.block.compRelease;
+#if false // TODO
+  auto const& compModeNorm = params.block.compMode;
+  auto const& compRMSSizeNorm = params.block.compRMSSize;
+  auto const& compVSideOrGSideNorm = params.block.compVSideOrGSide;
+#endif
 
   float onNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.on[0], voice);
   float oversampleNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.oversample[0], voice);
@@ -166,6 +196,76 @@ FFEffectProcessor::BeginVoiceOrBlock(
     _filterMode[i] = topo.NormalizedToListFast<FFEffectFilterMode>(
       FFEffectParam::FilterMode,
       FFSelectDualProcBlockParamNormalized<Global>(filterModeNorm[i], voice));
+
+    _compAttackTime[i] = topo.NormalizedToLinearFast(
+      FFEffectParam::CompAttack,
+      FFSelectDualProcBlockParamNormalized<Global>(compAttackNorm[i], voice));
+    _compReleaseTime[i] = topo.NormalizedToLinearFast(
+      FFEffectParam::CompRelease,
+      FFSelectDualProcBlockParamNormalized<Global>(compReleaseNorm[i], voice));
+    _compEnvCoeffAttack[i] = std::exp(-1 / (_compAttackTime[i] * sampleRate * _oversampleTimes));
+    _compEnvCoeffRelease[i] = std::exp(-1 / (_compReleaseTime[i] * sampleRate * _oversampleTimes));
+
+#if false // TODO
+    _compMode[i] = topo.NormalizedToListFast<FFEffectCompMode>(
+      FFEffectParam::CompMode,      
+      FFSelectDualProcBlockParamNormalized<Global>(compModeNorm[i], voice));
+    if constexpr(Global)
+      _gCompSide[i] = topo.NormalizedToListFast<FFGEffectCompSide>(
+        FFEffectParam::CompVSideOrGSide,
+        FFSelectDualProcBlockParamNormalized<Global>(compVSideOrGSideNorm[i], voice));
+    else
+      _vCompSide[i] = topo.NormalizedToListFast<FFVEffectCompSide>(
+        FFEffectParam::CompVSideOrGSide,
+        FFSelectDualProcBlockParamNormalized<Global>(compVSideOrGSideNorm[i], voice));
+    _compRMSSize[i] = topo.NormalizedToLinearFast(
+      FFEffectParam::CompRMSSize,
+      FFSelectDualProcBlockParamNormalized<Global>(compRMSSizeNorm[i], voice));
+#endif
+
+#if false // TODO
+    _compAttackSamplesOversampled[i] = FBTimeToSamples(_compAttack[i], sampleRate * _oversampleTimes);
+    _compReleaseSamplesOversampled[i] = FBTimeToSamples(_compRelease[i], sampleRate * _oversampleTimes);
+#endif
+
+    bool shouldInitComp = true;
+    if constexpr (Global)
+    {
+      shouldInitComp =
+        _prevOverSampleTimes != _oversampleTimes ||
+        _prevCompAttackTime[i] != _compAttackTime[i] ||
+        _prevCompReleaseTime[i] != _compReleaseTime[i];
+#if false // TODO
+      shouldInit =
+        _prevCompMode[i] != _compMode[i] ||
+        _prevGCompSide[i] != _gCompSide[i] ||
+        _prevCompRMSSize[i] != _compRMSSize[i] ||
+        _prevCompAttackSamplesOversampled[i] != _compAttackSamplesOversampled[i] ||
+        _prevCompReleaseSamplesOversampled[i] != _compReleaseSamplesOversampled[i];
+#endif
+    }
+    if (shouldInitComp)
+    {
+      _prevOverSampleTimes = _oversampleTimes;
+      _prevCompAttackTime[i] = _compAttackTime[i];
+      _prevCompReleaseTime[i] = _compReleaseTime[i];
+#if false // TODO
+      _compEnvs[i] = 0.0f;
+      _compEnvStart[i] = 0.0f;
+      _compStage[i] = FFEffectCompStage::Off;
+      _compAttackPositionSamplesOversampled[i] = 0;
+      _compReleasePositionSamplesOversampled[i] = 0;
+      _compRMSTotal[i] = 0.0f;
+      _compRMSWindowsPos[i] = 0;
+      std::fill(_compRMSWindows[i].begin(), _compRMSWindows[i].end(), 0.0f);
+
+      _prevCompMode[i] = _compMode[i];
+      _prevGCompSide[i] = _gCompSide[i];
+      _prevCompRMSSize[i] = _compRMSSize[i];
+      _prevCompAttackSamplesOversampled[i] = _compAttackSamplesOversampled[i];
+      _prevCompReleaseSamplesOversampled[i] = _compReleaseSamplesOversampled[i];
+#endif
+    }
 
     if constexpr(Global)
       if (!graph)
@@ -210,6 +310,9 @@ FFEffectProcessor::Process(
   auto const& combKeyTrkNorm = procParams.acc.combKeyTrk;
   auto const& combResMinNorm = procParams.acc.combResMin;
   auto const& combResPlusNorm = procParams.acc.combResPlus;
+  auto const& compThresholdNorm = procParams.acc.compThreshold;
+  auto const& compRatioNorm = procParams.acc.compRatio;
+  auto const& compKneeNorm = procParams.acc.compKnee;
   auto const& trackingKeyNorm = FFSelectDualProcAccParamNormalized<Global>(procParams.acc.trackingKey[0], voice);
 
   auto const& lfoOutput = *FFSelectDualState<Global>(
@@ -255,6 +358,9 @@ FFEffectProcessor::Process(
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combResPlusPlain;
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combRealFreqMinPlain;
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combRealFreqPlusPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> compThresholdPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> compRatioPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> compKneePlain;
 
   if (graph)
   {
@@ -562,8 +668,17 @@ FFEffectProcessor::Process(
         }
         distDrivePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistDrive, distDriveNormModulated[i].Load(s)));
       }
+      else if (_kind[i] == FFEffectKind::Compressor)
+      {
+        compThresholdPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CompThreshold,
+          FFSelectDualProcAccParamNormalized<Global>(compThresholdNorm[i], voice), s));
+        compRatioPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CompRatio,
+          FFSelectDualProcAccParamNormalized<Global>(compRatioNorm[i], voice), s));
+        compKneePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CompKnee,
+          FFSelectDualProcAccParamNormalized<Global>(compKneeNorm[i], voice), s));
+      }
       else
-        FB_ASSERT(_kind[i] == FFEffectKind::Off || _kind[i] == FFEffectKind::Compressor);
+        FB_ASSERT(_kind[i] == FFEffectKind::Off);
     }
   }
 
@@ -603,8 +718,14 @@ FFEffectProcessor::Process(
         distBiasPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         distDrivePlain[i].UpsampleStretch<FFEffectOversampleTimes>();
       }
+      else if (_kind[i] == FFEffectKind::Compressor)
+      {
+        compKneePlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        compRatioPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        compThresholdPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+      }
       else
-        FB_ASSERT(_kind[i] == FFEffectKind::Off || _kind[i] == FFEffectKind::Compressor);
+        FB_ASSERT(_kind[i] == FFEffectKind::Off);
     }
   }
 
@@ -639,9 +760,6 @@ FFEffectProcessor::Process(
     {
     case FFEffectKind::Off:
       break;
-    case FFEffectKind::Compressor:
-      ProcessCompress(i, Global, state, oversampled);
-      break;
     case FFEffectKind::Fold:
       ProcessFold(i, oversampled, distMixPlain, distBiasPlain, distDrivePlain);
       break;
@@ -659,6 +777,9 @@ FFEffectProcessor::Process(
       break;
     case FFEffectKind::CombMin:
       ProcessComb<false, true>(i, oversampledRate, oversampled, combResMinPlain, combResPlusPlain, combRealFreqMinPlain, combRealFreqPlusPlain);
+      break;
+    case FFEffectKind::Compressor:
+      ProcessCompress(i, Global, state, oversampled, compThresholdPlain, compRatioPlain, compKneePlain);
       break;
     default:
       FB_ASSERT(FFEffectKindIsSVF(_kind[i]));
@@ -702,7 +823,9 @@ FFEffectProcessor::Process(
     exchangeDSP->stVarFreqs[i] = stVarRealFreqPlain[i].First();
     exchangeDSP->combMinFreqs[i] = combRealFreqMinPlain[i].First();
     exchangeDSP->combPlusFreqs[i] = combRealFreqPlusPlain[i].First();
-    // TODO
+#if false // TODO
+    exchangeDSP->compEnvs[i] = _compEnvs[i];
+#endif
   }
 
   auto& exchangeParams = *FFSelectDualState<Global>(
@@ -743,6 +866,9 @@ FFEffectProcessor::Process(
     FFSelectDualExchangeState<Global>(exchangeParams.acc.combKeyTrk[i], voice) = FFSelectDualProcAccParamNormalized<Global>(combKeyTrkNorm[i], voice).Last();
     FFSelectDualExchangeState<Global>(exchangeParams.acc.combResMin[i], voice) = FFSelectDualProcAccParamNormalized<Global>(combResMinNorm[i], voice).Last();
     FFSelectDualExchangeState<Global>(exchangeParams.acc.combResPlus[i], voice) = FFSelectDualProcAccParamNormalized<Global>(combResPlusNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.compThreshold[i], voice) = FFSelectDualProcAccParamNormalized<Global>(compThresholdNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.compRatio[i], voice) = FFSelectDualProcAccParamNormalized<Global>(compRatioNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.compKnee[i], voice) = FFSelectDualProcAccParamNormalized<Global>(compKneeNorm[i], voice).Last();
   }
   return FBFixedBlockSamples;
 }
@@ -940,16 +1066,240 @@ FFEffectProcessor::ProcessFold(
   }
 }
 
-// https://git.iem.at/audioplugins/IEMPluginSuite/blob/master/resources/Compressor.h
+// https://github.com/jonathonracz/GoatMix/tree/master/GoatMix/Source/External/SimpleComp
 void 
 FFEffectProcessor::ProcessCompress(
   int block, bool global, FBModuleProcState const& state,
-  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled)
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compThresholdPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compRatioPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compKneePlain)
 {
   (void)block;
   (void)global;
   (void)state;
   (void)oversampled;
+  (void)compThresholdPlain;
+  (void)compRatioPlain;
+  (void)compKneePlain;
+
+  // todo not per sample
+  const float dcOffset = 1.0e-10;
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  for (int s = 0; s < totalSamples; s++)
+  {
+    float measure = std::max(std::abs(oversampled[0].Get(s)), oversampled[1].Get(s));
+    float measureDb = 20.0f * std::log10(measure + dcOffset);
+    float thresholdDb = 20.0f * std::log10(compThresholdPlain[block].Get(s));
+    float overDb = std::max(0.0f, measureDb - thresholdDb) + dcOffset;
+    if (overDb > _compEnvStateDb[block])
+      _compEnvStateDb[block] = overDb + _compEnvCoeffAttack[block] * (_compEnvStateDb[block] - overDb);
+    else
+      _compEnvStateDb[block] = overDb + _compEnvCoeffRelease[block] * (_compEnvStateDb[block] - overDb);
+    overDb = _compEnvStateDb[block] - dcOffset;
+    float ratio = 1.0f / (1.0f - compRatioPlain[block].Get(s));
+    float gainReductionDb = overDb * (ratio - 1.0f);	
+    float gainReduction = std::pow(10.0f, -gainReductionDb / 20.0f);
+    oversampled[0].Set(s, oversampled[0].Get(s) * gainReduction);
+    oversampled[1].Set(s, oversampled[1].Get(s) * gainReduction);
+  }
+
+#if false // TODO
+  oversampled.SanityCheck();
+
+  bool haveSide = true;
+  auto procState = state.ProcAs<FFProcState>();
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  FBSArray2<float, FBFixedBlockSamples, 2> sideDetector = {};
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2> detector = {};
+
+  if (_graph || (
+    global && _gCompSide[block] == FFGEffectCompSide::Off ||
+    !global && _vCompSide[block] == FFVEffectCompSide::Off))
+  {
+    haveSide = false;
+    for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
+      for (int c = 0; c < 2; c++)
+        detector[c].Store(s, oversampled[c].Load(s));
+  }
+  else if (global)
+  {
+    switch (_gCompSide[block])
+    {
+    case FFGEffectCompSide::AudioIn:
+      state.input->mainAudio->CopyTo(sideDetector);
+      break;
+    case FFGEffectCompSide::Sidechain:
+      state.input->sidechainAudio->CopyTo(sideDetector);
+      break;
+    case FFGEffectCompSide::VMix:
+      // TODO
+      break;
+    case FFGEffectCompSide::FX1:
+      procState->dsp.global.gEffect[0].output.CopyTo(sideDetector);
+      break;
+    case FFGEffectCompSide::FX2:
+      procState->dsp.global.gEffect[1].output.CopyTo(sideDetector);
+      break;
+    case FFGEffectCompSide::FX3:
+      procState->dsp.global.gEffect[2].output.CopyTo(sideDetector);
+      break;
+    default:
+      FB_ASSERT(false);
+      break;
+    }
+  }
+  else
+  {
+    switch (_vCompSide[block])
+    {
+    case FFVEffectCompSide::AudioIn:
+      state.input->mainAudio->CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::Sidechain:
+      state.input->sidechainAudio->CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::OscMix:
+      // TODO
+      break;
+    case FFVEffectCompSide::Osc1:
+      procState->dsp.voice[state.voice->slot].osci[0].output.CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::Osc2:
+      procState->dsp.voice[state.voice->slot].osci[1].output.CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::Osc3:
+      procState->dsp.voice[state.voice->slot].osci[2].output.CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::Osc4:
+      procState->dsp.voice[state.voice->slot].osci[3].output.CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::FX1:
+      procState->dsp.voice[state.voice->slot].vEffect[0].output.CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::FX2:
+      procState->dsp.voice[state.voice->slot].vEffect[1].output.CopyTo(sideDetector);
+      break;
+    case FFVEffectCompSide::FX3:
+      procState->dsp.voice[state.voice->slot].vEffect[2].output.CopyTo(sideDetector);
+      break;
+    default:
+      FB_ASSERT(false);
+      break;
+    }
+  }
+
+  if (haveSide)
+  {
+    for (int i = 0; i < FBFixedBlockSamples; i++)
+      for (int c = 0; c < 2; c++)
+        detector[c].Set(i, sideDetector[c].Get(i));
+    if (_oversampleTimes != 1)
+    {
+      detector[0].UpsampleStretch<FFEffectOversampleTimes>();
+      detector[1].UpsampleStretch<FFEffectOversampleTimes>();
+    }
+  }
+
+  for (int s = 0; s < totalSamples; s++)
+  {
+    float ratio = compRatioPlain[block].Get(s);
+    float kneeDb = compKneePlain[block].Get(s);
+    float threshold = compThresholdPlain[block].Get(s);
+    float measure = std::max(std::abs(detector[0].Get(s)), detector[1].Get(s));
+    if (!_graph && _compMode[block] == FFEffectCompMode::RMS)
+    {
+      _compRMSTotal[block] -= _compRMSWindows[block][_compRMSWindowsPos[block]];
+      _compRMSTotal[block] += measure * measure;
+      _compRMSWindows[block][_compRMSWindowsPos[block]] = measure * measure;
+      _compRMSWindowsPos[block]++;
+      _compRMSWindowsPos[block] %= (int)_compRMSWindows[block].size();
+      measure = std::sqrt(_compRMSTotal[block] / (float)_compRMSWindows[block].size());
+    }
+
+    if (measure > threshold)
+    {
+      if (_compStage[block] == FFEffectCompStage::Off)
+      {
+        _compEnvStart[block] = 0.0f;
+        _compStage[block] = FFEffectCompStage::Attack;
+        _compAttackPositionSamplesOversampled[block] = 0;
+        _compReleasePositionSamplesOversampled[block] = 0;
+      }
+      else if (_compStage[block] == FFEffectCompStage::Attack)
+      {
+        _compStage[block] = FFEffectCompStage::Attack;
+        _compReleasePositionSamplesOversampled[block] = 0;
+      }
+      else if (_compStage[block] == FFEffectCompStage::Release)
+      {
+        _compStage[block] = FFEffectCompStage::Attack;
+        float releasePos = _compReleasePositionSamplesOversampled[block] / (float)_compReleaseSamplesOversampled[block];
+        _compEnvStart[block] = 1.0f - releasePos;
+        _compAttackPositionSamplesOversampled[block] = 0;
+      }
+    }
+
+    float measureDb = 20.0f * std::log10(measure);
+    float thresholdDb = 20.0f * std::log10(threshold);
+    float thresholdStartDb = thresholdDb - kneeDb * 0.5f;
+    if (measureDb >= thresholdStartDb)
+    {
+      float yDb = 0.0f;
+      float thresholdEndDb = thresholdDb + kneeDb * 0.5f;
+      if (measureDb <= thresholdEndDb)
+      {
+        float z = (measureDb - thresholdDb + kneeDb * 0.5f);
+        yDb = measureDb - ratio * z * z / (2.0f * kneeDb);
+      }
+      else
+      {
+        yDb = thresholdDb + (measureDb - thresholdDb) * (1.0f - ratio);
+      }
+      float gain = std::pow(10.0f, yDb / 20.0f) / measure;
+      if (!_graph)
+        gain = (1.0f - _compEnvs[block]) + _compEnvs[block] * gain;
+      for (int c = 0; c < 2; c++)
+      {
+        FB_ASSERT(!std::isnan(gain));
+        oversampled[c].Set(s, oversampled[c].Get(s) * gain);
+      }
+    }    
+
+    if (_compStage[block] == FFEffectCompStage::Attack)
+    {
+      if (_compAttackPositionSamplesOversampled[block] < _compAttackSamplesOversampled[block])
+        _compAttackPositionSamplesOversampled[block]++;
+      if (_compAttackPositionSamplesOversampled[block] >= _compAttackSamplesOversampled[block])
+      {
+        _compStage[block] = FFEffectCompStage::Release;
+        _compAttackPositionSamplesOversampled[block] = 0;
+        _compReleasePositionSamplesOversampled[block] = 0;
+      }
+    }
+    if (_compStage[block] == FFEffectCompStage::Release)
+    {
+      if (_compReleasePositionSamplesOversampled[block] < _compReleaseSamplesOversampled[block])
+        _compReleasePositionSamplesOversampled[block]++;
+      if (_compReleasePositionSamplesOversampled[block] >= _compReleaseSamplesOversampled[block])
+      {
+        _compStage[block] = FFEffectCompStage::Off;
+        _compAttackPositionSamplesOversampled[block] = 0;
+        _compReleasePositionSamplesOversampled[block] = 0;
+      }
+    }
+    if (_compStage[block] == FFEffectCompStage::Off)
+      _compEnvs[block] = 0.0f;
+    else if (_compStage[block] == FFEffectCompStage::Attack)
+      _compEnvs[block] = _compEnvStart[block] + (1.0f - _compEnvStart[block]) * _compAttackPositionSamplesOversampled[block] / (float)_compAttackSamplesOversampled[block];
+    else if (_compStage[block] == FFEffectCompStage::Release)
+      _compEnvs[block] = 1.0f - _compReleasePositionSamplesOversampled[block] / (float)_compReleaseSamplesOversampled[block];
+    else
+      FB_ASSERT(false);
+  }
+
+  oversampled.SanityCheck();
+#endif
 }
 
 template void FFEffectProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, bool, bool, int, int);

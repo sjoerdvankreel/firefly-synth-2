@@ -11,7 +11,6 @@ v2.1.2
 [ ] renoise exchange data is no good for fx
 [ ] renoise comp threshold does weird
 [ ] profile comp
-[ ] credit comp
 
 vnext
 [ ] do more easy access controls (and maybe more mod sources)
