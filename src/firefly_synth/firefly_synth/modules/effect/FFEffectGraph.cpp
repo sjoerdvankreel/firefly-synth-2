@@ -216,7 +216,7 @@ EffectGraphProcessor<Global>::ProcessExchangeState(
     data.exchangeMainText = FBFormatDoubleCLocale(effectExchange->combPlusFreqs[params.graphIndex], 2) + " / " +
     FBToStringHz(effectExchange->combMinFreqs[params.graphIndex], 2);
   else if (kind == FFEffectKind::Compressor)
-    data.exchangeMainText = "-" + FBToStringDb(effectExchange->compGainReduction[params.graphIndex], 2);
+    data.exchangeMainText = "-" + FBToStringDb(effectExchange->compGainReduction[params.graphIndex], 2) + " Reduct";
   else
     FB_ASSERT(kind == FFEffectKind::Off);
 }
