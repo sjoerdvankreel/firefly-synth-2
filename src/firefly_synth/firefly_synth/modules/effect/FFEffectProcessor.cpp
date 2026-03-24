@@ -120,7 +120,8 @@ FFEffectProcessor::AllocOnDemandBuffers(
       int samples = (int)std::ceil(rmsWindowSize * sampleRate);
       if ((int)_compRMSWindows[i].size() != samples)
       {
-        _compRMSTotal[i] = 0.0f;
+        //_compEnvStateDb[i] = 0.0f;
+        //_compRMSTotal[i] = 0.0f;
         _compRMSWindowsPos[i] = 0;
         _compRMSWindows[i] = std::vector<float>(samples, 0.0f);
       }
@@ -155,7 +156,6 @@ FFEffectProcessor::BeginVoiceOrBlock(
   auto const& compReleaseNorm = params.block.compRelease;
   auto const& compThresholdNorm = params.block.compThreshold;
   auto const& compModeNorm = params.block.compMode;
-  auto const& compRMSSizeNorm = params.block.compRMSSize;
   // TODO auto const& compVSideOrGSideNorm = params.block.compVSideOrGSide;
 
   float onNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.on[0], voice);
@@ -201,9 +201,6 @@ FFEffectProcessor::BeginVoiceOrBlock(
     _compMode[i] = topo.NormalizedToListFast<FFEffectCompMode>(
       FFEffectParam::CompMode,
       FFSelectDualProcBlockParamNormalized<Global>(compModeNorm[i], voice));
-    _compRMSSize[i] = topo.NormalizedToLinearFast(
-      FFEffectParam::CompRMSSize,
-      FFSelectDualProcBlockParamNormalized<Global>(compRMSSizeNorm[i], voice));
     _compThresholdDb[i] = topo.NormalizedToLinearFast(FFEffectParam::CompThreshold,
       FFSelectDualProcBlockParamNormalized<Global>(compThresholdNorm[i], voice));
     _compThresholdDb[i] = 20.0f * std::log10(_compThresholdDb[i]);

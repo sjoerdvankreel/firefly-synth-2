@@ -51,7 +51,6 @@ class FFEffectProcessor final
   std::array<float, FFEffectBlockCount> _compGainReduction = {};
   std::array<float, FFEffectBlockCount> _compEnvCoeffAttack = {};
   std::array<float, FFEffectBlockCount> _compEnvCoeffRelease = {};
-  std::array<float, FFEffectBlockCount> _compRMSSize = {};
   std::array<float, FFEffectBlockCount> _compRMSTotal = {};
   std::array<int, FFEffectBlockCount> _compRMSWindowsPos = {};
   std::array<FFEffectCompMode, FFEffectBlockCount> _compMode = {};
