@@ -1088,7 +1088,6 @@ FFEffectProcessor::ProcessCompress(
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   for (int s = 0; s < totalSamples; s++)
   {
-    float kneeDb = compKneePlain[block].Get(s);
     float measure = std::max(std::abs(oversampled[0].Get(s)), oversampled[1].Get(s));
     float measureDb = 20.0f * std::log10(measure + dcOffset);
     float thresholdDb = 20.0f * std::log10(compThresholdPlain[block].Get(s));
@@ -1098,19 +1097,7 @@ FFEffectProcessor::ProcessCompress(
     else
       _compEnvStateDb[block] = overDb + _compEnvCoeffRelease[block] * (_compEnvStateDb[block] - overDb);
     overDb = _compEnvStateDb[block] - dcOffset;
-
     float ratio = 1.0f / (1.0f - compRatioPlain[block].Get(s));
-    float slope = 1.0f / compRatioPlain[block].Get(s) - 1.0f;
-    float kneeHalf = kneeDb / 2.0f;
-    if (overDb <= -kneeHalf)
-      overDb = 0.0f; //y_G = levelInDecibels;
-    else if (overDb > -kneeHalf && overDb <= kneeHalf)
-      overDb =
-      0.5f * slope * juce::square(overDb + kneeHalf)
-      / kneeDb; //y_G = levelInDecibels + 0.5f * slope * square(overShoot + kneeHalf) / knee;
-    else
-      overDb = slope * overDb;
-
     float gainReductionDb = overDb * (ratio - 1.0f);	
     float gainReduction = std::pow(10.0f, -gainReductionDb / 20.0f);
     oversampled[0].Set(s, oversampled[0].Get(s) * gainReduction);
