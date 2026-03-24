@@ -837,6 +837,7 @@ FFMakeEffectTopo(bool global)
   compThreshold.type = FBParamType::Linear;
   compThreshold.Linear().min = 0.01f;
   compThreshold.Linear().max = 2.0f;
+  compThreshold.Linear().editSkewFactor = 0.25f;
   compThreshold.Linear().displayMultiplier = 100.0f;
   auto selectCompThreshold = [](auto& module) { return &module.block.compThreshold; };
   compThreshold.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompThreshold);
