@@ -33,8 +33,6 @@ class FFEffectProcessor final
 
   std::array<float, FFEffectBlockCount> _compAttack = {};
   std::array<float, FFEffectBlockCount> _compRelease = {};
-  std::array<FFVEffectCompSide, FFEffectBlockCount> _vCompSide = {};
-  std::array<FFGEffectCompSide, FFEffectBlockCount> _gCompSide = {};
 #endif
 
   std::array<FFEffectKind, FFEffectBlockCount> _kind = {};
@@ -51,9 +49,11 @@ class FFEffectProcessor final
   std::array<float, FFEffectBlockCount> _compGainReduction = {};
   std::array<float, FFEffectBlockCount> _compEnvCoeffAttack = {};
   std::array<float, FFEffectBlockCount> _compEnvCoeffRelease = {};
+  std::array<FFEffectCompMode, FFEffectBlockCount> _compMode = {};
+  std::array<FFVEffectCompSide, FFEffectBlockCount> _vCompSide = {};
+  std::array<FFGEffectCompSide, FFEffectBlockCount> _gCompSide = {};
   std::array<float, FFEffectBlockCount> _compRMSTotal = {};
   std::array<int, FFEffectBlockCount> _compRMSWindowsPos = {};
-  std::array<FFEffectCompMode, FFEffectBlockCount> _compMode = {};
   std::array<std::vector<float>, FFEffectBlockCount> _compRMSWindows = {};
 
   bool _graph = {};
