@@ -1073,7 +1073,7 @@ FFEffectProcessor::ProcessCompress(
     float measure = std::max(std::abs(oversampled[0].Get(s)), oversampled[1].Get(s));
     float measureDb = 20.0f * std::log10(measure);
     float overDb = measureDb - _compThresholdDb[block];
-    float ratio = 1.0f / (1.0f - _compRatio[block]);
+    float ratio = 1.0f / (1.0f - _compRatio[block] * 0.5f);
     float slope = ratio - 1.0f;
     float kneeHalf = _compKneeDb[block] * 0.5f;
     if (overDb <= -kneeHalf)
