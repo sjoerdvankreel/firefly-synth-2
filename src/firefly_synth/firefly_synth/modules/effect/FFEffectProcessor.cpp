@@ -167,6 +167,14 @@ FFEffectProcessor::BeginVoiceOrBlock(
       FFEffectParam::FilterMode,
       FFSelectDualProcBlockParamNormalized<Global>(filterModeNorm[i], voice));
 
+    _compressors[i].setAttackTime(0.003f);
+    _compressors[i].setReleaseTime(0.1f);
+    _compressors[i].setKnee(0.0f);
+    _compressors[i].setMakeUpGain(0.0f);
+    _compressors[i].setRatio(4.0f);
+    _compressors[i].setThreshold(-24.0f);
+    _compressors[i].prepare(state.input->sampleRate);
+
     if constexpr(Global)
       if (!graph)
         continue;
@@ -950,6 +958,16 @@ FFEffectProcessor::ProcessCompress(
   (void)global;
   (void)state;
   (void)oversampled;
+
+  int totalSamples = _oversampleTimes * FBFixedBlockSamples;
+  for (int s = 0; s < totalSamples; s++)
+  {
+    float gain = 0.0f;
+    float detector = oversampled[0].Get(s);
+    _compressors[block].getGainFromSidechainSignal(&detector, &gain, 1);
+    oversampled[0].Set(0, gain * oversampled[0].Get(s));
+    oversampled[1].Set(1, gain * oversampled[1].Get(s));
+  }  
 }
 
 template void FFEffectProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, bool, bool, int, int);
