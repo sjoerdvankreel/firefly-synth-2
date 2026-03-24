@@ -20,32 +20,18 @@ inline int constexpr FFEffectOversampleFactor = 2;
 inline int constexpr FFEffectOversampleTimes = 1 << FFEffectOversampleFactor;
 inline int constexpr FFEffectFixedBlockOversamples = FBFixedBlockSamples * FFEffectOversampleTimes;
 
-enum class FFEffectCompStage
-{
-  Off,
-  Attack,
-  Release
-};
-
 class FFEffectProcessor final
 {
   bool _on = {};
   int _oversampleTimes = {};
-  int _prevOverSampleTimes = {};
+  std::array<float, FFEffectBlockCount> _compRatio = {};
+  std::array<float, FFEffectBlockCount> _compKneeDb = {};
   std::array<float, FFEffectBlockCount> _compEnvStateDb = {};
-  std::array<float, FFEffectBlockCount> _compAttackTime = {};
-  std::array<float, FFEffectBlockCount> _compReleaseTime = {};
+  std::array<float, FFEffectBlockCount> _compThresholdDb = {};
   std::array<float, FFEffectBlockCount> _compEnvCoeffAttack = {};
   std::array<float, FFEffectBlockCount> _compEnvCoeffRelease = {};
-  std::array<float, FFEffectBlockCount> _prevCompAttackTime = {};
-  std::array<float, FFEffectBlockCount> _prevCompReleaseTime = {};
 
 #if false
-  std::array<float, FFEffectBlockCount> _compEnvs = {};
-  std::array<float, FFEffectBlockCount> _compEnvStart = {};
-  std::array<FFEffectCompStage, FFEffectBlockCount> _compStage = {};
-  std::array<int, FFEffectBlockCount> _compAttackPositionSamplesOversampled = {};
-  std::array<int, FFEffectBlockCount> _compReleasePositionSamplesOversampled = {};
   // https://stackoverflow.com/questions/10990618/calculate-rolling-moving-average-in-c
   std::array<float, FFEffectBlockCount> _compRMSTotal = {};
   std::array<int, FFEffectBlockCount> _compRMSWindowsPos = {};
@@ -54,8 +40,6 @@ class FFEffectProcessor final
   std::array<float, FFEffectBlockCount> _prevCompRMSSize = {};
   std::array<FFEffectCompMode, FFEffectBlockCount> _prevCompMode = {};
   std::array<FFGEffectCompSide, FFEffectBlockCount> _prevGCompSide = {};
-  std::array<int, FFEffectBlockCount> _prevCompAttackSamplesOversampled = {};
-  std::array<int, FFEffectBlockCount> _prevCompReleaseSamplesOversampled = {};
 
   std::array<float, FFEffectBlockCount> _compAttack = {};
   std::array<float, FFEffectBlockCount> _compRelease = {};
@@ -85,6 +69,10 @@ class FFEffectProcessor final
 
   template <bool Global>
   FBBatch<float> NextBasePitchBatch(int pos);
+
+  void ProcessCompress(
+    int block, bool global, FBModuleProcState const& state,
+    FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled);
 
   template <bool PlusOn, bool MinOn>
   void ProcessComb(
@@ -124,13 +112,6 @@ class FFEffectProcessor final
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
-
-  void ProcessCompress(
-    int block, bool global, FBModuleProcState const& state,
-    FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
-    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compThresholdPlain,
-    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compRatioPlain,
-    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& compKneePlain);
 
 public:
   FFEffectProcessor();
