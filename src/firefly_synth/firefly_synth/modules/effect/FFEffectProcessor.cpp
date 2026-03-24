@@ -169,10 +169,10 @@ FFEffectProcessor::BeginVoiceOrBlock(
 
     _compressors[i].setAttackTime(0.003f);
     _compressors[i].setReleaseTime(0.1f);
-    _compressors[i].setKnee(0.0f);
+    _compressors[i].setKnee(0.1f);
     _compressors[i].setMakeUpGain(0.0f);
-    _compressors[i].setRatio(4.0f);
-    _compressors[i].setThreshold(-24.0f);
+    _compressors[i].setRatio(0.5f);
+    _compressors[i].setThreshold(-18.0f);
     _compressors[i].prepare(state.input->sampleRate);
 
     if constexpr(Global)
@@ -959,12 +959,22 @@ FFEffectProcessor::ProcessCompress(
   (void)state;
   (void)oversampled;
 
+  float prevGain = 0.0f;
   int totalSamples = _oversampleTimes * FBFixedBlockSamples;
   for (int s = 0; s < totalSamples; s++)
   {
     float gain = 0.0f;
     float detector = oversampled[0].Get(s);
     _compressors[block].getGainFromSidechainSignal(&detector, &gain, 1);
+    if (gain > 1.0f)
+      gain = 1.0f;
+    if (s > 0 && std::fabs(gain - prevGain) > 0.01f)
+    {
+      int zzz = 0;
+      zzz++;
+      (void)zzz;
+    }
+    prevGain = gain;
     oversampled[0].Set(0, gain * oversampled[0].Get(s));
     oversampled[1].Set(1, gain * oversampled[1].Get(s));
   }  
