@@ -214,9 +214,9 @@ EffectGraphProcessor<Global>::ProcessExchangeState(
     data.exchangeMainText = FBToStringHz(effectExchange->combMinFreqs[params.graphIndex], 2);
   else if (kind == FFEffectKind::Comb)
     data.exchangeMainText = FBFormatDoubleCLocale(effectExchange->combPlusFreqs[params.graphIndex], 2) + " / " +
-      FBToStringHz(effectExchange->combMinFreqs[params.graphIndex], 2);
+    FBToStringHz(effectExchange->combMinFreqs[params.graphIndex], 2);
   else if (kind == FFEffectKind::Compressor)
-    data.exchangeMainText = FBToStringPercent(effectExchange->compEnvs[params.graphIndex], 2) + " Env";
+    ;// TODO
   else
     FB_ASSERT(kind == FFEffectKind::Off);
 }

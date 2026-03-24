@@ -838,11 +838,11 @@ FFMakeEffectTopo(bool global)
   compThreshold.Linear().min = 0.01f;
   compThreshold.Linear().max = 2.0f;
   compThreshold.Linear().displayMultiplier = 100.0f;
-  auto selectCompThreshold = [](auto& module) { return &module.acc.compThreshold; };
+  auto selectCompThreshold = [](auto& module) { return &module.block.compThreshold; };
   compThreshold.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompThreshold);
-  compThreshold.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompThreshold);
+  compThreshold.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompThreshold);
   compThreshold.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompThreshold);
-  compThreshold.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompThreshold);
+  compThreshold.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompThreshold);
   compThreshold.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompThreshold);
   compThreshold.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
@@ -863,11 +863,11 @@ FFMakeEffectTopo(bool global)
   compRatio.Linear().min = 0.0f;
   compRatio.Linear().max = 0.99f;
   compRatio.Linear().displayMultiplier = 100.0f;
-  auto selectCompRatio = [](auto& module) { return &module.acc.compRatio; };
+  auto selectCompRatio = [](auto& module) { return &module.block.compRatio; };
   compRatio.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompRatio);
-  compRatio.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompRatio);
+  compRatio.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompRatio);
   compRatio.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompRatio);
-  compRatio.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompRatio);
+  compRatio.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompRatio);
   compRatio.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompRatio);
   compRatio.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
@@ -937,11 +937,11 @@ FFMakeEffectTopo(bool global)
   compKnee.type = FBParamType::Linear;
   compKnee.Linear().min = 0.01f;
   compKnee.Linear().max = 24.0f;
-  auto selectCompKnee = [](auto& module) { return &module.acc.compKnee; };
+  auto selectCompKnee = [](auto& module) { return &module.block.compKnee; };
   compKnee.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompKnee);
-  compKnee.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompKnee);
+  compKnee.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompKnee);
   compKnee.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompKnee);
-  compKnee.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompKnee);
+  compKnee.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompKnee);
   compKnee.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompKnee);
   compKnee.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
