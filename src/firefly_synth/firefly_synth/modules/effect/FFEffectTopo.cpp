@@ -863,6 +863,7 @@ FFMakeEffectTopo(bool global)
   compRatio.type = FBParamType::Linear;
   compRatio.Linear().min = 0.0f;
   compRatio.Linear().max = 0.99f;
+  compRatio.Linear().editSkewFactor = 2.0f;
   compRatio.Linear().displayMultiplier = 100.0f;
   auto selectCompRatio = [](auto& module) { return &module.block.compRatio; };
   compRatio.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompRatio);
