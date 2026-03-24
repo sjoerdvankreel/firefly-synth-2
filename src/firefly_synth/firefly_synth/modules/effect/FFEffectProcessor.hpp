@@ -20,155 +20,12 @@ inline int constexpr FFEffectOversampleFactor = 2;
 inline int constexpr FFEffectOversampleTimes = 1 << FFEffectOversampleFactor;
 inline int constexpr FFEffectFixedBlockOversamples = FBFixedBlockSamples * FFEffectOversampleTimes;
 
-class FFCompressor
+enum class FFEffectCompStage
 {
-public:
-  FFCompressor() {}
-  ~FFCompressor() {}
-
-  void prepare(float sr)
-  {
-    sampleRate = sr;
-
-    alphaAttack = 1.0f - timeToGain(attackTime);
-    alphaRelease = 1.0f - timeToGain(releaseTime);
-
-    prepared = true;
-  }
-
-  void setAttackTime(float attackTimeInSeconds)
-  {
-    attackTime = attackTimeInSeconds;
-    alphaAttack = 1.0f - timeToGain(attackTime);
-  }
-
-  void setReleaseTime(float releaseTimeInSeconds)
-  {
-    releaseTime = releaseTimeInSeconds;
-    alphaRelease = 1.0f - timeToGain(releaseTime);
-  }
-
-  float timeToGain(float timeInSeconds) { return exp(-1.0f / (sampleRate * timeInSeconds)); }
-
-  void setKnee(float kneeInDecibels)
-  {
-    knee = kneeInDecibels;
-    kneeHalf = knee / 2.0f;
-  }
-
-  float getKnee() { return knee; }
-
-  void setThreshold(float thresholdInDecibels) { threshold = thresholdInDecibels; }
-
-  float getTreshold() { return threshold; }
-
-  void setMakeUpGain(float makeUpGainInDecibels) { makeUpGain = makeUpGainInDecibels; }
-
-  float getMakeUpGain() { return makeUpGain; }
-
-  void setRatio(float ratio) { slope = 1.0f / ratio - 1.0f; }
-
-  float getMaxLevelInDecibels() { return maxLevel; }
-
-  void applyCharacteristicToOverShoot(float& overShoot)
-  {
-    if (overShoot <= -kneeHalf)
-      overShoot = 0.0f; //y_G = levelInDecibels;
-    else if (overShoot > -kneeHalf && overShoot <= kneeHalf)
-      overShoot =
-      0.5f * slope * juce::square(overShoot + kneeHalf)
-      / knee; //y_G = levelInDecibels + 0.5f * slope * square(overShoot + kneeHalf) / knee;
-    else
-      overShoot = slope * overShoot;
-  }
-
-  void getGainFromSidechainSignal(const float* sideChainSignal,
-    float* destination,
-    const int numSamples)
-  {
-    maxLevel = -std::numeric_limits<float>::infinity();
-    for (int i = 0; i < numSamples; ++i)
-    {
-      // convert sample to decibels
-      float levelInDecibels = juce::Decibels::gainToDecibels(abs(sideChainSignal[i]));
-      if (levelInDecibels > maxLevel)
-        maxLevel = levelInDecibels;
-      // calculate overshoot and apply knee and ratio
-      float overShoot = levelInDecibels - threshold;
-      applyCharacteristicToOverShoot(overShoot); //y_G = levelInDecibels + slope * overShoot;
-
-      // ballistics
-      const float diff = overShoot - state;
-      if (diff < 0.0f)
-        state += alphaAttack * diff;
-      else
-        state += alphaRelease * diff;
-
-      destination[i] = juce::Decibels::decibelsToGain(state + makeUpGain);
-    }
-  }
-
-  void getGainFromSidechainSignalInDecibelsWithoutMakeUpGain(const float* sideChainSignal,
-    float* destination,
-    const int numSamples)
-  {
-    maxLevel = -INFINITY;
-    for (int i = 0; i < numSamples; ++i)
-    {
-      // convert sample to decibels
-      float levelInDecibels = juce::Decibels::gainToDecibels(abs(sideChainSignal[i]));
-      if (levelInDecibels > maxLevel)
-        maxLevel = levelInDecibels;
-      // calculate overshoot and apply knee and ratio
-      float overShoot = levelInDecibels - threshold;
-      applyCharacteristicToOverShoot(overShoot); //y_G = levelInDecibels + slope * overShoot;
-
-      // ballistics
-      const float diff = overShoot - state;
-      if (diff < 0.0f)
-        state += alphaAttack * diff;
-      else
-        state += alphaRelease * diff;
-
-      destination[i] = state;
-    }
-  }
-
-  void getCharacteristic(float* inputLevels, float* dest, const int numSamples)
-  {
-    for (int i = 0; i < numSamples; ++i)
-    {
-      dest[i] = getCharacteristicSample(inputLevels[i]);
-    }
-  }
-
-  inline float getCharacteristicSample(float inputLevel)
-  {
-    float overShoot = inputLevel - threshold;
-    applyCharacteristicToOverShoot(overShoot);
-    return overShoot + inputLevel + makeUpGain;
-  }
-
-private:
-  float sampleRate{ 0.0f };
-  bool prepared;
-
-  float knee{ 0.0f }, kneeHalf{ 0.0f };
-  float threshold{ -10.0f };
-  float attackTime{ 0.01f };
-  float releaseTime{ 0.15f };
-  float slope{ 0.0f };
-  float makeUpGain{ 0.0f };
-
-  float maxLevel{ -std::numeric_limits<float>::infinity() };
-
-  //state juce::variable
-  float state{ 0.0f };
-
-  float alphaAttack;
-  float alphaRelease;
+  Off,
+  Attack,
+  Release
 };
-
 
 class FFEffectProcessor final
 {
@@ -180,7 +37,6 @@ class FFEffectProcessor final
   std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};
   std::array<FFEffectSkewMode, FFEffectBlockCount> _skewMode = {};
   std::array<FFEffectFilterMode, FFEffectBlockCount> _filterMode = {};
-  std::array<FFCompressor, FFEffectBlockCount> _compressors = {};
 
   bool _graph = {};
   int _graphSampleCount = {};
