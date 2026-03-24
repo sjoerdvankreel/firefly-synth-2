@@ -1066,7 +1066,8 @@ FFEffectProcessor::ProcessFold(
   }
 }
 
-// https://github.com/jonathonracz/GoatMix/tree/master/GoatMix/Source/External/SimpleComp
+// basic algo https://github.com/jonathonracz/GoatMix/tree/master/GoatMix/Source/External/SimpleComp
+// soft knee https://github.com/tu-studio/IEMPluginSuite/blob/master/resources/Compressor.h
 void 
 FFEffectProcessor::ProcessCompress(
   int block, bool global, FBModuleProcState const& state,
