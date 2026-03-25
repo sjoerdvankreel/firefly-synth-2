@@ -23,7 +23,8 @@ digraph Synth {
   "GNote"
   "VNote"
   "Global Out"
-  "External Audio"
+  "Audio In"
+  "Sidechain In"
 
   "GLFO" -> "GMatrix"
   "MIDI" -> "GMatrix"
@@ -65,7 +66,8 @@ digraph Synth {
   
   "Osc" -> "Osc Mod" [style = "dotted"]
   "Osc Mod" -> "Osc" [style = "dotted"]
-  "External Audio" -> "Osc" [style = "dashed"]
+  "Audio In" -> "Osc" [style = "dashed"][color = "#0000FF"]
+  "Sidechain In" -> "Osc" [style = "dashed"][color = "#0000FF"]
 
   "Osc" -> "VMix" [style = "dashed"]
   "VFX" -> "VMix" [style = "dashed"]
@@ -73,17 +75,23 @@ digraph Synth {
   "VMix" -> "Osc" [style = "dashed"]
   "VMix" -> "VFX" [style = "dashed"]
   "VMix" -> "Osc Mix" [style = "dashed"]
+  "Audio In" -> "VFX" [style = "dashed"][color = "#0000FF"]
+  "Sidechain In" -> "VFX" [style = "dashed"][color = "#0000FF"]
 
   "VMix" -> "GMix" [style = "dashed"]
-  "External Audio" -> "GMix" [style = "dashed"]
+  "Audio In" -> "GMix" [style = "dashed"]
+  "Sidechain In" -> "GMix" [style = "dashed"]
   "GFX" -> "GMix" [style = "dashed"]
   "GMix" -> "GFX" [style = "dashed"]
   "GMix" -> "Global Out" [style = "dashed"]
+  "Audio In" -> "GFX" [style = "dashed"][color = "#0000FF"]
+  "Sidechain In" -> "GFX" [style = "dashed"][color = "#0000FF"]
 
   "GFX" -> "GEcho" [style = "dashed"][color = "#0000FF"]
   "GMix" -> "GEcho" [style = "dashed"][color = "#0000FF"]
   "VMix" -> "GEcho" [style = "dashed"][color = "#0000FF"]
-  "External Audio" -> "GEcho" [style = "dashed"][color = "#0000FF"]
+  "Audio In" -> "GEcho" [style = "dashed"][color = "#0000FF"]
+  "Sidechain In" -> "GEcho" [style = "dashed"][color = "#0000FF"]
   
   "VFX" -> "VEcho" [style = "dashed"][color = "#0000FF"]
   "VMix" -> "VEcho" [style = "dashed"][color = "#0000FF"]
