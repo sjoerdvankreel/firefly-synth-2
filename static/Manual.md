@@ -888,7 +888,9 @@ The built-in compressor is pretty basic with the following standard parameters:
 
 The nice thing is that it is fully integrated into the internal routing system.<br/>
 This means you can sidechain compress pretty much anything by anything: <br/>
-oscillators, voice fx, global fx, external audio, voice mixdown etc.
+oscillators, voice fx, global fx, external audio, voice mixdown etc.<br/>
+But note: if you sidechain to "self" (like GFX1 by GFX1), this won't do what you want.<br/>
+The side signal will be 1 block behind, so in this case just turn off sidechaining.
 
 <a id="GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
 <a id="VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
@@ -920,7 +922,8 @@ For global, may also be used to target the voice mixdown before all FX,<br/>
 the external audio input (both main/sidechain) before all fx, or the input/output of individual GFX sections.<br/>
 For voice, may also be used to target individual oscillators or the input/output of individual VFX sections.<br/>
 This allows for stuff like "filter/shape the echo" instead of "echo the filter/shaper".<br/>
-Or echo individual oscis.
+Or echo individual oscis.<br/>
+Note: for instrument build, the main audio input will be silence (sidechain will work).
 
 The voice echo target needs tight cooperation with the Voice Mixer (VMix) envelope target.<br/>
 If you get this wrong, the voice echo will "hide" behind that envelope and the echo is cut short.<br/>
