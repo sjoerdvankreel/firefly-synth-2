@@ -822,6 +822,8 @@ For global FX only, the key smoothing control allows to smooth out changes in th
 
 The graph plot for waveshapers is a shaper plot.<br/>
 The graph plot for filters is a frequency response.<br/>
+The graph plot for compressors combined is a ramp response with attack=0, decay=0, and peak (not RMS) mode always.<br/>
+This sort-of resembles the familiar compressor plot line, albeit bipolar.<br/>
 The graph plot for everything combined is a ramp response.<br/>
 
 ### Filter modes
