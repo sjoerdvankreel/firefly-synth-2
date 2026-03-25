@@ -873,6 +873,13 @@ Choice of a plain (triangular) folder and a bunch of (stacked) trigonometric fun
 Skew: applies a vertical (y/level) skewing factor to the signal.<br/>
 Choice of unipolar and bipolar modes with continuous amount control.
 
+### Compressor
+Unlike the other FX types compressor parameters are not modulatable.<br/>
+I just didn't see the need for throwing LFO's at any of them.
+
+The compressor algorithm is a combination of https://github.com/jonathonracz/GoatMix/tree/master/GoatMix/Source/External/SimpleComp<br/>
+and https://github.com/tu-studio/IEMPluginSuite/blob/master/resources/Compressor.h.
+
 <a id="GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
 <a id="VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
 ## Voice Echo and Global Echo
