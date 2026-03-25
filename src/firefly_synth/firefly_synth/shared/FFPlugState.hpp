@@ -1,6 +1,7 @@
 #pragma once
 
 #include <firefly_synth/dsp/plug/FFVoiceProcessor.hpp>
+#include <firefly_synth/dsp/plug/FFPlugDSPState.hpp>
 #include <firefly_synth/modules/env/FFEnvState.hpp>
 #include <firefly_synth/modules/lfo/FFLFOState.hpp>
 #include <firefly_synth/modules/mix/FFVMixState.hpp>
@@ -72,6 +73,7 @@ struct alignas(FBSIMDAlign) FFVoiceExchangeState final
 
 struct alignas(FBSIMDAlign) FFGlobalDSPState final
 {
+  FFPlugDSPState plug = {};     
   FFMIDIDSPState midi = {};
   FFGNoteDSPState gNote = {};
   FFOutputDSPState output = {};

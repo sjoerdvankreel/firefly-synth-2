@@ -12,6 +12,7 @@ v2.1.2
 [ ] renoise comp threshold does weird
 [ ] profile comp
 [ ] dont side by self
+[ ] routing diagram
 
 vnext
 [ ] do more easy access controls (and maybe more mod sources)
