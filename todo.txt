@@ -6,14 +6,14 @@ v2.1.2
 [x] retest all the sidechain tests
 [x] todo easy access->no
 [x] drop the overlapping controls
-[ ] compressor
-[ ] todo oversample test it
+[x] profile comp
+[x] compressor
+[x] renoise comp threshold does weird
+[x] host tests also clap
+[x] todo oversample test it
 [ ] renoise exchange data is no good for fx
-[ ] renoise comp threshold does weird
-[ ] profile comp
 [ ] dont side by self
 [ ] routing diagram
-[ ] host tests also clap
 
 vnext
 [ ] do more easy access controls (and maybe more mod sources)
