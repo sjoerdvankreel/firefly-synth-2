@@ -917,7 +917,7 @@ This controls the amount by which one channel's input affects the other channel'
 Target: this affects where in the processing pipeline the echo is applied.<br/>
 The most natural setting for this is VMix Out (voice) or GMix Out (global).<br/>
 For global, may also be used to target the voice mixdown before all FX,<br/>
-the external audio input before all fx, or the input/output of individual GFX sections.<br/>
+the external audio input (both main/sidechain) before all fx, or the input/output of individual GFX sections.<br/>
 For voice, may also be used to target individual oscillators or the input/output of individual VFX sections.<br/>
 This allows for stuff like "filter/shape the echo" instead of "echo the filter/shaper".<br/>
 Or echo individual oscis.
