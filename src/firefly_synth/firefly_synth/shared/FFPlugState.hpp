@@ -1,7 +1,6 @@
 #pragma once
 
 #include <firefly_synth/dsp/plug/FFVoiceProcessor.hpp>
-#include <firefly_synth/dsp/plug/FFPlugDSPState.hpp>
 #include <firefly_synth/modules/env/FFEnvState.hpp>
 #include <firefly_synth/modules/lfo/FFLFOState.hpp>
 #include <firefly_synth/modules/mix/FFVMixState.hpp>
@@ -73,7 +72,6 @@ struct alignas(FBSIMDAlign) FFVoiceExchangeState final
 
 struct alignas(FBSIMDAlign) FFGlobalDSPState final
 {
-  FFPlugDSPState plug = {};     
   FFMIDIDSPState midi = {};
   FFGNoteDSPState gNote = {};
   FFOutputDSPState output = {};
@@ -84,6 +82,7 @@ struct alignas(FBSIMDAlign) FFGlobalDSPState final
   FFModMatrixDSPState<true> gMatrix = {};
   std::array<FFLFODSPState, FFLFOCount> gLFO = {};
   std::array<FFEffectDSPState, FFEffectCount> gEffect = {};
+  FBSArray2<float, FBFixedBlockSamples, 2> voiceMixdown = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalDSPState);
 };
 
@@ -100,6 +99,7 @@ struct alignas(FBSIMDAlign) FFVoiceDSPState final
   std::array<FFOsciDSPState, FFOsciCount> osci = {};
   std::array<FFEffectDSPState, FFEffectCount> vEffect = {};
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
+  FBSArray2<float, FBFixedBlockSamples, 2> osciMixdown = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceDSPState);
 };
 

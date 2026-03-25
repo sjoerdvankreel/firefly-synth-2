@@ -1033,7 +1033,7 @@ FFEffectProcessor::ProcessCompress(
       state.input->sidechainAudio->CopyTo(sideDetector);
       break;
     case FFGEffectCompSide::VMix:
-      procState->dsp.global.plug.voiceMixdown.CopyTo(sideDetector);
+      procState->dsp.global.voiceMixdown.CopyTo(sideDetector);
       break;
     case FFGEffectCompSide::FX1:
       procState->dsp.global.gEffect[0].output.CopyTo(sideDetector);
@@ -1060,7 +1060,7 @@ FFEffectProcessor::ProcessCompress(
       state.input->sidechainAudio->CopyTo(sideDetector);
       break;
     case FFVEffectCompSide::OscMix:
-      // TODO
+      procState->dsp.voice[state.voice->slot].osciMixdown.CopyTo(sideDetector);
       break;
     case FFVEffectCompSide::Osc1:
       procState->dsp.voice[state.voice->slot].osci[0].output.CopyTo(sideDetector);

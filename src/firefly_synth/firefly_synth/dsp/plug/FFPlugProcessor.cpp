@@ -249,9 +249,9 @@ FFPlugProcessor::ProcessPostVoice(
   if(_flushThisRound)
     globalDSP.gEcho.processor->FlushDelayLines();
 
-  globalDSP.plug.voiceMixdown.Fill(0.0f);
+  globalDSP.voiceMixdown.Fill(0.0f);
   for (int v: input.voiceManager->ActiveAndReturnedVoices())
-    globalDSP.plug.voiceMixdown.Add(_procState->dsp.voice[v].output);
+    globalDSP.voiceMixdown.Add(_procState->dsp.voice[v].output);
 
   FBSArray2<float, FBFixedBlockSamples, 2> mainAudioIn = {};
   FBSArray2<float, FBFixedBlockSamples, 2> sidechainAudioIn = {};
@@ -259,7 +259,7 @@ FFPlugProcessor::ProcessPostVoice(
   input.sidechainAudio->CopyTo(sidechainAudioIn);
 
   if (gEchoTarget == FFGEchoTarget::VoiceMix)
-    ProcessGEcho(state, globalDSP.plug.voiceMixdown);
+    ProcessGEcho(state, globalDSP.voiceMixdown);
   if (gEchoTarget == FFGEchoTarget::AudioIn)
     ProcessGEcho(state, mainAudioIn);
   if (gEchoTarget == FFGEchoTarget::Sidechain)
@@ -271,7 +271,7 @@ FFPlugProcessor::ProcessPostVoice(
     auto const& voiceToGFXNorm = gMix.acc.voiceToGFX[i].Global().CV();
     auto const& audioInToGFXNorm = gMix.acc.audioInToGFX[i].Global().CV();
     auto const& sidechainToGFXNorm = gMix.acc.sidechainToGFX[i].Global().CV();
-    globalDSP.gEffect[i].input.AddMul(globalDSP.plug.voiceMixdown, voiceToGFXNorm);
+    globalDSP.gEffect[i].input.AddMul(globalDSP.voiceMixdown, voiceToGFXNorm);
     globalDSP.gEffect[i].input.AddMul(mainAudioIn, audioInToGFXNorm);
     globalDSP.gEffect[i].input.AddMul(sidechainAudioIn, sidechainToGFXNorm);
     for (int r = 0; r < FFMixFXToFXCount; r++)
@@ -303,7 +303,7 @@ FFPlugProcessor::ProcessPostVoice(
   auto const& voiceToOutNorm = gMix.acc.voiceToOut[0].Global().CV();
   auto const& audioInToOutNorm = gMix.acc.audioInToOut[0].Global().CV();
   auto const& sidechainToOutNorm = gMix.acc.sidechainToOut[0].Global().CV();
-  output.audio.AddMul(globalDSP.plug.voiceMixdown, voiceToOutNorm);
+  output.audio.AddMul(globalDSP.voiceMixdown, voiceToOutNorm);
   output.audio.AddMul(mainAudioIn, audioInToOutNorm);
   output.audio.AddMul(sidechainAudioIn, sidechainToOutNorm);
   for (int i = 0; i < FFEffectCount; i++)
