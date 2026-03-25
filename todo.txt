@@ -1,3 +1,4 @@
+[ ] drop #if false block from the effect processor
 [ ] do more easy access controls (and maybe more mod sources)
 [ ] after init, load, etc, should select the first graph of everything
 [ ] matrix/unison as popups?
