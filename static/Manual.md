@@ -780,7 +780,7 @@ Both of them can be keyboard-tracked relative to the root key.
 
 Allows to use external audio input as an oscillator.<br/>
 For instrument build, this is sidechain only.<br/>
-For FX build, this is both primary input and sidechain (but does require a host which allows to send notes to an effect plugin).
+For FX build, this is both primary input and sidechain (but does require a host which allows to send notes to an effect plugin).<br/>
 Primary use case is to allow an external signal as an FM/RM/PM source.<br/>
 If you just want to throw some effects to external input, use Global Mixer ("Audio/Sidechain In To GFX") and the global echo module instead.
 
