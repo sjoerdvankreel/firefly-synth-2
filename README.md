@@ -152,7 +152,7 @@ You have to download the zip to get at the PolyBLEP source for all waveforms.
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_matrix_pad.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_matrix_pad.rpp)
 [video](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/video/demo_matrix_pad.mp4)
-* Osci to osci compressor
+* Osci to osci compressor (Nice kicks)
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_compress_duck_osc_2by1.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_compress_duck_osc_2by1.rpp)
 * Distortion (still love it)
