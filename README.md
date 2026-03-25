@@ -108,6 +108,9 @@ For help with loads of stuff, from low-level technical details to CLAP support t
 * Smooth noise: https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html
 * Stole the new osci algos from here: https://www.taletn.com/reaper/mono_synth/.<br/>
 You have to download the zip to get at the PolyBLEP source for all waveforms.
+* Compressor:<br/>
+Basic algorithm stolen from ChunkWare's SimpleComp (among others here https://github.com/jonathonracz/GoatMix/tree/master/GoatMix/Source/External/SimpleComp) and <br/>
+added soft knee support based on this https://github.com/tu-studio/IEMPluginSuite/blob/master/resources/Compressor.h.
 
 # Demo Material
 
