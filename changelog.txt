@@ -1,3 +1,11 @@
+March 25, 2026 - v2.1.2.
+
+- Add compressor as an effect type.
+- Add sidechain support for FX build.
+- Master softclip now defaults to off.
+- Bugfix: crash on FLStudio (and probably others with variable block size).
+- Bugfix: some controls in the FX details UI were overlapping so you could not drag them.
+
 March 15, 2026 - v2.1.1.
 
 - Major UI overhaul.
