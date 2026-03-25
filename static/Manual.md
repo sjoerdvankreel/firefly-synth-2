@@ -809,7 +809,7 @@ Exponential (on): modulator controls the carriers pitch. Causes pitch-drift.
 <a id="G154051CE-66D9-41C8-B479-C52D1111C962"></a>
 <a id="V154051CE-66D9-41C8-B479-C52D1111C962"></a>
 ## Voice FX and Global FX
-Effect module with 4 subslots, each slot can be a state variable filter, comb filter, or waveshaper.
+Effect module with 4 subslots, each slot can be a state variable filter, comb filter, waveshaper or compressor.
 
 ![image](screen_manual_fx1.png)
 ![image](screen_manual_fx2.png)
