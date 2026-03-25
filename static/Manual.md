@@ -811,8 +811,8 @@ Exponential (on): modulator controls the carriers pitch. Causes pitch-drift.
 ## Voice FX and Global FX
 Effect module with 4 subslots, each slot can be a state variable filter, comb filter, waveshaper or compressor.
 
-![image](screen_manual_fx1.png)
-![image](screen_manual_fx2.png)
+![image](screen_manual_vfx1.png)
+![image](screen_manual_vfx2.png)
 
 Oversampling applies to the module as a whole, so all 4 subslots together.<br/>
 Tracking key sets the root key (offset from C4) against which all filters are keyboard-tracked.<br/>
