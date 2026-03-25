@@ -34,7 +34,7 @@ Just linear and unipolar exponential, I just didn't see the need for the other o
 * No monophonic mode, period.<br/>
 I also do not intend to build it back, because too complicated.<br/>
 FF2 does contain new portamento section-attack/section-release shortening controls to emulate those short transitions for leads etc.<br/>
-If you want a monosynth, get a proper monosynth. By now I feel they are different enough to not try and force one into a polysynth.
+If you want a monosynth, get a proper monosynth. By now I feel they are different enough to not try and force one onto a polysynth.
 
 # The Just-Different
 Stuff that both can do, just in different ways.
@@ -105,6 +105,8 @@ Same as global including feedback/multitap delay and reverb.
 For both the dedicated FM-osci as well as the inter-osci modulation section.
 * Looping envelopes.<br/>
 All envelopes now have loop start/length controls, representing the sustain section.
+* Built-in compressor.<br/>
+FF2 allows to use a compressor in any of the voice/global fx slots. So, anywhere you can do a filter or shaper.<br/>
 * Filters on echo.<br/>
 All echo modules (feedback delay, multi-tap delay, reverb) gained LPF/HPF options.<br/>
 Nothing you couldn't do before, except for the feedback delay filters, which are placed INSIDE the feedback path.<br/>
