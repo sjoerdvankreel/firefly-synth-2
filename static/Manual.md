@@ -39,8 +39,8 @@ Some hosts allow to send midi notes to an FX plugin, some do not.<br/>
 
 All the rest is really just different default values:
 * Receive MIDI notes: default Off for FX, On for instrument.
-* Global echo target defaults to External Audio for FX, off for instrument.
-* Global mixer default routes External Audio to master out for FX, Voice Mixdown to master out for instrument.
+* Global echo target defaults to Audio In for FX, off for instrument.
+* Global mixer default routes Audio In to master out for FX, Voice Mixdown to master out for instrument.
 
 Patches can be shared between the FX and instrument builds.
 
@@ -624,10 +624,10 @@ Controls the signal path of the global audio engine.
 
 * Voice Mix to GFX:<br/>
 Routes the voice mixdown to the global effect (GFX) section.
-* External Audio to GFX:<br/>
-Routes external audio to the global effect (GFX) section.<br/>
-For the FX build, external audio is the plugin's primary input.<br/>
-For the instrument build, external audio is the plugin's sidechain input.
+* Audio In to GFX (FX build only):<br/>
+Routes primary audio input to the global effect (GFX) section.
+* Sidechain In to GFX (both instrument and FX build):<br/>
+Routes sidechain audio input to the global effect (GFX) section.
 * Global FX to global FX:<br/>
 Routes the output of global effect modules to other global effect modules.<br/>
 FX modules are processed in order, so you can only route GFX 1 to 2/3/4, 2 to 3/4 etc.
@@ -635,8 +635,10 @@ FX modules are processed in order, so you can only route GFX 1 to 2/3/4, 2 to 3/
 Routes individual global FX to master output.
 * VMix to out:<br/>
 Routes voice mixdown to master output.
-* External audio to out:<br/>
-Routes external audio to master output.
+* Audio In to out (FX build only):<br/>
+Routes primary audio input to master output.
+* Sidechain In to out (both instrument and FX build):<br/>
+Routes sidechain audio input to master output.
 
 The amplitude parameter is just master gain with an optional LFO applied to it.<br/>
 Likewise the balance control is global stereo balance with an optional LFO applied to it.
