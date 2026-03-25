@@ -12,11 +12,13 @@ struct FBRuntimeGUIParam;
 
 class FBAutoSizeSlider:
 public juce::Slider,
-public IFBHorizontalAutoSize
+public IFBHorizontalAutoSize,
+public IFBVerticalAutoSize
 {
 protected:
   FBAutoSizeSlider(FBPlugGUI* plugGUI, juce::Slider::SliderStyle style);
 public:
+  int FixedHeight() const override;
   int FixedWidth(int height) const override;
 };
 

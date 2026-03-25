@@ -8,5 +8,6 @@ std::unique_ptr<FBStaticModule> FFMakeGMixTopo(bool isFx);
 
 enum class FFGMixParam {
   Amp, LFO5ToAmp, Bal, LFO6ToBal,
-  VoiceToGFX, ExtAudioToGFX, GFXToGFX,
-  VoiceToOut, ExtAudioToOut, GFXToOut, Count };
+  VoiceToGFX, AudioInToGFX, SidechainToGFX, GFXToGFX,
+  VoiceToOut, AudioInToOut, SidechainToOut, GFXToOut, 
+  DummyToggle, Count };

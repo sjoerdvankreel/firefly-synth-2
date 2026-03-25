@@ -347,43 +347,46 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-MakeOsciSectionExtAudio(FBPlugGUI* plugGUI, int moduleSlot)
+MakeOsciSectionAudioIn(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> columnSizes = { 0, 1, 0, 0, 0, 0 };
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0 }, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0, 0, 0 }, columnSizes);
 
-  auto inputGain = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::ExtAudioInputGain, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, inputGain));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, inputGain, Slider::SliderStyle::LinearHorizontal));
-  auto inputBal = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::ExtAudioInputBal, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, inputBal));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, inputBal, Slider::SliderStyle::LinearHorizontal));
-  auto lpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::ExtAudioLPFreq, 0 } });
-  grid->Add(2, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpFreq));
-  grid->Add(2, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::LinearHorizontal));
-  auto lpRes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::ExtAudioLPRes, 0 } });
-  grid->Add(2, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpRes));
-  grid->Add(2, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpRes, Slider::SliderStyle::RotaryVerticalDrag));
-  auto lpOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::ExtAudioLPOn, 0 } });
-  grid->Add(2, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpOn));
-  grid->Add(2, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, lpOn));
-  auto hpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::ExtAudioHPFreq, 0 } });
-  grid->Add(3, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpFreq));
-  grid->Add(3, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, Slider::SliderStyle::LinearHorizontal));
-  auto hpRes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::ExtAudioHPRes, 0 } });
-  grid->Add(3, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
-  grid->Add(3, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
-  auto hpOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::ExtAudioHPOn, 0 } });
-  grid->Add(3, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpOn));
-  grid->Add(3, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, hpOn));
+  auto source = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::AudioInSource, 0 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, source));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, source));
+  auto inputGain = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::AudioInGain, 0 } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, inputGain));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, inputGain, Slider::SliderStyle::LinearHorizontal));
+  auto inputBal = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::AudioInBal, 0 } });
+  grid->Add(2, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, inputBal));
+  grid->Add(2, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, inputBal, Slider::SliderStyle::LinearHorizontal));
+  auto lpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::AudioInLPFreq, 0 } });
+  grid->Add(3, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpFreq));
+  grid->Add(3, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::LinearHorizontal));
+  auto lpRes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::AudioInLPRes, 0 } });
+  grid->Add(3, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpRes));
+  grid->Add(3, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  auto lpOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::AudioInLPOn, 0 } });
+  grid->Add(3, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpOn));
+  grid->Add(3, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, lpOn));
+  auto hpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::AudioInHPFreq, 0 } });
+  grid->Add(4, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpFreq));
+  grid->Add(4, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, Slider::SliderStyle::LinearHorizontal));
+  auto hpRes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::AudioInHPRes, 0 } });
+  grid->Add(4, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
+  grid->Add(4, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  auto hpOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::AudioInHPOn, 0 } });
+  grid->Add(4, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpOn));
+  grid->Add(4, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, hpOn));
 
-  for (int i = 0; i < 4; i += 2)
+  for (int i = 0; i < 5; i += 2)
     grid->MarkSection({ { i, 0 }, { 1, 6 } }, FBGridSectionMark::AlternateBackground);
 
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
-  dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::ExtAudio; });
+  dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::AudioIn; });
   return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
 }
 
@@ -403,7 +406,7 @@ MakeOsciDetail(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 0, MakeOsciSectionWave(plugGUI, moduleSlot));
   grid->Add(0, 0, MakeOsciSectionFM(plugGUI, moduleSlot));
   grid->Add(0, 0, MakeOsciSectionString(plugGUI, moduleSlot));
-  grid->Add(0, 0, MakeOsciSectionExtAudio(plugGUI, moduleSlot));
+  grid->Add(0, 0, MakeOsciSectionAudioIn(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, true, false, grid);
 }
 

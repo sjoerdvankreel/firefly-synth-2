@@ -160,8 +160,8 @@ FFOsciProcessor::BeginVoice(
     BeginVoiceFM(state, uniPhaseInit);
   else if (_type == FFOsciType::String)
     BeginVoiceString(state, graph);
-  else if (_type == FFOsciType::ExtAudio)
-    BeginVoiceExtAudio(state);
+  else if (_type == FFOsciType::AudioIn)
+    BeginVoiceAudioIn(state);
   else
     FB_ASSERT(false);
 }
@@ -234,7 +234,7 @@ FFOsciProcessor::Process(
     procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscGain, false, voice, -1, gainNormModulated);
     procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscPan, false, voice, -1, panNormModulated);
 
-    if (_type != FFOsciType::ExtAudio)
+    if (_type != FFOsciType::AudioIn)
     {
       FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[state.moduleSlot].outputAll, lfoToFine.CV(), fineNormModulated);
       procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::OscFine, false, voice, -1, fineNormModulated);
@@ -250,7 +250,7 @@ FFOsciProcessor::Process(
   FBSArray<float, FFOsciFixedBlockOversamples> basePitchPlain;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
-    if (_type != FFOsciType::ExtAudio)
+    if (_type != FFOsciType::AudioIn)
     {
       auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNormModulated.Load(s));
       auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNormModulated.Load(s));
@@ -264,13 +264,13 @@ FFOsciProcessor::Process(
       auto baseFreq = FBPitchToFreq(pitch);
       basePitchPlain.Store(s, pitch);
       uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
-      if (_graph && _type != FFOsciType::ExtAudio)
+      if (_graph && _type != FFOsciType::AudioIn)
         _graphPhaseGen.NextBatch(baseFreq / sampleRate);
     }
     else
     {
       basePitchPlain.Store(s, FBBatch<float>(defaultPitch));
-      if (_graph && _type != FFOsciType::ExtAudio)
+      if (_graph && _type != FFOsciType::AudioIn)
         _graphPhaseGen.NextBatch(FBBatch<float>(defaultFreq / sampleRate));
     }
 
@@ -296,8 +296,8 @@ FFOsciProcessor::Process(
       topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNormModulated.Get(0)),
       topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm.CV().Get(0)),
       voiceBasePitch, basePitchPlain, uniDetunePlain);
-  else if (_type == FFOsciType::ExtAudio)
-    ProcessExtAudio(state);
+  else if (_type == FFOsciType::AudioIn)
+    ProcessAudioIn(state);
   else
     FB_ASSERT(false);
 

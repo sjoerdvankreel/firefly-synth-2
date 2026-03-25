@@ -10,18 +10,31 @@ FBCLAPPlugin::implementsAudioPorts() const noexcept
 }
 
 uint32_t 
-FBCLAPPlugin::audioPortsCount(bool /*isInput*/) const noexcept
+FBCLAPPlugin::audioPortsCount(bool isInput) const noexcept
 {
-  return 1;
+  if (!isInput)
+    return 1;
+  return _topo->static_->meta.isFx? 2: 1;
 }
 
 bool
 FBCLAPPlugin::audioPortsInfo(uint32_t index, bool isInput, clap_audio_port_info* info) const noexcept 
 {
-  if (index != 0)
+  if (!isInput && index != 0)
     return false;
 
-  info->id = 0;
+  if (_topo->static_->meta.isFx)
+  {
+    if (index > 1)
+      return false;
+  }
+  else
+  {
+    if (index > 0)
+      return false;
+  }
+
+  info->id = index;
   info->channel_count = 2;
   info->port_type = CLAP_PORT_STEREO;
   info->in_place_pair = CLAP_INVALID_ID;
@@ -38,8 +51,16 @@ FBCLAPPlugin::audioPortsInfo(uint32_t index, bool isInput, clap_audio_port_info*
     // With main, it wont accept sidechaining.
     if (_topo->static_->meta.isFx)
     {
-      info->flags = CLAP_AUDIO_PORT_IS_MAIN;
-      std::strcpy(info->name, "Stereo In");
+      if (index == 0)
+      {
+        info->flags = CLAP_AUDIO_PORT_IS_MAIN;
+        std::strcpy(info->name, "Stereo In");
+      }
+      else
+      {
+        info->flags = 0;
+        std::strcpy(info->name, "Sidechain");
+      }
     }
     else
     {

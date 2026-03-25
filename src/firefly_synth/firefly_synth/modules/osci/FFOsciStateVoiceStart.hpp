@@ -7,7 +7,7 @@ template <class TAccurate>
 class alignas(alignof(TAccurate)) FFOsciVoiceStartParamState final
 {
   friend class FFOsciProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo(bool);
   std::array<TAccurate, 1> phase = {};
   std::array<TAccurate, 1> waveDSFBW = {};
   std::array<TAccurate, 1> uniOffset = {};

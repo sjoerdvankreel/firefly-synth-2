@@ -40,7 +40,8 @@ FFGEchoTargetToString(FFGEchoTarget target)
   case FFGEchoTarget::MixIn: return "GMix In";
   case FFGEchoTarget::MixOut: return "GMix Out";
   case FFGEchoTarget::VoiceMix: return "VMix";
-  case FFGEchoTarget::ExtAudio: return "Ext Audio";
+  case FFGEchoTarget::AudioIn: return "Audio In";
+  case FFGEchoTarget::Sidechain: return "Sidechain";
   case FFGEchoTarget::FX1In: return "GFX1 In";
   case FFGEchoTarget::FX1Out: return "GFX1 Out";
   case FFGEchoTarget::FX2In: return "GFX2 In";
@@ -106,7 +107,7 @@ FFMakeEchoTopo(bool global, bool isFx)
   vTargetOrGTarget.id = prefix + "{60F7D173-C5F9-46AD-A108-D17D40FE4C1D}";
   vTargetOrGTarget.description = "Echo Target Stage";
   vTargetOrGTarget.name = "Target";
-  vTargetOrGTarget.defaultText = global && isFx? FFGEchoTargetToString(FFGEchoTarget::ExtAudio): "Off";
+  vTargetOrGTarget.defaultText = global && isFx? FFGEchoTargetToString(FFGEchoTarget::AudioIn): "Off";
   vTargetOrGTarget.type = FBParamType::List;
   auto selectVTargetOrGTarget = [](auto& module) { return &module.block.vTargetOrGTarget; };
   vTargetOrGTarget.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectVTargetOrGTarget);
@@ -120,7 +121,8 @@ FFMakeEchoTopo(bool global, bool isFx)
       { "{38A69D55-AB3E-49F2-9CCD-44917FD24597}", FFGEchoTargetToString(FFGEchoTarget::MixIn)  },
       { "{C510F9C1-13A6-4929-A7EA-7C5F79BA6E42}", FFGEchoTargetToString(FFGEchoTarget::MixOut)  },
       { "{9A195809-A9A8-454A-ACD1-5376892EE416}", FFGEchoTargetToString(FFGEchoTarget::VoiceMix)  },
-      { "{746FE368-54F7-4BCA-A883-9B3C40163C84}", FFGEchoTargetToString(FFGEchoTarget::ExtAudio)  },
+      { "{746FE368-54F7-4BCA-A883-9B3C40163C84}", FFGEchoTargetToString(FFGEchoTarget::AudioIn)  },
+      { "{02F1846A-E2BC-4A84-AD91-C64B5F51B2DB}", FFGEchoTargetToString(FFGEchoTarget::Sidechain)  },
       { "{CDE64B50-C65D-43E9-B52E-325F544E5175}", FFGEchoTargetToString(FFGEchoTarget::FX1In)  },
       { "{1C7AA2CC-2116-45E4-B7C2-AA9678CC15B5}", FFGEchoTargetToString(FFGEchoTarget::FX1Out)  },
       { "{68C1469F-96FF-47D7-8A2E-B24309E10031}", FFGEchoTargetToString(FFGEchoTarget::FX2In)  },

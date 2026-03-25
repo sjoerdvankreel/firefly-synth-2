@@ -1,6 +1,7 @@
 #pragma once
 
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
+#include <firefly_base/dsp/buffer/FBBufferBlock.hpp>
 #include <firefly_base/dsp/shared/FBNoteMatrix.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 
@@ -27,6 +28,7 @@ class FBHostProcessor final
   std::array<bool, 128> _noteOn = {};
   std::array<float, 128> _noteVelo = {};
   FBNoteMatrix<float> _noteMatrix = {};
+  FBFixedInputBlock _firstRound = {};
 
   bool _anyNoteIsOn = {};
   bool _anyNoteEverReceived = false;

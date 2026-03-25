@@ -4,14 +4,14 @@
 #include <string>
 
 struct FBStaticModule;
-std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
+std::unique_ptr<FBStaticModule> FFMakeOsciTopo(bool isFx);
 
 enum class FFOsciFMMode { Linear, Exp };
 enum class FFOsciStringMode { Uni, Norm };
 enum class FFOsciFMRatioMode { Ratio, Free };
 
 enum class FFOsciType { 
-  Off, Wave, FM, String, ExtAudio };
+  Off, Wave, FM, String, AudioIn };
 std::string FFOsciTypeToString(FFOsciType type);
 
 enum class FFOsciWaveDSFMode { Off, Over, BW };
@@ -19,6 +19,7 @@ enum class FFOsciWaveHSMode { Off, Saw, Sqr, Tri };
 enum class FFOsciWavePWMode { Off, Sqr, Rect, TriPls, TriSaw, TrapTri, HWSaw };
 enum class FFOsciWaveBasicMode { Off, Sin, Cos, Saw, Tri, Rect, Ramp, SinSqr, 
   SawSqr, SinSaw, BSSin, HWSin, FWSin, AltSin, Trap, SawM1, SqrM1, Parabl, HypTri };
+enum class FFOsciAudioInSource { AudioIn, Sidechain };
 
 inline int constexpr FFOsciUniMaxCount = 8;
 inline int constexpr FFOsciWavePWCount = 2;
@@ -42,7 +43,8 @@ enum class FFOsciParam {
   StringLPOn, StringLPFreq, StringLPRes, StringLPKTrk,
   StringHPOn, StringHPFreq, StringHPRes, StringHPKTrk,
   StringDamp, StringDampKTrk, StringFeedback, StringFeedbackKTrk, 
-  ExtAudioInputGain, ExtAudioInputBal,
-  ExtAudioLPOn, ExtAudioLPFreq, ExtAudioLPRes,
-  ExtAudioHPOn, ExtAudioHPFreq, ExtAudioHPRes,
+  AudioInSource,
+  AudioInGain, AudioInBal,
+  AudioInLPOn, AudioInLPFreq, AudioInLPRes,
+  AudioInHPOn, AudioInHPFreq, AudioInHPRes,
   Count };

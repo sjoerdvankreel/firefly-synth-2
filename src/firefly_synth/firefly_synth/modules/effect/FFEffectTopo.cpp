@@ -66,6 +66,7 @@ FFEffectKindToString(FFEffectKind kind)
   case FFEffectKind::HSH: return "HSH";
   case FFEffectKind::CombMin: return "Comb-";
   case FFEffectKind::CombPlus: return "Comb+";
+  case FFEffectKind::Compressor: return "Comp";
   default: FB_ASSERT(false); return {};
   }
 }
@@ -77,6 +78,53 @@ FFEffectFoldModeToString(FFEffectFoldMode mode)
   {
   case FFEffectFoldMode::FFEffectFoldModeFold: return "Fold";
   default: return FFTrigFunctionToString((FFTrigFunction)mode);
+  }
+}
+
+std::string
+FFEffectCompModeToString(FFEffectCompMode mode)
+{
+  switch (mode)
+  {
+  case FFEffectCompMode::RMS: return "RMS";
+  case FFEffectCompMode::Peak: return "Peak";
+  default: FB_ASSERT(false); return {};
+  }
+}
+
+std::string 
+FFVEffectCompSideToString(FFVEffectCompSide side)
+{
+  switch (side)
+  {
+  case FFVEffectCompSide::Off: return "Off";
+  case FFVEffectCompSide::AudioIn: return "Audio In";
+  case FFVEffectCompSide::Sidechain: return "Sidechain";
+  case FFVEffectCompSide::OscMix: return "Osc Mix";
+  case FFVEffectCompSide::Osc1: return "Osc 1";
+  case FFVEffectCompSide::Osc2: return "Osc 2";
+  case FFVEffectCompSide::Osc3: return "Osc 3";
+  case FFVEffectCompSide::Osc4: return "Osc 4";
+  case FFVEffectCompSide::FX1: return "VFX 1";
+  case FFVEffectCompSide::FX2: return "VFX 2";
+  case FFVEffectCompSide::FX3: return "VFX 3";
+  default: FB_ASSERT(false); return {};
+  }
+}
+
+std::string 
+FFGEffectCompSideToString(FFGEffectCompSide side)
+{
+  switch (side)
+  {
+  case FFGEffectCompSide::Off: return "Off";
+  case FFGEffectCompSide::AudioIn: return "Audio In";
+  case FFGEffectCompSide::Sidechain: return "Sidechain";
+  case FFGEffectCompSide::VMix: return "VMix";
+  case FFGEffectCompSide::FX1: return "GFX 1";
+  case FFGEffectCompSide::FX2: return "GFX 2";
+  case FFGEffectCompSide::FX3: return "GFX 3";
+  default: FB_ASSERT(false); return {};
   }
 }
 
@@ -197,10 +245,12 @@ FFMakeEffectTopo(bool global)
     { "{37005D34-E2E4-4CCD-8783-135952515B41}", FFEffectKindToString(FFEffectKind::CombMin) },
     { "{FD072A47-EE67-4091-A687-7168B69A6E89}", FFEffectKindToString(FFEffectKind::Clip) },
     { "{06334343-5264-489E-ADF9-20ADCEF983FC}", FFEffectKindToString(FFEffectKind::Fold) },
-    { "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", FFEffectKindToString(FFEffectKind::Skew) } };
+    { "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", FFEffectKindToString(FFEffectKind::Skew) },
+    { "{C5D903AD-8621-4A6A-9408-3441239CD395}", FFEffectKindToString(FFEffectKind::Compressor) } };
   kind.List().submenuStart[(int)FFEffectKind::Off] = "Off";
   kind.List().submenuStart[(int)FFEffectKind::LPF] = "Filter";
   kind.List().submenuStart[(int)FFEffectKind::Clip] = "Shape";
+  kind.List().submenuStart[(int)FFEffectKind::Compressor] = "Other";
   auto selectKind = [](auto& module) { return &module.block.kind; };
   kind.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectKind);
   kind.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectKind);
@@ -227,7 +277,9 @@ FFMakeEffectTopo(bool global)
   envAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectEnvAmt);
   envAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectEnvAmt);
   envAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
-    [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] != 0; });
+    [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] != 0 && vs[1] != (int)FFEffectKind::Compressor; });
+  envAmt.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != (int)FFEffectKind::Compressor; });
 
   auto& lfoAmt = result->params[(int)FFEffectParam::LFOAmt];
   lfoAmt.mode = FBParamMode::Accurate;
@@ -247,7 +299,9 @@ FFMakeEffectTopo(bool global)
   lfoAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectLFOAmt);
   lfoAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectLFOAmt);
   lfoAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+    [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[1] != (int)FFEffectKind::Compressor; });
+  lfoAmt.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != (int)FFEffectKind::Compressor; });
 
   auto& filterMode = result->params[(int)FFEffectParam::FilterMode];
   filterMode.defaultText = "Freq";
@@ -673,9 +727,9 @@ FFMakeEffectTopo(bool global)
   distDrive.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectDistDrive);
   distDrive.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectDistDrive);
   distDrive.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return FFEffectKindIsShaper((FFEffectKind)vs[0]); });
   distDrive.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] != 0 && vs[1] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return vs[0] != 0 && FFEffectKindIsShaper((FFEffectKind)vs[1]); });
 
   auto& distMix = result->params[(int)FFEffectParam::DistMix];
   distMix.mode = FBParamMode::Accurate;
@@ -695,9 +749,9 @@ FFMakeEffectTopo(bool global)
   distMix.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectDistMix);
   distMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectDistMix);
   distMix.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return FFEffectKindIsShaper((FFEffectKind)vs[0]); });
   distMix.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] != 0 && vs[1] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return vs[0] != 0 && FFEffectKindIsShaper((FFEffectKind)vs[1]); });
 
   auto& distBias = result->params[(int)FFEffectParam::DistBias];
   distBias.mode = FBParamMode::Accurate;
@@ -720,9 +774,9 @@ FFMakeEffectTopo(bool global)
   distBias.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectDistBias);
   distBias.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectDistBias);
   distBias.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return FFEffectKindIsShaper((FFEffectKind)vs[0]); });
   distBias.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] != 0 && vs[1] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return vs[0] != 0 && FFEffectKindIsShaper((FFEffectKind)vs[1]); });
 
   auto& distAmt = result->params[(int)FFEffectParam::DistAmt];
   distAmt.mode = FBParamMode::Accurate;
@@ -742,9 +796,227 @@ FFMakeEffectTopo(bool global)
   distAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectDistAmt);
   distAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectDistAmt);
   distAmt.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
-    [](auto const& vs) { return vs[0] >= (int)FFEffectKind::Clip; });
+    [](auto const& vs) { return FFEffectKindIsShaper((FFEffectKind)vs[0]); });
   distAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::ClipMode },
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::Skew || vs[1] == (int)FFEffectKind::Clip && vs[2] == (int)FFEffectClipMode::Exp); });
+
+  auto& compMode = result->params[(int)FFEffectParam::CompMode];
+  compMode.mode = FBParamMode::Block;
+  compMode.defaultText = "Peak";
+  compMode.name = "Comp Mode";
+  compMode.display = "Mode";
+  compMode.slotCount = FFEffectBlockCount;
+  compMode.slotFormatter = FFFormatBlockSlot;
+  compMode.id = prefix + "{2EA47F66-A7ED-4C9E-92C7-611C2FAB82A6}";
+  compMode.description = "Compressor Mode";
+  compMode.type = FBParamType::List;
+  compMode.List().items = {
+    { prefix + "{85B141BB-46F8-4E8F-A24B-585160FA5CE3}", FFEffectCompModeToString(FFEffectCompMode::Peak) },
+    { prefix + "{63FD8FCE-450E-46AF-95D6-804E05336919}", FFEffectCompModeToString(FFEffectCompMode::RMS) } };
+  auto selectCompMode = [](auto& module) { return &module.block.compMode; };
+  compMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompMode);
+  compMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompMode);
+  compMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompMode);
+  compMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompMode);
+  compMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompMode);
+  compMode.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compMode.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
+
+  auto& compThreshold = result->params[(int)FFEffectParam::CompThreshold];
+  compThreshold.mode = FBParamMode::Block;
+  compThreshold.defaultText = "100";
+  compThreshold.name = "Comp Threshold";
+  compThreshold.display = "Threshold";
+  compThreshold.unit = "%";
+  compThreshold.slotCount = FFEffectBlockCount;
+  compThreshold.slotFormatter = FFFormatBlockSlot;
+  compThreshold.id = prefix + "{12F6A492-5B00-4B4B-95D3-2BF1909036FD}";
+  compThreshold.description = "Compressor Threshold";
+  compThreshold.type = FBParamType::Linear;
+  compThreshold.Linear().min = 0.01f;
+  compThreshold.Linear().max = 2.0f;
+  compThreshold.Linear().editSkewFactor = 0.25f;
+  compThreshold.Linear().displayMultiplier = 100.0f;
+  auto selectCompThreshold = [](auto& module) { return &module.block.compThreshold; };
+  compThreshold.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompThreshold);
+  compThreshold.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompThreshold);
+  compThreshold.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompThreshold);
+  compThreshold.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompThreshold);
+  compThreshold.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompThreshold);
+  compThreshold.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compThreshold.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
+
+  auto& compRatio = result->params[(int)FFEffectParam::CompRatio];
+  compRatio.mode = FBParamMode::Block;
+  compRatio.unit = "%";
+  compRatio.defaultText = "75";
+  compRatio.name = "Comp Ratio";
+  compRatio.display = "Ratio";
+  compRatio.slotCount = FFEffectBlockCount;
+  compRatio.slotFormatter = FFFormatBlockSlot;
+  compRatio.id = prefix + "{F8DEB5FF-4A33-4D64-A459-CB40EFBF5128}";
+  compRatio.description = "Compressor Ratio";
+  compRatio.type = FBParamType::Linear;
+  compRatio.Linear().min = 0.0f;
+  compRatio.Linear().max = 0.99f;
+  compRatio.Linear().editSkewFactor = 2.0f;
+  compRatio.Linear().displayMultiplier = 100.0f;
+  auto selectCompRatio = [](auto& module) { return &module.block.compRatio; };
+  compRatio.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompRatio);
+  compRatio.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompRatio);
+  compRatio.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompRatio);
+  compRatio.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompRatio);
+  compRatio.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompRatio);
+  compRatio.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compRatio.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
+
+  auto& compAttack = result->params[(int)FFEffectParam::CompAttack];
+  compAttack.mode = FBParamMode::Block;
+  compAttack.defaultText = "3";
+  compAttack.display = "Attack";
+  compAttack.name = "Comp Attack";
+  compAttack.slotCount = FFEffectBlockCount;
+  compAttack.unit = "Ms";
+  compAttack.id = prefix + "{EBA15417-C159-4B31-BC14-BE31AFE04EED}";
+  compAttack.description = "Compressor Attack Time";
+  compAttack.type = FBParamType::Linear;
+  compAttack.Linear().min = 0.0f;
+  compAttack.Linear().max = 0.5f;
+  compAttack.Linear().editSkewFactor = 0.5f;
+  compAttack.Linear().displayMultiplier = 1000;
+  auto selectCompAttack = [](auto& module) { return &module.block.compAttack; };
+  compAttack.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompAttack);
+  compAttack.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompAttack);
+  compAttack.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompAttack);
+  compAttack.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompAttack);
+  compAttack.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompAttack);
+  compAttack.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compAttack.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
+
+  auto& compRelease = result->params[(int)FFEffectParam::CompRelease];
+  compRelease.mode = FBParamMode::Block;
+  compRelease.defaultText = "100";
+  compRelease.display = "Release";
+  compRelease.name = "Comp Release";
+  compRelease.slotCount = FFEffectBlockCount;
+  compRelease.unit = "Ms";
+  compRelease.id = prefix + "{02783FD0-E646-4282-A0F8-E2CC865AF11D}";
+  compRelease.description = "Compressor Release Time";
+  compRelease.type = FBParamType::Linear;
+  compRelease.Linear().min = 0.0f;
+  compRelease.Linear().max = 5.0f;
+  compRelease.Linear().editSkewFactor = 0.5f;
+  compRelease.Linear().displayMultiplier = 1000;
+  auto selectCompRelease = [](auto& module) { return &module.block.compRelease; };
+  compRelease.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompRelease);
+  compRelease.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompRelease);
+  compRelease.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompRelease);
+  compRelease.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompRelease);
+  compRelease.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompRelease);
+  compRelease.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compRelease.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
+
+  auto& compKnee = result->params[(int)FFEffectParam::CompKnee];
+  compKnee.mode = FBParamMode::Block;
+  compKnee.defaultText = "0.01";
+  compKnee.name = "Comp Knee";
+  compKnee.display = "Knee";
+  compKnee.unit = "dB";
+  compKnee.slotCount = FFEffectBlockCount;
+  compKnee.slotFormatter = FFFormatBlockSlot;
+  compKnee.id = prefix + "{198616E6-C9AB-4D38-A9DB-9389C74A7A4F}";
+  compKnee.description = "Compressor Knee";
+  compKnee.type = FBParamType::Linear;
+  compKnee.Linear().min = 0.01f;
+  compKnee.Linear().max = 24.0f;
+  auto selectCompKnee = [](auto& module) { return &module.block.compKnee; };
+  compKnee.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompKnee);
+  compKnee.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompKnee);
+  compKnee.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompKnee);
+  compKnee.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompKnee);
+  compKnee.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompKnee);
+  compKnee.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compKnee.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
+
+  auto& compRMSSize = result->params[(int)FFEffectParam::CompRMSSize];
+  compRMSSize.mode = FBParamMode::Block;
+  compRMSSize.defaultText = "5";
+  compRMSSize.display = "RMS";
+  compRMSSize.name = "RMS Size";
+  compRMSSize.slotCount = FFEffectBlockCount;
+  compRMSSize.unit = "Ms";
+  compRMSSize.id = prefix + "{A1D63E6A-F8BB-4801-8EE3-655A5D7970F5}";
+  compRMSSize.description = "Compressor RMS Size";
+  compRMSSize.type = FBParamType::Linear;
+  compRMSSize.Linear().min = 0.001f;
+  compRMSSize.Linear().max = 0.1f;
+  compRMSSize.Linear().editSkewFactor = 0.5f;
+  compRMSSize.Linear().displayMultiplier = 1000;
+  auto selectCompRMSSize = [](auto& module) { return &module.block.compRMSSize; };
+  compRMSSize.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompRMSSize);
+  compRMSSize.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompRMSSize);
+  compRMSSize.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompRMSSize);
+  compRMSSize.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompRMSSize);
+  compRMSSize.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompRMSSize);
+  compRMSSize.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compRMSSize.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind, (int)FFEffectParam::CompMode },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor && vs[2] == (int)FFEffectCompMode::RMS; });
+
+  auto& compVSideOrGSide = result->params[(int)FFEffectParam::CompVSideOrGSide];
+  compVSideOrGSide.mode = FBParamMode::Block;
+  compVSideOrGSide.defaultText = "Off";
+  compVSideOrGSide.name = "Comp Sidechain";
+  compVSideOrGSide.display = "Side";
+  compVSideOrGSide.slotCount = FFEffectBlockCount;
+  compVSideOrGSide.slotFormatter = FFFormatBlockSlot;
+  compVSideOrGSide.id = prefix + "{E72C3234-F8DD-4EEE-A7C2-31C26FDD2EA2}";
+  compVSideOrGSide.description = "Compressor Sidechain";
+  compVSideOrGSide.type = FBParamType::List;
+  if (global)
+    compVSideOrGSide.List().items = {
+      { prefix + "{8C37166E-DA71-4BA4-9ADF-B948DD35BE37}", FFGEffectCompSideToString(FFGEffectCompSide::Off) },
+      { prefix + "{8C72FECF-8721-4157-8AAE-4D321F61033A}", FFGEffectCompSideToString(FFGEffectCompSide::AudioIn) },
+      { prefix + "{F704A8A1-9E48-493F-BF44-74BC5DA2FA2A}", FFGEffectCompSideToString(FFGEffectCompSide::Sidechain) },
+      { prefix + "{320EAC20-83E1-4817-8E48-BC0409D738F4}", FFGEffectCompSideToString(FFGEffectCompSide::VMix) },
+      { prefix + "{2817E796-DCA3-4737-9653-64E6F6E906A2}", FFGEffectCompSideToString(FFGEffectCompSide::FX1) },
+      { prefix + "{61457B80-DEBB-4129-970F-D69D5DD80FFD}", FFGEffectCompSideToString(FFGEffectCompSide::FX2) },
+      { prefix + "{24396073-0731-4B27-80A4-34121CCBA601}", FFGEffectCompSideToString(FFGEffectCompSide::FX3) } };
+  else
+    compVSideOrGSide.List().items = {
+      { prefix + "{5DD03567-DFE8-4B31-B852-86EA792DA59B}", FFVEffectCompSideToString(FFVEffectCompSide::Off) },
+      { prefix + "{56BBC410-30CD-4CA9-ABE7-80F100595409}", FFVEffectCompSideToString(FFVEffectCompSide::AudioIn) },
+      { prefix + "{F572BBA5-9CC3-4535-965C-0ED58CE7ABE6}", FFVEffectCompSideToString(FFVEffectCompSide::Sidechain) },
+      { prefix + "{04C086B6-0EBA-4AD4-A671-852C8C7CA3CE}", FFVEffectCompSideToString(FFVEffectCompSide::OscMix) },
+      { prefix + "{80BC7E48-C21A-45CD-A117-D2CBBF932D4F}", FFVEffectCompSideToString(FFVEffectCompSide::Osc1) },
+      { prefix + "{2004DBF6-E283-4739-9EEB-A052C0729AC4}", FFVEffectCompSideToString(FFVEffectCompSide::Osc2) },
+      { prefix + "{9B43C310-C7F4-449B-B22F-B5D38172F084}", FFVEffectCompSideToString(FFVEffectCompSide::Osc3) },
+      { prefix + "{9508FB0B-07F6-4197-A97E-AEC73FA37569}", FFVEffectCompSideToString(FFVEffectCompSide::Osc4) },
+      { prefix + "{5B654DD1-3FA2-4B41-9B83-E2C832BA77F2}", FFVEffectCompSideToString(FFVEffectCompSide::FX1) },
+      { prefix + "{77F1BDA9-F228-45AB-8A7B-6A78A9EE01CF}", FFVEffectCompSideToString(FFVEffectCompSide::FX2) },
+      { prefix + "{74D30B36-5B8A-4AB5-B6A9-32AD5FEF6393}", FFVEffectCompSideToString(FFVEffectCompSide::FX3) } };
+  auto selectCompVSideOrGSide = [](auto& module) { return &module.block.compVSideOrGSide; };
+  compVSideOrGSide.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectCompVSideOrGSide);
+  compVSideOrGSide.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectCompVSideOrGSide);
+  compVSideOrGSide.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectCompVSideOrGSide);
+  compVSideOrGSide.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectCompVSideOrGSide);
+  compVSideOrGSide.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectCompVSideOrGSide);
+  compVSideOrGSide.dependencies.visible.audio.WhenSimple({ (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] == (int)FFEffectKind::Compressor; });
+  compVSideOrGSide.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Compressor; });
 
   return result;
 }

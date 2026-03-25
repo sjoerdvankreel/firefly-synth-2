@@ -171,10 +171,10 @@ FBVST3AudioEffect::initialize(FUnknown* context)
 
     // The bustype is important to bitwig.
     // With main, it wont accept sidechaining.
+    // We allow side in for synth and fx both.
     if(_topo->static_->meta.isFx)
       addAudioInput(STR16("Stereo In"), SpeakerArr::kStereo, BusTypes::kMain);
-    else
-      addAudioInput(STR16("Sidechain"), SpeakerArr::kStereo, BusTypes::kAux);
+    addAudioInput(STR16("Sidechain"), SpeakerArr::kStereo, BusTypes::kAux);
     return kResultTrue;
   });
 }
@@ -191,12 +191,22 @@ tresult PLUGIN_API
 FBVST3AudioEffect::setBusArrangements(
   SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts)
 {
-  if (numIns > 1)
-    return kResultFalse;
-  if (numOuts != 1 || outputs[0] != SpeakerArr::kStereo)
-    return kResultFalse;
-  if (numIns == 1 && inputs[0] != SpeakerArr::kStereo)
-    return kResultFalse;
+  if (_topo->static_->meta.isFx)
+  {
+    if (numIns != 0 && numIns != 1 && numIns != 2)
+      return kResultFalse;
+    if (numIns > 0 && inputs[0] != SpeakerArr::kStereo)
+      return kResultFalse;
+    if(numIns > 1 && inputs[1] != SpeakerArr::kStereo)
+      return kResultFalse;
+  }
+  else
+  {
+    if (numIns != 0 && numIns != 1)
+      return kResultFalse;
+    if (numIns > 0 && inputs[0] != SpeakerArr::kStereo)
+      return kResultFalse;
+  } 
   return AudioEffect::setBusArrangements(inputs, numIns, outputs, numOuts);
 }
 
@@ -311,10 +321,20 @@ FBVST3AudioEffect::process(ProcessData& data)
     _output.audio = FBHostAudioBlock(data.outputs->channelBuffers32, data.numSamples);
 
     float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
-    if (data.numInputs != 1)
-      _input.audio = FBHostAudioBlock(zeroIn, data.numSamples);
+    _input.mainAudio = FBHostAudioBlock(zeroIn, data.numSamples);
+    _input.sidechainAudio = FBHostAudioBlock(zeroIn, data.numSamples);
+    if (!_topo->static_->meta.isFx)
+    {
+      if(data.numInputs > 0)
+        _input.sidechainAudio = FBHostAudioBlock(data.inputs[0].channelBuffers32, data.numSamples);
+    }
     else
-      _input.audio = FBHostAudioBlock(data.inputs[0].channelBuffers32, data.numSamples);
+    {
+      if(data.numInputs > 0)
+        _input.mainAudio = FBHostAudioBlock(data.inputs[0].channelBuffers32, data.numSamples);
+      if (data.numInputs > 1)
+        _input.sidechainAudio = FBHostAudioBlock(data.inputs[1].channelBuffers32, data.numSamples);
+    }
 
     _hostProcessor->ProcessHost(_input, _output);
 

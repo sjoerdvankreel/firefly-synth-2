@@ -55,7 +55,7 @@ FFMakeSettingsTopo(bool isFx)
   autoSoftClip.slotCount = 1;
   autoSoftClip.id = "{45AA6AD5-0B48-4942-913B-D6FB08BDA4FF}";
   autoSoftClip.description = "Auto Soft Clip";
-  autoSoftClip.defaultText = "+12 dB";
+  autoSoftClip.defaultText = "Off";
   autoSoftClip.description = "Clip Output Above 0dB";
   autoSoftClip.type = FBParamType::List;
   autoSoftClip.List().items = {

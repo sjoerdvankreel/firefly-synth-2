@@ -848,9 +848,9 @@ FBLookAndFeel::drawRotarySlider(
   Path valueArc;
   float trackEndAngle = toAngle;
   float trackStartAngle = rotaryStartAngle;
-  if (auto ps = dynamic_cast<FBParamSlider*>(&slider))
+  if (paramSlider != nullptr)
   {
-    bool bipolar = ps->Param()->static_.NonRealTime().DisplayAsBipolar();
+    bool bipolar = paramSlider->Param()->static_.NonRealTime().DisplayAsBipolar();
     if (bipolar)
     {
       float centerAngle = rotaryStartAngle + 0.5f * (rotaryEndAngle - rotaryStartAngle);

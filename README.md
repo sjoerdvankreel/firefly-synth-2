@@ -32,8 +32,9 @@ The entire folder, not just the binary.
 
 # Platform Support
 * Windows 10+, X64
-* Linux X64, glibc 2.35+
 * MacOS 10.15+, X64/ARM
+* Linux X64, glibc 2.35+
+* Linux ARM64 known to work, not officially supported
 
 # Host Support
 Tested on Carla, Bitwig, Ardour, FLStudio, Reaper and Renoise.<br/>
@@ -107,6 +108,9 @@ For help with loads of stuff, from low-level technical details to CLAP support t
 * Smooth noise: https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1/creating-simple-1D-noise.html
 * Stole the new osci algos from here: https://www.taletn.com/reaper/mono_synth/.<br/>
 You have to download the zip to get at the PolyBLEP source for all waveforms.
+* Compressor:<br/>
+Basic algorithm stolen from ChunkWare's SimpleComp (among others here https://github.com/jonathonracz/GoatMix/tree/master/GoatMix/Source/External/SimpleComp) and <br/>
+added soft knee support based on this https://github.com/tu-studio/IEMPluginSuite/blob/master/resources/Compressor.h.
 
 # Demo Material
 
@@ -117,6 +121,9 @@ You have to download the zip to get at the PolyBLEP source for all waveforms.
 * Short 2
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_short_02.mp3)
 [renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_short_02.xrns)
+* Short 2 (builtin compressor)
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_short_02_compress.mp3)
+[renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_short_02_compress.xrns)
 
 ## Feature demos
 * Plucked strings
@@ -153,6 +160,9 @@ You have to download the zip to get at the PolyBLEP source for all waveforms.
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_distortion.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_distortion.rpp)
 [video](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/video/demo_distortion_video.mp4)
+* Osci to osci compressor (Nice kicks)
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_compress_duck_osc_2by1.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_compress_duck_osc_2by1.rpp)
 * Plucked strings + per-voice echo mod
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_voice_echo_pluckstring_and_voice_echo_mod.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_voice_echo_pluckstring_and_voice_echo_mod.rpp)

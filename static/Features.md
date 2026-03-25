@@ -4,6 +4,7 @@
 * Per-voice realtime visuals for graphs and knobs
 * Some ready-to-use modulators without having to set up the matrix
 * Detailed audio routing options without having to set up a matrix
+* Sidechain input for both instrument and FX version
 
 # 4x Oscillator
 * DSF (additive) generator
@@ -19,6 +20,7 @@
 * 4 subslots for each
 * Comb filter
 * State variable filter
+* Compressor
 * Various waveshapers
 * Optional oversampling
 

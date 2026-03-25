@@ -39,8 +39,8 @@ Some hosts allow to send midi notes to an FX plugin, some do not.<br/>
 
 All the rest is really just different default values:
 * Receive MIDI notes: default Off for FX, On for instrument.
-* Global echo target defaults to External Audio for FX, off for instrument.
-* Global mixer default routes External Audio to master out for FX, Voice Mixdown to master out for instrument.
+* Global echo target defaults to Audio In for FX, off for instrument.
+* Global mixer default routes Audio In to master out for FX, Voice Mixdown to master out for instrument.
 
 Patches can be shared between the FX and instrument builds.
 
@@ -624,10 +624,10 @@ Controls the signal path of the global audio engine.
 
 * Voice Mix to GFX:<br/>
 Routes the voice mixdown to the global effect (GFX) section.
-* External Audio to GFX:<br/>
-Routes external audio to the global effect (GFX) section.<br/>
-For the FX build, external audio is the plugin's primary input.<br/>
-For the instrument build, external audio is the plugin's sidechain input.
+* Audio In to GFX (FX build only):<br/>
+Routes primary audio input to the global effect (GFX) section.
+* Sidechain In to GFX (both instrument and FX build):<br/>
+Routes sidechain audio input to the global effect (GFX) section.
 * Global FX to global FX:<br/>
 Routes the output of global effect modules to other global effect modules.<br/>
 FX modules are processed in order, so you can only route GFX 1 to 2/3/4, 2 to 3/4 etc.
@@ -635,8 +635,10 @@ FX modules are processed in order, so you can only route GFX 1 to 2/3/4, 2 to 3/
 Routes individual global FX to master output.
 * VMix to out:<br/>
 Routes voice mixdown to master output.
-* External audio to out:<br/>
-Routes external audio to master output.
+* Audio In to out (FX build only):<br/>
+Routes primary audio input to master output.
+* Sidechain In to out (both instrument and FX build):<br/>
+Routes sidechain audio input to master output.
 
 The amplitude parameter is just master gain with an optional LFO applied to it.<br/>
 Likewise the balance control is global stereo balance with an optional LFO applied to it.
@@ -774,11 +776,13 @@ Damping is primarily used to shorten low notes.<br/>
 Feedback is primarily used to lengthen high notes.<br/>
 Both of them can be keyboard-tracked relative to the root key.
 
-### External Audio Section
+### Audio In Section
 
 Allows to use external audio input as an oscillator.<br/>
+For instrument build, this is sidechain only.<br/>
+For FX build, this is both primary input and sidechain (but does require a host which allows to send notes to an effect plugin).<br/>
 Primary use case is to allow an external signal as an FM/RM/PM source.<br/>
-If you just want to throw some effects to external input, use Global Mixer ("External Audio To GFX") and the global echo module instead.
+If you just want to throw some effects to external input, use Global Mixer ("Audio/Sidechain In To GFX") and the global echo module instead.
 
 * Input gain for when the external signal is too loud/too quiet.
 * Balance control to turn the external stereo signal into mono.<br/>
@@ -805,10 +809,10 @@ Exponential (on): modulator controls the carriers pitch. Causes pitch-drift.
 <a id="G154051CE-66D9-41C8-B479-C52D1111C962"></a>
 <a id="V154051CE-66D9-41C8-B479-C52D1111C962"></a>
 ## Voice FX and Global FX
-Effect module with 4 subslots, each slot can be a state variable filter, comb filter, or waveshaper.
+Effect module with 4 subslots, each slot can be a state variable filter, comb filter, waveshaper or compressor.
 
-![image](screen_manual_fx1.png)
-![image](screen_manual_fx2.png)
+![image](screen_manual_vfx1.png)
+![image](screen_manual_vfx2.png)
 
 Oversampling applies to the module as a whole, so all 4 subslots together.<br/>
 Tracking key sets the root key (offset from C4) against which all filters are keyboard-tracked.<br/>
@@ -818,6 +822,8 @@ For global FX only, the key smoothing control allows to smooth out changes in th
 
 The graph plot for waveshapers is a shaper plot.<br/>
 The graph plot for filters is a frequency response.<br/>
+The graph plot for compressors is a ramp response with attack=0, decay=0, and peak (not RMS) mode always.<br/>
+This sort-of resembles the familiar compressor plot line, albeit bipolar.<br/>
 The graph plot for everything combined is a ramp response.<br/>
 
 ### Filter modes
@@ -867,6 +873,25 @@ Choice of a plain (triangular) folder and a bunch of (stacked) trigonometric fun
 Skew: applies a vertical (y/level) skewing factor to the signal.<br/>
 Choice of unipolar and bipolar modes with continuous amount control.
 
+### Compressor
+Unlike the other FX types compressor parameters are not modulatable.<br/>
+I just didn't see the need for throwing LFO's at any of them.
+
+The compressor algorithm is a combination of <br/>
+https://github.com/jonathonracz/GoatMix/tree/master/GoatMix/Source/External/SimpleComp and<br/>
+https://github.com/tu-studio/IEMPluginSuite/blob/master/resources/Compressor.h.
+
+The built-in compressor is pretty basic with the following standard parameters:
+* Attack/Release times
+* Threshold, ratio and knee controls
+* Peak or RMS with variable window size
+
+The nice thing is that it is fully integrated into the internal routing system.<br/>
+This means you can sidechain compress pretty much anything by anything: <br/>
+oscillators, voice fx, global fx, external audio, voice mixdown etc.<br/>
+But note: if you sidechain to "self" (like GFX1 by GFX1), this won't do what you want.<br/>
+The side signal will be 1 block behind, so in this case just turn off sidechaining.
+
 <a id="GB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
 <a id="VB979D7BD-65A2-42E4-A7B2-3A48BBFFDE23"></a>
 ## Voice Echo and Global Echo
@@ -894,10 +919,11 @@ This controls the amount by which one channel's input affects the other channel'
 Target: this affects where in the processing pipeline the echo is applied.<br/>
 The most natural setting for this is VMix Out (voice) or GMix Out (global).<br/>
 For global, may also be used to target the voice mixdown before all FX,<br/>
-the external audio input before all fx, or the input/output of individual GFX sections.<br/>
+the external audio input (both main/sidechain) before all fx, or the input/output of individual GFX sections.<br/>
 For voice, may also be used to target individual oscillators or the input/output of individual VFX sections.<br/>
 This allows for stuff like "filter/shape the echo" instead of "echo the filter/shaper".<br/>
-Or echo individual oscis.
+Or echo individual oscis.<br/>
+Note: for instrument build, the main audio input will be silence (sidechain will work).
 
 The voice echo target needs tight cooperation with the Voice Mixer (VMix) envelope target.<br/>
 If you get this wrong, the voice echo will "hide" behind that envelope and the echo is cut short.<br/>

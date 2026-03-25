@@ -35,7 +35,8 @@ _procState(std::make_unique<FBProcStateContainer>(*plugGUI->HostContext()->Topo(
 _primaryVoiceManager(std::make_unique<FBVoiceManager>(_procState.get())),
 _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
 {
-  _input->audio = &_audio;
+  _input->mainAudio = &_mainAudio;
+  _input->sidechainAudio = &_sidechainAudio;
   _input->noteEvents = &_noteEvents;
   _input->procState = _procState.get();
   _input->noteMatrixRaw = &_noteMatrixRaw;

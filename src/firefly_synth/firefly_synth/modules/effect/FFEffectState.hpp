@@ -24,6 +24,7 @@ public FBModuleProcSingleExchangeState
   std::array<float, FFEffectBlockCount> stVarFreqs = {};
   std::array<float, FFEffectBlockCount> combMinFreqs = {};
   std::array<float, FFEffectBlockCount> combPlusFreqs = {};
+  std::array<float, FFEffectBlockCount> compGainReduction = {};
 };
 
 class alignas(FBSIMDAlign) FFEffectDSPState final
@@ -53,6 +54,14 @@ class alignas(alignof(TBlock)) FFEffectBlockParamState final
   std::array<TBlock, FFEffectBlockCount> foldMode = {};
   std::array<TBlock, FFEffectBlockCount> skewMode = {};
   std::array<TBlock, FFEffectBlockCount> filterMode = {};
+  std::array<TBlock, FFEffectBlockCount> compMode = {};
+  std::array<TBlock, FFEffectBlockCount> compKnee = {};
+  std::array<TBlock, FFEffectBlockCount> compRatio = {};
+  std::array<TBlock, FFEffectBlockCount> compAttack = {};
+  std::array<TBlock, FFEffectBlockCount> compRelease = {};
+  std::array<TBlock, FFEffectBlockCount> compRMSSize = {};
+  std::array<TBlock, FFEffectBlockCount> compThreshold = {};
+  std::array<TBlock, FFEffectBlockCount> compVSideOrGSide = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectBlockParamState);
 };

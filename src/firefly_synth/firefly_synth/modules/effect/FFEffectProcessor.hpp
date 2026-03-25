@@ -24,11 +24,37 @@ class FFEffectProcessor final
 {
   bool _on = {};
   int _oversampleTimes = {};
+
+#if false
+
+  std::array<float, FFEffectBlockCount> _prevCompRMSSize = {};
+  std::array<FFEffectCompMode, FFEffectBlockCount> _prevCompMode = {};
+  std::array<FFGEffectCompSide, FFEffectBlockCount> _prevGCompSide = {};
+
+  std::array<float, FFEffectBlockCount> _compAttack = {};
+  std::array<float, FFEffectBlockCount> _compRelease = {};
+#endif
+
   std::array<FFEffectKind, FFEffectBlockCount> _kind = {};
   std::array<FFEffectClipMode, FFEffectBlockCount> _clipMode = {};
   std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};
   std::array<FFEffectSkewMode, FFEffectBlockCount> _skewMode = {};
   std::array<FFEffectFilterMode, FFEffectBlockCount> _filterMode = {};
+
+  // well heck, compressors are difficult
+  std::array<float, FFEffectBlockCount> _compRatio = {};
+  std::array<float, FFEffectBlockCount> _compKneeDb = {};
+  std::array<float, FFEffectBlockCount> _compEnvStateDb = {};
+  std::array<float, FFEffectBlockCount> _compThresholdDb = {};
+  std::array<float, FFEffectBlockCount> _compGainReduction = {};
+  std::array<float, FFEffectBlockCount> _compEnvCoeffAttack = {};
+  std::array<float, FFEffectBlockCount> _compEnvCoeffRelease = {};
+  std::array<FFEffectCompMode, FFEffectBlockCount> _compMode = {};
+  std::array<FFVEffectCompSide, FFEffectBlockCount> _vCompSide = {};
+  std::array<FFGEffectCompSide, FFEffectBlockCount> _gCompSide = {};
+  std::array<float, FFEffectBlockCount> _compRMSTotal = {};
+  std::array<int, FFEffectBlockCount> _compRMSWindowsPos = {};
+  std::array<std::vector<float>, FFEffectBlockCount> _compRMSWindows = {};
 
   bool _graph = {};
   int _graphSampleCount = {};
@@ -45,7 +71,11 @@ class FFEffectProcessor final
   template <bool Global>
   FBBatch<float> NextBasePitchBatch(int pos);
 
-  template <bool Global, bool PlusOn, bool MinOn>
+  void ProcessCompress(
+    int block, bool global, FBModuleProcState const& state,
+    FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled);
+
+  template <bool PlusOn, bool MinOn>
   void ProcessComb(
     int block, float oversampledRate,
     FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
@@ -54,7 +84,6 @@ class FFEffectProcessor final
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqMinPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqPlusPlain);
 
-  template <bool Global>
   void ProcessStVar(
     int block, float oversampledRate,
     FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,

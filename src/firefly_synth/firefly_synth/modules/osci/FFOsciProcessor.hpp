@@ -60,8 +60,9 @@ class FFOsciProcessor final
   float _uniOffsetPlain = {};
   float _uniRandomPlain = {};
 
-  bool _extAudioLPOn = {};
-  bool _extAudioHPOn = {};
+  bool _audioInLPOn = {};
+  bool _audioInHPOn = {};
+  FFOsciAudioInSource _audioInSource = {};
 
   int _stringSeed = {};
   int _stringPoles = {};
@@ -100,8 +101,8 @@ class FFOsciProcessor final
   juce::dsp::AudioBlock<float> _downsampledBlock = {};
   std::array<float*, FFOsciUniMaxCount> _downsampledChannelPtrs = {};
 
-  FFStateVariableFilter<1> _extAudioLPFilter = {};
-  FFStateVariableFilter<1> _extAudioHPFilter = {};
+  FFStateVariableFilter<1> _audioInLPFilter = {};
+  FFStateVariableFilter<1> _audioInHPFilter = {};
 
   FFStateVariableFilter<FFOsciUniMaxCount> _stringLPFilter = {};
   FFStateVariableFilter<FFOsciUniMaxCount> _stringHPFilter = {};
@@ -126,7 +127,7 @@ class FFOsciProcessor final
     float excite, float colorNorm,
     float xNorm, float yNorm);
 
-  void ProcessExtAudio(
+  void ProcessAudioIn(
     FBModuleProcState& state);
   void ProcessFM(
     FBModuleProcState& state,
@@ -143,7 +144,7 @@ class FFOsciProcessor final
     FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
     FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain);
 
-  void BeginVoiceExtAudio(FBModuleProcState& state);
+  void BeginVoiceAudioIn(FBModuleProcState& state);
   void BeginVoiceString(FBModuleProcState& state, bool graph);
   void BeginVoiceFM(FBModuleProcState& state, FBSArray<float, FFOsciUniMaxCount> const& uniPhaseInit);
   void BeginVoiceWave(FBModuleProcState& state, FBSArray<float, FFOsciUniMaxCount> const& uniPhaseInit);

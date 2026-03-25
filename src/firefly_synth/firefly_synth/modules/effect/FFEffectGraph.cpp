@@ -170,7 +170,7 @@ EffectGraphProcessor<Global>::PostProcess(
   FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, params.graphIndex } };
   auto kind = state->AudioParamList<FFEffectKind>(indices, params.exchange, params.exchangeVoice);
 
-  points.bipolar = !params.detailGraphs || (kind == FFEffectKind::Clip || kind == FFEffectKind::Fold || kind == FFEffectKind::Skew);
+  points.bipolar = !params.detailGraphs || FFEffectKindIsShaper(kind) || kind == FFEffectKind::Compressor;
   points.plotLogStart = 20.0f;
   points.plotLogEnd = 20000.0f;
   points.plotLogarithmic = !points.bipolar;
@@ -214,7 +214,9 @@ EffectGraphProcessor<Global>::ProcessExchangeState(
     data.exchangeMainText = FBToStringHz(effectExchange->combMinFreqs[params.graphIndex], 2);
   else if (kind == FFEffectKind::Comb)
     data.exchangeMainText = FBFormatDoubleCLocale(effectExchange->combPlusFreqs[params.graphIndex], 2) + " / " +
-      FBToStringHz(effectExchange->combMinFreqs[params.graphIndex], 2);
+    FBToStringHz(effectExchange->combMinFreqs[params.graphIndex], 2);
+  else if (kind == FFEffectKind::Compressor)
+    data.exchangeMainText = "-" + FBToStringDb(effectExchange->compGainReduction[params.graphIndex], 2) + " Reduct";
   else
     FB_ASSERT(kind == FFEffectKind::Off);
 }
@@ -282,12 +284,14 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
     graphData->graphs[i].moduleSlot = moduleSlot;
     graphData->graphs[i].moduleIndex = (int)moduleType;
     graphData->graphs[i].displayGainAsDb = true;
-    graphData->graphs[i].ScaleToSelfNormalized();
+
+    FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } };
+    auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
+    if(!detailGraphs || kind != FFEffectKind::Compressor)
+      graphData->graphs[i].ScaleToSelfNormalized();
 
     if (detailGraphs)
     {
-      FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } };
-      auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
       indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::FilterMode, i } };
       auto filterMode = renderState->AudioParamList<FFEffectFilterMode>(indices, false, -1);
       indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistDrive, i } };
@@ -348,10 +352,19 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData, bool detailGraphs)
         auto mode = renderState->AudioParamList<FFEffectSkewMode>(indices, false, -1);
         graphData->graphs[i].title += ", " + FFEffectSkewModeToString(mode);
       }
+      if (kind == FFEffectKind::Compressor)
+      {
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CompThreshold, i } };
+        auto compThreshold = renderState->AudioParamLinear(indices, false, -1);
+        graphData->graphs[i].defaultMainText = FBToStringPercent(compThreshold, 2) + " Threshold";
+        indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CompMode, i } };
+        auto compMode = renderState->AudioParamList<FFEffectCompMode>(indices, false, -1);
+        graphData->graphs[i].title += ", " + FFEffectCompModeToString(compMode);
+      }
     }
     else
     {
-      FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Oversample, 0 } };
+      indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Oversample, 0 } };
       bool oversample = renderState->AudioParamBool(indices, false, -1);
       graphData->graphs[i].title = moduleName + ": " + (on ? "On" : "Off");
       if (on && oversample)

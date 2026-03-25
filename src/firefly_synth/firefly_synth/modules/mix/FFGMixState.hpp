@@ -8,6 +8,15 @@
 
 struct FBStaticModule;
 
+template <class TBlock>
+class alignas(alignof(TBlock)) FFGMixBlockParamState final
+{
+  friend std::unique_ptr<FBStaticModule> FFMakeGMixTopo(bool);
+  std::array<TBlock, 1> dummyToggle = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGMixBlockParamState);
+};
+
 template <class TAccurate>
 class alignas(alignof(TAccurate)) FFGMixAccParamState final
 {
@@ -18,21 +27,24 @@ class alignas(alignof(TAccurate)) FFGMixAccParamState final
   std::array<TAccurate, 1> lfo5ToAmp = {};
   std::array<TAccurate, 1> lfo6ToBal = {};
   std::array<TAccurate, 1> voiceToOut = {};
-  std::array<TAccurate, 1> extAudioToOut = {};
+  std::array<TAccurate, 1> audioInToOut = {};
+  std::array<TAccurate, 1> sidechainToOut = {};
   std::array<TAccurate, FFEffectCount> GFXToOut = {};
   std::array<TAccurate, FFEffectCount> voiceToGFX = {};
-  std::array<TAccurate, FFEffectCount> extAudioToGFX = {};
+  std::array<TAccurate, FFEffectCount> audioInToGFX = {};
+  std::array<TAccurate, FFEffectCount> sidechainToGFX = {};
   std::array<TAccurate, FFMixFXToFXCount> GFXToGFX = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGMixAccParamState);
 };
 
-template <class TAccurate>
+template <class TBlock, class TAccurate>
 class alignas(alignof(TAccurate)) FFGMixParamState final
 {
   friend class FFPlugProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGMixTopo(bool);
   FFGMixAccParamState<TAccurate> acc = {};
+  FFGMixBlockParamState<TBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGMixParamState);
 };

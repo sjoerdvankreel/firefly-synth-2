@@ -1,10 +1,9 @@
-vnext
+[ ] drop #if false block from the effect processor
 [ ] do more easy access controls (and maybe more mod sources)
 [ ] after init, load, etc, should select the first graph of everything
 [ ] matrix/unison as popups?
 [ ] fix the 1sec delay on plot visuals
 [ ] programmatic dump screenshot?
-[ ] compressor
 [ ] fix the build scripts for linux-arm
 [ ] add loop count param
 [ ] one phase LFO type
@@ -17,19 +16,14 @@ vnext
 [ ] allow click + on first disabled matrix slot
 
 fix the string oversample bug already
-drop screenshot_theme_light_default (for the website) once fix the auto-screenshot
-also probably make the images on the website bigger somehow
-allow more margin/padding, the borders clip
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo
 do display disabled/impossible items different in the mod matrix
 VDist/GDist - bitcrush, downsample, filter, eq, shape, oversample, more?
-VComp/GComp - ext audio in, but can be other stuff as well
 
 pck support
 arpeggiator
 allow more stuff on the feedback delay path, like, try to get an entire fx block in there somehow => just put one in a popup window?
-built-in compressor (can actually do that now with side-chain in, so nice)
 more presets
 fancy patch browser
 check into AV Linux
