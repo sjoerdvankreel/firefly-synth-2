@@ -877,8 +877,9 @@ Choice of unipolar and bipolar modes with continuous amount control.
 Unlike the other FX types compressor parameters are not modulatable.<br/>
 I just didn't see the need for throwing LFO's at any of them.
 
-The compressor algorithm is a combination of https://github.com/jonathonracz/GoatMix/tree/master/GoatMix/Source/External/SimpleComp<br/>
-and https://github.com/tu-studio/IEMPluginSuite/blob/master/resources/Compressor.h.
+The compressor algorithm is a combination of <br/>
+https://github.com/jonathonracz/GoatMix/tree/master/GoatMix/Source/External/SimpleComp and<br/>
+https://github.com/tu-studio/IEMPluginSuite/blob/master/resources/Compressor.h.
 
 The built-in compressor is pretty basic with the following standard parameters:
 * Attack/Release times
