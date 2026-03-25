@@ -776,11 +776,13 @@ Damping is primarily used to shorten low notes.<br/>
 Feedback is primarily used to lengthen high notes.<br/>
 Both of them can be keyboard-tracked relative to the root key.
 
-### External Audio Section
+### Audio In Section
 
 Allows to use external audio input as an oscillator.<br/>
+For instrument build, this is sidechain only.<br/>
+For FX build, this is both primary input and sidechain (but does require a host which allows to send notes to an effect plugin).
 Primary use case is to allow an external signal as an FM/RM/PM source.<br/>
-If you just want to throw some effects to external input, use Global Mixer ("External Audio To GFX") and the global echo module instead.
+If you just want to throw some effects to external input, use Global Mixer ("Audio/Sidechain In To GFX") and the global echo module instead.
 
 * Input gain for when the external signal is too loud/too quiet.
 * Balance control to turn the external stereo signal into mono.<br/>
