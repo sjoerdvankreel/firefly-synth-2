@@ -11,7 +11,7 @@ v2.1.2
 [x] renoise comp threshold does weird
 [x] host tests also clap
 [x] todo oversample test it
-[ ] renoise exchange data is no good for fx
+[x] renoise exchange data is no good for fx
 [ ] dont side by self
 [ ] routing diagram
 
