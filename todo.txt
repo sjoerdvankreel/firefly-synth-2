@@ -3,6 +3,7 @@
 [z] synth not so loud
 [z] kick slightly different not 101011111010 but 10101110111010101 etc
 
+[ ] mseg xmode off is borked for sync
 [ ] drop #if false block from the effect processor
 [ ] do more easy access controls (and maybe more mod sources)
 [ ] after init, load, etc, should select the first graph of everything
