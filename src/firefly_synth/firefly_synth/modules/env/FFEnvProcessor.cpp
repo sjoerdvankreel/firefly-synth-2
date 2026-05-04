@@ -182,7 +182,7 @@ FFEnvProcessor::Process(
   for (int i = 0; i < FFEnvStageCount; i++)
   {
     stageSlopeIn[i].Voice()[voice].CV().CopyTo(stageSlopeModulated[i]);
-    if (!graph && _stageSamples[i] != 0 && _type == FFEnvType::Exp)
+    if (!graph && _stageSamples[i] != 0 && FFEnvTypeIsExpo(_type))
       procState->dsp.global.globalUni.processor->ApplyToVoice(state, FFGlobalUniTarget::EnvSlope, false, voice, -1, stageSlopeModulated[i]);
   }
   
@@ -244,7 +244,13 @@ FFEnvProcessor::Process(
       else
       {
         float slope = FBEnvMinSlope + stageSlopeModulated[stage].Get(s) * FBEnvSlopeRange;
-        _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * FBInvLogHalf);
+        if(_type == FFEnvType::ExpUP)
+          _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * FBInvLogHalf);
+        else
+        {
+          float bp = FBToBipolar(pos);
+          _lastOverall = stageStart + (stageEnd - stageStart) * FBToUnipolar((bp < 0.0f ? -1.0f : 1.0f) * std::pow(std::fabs(bp), std::log(slope) * FBInvLogHalf));
+        }
       }
 
       // Dealing with portamento subsection release.

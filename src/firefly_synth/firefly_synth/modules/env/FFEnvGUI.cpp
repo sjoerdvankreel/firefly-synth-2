@@ -91,7 +91,7 @@ UpdateMSEGModel(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGModel& model)
   int snapXIndex = context->GetGUIParamList<int>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapXCount, 0 } });
   int snapYIndex = context->GetGUIParamList<int>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGSnapYCount, 0 } });
   model.xMode = sync ? FBMSEGXMode::Bars : FBMSEGXMode::Time;
-  model.yMode = type == FFEnvType::Exp ? FBMSEGYMode::Exponential : FBMSEGYMode::Linear;
+  model.yMode = type == FFEnvType::ExpUP ? FBMSEGYMode::ExpUP : type == FFEnvType::ExpBP? FBMSEGYMode::ExpBP: FBMSEGYMode::Linear;
   model.enabled = type != FFEnvType::Off;
   model.xEditMode = context->GetGUIParamList<FBMSEGXEditMode>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGXEditMode, 0 } });
   model.yEditMode = context->GetGUIParamList<FBMSEGYEditMode>({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvGUIParam::MSEGYEditMode, 0 } });

@@ -25,8 +25,11 @@ inline int constexpr FFEnvMaxBarsDen = 1;
 inline float constexpr FFEnvMaxTime = 10.0f;
 
 enum class FFEnvCVOutput { Output, Count };
-enum class FFEnvType { Off, Linear, Exp };
+enum class FFEnvType { Off, Linear, ExpUP, ExpBP };
 std::string FFEnvTypeToString(FFEnvType type);
+
+inline bool FFEnvTypeIsExpo(FFEnvType type)
+{ return type == FFEnvType::ExpUP || type == FFEnvType::ExpBP; }
 
 enum class FFEnvGUIParam { 
   MSEGXEditMode, MSEGSnapXCount, 
