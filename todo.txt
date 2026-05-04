@@ -1,8 +1,8 @@
 [x] master aux to 6
 [x] refix all the renoise demos
-[ ] bpexpo envelopes + docs
-[ ] mseg xmode off is borked for sync
+[x] bpexpo envelopes + docs
 
+[ ] mseg xmode off is borked for sync
 [ ] do more easy access controls (and maybe more mod sources)
 [ ] after init, load, etc, should select the first graph of everything
 [ ] fix the 1sec delay on plot visuals
