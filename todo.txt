@@ -1,4 +1,4 @@
-[x] master aux to 6
+[x] master aux to 8
 [x] refix all the renoise demos
 [x] bpexpo envelopes + docs
 
