@@ -1,13 +1,10 @@
-- demotrack
-[ ] bass not lr
-[z] synth not so loud
-[z] kick slightly different not 101011111010 but 10101110111010101 etc
-
+[x] master aux to 6
+[x] refix all the renoise demos
+[ ] bpexpo envelopes + docs
 [ ] mseg xmode off is borked for sync
-[ ] drop #if false block from the effect processor
+
 [ ] do more easy access controls (and maybe more mod sources)
 [ ] after init, load, etc, should select the first graph of everything
-[ ] matrix/unison as popups?
 [ ] fix the 1sec delay on plot visuals
 [ ] programmatic dump screenshot?
 [ ] fix the build scripts for linux-arm
@@ -15,7 +12,6 @@
 [ ] one phase LFO type
 [ ] do mod rate/amt for multitap
 [ ] override all-osci unison
-[ ] bpexpo envelopes + docs
 [ ] GLFO_N->X everywhere you can do VLFO_N->X
 [ ] tooltips for time stuff in hz and seconds?
 [ ] store last selected patch folder in global settings on disk

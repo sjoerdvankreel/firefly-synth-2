@@ -25,16 +25,6 @@ class FFEffectProcessor final
   bool _on = {};
   int _oversampleTimes = {};
 
-#if false
-
-  std::array<float, FFEffectBlockCount> _prevCompRMSSize = {};
-  std::array<FFEffectCompMode, FFEffectBlockCount> _prevCompMode = {};
-  std::array<FFGEffectCompSide, FFEffectBlockCount> _prevGCompSide = {};
-
-  std::array<float, FFEffectBlockCount> _compAttack = {};
-  std::array<float, FFEffectBlockCount> _compRelease = {};
-#endif
-
   std::array<FFEffectKind, FFEffectBlockCount> _kind = {};
   std::array<FFEffectClipMode, FFEffectBlockCount> _clipMode = {};
   std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};

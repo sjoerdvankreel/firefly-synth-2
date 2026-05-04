@@ -3,7 +3,7 @@
 #include <memory>
 
 struct FBStaticModule;
-inline int constexpr FFMasterAuxCount = 4;
+inline int constexpr FFMasterAuxCount = 6;
 
 enum class FFMasterCVOutput { 
   Aux, ModWheel, PitchBend, PitchBendRaw, 
