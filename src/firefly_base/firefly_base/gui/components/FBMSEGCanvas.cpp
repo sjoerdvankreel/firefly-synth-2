@@ -36,7 +36,8 @@ FBMSEGCanvas::ModelUpdated(bool snapshotForUndo)
     FB_ASSERT(0.0 <= Model().points[i].lengthTime && Model().points[i].lengthTime <= _maxLengthTime);
   }
   for (int i = 0; i < _model.points.size(); i++)
-    _model.points[i].lengthBars = LengthTimeToClosestBars(_model.points[i].lengthTime);
+    if(_model.xEditMode != FBMSEGXEditMode::Off)
+      _model.points[i].lengthBars = LengthTimeToClosestBars(_model.points[i].lengthTime);
   if (modelUpdated != nullptr)
   {
     if(snapshotForUndo)
