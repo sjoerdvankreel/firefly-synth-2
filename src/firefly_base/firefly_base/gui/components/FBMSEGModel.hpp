@@ -12,7 +12,8 @@ enum class FBMSEGXMode
 enum class FBMSEGYMode
 {
   Linear,
-  Exponential
+  ExpUP,
+  ExpBP
 };
 
 enum class FBMSEGXEditMode

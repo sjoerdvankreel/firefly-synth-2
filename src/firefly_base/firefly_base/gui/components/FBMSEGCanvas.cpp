@@ -36,7 +36,8 @@ FBMSEGCanvas::ModelUpdated(bool snapshotForUndo)
     FB_ASSERT(0.0 <= Model().points[i].lengthTime && Model().points[i].lengthTime <= _maxLengthTime);
   }
   for (int i = 0; i < _model.points.size(); i++)
-    _model.points[i].lengthBars = LengthTimeToClosestBars(_model.points[i].lengthTime);
+    if(_model.xEditMode != FBMSEGXEditMode::Off)
+      _model.points[i].lengthBars = LengthTimeToClosestBars(_model.points[i].lengthTime);
   if (modelUpdated != nullptr)
   {
     if(snapshotForUndo)
@@ -417,7 +418,7 @@ FBMSEGCanvas::GetNearestHit(juce::Point<float> const& p, int* index) const
       minPointDistance = pointDistance;
       minPointDistanceIndex = i;
     }
-    if (_model.yMode == FBMSEGYMode::Exponential)
+    if (_model.yMode == FBMSEGYMode::ExpBP || _model.yMode == FBMSEGYMode::ExpUP)
     {
       auto slopeDistance = p.getDistanceFrom(_currentSlopesScreen[i]);
       if (slopeDistance < minSlopeDistance)
@@ -532,15 +533,23 @@ FBMSEGCanvas::paint(Graphics& g)
 
     // Ok so can't use beziers - they divert too much from what audio
     // is actually doing at the extremes. So, pixel by pixel it is.
-    double currentSlopeNorm = _model.yMode == FBMSEGYMode::Exponential ? _model.points[i].slope : 0.5f;
+    double currentSlopeNorm = _model.yMode == FBMSEGYMode::ExpUP || _model.yMode == FBMSEGYMode::ExpBP ? _model.points[i].slope : 0.5f;
     int steps = (int)std::round(currentXScreen - prevXScreen);
     for (int j = 0; j < steps; j++)
     {
       // Keep in check with the actual envelope generator (ugly, i know).
+      float stepYScreen;
       float stepOffset = (float)j / (float)steps;
       float slope = FBEnvMinSlope + (float)currentSlopeNorm * FBEnvSlopeRange;
       float stepXScreen = prevXScreen + (currentXScreen - prevXScreen) * stepOffset;
-      float stepYScreen = prevYScreen + (currentYScreen - prevYScreen) * std::pow(stepOffset, std::log(slope) * FBInvLogHalf);
+      if (_model.yMode == FBMSEGYMode::ExpBP)
+      {
+        float bp = FBToBipolar(stepOffset);
+        stepYScreen = prevYScreen + (currentYScreen - prevYScreen) * FBToUnipolar((bp < 0.0f ? -1.0f : 1.0f) * std::pow(std::fabs(bp), std::log(slope) * FBInvLogHalf));
+      }
+      else
+        stepYScreen = prevYScreen + (currentYScreen - prevYScreen) * std::pow(stepOffset, std::log(slope) * FBInvLogHalf);
+
       path.lineTo(stepXScreen, stepYScreen);
     }
 
@@ -596,14 +605,16 @@ FBMSEGCanvas::paint(Graphics& g)
         pointX - pointRadius, pointY - pointRadius,
         2.0f * pointRadius, 2.0f * pointRadius);
 
-    float pointSlope = _model.yMode == FBMSEGYMode::Exponential ? (float)_model.points[i].slope : 0.5f;
-    float slope = FBEnvMinSlope + pointSlope * FBEnvSlopeRange;
+    float slope = 0.5f;
+    float pointSlope = _model.yMode == FBMSEGYMode::ExpUP || _model.yMode == FBMSEGYMode::ExpBP ? (float)_model.points[i].slope : 0.5f;
+    if(_model.yMode == FBMSEGYMode::ExpUP)
+      slope = FBEnvMinSlope + pointSlope * FBEnvSlopeRange;
     float prevPointX = i == 0 ? _startPointScreen.getX() : _currentPointsScreen[i - 1].getX();
     float prevPointY = i == 0 ? _startPointScreen.getY() : _currentPointsScreen[i - 1].getY();
     float slopeX = prevPointX + (pointX - prevPointX) * 0.5f;
     float slopeY = prevPointY + (pointY - prevPointY) * std::pow(0.5f, std::log(slope) * FBInvLogHalf);
 
-    if (_model.yMode == FBMSEGYMode::Exponential)
+    if (_model.yMode == FBMSEGYMode::ExpUP || _model.yMode == FBMSEGYMode::ExpBP)
       g.drawEllipse(
         slopeX - pointRadius, slopeY - pointRadius,
         2.0f * pointRadius, 2.0f * pointRadius, 1.0f);

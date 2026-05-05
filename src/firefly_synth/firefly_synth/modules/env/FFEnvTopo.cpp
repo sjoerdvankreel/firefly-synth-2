@@ -20,7 +20,8 @@ FFEnvTypeToString(FFEnvType type)
   switch (type)
   {
   case FFEnvType::Off: return "Off";
-  case FFEnvType::Exp: return "Expo";
+  case FFEnvType::ExpUP: return "Expo UP";
+  case FFEnvType::ExpBP: return "Expo BP";
   case FFEnvType::Linear: return "Linear";
   default: FB_ASSERT(false); return "";
   }
@@ -113,9 +114,10 @@ FFMakeEnvTopo()
   type.description = "Envelope Type";
   type.type = FBParamType::List;
   type.List().items = {
-    { "{6F0DA153-9544-4EFB-BC6D-88F761583F39}", "Off" },
-    { "{BD01A08E-5639-4DB3-87CD-3276BCDB54E1}", "Linear" },
-    { "{30BF083A-81F1-477C-BC6B-5AA4DFB111A8}", "Expo" } };
+    { "{6F0DA153-9544-4EFB-BC6D-88F761583F39}", FFEnvTypeToString(FFEnvType::Off) },
+    { "{BD01A08E-5639-4DB3-87CD-3276BCDB54E1}", FFEnvTypeToString(FFEnvType::Linear) },
+    { "{30BF083A-81F1-477C-BC6B-5AA4DFB111A8}", FFEnvTypeToString(FFEnvType::ExpUP) },
+    { "{224CC4AB-2F3D-4320-90D9-170A0BAA81D7}", FFEnvTypeToString(FFEnvType::ExpBP) } };
   type.defaultTextSelector = [](int /*mi*/, int ms, int /*ps*/) { return ms == FFAmpEnvSlot ? "Linear" : "Off"; }; 
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
@@ -269,7 +271,7 @@ FFMakeEnvTopo()
   stageSlope.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageSlope);
   stageSlope.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStageSlope);
   stageSlope.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStageSlope);
-  stageSlope.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEnvType::Exp; });
+  stageSlope.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return FFEnvTypeIsExpo((FFEnvType)vs[0]); });
 
   auto& stageTime = result->params[(int)FFEnvParam::StageTime];
   stageTime.mode = FBParamMode::VoiceStart;

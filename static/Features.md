@@ -38,6 +38,7 @@
 # 7x Per-voice envelope
 * 16-stage MSEG with visual editor
 * Customizeable loop and release points
+* Linear and exponential (unipolar/bipolar) modes
 
 # Extensive matrix module
 * 17 per-voice and 9 global slots
