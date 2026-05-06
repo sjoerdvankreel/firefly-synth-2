@@ -130,6 +130,9 @@ added soft knee support based on this https://github.com/tu-studio/IEMPluginSuit
 * Short 4
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_short_04.mp3)
 [renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_short_04.xrns)
+* Short 5 nicer kicks
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_short_05_nicer_kicks.mp3)
+[renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_short_05_nicer_kicks.xrns)
 
 ## Full length tracks
 * Full 1 (progressive trance)
