@@ -187,7 +187,7 @@ added soft knee support based on this https://github.com/tu-studio/IEMPluginSuit
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/3osc_uni_and_global_uni.xrns)
 * Per-voice echo applied to only one out of 2 osci's
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_voice_echo_one_osci_only.mp3)
-[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_voice_echo_one_osci_only.rpp)
+[renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_voice_echo_one_osci_only.rpp)
 * Global unison with different per-voice settings for coarse pitch, voice lfo to voice filter, and echo
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_global_uni_lfo_echo.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_global_uni_lfo_echo.rpp)
