@@ -188,6 +188,9 @@ added soft knee support based on this https://github.com/tu-studio/IEMPluginSuit
 * Global unison with different per-voice settings for coarse pitch, voice lfo to voice filter, and echo
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_global_uni_lfo_echo.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_global_uni_lfo_echo.rpp)
+* 3 oscillator (5/8/3 voices) unison + global unison
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/3osc_uni_and_global_uni.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/3osc_uni_and_global_uni.xrns)
 
 # Screenshots
 
