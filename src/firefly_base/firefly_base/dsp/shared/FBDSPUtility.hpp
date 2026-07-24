@@ -2,12 +2,10 @@
 
 #include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/static/FBBarsItem.hpp>
 
 #include <xsimd/xsimd.hpp>
 #include <cmath>
-#include <atomic>
 #include <numbers>
 #include <algorithm>
 
@@ -99,14 +97,14 @@ FBBarsToFreq(FBBarsItem const& bars, float bpm)
   // cast to int for a delay-buffer tap index in FFDelayLine::Delay() --
   // undefined behavior, and in FFDelayLine's read functions specifically,
   // an out-of-bounds array read (they don't wrap negative indices).
-  // Fall back instead, and say so once (one-shot: logging must never
-  // fire on every sample/block).
+  // Fall back instead, and say so once. The warning itself lives in
+  // FBUtility.cpp (FBWarnInvalidBpmOnce), not inline here -- this header
+  // is included by ~26 translation units, and a function-local static +
+  // logging call inside an inline function duplicates across all of them
+  // for the linker to fold, which is unnecessary link-time cost for a
+  // one-shot diagnostic.
   if (bpm <= 0.0f)
-  {
-    static std::atomic<bool> warned{ false };
-    if (!warned.exchange(true))
-      FB_LOG_WARN("Invalid BPM value (bpm <= 0) for tempo-synced timing, falling back to 120 BPM.");
-  }
+    FBWarnInvalidBpmOnce();
   float safeBpm = bpm > 0.0f ? bpm : 120.0f;
   return (bars.denom * safeBpm) / (bars.num * 240.0f);
 }

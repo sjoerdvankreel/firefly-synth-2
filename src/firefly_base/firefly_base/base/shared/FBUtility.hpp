@@ -105,6 +105,17 @@ FBFormatDoubleCLocale(double val, int precision);
 std::optional<double>
 FBStringToDoubleOptCLocale(std::string const& text);
 
+// Fires FB_LOG_WARN at most once per process. Out-of-line (defined in
+// FBUtility.cpp) rather than inline in a header on purpose: this used to
+// be a function-local static inside an inline function in
+// FBDSPUtility.hpp, a header included by ~26 translation units -- under
+// LTO/IPO that meant every one of those TUs carried its own copy of the
+// atomic-guarded static + FB_LOG_WARN's string literal for the linker to
+// fold, which is exactly the kind of thing that can blow up link time.
+// Keeping it as a single compiled definition avoids that entirely.
+void
+FBWarnInvalidBpmOnce();
+
 std::vector<std::uint8_t>
 FBReadFile(std::filesystem::path const& p);
 bool
