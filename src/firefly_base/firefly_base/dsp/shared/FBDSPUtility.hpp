@@ -2,10 +2,12 @@
 
 #include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/static/FBBarsItem.hpp>
 
 #include <xsimd/xsimd.hpp>
 #include <cmath>
+#include <atomic>
 #include <numbers>
 #include <algorithm>
 
@@ -92,13 +94,28 @@ FBFreqToSamples(float freq, float sampleRate)
 inline float
 FBBarsToFreq(FBBarsItem const& bars, float bpm)
 {
-  return (bars.denom * bpm) / (bars.num * 240.0f);
+  // A tempo-synced feature (e.g. the echo module's feedback delay)
+  // dividing by an invalid bpm here used to produce inf, which then got
+  // cast to int for a delay-buffer tap index in FFDelayLine::Delay() --
+  // undefined behavior, and in FFDelayLine's read functions specifically,
+  // an out-of-bounds array read (they don't wrap negative indices).
+  // Fall back instead, and say so once (one-shot: logging must never
+  // fire on every sample/block).
+  if (bpm <= 0.0f)
+  {
+    static std::atomic<bool> warned{ false };
+    if (!warned.exchange(true))
+      FB_LOG_WARN("Invalid BPM value (bpm <= 0) for tempo-synced timing, falling back to 120 BPM.");
+  }
+  float safeBpm = bpm > 0.0f ? bpm : 120.0f;
+  return (bars.denom * safeBpm) / (bars.num * 240.0f);
 }
 
 inline float
 FBBarsToTime(FBBarsItem const& bars, float bpm)
 {
-  return (bars.num * 240.0f) / (bars.denom * bpm);
+  float freq = FBBarsToFreq(bars, bpm);
+  return freq > 0.0f ? 1.0f / freq : 1.0f; // never return inf
 }
 
 inline int
@@ -110,7 +127,11 @@ FBBarsToSamples(FBBarsItem const& bars, float sampleRate, float bpm)
 inline float
 FBBarsToFloatSamples(FBBarsItem const& bars, float sampleRate, float bpm)
 {
-  return FBTimeToFloatSamples((bars.num * 240.0f) / (bars.denom * bpm), sampleRate);
+  // Was: FBTimeToFloatSamples((bars.num * 240.0f) / (bars.denom * bpm), sampleRate)
+  // -- a second, independent bpm division that bypassed FBBarsToFreq's
+  // guard entirely. Route through FBBarsToTime instead so there is only
+  // one place that ever divides by bpm.
+  return FBTimeToFloatSamples(FBBarsToTime(bars, bpm), sampleRate);
 }
 
 inline float

@@ -5,6 +5,8 @@
 #include <firefly_base/base/shared/FBMemoryPool.hpp>
 
 #include <array>
+#include <cmath>
+#include <algorithm>
 
 class FBMemoryPool;
 
@@ -67,6 +69,16 @@ FFDelayLine<TapCount>::Delay(int tap, float delay)
 {
   assert(0 < MaxBufferSize());
   assert(0 < _currentBufferSize);
+  // Guard against a non-finite/out-of-range delay value reaching the
+  // float-to-int cast below -- undefined behavior otherwise (e.g. an
+  // inf from a tempo-sync divide-by-zero elsewhere deterministically
+  // casts to INT_MIN on x86 in practice), and this is what used to feed
+  // a corrupted, deeply-negative index into GetLagrangeInterpolate/
+  // GetLinearInterpolate. FB_ASSERT alone doesn't help here since it's a
+  // no-op in release builds -- this needs an unconditional clamp.
+  if (!std::isfinite(delay))
+    delay = 0.0f;
+  delay = std::clamp(delay, 0.0f, (float)(CurrentBufferSize() - 1));
   _delayWhole[tap] = static_cast<int>(delay);
   _delayFraction[tap] = delay - _delayWhole[tap];
   FB_ASSERT(0.0f <= delay && delay <= CurrentBufferSize());
@@ -101,8 +113,14 @@ FFDelayLine<TapCount>::GetLinearInterpolate(int tap)
 {
   assert(0 < MaxBufferSize());
   assert(0 < _currentBufferSize);
-  int pos1 = (_read + _delayWhole[tap]) % CurrentBufferSize();
-  int pos2 = (pos1 + 1) % CurrentBufferSize();
+  // Double-modulo: C++'s % can return a negative result when the left
+  // operand is negative, which _delayWhole[tap] can be if a corrupted
+  // (e.g. non-finite-derived) delay value ever reaches here despite the
+  // guard in Delay() -- this keeps pos1/pos2 in [0, CurrentBufferSize())
+  // unconditionally instead of risking an out-of-bounds _data[] read.
+  int size = CurrentBufferSize();
+  int pos1 = ((_read + _delayWhole[tap]) % size + size) % size;
+  int pos2 = (pos1 + 1) % size;
   float val1 = _data[pos1];
   float val2 = _data[pos2];
   return val1 + _delayFraction[tap] * (val2 - val1);
@@ -118,12 +136,17 @@ FFDelayLine<TapCount>::GetLagrangeInterpolate(int tap)
   int pos2 = pos1 + 1;
   int pos3 = pos1 + 2;
   int pos4 = pos1 + 3;
-  if (pos4 >= _currentBufferSize)
+  // Previously only wrapped when pos4 >= _currentBufferSize, which
+  // guards the too-large-positive case but does nothing for a negative
+  // pos1 (e.g. from a corrupted _delayWhole[tap]) -- that fell straight
+  // through to an out-of-bounds _data[pos1] read below. Always wrap via
+  // double-modulo instead, which is safe for any pos1 regardless of sign.
+  if (pos1 < 0 || pos4 >= _currentBufferSize)
   {
-    pos1 %= _currentBufferSize;
-    pos2 %= _currentBufferSize;
-    pos3 %= _currentBufferSize;
-    pos4 %= _currentBufferSize;
+    pos1 = ((pos1 % _currentBufferSize) + _currentBufferSize) % _currentBufferSize;
+    pos2 = ((pos2 % _currentBufferSize) + _currentBufferSize) % _currentBufferSize;
+    pos3 = ((pos3 % _currentBufferSize) + _currentBufferSize) % _currentBufferSize;
+    pos4 = ((pos4 % _currentBufferSize) + _currentBufferSize) % _currentBufferSize;
   }
   float val1 = _data[pos1];
   float val2 = _data[pos2];
