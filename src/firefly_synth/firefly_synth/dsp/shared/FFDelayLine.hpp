@@ -6,6 +6,7 @@
 
 #include <array>
 #include <cmath>
+#include <limits>
 #include <algorithm>
 
 class FBMemoryPool;
@@ -69,19 +70,29 @@ FFDelayLine<TapCount>::Delay(int tap, float delay)
 {
   assert(0 < MaxBufferSize());
   assert(0 < _currentBufferSize);
-  // Guard against a non-finite/out-of-range delay value reaching the
-  // float-to-int cast below -- undefined behavior otherwise (e.g. an
-  // inf from a tempo-sync divide-by-zero elsewhere deterministically
-  // casts to INT_MIN on x86 in practice), and this is what used to feed
-  // a corrupted, deeply-negative index into GetLagrangeInterpolate/
-  // GetLinearInterpolate. FB_ASSERT alone doesn't help here since it's a
-  // no-op in release builds -- this needs an unconditional clamp.
+  // Guard against a non-finite delay value reaching the float-to-int cast
+  // below -- undefined behavior otherwise (e.g. an inf from a tempo-sync
+  // divide-by-zero elsewhere deterministically casts to INT_MIN on x86 in
+  // practice), and this is what used to feed a corrupted, deeply-negative
+  // index into GetLagrangeInterpolate/GetLinearInterpolate.
+  //
+  // Deliberately NOT clamping to CurrentBufferSize() here: a legitimate
+  // delay value larger than the current buffer (e.g. a low note's
+  // Karplus-Strong period near FFOsciStringMinFreq) is meant to wrap
+  // around via the modulo in GetLinearInterpolate/GetLagrangeInterpolate,
+  // not saturate. An earlier version of this fix clamped to
+  // CurrentBufferSize()-1, which collapsed every delay value above that
+  // ceiling to the same value -- turning many different (mostly low)
+  // notes into the exact same wrong pitch. Only clamp to the range a
+  // float-to-int cast can represent safely; that's astronomically larger
+  // than any real delay value, so it only ever engages for genuinely
+  // corrupted (inf-derived) input, never for legitimate long periods.
   if (!std::isfinite(delay))
     delay = 0.0f;
-  delay = std::clamp(delay, 0.0f, (float)(CurrentBufferSize() - 1));
+  delay = std::clamp(delay, (float)std::numeric_limits<int>::min(), (float)std::numeric_limits<int>::max());
   _delayWhole[tap] = static_cast<int>(delay);
   _delayFraction[tap] = delay - _delayWhole[tap];
-  FB_ASSERT(0.0f <= delay && delay <= CurrentBufferSize());
+  FB_ASSERT(0.0f <= delay);
 }
 
 template <int TapCount>
