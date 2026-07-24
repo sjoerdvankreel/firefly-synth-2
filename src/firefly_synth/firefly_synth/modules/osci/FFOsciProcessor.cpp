@@ -11,6 +11,7 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
+// #include <firefly_base/base/shared/FBLogging.hpp>
 
 #include <libMTSClient.h>
 #include <xsimd/xsimd.hpp>
@@ -262,6 +263,7 @@ FFOsciProcessor::Process(
         pitch += masterPitchBendSemis.Load(s);
 
       auto baseFreq = FBPitchToFreq(pitch);
+      
       basePitchPlain.Store(s, pitch);
       uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
       if (_graph && _type != FFOsciType::AudioIn)

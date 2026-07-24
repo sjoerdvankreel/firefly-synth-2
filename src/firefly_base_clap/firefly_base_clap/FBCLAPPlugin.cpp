@@ -69,6 +69,9 @@ MakeMIDINoteEvent(
   result.note.channel = event->data[0] & 0x0F;
   result.velo = event->data[2] / 127.0f;
   result.on = message == MIDIMessageNoteOn;
+
+  if (result.on)
+    FB_LOG_INFO("note on key=" + std::to_string(result.note.key) + " ch=" + std::to_string(result.note.channel));
   return result;
 }
 

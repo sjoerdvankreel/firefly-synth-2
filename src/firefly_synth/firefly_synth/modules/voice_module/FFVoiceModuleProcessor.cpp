@@ -13,6 +13,7 @@
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
+// #include <firefly_base/base/shared/FBLogging.hpp>
 
 #include <libMTSClient.h>
 #include <xsimd/xsimd.hpp>
@@ -31,6 +32,7 @@ FFVoiceModuleProcessor::BeginVoice(
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
 
   _thisVoiceKeyMaybeTuned = (float)state.voice->event.note.key;
+
   if (procState->dsp.global.settings.tuning && procState->dsp.global.settings.tuneOnNote)
     _thisVoiceKeyMaybeTuned += (float)MTS_RetuningInSemitones(
       procState->dsp.global.master.mtsClient,
@@ -176,6 +178,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
         state.voice->event.note.channel);
     pitchTuned += pitchModUntuned.Get(s);
     dspState.pitch.Set(s, pitchTuned);
+
 
     if(settingsDspState.tuning && settingsDspState.tuneVoiceMatrix)
       dspState.outputPitch.Set(s, std::clamp(pitchTuned / 127.0f, 0.0f, 1.0f));
