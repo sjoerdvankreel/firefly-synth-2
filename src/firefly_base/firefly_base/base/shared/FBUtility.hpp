@@ -120,3 +120,7 @@ std::filesystem::path
 FBGetThemesFolderPath();
 std::filesystem::path
 FBGetPresetsFolderPath();
+
+// Log once per process if we encounter non-positive bpm.
+void
+FBWarnInvalidBpmOnce();

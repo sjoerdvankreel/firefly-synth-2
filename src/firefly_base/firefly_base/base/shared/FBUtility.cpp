@@ -5,6 +5,7 @@
 #include <juce_core/juce_core.h>
 #include <sstream>
 #include <fstream>
+#include <atomic>
 
 using namespace juce;
 
@@ -233,4 +234,12 @@ FBParseJson(std::string const& text, var& json)
     return false;
   }
   return true;
+}
+
+void
+FBWarnInvalidBpmOnce()
+{
+  static std::atomic<bool> warned { false };
+  if (!warned.exchange(true))
+    FB_LOG_WARN("Invalid BPM value (bpm <= 0) for tempo-synced timing, falling back to 120 BPM.");
 }
