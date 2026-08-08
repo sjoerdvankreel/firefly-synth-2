@@ -1,4 +1,4 @@
-?, ? - ? - v2.1.4.
+August 8, 2026 - v2.1.4.
 - Incorporate fixes from https://github.com/emrum/firefly-synth-2:
 * Nonpositive BPM values would result in OOB read/write.
 * OOB delay line values would clamp rather than wraparound, producing the same tone for every note below a certain frequency for the string osci.
