@@ -90,15 +90,24 @@ FBFreqToSamples(float freq, float sampleRate)
 }
 
 inline float
-FBBarsToFreq(FBBarsItem const& bars, float bpm)
+FBSafeBpm(float bpm)
 {
-  return (bars.denom * bpm) / (bars.num * 240.0f);
+  if (bpm > 0.0f)
+    return bpm;
+  FBWarnInvalidBpmOnce();
+  return 120.0f;
+}
+
+inline float
+FBBarsToFreq(FBBarsItem const& bars, float bpm)
+{  
+  return (bars.denom * FBSafeBpm(bpm)) / (bars.num * 240.0f);
 }
 
 inline float
 FBBarsToTime(FBBarsItem const& bars, float bpm)
 {
-  return (bars.num * 240.0f) / (bars.denom * bpm);
+  return (bars.num * 240.0f) / (bars.denom * FBSafeBpm(bpm));
 }
 
 inline int
@@ -110,7 +119,7 @@ FBBarsToSamples(FBBarsItem const& bars, float sampleRate, float bpm)
 inline float
 FBBarsToFloatSamples(FBBarsItem const& bars, float sampleRate, float bpm)
 {
-  return FBTimeToFloatSamples((bars.num * 240.0f) / (bars.denom * bpm), sampleRate);
+  return FBTimeToFloatSamples(FBBarsToTime(bars, bpm), sampleRate);
 }
 
 inline float

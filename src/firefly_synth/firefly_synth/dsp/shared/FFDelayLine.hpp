@@ -67,9 +67,16 @@ FFDelayLine<TapCount>::Delay(int tap, float delay)
 {
   assert(0 < MaxBufferSize());
   assert(0 < _currentBufferSize);
+
+  // Do NOT clamp to current buffer size.
+  // For really long delay values we handle that case in
+  // GetLinearInterpolate/GetLagrangeInterpolate by wraparound rather than 
+  // clamping all out-of-bounds delays to the same value here.
+  delay = std::clamp(delay, 0.0f, static_cast<float>(std::numeric_limits<int>::max()));
+
   _delayWhole[tap] = static_cast<int>(delay);
   _delayFraction[tap] = delay - _delayWhole[tap];
-  FB_ASSERT(0.0f <= delay && delay <= CurrentBufferSize());
+  FB_ASSERT(0.0f <= delay);
 }
 
 template <int TapCount>
@@ -101,8 +108,13 @@ FFDelayLine<TapCount>::GetLinearInterpolate(int tap)
 {
   assert(0 < MaxBufferSize());
   assert(0 < _currentBufferSize);
-  int pos1 = (_read + _delayWhole[tap]) % CurrentBufferSize();
-  int pos2 = (pos1 + 1) % CurrentBufferSize();
+
+  // Wraparound rather than clamp out-of-buffer delay values.
+  // See Delay(int tap, float delay).
+  int size = CurrentBufferSize();
+  int pos1 = ((_read + _delayWhole[tap]) % size + size) % size;
+  int pos2 = (pos1 + 1) % size;
+
   float val1 = _data[pos1];
   float val2 = _data[pos2];
   return val1 + _delayFraction[tap] * (val2 - val1);
@@ -114,17 +126,22 @@ FFDelayLine<TapCount>::GetLagrangeInterpolate(int tap)
 {
   assert(0 < MaxBufferSize());
   assert(0 < _currentBufferSize);
+
   int pos1 = (_read + _delayWhole[tap]);
   int pos2 = pos1 + 1;
   int pos3 = pos1 + 2;
   int pos4 = pos1 + 3;
-  if (pos4 >= _currentBufferSize)
+  
+  // Wraparound rather than clamp out-of-buffer delay values.
+  // See Delay(int tap, float delay).
+  if (pos1 < 0 || pos4 >= _currentBufferSize)
   {
-    pos1 %= _currentBufferSize;
-    pos2 %= _currentBufferSize;
-    pos3 %= _currentBufferSize;
-    pos4 %= _currentBufferSize;
+    pos1 = ((pos1 % _currentBufferSize) + _currentBufferSize) % _currentBufferSize;
+    pos2 = ((pos2 % _currentBufferSize) + _currentBufferSize) % _currentBufferSize;
+    pos3 = ((pos3 % _currentBufferSize) + _currentBufferSize) % _currentBufferSize;
+    pos4 = ((pos4 % _currentBufferSize) + _currentBufferSize) % _currentBufferSize;
   }
+
   float val1 = _data[pos1];
   float val2 = _data[pos2];
   float val3 = _data[pos3];
