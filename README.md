@@ -115,22 +115,22 @@ added soft knee support based on this https://github.com/tu-studio/IEMPluginSuit
 # Demo Material
 
 ## Short tracks
-* Short 1
+* Short 1 (tech/house)
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_short_01.mp3)
 [renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_short_01.xrns)
-* Short 2
+* Short 2 (trance/psy)
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_short_02.mp3)
 [renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_short_02.xrns)
 * Short 2 (builtin compressor)
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_short_02_compress.mp3)
 [renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_short_02_compress.xrns)
-* Short 3
+* Short 3 (acid/techno)
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_short_03.mp3)
 [renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_short_03.xrns)
-* Short 4
+* Short 4  (goa/acid)
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_short_04.mp3)
 [renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_short_04.xrns)
-* Short 5 nicer kicks
+* Short 5 (hardcore/gabber kicks)
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_short_05_nicer_kicks.mp3)
 [renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_short_05_nicer_kicks.xrns)
 
