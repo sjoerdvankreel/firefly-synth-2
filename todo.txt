@@ -1,3 +1,4 @@
+[ ] gather the presets
 [ ] filter mix controls
 [ ] labeled aux controls
 [ ] allow longer lfo period
