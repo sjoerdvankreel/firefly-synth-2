@@ -127,6 +127,7 @@ set(SMTG_ENABLE_VST3_HOSTING_EXAMPLES OFF)
 if(FB_ENABLE_ASAN)
   set(SMTG_ENABLE_ADDRESS_SANITIZER ON)
 endif()
+set(public_sdk_SOURCE_DIR "${CMAKE_SOURCE_DIR}/lib/vst3sdk/public.sdk")
 add_subdirectory("${CMAKE_SOURCE_DIR}/lib/vst3sdk")
 
 # plugin base
