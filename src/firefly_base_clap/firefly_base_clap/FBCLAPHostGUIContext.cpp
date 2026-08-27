@@ -52,7 +52,7 @@ ContextMenuBuilderAddItem(
 void
 FBCLAPPlugin::OnParamNameChanged()
 {
-  _host.paramsRescan(CLAP_PARAM_RESCAN_TEXT);
+  _host.paramsRescan(CLAP_PARAM_RESCAN_INFO);
 }
 
 double
