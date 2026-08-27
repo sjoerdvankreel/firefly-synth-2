@@ -112,6 +112,13 @@ FBVST3EditController::DoPerformAudioParamEdit(int index, double normalized)
   endEdit(tag);
 }
 
+void 
+FBVST3EditController::OnParamNameChanged()
+{
+  if (componentHandler)
+    componentHandler->restartComponent(Vst::kParamTitlesChanged);
+}
+
 double
 FBVST3EditController::GetAudioParamNormalized(int index) const
 {
@@ -193,6 +200,7 @@ FBVST3EditController::setState(IBStream* state)
       return kResultFalse;
     _topo->LoadGUIStateFromStringWithDryRun(json, *_guiState);
     OnPatchNameChanged();
+    OnParamNameChanged();
     OnInstanceNameChanged();
     if(_guiEditor != nullptr)
       for (int i = 0; i < _guiState->Params().size(); i++)

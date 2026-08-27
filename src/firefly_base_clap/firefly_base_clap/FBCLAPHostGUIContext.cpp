@@ -49,6 +49,12 @@ ContextMenuBuilderAddItem(
   return true;
 }
 
+void
+FBCLAPPlugin::OnParamNameChanged()
+{
+  _host.paramsRescan(CLAP_PARAM_RESCAN_TEXT);
+}
+
 double
 FBCLAPPlugin::GetAudioParamNormalized(int index) const
 {

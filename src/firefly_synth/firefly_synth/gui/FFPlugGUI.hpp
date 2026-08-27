@@ -111,7 +111,7 @@ public:
   void RequestMainGraphsRerender(int index, int slot);
   void SwitchDetailsSectionToModule(int index, int slot);
 
-  void resized() override;
+  void resized() override;  
   void OnPatchLoaded() override;
   void OnPatchNameChanged(std::string const& name) override;
   void OnInstanceNameChanged(std::string const& name) override;

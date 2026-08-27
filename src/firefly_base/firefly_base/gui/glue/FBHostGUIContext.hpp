@@ -87,6 +87,7 @@ protected:
   void OnPatchLoaded();
   void OnPatchNameChanged();
   void OnInstanceNameChanged();
+  virtual void OnParamNameChanged() = 0;
   virtual void DoEndAudioParamChange(int index) = 0;
   virtual void DoBeginAudioParamChange(int index) = 0;
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
@@ -105,9 +106,12 @@ public:
   std::string const& PatchName() const;
   std::string const& ThemeName() const;
   std::string const& InstanceName() const;
+  std::map<int, std::string> const& ParamNames() const;
   void SetPatchName(std::string const& name);
   void SetThemeName(std::string const& name);
   void SetInstanceName(std::string const& name);
+  void ClearParamName(int paramId);
+  void SetParamName(int paramId, std::string const& name);
   bool IsPatchLoaded() const { return _isPatchLoaded; }
   
   void ShowOnlineManual() const;

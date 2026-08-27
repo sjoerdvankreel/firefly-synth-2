@@ -111,6 +111,7 @@ public:
   FBProcStateContainer* ProcState() override { return _procState.get(); }
   FBExchangeStateContainer* ExchangeToGUIState() override { return _exchangeToGUIState.get(); } 
 
+  void OnParamNameChanged() override;
   double GetAudioParamNormalized(int index) const override;
   void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;
   std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) override;
