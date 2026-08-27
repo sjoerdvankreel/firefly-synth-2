@@ -1,4 +1,4 @@
-[ ] update the libs
+[x] update the libs
 [ ] filter dry/wet ?
 [ ] gather the presets + gateway
 [ ] filter mix controls
