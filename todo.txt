@@ -1,6 +1,6 @@
+[x] update the libs
 [ ] dark theme
 [ ] fix the comp and the rms comp
-[ ] update the libs
 [ ] fix the arch thingy
 [ ] switch to MIT
 [ ] filter dry/wet ?
