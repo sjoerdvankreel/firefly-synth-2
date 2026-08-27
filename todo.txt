@@ -1,4 +1,5 @@
-[x] update the libs
+[ ] update the libs
+[ ] fix the arch thingy
 [ ] switch to MIT
 [ ] filter dry/wet ?
 [ ] gather the presets + gateway
