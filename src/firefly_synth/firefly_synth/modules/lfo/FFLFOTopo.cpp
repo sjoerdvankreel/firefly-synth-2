@@ -40,7 +40,7 @@ FFLFOWaveModeToString(int mode)
 static std::vector<FBBarsItem>
 MakeLFOBarsItems(bool withZero)
 {
-  return FBMakeBarsItems(withZero, { 1, 128 }, { 4, 1 });
+  return FBMakeBarsItems(withZero, { 1, 128 }, { 16, 1 });
 }
 
 std::unique_ptr<FBStaticModule>
@@ -301,7 +301,7 @@ FFMakeLFOTopo(bool global)
   rateHz.id = prefix + "{EFAAB971-9F51-4FFD-9873-D33D4591F606}";
   rateHz.description = "LFO Rate Time";
   rateHz.type = FBParamType::Linear;
-  rateHz.Linear().min = 0.05f;
+  rateHz.Linear().min = 0.02f;
   rateHz.Linear().max = 20.0f;
   rateHz.Linear().editSkewFactor = 0.5f;
   auto selectRateHz = [](auto& module) { return &module.acc.rateHz; };

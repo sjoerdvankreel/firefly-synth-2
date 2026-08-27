@@ -1,5 +1,6 @@
 [x] update the libs
 [x] fix the arch thingy
+[x] allow longer lfo period both hz and sync
 [ ] dark theme
 [ ] fix the comp and the rms comp
 [ ] switch to MIT
@@ -7,7 +8,6 @@
 [ ] gather the presets + gateway
 [ ] filter mix controls
 [ ] labeled aux controls
-[ ] allow longer lfo period
 [ ] do more easy access controls (and maybe more mod sources)
 [ ] after init, load, etc, should select the first graph of everything
 [ ] fix the 1sec delay on plot visuals
