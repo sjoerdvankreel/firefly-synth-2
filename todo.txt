@@ -1,3 +1,5 @@
+[ ] update manual + screenshots et all
+[ ] update all the hosts
 [x] update the libs
 [x] fix the arch thingy
 [x] allow longer lfo period both hz and sync
