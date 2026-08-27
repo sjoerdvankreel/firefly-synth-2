@@ -1,3 +1,4 @@
+[ ] dark theme
 [ ] update the libs
 [ ] fix the arch thingy
 [ ] switch to MIT
