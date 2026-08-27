@@ -174,6 +174,9 @@ private:
 
   void SetupOverlayGUI();
   void SetupAboutBoxGUI();
+
+  void RenameAudioParam(int index);
+  void ClearAudioParamName(int index);
   void GUIParamNormalizedChanged(int index);
   void AudioParamNormalizedChanged(int index);
 

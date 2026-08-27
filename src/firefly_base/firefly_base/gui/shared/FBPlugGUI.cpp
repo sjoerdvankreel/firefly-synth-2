@@ -198,6 +198,21 @@ FBPlugGUI::RemoveParamListener(IFBParamListener* listener)
 }
 
 void
+FBPlugGUI::RenameAudioParam(int index)
+{
+  static int TEMP = 9;
+  int tag = _hostContext->Topo()->audio.params[index].tag;
+  _hostContext->SetParamName(tag, std::to_string(TEMP++));
+}
+
+void
+FBPlugGUI::ClearAudioParamName(int index)
+{
+  int tag = _hostContext->Topo()->audio.params[index].tag;
+  _hostContext->ClearParamName(tag);
+}
+
+void
 FBPlugGUI::AudioParamNormalizedChangedFromHost(int index, double value)
 {
   auto controlCount = GetControlCountForAudioParamIndex(index);
@@ -370,10 +385,12 @@ FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
   FB_LOG_ENTRY_EXIT();
   auto menu = std::make_shared<PopupMenu>();
   menu->addItem(1, "Show Manual");
+  menu->addItem(2, "Rename Param");
+  menu->addItem(3, "Clear Param Name");
   menu->addSeparator();
-  menu->addItem(2, "Set To Patch");
-  menu->addItem(3, "Set To Session");
-  menu->addItem(4, "Set To Default");
+  menu->addItem(4, "Set To Patch");
+  menu->addItem(5, "Set To Session");
+  menu->addItem(6, "Set To Default");
   if (showHostMenu)
   {
     auto hostMenuItems = HostContext()->MakeAudioParamContextMenu(index);
@@ -392,15 +409,23 @@ FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
     }
     else if (tag == 2)
     {
+      RenameAudioParam(index);
+    }
+    else if (tag == 3)
+    {
+      ClearAudioParamName(index);
+    }
+    else if (tag == 4)
+    {
       HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Patch");
       HostContext()->PerformImmediateAudioParamEdit(index, *HostContext()->PatchState().Params()[index]);
     }
-    else if (tag == 3)
+    else if (tag == 5)
     {
       HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Session");
       HostContext()->PerformImmediateAudioParamEdit(index, *HostContext()->SessionState().Params()[index]);
     }
-    else if (tag == 4)
+    else if (tag == 6)
     {
       HostContext()->UndoState().Snapshot("Set " + HostContext()->Topo()->audio.params[index].shortName + " To Default");
       HostContext()->PerformImmediateAudioParamEdit(index, HostContext()->Topo()->audio.params[index].DefaultNormalizedByText());
