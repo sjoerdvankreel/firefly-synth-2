@@ -113,8 +113,11 @@ FBVST3EditController::DoPerformAudioParamEdit(int index, double normalized)
 }
 
 void 
-FBVST3EditController::OnParamNameChanged()
+FBVST3EditController::OnParamNameChanged(int index)
 {
+  if (index != -1)
+    if (auto p = dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index)))
+      p->OnNameChanged();  
   if (componentHandler)
     componentHandler->restartComponent(Vst::kParamTitlesChanged);
 }
@@ -200,7 +203,7 @@ FBVST3EditController::setState(IBStream* state)
       return kResultFalse;
     _topo->LoadGUIStateFromStringWithDryRun(json, *_guiState);
     OnPatchNameChanged();
-    OnParamNameChanged();
+    OnParamNameChanged(-1);
     OnInstanceNameChanged();
     if(_guiEditor != nullptr)
       for (int i = 0; i < _guiState->Params().size(); i++)
@@ -247,7 +250,7 @@ FBVST3EditController::initialize(FUnknown* context)
         FB_ASSERT(_topo->modules[m].params[p].tag < FBVST3MIDIParameterMappingBegin);
         auto const& topo = _topo->modules[m].params[p];
         auto info = MakePlugParamInfo(topo, unitId);
-        parameters.addParameter(new FBVST3Parameter(&topo, info));
+        parameters.addParameter(new FBVST3Parameter(this, &topo, info));
       }
       unitId++;
     }

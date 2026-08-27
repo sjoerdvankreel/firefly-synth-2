@@ -109,13 +109,13 @@ FBHostGUIContext::SetInstanceName(std::string const& name)
 void FBHostGUIContext::SetParamName(int paramId, std::string const& name)
 {
   _guiState->SetParamName(paramId, name);
-  OnParamNameChanged();
+  OnParamNameChanged(Topo()->audio.paramTagToIndex.at(paramId));
 }
 
 void FBHostGUIContext::ClearParamName(int paramId)
 {
   _guiState->ClearParamName(paramId);
-  OnParamNameChanged();
+  OnParamNameChanged(Topo()->audio.paramTagToIndex.at(paramId));
 }
 
 void

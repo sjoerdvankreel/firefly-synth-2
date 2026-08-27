@@ -50,7 +50,7 @@ ContextMenuBuilderAddItem(
 }
 
 void
-FBCLAPPlugin::OnParamNameChanged()
+FBCLAPPlugin::OnParamNameChanged(int /*index*/)
 {
   _host.paramsRescan(CLAP_PARAM_RESCAN_INFO);
 }

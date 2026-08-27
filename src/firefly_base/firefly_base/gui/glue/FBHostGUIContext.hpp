@@ -87,7 +87,7 @@ protected:
   void OnPatchLoaded();
   void OnPatchNameChanged();
   void OnInstanceNameChanged();
-  virtual void OnParamNameChanged() = 0;
+  virtual void OnParamNameChanged(int index) = 0;
   virtual void DoEndAudioParamChange(int index) = 0;
   virtual void DoBeginAudioParamChange(int index) = 0;
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
