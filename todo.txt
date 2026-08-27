@@ -1,7 +1,7 @@
 [x] update the libs
+[x] fix the arch thingy
 [ ] dark theme
 [ ] fix the comp and the rms comp
-[ ] fix the arch thingy
 [ ] switch to MIT
 [ ] filter dry/wet ?
 [ ] gather the presets + gateway
