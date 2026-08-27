@@ -1,4 +1,6 @@
-[ ] gather the presets
+[ ] update the libs
+[ ] filter dry/wet ?
+[ ] gather the presets + gateway
 [ ] filter mix controls
 [ ] labeled aux controls
 [ ] allow longer lfo period
