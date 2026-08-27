@@ -769,7 +769,7 @@ FBPlugGUI::MakePresetMenu(
 void
 FBPlugGUI::SetupAboutBoxGUI()
 {
-#if FB_APPLE_AARCH64      
+#if FB_AARCH64      
   std::string archName = "ARM";
 #else
   std::string archName = "X64";
