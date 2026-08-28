@@ -115,7 +115,7 @@ var
 FBRuntimeTopo::SaveEditStateToVar(
   FBScalarStateContainer const& editState, bool patchOnly) const
 {
-  return SaveParamStateToVar(editState, audio.params, patchOnly);
+  return SaveParamStateToVar(audio.params, editState, patchOnly);
 }
 
 var
@@ -123,7 +123,7 @@ FBRuntimeTopo::SaveGUIStateToVar(
   FBGUIStateContainer const& guiState) const
 {
   DynamicObject* result = new DynamicObject;
-  result->setProperty("params", SaveParamStateToVar(guiState, this->gui.params, false));
+  result->setProperty("params", SaveParamStateToVar(this->gui.params, guiState, false));
   result->setProperty("patchName", String(guiState.PatchName()));
   result->setProperty("themeName", String(guiState.ThemeName()));
   result->setProperty("instanceName", String(guiState.InstanceName()));
@@ -134,7 +134,7 @@ bool
 FBRuntimeTopo::LoadEditStateFromVar(
   var const& json, FBScalarStateContainer& editState, bool patchOnly) const
 {
-  return LoadParamStateFromVar(false, json, editState, audio, patchOnly);
+  return LoadParamStateFromVar(json, audio, editState, false, patchOnly);
 }
 
 bool
@@ -144,7 +144,7 @@ FBRuntimeTopo::LoadGUIStateFromVar(
   // 2.0.6 alpha 26, "gui" element split into "params" and "patchName"
   if (json.hasProperty("params"))
   {
-    if(!LoadParamStateFromVar(true, json["params"], guiState, this->gui, false))
+    if(!LoadParamStateFromVar(json["params"], this->gui, guiState, true, false))
       return false;
     if(json.hasProperty("patchName"))
       guiState.SetPatchName(json["patchName"].toString().toStdString());
@@ -154,7 +154,7 @@ FBRuntimeTopo::LoadGUIStateFromVar(
       guiState.SetInstanceName(json["instanceName"].toString().toStdString());
     return true;
   }
-  return LoadParamStateFromVar(true, json, guiState, this->gui, false);
+  return LoadParamStateFromVar(json, this->gui, guiState, true, false);
 }
 
 std::string 
@@ -326,7 +326,7 @@ FBRuntimeTopo::LoadEditAndGUIStateFromVar(
 template <class TContainer, class TParam>
 var
 FBRuntimeTopo::SaveParamStateToVar(
-  TContainer const& container, std::vector<TParam> const& params, bool patchOnly) const
+  std::vector<TParam> const& params, TContainer const& container, bool patchOnly) const
 {
   var state;
   for (int p = 0; p < params.size(); p++)
@@ -379,7 +379,7 @@ FBRuntimeTopo::SaveParamStateToVar(
 template <class TContainer, class TParamsTopo>
 bool 
 FBRuntimeTopo::LoadParamStateFromVar(
-  bool isGuiState, var const& json, TContainer& container, TParamsTopo& params, bool patchOnly) const
+  var const& json, TParamsTopo const& params, TContainer& container, bool isGuiState, bool patchOnly) const
 {
   FB_LOG_ENTRY_EXIT();
 

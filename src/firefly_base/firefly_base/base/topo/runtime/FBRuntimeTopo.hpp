@@ -18,9 +18,9 @@ struct FBRuntimeTopo final
 {
 private:
   template <class TContainer, class TParam> 
-  juce::var SaveParamStateToVar(TContainer const& container, std::vector<TParam> const& params, bool patchOnly) const;
+  juce::var SaveParamStateToVar(std::vector<TParam> const& params, TContainer const& container, bool patchOnly) const;
   template <class TContainer, class TParamsTopo>
-  bool LoadParamStateFromVar(bool isGuiState, juce::var const& json, TContainer& container, TParamsTopo& params, bool patchOnly) const;
+  bool LoadParamStateFromVar(juce::var const& json, TParamsTopo const& params, TContainer& container, bool isGuiState, bool patchOnly) const;
 
 public:
   std::unique_ptr<FBStaticTopo> static_;
