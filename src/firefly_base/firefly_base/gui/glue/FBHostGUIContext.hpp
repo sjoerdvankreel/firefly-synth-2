@@ -162,6 +162,7 @@ public:
   FBScalarStateContainer const& SessionState() const { return _sessionState; }
 
   virtual void NotifyHostOfParamNameChanges() = 0;
+  virtual void ClearAudioParamNameOverrides() = 0;
   virtual void ClearAudioParamNameOverride(int index) = 0;
   virtual bool GetAudioParamNameOverride(int index, std::string& name) const = 0;
   virtual void SetAudioParamNameOverride(int index, std::string const& name) = 0;
