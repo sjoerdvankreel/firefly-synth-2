@@ -137,7 +137,8 @@ bool
 FBVST3EditController::GetAudioParamNameOverride(int index, std::string& name) const
 {
   if(auto p = dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index)))
-    p->GetNameOverride(name);
+    return p->GetNameOverride(name);
+  return false;
 }
 
 void 
