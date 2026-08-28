@@ -202,12 +202,14 @@ FBPlugGUI::SetAudioParamNameOverride(int index)
 {
   static int TEMP = 9;
   _hostContext->SetAudioParamNameOverride(index, std::to_string(TEMP++));
+  _hostContext->NotifyHostOfParamNameChanges();
 }
 
 void
 FBPlugGUI::ClearAudioParamNameOverride(int index)
 {
   _hostContext->ClearAudioParamNameOverride(index);
+  _hostContext->NotifyHostOfParamNameChanges();
 }
 
 void

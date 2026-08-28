@@ -52,7 +52,6 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
     _topo->LoadEditAndGUIStateFromStringWithDryRun(json, *_editState, this, *_guiState, false);
     OnPatchNameChanged();
     OnInstanceNameChanged();
-    NotifyHostOfParamNameChanges();
     if(_gui)
       for(int i = 0; i < _guiState->Params().size(); i++)
         _gui->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));
