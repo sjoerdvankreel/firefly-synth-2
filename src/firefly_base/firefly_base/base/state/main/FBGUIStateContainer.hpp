@@ -15,7 +15,6 @@ class FBGUIStateContainer final
   std::string _themeName;
   std::string _patchName = "Init Patch";
   std::string _instanceName = "New Session";
-  std::map<int, std::string> _paramNames;
 
   std::vector<double*> _params;
   void* _rawState;
@@ -31,12 +30,9 @@ public:
   std::string const& ThemeName() const { return _themeName; }
   std::string const& PatchName() const { return _patchName; }
   std::string const& InstanceName() const { return _instanceName; }
-  std::map<int, std::string> const& ParamNames() const { return _paramNames; }
   void SetThemeName(std::string const& name) { _themeName = name; }
   void SetPatchName(std::string const& name) { _patchName = name; }
   void SetInstanceName(std::string const& name) { _instanceName = name; }
-  void ClearParamName(int paramId) { _paramNames.erase(paramId); }
-  void SetParamName(int paramId, std::string const& name) { _paramNames[paramId] = name; }
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }

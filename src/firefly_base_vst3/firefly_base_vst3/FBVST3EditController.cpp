@@ -112,14 +112,29 @@ FBVST3EditController::DoPerformAudioParamEdit(int index, double normalized)
   endEdit(tag);
 }
 
-void 
-FBVST3EditController::OnParamNameChanged(int index)
+void
+FBVST3EditController::NotifyHostOfParamNameChanges()
 {
-  if (index != -1)
-    if (auto p = dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index)))
-      p->OnNameChanged();  
   if (componentHandler)
     componentHandler->restartComponent(Vst::kParamTitlesChanged);
+}
+
+void 
+FBVST3EditController::ClearAudioParamNameOverride(int index)
+{
+  dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index))->ClearNameOverride();
+}
+
+bool 
+FBVST3EditController::GetAudioParamNameOverride(int index, std::string& name) const
+{
+  return dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index))->GetNameOverride(name);
+}
+
+void 
+FBVST3EditController::SetAudioParamNameOverride(int index, std::string const& name)
+{
+  dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index))->SetNameOverride(name);
 }
 
 double
@@ -203,8 +218,7 @@ FBVST3EditController::setState(IBStream* state)
       return kResultFalse;
     _topo->LoadGUIStateFromStringWithDryRun(json, *_guiState);
     OnPatchNameChanged();
-    OnParamNameChanged(-1);
-    OnInstanceNameChanged();
+    OnInstanceNameChanged();    
     if(_guiEditor != nullptr)
       for (int i = 0; i < _guiState->Params().size(); i++)
         _guiEditor->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));      
@@ -226,7 +240,7 @@ FBVST3EditController::setComponentState(IBStream* state)
       return kResultFalse;
     for (int i = 0; i < edit.Params().size(); i++)
       setParamNormalized(_topo->audio.params[i].tag, *edit.Params()[i]);
-
+    NotifyHostOfParamNameChanges();
     MarkPatchAsSessionState();
     return kResultOk;
   });

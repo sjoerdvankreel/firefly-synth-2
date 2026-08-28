@@ -128,10 +128,10 @@ FBCLAPPlugin::paramsInfo(
     strncpy(info->module, runtimeModule.name.c_str(),
       std::min(sizeof(info->module) - 1, runtimeModule.name.size()));
 
-    auto iter = ParamNames().find(runtimeParam.tag);
-    if(iter != ParamNames().end())
-      strncpy(info->name, iter->second.c_str(),
-        std::min(sizeof(info->name) - 1, iter->second.size()));
+    std::string nameOverride;
+    if(GetAudioParamNameOverride(paramIndex, nameOverride))
+      strncpy(info->name, nameOverride.c_str(),
+        std::min(sizeof(info->name) - 1, nameOverride.size()));
     else
       strncpy(info->name, runtimeParam.longName.c_str(),
         std::min(sizeof(info->name) - 1, runtimeParam.longName.size()));

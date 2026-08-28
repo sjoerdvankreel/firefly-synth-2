@@ -65,12 +65,6 @@ FBHostGUIContext::InstanceName() const
   return _guiState->InstanceName();
 }
 
-std::map<int, std::string> const&
-FBHostGUIContext::ParamNames() const
-{
-  return _guiState->ParamNames();
-}
-
 void
 FBHostGUIContext::OnPatchLoaded()
 {
@@ -104,18 +98,6 @@ FBHostGUIContext::SetInstanceName(std::string const& name)
 {
   _guiState->SetInstanceName(name);
   OnInstanceNameChanged();
-}
-
-void FBHostGUIContext::SetParamName(int paramId, std::string const& name)
-{
-  _guiState->SetParamName(paramId, name);
-  OnParamNameChanged(Topo()->audio.paramTagToIndex.at(paramId));
-}
-
-void FBHostGUIContext::ClearParamName(int paramId)
-{
-  _guiState->ClearParamName(paramId);
-  OnParamNameChanged(Topo()->audio.paramTagToIndex.at(paramId));
 }
 
 void

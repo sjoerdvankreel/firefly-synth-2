@@ -198,18 +198,16 @@ FBPlugGUI::RemoveParamListener(IFBParamListener* listener)
 }
 
 void
-FBPlugGUI::RenameAudioParam(int index)
+FBPlugGUI::SetAudioParamNameOverride(int index)
 {
   static int TEMP = 9;
-  int tag = _hostContext->Topo()->audio.params[index].tag;
-  _hostContext->SetParamName(tag, std::to_string(TEMP++));
+  _hostContext->SetAudioParamNameOverride(index, std::to_string(TEMP++));
 }
 
 void
-FBPlugGUI::ClearAudioParamName(int index)
+FBPlugGUI::ClearAudioParamNameOverride(int index)
 {
-  int tag = _hostContext->Topo()->audio.params[index].tag;
-  _hostContext->ClearParamName(tag);
+  _hostContext->ClearAudioParamNameOverride(index);
 }
 
 void
@@ -409,11 +407,11 @@ FBPlugGUI::ShowMenuForAudioParam(int index, bool showHostMenu)
     }
     else if (tag == 2)
     {
-      RenameAudioParam(index);
+      SetAudioParamNameOverride(index);
     }
     else if (tag == 3)
     {
-      ClearAudioParamName(index);
+      ClearAudioParamNameOverride(index);
     }
     else if (tag == 4)
     {

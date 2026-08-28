@@ -87,7 +87,6 @@ protected:
   void OnPatchLoaded();
   void OnPatchNameChanged();
   void OnInstanceNameChanged();
-  virtual void OnParamNameChanged(int index) = 0;
   virtual void DoEndAudioParamChange(int index) = 0;
   virtual void DoBeginAudioParamChange(int index) = 0;
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
@@ -106,12 +105,10 @@ public:
   std::string const& PatchName() const;
   std::string const& ThemeName() const;
   std::string const& InstanceName() const;
-  std::map<int, std::string> const& ParamNames() const;
   void SetPatchName(std::string const& name);
   void SetThemeName(std::string const& name);
   void SetInstanceName(std::string const& name);
-  void ClearParamName(int paramId);
-  void SetParamName(int paramId, std::string const& name);
+  
   bool IsPatchLoaded() const { return _isPatchLoaded; }
   
   void ShowOnlineManual() const;
@@ -163,6 +160,11 @@ public:
 
   FBScalarStateContainer const& PatchState() const { return _patchState; }
   FBScalarStateContainer const& SessionState() const { return _sessionState; }
+
+  virtual void NotifyHostOfParamNameChanges() = 0;
+  virtual void ClearAudioParamNameOverride(int index) = 0;
+  virtual bool GetAudioParamNameOverride(int index, std::string& name) const = 0;
+  virtual void SetAudioParamNameOverride(int index, std::string const& name) = 0;
 
   virtual double GetAudioParamNormalized(int index) const = 0;
   virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;

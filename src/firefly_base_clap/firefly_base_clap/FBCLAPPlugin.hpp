@@ -6,6 +6,9 @@
 
 #include <clap/helpers/plugin.hh>
 #include <readerwriterqueue.h>
+
+#include <map>
+#include <string>
 #include <memory>
 
 using namespace clap;
@@ -47,6 +50,7 @@ public IFBHostDSPContext
   std::unique_ptr<FBPlugGUIContext> _gui;
   std::unique_ptr<FBProcStateContainer> _procState;
   std::unique_ptr<FBScalarStateContainer> _editState;
+  std::map<int, std::string> _audioParamNameOverridesByIndex = {};
   std::unique_ptr<FBExchangeStateContainer> _exchangeToGUIState;
   std::unique_ptr<FBCLAPExchangeStateQueueBase> _exchangeStateQueue;
 
@@ -110,8 +114,12 @@ public:
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
   FBProcStateContainer* ProcState() override { return _procState.get(); }
   FBExchangeStateContainer* ExchangeToGUIState() override { return _exchangeToGUIState.get(); } 
+  
+  void NotifyHostOfParamNameChanges() override;
+  void ClearAudioParamNameOverride(int index) override;
+  bool GetAudioParamNameOverride(int index, std::string& name) const override;
+  void SetAudioParamNameOverride(int index, std::string const& name) override;
 
-  void OnParamNameChanged(int index) override;
   double GetAudioParamNormalized(int index) const override;
   void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;
   std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) override;

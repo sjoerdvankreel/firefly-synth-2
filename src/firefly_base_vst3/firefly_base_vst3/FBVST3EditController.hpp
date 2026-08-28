@@ -54,7 +54,11 @@ public:
 
   void ResetView();
 
-  void OnParamNameChanged(int index) override;
+  void NotifyHostOfParamNameChanges() override;
+  void ClearAudioParamNameOverride(int index) override;
+  bool GetAudioParamNameOverride(int index, std::string& name) const override;
+  void SetAudioParamNameOverride(int index, std::string const& name) override;
+
   double GetAudioParamNormalized(int index) const override;
   void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;
   std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) override;

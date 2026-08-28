@@ -18,7 +18,10 @@ public:
 	virtual ~FBVST3Parameter() = default;
   FBVST3Parameter(FBHostGUIContext const* hostContext, FBRuntimeParam const* topo, ParameterInfo const& info);
 
-	void OnNameChanged();
+	void ClearNameOverride();
+	bool GetNameOverride(std::string& name) const;
+	void SetNameOverride(std::string const& name);
+
 	ParameterInfo& getInfo() override { return _infoOverride; }
 	ParameterInfo const& getInfo() const override { return _infoOverride; };
 	void toString(ParamValue valueNormalized, String128 string) const override;

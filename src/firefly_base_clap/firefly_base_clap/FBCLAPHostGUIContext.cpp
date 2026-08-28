@@ -49,10 +49,32 @@ ContextMenuBuilderAddItem(
   return true;
 }
 
-void
-FBCLAPPlugin::OnParamNameChanged(int /*index*/)
+void 
+FBCLAPPlugin::NotifyHostOfParamNameChanges()
 {
   _host.paramsRescan(CLAP_PARAM_RESCAN_INFO);
+}
+
+void 
+FBCLAPPlugin::ClearAudioParamNameOverride(int index)
+{
+  _audioParamNameOverridesByIndex.erase(index);
+}
+
+void
+FBCLAPPlugin::SetAudioParamNameOverride(int index, std::string const& name)
+{
+  _audioParamNameOverridesByIndex[index] = name;
+}
+
+bool 
+FBCLAPPlugin::GetAudioParamNameOverride(int index, std::string& name) const
+{
+  auto iter = _audioParamNameOverridesByIndex.find(index);
+  if (iter == _audioParamNameOverridesByIndex.end())
+    return false;
+  name = iter->second;
+  return true;
 }
 
 double

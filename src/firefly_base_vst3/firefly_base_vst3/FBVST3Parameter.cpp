@@ -10,6 +10,29 @@ FBVST3Parameter(FBHostGUIContext const* hostContext, FBRuntimeParam const* topo,
 Parameter(info), _hostContext(hostContext), _topo(topo), _infoOverride(info) {}
 
 void 
+FBVST3Parameter::ClearNameOverride()
+{
+  FBVST3CopyToString128(_topo->longName, _infoOverride.title);
+  FBVST3CopyToString128(_topo->shortName, _infoOverride.shortTitle);
+}
+
+void
+FBVST3Parameter::SetNameOverride(std::string const& name)
+{
+  FBVST3CopyToString128(name, _infoOverride.title);
+  FBVST3CopyToString128(name, _infoOverride.shortTitle);
+}
+
+bool 
+FBVST3Parameter::GetNameOverride(std::string& name) const
+{
+  std::string temp;
+  FBVST3CopyFromString128(info.title, temp);
+  FBVST3CopyFromString128(_infoOverride.title, name);  
+  return temp != name;
+}
+
+void 
 FBVST3Parameter::toString(ParamValue valueNormalized_, String128 string) const
 {
   FBWithLogException([this, valueNormalized_, &string]()
@@ -32,20 +55,4 @@ FBVST3Parameter::fromString(const TChar* string, ParamValue& valueNormalized_) c
     valueNormalized_ = parsed.value();
     return true;
   });
-}
-
-void
-FBVST3Parameter::OnNameChanged()
-{
-  auto iter = _hostContext->ParamNames().find(info.id);
-  if (iter == _hostContext->ParamNames().end())
-  {
-    FBVST3CopyToString128(_topo->longName, _infoOverride.title);
-    FBVST3CopyToString128(_topo->shortName, _infoOverride.shortTitle);
-  }
-  else
-  {
-    FBVST3CopyToString128(iter->second, _infoOverride.title);
-    FBVST3CopyToString128(iter->second, _infoOverride.shortTitle);
-  }
 }
