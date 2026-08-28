@@ -129,19 +129,22 @@ FBVST3EditController::ClearAudioParamNameOverrides()
 void 
 FBVST3EditController::ClearAudioParamNameOverride(int index)
 {
-  dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index))->ClearNameOverride();
+  if(auto p = dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index)))
+    p->ClearNameOverride();
 }
 
 bool 
 FBVST3EditController::GetAudioParamNameOverride(int index, std::string& name) const
 {
-  return dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index))->GetNameOverride(name);
+  if(auto p = dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index)))
+    p->GetNameOverride(name);
 }
 
 void 
 FBVST3EditController::SetAudioParamNameOverride(int index, std::string const& name)
 {
-  dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index))->SetNameOverride(name);
+  if(auto p = dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index)))
+    p->SetNameOverride(name);
 }
 
 double
