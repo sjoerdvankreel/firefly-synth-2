@@ -55,7 +55,7 @@ _lookAndFeel(std::make_unique<FBLookAndFeel>())
   _savePatchBrowser = std::make_unique<FBFileBrowserComponent>(this, true, "Save Patch", extension, filterName, [this](juce::File const& file) {
     FBScalarStateContainer editState(*HostContext()->Topo());
     editState.CopyFrom(HostContext(), true);
-    file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState, true));
+    file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState, HostContext(), true));
   });
   _saveTopologyBrowser = std::make_unique<FBFileBrowserComponent>(this, true, "Dump Topology", "txt", "Text Files", [this](juce::File const& file) {
     file.replaceWithText(HostContext()->Topo()->static_->PrintTopology());
@@ -621,7 +621,7 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
     if (id == 7) {
       FBScalarStateContainer editState(*HostContext()->Topo());
       editState.CopyFrom(HostContext(), true);
-      SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveEditStateToString(editState, true));
+      SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveEditStateToString(editState, HostContext(), true));
     }
     if (id == 8) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
@@ -740,7 +740,7 @@ FBPlugGUI::LoadPatchFromText(
 {
   FB_LOG_ENTRY_EXIT();
   FBScalarStateContainer editState(*HostContext()->Topo());
-  if (!HostContext()->Topo()->LoadEditStateFromString(text, editState, true))
+  if (!HostContext()->Topo()->LoadEditStateFromString(text, editState, HostContext(), true))
     return false;
   BeforePatchChanged();
   HostContext()->UndoState().Snapshot(undoAction);

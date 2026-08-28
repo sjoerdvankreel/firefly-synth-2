@@ -55,7 +55,13 @@ FBCLAPPlugin::NotifyHostOfParamNameChanges()
   _host.paramsRescan(CLAP_PARAM_RESCAN_INFO);
 }
 
-void 
+void
+FBCLAPPlugin::ClearAudioParamNameOverrides()
+{
+  _audioParamNameOverridesByIndex.clear();
+}
+
+void
 FBCLAPPlugin::ClearAudioParamNameOverride(int index)
 {
   _audioParamNameOverridesByIndex.erase(index);

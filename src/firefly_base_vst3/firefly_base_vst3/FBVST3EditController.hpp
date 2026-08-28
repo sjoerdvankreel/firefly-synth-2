@@ -55,6 +55,7 @@ public:
   void ResetView();
 
   void NotifyHostOfParamNameChanges() override;
+  void ClearAudioParamNameOverrides() override;
   void ClearAudioParamNameOverride(int index) override;
   bool GetAudioParamNameOverride(int index, std::string& name) const override;
   void SetAudioParamNameOverride(int index, std::string const& name) override;

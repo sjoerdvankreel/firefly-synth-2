@@ -738,7 +738,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
           if (!Base64::convertFromBase64(ostream, paramOverrideNameEncoded.toString()))
             FB_LOG_WARN("Parameter override name is not a valid base64 string.");
           else
-            (*audioParamNameOverrides)[sp] = ostream.toString();
+            (*audioParamNameOverrides)[sp] = ostream.toString().toStdString();
         }
       }
   }

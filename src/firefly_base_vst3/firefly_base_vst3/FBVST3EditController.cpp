@@ -120,6 +120,13 @@ FBVST3EditController::NotifyHostOfParamNameChanges()
 }
 
 void 
+FBVST3EditController::ClearAudioParamNameOverrides()
+{
+  for (int i = 0; i < parameters.getParameterCount(); i++)
+    ClearAudioParamNameOverride(i);
+}
+
+void 
 FBVST3EditController::ClearAudioParamNameOverride(int index)
 {
   dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index))->ClearNameOverride();
@@ -236,7 +243,7 @@ FBVST3EditController::setComponentState(IBStream* state)
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
     FBScalarStateContainer edit(*_topo);
-    if (!_topo->LoadEditStateFromString(json, edit, false))
+    if (!_topo->LoadEditStateFromString(json, edit, this, false))
       return kResultFalse;
     for (int i = 0; i < edit.Params().size(); i++)
       setParamNormalized(_topo->audio.params[i].tag, *edit.Params()[i]);
