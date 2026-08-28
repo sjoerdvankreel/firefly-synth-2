@@ -5,7 +5,9 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeParamsTopo.hpp>
 
 #include <juce_core/juce_core.h>
+
 #include <map>
+#include <string>
 #include <vector>
 #include <memory>
 
@@ -22,7 +24,7 @@ private:
   template <class TContainer, class TParam> 
   juce::var SaveParamStateToVar(std::vector<TParam> const& params, TContainer const& container, FBHostGUIContext const* hostContext, bool isGuiState, bool patchOnly) const;
   template <class TContainer, class TParamsTopo>
-  bool LoadParamStateFromVar(juce::var const& json, TParamsTopo const& params, TContainer& container, FBHostGUIContext* hostContext, bool isGuiState, bool patchOnly) const;
+  bool LoadParamStateFromVar(juce::var const& json, TParamsTopo const& params, TContainer& container, std::map<int, std::string>* audioParamNameOverrides, bool isGuiState, bool patchOnly) const;
 
 public:
   std::unique_ptr<FBStaticTopo> static_;
@@ -50,12 +52,16 @@ public:
   bool LoadGUIStateFromVar(juce::var const& json, FBGUIStateContainer& gui) const;
   bool LoadProcStateFromVar(juce::var const& json, FBProcStateContainer& proc, bool patchOnly) const;
   bool LoadEditStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext* hostContext, bool patchOnly) const;
+  bool LoadEditStateFromVar(juce::var const& json, FBScalarStateContainer& edit, std::map<int, std::string>* audioParamNameOverrides, bool patchOnly) const;
   bool LoadEditAndGUIStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext* hostContext, FBGUIStateContainer& gui, bool patchOnly) const;
+  bool LoadEditAndGUIStateFromVar(juce::var const& json, FBScalarStateContainer& edit, std::map<int, std::string>* audioParamNameOverrides, FBGUIStateContainer& gui, bool patchOnly) const;
 
   bool LoadGUIStateFromString(std::string const& text, FBGUIStateContainer& guiState) const;
   bool LoadProcStateFromString(std::string const& text, FBProcStateContainer& procState, bool patchOnly) const;
   bool LoadEditStateFromString(std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext* hostContext, bool patchOnly) const;
+  bool LoadEditStateFromString(std::string const& text, FBScalarStateContainer& editState, std::map<int, std::string>* audioParamNameOverrides, bool patchOnly) const;
   bool LoadEditAndGUIStateFromString(std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext* hostContext, FBGUIStateContainer& guiState, bool patchOnly) const;
+  bool LoadEditAndGUIStateFromString(std::string const& text, FBScalarStateContainer& editState, std::map<int, std::string>* audioParamNameOverrides, FBGUIStateContainer& guiState, bool patchOnly) const;
 
   // With dry run copies over the loaded state only if load succeeded.
   // It returns void rather than bool because it "always succeeds" even if not.
