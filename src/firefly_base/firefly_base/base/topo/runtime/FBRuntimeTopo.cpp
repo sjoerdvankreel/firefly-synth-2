@@ -3,6 +3,7 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/state/main/FBGUIStateContainer.hpp>
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
@@ -363,6 +364,13 @@ FBRuntimeTopo::SaveParamStateToVar(
     }
     param->setProperty("name", String(longNameClean));
 
+    // well, this is user input.
+    // just play it safe and encode it.
+    std::string overrideName;
+    if (!isGuiState && hostContext != nullptr)
+      if (hostContext->GetAudioParamNameOverride(p, overrideName))
+        param->setProperty("overrideNameEncoded", Base64::toBase64(String(overrideName)));
+
     state.append(var(param));
   }
 
@@ -653,6 +661,25 @@ FBRuntimeTopo::LoadParamStateFromVar(
       !topo.static_.IsFakeParam() &&
       (!patchOnly || topo.static_.StoreInPatch()))
       *container.Params()[iter->second] = static_cast<float>(normalized.value());
+
+    // Pick up and base64 decode the optional parameter name override.
+    if (!isGuiState && hostContext != nullptr)
+      if (param->hasProperty("overrideNameEncoded"))
+      {
+        var paramOverrideNameEncoded = param->getProperty("overrideNameEncoded");
+        if (!paramOverrideNameEncoded.isString())
+        {
+          FB_LOG_WARN("Parameter override name is not a string.");
+        }
+        else
+        {
+          juce::MemoryOutputStream ostream;
+          if (!Base64::convertFromBase64(ostream, paramOverrideNameEncoded.toString()))
+            FB_LOG_WARN("Parameter override name is not a valid base64 string.");
+          else
+            hostContext->SetAudioParamNameOverride(sp, ostream.toString());
+        }
+      }
   }
 
   FB_LOG_INFO("Start deserialization post-processing.");
