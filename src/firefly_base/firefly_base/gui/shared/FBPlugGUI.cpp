@@ -644,6 +644,7 @@ FBPlugGUI::ReloadPatch()
   HostContext()->UndoState().Snapshot("Reload Patch");
   HostContext()->RevertPatchToPatchState();
   HostContext()->MarkPatchAsPatchState(oldName);
+  HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged();
 }
 
@@ -654,6 +655,7 @@ FBPlugGUI::ReloadSession()
   BeforePatchChanged();
   HostContext()->UndoState().Snapshot("Reload Session");
   HostContext()->RevertPatchToSessionState();
+  HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged();
 }
 
