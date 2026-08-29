@@ -49,7 +49,7 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
       else
         json.append(buffer, read);
 
-    _topo->LoadEditAndGUIStateFromStringWithDryRun(json, *_editState, *_guiState, false);
+    _topo->LoadEditAndGUIStateFromStringWithDryRun(json, *_editState, *this, false);
     OnPatchNameChanged();
     OnInstanceNameChanged();
     if(_gui)

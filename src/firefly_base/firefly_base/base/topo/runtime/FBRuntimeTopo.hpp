@@ -6,6 +6,7 @@
 
 #include <juce_core/juce_core.h>
 #include <map>
+#include <string>
 #include <vector>
 #include <memory>
 
@@ -46,15 +47,19 @@ public:
   std::string SaveEditStateToString(FBScalarStateContainer const& editState, bool patchOnly) const;
   std::string SaveEditAndGUIStateToString(FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext, bool patchOnly) const;
 
-  bool LoadGUIStateFromVar(juce::var const& json, FBHostGUIContext& hostContext) const;
   bool LoadProcStateFromVar(juce::var const& json, FBProcStateContainer& proc, bool patchOnly) const;
   bool LoadEditStateFromVar(juce::var const& json, FBScalarStateContainer& edit, bool patchOnly) const;
+  bool LoadGUIStateFromVar(juce::var const& json, FBHostGUIContext& hostContext) const;
+  bool LoadGUIStateFromVar(juce::var const& json, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides) const;
   bool LoadEditAndGUIStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext& hostContext, bool patchOnly) const;
+  bool LoadEditAndGUIStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, bool patchOnly) const;
 
-  bool LoadGUIStateFromString(std::string const& text, FBHostGUIContext& hostContext) const;
   bool LoadProcStateFromString(std::string const& text, FBProcStateContainer& procState, bool patchOnly) const;
   bool LoadEditStateFromString(std::string const& text, FBScalarStateContainer& editState, bool patchOnly) const;
+  bool LoadGUIStateFromString(std::string const& text, FBHostGUIContext& hostContext) const;
+  bool LoadGUIStateFromString(std::string const& text, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides) const;
   bool LoadEditAndGUIStateFromString(std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext& hostContext, bool patchOnly) const;
+  bool LoadEditAndGUIStateFromString(std::string const& text, FBScalarStateContainer& editState, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, bool patchOnly) const;
 
   // With dry run copies over the loaded state only if load succeeded.
   // It returns void rather than bool because it "always succeeds" even if not.
