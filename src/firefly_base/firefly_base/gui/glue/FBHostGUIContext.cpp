@@ -33,18 +33,46 @@ void
 FBHostGUIContext::RevertPatchToPatchState()
 {
   _patchState.CopyTo(this, true);
-}
-
-void
-FBHostGUIContext::MarkPatchAsSessionState()
-{
-  _sessionState.CopyFrom(this, true);
+  for (auto kv : _patchParamNameOverridesByIndex)
+    SetAudioParamNameOverride(kv.first, kv.second);
 }
 
 void
 FBHostGUIContext::RevertPatchToSessionState()
 {
   _sessionState.CopyTo(this, true);
+  for (auto kv : _sessionParamNameOverridesByIndex)
+    SetAudioParamNameOverride(kv.first, kv.second);
+}
+
+void
+FBHostGUIContext::MarkPatchAsSessionState()
+{
+  _sessionState.CopyFrom(this, true);
+  _sessionParamNameOverridesByIndex.clear();
+  for (int i = 0; i < _patchState.Params().size(); i++)
+  {
+    std::string name;
+    if (GetAudioParamNameOverride(i, name))
+      _sessionParamNameOverridesByIndex[i] = name;
+  }
+}
+
+void
+FBHostGUIContext::MarkPatchAsPatchState(std::string const& patchName)
+{
+  _patchState.CopyFrom(this, true);
+  _patchParamNameOverridesByIndex.clear();
+  for (int i = 0; i < _patchState.Params().size(); i++)
+  {
+    std::string paramName;
+    if (GetAudioParamNameOverride(i, paramName))
+      _patchParamNameOverridesByIndex[i] = paramName;
+  }
+
+  _isPatchLoaded = true;
+  OnPatchLoaded();
+  SetPatchName(patchName);
 }
 
 std::string const& 
@@ -120,15 +148,6 @@ FBHostGUIContext::RemoveListener(IFBHostGUIContextListener* listener)
   auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
   if (iter != _listeners.end())
     _listeners.erase(iter);
-}
-
-void
-FBHostGUIContext::MarkPatchAsPatchState(std::string const& name)
-{
-  _patchState.CopyFrom(this, true);
-  _isPatchLoaded = true;
-  OnPatchLoaded();
-  SetPatchName(name);
 }
 
 double 

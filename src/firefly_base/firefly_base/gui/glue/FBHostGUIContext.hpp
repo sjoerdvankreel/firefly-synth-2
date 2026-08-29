@@ -6,6 +6,7 @@
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -72,8 +73,10 @@ private:
   FBUndoStateContainer _undoState;
   // updated on init/load/reload patch etc
   FBScalarStateContainer _patchState;
+  std::map<int, std::string> _patchParamNameOverridesByIndex = {};
   // updated on daw load
   FBScalarStateContainer _sessionState;
+  std::map<int, std::string> _sessionParamNameOverridesByIndex = {};
 
   void ShowOnlineManualForModule(int index) const;
 
