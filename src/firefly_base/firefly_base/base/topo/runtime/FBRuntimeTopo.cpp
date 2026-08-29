@@ -33,7 +33,6 @@ static void CopyAudioParamNameOverridesToHostContext(
   hostContext.ClearAudioParamNameOverrides();
   for (auto kv : overrideNames)
     hostContext.SetAudioParamNameOverride(kv.first, kv.second);
-  hostContext.NotifyHostOfParamNameChanges();
 }
 
 static std::vector<FBRuntimeModule>

@@ -750,6 +750,7 @@ FBPlugGUI::LoadPatchFromText(
   HostContext()->UndoState().Snapshot(undoAction);
   editState.CopyTo(HostContext(), true);
   HostContext()->MarkPatchAsPatchState(patchName);
+  HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged();
   return true;
 }
