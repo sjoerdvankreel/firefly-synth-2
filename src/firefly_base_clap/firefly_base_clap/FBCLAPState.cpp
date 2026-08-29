@@ -62,8 +62,8 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
       if (_gui)
         _gui->SetAudioParamNormalizedFromHost(i, normalized);
     }
-
     MarkPatchAsSessionState();
+    NotifyHostOfParamNameChanges();
     return true;
   });
 }
