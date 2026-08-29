@@ -159,6 +159,7 @@ public:
   FBUndoStateContainer& UndoState() { return _undoState; }
   FBRuntimeTopo const* Topo() const { return _topo.get(); }
   FBGUIStateContainer* GUIState() { return _guiState.get(); }
+  FBGUIStateContainer const* GUIState() const { return _guiState.get(); }
   FBExchangeStateContainer const* ExchangeFromDSPState() const { return _exchangeFromDSPState.get(); }
 
   FBScalarStateContainer const& PatchState() const { return _patchState; }

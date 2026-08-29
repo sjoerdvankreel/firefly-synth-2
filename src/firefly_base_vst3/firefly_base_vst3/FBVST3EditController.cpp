@@ -211,7 +211,7 @@ FBVST3EditController::getState(IBStream* state)
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, state]()
   {
-    std::string json = _topo->SaveGUIStateToString(*_guiState);
+    std::string json = _topo->SaveGUIStateToString(*this);
     if (!FBVST3SaveIBStream(state, json))
       return kResultFalse;
     return kResultOk;
@@ -227,7 +227,7 @@ FBVST3EditController::setState(IBStream* state)
     std::string json;
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
-    _topo->LoadGUIStateFromStringWithDryRun(json, *_guiState);
+    _topo->LoadGUIStateFromStringWithDryRun(json, *this);
     OnPatchNameChanged();
     OnInstanceNameChanged();    
     if(_guiEditor != nullptr)
@@ -247,7 +247,7 @@ FBVST3EditController::setComponentState(IBStream* state)
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
     FBScalarStateContainer edit(*_topo);
-    if (!_topo->LoadEditStateFromString(json, edit, this, false))
+    if (!_topo->LoadEditStateFromString(json, edit, false))
       return kResultFalse;
     for (int i = 0; i < edit.Params().size(); i++)
       setParamNormalized(_topo->audio.params[i].tag, *edit.Params()[i]);
