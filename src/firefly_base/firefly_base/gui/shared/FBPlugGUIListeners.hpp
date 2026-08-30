@@ -1,5 +1,12 @@
 #pragma once
 
+class IFBGUIResetListener
+{
+public:
+  virtual ~IFBGUIResetListener() {}
+  virtual void OnResetRequest() = 0;
+};
+
 class IFBThemeListener
 {
 public:

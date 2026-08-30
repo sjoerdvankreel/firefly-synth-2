@@ -22,6 +22,7 @@ class FBCardComponent;
 class FBAutoSizeButton;
 class IFBThemeListener;
 class IFBParamListener;
+class IFBGUIResetListener;
 class FBGUIParamControl;
 class FBParamsDependent;
 class FBHostGUIContext;
@@ -70,6 +71,7 @@ public:
   FBTheme const& GetTheme() const;
   FBLookAndFeel* LookAndFeel() const { return _lookAndFeel.get(); }
 
+  void RequestGUIReset();
   void SwitchTheme(std::string const& themeName);
   std::vector<FBTheme> const& Themes() const { return _themes; }
 
@@ -86,6 +88,8 @@ public:
   void AddParamListener(IFBParamListener* listener);
   void RemoveThemeListener(IFBThemeListener* listener);
   void RemoveParamListener(IFBParamListener* listener);
+  void AddGUIResetListener(IFBGUIResetListener* listener);
+  void RemoveGUIResetListener(IFBGUIResetListener* listener);
 
   std::string GetTooltipForGUIParam(int index) const;
   std::string GetTooltipForAudioParam(FBParamControl const* control) const;
@@ -122,8 +126,8 @@ protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
   FBPlugGUI(FBHostGUIContext* hostContext);
 
+  virtual void AfterPatchChanged();
   virtual void ForceReLayout() = 0;
-  virtual void AfterPatchChanged() = 0;
   virtual void BeforePatchChanged() = 0;
   virtual void UpdateExchangeStateTick() = 0;
 
@@ -150,6 +154,7 @@ private:
   std::vector<FBTheme> _themes = {};
   std::vector<IFBThemeListener*> _themeListeners = {};
   std::vector<IFBParamListener*> _paramListeners = {};
+  std::vector<IFBGUIResetListener*> _resetListeners = {};
 
   std::unique_ptr<FBFileBrowserComponent> _loadPatchBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _savePatchBrowser = {};

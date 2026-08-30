@@ -1,7 +1,8 @@
 #pragma once
 
-#include <firefly_base/gui/shared/FBAutoSize.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
+#include <firefly_base/gui/shared/FBAutoSize.hpp>
+#include <firefly_base/gui/shared/FBPlugGUIListeners.hpp>
 #include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBContentComponent.hpp>
@@ -109,7 +110,8 @@ public:
 
 class FBSelectComponent:
 public juce::Component,
-public FBModuleSelector
+public FBModuleSelector,
+public IFBGUIResetListener
 {
   int const _rows;
   int const _cols;
@@ -126,11 +128,13 @@ public FBModuleSelector
   void Select(int index);
 
 public:
+  ~FBSelectComponent();
   FBSelectComponent(FBPlugGUI* plugGUI, 
     std::vector<int> const& rows, std::vector<int> const& cols);
 
   void resized() override;
   void mouseUp(const juce::MouseEvent& event) override;
+  void OnResetRequest() override { Select(0); }
 
   void AddLabel(int row, int col, std::string const& text);
   void AddSelector(int row, int col, FBTopoIndices const& moduleIndices, std::string const& text, juce::Component* component);

@@ -148,6 +148,19 @@ FBPlugGUI::SwitchTheme(std::string const& themeName)
 }
 
 void
+FBPlugGUI::AfterPatchChanged()
+{
+  RequestGUIReset();
+}
+
+void 
+FBPlugGUI::RequestGUIReset()
+{
+  for (int i = 0; i < _resetListeners.size(); i++)
+    _resetListeners[i]->OnResetRequest();
+}
+
+void
 FBPlugGUI::SetScale(double scale)
 {
   _scale = scale;
@@ -218,6 +231,22 @@ FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double value)
   AudioParamNormalizedChanged(index);
   for (int i = 0; i < _paramListeners.size(); i++)
     _paramListeners[i]->AudioParamChanged(index, value, true);
+}
+
+void
+FBPlugGUI::AddGUIResetListener(IFBGUIResetListener* listener)
+{
+  auto iter = std::find(_resetListeners.begin(), _resetListeners.end(), listener);
+  FB_ASSERT(iter == _resetListeners.end());
+  _resetListeners.push_back(listener);
+}
+
+void
+FBPlugGUI::RemoveGUIResetListener(IFBGUIResetListener* listener)
+{
+  auto iter = std::find(_resetListeners.begin(), _resetListeners.end(), listener);
+  FB_ASSERT(iter != _resetListeners.end());
+  _resetListeners.erase(iter);
 }
 
 void

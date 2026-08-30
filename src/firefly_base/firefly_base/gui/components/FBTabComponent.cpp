@@ -159,6 +159,12 @@ FBSelectButton::mouseUp(const MouseEvent& event)
 }
 
 FBSelectComponent::
+~FBSelectComponent()
+{
+  _plugGUI->RemoveGUIResetListener(this);
+}
+
+FBSelectComponent::
 FBSelectComponent(FBPlugGUI* plugGUI, std::vector<int> const& rows, std::vector<int> const& cols):
 FBModuleSelector(plugGUI),
 _rows((int)rows.size()), _cols((int)cols.size())
@@ -171,6 +177,8 @@ _rows((int)rows.size()), _cols((int)cols.size())
   _marginContent = std::make_unique<FBMarginComponent>(plugGUI, false, false, false, true, _content.get());
   _mainGrid->Add(0, 0, _marginSelect.get());
   _mainGrid->Add(0, 1, _marginContent.get());
+
+  _plugGUI->AddGUIResetListener(this);
   addAndMakeVisible(_mainGrid.get());
 }
 
