@@ -492,7 +492,11 @@ FBPlugGUI::GetTooltipForAudioParam(FBParamControl const* control) const
   double engineMin = paramActive.active ? paramActive.minValue : normalized;
   double engineMax = paramActive.active ? paramActive.maxValue : normalized;
 
+  std::string overrideName;
   std::string result = param.static_.description;
+  if (HostContext()->GetAudioParamNameOverride(index, overrideName))
+    result += "\r\n" + overrideName;
+
 #ifndef NDEBUG
   result += "\r\nParam index: " + std::to_string(index);
   result += "\r\nParam tag: " + std::to_string(param.tag);
