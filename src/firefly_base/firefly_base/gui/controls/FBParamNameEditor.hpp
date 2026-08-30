@@ -15,10 +15,10 @@ public juce::TextEditor::Listener
 public:
   FBParamNameEditor(FBPlugGUI* plugGUI, int fixedWidth);
 
+  void InitEdit(int paramIndex);
   void paint(juce::Graphics& g) override;
   void textEditorTextChanged(juce::TextEditor&) override;
   void textEditorFocusLost(juce::TextEditor&) override {}
   void textEditorReturnKeyPressed(juce::TextEditor&) override {}
   void textEditorEscapeKeyPressed(juce::TextEditor&) override {}
-  void SetParamIndex(int paramIndex) { _paramIndex = paramIndex; }
 };

@@ -202,11 +202,11 @@ FBPlugGUI::RemoveParamListener(IFBParamListener* listener)
 void
 FBPlugGUI::SetAudioParamNameOverride(int index)
 {
-  _paramNameEditor->SetParamIndex(index);
+  _paramNameEditor->InitEdit(index);
   auto const& runtimeParam = HostContext()->Topo()->audio.params[index];
   auto const& indices = HostContext()->Topo()->modules[runtimeParam.runtimeModuleIndex].topoIndices;
-  std::string title = "Edit " + runtimeParam.shortName + " name";
-  ShowOverlayComponent(title, indices.index, indices.slot, _paramNameEditor, 300, 120, false, []() {});
+  std::string title = "Edit Name:" + runtimeParam.longName;
+  ShowOverlayComponent(title, indices.index, indices.slot, _paramNameEditor, 240, 70, true, [this, index]() { ClearAudioParamNameOverride(index); });
 }
 
 void
