@@ -86,40 +86,8 @@ TabBarButton(name, bar) {}
 void 
 FBTabBarButton::clicked(const ModifierKeys& modifiers)
 {
-  FBModuleTabComponent* tabs;
   if (!modifiers.isRightButtonDown())
     TabBarButton::clicked(modifiers);
-  else if ((tabs = findParentComponentOfClass<FBModuleTabComponent>()) != nullptr)
-    tabs->TabRightClicked(getIndex());
-}
-
-FBModuleTabBarButton::
-FBModuleTabBarButton(
-FBPlugGUI* plugGUI,
-std::string const& separatorText,
-const juce::String& name,
-juce::TabbedButtonBar& bar,
-FBTopoIndices const& moduleIndices):
-FBTabBarButton(name, bar),
-_plugGUI(plugGUI),
-_separatorText(separatorText),
-_moduleIndices(moduleIndices) {}
-
-void
-FBModuleTabBarButton::clicked(const ModifierKeys& modifiers)
-{
-  FBTabBarButton::clicked(modifiers);
-  _plugGUI->ModuleSlotClicked(_moduleIndices.index, _moduleIndices.slot);
-}
-
-FBColorScheme const* 
-FBModuleTabBarButton::GetScheme(FBTheme const& theme) const
-{
-  int rtModuleIndex = _plugGUI->HostContext()->Topo()->moduleTopoToRuntime.at(_moduleIndices);
-  auto moduleIter = theme.moduleColors.find(rtModuleIndex);
-  if (moduleIter != theme.moduleColors.end())
-    return &theme.global.colorSchemes.at(moduleIter->second.colorScheme);
-  return nullptr;
 }
 
 FBAutoSizeTabComponent::
@@ -162,76 +130,6 @@ FBAutoSizeTabComponent::AddTab(
   addTab(header, Colours::transparentBlack, component, false);
   auto button = getTabbedButtonBar().getTabButton(getTabbedButtonBar().getNumTabs() - 1);
   auto& fbTabButton = dynamic_cast<FBTabBarButton&>(*button);
-  fbTabButton.centerText = centerText;
-}
-
-FBModuleTabComponent::
-FBModuleTabComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
-FBAutoSizeTabComponent(plugGUI),
-FBModuleSelector(plugGUI, param)
-{
-  assert(param != nullptr);
-}
-
-void
-FBModuleTabComponent::TabRightClicked(int tabIndex)
-{
-  if (tabIndex >= 0 && tabIndex < (int)_moduleIndices.size())
-    ShowModulePopupMenuFor(tabIndex, getTabbedButtonBar().getTabButton(tabIndex));
-}
-
-void 
-FBModuleTabComponent::SetTabSeparatorText(int tabIndex, std::string const& text)
-{
-  _tabSeparatorText[tabIndex] = text;
-}
-
-TabBarButton*
-FBModuleTabComponent::createTabButton(const juce::String& tabName, int tabIndex)
-{
-  return new FBModuleTabBarButton(_tabPlugGUI, _tabSeparatorText[tabIndex], tabName, *tabs, _moduleIndices[tabIndex]);
-}
-
-void
-FBModuleTabComponent::ActivateStoredSelection()
-{
-  if (0 <= _storedSelection && _storedSelection < _moduleIndices.size())
-    setCurrentTabIndex(_storedSelection);
-}
-
-void
-FBModuleTabComponent::currentTabChanged(
-  int newCurrentTabIndex, juce::String const& newCurrentTabName)
-{
-  FBAutoSizeTabComponent::currentTabChanged(newCurrentTabIndex, newCurrentTabName);
-  if (newCurrentTabIndex >= 0 && newCurrentTabIndex < _moduleIndices.size())
-    SelectModuleGUI(newCurrentTabIndex);
-}
-
-void
-FBModuleTabComponent::AddModuleTab(
-  bool centerText, bool large,
-  FBTopoIndices const& moduleIndices,
-  Component* component)
-{
-  _moduleIndices.push_back(moduleIndices);
-  auto topo = _tabPlugGUI->HostContext()->Topo();
-  auto const& module = topo->static_->modules[moduleIndices.index];
-
-  std::string header = {};
-  if (module.tabSlotFormatter != nullptr)
-    header = FBMakeRuntimeModuleShortName(
-      *topo->static_, module.name, module.slotCount,
-      moduleIndices.slot, module.tabSlotFormatter, module.slotFormatterOverrides);
-  else if(module.slotCount > 1)
-    header = std::to_string(moduleIndices.slot + 1);
-  else
-    header = module.name;
-
-  addTab(header, Colours::black, component, false);
-  auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
-  auto& fbTabButton = dynamic_cast<FBTabBarButton&>(*button);
-  fbTabButton.large = large;
   fbTabButton.centerText = centerText;
 }
 

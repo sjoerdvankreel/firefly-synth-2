@@ -238,21 +238,12 @@ FBLookAndFeel::getTabButtonBestWidth(
   int numTabs = button.getTabbedButtonBar().getNumTabs();
   if (numTabs == 1)
     return barWidth;
-  FBModuleTabBarButton* fbButton = dynamic_cast<FBModuleTabBarButton*>(&button);
-  if (fbButton == nullptr)
-  {
-    int tabWidth = barWidth / numTabs;
-    int remain = barWidth - tabWidth * numTabs;    
-    if (button.getTabbedButtonBar().indexOfTabButton(&button) == numTabs - 1)
-      tabWidth += remain;
-    return tabWidth;
-  }
-  bool large = fbButton->large;
-  bool hasSeparatorText = !fbButton->GetSeparatorText().empty();
-  int result = large ? TabSizeLarge : TabSizeSmall;
-  if (hasSeparatorText)
-    result += TabSizeLarge;
-  return result;
+
+  int tabWidth = barWidth / numTabs;
+  int remain = barWidth - tabWidth * numTabs;    
+  if (button.getTabbedButtonBar().indexOfTabButton(&button) == numTabs - 1)
+    tabWidth += remain;
+  return tabWidth;
 }
 
 Label* 
@@ -1019,8 +1010,6 @@ FBLookAndFeel::drawTabButton(
   {
     large = fbButton->large;
     centerText = fbButton->centerText;
-    if(auto fbModuleButton = dynamic_cast<FBModuleTabBarButton*>(&button))
-      separatorText = fbModuleButton->GetSeparatorText();
   }
 
   if (auto fbt = button.findParentComponentOfClass<FBAutoSizeTabComponent>())

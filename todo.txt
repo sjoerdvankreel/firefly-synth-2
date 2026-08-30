@@ -4,7 +4,7 @@
 [x] labeled aux controls => show in tooltip and generic editor + TEST EVERYTHING + clear-all-overrides + manual + gui things + actual edit box
 [x] store last selected patch folder in global settings on disk
 [x] more themes
-[ ] after init, load, etc, should select the first graph of everything
+[ ] after init, load, etc, should select the first graph of everything + NOT track it anymore
 
 [ ] screenshots for themes
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)

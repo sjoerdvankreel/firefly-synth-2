@@ -54,28 +54,6 @@ public:
   void clicked(const juce::ModifierKeys& modifiers) override;
 };
 
-class FBModuleTabBarButton:
-public FBTabBarButton,
-public IFBThemingComponent
-{
-  FBPlugGUI* const _plugGUI;
-  std::string const _separatorText;
-  FBTopoIndices const _moduleIndices;
-
-public:
-  FBModuleTabBarButton(
-    FBPlugGUI* plugGUI,
-    std::string const& separatorText,
-    const juce::String& name,
-    juce::TabbedButtonBar& bar,
-    FBTopoIndices const& moduleIndices);
-
-  bool IsModuleTab() const override { return true; }
-  void clicked(const juce::ModifierKeys& modifiers) override;
-  FBColorScheme const* GetScheme(FBTheme const& theme) const override;
-  std::string const GetSeparatorText() const { return _separatorText; }
-};
-
 class FBAutoSizeTabComponent:
 public juce::TabbedComponent,
 public IFBHorizontalAutoSize
@@ -94,30 +72,6 @@ public:
   
   juce::TabBarButton* createTabButton(const juce::String& tabName, int tabIndex) override;
   void currentTabChanged(int newCurrentTabIndex, const juce::String& newCurrentTabName) override;
-};
-
-class FBModuleTabComponent:
-public FBAutoSizeTabComponent,
-public FBModuleSelector
-{  
-  std::map<int, std::string> _tabSeparatorText = {};
-
-public:
-  FBModuleTabComponent(
-    FBPlugGUI* plugGUI, 
-    FBRuntimeGUIParam const* param);
-  
-  void AddModuleTab(
-    bool centerText, bool large,
-    FBTopoIndices const& moduleIndices,
-    juce::Component* component);
-  
-  void TabRightClicked(int tabIndex);
-  void SetTabSeparatorText(int tabIndex, std::string const& text);
-  void ActivateStoredSelection() override;
-
-  juce::TabBarButton* createTabButton(const juce::String& tabName, int tabIndex) override;
-  void currentTabChanged(int newCurrentTabIndex, juce::String const& newCurrentTabName) override;
 };
 
 class FBSelectButton:
