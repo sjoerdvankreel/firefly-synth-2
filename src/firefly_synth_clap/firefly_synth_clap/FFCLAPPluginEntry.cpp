@@ -88,13 +88,16 @@ Deinit()
 {
   FBTuningTerminate();
   FBGUITerminate();
+  FBUtilityTerminate();
   FBLogTerminate();
 }
 
 static bool CLAP_ABI 
 Init(char const*) 
 { 
-  FBLogInit(FFPlugMeta(FBPlugFormat::CLAP, FF_IS_FX != 0));
+  auto meta = FFPlugMeta(FBPlugFormat::CLAP, FF_IS_FX != 0);
+  FBLogInit(meta);
+  FBUtilityInit(meta);
   FBGUIInit();
   FBTuningInit();
   return true;

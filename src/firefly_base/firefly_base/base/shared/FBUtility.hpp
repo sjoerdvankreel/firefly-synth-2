@@ -72,6 +72,19 @@ inline int const FBDefaultDisplayPrecision = 3;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(x); \
   x() = default
 
+namespace FBUserGlobalSettingKeys
+{
+  std::string const LoadPatchFolder = "LoadPatchFolder";
+  std::string const SavePatchFolder = "SavePatchFolder";
+  std::string const SaveTopologyFolder = "SaveTopologyFolder";
+  std::string const SaveParamListFolder = "SaveParamListFolder";
+}
+
+void
+FBUtilityInit(FBStaticTopoMeta const& meta);
+void
+FBUtilityTerminate();
+
 std::string
 FBPitchToStringNotes(float pitch);
 std::string
@@ -124,3 +137,8 @@ FBGetPresetsFolderPath();
 // Log once per process if we encounter non-positive bpm.
 void
 FBWarnInvalidBpmOnce();
+
+bool
+FBGetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std::string& val);
+void
+FBSetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std::string const& val);

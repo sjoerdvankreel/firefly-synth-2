@@ -678,6 +678,7 @@ FBPlugGUI::LoadPatchFromFile()
 {
   FB_LOG_ENTRY_EXIT();
   HideAllOverlaysAndFileBrowsers();
+  InitFileBrowserPath(*_loadPatchBrowser, FBUserGlobalSettingKeys::LoadPatchFolder);
   _loadPatchBrowser->Show();
 }
 
@@ -686,6 +687,7 @@ FBPlugGUI::SavePatchToFile()
 {
   FB_LOG_ENTRY_EXIT();
   HideAllOverlaysAndFileBrowsers();
+  InitFileBrowserPath(*_savePatchBrowser, FBUserGlobalSettingKeys::SavePatchFolder);
   _savePatchBrowser->Show();
 }
 
@@ -694,6 +696,7 @@ FBPlugGUI::DumpTopologyToFile()
 {
   FB_LOG_ENTRY_EXIT();
   HideAllOverlaysAndFileBrowsers();
+  InitFileBrowserPath(*_saveTopologyBrowser, FBUserGlobalSettingKeys::SaveTopologyFolder);
   _saveTopologyBrowser->Show();
 }
 
@@ -702,6 +705,7 @@ FBPlugGUI::DumpParamListToFile()
 {
   FB_LOG_ENTRY_EXIT();
   HideAllOverlaysAndFileBrowsers();
+  InitFileBrowserPath(*_saveParamListBrowser, FBUserGlobalSettingKeys::SaveParamListFolder);
   _saveParamListBrowser->Show();
 }
 

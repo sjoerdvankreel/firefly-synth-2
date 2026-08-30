@@ -65,6 +65,7 @@ DeinitModule()
 {
   FBTuningTerminate();
   FBGUITerminate();
+  FBUtilityTerminate();
   FBLogTerminate();
   return true;
 }
@@ -72,7 +73,9 @@ DeinitModule()
 bool 
 InitModule()
 {
-  FBLogInit(FFPlugMeta(FBPlugFormat::VST3, FF_IS_FX != 0));
+  auto meta = FFPlugMeta(FBPlugFormat::CLAP, FF_IS_FX != 0);
+  FBLogInit(meta);
+  FBUtilityInit(meta);
   FBGUIInit();
   FBTuningInit();
   return true;

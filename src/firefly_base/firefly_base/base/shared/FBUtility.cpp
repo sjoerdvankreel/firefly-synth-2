@@ -12,6 +12,34 @@ using namespace juce;
 // turns out this is expensive to construct
 static std::locale const CLocale("C");
 
+static std::unique_ptr<juce::InterProcessLock> _interProcessLock = {};
+
+static juce::PropertiesFile
+GetUserGlobalSettingsFile(FBStaticTopoMeta const& meta)
+{
+  auto path = FBGetUserPluginDataFolder(meta) / "settings.xml";
+  auto file = juce::File(juce::String(path.string()));
+  PropertiesFile::Options options = {};
+  options.commonToAllUsers = false;
+  options.applicationName = meta.name;
+  options.processLock = _interProcessLock.get();
+  options.storageFormat = PropertiesFile::StorageFormat::storeAsXML;
+  return PropertiesFile(file, options);
+}
+
+void
+FBUtilityInit(FBStaticTopoMeta const& meta)
+{
+  auto name = FBPlugFormatToString(meta.format) + "-" + meta.id;
+  _interProcessLock = std::make_unique<juce::InterProcessLock>(name);
+}
+
+void
+FBUtilityTerminate()
+{
+  _interProcessLock.reset();
+}
+
 std::string
 FBToStringHz(float val, int precision)
 {
@@ -242,4 +270,21 @@ FBWarnInvalidBpmOnce()
   static std::atomic<bool> warned { false };
   if (!warned.exchange(true))
     FB_LOG_WARN("Invalid BPM value (bpm <= 0) for tempo-synced timing, falling back to 120 BPM.");
+}
+
+bool
+FBGetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std::string& val)
+{
+  auto propsFile = GetUserGlobalSettingsFile(meta);
+  if (!propsFile.containsKey(key))
+    return false;
+  val = propsFile.getValue(key).toStdString();
+  return true;
+}
+
+void
+FBSetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std::string const& val)
+{
+  auto propsFile = GetUserGlobalSettingsFile(meta);
+  propsFile.setValue(String(key), String(val));
 }

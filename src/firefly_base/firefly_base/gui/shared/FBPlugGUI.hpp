@@ -176,6 +176,7 @@ private:
 
   void SetupOverlayGUI();
   void SetupAboutBoxGUI();
+  void InitFileBrowserPath(FileBrowserComponent& browser, std::string const& key);
 
   void SetAudioParamNameOverride(int index);
   void ClearAudioParamNameOverride(int index);
