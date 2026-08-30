@@ -186,8 +186,9 @@ var
 FBRuntimeTopo::SavePatchStateToVar(FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext) const
 {
   auto result = new DynamicObject;
+  // "patchState" not "patch", thats used by major-minor-patch
   result->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext));
-  result->setProperty("patch", SaveEditStateToVar(editState, true));
+  result->setProperty("patchState", SaveEditStateToVar(editState, true));
   return var(result);
 }
 
@@ -282,10 +283,10 @@ FBRuntimeTopo::LoadEditAndGUIStateFromString(
 bool 
 FBRuntimeTopo::LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext& hostContext) const
 {
-  // 2.1.5: added paramNameOverrides, what was previously root is now "patch"
-  if (!json.hasProperty("patch"))
+  // 2.1.5: added paramNameOverrides, what was previously root is now "patchState"
+  if (!json.hasProperty("patchState"))
     return LoadEditStateFromVar(json, edit, true);
-  if (!LoadEditStateFromVar(json["patch"], edit, true))
+  if (!LoadEditStateFromVar(json["patchState"], edit, true))
     return false;
   if (json.hasProperty("paramNameOverrides"))
   {
