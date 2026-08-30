@@ -168,20 +168,27 @@ private:
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsVisibleDependents = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsEnabledDependents = {};
 
+  void SetupOverlayGUI();
+  void SetupAboutBoxGUI();
+
+  void SetAudioParamNameOverride(int index);
+  void ClearAudioParamNameOverride(int index);
+  void GUIParamNormalizedChanged(int index);
+  void AudioParamNormalizedChanged(int index);
+
   void ShowAboutBox();
   void ShowLogFolder();
   void ShowPluginFolder();
   void DumpTopologyToFile();
   void DumpParamListToFile();
 
-  void SetupOverlayGUI();
-  void SetupAboutBoxGUI();
-  void InitFileBrowserPath(FileBrowserComponent& browser, std::string const& key);
-
-  void SetAudioParamNameOverride(int index);
-  void ClearAudioParamNameOverride(int index);
-  void GUIParamNormalizedChanged(int index);
-  void AudioParamNormalizedChanged(int index);
+  void InitLoadPatchBrowser();
+  void InitSavePatchBrowser();
+  void InitDumpTopologyBrowser();
+  void InitDumpParamListBrowser();
+  
+  juce::File GetBrowserInitialPath(std::string const& browserKey);
+  void SetBrowserInitialPath(std::string const& browserKey, juce::File const& selected);
 
   bool LoadPatchFromText(
     std::string const& undoAction,

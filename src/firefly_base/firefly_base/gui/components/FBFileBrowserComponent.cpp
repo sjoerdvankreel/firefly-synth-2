@@ -19,10 +19,8 @@ FBFileBrowserComponent::
 FBFileBrowserComponent::
 FBFileBrowserComponent(
   FBPlugGUI* plugGUI, bool isSave,
-  std::string const& title,
-  std::string const& extension, 
-  std::string const& filterName,
-  std::function<void(File const&)> onSelect):
+  std::string const& title, std::string const& extension, std::string const& filterName,
+  juce::File initialPath, std::function<void(File const&)> onSelect):
 _plugGUI(plugGUI),
 _isSave(isSave),
 _extension(extension),
@@ -39,7 +37,7 @@ _onSelect(onSelect)
     browserFlags |= FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
   else
     browserFlags |= FileBrowserComponent::openMode | FileBrowserComponent::filenameBoxIsReadOnly;
-  _browser = std::make_unique<FileBrowserComponent>(browserFlags, File(), _filter.get(), nullptr);
+  _browser = std::make_unique<FileBrowserComponent>(browserFlags, initialPath, _filter.get(), nullptr);
   _browser->addListener(this);
   _grid = std::make_unique<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1, 0, }, std::vector<int> { 1, 0, 0, });
   _grid->Add(0, 0, 1, 3, _title.get());

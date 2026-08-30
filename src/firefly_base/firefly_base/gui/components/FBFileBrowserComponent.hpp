@@ -39,7 +39,7 @@ public:
   FBFileBrowserComponent(
     FBPlugGUI* plugGUI, bool isSave, std::string const& title,
     std::string const& extension, std::string const& filterName, 
-    std::function<void(juce::File const&)> onSelect);
+    juce::File initialPath, std::function<void(juce::File const&)> onSelect);
   
   void Show();
   void Hide();
