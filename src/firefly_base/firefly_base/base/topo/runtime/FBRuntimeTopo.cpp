@@ -49,6 +49,16 @@ MakeRuntimeModules(FBStaticTopo const& topo)
   return result;
 }
 
+static void
+CopyParamNameOverridesToHostContext(
+  std::map<int, std::string> const& paramNameOverrides,
+  FBHostGUIContext& hostContext)
+{
+  hostContext.ClearAudioParamNameOverrides();
+  for (auto kv : paramNameOverrides)
+    hostContext.SetAudioParamNameOverride(kv.first, kv.second);
+}
+
 FBRuntimeTopo::
 FBRuntimeTopo(std::unique_ptr<FBStaticTopo>&& topo_) :
   static_(std::move(topo_)),
@@ -112,102 +122,6 @@ FBRuntimeTopo::PrintParamList() const
   return result.str();
 }
 
-var
-FBRuntimeTopo::SaveEditStateToVar(
-  FBScalarStateContainer const& editState, bool patchOnly) const
-{
-  return SaveParamStateToVar(editState, audio.params, patchOnly);
-}
-
-var
-FBRuntimeTopo::SaveGUIStateToVar(
-  FBHostGUIContext const& hostContext) const
-{
-  DynamicObject* result = new DynamicObject;
-  result->setProperty("params", SaveParamStateToVar(*hostContext.GUIState(), this->gui.params, false));
-  result->setProperty("patchName", String(hostContext.GUIState()->PatchName()));
-  result->setProperty("themeName", String(hostContext.GUIState()->ThemeName()));
-  result->setProperty("instanceName", String(hostContext.GUIState()->InstanceName()));
-
-  std::string name;
-  DynamicObject* paramNameOverrides = new DynamicObject;
-  for(int p = 0; p < audio.params.size(); p++)
-    if (hostContext.GetAudioParamNameOverride(p, name))
-    {
-      auto tag = String(std::to_string(audio.params[p].tag));
-      paramNameOverrides->setProperty(tag, Base64::toBase64(String(name)));
-    }
-  result->setProperty("paramNameOverrides", var(paramNameOverrides));
-  return var(result);
-}
-
-bool
-FBRuntimeTopo::LoadEditStateFromVar(
-  var const& json, FBScalarStateContainer& editState, bool patchOnly) const
-{
-  return LoadParamStateFromVar(false, json, editState, audio, patchOnly);
-}
-
-bool 
-FBRuntimeTopo::LoadGUIStateFromVar(juce::var const& json, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides) const
-{
-  // 2.0.6 alpha 26, "gui" element split into "params" and "patchName"
-  if (json.hasProperty("params"))
-  {
-    if (!LoadParamStateFromVar(true, json["params"], guiState, this->gui, false))
-      return false;
-    if (json.hasProperty("patchName"))
-      guiState.SetPatchName(json["patchName"].toString().toStdString());
-    if (json.hasProperty("themeName"))
-      guiState.SetThemeName(json["themeName"].toString().toStdString());
-    if (json.hasProperty("instanceName"))
-      guiState.SetInstanceName(json["instanceName"].toString().toStdString());
-
-    // 2.1.5 added paramNameOverrides
-    if (json.hasProperty("paramNameOverrides"))
-    {
-      var const& paramNameOverridesVar = json["paramNameOverrides"];
-      if (auto* obj = paramNameOverridesVar.getDynamicObject())
-      {
-        for (auto const& prop : obj->getProperties())
-        {
-          char* unused = nullptr;
-          auto tagString = prop.name.toString().toStdString();
-          int tag = std::strtol(tagString.c_str(), &unused, 10);
-          auto iter = audio.paramTagToIndex.find(tag);
-          if (iter != audio.paramTagToIndex.end())
-          {
-            auto encoded = obj->getProperty(prop.name);
-            if (encoded.isString())
-            {
-              juce::MemoryOutputStream ostream;
-              if (Base64::convertFromBase64(ostream, encoded.toString()))
-                paramNameOverrides[iter->second] = ostream.toString().toStdString();
-            }
-          }
-        }
-      }
-    }
-
-    return true;
-  }
-
-  return LoadParamStateFromVar(true, json, guiState, this->gui, false);
-}
-
-bool
-FBRuntimeTopo::LoadGUIStateFromVar(
-  var const& json, FBHostGUIContext& hostContext) const
-{
-  std::map<int, std::string> paramNameOverrides;
-  if (!LoadGUIStateFromVar(json, *hostContext.GUIState(), paramNameOverrides))
-    return false;
-  hostContext.ClearAudioParamNameOverrides();
-  for (auto kv : paramNameOverrides)
-    hostContext.SetAudioParamNameOverride(kv.first, kv.second);
-  return true;
-}
-
 std::string
 FBRuntimeTopo::SaveGUIStateToString(
   FBHostGUIContext const& hostContext) const
@@ -230,10 +144,23 @@ FBRuntimeTopo::SaveEditStateToString(
 }
 
 std::string
+FBRuntimeTopo::SavePatchStateToString(FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext) const
+{
+  return JSON::toString(SavePatchStateToVar(editState, hostContext)).toStdString();
+}
+
+std::string
 FBRuntimeTopo::SaveEditAndGUIStateToString(
   FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext, bool patchOnly) const
 {
   return JSON::toString(SaveEditAndGUIStateToVar(editState, hostContext, patchOnly)).toStdString();
+}
+
+var
+FBRuntimeTopo::SaveEditStateToVar(
+  FBScalarStateContainer const& editState, bool patchOnly) const
+{
+  return SaveParamStateToVar(editState, audio.params, patchOnly);
 }
 
 var
@@ -243,6 +170,32 @@ FBRuntimeTopo::SaveProcStateToVar(
   FBScalarStateContainer editState(*this);
   editState.CopyFrom(this, procState, patchOnly);
   return SaveEditStateToVar(editState, patchOnly);
+}
+
+var
+FBRuntimeTopo::SaveEditAndGUIStateToVar(
+  FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext, bool patchOnly) const
+{
+  auto result = new DynamicObject;
+  result->setProperty("gui", SaveGUIStateToVar(hostContext));
+  result->setProperty("edit", SaveEditStateToVar(editState, patchOnly));
+  return var(result);
+}
+
+var 
+FBRuntimeTopo::SavePatchStateToVar(FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext) const
+{
+  auto result = new DynamicObject;
+  result->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext));
+  result->setProperty("patch", SaveEditStateToVar(editState, true));
+  return var(result);
+}
+
+bool
+FBRuntimeTopo::LoadEditStateFromVar(
+  var const& json, FBScalarStateContainer& editState, bool patchOnly) const
+{
+  return LoadParamStateFromVar(false, json, editState, audio, patchOnly);
 }
 
 bool
@@ -266,7 +219,7 @@ FBRuntimeTopo::LoadGUIStateFromString(
   return LoadGUIStateFromVar(json, hostContext);
 }
 
-bool 
+bool
 FBRuntimeTopo::LoadGUIStateFromString(
   std::string const& text, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides) const
 {
@@ -296,6 +249,15 @@ FBRuntimeTopo::LoadEditStateFromString(
   return LoadEditStateFromVar(json, editState, patchOnly);
 }
 
+bool 
+FBRuntimeTopo::LoadPatchStateFromString(std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext& hostContext) const
+{
+  var json;
+  if (!FBParseJson(text, json))
+    return false;
+  return LoadPatchStateFromVar(json, editState, hostContext);
+}
+
 bool
 FBRuntimeTopo::LoadEditAndGUIStateFromString(
   std::string const& text,
@@ -317,78 +279,35 @@ FBRuntimeTopo::LoadEditAndGUIStateFromString(
   return LoadEditAndGUIStateFromVar(json, editState, guiState, paramNameOverrides, patchOnly);
 }
 
-void
-FBRuntimeTopo::LoadGUIStateFromStringWithDryRun(
-  std::string const& text, FBHostGUIContext& hostContext) const
-{
-  FBGUIStateContainer dryGUIState(*this);
-  std::map<int, std::string> paramNameOverrides;
-  if (LoadGUIStateFromString(text, dryGUIState, paramNameOverrides))
-  {
-    hostContext.GUIState()->CopyFrom(dryGUIState);
-    hostContext.GUIState()->SetPatchName(dryGUIState.PatchName());
-    hostContext.GUIState()->SetThemeName(dryGUIState.ThemeName());
-    hostContext.GUIState()->SetInstanceName(dryGUIState.InstanceName());
-    hostContext.ClearAudioParamNameOverrides();
-    for (auto kv : paramNameOverrides)
-      hostContext.SetAudioParamNameOverride(kv.first, kv.second);
-  }
-}
-
-void
-FBRuntimeTopo::LoadProcStateFromStringWithDryRun(
-  std::string const& text, FBProcStateContainer& procState, bool patchOnly) const
-{
-  FBScalarStateContainer dryEditState(*this);
-  dryEditState.CopyFrom(this, procState, patchOnly);
-  if (LoadEditStateFromString(text, dryEditState, patchOnly))
-    procState.InitProcessing(dryEditState);
-}
-
-void
-FBRuntimeTopo::LoadEditStateFromStringWithDryRun(
-  std::string const& text, FBScalarStateContainer& editState, bool patchOnly) const
-{
-  FBScalarStateContainer dryEditState(*this);
-  dryEditState.CopyFrom(this, editState, patchOnly);
-  if (LoadEditStateFromString(text, dryEditState, patchOnly))
-    editState.CopyFrom(this, dryEditState, patchOnly);
-}
-
-void
-FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
-  std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext& hostContext, bool patchOnly) const
-{
-  FBGUIStateContainer dryGUIState(*this);
-  FBScalarStateContainer dryEditState(*this);
-  std::map<int, std::string> paramNameOverrides;
-  dryGUIState.CopyFrom(*hostContext.GUIState());
-  dryEditState.CopyFrom(this, editState, patchOnly);
-  if (!LoadEditAndGUIStateFromString(text, dryEditState, dryGUIState, paramNameOverrides, patchOnly))
-    return;
-  editState.CopyFrom(this, dryEditState, patchOnly);
-  hostContext.GUIState()->CopyFrom(dryGUIState);
-  hostContext.GUIState()->SetPatchName(dryGUIState.PatchName());
-  hostContext.GUIState()->SetThemeName(dryGUIState.ThemeName());
-  hostContext.GUIState()->SetInstanceName(dryGUIState.InstanceName());
-  hostContext.ClearAudioParamNameOverrides();
-  for (auto kv : paramNameOverrides)
-    hostContext.SetAudioParamNameOverride(kv.first, kv.second);
-}
-
-var
-FBRuntimeTopo::SaveEditAndGUIStateToVar(
-  FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext, bool patchOnly) const
-{
-  auto guiStateVar = SaveGUIStateToVar(hostContext);
-  auto editStateVar = SaveEditStateToVar(editState, patchOnly);
-  auto result = new DynamicObject;
-  result->setProperty("gui", guiStateVar);
-  result->setProperty("edit", editStateVar);
-  return var(result);
-}
-
 bool 
+FBRuntimeTopo::LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext& hostContext) const
+{
+  // 2.1.5: added paramNameOverrides, what was previously root is now "patch"
+  if (!json.hasProperty("patch"))
+    return LoadEditStateFromVar(json, edit, true);
+  if (!LoadEditStateFromVar(json["patch"], edit, true))
+    return false;
+  if (json.hasProperty("paramNameOverrides"))
+  {
+    std::map<int, std::string> paramNameOverrides;
+    LoadParamNameOverridesFromVar(json["paramNameOverrides"], paramNameOverrides);
+    CopyParamNameOverridesToHostContext(paramNameOverrides, hostContext);
+  }
+  return true;
+}
+
+bool
+FBRuntimeTopo::LoadGUIStateFromVar(
+  var const& json, FBHostGUIContext& hostContext) const
+{
+  std::map<int, std::string> paramNameOverrides;
+  if (!LoadGUIStateFromVar(json, *hostContext.GUIState(), paramNameOverrides))
+    return false;
+  CopyParamNameOverridesToHostContext(paramNameOverrides, hostContext);
+  return true;
+}
+
+bool
 FBRuntimeTopo::LoadEditAndGUIStateFromVar(
   juce::var const& json, FBScalarStateContainer& editState, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, bool patchOnly) const
 {
@@ -411,17 +330,138 @@ FBRuntimeTopo::LoadEditAndGUIStateFromVar(
   std::map<int, std::string> paramNameOverrides;
   if (obj->hasProperty("gui"))
     if (LoadGUIStateFromVar(obj->getProperty("gui"), *hostContext.GUIState(), paramNameOverrides))
-    {
-      hostContext.ClearAudioParamNameOverrides();
-      for (auto kv : paramNameOverrides)
-        hostContext.SetAudioParamNameOverride(kv.first, kv.second);
-    }
+      CopyParamNameOverridesToHostContext(paramNameOverrides, hostContext);
   if (obj->hasProperty("edit"))
     return LoadEditStateFromVar(obj->getProperty("edit"), editState, patchOnly);
   FB_LOG_ERROR("Missing edit state.");
   FBScalarStateContainer editDefaultState(*this);
   editState.CopyFrom(this, editDefaultState, patchOnly);
   return true;
+}
+
+void
+FBRuntimeTopo::LoadProcStateFromStringWithDryRun(
+  std::string const& text, FBProcStateContainer& procState, bool patchOnly) const
+{
+  FBScalarStateContainer dryEditState(*this);
+  dryEditState.CopyFrom(this, procState, patchOnly);
+  if (LoadEditStateFromString(text, dryEditState, patchOnly))
+    procState.InitProcessing(dryEditState);
+}
+
+void
+FBRuntimeTopo::LoadGUIStateFromStringWithDryRun(
+  std::string const& text, FBHostGUIContext& hostContext) const
+{
+  FBGUIStateContainer dryGUIState(*this);
+  std::map<int, std::string> paramNameOverrides;
+  if (LoadGUIStateFromString(text, dryGUIState, paramNameOverrides))
+  {
+    hostContext.GUIState()->CopyFrom(dryGUIState);
+    hostContext.GUIState()->SetPatchName(dryGUIState.PatchName());
+    hostContext.GUIState()->SetThemeName(dryGUIState.ThemeName());
+    hostContext.GUIState()->SetInstanceName(dryGUIState.InstanceName());
+    CopyParamNameOverridesToHostContext(paramNameOverrides, hostContext);
+  }
+}
+
+void
+FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
+  std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext& hostContext, bool patchOnly) const
+{
+  FBGUIStateContainer dryGUIState(*this);
+  FBScalarStateContainer dryEditState(*this);
+  std::map<int, std::string> paramNameOverrides;
+  dryGUIState.CopyFrom(*hostContext.GUIState());
+  dryEditState.CopyFrom(this, editState, patchOnly);
+  if (!LoadEditAndGUIStateFromString(text, dryEditState, dryGUIState, paramNameOverrides, patchOnly))
+    return;
+  editState.CopyFrom(this, dryEditState, patchOnly);
+  hostContext.GUIState()->CopyFrom(dryGUIState);
+  hostContext.GUIState()->SetPatchName(dryGUIState.PatchName());
+  hostContext.GUIState()->SetThemeName(dryGUIState.ThemeName());
+  hostContext.GUIState()->SetInstanceName(dryGUIState.InstanceName());
+  CopyParamNameOverridesToHostContext(paramNameOverrides, hostContext);
+}
+
+var 
+FBRuntimeTopo::SaveParamNameOverridesToVar(FBHostGUIContext const& hostContext) const
+{
+  std::string name;
+  DynamicObject* result = new DynamicObject;
+  for (int p = 0; p < audio.params.size(); p++)
+    if (hostContext.GetAudioParamNameOverride(p, name))
+    {
+      auto tag = String(std::to_string(audio.params[p].tag));
+      result->setProperty(tag, Base64::toBase64(String(name)));
+    }
+  return var(result);
+}
+
+bool
+FBRuntimeTopo::LoadParamNameOverridesFromVar(var const& json, std::map<int, std::string>& paramNameOverrides) const
+{
+  paramNameOverrides.clear();
+  auto* obj = json.getDynamicObject();
+  if (obj == nullptr)
+    return false;
+
+  for (auto const& prop : obj->getProperties())
+  {
+    char* unused = nullptr;
+    auto tagString = prop.name.toString().toStdString();
+    int tag = std::strtol(tagString.c_str(), &unused, 10);
+    auto iter = audio.paramTagToIndex.find(tag);
+    if (iter != audio.paramTagToIndex.end())
+    {
+      auto encoded = obj->getProperty(prop.name);
+      if (encoded.isString())
+      {
+        juce::MemoryOutputStream ostream;
+        if (Base64::convertFromBase64(ostream, encoded.toString()))
+          paramNameOverrides[iter->second] = ostream.toString().toStdString();
+      }
+    }
+  }
+  return true;
+}
+
+var
+FBRuntimeTopo::SaveGUIStateToVar(
+  FBHostGUIContext const& hostContext) const
+{
+  DynamicObject* result = new DynamicObject;
+  result->setProperty("params", SaveParamStateToVar(*hostContext.GUIState(), this->gui.params, false));
+  result->setProperty("patchName", String(hostContext.GUIState()->PatchName()));
+  result->setProperty("themeName", String(hostContext.GUIState()->ThemeName()));
+  result->setProperty("instanceName", String(hostContext.GUIState()->InstanceName()));
+  result->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext));
+  return var(result);
+}
+
+bool 
+FBRuntimeTopo::LoadGUIStateFromVar(juce::var const& json, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides) const
+{
+  // 2.0.6 alpha 26, "gui" element split into "params" and "patchName"
+  if (json.hasProperty("params"))
+  {
+    if (!LoadParamStateFromVar(true, json["params"], guiState, this->gui, false))
+      return false;
+    if (json.hasProperty("patchName"))
+      guiState.SetPatchName(json["patchName"].toString().toStdString());
+    if (json.hasProperty("themeName"))
+      guiState.SetThemeName(json["themeName"].toString().toStdString());
+    if (json.hasProperty("instanceName"))
+      guiState.SetInstanceName(json["instanceName"].toString().toStdString());
+
+    // 2.1.5 added paramNameOverrides
+    if (json.hasProperty("paramNameOverrides"))
+      LoadParamNameOverridesFromVar(json["paramNameOverrides"], paramNameOverrides);
+
+    return true;
+  }
+
+  return LoadParamStateFromVar(true, json, guiState, this->gui, false);
 }
 
 template <class TContainer, class TParam>
