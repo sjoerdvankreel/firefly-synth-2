@@ -10,12 +10,13 @@ using namespace juce;
 
 FBParamNameEditor::
 FBParamNameEditor(FBPlugGUI* plugGUI, int):
-_plugGUI(plugGUI)
+_plugGUI(plugGUI), _filter(63, "")
 {
   auto lnf = FBGetLookAndFeelFor(plugGUI);
   addListener(this);
   setFont(lnf->GetFont());
   setPopupMenuEnabled(false);
+  setInputFilter(&_filter, false);
 }
 
 void 

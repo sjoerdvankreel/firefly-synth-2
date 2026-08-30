@@ -11,6 +11,7 @@ public juce::TextEditor::Listener
 {
   int _paramIndex = -1;
   FBPlugGUI* const _plugGUI;
+  LengthAndCharacterRestriction _filter;
 
 public:
   FBParamNameEditor(FBPlugGUI* plugGUI, int fixedWidth);
