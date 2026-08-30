@@ -10,7 +10,7 @@ using namespace juce;
 
 FBParamNameEditor::
 FBParamNameEditor(FBPlugGUI* plugGUI, int):
-_plugGUI(plugGUI), _filter(63, "")
+_plugGUI(plugGUI), _filter(127, "")
 {
   auto lnf = FBGetLookAndFeelFor(plugGUI);
   addListener(this);
