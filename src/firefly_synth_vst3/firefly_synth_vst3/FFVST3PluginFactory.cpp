@@ -73,7 +73,7 @@ DeinitModule()
 bool 
 InitModule()
 {
-  auto meta = FFPlugMeta(FBPlugFormat::CLAP, FF_IS_FX != 0);
+  auto meta = FFPlugMeta(FBPlugFormat::VST3, FF_IS_FX != 0);
   FBLogInit(meta);
   FBUtilityInit(meta);
   FBGUIInit();
