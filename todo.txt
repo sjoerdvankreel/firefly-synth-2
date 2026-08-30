@@ -3,6 +3,7 @@
 [x] allow longer lfo period both hz and sync
 [x] labeled aux controls => show in tooltip and generic editor + TEST EVERYTHING + clear-all-overrides + manual + gui things + actual edit box
 [x] store last selected patch folder in global settings on disk
+[ ] screenshots for themes
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] gather the presets + gateway
 [ ] dark theme
