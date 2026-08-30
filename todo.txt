@@ -2,6 +2,8 @@
 [x] fix the arch thingy
 [x] allow longer lfo period both hz and sync
 [x] labeled aux controls => show in tooltip and generic editor + TEST EVERYTHING + clear-all-overrides + manual + gui things + actual edit box
+[ ] store last selected patch folder in global settings on disk
+[ ] allow click + on first disabled matrix slot
 [ ] update manual + screenshots et all
 [ ] update all the hosts
 [ ] dark theme
@@ -21,8 +23,6 @@
 [ ] override all-osci unison
 [ ] GLFO_N->X everywhere you can do VLFO_N->X
 [ ] tooltips for time stuff in hz and seconds?
-[ ] store last selected patch folder in global settings on disk
-[ ] allow click + on first disabled matrix slot
 
 fix the string oversample bug already
 allow full fx module inside the feedback delay
