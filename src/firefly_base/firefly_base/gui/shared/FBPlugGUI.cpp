@@ -10,6 +10,7 @@
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
+#include <firefly_base/gui/controls/FBParamNameEditor.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBImageComponent.hpp>
@@ -68,6 +69,7 @@ _lookAndFeel(std::make_unique<FBLookAndFeel>())
   addMouseListener(this, true);
   SetupOverlayGUI();
   SetupAboutBoxGUI();
+  _paramNameEditor = StoreComponent<FBParamNameEditor>(this, 240);
 }
 
 FBTheme const& 
@@ -200,9 +202,11 @@ FBPlugGUI::RemoveParamListener(IFBParamListener* listener)
 void
 FBPlugGUI::SetAudioParamNameOverride(int index)
 {
-  static int TEMP = 9;
-  _hostContext->SetAudioParamNameOverride(index, std::to_string(TEMP++));
-  _hostContext->NotifyHostOfParamNameChanges();
+  _paramNameEditor->SetParamIndex(index);
+  auto const& runtimeParam = HostContext()->Topo()->audio.params[index];
+  auto const& indices = HostContext()->Topo()->modules[runtimeParam.runtimeModuleIndex].topoIndices;
+  std::string title = "Edit " + runtimeParam.shortName + " name";
+  ShowOverlayComponent(title, indices.index, indices.slot, _paramNameEditor, 300, 120, false, []() {});
 }
 
 void

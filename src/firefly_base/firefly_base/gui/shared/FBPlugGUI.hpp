@@ -28,6 +28,7 @@ class FBHostGUIContext;
 class FBMarginComponent;
 class FBContentComponent;
 class FBStackingComponent;
+class FBParamNameEditor;
 struct FBParamTopoIndices;
 
 // Well here goes my nice distinction between plug and base library again.
@@ -155,6 +156,7 @@ private:
   std::unique_ptr<FBFileBrowserComponent> _saveTopologyBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _saveParamListBrowser = {};
 
+  FBParamNameEditor* _paramNameEditor = {};
   FBStackingComponent* _aboutBoxStack = {};
   juce::TooltipWindow* _tooltipWindow = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
