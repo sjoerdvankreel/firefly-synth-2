@@ -4,6 +4,7 @@
 [x] labeled aux controls => show in tooltip and generic editor + TEST EVERYTHING + clear-all-overrides + manual + gui things + actual edit box
 [x] store last selected patch folder in global settings on disk
 [x] more themes
+[ ] after init, load, etc, should select the first graph of everything
 
 [ ] screenshots for themes
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
@@ -11,7 +12,6 @@
 [ ] fix the comp and the rms comp
 [ ] update manual + screenshots et all
 [ ] switch to MIT ?
-[ ] after init, load, etc, should select the first graph of everything
 [ ] fix the 1sec delay on plot visuals
 [ ] programmatic dump screenshot?
 [ ] fix the build scripts for linux-arm
