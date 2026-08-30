@@ -6,7 +6,7 @@
 [x] more themes
 [ ] after init, load, etc, should select the first graph of everything + NOT track it anymore
 
-[ ] screenshots for themes
+[ ] screenshots for themes + big pad video with pretty green theme
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] gather the presets + gateway
 [ ] fix the comp and the rms comp
