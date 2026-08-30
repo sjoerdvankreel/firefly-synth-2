@@ -205,7 +205,8 @@ FBPlugGUI::SetAudioParamNameOverride(int index)
   _paramNameEditor->InitEdit(index);
   auto const& runtimeParam = HostContext()->Topo()->audio.params[index];
   auto const& indices = HostContext()->Topo()->modules[runtimeParam.runtimeModuleIndex].topoIndices;
-  ShowOverlayComponent("Edit Param Name", indices.index, indices.slot, _paramNameEditor, 240, 70, true, [this, index]() { ClearAudioParamNameOverride(index); });
+  ShowOverlayComponent("Edit Param Name", indices.index, indices.slot, _paramNameEditor, 240, 70, true, 
+    [this, index]() { _paramNameEditor->ClearEdit(index); });
 }
 
 void

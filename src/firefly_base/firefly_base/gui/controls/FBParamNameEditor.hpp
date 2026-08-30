@@ -17,6 +17,7 @@ public:
   FBParamNameEditor(FBPlugGUI* plugGUI, int fixedWidth);
 
   void InitEdit(int paramIndex);
+  void ClearEdit(int paramIndex);
   void paint(juce::Graphics& g) override;
   void textEditorTextChanged(juce::TextEditor&) override;
   void textEditorFocusLost(juce::TextEditor&) override {}
