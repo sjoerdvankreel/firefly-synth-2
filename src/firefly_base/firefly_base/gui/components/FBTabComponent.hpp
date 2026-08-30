@@ -24,19 +24,15 @@ class FBModuleSelector
 {
 protected:
   FBPlugGUI* const _plugGUI;
-  FBRuntimeGUIParam const* const _param;
-  int _storedSelection = -1;
   std::vector<FBTopoIndices> _moduleIndices = {};
 
-  FBModuleSelector(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param);
+  FBModuleSelector(FBPlugGUI* plugGUI);
   void SelectModuleGUI(int index);
   void ShowModulePopupMenuFor(int index, juce::Component* clicked);
 
 public:
   juce::PopupMenu extendedMenu = {};
   std::function<void(FBPlugGUI* plugGUI, FBTopoIndices const&, int)> extendedMenuHandler = {};
-
-  virtual void ActivateStoredSelection() = 0;
 };
 
 class FBTabBarButton:
@@ -130,14 +126,12 @@ public FBModuleSelector
   void Select(int index);
 
 public:
-  FBSelectComponent(
-    FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param,
+  FBSelectComponent(FBPlugGUI* plugGUI, 
     std::vector<int> const& rows, std::vector<int> const& cols);
 
   void resized() override;
   void mouseUp(const juce::MouseEvent& event) override;
 
-  void ActivateStoredSelection() override;
   void AddLabel(int row, int col, std::string const& text);
   void AddSelector(int row, int col, FBTopoIndices const& moduleIndices, std::string const& text, juce::Component* component);
 };

@@ -414,9 +414,7 @@ Component*
 FFMakeOsciGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto topo = plugGUI->HostContext()->Topo();
-  auto moduleParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::OscSelectedTab, 0 } });
-  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, moduleParam, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0 });
+  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0 });
   select->AddLabel(0, 0, "OSC");
   select->AddSelector(1, 0, { (int)FFModuleType::OsciMod, 0 }, "Mod", FFMakeOsciModTab(plugGUI));
   for (int i = 0; i < FFOsciCount; i++)
@@ -425,7 +423,6 @@ FFMakeOsciGUI(FBPlugGUI* plugGUI)
     int c = 1 + i % 2;
     select->AddSelector(r, c, { (int)FFModuleType::Osci, i }, std::to_string(i + 1), MakeOsciTab(plugGUI, i));
   }
-  select->ActivateStoredSelection();
   return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::OscSelector, select);
 }
 

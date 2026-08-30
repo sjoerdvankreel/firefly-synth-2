@@ -19,11 +19,8 @@ Component*
 FFMakeMixGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto topo = plugGUI->HostContext()->Topo();
-  auto moduleParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::MixSelectedTab, 0 } });
-  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, moduleParam, std::vector<int> { 1, 1 }, std::vector<int> { 1 });
+  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 1 });
   select->AddSelector(0, 0, { (int)FFModuleType::VMix, 0 }, "VMix", FFMakeVMixGUITab(plugGUI));
   select->AddSelector(1, 0, { (int)FFModuleType::GMix, 0 }, "GMix", FFMakeGMixGUITab(plugGUI));
-  select->ActivateStoredSelection();
   return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::MixSelector, select);
 }

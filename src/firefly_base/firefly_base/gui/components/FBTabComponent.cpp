@@ -13,21 +13,14 @@
 using namespace juce;
 
 FBModuleSelector::
-FBModuleSelector(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
-_plugGUI(plugGUI), _param(param)
-{
-  double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(_param->runtimeParamIndex);
-  _storedSelection = _param->static_.Discrete().NormalizedToPlainFast((float)normalized);
-}
+FBModuleSelector(FBPlugGUI* plugGUI):
+_plugGUI(plugGUI) {}
 
 void 
 FBModuleSelector::SelectModuleGUI(int index)
 {
   auto const& indices = _moduleIndices[index];
   _plugGUI->ActiveModuleSlotChanged(indices.index, indices.slot);
-  double normalized = _param->static_.Discrete().PlainToNormalizedFast(index);
-  _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
-  _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
 }
 
 void 
@@ -166,8 +159,8 @@ FBSelectButton::mouseUp(const MouseEvent& event)
 }
 
 FBSelectComponent::
-FBSelectComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, std::vector<int> const& rows, std::vector<int> const& cols):
-FBModuleSelector(plugGUI, param),
+FBSelectComponent(FBPlugGUI* plugGUI, std::vector<int> const& rows, std::vector<int> const& cols):
+FBModuleSelector(plugGUI),
 _rows((int)rows.size()), _cols((int)cols.size())
 {
   _content = std::make_unique<FBContentComponent>();
@@ -186,13 +179,6 @@ FBSelectComponent::resized()
 {
   _mainGrid->setBounds(getLocalBounds());
   _mainGrid->resized();
-}
-
-void
-FBSelectComponent::ActivateStoredSelection()
-{
-  if (0 <= _storedSelection && _storedSelection < _moduleIndices.size())
-    Select(_storedSelection);
 }
 
 void 
