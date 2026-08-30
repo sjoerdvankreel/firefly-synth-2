@@ -1,9 +1,9 @@
-[ ] update manual + screenshots et all
-[ ] update all the hosts
 [x] update the libs
 [x] fix the arch thingy
 [x] allow longer lfo period both hz and sync
-[ ] labeled aux controls => show in tooltip and generic editor + TEST EVERYTHING + clear-all-overrides + manual + gui things + actual edit box
+[x] labeled aux controls => show in tooltip and generic editor + TEST EVERYTHING + clear-all-overrides + manual + gui things + actual edit box
+[ ] update manual + screenshots et all
+[ ] update all the hosts
 [ ] dark theme
 [ ] fix the comp and the rms comp
 [ ] switch to MIT
