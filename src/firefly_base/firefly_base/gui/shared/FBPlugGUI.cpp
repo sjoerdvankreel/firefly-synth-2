@@ -590,21 +590,23 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   auto& undoState = HostContext()->UndoState();
   PopupMenu menu;
   menu.addItem(1, "About");
-  menu.addItem(7, "Copy Patch");
-  menu.addItem(8, "Paste Patch");
   menu.addItem(2, "Show Manual");
+  menu.addItem(3, "Clear Param Names");
   menu.addSeparator();
-  menu.addItem(3, "Dump Topology");
-  menu.addItem(4, "Dump Param List");
-  menu.addItem(5, "Show Log Folder");
-  menu.addItem(6, "Show Plugin Folder");
+  menu.addItem(4, "Copy Patch");
+  menu.addItem(5, "Paste Patch");
+  menu.addSeparator();
+  menu.addItem(6, "Dump Topology");
+  menu.addItem(7, "Dump Param List");
+  menu.addItem(8, "Show Log Folder");
+  menu.addItem(9, "Show Plugin Folder");
   menu.addSeparator();
   if (undoState.CanUndo() || undoState.CanRedo())
     menu.addSeparator();
   if (undoState.CanUndo())
-    menu.addItem(9, "Undo " + undoState.UndoAction());
+    menu.addItem(10, "Undo " + undoState.UndoAction());
   if (undoState.CanRedo())
-    menu.addItem(10, "Redo " + undoState.RedoAction());
+    menu.addItem(11, "Redo " + undoState.RedoAction());
 
   PopupMenu::Options options;
   auto lnf = FBGetLookAndFeelFor(this);
@@ -614,18 +616,22 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
   menu.showMenuAsync(options, [this](int id) {
     if (id == 1) ShowAboutBox();
     if (id == 2) HostContext()->ShowOnlineManual();
-    if (id == 3) DumpTopologyToFile();
-    if (id == 4) DumpParamListToFile();
-    if (id == 5) ShowLogFolder();
-    if (id == 6) ShowPluginFolder();
-    if (id == 9) HostContext()->UndoState().Undo();
-    if (id == 10) HostContext()->UndoState().Redo();
-    if (id == 7) {
+    if (id == 6) DumpTopologyToFile();
+    if (id == 7) DumpParamListToFile();
+    if (id == 8) ShowLogFolder();
+    if (id == 9) ShowPluginFolder();
+    if (id == 10) HostContext()->UndoState().Undo();
+    if (id == 11) HostContext()->UndoState().Redo();
+    if (id == 3) {
+      HostContext()->ClearAudioParamNameOverrides();
+      HostContext()->NotifyHostOfParamNameChanges();
+    }
+    if (id == 4) {
       FBScalarStateContainer editState(*HostContext()->Topo());
       editState.CopyFrom(HostContext(), true);
       SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SavePatchStateToString(editState, *HostContext()));
     }
-    if (id == 8) {
+    if (id == 5) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
         AlertWindow::showMessageBoxAsync(
           MessageBoxIconType::NoIcon,
