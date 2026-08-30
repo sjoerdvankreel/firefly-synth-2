@@ -8,9 +8,11 @@
 
 using namespace juce;
 
+// 126 is quite arbitrary,
+// but it's the max bitwig accepts before reverting to generic names
 FBParamNameEditor::
 FBParamNameEditor(FBPlugGUI* plugGUI, int):
-_plugGUI(plugGUI), _filter(127, "")
+_plugGUI(plugGUI), _filter(126, "")
 {
   auto lnf = FBGetLookAndFeelFor(plugGUI);
   addListener(this);
