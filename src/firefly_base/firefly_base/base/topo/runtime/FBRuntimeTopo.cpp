@@ -285,7 +285,10 @@ FBRuntimeTopo::LoadPatchStateFromVar(juce::var const& json, FBScalarStateContain
 {
   // 2.1.5: added paramNameOverrides, what was previously root is now "patchState"
   if (!json.hasProperty("patchState"))
+  {
+    hostContext.ClearAudioParamNameOverrides();
     return LoadEditStateFromVar(json, edit, true);
+  }
   if (!LoadEditStateFromVar(json["patchState"], edit, true))
     return false;
   if (json.hasProperty("paramNameOverrides"))
@@ -456,6 +459,7 @@ FBRuntimeTopo::LoadGUIStateFromVar(juce::var const& json, FBGUIStateContainer& g
       guiState.SetInstanceName(json["instanceName"].toString().toStdString());
 
     // 2.1.5 added paramNameOverrides
+    paramNameOverrides.clear();
     if (json.hasProperty("paramNameOverrides"))
       LoadParamNameOverridesFromVar(json["paramNameOverrides"], paramNameOverrides);
 
