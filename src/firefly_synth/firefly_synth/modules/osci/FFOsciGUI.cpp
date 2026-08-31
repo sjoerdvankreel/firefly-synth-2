@@ -414,7 +414,12 @@ Component*
 FFMakeOsciGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0 }, []() { return 0; });
+  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0 }, [plugGUI]() { 
+    for (int i = 0; i < FFOsciCount; i++)
+      if (plugGUI->HostContext()->GetAudioParamList<FFOsciType>({ { (int)FFModuleType::Osci, i }, { (int)FFOsciParam::Type, 0 } }) != FFOsciType::Off)
+        return i + 1;
+    return 1; 
+  });
   select->AddLabel(0, 0, "OSC");
   select->AddSelector(1, 0, { (int)FFModuleType::OsciMod, 0 }, "Mod", FFMakeOsciModTab(plugGUI));
   for (int i = 0; i < FFOsciCount; i++)
