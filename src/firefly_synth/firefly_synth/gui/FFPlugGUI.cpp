@@ -219,29 +219,31 @@ FFPlugGUI::RequestGUIReset()
   FBPlugGUI::RequestGUIReset();
   _tabs->setCurrentTabIndex(0);
 
-  if (!HostContext()->Topo()->static_->meta.isFx)
-  {
-    for (int i = 0; i < FFOsciCount; i++)
-      if (HostContext()->GetAudioParamList<FFOsciType>({ { (int)FFModuleType::Osci, i }, { (int)FFOsciParam::Type, 0 } }) != FFOsciType::Off)
-      {
-        ModuleSlotClicked((int)FFModuleType::Osci, i);
-        break;
-      }
-  }
-  else if (HostContext()->GetAudioParamList<FFGEchoTarget>({ { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } }) != FFGEchoTarget::Off)
-  {
-    ModuleSlotClicked((int)FFModuleType::GEcho, 0);
-  }
-  else
-  {
-    for (int i = 0; i < FFEffectCount; i++)
-      if (HostContext()->GetAudioParamBool({ { (int)FFModuleType::GEffect, i }, { (int)FFEffectParam::On, 0 } }))
-      {
-        ModuleSlotClicked((int)FFModuleType::GEffect, i);
-        return;
-      }
-    ModuleSlotClicked((int)FFModuleType::GEffect, 0);
-  }
+  MessageManager::callAsync([this]() {
+    if (!HostContext()->Topo()->static_->meta.isFx)
+    {
+      for (int i = 0; i < FFOsciCount; i++)
+        if (HostContext()->GetAudioParamList<FFOsciType>({ { (int)FFModuleType::Osci, i }, { (int)FFOsciParam::Type, 0 } }) != FFOsciType::Off)
+        {
+          ModuleSlotClicked((int)FFModuleType::Osci, i);
+          break;
+        }
+    }
+    else if (HostContext()->GetAudioParamList<FFGEchoTarget>({ { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } }) != FFGEchoTarget::Off)
+    {
+      ModuleSlotClicked((int)FFModuleType::GEcho, 0);
+    }
+    else
+    {
+      for (int i = 0; i < FFEffectCount; i++)
+        if (HostContext()->GetAudioParamBool({ { (int)FFModuleType::GEffect, i }, { (int)FFEffectParam::On, 0 } }))
+        {
+          ModuleSlotClicked((int)FFModuleType::GEffect, i);
+          return;
+        }
+      ModuleSlotClicked((int)FFModuleType::GEffect, 0);
+    }
+  });
 }
 
 void 
