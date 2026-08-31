@@ -219,6 +219,7 @@ FFPlugGUI::RequestGUIReset()
   FBPlugGUI::RequestGUIReset();
   _tabs->setCurrentTabIndex(0);
 
+  // TODO NOT GOOD
   MessageManager::callAsync([this]() {
     if (!HostContext()->Topo()->static_->meta.isFx)
     {
