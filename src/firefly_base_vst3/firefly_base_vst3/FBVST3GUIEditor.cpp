@@ -31,7 +31,13 @@ FBVST3GUIEditor::
   dynamic_cast<FBVST3EditController&>(*getController()).ResetView();
 }
 
-void 
+void
+FBVST3GUIEditor::RequestGUIReset()
+{
+  _gui->RequestGUIReset();
+}
+
+void
 FBVST3GUIEditor::UpdateExchangeState()
 {
   _gui->UpdateExchangeState();

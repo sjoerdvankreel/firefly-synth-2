@@ -64,6 +64,8 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
     }
     MarkPatchAsSessionState();
     NotifyHostOfParamNameChanges();
+    if (_gui)
+      _gui->RequestGUIReset();
     return true;
   });
 }

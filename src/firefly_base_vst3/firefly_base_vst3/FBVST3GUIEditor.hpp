@@ -55,6 +55,7 @@ public:
   tresult PLUGIN_API setContentScaleFactor(ScaleFactor factor) override;
   tresult PLUGIN_API queryInterface(Steinberg::TUID const iid, void** obj) override;
 
+  void RequestGUIReset();
   void UpdateExchangeState();
   void SetGUIParamNormalizedFromHost(int index, double normalized);
   void SetAudioParamNormalizedFromHost(int index, double normalized);
