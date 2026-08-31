@@ -12,6 +12,7 @@
 #include <firefly_synth/modules/other/FFOtherGUI.hpp>
 #include <firefly_synth/modules/other/FFOtherTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
+#include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
@@ -230,7 +231,17 @@ FFPlugGUI::RequestGUIReset()
   else if (HostContext()->GetAudioParamList<FFGEchoTarget>({ { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } }) != FFGEchoTarget::Off)
   {
     ModuleSlotClicked((int)FFModuleType::GEcho, 0);
-  }  
+  }
+  else
+  {
+    for (int i = 0; i < FFEffectCount; i++)
+      if (HostContext()->GetAudioParamBool({ { (int)FFModuleType::GEffect, i }, { (int)FFEffectParam::On, 0 } }))
+      {
+        ModuleSlotClicked((int)FFModuleType::GEffect, i);
+        return;
+      }
+    ModuleSlotClicked((int)FFModuleType::GEffect, 0);
+  }
 }
 
 void 
