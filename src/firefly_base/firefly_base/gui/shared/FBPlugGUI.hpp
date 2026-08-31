@@ -71,7 +71,7 @@ public:
   FBTheme const& GetTheme() const;
   FBLookAndFeel* LookAndFeel() const { return _lookAndFeel.get(); }
 
-  void RequestGUIReset();
+  virtual void RequestGUIReset();
   void SwitchTheme(std::string const& themeName);
   std::vector<FBTheme> const& Themes() const { return _themes; }
 

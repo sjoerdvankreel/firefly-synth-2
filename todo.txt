@@ -4,6 +4,7 @@
 [x] labeled aux controls => show in tooltip and generic editor + TEST EVERYTHING + clear-all-overrides + manual + gui things + actual edit box
 [x] store last selected patch folder in global settings on disk
 [x] more themes
+[ ] screenshots with flstudio host window bc it is more pretty (or bitwig)
 [ ] vmix "env target"
 [ ] after init, load, etc, should select the first graph of everything + NOT track it anymore
 

@@ -116,6 +116,7 @@ public:
   void OnPatchNameChanged(std::string const& name) override;
   void OnInstanceNameChanged(std::string const& name) override;
 
+  void RequestGUIReset() override;
   void ModuleSlotClicked(int index, int slot) override;
   void ActiveModuleSlotChanged(int index, int slot) override;
   void GUIParamNormalizedChanged(int index, double normalized) override;

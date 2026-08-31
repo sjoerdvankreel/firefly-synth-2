@@ -211,6 +211,13 @@ FFPlugGUI::SwitchGraphsToModule(int index, int slot)
 }
 
 void 
+FFPlugGUI::RequestGUIReset()
+{
+  FBPlugGUI::RequestGUIReset();
+  _tabs->setCurrentTabIndex(0);
+}
+
+void 
 FFPlugGUI::ModuleSlotClicked(int index, int slot)
 {
   SwitchGraphsToModule(index, slot);
