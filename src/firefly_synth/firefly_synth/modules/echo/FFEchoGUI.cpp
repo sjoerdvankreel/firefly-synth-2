@@ -367,7 +367,10 @@ Component*
 FFMakeEchoGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 1 }, []() { return 0; });
+  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 1 }, [plugGUI]() {
+    FBParamTopoIndices indices = { { (int)FFModuleType::VEcho, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
+    return plugGUI->HostContext()->GetAudioParamList<FFVEchoTarget>(indices) != FFVEchoTarget::Off ? 0 : 1;
+  });
   select->AddSelector(0, 0, { (int)FFModuleType::VEcho, 0 }, "VEcho", MakeEchoTab(plugGUI, false));
   select->AddSelector(1, 0, { (int)FFModuleType::GEcho, 0 }, "GEcho", MakeEchoTab(plugGUI, true));
   return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::EchoSelector, select);
