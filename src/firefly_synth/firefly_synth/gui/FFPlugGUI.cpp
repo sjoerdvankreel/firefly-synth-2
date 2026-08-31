@@ -6,7 +6,9 @@
 #include <firefly_synth/modules/lfo/FFLFOGUI.hpp>
 #include <firefly_synth/modules/mix/FFMixGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
+#include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/echo/FFEchoGUI.hpp>
+#include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 #include <firefly_synth/modules/other/FFOtherGUI.hpp>
 #include <firefly_synth/modules/other/FFOtherTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
@@ -215,6 +217,20 @@ FFPlugGUI::RequestGUIReset()
 {
   FBPlugGUI::RequestGUIReset();
   _tabs->setCurrentTabIndex(0);
+
+  if (!HostContext()->Topo()->static_->meta.isFx)
+  {
+    for (int i = 0; i < FFOsciCount; i++)
+      if (HostContext()->GetAudioParamList<FFOsciType>({ { (int)FFModuleType::Osci, i }, { (int)FFOsciParam::Type, 0 } }) != FFOsciType::Off)
+      {
+        ModuleSlotClicked((int)FFModuleType::Osci, i);
+        break;
+      }
+  }
+  else if (HostContext()->GetAudioParamList<FFGEchoTarget>({ { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } }) != FFGEchoTarget::Off)
+  {
+    ModuleSlotClicked((int)FFModuleType::GEcho, 0);
+  }  
 }
 
 void 
