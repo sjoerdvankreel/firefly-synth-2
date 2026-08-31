@@ -26,7 +26,6 @@ public:
   FBHostGUIContext const* HostContext() const { return _hostContext; }
 
   virtual ~FBPlugGUIContext() {}
-  virtual void RequestGUIReset() = 0;
   virtual void RemoveFromDesktop() = 0;
   virtual void UpdateExchangeState() = 0;
   virtual void SetVisible(bool visible) = 0;

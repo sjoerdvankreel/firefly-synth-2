@@ -26,7 +26,6 @@ public:
 
   void paint(juce::Graphics& g) override;
 
-  void RequestGUIReset() override;
   void RemoveFromDesktop() override;
   void UpdateExchangeState() override;
   void SetVisible(bool visible) override;
