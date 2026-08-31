@@ -158,7 +158,7 @@ Component*
 FFMakeLFOGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0, 0, 0, 0, 0 });
+  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0, 0, 0, 0, 0 }, []() { return 0; });
   select->AddLabel(0, 0, "VLFO");
   for (int i = 0; i < FFLFOCount; i++)
     select->AddSelector(0, i + 1, { (int)FFModuleType::VLFO, i }, std::to_string(i + 1), MakeLFOTab(plugGUI, FFModuleType::VLFO, i));

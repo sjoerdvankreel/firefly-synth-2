@@ -10,8 +10,9 @@
 #include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
-#include <vector>
 #include <map>
+#include <vector>
+#include <functional>
 
 class FBPlugGUI;
 struct FBTheme;
@@ -115,6 +116,7 @@ public IFBGUIResetListener
 {
   int const _rows;
   int const _cols;
+  std::function<int()> _resetToIndex;
   std::unique_ptr<FBCardComponent> _card = {};
   std::unique_ptr<FBMarginComponent> _marginSelect = {};
   std::unique_ptr<FBMarginComponent> _marginContent = {};
@@ -129,12 +131,15 @@ public IFBGUIResetListener
 
 public:
   ~FBSelectComponent();
-  FBSelectComponent(FBPlugGUI* plugGUI, 
-    std::vector<int> const& rows, std::vector<int> const& cols);
+  FBSelectComponent(
+    FBPlugGUI* plugGUI,
+    std::vector<int> const& rows,
+    std::vector<int> const& cols,
+    std::function<int()> resetToIndex);
 
   void resized() override;
   void mouseUp(const juce::MouseEvent& event) override;
-  void OnResetRequest() override { Select(0); }
+  void OnResetRequest() override;
 
   void AddLabel(int row, int col, std::string const& text);
   void AddSelector(int row, int col, FBTopoIndices const& moduleIndices, std::string const& text, juce::Component* component);

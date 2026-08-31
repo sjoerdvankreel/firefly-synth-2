@@ -286,7 +286,7 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
   FB_LOG_ENTRY_EXIT();
   msegEditors.clear();
   FBMSEGEditor* msegEditor = nullptr;
-  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1 }, std::vector<int> { 1, 0, 0, 0, 0, 0, 0, 0 });
+  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1 }, std::vector<int> { 1, 0, 0, 0, 0, 0, 0, 0 }, []() { return 0; });
   select->AddLabel(0, 0, "ENV");
   select->AddSelector(0, 1, { (int)FFModuleType::Env, 0 }, "Amp", MakeEnvTab(plugGUI, FFAmpEnvSlot, &msegEditor));
   msegEditors.push_back(msegEditor);

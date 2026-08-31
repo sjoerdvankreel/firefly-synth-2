@@ -165,9 +165,13 @@ FBSelectComponent::
 }
 
 FBSelectComponent::
-FBSelectComponent(FBPlugGUI* plugGUI, std::vector<int> const& rows, std::vector<int> const& cols):
+FBSelectComponent(
+  FBPlugGUI* plugGUI, 
+  std::vector<int> const& rows, 
+  std::vector<int> const& cols,
+  std::function<int()> resetToIndex):
 FBModuleSelector(plugGUI),
-_rows((int)rows.size()), _cols((int)cols.size())
+_rows((int)rows.size()), _cols((int)cols.size()), _resetToIndex(resetToIndex)
 {
   _content = std::make_unique<FBContentComponent>();
   _mainGrid = std::make_unique<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
@@ -190,6 +194,12 @@ FBSelectComponent::resized()
 }
 
 void 
+FBSelectComponent::OnResetRequest()
+{
+  Select(_resetToIndex());
+}
+
+void 
 FBSelectComponent::mouseUp(const MouseEvent& event)
 {
   if(event.mods.isRightButtonDown())
@@ -201,6 +211,8 @@ FBSelectComponent::mouseUp(const MouseEvent& event)
 void 
 FBSelectComponent::Select(int index)
 {
+  if (index < 0 || index >= _buttons.size())
+    return;
   for (int i = 0; i < _buttons.size(); i++)
     _buttons[i]->setToggleState(false, dontSendNotification);
   _buttons[index]->setToggleState(true, dontSendNotification);
