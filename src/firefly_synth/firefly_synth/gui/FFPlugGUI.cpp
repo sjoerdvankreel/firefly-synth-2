@@ -67,10 +67,8 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
     SwitchTheme(HostContext()->Topo()->static_->defaultThemeName);
   SetupGUI();
   InitAllDependencies();
+  RequestGUIReset(false);
   resized();
-
-  // dont call in the base ctor, its a virtual
-  RequestGUIReset();
 }
 
 void 
@@ -217,11 +215,24 @@ FFPlugGUI::SwitchGraphsToModule(int index, int slot)
 }
 
 void 
-FFPlugGUI::RequestGUIReset()
+FFPlugGUI::RequestGUIReset(bool async)
 {
   FBPlugGUI::RequestGUIReset();
   _tabs->setCurrentTabIndex(0);
 
+  // Async is fine (actually better) for user interaction stuff like "load patch" etc.
+  // It queues up the final tab selection after all other handlers have run.
+  // But, cannot use it for host-initiated stuff (vst3 attach() etc) since we
+  // might be killed before the callback runs.
+  if (async)
+    MessageManager::callAsync([this]() { HandleRequestGUIReset(); });
+  else
+    HandleRequestGUIReset();
+}
+
+void 
+FFPlugGUI::HandleRequestGUIReset()
+{
   if (!HostContext()->Topo()->static_->meta.isFx)
   {
     for (int i = 0; i < FFOsciCount; i++)
