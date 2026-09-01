@@ -51,12 +51,6 @@ FBPlugGUIContainer::RemoveFromDesktop()
   removeFromDesktop();
 }
 
-void 
-FBPlugGUIContainer::RequestGUIReset()
-{
-  _gui->RequestGUIReset();
-}
-
 void
 FBPlugGUIContainer::UpdateExchangeState()
 {

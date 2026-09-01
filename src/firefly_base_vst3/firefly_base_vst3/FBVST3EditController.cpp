@@ -235,8 +235,6 @@ FBVST3EditController::setState(IBStream* state)
         _guiEditor->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));      
     MarkPatchAsSessionState();
     NotifyHostOfParamNameChanges();
-    if (_guiEditor)
-      _guiEditor->RequestGUIReset();
     return kResultTrue;
   });
 }
@@ -257,8 +255,6 @@ FBVST3EditController::setComponentState(IBStream* state)
       setParamNormalized(_topo->audio.params[i].tag, *edit.Params()[i]);
     MarkPatchAsSessionState();
     NotifyHostOfParamNameChanges();
-    if (_guiEditor)
-      _guiEditor->RequestGUIReset();
     return kResultOk;
   });
 }
