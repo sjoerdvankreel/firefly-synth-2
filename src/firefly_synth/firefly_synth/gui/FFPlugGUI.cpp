@@ -281,7 +281,7 @@ FFPlugGUI::ControlMarkerForAudioParam(int index, char& marker) const
     return false;
   if (name.size() == 0)
     return false;
-  marker = std::toupper(name[0]);
+  marker = (char)std::toupper(name[0]);
   return true;
 }
 
