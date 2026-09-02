@@ -259,6 +259,15 @@ FBRuntimeTopo::LoadPatchStateFromString(std::string const& text, FBScalarStateCo
   return LoadPatchStateFromVar(json, editState, hostContext);
 }
 
+bool 
+FBRuntimeTopo::LoadPatchStateFromString(std::string const& text, FBScalarStateContainer& editState, std::map<int, std::string>& paramNameOverrides) const
+{
+  var json;
+  if (!FBParseJson(text, json))
+    return false;
+  return LoadPatchStateFromVar(json, editState, paramNameOverrides);
+}
+
 bool
 FBRuntimeTopo::LoadEditAndGUIStateFromString(
   std::string const& text,
@@ -283,19 +292,27 @@ FBRuntimeTopo::LoadEditAndGUIStateFromString(
 bool 
 FBRuntimeTopo::LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext& hostContext) const
 {
+  std::map<int, std::string> paramNameOverrides;
+  if (!LoadPatchStateFromVar(json, edit, paramNameOverrides))
+    return false;
+  CopyParamNameOverridesToHostContext(paramNameOverrides, hostContext);
+  return true;
+}
+
+bool 
+FBRuntimeTopo::LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& edit, std::map<int, std::string>& paramNameOverrides) const
+{
   // 2.1.5: added paramNameOverrides, what was previously root is now "patchState"
   if (!json.hasProperty("patchState"))
   {
-    hostContext.ClearAudioParamNameOverrides();
+    paramNameOverrides.clear();
     return LoadEditStateFromVar(json, edit, true);
   }
   if (!LoadEditStateFromVar(json["patchState"], edit, true))
     return false;
   if (json.hasProperty("paramNameOverrides"))
   {
-    std::map<int, std::string> paramNameOverrides;
     LoadParamNameOverridesFromVar(json["paramNameOverrides"], paramNameOverrides);
-    CopyParamNameOverridesToHostContext(paramNameOverrides, hostContext);
   }
   return true;
 }

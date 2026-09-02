@@ -36,6 +36,7 @@ private:
   bool LoadEditStateFromVar(juce::var const& json, FBScalarStateContainer& edit, bool patchOnly) const;
   bool LoadParamNameOverridesFromVar(juce::var const& json, std::map<int, std::string>& paramNameOverrides) const;
   bool LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext& hostContext) const;
+  bool LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& editState, std::map<int, std::string>& paramNameOverrides) const;
   bool LoadGUIStateFromVar(juce::var const& json, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides) const;
   bool LoadEditAndGUIStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext& hostContext, bool patchOnly) const;
   bool LoadEditAndGUIStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, bool patchOnly) const;
@@ -63,6 +64,7 @@ public:
   bool LoadProcStateFromString(std::string const& text, FBProcStateContainer& procState, bool patchOnly) const;
   bool LoadEditStateFromString(std::string const& text, FBScalarStateContainer& editState, bool patchOnly) const;
   bool LoadPatchStateFromString(std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext& hostContext) const;
+  bool LoadPatchStateFromString(std::string const& text, FBScalarStateContainer& editState, std::map<int, std::string>& paramNameOverrides) const;
   bool LoadGUIStateFromString(std::string const& text, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides) const;
   bool LoadEditAndGUIStateFromString(std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext& hostContext, bool patchOnly) const;
   bool LoadEditAndGUIStateFromString(std::string const& text, FBScalarStateContainer& editState, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, bool patchOnly) const;

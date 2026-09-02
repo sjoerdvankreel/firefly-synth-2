@@ -34,7 +34,8 @@ FBPlugGUI::
 FBPlugGUI::
 FBPlugGUI(FBHostGUIContext* hostContext) :
 _hostContext(hostContext),
-_lookAndFeel(std::make_unique<FBLookAndFeel>())
+_lookAndFeel(std::make_unique<FBLookAndFeel>()),
+_patchBeforePreview(*hostContext->Topo())
 {
   _themes = FBLoadThemes(hostContext->Topo());
   if (_themes.empty())
@@ -89,7 +90,20 @@ FBPlugGUI::InitLoadPatchBrowser()
         MessageBoxIconType::NoIcon,
         "Error",
         "Failed to load patch. See log for details.");
-    }, [this](juce::File const& file) { LoadPatchAsPreview(file); });
+    }, [this](juce::File const& file) { 
+      LoadPatchAsPreview(file); 
+    }, [this] {
+      if (!_patchWasPreviewed)
+        return;
+      BeforePatchChanged();
+      _patchBeforePreview.CopyTo(HostContext(), true);
+      HostContext()->ClearAudioParamNameOverrides();
+      for (auto kv : _paramNamesBeforePreview)
+        HostContext()->SetAudioParamNameOverride(kv.first, kv.second);
+      HostContext()->NotifyHostOfParamNameChanges();
+      AfterPatchChanged(false);
+    });
+  _loadPatchBrowser->SetPreviewEnabled(_isPatchPreviewEnabled);
 }
 
 void 
@@ -103,7 +117,7 @@ FBPlugGUI::InitSavePatchBrowser()
     FBScalarStateContainer editState(*HostContext()->Topo());
     editState.CopyFrom(HostContext(), true);
     file.replaceWithText(HostContext()->Topo()->SavePatchStateToString(editState, *HostContext()));
-  }, [](juce::File const&){});
+  }, [](juce::File const&){}, [](){});
 }
 
 void 
@@ -113,7 +127,7 @@ FBPlugGUI::InitDumpTopologyBrowser()
   _saveTopologyBrowser = std::make_unique<FBFileBrowserComponent>(this, true, false, "Dump Topology", "txt", "Text Files", initialPath, [this](juce::File const& file) {
     SetBrowserInitialPath(FBUserGlobalSettingKeys::SaveTopologyFolder, file);
     file.replaceWithText(HostContext()->Topo()->static_->PrintTopology());
-  }, [](juce::File const&){});
+  }, [](juce::File const&){}, []() {});
 }
 
 void 
@@ -123,7 +137,7 @@ FBPlugGUI::InitDumpParamListBrowser()
   _saveParamListBrowser = std::make_unique<FBFileBrowserComponent>(this, true, false, "Dump Param List", "txt", "Text Files", initialPath, [this](juce::File const& file) {
     SetBrowserInitialPath(FBUserGlobalSettingKeys::SaveParamListFolder, file);
     file.replaceWithText(HostContext()->Topo()->PrintParamList());
-  }, [](juce::File const&){});
+  }, [](juce::File const&){}, []() {});
 }
 
 FBTheme const& 
@@ -763,7 +777,13 @@ FBPlugGUI::LoadPatchFromFile()
   FB_LOG_ENTRY_EXIT();
   HideAllOverlaysAndFileBrowsers();
   InitLoadPatchBrowser();
-  _loadPatchBrowser->SetPreviewEnabled(_isPatchPreviewEnabled);
+  _patchWasPreviewed = false;
+  _patchBeforePreview.CopyFrom(HostContext(), true);
+  _paramNamesBeforePreview.clear();
+  std::string name;
+  for (int i = 0; i < HostContext()->Topo()->audio.params.size(); i++)
+    if (HostContext()->GetAudioParamNameOverride(i, name))
+      _paramNamesBeforePreview[i] = name;
   _loadPatchBrowser->Show();
 }
 
@@ -846,6 +866,7 @@ FBPlugGUI::LoadPatchAsPreview(
   juce::File const& file)
 {
   FB_LOG_ENTRY_EXIT();
+  _patchWasPreviewed = true;
   FBScalarStateContainer editState(*HostContext()->Topo());
   if (!HostContext()->Topo()->LoadPatchStateFromString(file.loadFileAsString().toStdString(), editState, *HostContext()))
     return;

@@ -20,19 +20,20 @@ FBFileBrowserComponent::
 FBFileBrowserComponent(
   FBPlugGUI* plugGUI, bool isSave, bool hasPreview,
   std::string const& title, std::string const& extension, std::string const& filterName, juce::File initialPath, 
-  std::function<void(File const&)> onSelect, std::function<void(File const&)> onPreview):
+  std::function<void(File const&)> onSelect, std::function<void(File const&)> onPreview, std::function<void()> onCancel):
 _plugGUI(plugGUI),
 _isSave(isSave),
 _hasPreview(hasPreview),
 _extension(extension),
 _onSelect(onSelect),
-_onPreview(onPreview)
+_onPreview(onPreview),
+_onCancel(onCancel)
 {
   _title = std::make_unique<FBAutoSizeLabel>(plugGUI, title, FBLabelAlign::Center);
   _okButton = std::make_unique<FBAutoSizeButton>(plugGUI, "OK");
   _okButton->onClick = [this]() { SelectFile(_browser->getSelectedFile(0)); };
   _cancelButton = std::make_unique<FBAutoSizeButton>(plugGUI, "Cancel");
-  _cancelButton->onClick = [this]() { Hide(); };
+  _cancelButton->onClick = [this]() { _onCancel(); Hide(); };
   _filter = std::make_unique<WildcardFileFilter>("*." + extension, "", filterName);
   if (hasPreview)
   {
