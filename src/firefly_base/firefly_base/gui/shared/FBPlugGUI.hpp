@@ -201,6 +201,7 @@ private:
   void SetBrowserInitialPath(std::string const& browserKey, juce::File const& selected);
 
   void RevertPreviewedPatch();
+  void RepaintControlsForAudioParam(int index);
   void LoadPatchAsPreview(
     juce::File const& file);
   bool LoadPatchFromText(

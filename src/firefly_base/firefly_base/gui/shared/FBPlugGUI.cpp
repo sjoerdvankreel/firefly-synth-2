@@ -310,14 +310,17 @@ FBPlugGUI::SetAudioParamNameOverride(int index)
       else
         HostContext()->SetAudioParamNameOverride(index, text.toStdString());
       HostContext()->NotifyHostOfParamNameChanges();
+      RepaintControlsForAudioParam(index);
     });
 }
 
 void
 FBPlugGUI::ClearAudioParamNameOverride(int index)
 {
+  HostContext()->UndoState().Snapshot("Clear Param Name");
   _hostContext->ClearAudioParamNameOverride(index);
   _hostContext->NotifyHostOfParamNameChanges();
+  RepaintControlsForAudioParam(index);
 }
 
 void
@@ -735,8 +738,10 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
     if (id == 10) HostContext()->UndoState().Undo();
     if (id == 11) HostContext()->UndoState().Redo();
     if (id == 3) {
+      HostContext()->UndoState().Snapshot("Clear Param Names");
       HostContext()->ClearAudioParamNameOverrides();
       HostContext()->NotifyHostOfParamNameChanges();
+      repaint();
     }
     if (id == 4) {
       FBScalarStateContainer editState(*HostContext()->Topo());
@@ -860,6 +865,15 @@ FBPlugGUI::InitPatch()
   HostContext()->MarkPatchAsPatchState("Init Patch");
   HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged(false);
+}
+
+void
+FBPlugGUI::RepaintControlsForAudioParam(int index)
+{
+  int count = GetControlCountForAudioParamIndex(index);
+  for (int i = 0; i < count; i++)
+    if (auto p = dynamic_cast<juce::Component*>(GetControlForAudioParamIndex(index, i)))
+      p->repaint();
 }
 
 void 
