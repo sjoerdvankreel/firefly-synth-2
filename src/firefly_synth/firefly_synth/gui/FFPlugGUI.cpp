@@ -14,6 +14,7 @@
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
+#include <firefly_synth/modules/master/FFMasterTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
 #include <firefly_synth/modules/settings/FFSettingsGUI.hpp>
@@ -265,6 +266,23 @@ FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
 {
   SwitchGraphsToModule(index, slot);
   SwitchDetailsSectionToModule(index, slot);
+}
+
+bool 
+FFPlugGUI::ControlMarkerForAudioParam(int index, char& marker) const
+{
+  auto const& param = HostContext()->Topo()->audio.params[index];
+  if (param.topoIndices.module.index != (int)FFModuleType::Master)
+    return false;
+  if (param.topoIndices.param.index != (int)FFMasterParam::Aux)
+    return false;
+  std::string name;
+  if (!HostContext()->GetAudioParamNameOverride(index, name))
+    return false;
+  if (name.size() == 0)
+    return false;
+  marker = std::toupper(name[0]);
+  return true;
 }
 
 void 

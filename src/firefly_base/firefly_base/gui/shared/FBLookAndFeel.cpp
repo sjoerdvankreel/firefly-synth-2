@@ -904,6 +904,16 @@ FBLookAndFeel::drawRotarySlider(
     g.setColour(Colours::white.withAlpha(0.5f));
     g.fillEllipse(bounds.toFloat().reduced(0.5f, 0.5f));
   }
+
+  if (paramSlider)
+  {
+    char marker;
+    if (paramSlider->PlugGUI()->ControlMarkerForAudioParam(paramSlider->Param()->runtimeParamIndex, marker))
+    {
+      g.setColour(scheme.primary);
+      g.drawText(std::string(1, marker), bounds, Justification::centred, false);
+    }
+  }
 }
 
 juce::Rectangle<int> 

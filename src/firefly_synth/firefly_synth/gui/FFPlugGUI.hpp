@@ -121,7 +121,8 @@ public:
 
   void ModuleSlotClicked(int index, int slot) override;
   void ActiveModuleSlotChanged(int index, int slot) override;
-  void GUIParamNormalizedChanged(int index, double normalized) override;
+  bool ControlMarkerForAudioParam(int index, char& marker) const override;
+  void GUIParamNormalizedChanged(int index, double normalized) override;  
   void AudioParamNormalizedChangedFromUI(int index, double normalized) override;
   void AudioParamNormalizedChangedFromHost(int index, double normalized) override;
 };

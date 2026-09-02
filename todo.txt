@@ -7,9 +7,9 @@
 [x] after init, load, etc, should select the first graph of everything + NOT track it anymore
 [x] vmix "env target"
 [x] patch preview + merge load patch/preview windows + remember preview setting
+[x] gather the presets + gateway + give meaningful names to the auxes
 [ ] show what aux is active + also on patch preview
 [ ] red green default theme + update screenshots
-[ ] gather the presets + gateway + give meaningful names to the auxes
 [ ] screenshots with flstudio host window bc it is more pretty (or bitwig)
 [ ] screenshots for themes + big pad video with pretty green theme
 [ ] update manual + screenshots et all
