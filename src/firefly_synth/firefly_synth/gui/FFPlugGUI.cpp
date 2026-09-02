@@ -67,7 +67,7 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
     SwitchTheme(HostContext()->Topo()->static_->defaultThemeName);
   SetupGUI();
   InitAllDependencies();
-  RequestGUIReset(false);
+  RequestGUIReset();
   resized();
 }
 
@@ -215,47 +215,42 @@ FFPlugGUI::SwitchGraphsToModule(int index, int slot)
 }
 
 void 
-FFPlugGUI::RequestGUIReset(bool async)
+FFPlugGUI::RequestGUIReset()
 {
   FBPlugGUI::RequestGUIReset();
   _tabs->setCurrentTabIndex(0);
 
-  // Async is fine (actually better) for user interaction stuff like "load patch" etc.
-  // It queues up the final tab selection after all other handlers have run.
-  // But, cannot use it for host-initiated stuff (vst3 attach() etc) since we
-  // might be killed before the callback runs.
-  if (async)
-    MessageManager::callAsync([this]() { HandleRequestGUIReset(); });
-  else
-    HandleRequestGUIReset();
-}
-
-void 
-FFPlugGUI::HandleRequestGUIReset()
-{
-  if (!HostContext()->Topo()->static_->meta.isFx)
-  {
-    for (int i = 0; i < FFOsciCount; i++)
-      if (HostContext()->GetAudioParamList<FFOsciType>({ { (int)FFModuleType::Osci, i }, { (int)FFOsciParam::Type, 0 } }) != FFOsciType::Off)
-      {
-        ModuleSlotClicked((int)FFModuleType::Osci, i);
-        break;
-      }
-  }
-  else if (HostContext()->GetAudioParamList<FFGEchoTarget>({ { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } }) != FFGEchoTarget::Off)
-  {
-    ModuleSlotClicked((int)FFModuleType::GEcho, 0);
-  }
-  else
-  {
-    for (int i = 0; i < FFEffectCount; i++)
-      if (HostContext()->GetAudioParamBool({ { (int)FFModuleType::GEffect, i }, { (int)FFEffectParam::On, 0 } }))
-      {
-        ModuleSlotClicked((int)FFModuleType::GEffect, i);
-        return;
-      }
-    ModuleSlotClicked((int)FFModuleType::GEffect, 0);
-  }
+  // must run after all the base stuff has finished, so, async it is
+  // need to be very careful when the host calls this
+  WeakReference<FFPlugGUI> weakRef = this;
+  MessageManager::callAsync([weakRef]() {
+    auto self = weakRef.get();
+    if (!self)
+      return;
+    if (!self->HostContext()->Topo()->static_->meta.isFx)
+    {
+      for (int i = 0; i < FFOsciCount; i++)
+        if (self->HostContext()->GetAudioParamList<FFOsciType>({ { (int)FFModuleType::Osci, i }, { (int)FFOsciParam::Type, 0 } }) != FFOsciType::Off)
+        {
+          self->ModuleSlotClicked((int)FFModuleType::Osci, i);
+          break;
+        }
+    }
+    else if (self->HostContext()->GetAudioParamList<FFGEchoTarget>({ { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } }) != FFGEchoTarget::Off)
+    {
+      self->ModuleSlotClicked((int)FFModuleType::GEcho, 0);
+    }
+    else
+    {
+      for (int i = 0; i < FFEffectCount; i++)
+        if (self->HostContext()->GetAudioParamBool({ { (int)FFModuleType::GEffect, i }, { (int)FFEffectParam::On, 0 } }))
+        {
+          self->ModuleSlotClicked((int)FFModuleType::GEffect, i);
+          return;
+        }
+      self->ModuleSlotClicked((int)FFModuleType::GEffect, 0);
+    }
+  });
 }
 
 void 

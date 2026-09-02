@@ -84,6 +84,8 @@ public FBPlugGUI
   std::unique_ptr<FFVoiceModuleParamListener> _voiceModuleParamListener = {};
   std::unique_ptr<FFMainTabChangedListener> _mainTabChangedListener = {};
 
+  JUCE_DECLARE_WEAK_REFERENCEABLE(FFPlugGUI);
+
   void SetupGUI();
   bool HighlightModulationBounds() const override;
   FBHighlightTweakMode HighlightTweakedMode() const override;
@@ -113,12 +115,9 @@ public:
 
   void resized() override;  
   void OnPatchLoaded() override;
+  void RequestGUIReset() override;
   void OnPatchNameChanged(std::string const& name) override;
   void OnInstanceNameChanged(std::string const& name) override;
-
-  void HandleRequestGUIReset();
-  void RequestGUIReset(bool async);
-  void RequestGUIReset() override { RequestGUIReset(true); }
 
   void ModuleSlotClicked(int index, int slot) override;
   void ActiveModuleSlotChanged(int index, int slot) override;
