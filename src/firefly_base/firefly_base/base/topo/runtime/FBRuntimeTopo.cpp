@@ -49,16 +49,6 @@ MakeRuntimeModules(FBStaticTopo const& topo)
   return result;
 }
 
-static void
-CopyParamNameOverridesToHostContext(
-  std::map<int, std::string> const& paramNameOverrides,
-  FBHostGUIContext& hostContext)
-{
-  hostContext.ClearAudioParamNameOverrides();
-  for (auto kv : paramNameOverrides)
-    hostContext.SetAudioParamNameOverride(kv.first, kv.second);
-}
-
 FBRuntimeTopo::
 FBRuntimeTopo(std::unique_ptr<FBStaticTopo>&& topo_) :
   static_(std::move(topo_)),
@@ -295,7 +285,7 @@ FBRuntimeTopo::LoadPatchStateFromVar(juce::var const& json, FBScalarStateContain
   std::map<int, std::string> paramNameOverrides;
   if (!LoadPatchStateFromVar(json, edit, paramNameOverrides))
     return false;
-  CopyParamNameOverridesToHostContext(paramNameOverrides, hostContext);
+  hostContext.SetAudioParamNameOverrides(paramNameOverrides);
   return true;
 }
 
@@ -324,7 +314,7 @@ FBRuntimeTopo::LoadGUIStateFromVar(
   std::map<int, std::string> paramNameOverrides;
   if (!LoadGUIStateFromVar(json, *hostContext.GUIState(), paramNameOverrides))
     return false;
-  CopyParamNameOverridesToHostContext(paramNameOverrides, hostContext);
+  hostContext.SetAudioParamNameOverrides(paramNameOverrides);
   return true;
 }
 
@@ -351,7 +341,7 @@ FBRuntimeTopo::LoadEditAndGUIStateFromVar(
   std::map<int, std::string> paramNameOverrides;
   if (obj->hasProperty("gui"))
     if (LoadGUIStateFromVar(obj->getProperty("gui"), *hostContext.GUIState(), paramNameOverrides))
-      CopyParamNameOverridesToHostContext(paramNameOverrides, hostContext);
+      hostContext.SetAudioParamNameOverrides(paramNameOverrides);
   if (obj->hasProperty("edit"))
     return LoadEditStateFromVar(obj->getProperty("edit"), editState, patchOnly);
   FB_LOG_ERROR("Missing edit state.");
@@ -382,7 +372,7 @@ FBRuntimeTopo::LoadGUIStateFromStringWithDryRun(
     hostContext.GUIState()->SetPatchName(dryGUIState.PatchName());
     hostContext.GUIState()->SetThemeName(dryGUIState.ThemeName());
     hostContext.GUIState()->SetInstanceName(dryGUIState.InstanceName());
-    CopyParamNameOverridesToHostContext(paramNameOverrides, hostContext);
+    hostContext.SetAudioParamNameOverrides(paramNameOverrides);
   }
 }
 
@@ -402,7 +392,7 @@ FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
   hostContext.GUIState()->SetPatchName(dryGUIState.PatchName());
   hostContext.GUIState()->SetThemeName(dryGUIState.ThemeName());
   hostContext.GUIState()->SetInstanceName(dryGUIState.InstanceName());
-  CopyParamNameOverridesToHostContext(paramNameOverrides, hostContext);
+  hostContext.SetAudioParamNameOverrides(paramNameOverrides);
 }
 
 var 

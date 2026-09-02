@@ -170,6 +170,8 @@ public:
   virtual void ClearAudioParamNameOverride(int index) = 0;
   virtual bool GetAudioParamNameOverride(int index, std::string& name) const = 0;
   virtual void SetAudioParamNameOverride(int index, std::string const& name) = 0;
+  std::map<int, std::string> GetAudioParamNameOverrides() const;
+  void SetAudioParamNameOverrides(std::map<int, std::string> const& overrides);
 
   virtual double GetAudioParamNormalized(int index) const = 0;
   virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;

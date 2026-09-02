@@ -3,6 +3,8 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 
+#include <map>
+#include <string>
 #include <vector>
 
 class FBHostGUIContext;
@@ -12,6 +14,7 @@ struct FBUndoItem final
   std::string action = {};
   std::string patchName = {};
   FBScalarStateContainer state;
+  std::map<int, std::string> paramNameOverrides;
 
   FB_NOCOPY_MOVE_NODEFCTOR(FBUndoItem);
   FBUndoItem(FBRuntimeTopo const& topo): state(topo) {}

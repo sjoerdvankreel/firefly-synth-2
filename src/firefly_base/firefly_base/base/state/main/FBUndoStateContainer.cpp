@@ -8,11 +8,13 @@ SwapContextForItem(
   FBHostGUIContext* hostContext,
   FBUndoItem& item)
 {
-  FBScalarStateContainer temp(*hostContext->Topo());
-  temp.CopyFrom(hostContext, false);
+  FBScalarStateContainer tempState(*hostContext->Topo());
+  tempState.CopyFrom(hostContext, false);
+  auto tempParamNameOverrides = hostContext->GetAudioParamNameOverrides();
   item.state.CopyTo(hostContext, false);
-  item.state.CopyFrom(hostContext->Topo(), temp, false);
-
+  hostContext->SetAudioParamNameOverrides(item.paramNameOverrides);
+  item.state.CopyFrom(hostContext->Topo(), tempState, false);
+  item.paramNameOverrides = tempParamNameOverrides;
   std::string tempName(hostContext->PatchName());
   hostContext->SetPatchName(item.patchName);
   item.patchName = tempName;

@@ -29,49 +29,51 @@ _sessionState(*_topo.get())
 {
 }
 
+std::map<int, std::string> 
+FBHostGUIContext::GetAudioParamNameOverrides() const
+{
+  std::string name;
+  std::map<int, std::string> result;
+  for (int i = 0; i < _topo->audio.params.size(); i++)
+    if (GetAudioParamNameOverride(i, name))
+      result[i] = name;
+  return result;
+}
+
+void 
+FBHostGUIContext::SetAudioParamNameOverrides(std::map<int, std::string> const& overrides)
+{
+  ClearAudioParamNameOverrides();
+  for (auto kv : overrides)
+    SetAudioParamNameOverride(kv.first, kv.second);
+}
+
 void 
 FBHostGUIContext::RevertPatchToPatchState()
 {
   _patchState.CopyTo(this, true);
-  ClearAudioParamNameOverrides();
-  for (auto kv : _patchParamNameOverridesByIndex)
-    SetAudioParamNameOverride(kv.first, kv.second);
+  SetAudioParamNameOverrides(_patchParamNameOverridesByIndex);
 }
 
 void
 FBHostGUIContext::RevertPatchToSessionState()
 {
   _sessionState.CopyTo(this, true);
-  ClearAudioParamNameOverrides();
-  for (auto kv : _sessionParamNameOverridesByIndex)
-    SetAudioParamNameOverride(kv.first, kv.second);
+  SetAudioParamNameOverrides(_sessionParamNameOverridesByIndex);
 }
 
 void
 FBHostGUIContext::MarkPatchAsSessionState()
 {
   _sessionState.CopyFrom(this, true);
-  _sessionParamNameOverridesByIndex.clear();
-  for (int i = 0; i < _patchState.Params().size(); i++)
-  {
-    std::string name;
-    if (GetAudioParamNameOverride(i, name))
-      _sessionParamNameOverridesByIndex[i] = name;
-  }
+  _sessionParamNameOverridesByIndex = GetAudioParamNameOverrides();
 }
 
 void
 FBHostGUIContext::MarkPatchAsPatchState(std::string const& patchName)
 {
   _patchState.CopyFrom(this, true);
-  _patchParamNameOverridesByIndex.clear();
-  for (int i = 0; i < _patchState.Params().size(); i++)
-  {
-    std::string paramName;
-    if (GetAudioParamNameOverride(i, paramName))
-      _patchParamNameOverridesByIndex[i] = paramName;
-  }
-
+  _patchParamNameOverridesByIndex = GetAudioParamNameOverrides();
   _isPatchLoaded = true;
   OnPatchLoaded();
   SetPatchName(patchName);
