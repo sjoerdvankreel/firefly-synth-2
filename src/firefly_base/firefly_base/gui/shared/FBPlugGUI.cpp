@@ -891,10 +891,10 @@ FBPlugGUI::LoadPatchFromText(
   FB_LOG_ENTRY_EXIT();
   RevertPreviewedPatch();
   FBScalarStateContainer editState(*HostContext()->Topo());
+  HostContext()->UndoState().Snapshot(undoAction);
   if (!HostContext()->Topo()->LoadPatchStateFromString(text, editState, *HostContext()))
     return false;
   BeforePatchChanged();
-  HostContext()->UndoState().Snapshot(undoAction);
   editState.CopyTo(HostContext(), true);
   HostContext()->MarkPatchAsPatchState(patchName);
   HostContext()->NotifyHostOfParamNameChanges();
