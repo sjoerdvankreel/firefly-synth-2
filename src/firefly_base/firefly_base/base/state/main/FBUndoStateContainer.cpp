@@ -29,6 +29,7 @@ FBUndoStateContainer::Undo()
 {
   FB_ASSERT(CanUndo());
   SwapContextForItem(_hostContext, _items[_position - 1]);
+  _hostContext->NotifyHostOfParamNameChanges();
   _position--;
 }
 
@@ -37,6 +38,7 @@ FBUndoStateContainer::Redo()
 {
   FB_ASSERT(CanRedo());
   SwapContextForItem(_hostContext, _items[_position]);
+  _hostContext->NotifyHostOfParamNameChanges();
   _position++;
 }
 
