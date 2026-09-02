@@ -30266,7 +30266,7 @@
         "moduleId": "{09ED2CCE-3AC5-455E-935C-A684BEBC154D}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "10.000000",
+        "val": "50.000000",
         "name": "GMix Amp"
       },
       {
@@ -32059,7 +32059,7 @@
         "moduleId": "G{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "{C510F9C1-13A6-4929-A7EA-7C5F79BA6E42}",
+        "val": "{90701058-1399-4D0A-B098-AE5AFFB9123C}",
         "name": "GEcho Target"
       },
       {
@@ -35447,7 +35447,7 @@
         "moduleId": "G{19758BF4-241B-4A59-A943-3AE7426C7CC9}",
         "paramSlot": 2,
         "moduleSlot": 0,
-        "val": "{F01ABE4C-C22E-47F2-900E-7E913906A740}",
+        "val": "{8E7F2BE6-12B7-483E-8308-DD96F63C7743}",
         "name": "GMatrix Op 3"
       },
       {

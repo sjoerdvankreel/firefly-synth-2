@@ -5439,7 +5439,7 @@
         "moduleId": "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "{604E32C2-B3E9-4547-88B0-601F0D3AD055}",
+        "val": "{B462657B-B0FB-47B1-AACA-0DF284E655E9}",
         "name": "Osc 1 String Mode"
       },
       {
@@ -5472,7 +5472,7 @@
         "moduleId": "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "1",
+        "val": "8",
         "name": "Osc 1 String Quality"
       },
       {
@@ -5494,7 +5494,7 @@
         "moduleId": "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "15.012001",
+        "val": "91.969001",
         "name": "Osc 1 String Y"
       },
       {
@@ -5505,7 +5505,7 @@
         "moduleId": "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "100.000000",
+        "val": "12.913001",
         "name": "Osc 1 String Color"
       },
       {
@@ -5527,7 +5527,7 @@
         "moduleId": "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "Off",
+        "val": "On",
         "name": "Osc 1 String LP On"
       },
       {
@@ -5538,7 +5538,7 @@
         "moduleId": "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "19999.997064",
+        "val": "9196.517953",
         "name": "Osc 1 String LP Freq"
       },
       {
@@ -5549,7 +5549,7 @@
         "moduleId": "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "0.000000",
+        "val": "68.954998",
         "name": "Osc 1 String LP Reso"
       },
       {
@@ -8618,7 +8618,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "{BD01A08E-5639-4DB3-87CD-3276BCDB54E1}",
+        "val": "{30BF083A-81F1-477C-BC6B-5AA4DFB111A8}",
         "name": "Amp Env Type"
       },
       {
@@ -8640,7 +8640,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "2",
+        "val": "Off",
         "name": "Amp Env Release"
       },
       {
@@ -8706,7 +8706,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "33.655852",
+        "val": "0.000000",
         "name": "Amp Env Level 1"
       },
       {
@@ -8717,7 +8717,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 1,
         "moduleSlot": 0,
-        "val": "9.316061",
+        "val": "25.000000",
         "name": "Amp Env Level 2"
       },
       {
@@ -8882,7 +8882,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "0.000000",
+        "val": "84.250903",
         "name": "Amp Env Slope 1"
       },
       {
@@ -9058,7 +9058,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "0.087335",
+        "val": "0.292000",
         "name": "Amp Env Time 1"
       },
       {
@@ -9069,7 +9069,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 1,
         "moduleSlot": 0,
-        "val": "0.082281",
+        "val": "0.000000",
         "name": "Amp Env Time 2"
       },
       {
@@ -9080,7 +9080,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 2,
         "moduleSlot": 0,
-        "val": "0.338164",
+        "val": "0.000000",
         "name": "Amp Env Time 3"
       },
       {
@@ -9091,7 +9091,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 3,
         "moduleSlot": 0,
-        "val": "0.192220",
+        "val": "0.000000",
         "name": "Amp Env Time 4"
       },
       {
@@ -9234,7 +9234,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "1/32",
+        "val": "1/11",
         "name": "Amp Env Bars 1"
       },
       {
@@ -9245,7 +9245,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 1,
         "moduleSlot": 0,
-        "val": "1/32",
+        "val": "Off",
         "name": "Amp Env Bars 2"
       },
       {
@@ -9256,7 +9256,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 2,
         "moduleSlot": 0,
-        "val": "13/96",
+        "val": "Off",
         "name": "Amp Env Bars 3"
       },
       {
@@ -9267,7 +9267,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 3,
         "moduleSlot": 0,
-        "val": "1/13",
+        "val": "Off",
         "name": "Amp Env Bars 4"
       },
       {
@@ -9410,7 +9410,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 0,
         "moduleSlot": 1,
-        "val": "{BD01A08E-5639-4DB3-87CD-3276BCDB54E1}",
+        "val": "{30BF083A-81F1-477C-BC6B-5AA4DFB111A8}",
         "name": "Env 1 Type"
       },
       {
@@ -9432,7 +9432,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 0,
         "moduleSlot": 1,
-        "val": "2",
+        "val": "Off",
         "name": "Env 1 Release"
       },
       {
@@ -9498,7 +9498,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 0,
         "moduleSlot": 1,
-        "val": "84.588856",
+        "val": "0.000000",
         "name": "Env 1 Level 1"
       },
       {
@@ -9674,7 +9674,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 0,
         "moduleSlot": 1,
-        "val": "0.000000",
+        "val": "93.393564",
         "name": "Env 1 Slope 1"
       },
       {
@@ -9828,7 +9828,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 14,
         "moduleSlot": 1,
-        "val": "0.000000",
+        "val": "-100.000000",
         "name": "Env 1 Slope 15"
       },
       {
@@ -9839,7 +9839,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 15,
         "moduleSlot": 1,
-        "val": "0.000000",
+        "val": "-100.000000",
         "name": "Env 1 Slope 16"
       },
       {
@@ -9850,7 +9850,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 0,
         "moduleSlot": 1,
-        "val": "0.071023",
+        "val": "0.400000",
         "name": "Env 1 Time 1"
       },
       {
@@ -9861,7 +9861,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 1,
         "moduleSlot": 1,
-        "val": "0.250495",
+        "val": "0.000000",
         "name": "Env 1 Time 2"
       },
       {
@@ -10026,7 +10026,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 0,
         "moduleSlot": 1,
-        "val": "1/32",
+        "val": "5/32",
         "name": "Env 1 Bars 1"
       },
       {
@@ -10037,7 +10037,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 1,
         "moduleSlot": 1,
-        "val": "1/10",
+        "val": "Off",
         "name": "Env 1 Bars 2"
       },
       {
@@ -10048,7 +10048,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 2,
         "moduleSlot": 1,
-        "val": "3/20",
+        "val": "Off",
         "name": "Env 1 Bars 3"
       },
       {
@@ -14217,7 +14217,7 @@
         "moduleId": "V{154051CE-66D9-41C8-B479-C52D1111C962}",
         "paramSlot": 1,
         "moduleSlot": 0,
-        "val": "{32FE4541-7D8F-452D-8878-9CD632A0A324}",
+        "val": "{46A4BE9B-1072-4811-B3A1-3A463D0BA534}",
         "name": "VFX 1 Kind B"
       },
       {
@@ -14228,7 +14228,7 @@
         "moduleId": "V{154051CE-66D9-41C8-B479-C52D1111C962}",
         "paramSlot": 2,
         "moduleSlot": 0,
-        "val": "{FD072A47-EE67-4091-A687-7168B69A6E89}",
+        "val": "{46A4BE9B-1072-4811-B3A1-3A463D0BA534}",
         "name": "VFX 1 Kind C"
       },
       {
@@ -14734,7 +14734,7 @@
         "moduleId": "V{154051CE-66D9-41C8-B479-C52D1111C962}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "999.999953",
+        "val": "13027.745089",
         "name": "VFX 1 SVF Freq A"
       },
       {
@@ -14745,7 +14745,7 @@
         "moduleId": "V{154051CE-66D9-41C8-B479-C52D1111C962}",
         "paramSlot": 1,
         "moduleSlot": 0,
-        "val": "332.999980",
+        "val": "999.999953",
         "name": "VFX 1 SVF Freq B"
       },
       {
@@ -15064,7 +15064,7 @@
         "moduleId": "V{154051CE-66D9-41C8-B479-C52D1111C962}",
         "paramSlot": 2,
         "moduleSlot": 0,
-        "val": "772.322989",
+        "val": "100.000000",
         "name": "VFX 1 Dist Drive C"
       },
       {
@@ -29837,7 +29837,7 @@
         "moduleId": "{5C91D5A0-3EC1-4142-935A-3FE83B60C04E}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "0.000000",
+        "val": "100.000000",
         "name": "VMix Osc 1???Osc Mix"
       },
       {
@@ -29881,7 +29881,7 @@
         "moduleId": "{5C91D5A0-3EC1-4142-935A-3FE83B60C04E}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "0.000000",
+        "val": "100.000000",
         "name": "VMix Osc Mix???VFX 1"
       },
       {
@@ -29925,7 +29925,7 @@
         "moduleId": "{5C91D5A0-3EC1-4142-935A-3FE83B60C04E}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "100.000000",
+        "val": "0.000000",
         "name": "VMix Osc 1???VFX 1"
       },
       {
@@ -32180,7 +32180,7 @@
         "moduleId": "G{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "10.613000",
+        "val": "11.881000",
         "name": "GEcho Rvrb Mix"
       },
       {
@@ -32202,7 +32202,7 @@
         "moduleId": "G{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "33.000001",
+        "val": "50.000000",
         "name": "GEcho Rvrb Size"
       },
       {
@@ -32213,7 +32213,7 @@
         "moduleId": "G{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "100.000000",
+        "val": "67.000002",
         "name": "GEcho Rvrb Damp"
       },
       {
@@ -32246,7 +32246,7 @@
         "moduleId": "G{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "2535.480501",
+        "val": "19999.997064",
         "name": "GEcho Rvrb LP Freq"
       },
       {
@@ -32268,7 +32268,7 @@
         "moduleId": "G{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "On",
+        "val": "Off",
         "name": "GEcho Rvrb HP On"
       },
       {
@@ -32279,7 +32279,7 @@
         "moduleId": "G{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "396.277035",
+        "val": "20.000000",
         "name": "GEcho Rvrb HP Freq"
       },
       {
@@ -32290,7 +32290,7 @@
         "moduleId": "G{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "78.384000",
+        "val": "0.000000",
         "name": "GEcho Rvrb HP Reso"
       },
       {
