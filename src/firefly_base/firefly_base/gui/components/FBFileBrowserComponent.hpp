@@ -48,7 +48,9 @@ public:
   
   void Show();
   void Hide();
-  
+  bool IsPreviewEnabled() const;
+  void SetPreviewEnabled(bool enabled);
+
   void resized() override;
   void selectionChanged() override {}
   void fileDoubleClicked(const juce::File&) override;

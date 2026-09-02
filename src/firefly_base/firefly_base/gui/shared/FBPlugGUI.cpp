@@ -81,6 +81,7 @@ FBPlugGUI::InitLoadPatchBrowser()
   auto filterName = HostContext()->Topo()->static_->patchFilterName;
   auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::LoadPatchFolder);
   _loadPatchBrowser = std::make_unique<FBFileBrowserComponent>(this, false, true, "Load Patch", extension, filterName, initialPath, [this](juce::File const& file) {
+    _isPatchPreviewEnabled = _loadPatchBrowser->IsPreviewEnabled();
     SetBrowserInitialPath(FBUserGlobalSettingKeys::LoadPatchFolder, file);
     auto text = file.loadFileAsString().toStdString();
     if (!LoadPatchFromText("Load Patch", file.getFileNameWithoutExtension().toStdString(), text))
@@ -762,6 +763,7 @@ FBPlugGUI::LoadPatchFromFile()
   FB_LOG_ENTRY_EXIT();
   HideAllOverlaysAndFileBrowsers();
   InitLoadPatchBrowser();
+  _loadPatchBrowser->SetPreviewEnabled(_isPatchPreviewEnabled);
   _loadPatchBrowser->Show();
 }
 

@@ -68,6 +68,19 @@ FBFileBrowserComponent::fileDoubleClicked(const File& file)
   SelectFile(file);
 }
 
+bool
+FBFileBrowserComponent::IsPreviewEnabled() const
+{
+  return _hasPreview && _previewToggle->getToggleState();
+}
+
+void
+FBFileBrowserComponent::SetPreviewEnabled(bool enabled)
+{
+  if (_hasPreview)
+    _previewToggle->setToggleState(enabled, dontSendNotification);
+}
+
 void 
 FBFileBrowserComponent::fileClicked(const File& file, const MouseEvent& /*event*/)
 {

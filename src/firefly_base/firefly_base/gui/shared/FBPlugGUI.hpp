@@ -137,6 +137,7 @@ protected:
 
 private:
   double _scale = 1.0;
+  bool _isPatchPreviewEnabled = false;
   FBHostGUIContext* const _hostContext;
   std::unique_ptr<FBLookAndFeel> _lookAndFeel;
 
