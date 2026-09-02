@@ -7,6 +7,7 @@
 [x] after init, load, etc, should select the first graph of everything + NOT track it anymore
 [x] vmix "env target"
 [x] patch preview + merge load patch/preview windows + remember preview setting
+[ ] show what aux is active + also on patch preview
 [ ] red green default theme + update screenshots
 [ ] gather the presets + gateway + give meaningful names to the auxes
 [ ] screenshots with flstudio host window bc it is more pretty (or bitwig)
@@ -14,6 +15,7 @@
 [ ] update manual + screenshots et all
 [ ] adjust website theme
 
+[ ] show which aux params are active in the gui
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] fix the comp and the rms comp
 [ ] switch to MIT ?

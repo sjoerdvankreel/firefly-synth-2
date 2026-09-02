@@ -1,5 +1,7 @@
 {
   "paramNameOverrides": {
+    "220460541": "RGlzdA==",
+    "220460542": "RmlsdGVy"
   },
   "patchState": {
     "magic": "{84A1EBED-4BE5-47F2-8E53-13B965628974}",
@@ -16,7 +18,7 @@
         "moduleId": "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "100.000000",
+        "val": "48.687000",
         "name": "Master Aux 1"
       },
       {
@@ -27,7 +29,7 @@
         "moduleId": "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}",
         "paramSlot": 1,
         "moduleSlot": 0,
-        "val": "0.000000",
+        "val": "49.293000",
         "name": "Master Aux 2"
       },
       {

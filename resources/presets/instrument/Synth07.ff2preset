@@ -1,5 +1,9 @@
 {
   "paramNameOverrides": {
+    "220460541": "RW52",
+    "220460542": "RmlsdGVyIDE=",
+    "220460543": "RmlsdGVyIDI=",
+    "220460544": "Rk0="
   },
   "patchState": {
     "magic": "{84A1EBED-4BE5-47F2-8E53-13B965628974}",
@@ -16,7 +20,7 @@
         "moduleId": "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "18.823530",
+        "val": "48.723000",
         "name": "Master Aux 1"
       },
       {
@@ -27,7 +31,7 @@
         "moduleId": "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}",
         "paramSlot": 1,
         "moduleSlot": 0,
-        "val": "50.196081",
+        "val": "47.772000",
         "name": "Master Aux 2"
       },
       {
@@ -38,7 +42,7 @@
         "moduleId": "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}",
         "paramSlot": 2,
         "moduleSlot": 0,
-        "val": "100.000000",
+        "val": "49.899000",
         "name": "Master Aux 3"
       },
       {
@@ -49,7 +53,7 @@
         "moduleId": "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}",
         "paramSlot": 3,
         "moduleSlot": 0,
-        "val": "100.000000",
+        "val": "49.899000",
         "name": "Master Aux 4"
       },
       {
