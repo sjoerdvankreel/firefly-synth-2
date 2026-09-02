@@ -28,7 +28,7 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
 
   auto load = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Load");
   load->setTooltip("Load From File");
-  load->onClick = [plugGUI]() { plugGUI->LoadPatchFromFile(); };
+  load->onClick = [plugGUI]() { plugGUI->LoadPatchFromFile(false); };
   grid->Add(0, 2, load);
 
   auto reload = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Reload");
@@ -60,7 +60,7 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
 
   auto preset = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Preset");
   preset->setTooltip("Load Preset");
-  preset->onClick = [plugGUI, preset]() { plugGUI->LoadPreset(preset); };
+  preset->onClick = [plugGUI]() { plugGUI->LoadPatchFromFile(true); };
   grid->Add(0, 7, preset);
 
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);

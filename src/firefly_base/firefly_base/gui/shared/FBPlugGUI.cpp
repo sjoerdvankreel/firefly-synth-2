@@ -44,7 +44,7 @@ _patchBeforePreview(*hostContext->Topo())
   _tooltipWindow = StoreComponent<TooltipWindow>();
   _hostContext->AddListener(this);
 
-  InitLoadPatchBrowser();
+  InitLoadPatchBrowser(false);
   InitSavePatchBrowser();
   InitDumpTopologyBrowser();
   InitDumpParamListBrowser();
@@ -76,14 +76,17 @@ FBPlugGUI::GetBrowserInitialPath(std::string const& browserKey)
 }
 
 void 
-FBPlugGUI::InitLoadPatchBrowser()
+FBPlugGUI::InitLoadPatchBrowser(bool preset)
 {
   auto extension = HostContext()->Topo()->static_->patchExtension;
   auto filterName = HostContext()->Topo()->static_->patchFilterName;
   auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::LoadPatchFolder);
-  _loadPatchBrowser = std::make_unique<FBFileBrowserComponent>(this, false, true, "Load Patch", extension, filterName, initialPath, [this](juce::File const& file) {
+  if (preset)
+    initialPath = File(FBGetPresetsFolderPath().string());
+  _loadPatchBrowser = std::make_unique<FBFileBrowserComponent>(this, false, true, "Load Patch", extension, filterName, initialPath, [this, preset](juce::File const& file) {
     _isPatchPreviewEnabled = _loadPatchBrowser->IsPreviewEnabled();
-    SetBrowserInitialPath(FBUserGlobalSettingKeys::LoadPatchFolder, file);
+    if(!preset)
+      SetBrowserInitialPath(FBUserGlobalSettingKeys::LoadPatchFolder, file);
     auto text = file.loadFileAsString().toStdString();
     if (!LoadPatchFromText("Load Patch", file.getFileNameWithoutExtension().toStdString(), text))
       AlertWindow::showMessageBoxAsync(
@@ -773,11 +776,11 @@ FBPlugGUI::ReloadSession()
 }
 
 void
-FBPlugGUI::LoadPatchFromFile()
+FBPlugGUI::LoadPatchFromFile(bool preset)
 {
   FB_LOG_ENTRY_EXIT();
   HideAllOverlaysAndFileBrowsers();
-  InitLoadPatchBrowser();
+  InitLoadPatchBrowser(preset);
   _patchWasPreviewed = false;
   _patchBeforePreview.CopyFrom(HostContext(), true);
   _loadPatchBrowser->Show();
@@ -900,45 +903,6 @@ FBPlugGUI::LoadPatchFromText(
   HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged(false);
   return true;
-}
-
-void
-FBPlugGUI::LoadPreset(Component* clickedFrom)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto presetList = HostContext()->LoadPresetList();
-  if (!presetList->files.size() && !presetList->folders.size())
-    return;
-  auto presetMenu = MakePresetMenu(presetList);
-  PopupMenu::Options options = {};
-  auto lnf = FBGetLookAndFeelFor(this);
-  options = options.withParentComponent(this);
-  options = options.withTargetComponent(clickedFrom);
-  options = options.withStandardItemHeight(lnf->GetStandardPopupMenuItemHeight());
-  presetMenu.showMenuAsync(options);
-}
-
-PopupMenu 
-FBPlugGUI::MakePresetMenu(
-  std::shared_ptr<FBPresetFolder> folder)
-{
-  PopupMenu result = {};
-  for (int i = 0; i < folder->files.size(); i++)
-    result.addItem(folder->files[i].name, [this, path = folder->files[i].path](){
-      auto juceFile = File(path);
-      if (juceFile.exists())
-      {
-        auto text = juceFile.loadFileAsString().toStdString();
-        if (!LoadPatchFromText("Load Preset", juceFile.getFileNameWithoutExtension().toStdString(), text))
-          AlertWindow::showMessageBoxAsync(
-            MessageBoxIconType::NoIcon,
-            "Error",
-            "Failed to load preset. See log for details.");
-      }
-    });
-  for (int i = 0; i < folder->folders.size(); i++)
-    result.addSubMenu(folder->folders[i]->name, MakePresetMenu(folder->folders[i]));
-  return result;
 }
 
 void

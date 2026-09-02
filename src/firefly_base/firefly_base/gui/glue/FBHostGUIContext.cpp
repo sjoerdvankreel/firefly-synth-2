@@ -408,39 +408,6 @@ FBHostGUIContext::ShowOnlineManualForModule(int index) const
   juce::URL(OnlineManualLocation()).withAnchor(cleanModuleId).launchInDefaultBrowser();
 }
 
-std::shared_ptr<FBPresetFolder>
-FBHostGUIContext::LoadPresetList(std::filesystem::path const& p) const
-{
-  auto result = std::make_shared<FBPresetFolder>();
-  result->name = p.filename().string();
-  for (auto const& i: std::filesystem::directory_iterator(p))
-  {
-    if (std::filesystem::is_regular_file(i.path()))
-    {
-      FBPresetFile file = {};
-      file.path = i.path().string();
-      file.name = i.path().stem().string();
-      result->files.push_back(file);
-    }
-    if (std::filesystem::is_directory(i.path()))
-      result->folders.push_back(LoadPresetList(i.path()));
-  }
-
-  std::sort(result->files.begin(), result->files.end(), [](auto const& a, auto const& b) { return a.name < b.name;  });
-  std::sort(result->folders.begin(), result->folders.end(), [](auto const& a, auto const& b) { return a->name < b->name; });
-  return result;
-}
-
-std::shared_ptr<FBPresetFolder>
-FBHostGUIContext::LoadPresetList() const
-{
-  std::string subPath = Topo()->static_->meta.isFx ? "fx" : "instrument";
-  std::filesystem::path presetRoot(FBGetPresetsFolderPath() / subPath);
-  if (std::filesystem::exists(presetRoot))
-    return LoadPresetList(presetRoot);
-  return {};
-}
-
 void
 FBAddHostContextMenu(
   std::shared_ptr<juce::PopupMenu> menu, 

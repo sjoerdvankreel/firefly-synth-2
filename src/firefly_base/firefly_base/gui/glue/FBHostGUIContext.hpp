@@ -31,19 +31,6 @@ struct FBHostContextMenuItem
   bool subMenuStart = false;
 };
 
-struct FBPresetFile
-{
-  std::string name = {};
-  std::string path = {};
-};
-
-struct FBPresetFolder
-{
-  std::string name = {};
-  std::vector<FBPresetFile> files = {};
-  std::vector<std::shared_ptr<FBPresetFolder>> folders = {};
-};
-
 void
 FBAddHostContextMenu(
   std::shared_ptr<juce::PopupMenu> menu,
@@ -80,9 +67,6 @@ private:
 
   void ShowOnlineManualForModule(int index) const;
 
-  std::shared_ptr<FBPresetFolder>
-  LoadPresetList(std::filesystem::path const& p) const;
-
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostGUIContext);
   FBHostGUIContext(std::unique_ptr<FBStaticTopo>&& topo);
@@ -117,7 +101,6 @@ public:
   void ShowOnlineManual() const;
   void ShowOnlineManualForGUIParam(int index) const;
   void ShowOnlineManualForAudioParam(int index) const;
-  std::shared_ptr<FBPresetFolder> LoadPresetList() const;
   virtual std::string OnlineManualLocation() const = 0;
 
   void AddListener(IFBHostGUIContextListener* listener);

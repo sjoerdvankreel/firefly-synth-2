@@ -60,8 +60,7 @@ public:
   void ReloadPatch();
   void ReloadSession();
   void SavePatchToFile();
-  void LoadPatchFromFile();
-  void LoadPreset(juce::Component* clickedFrom);
+  void LoadPatchFromFile(bool preset);
   
   void FlashAudioParamDisabling(int index);
   void FlashAudioParamsDisablingParam(int index);
@@ -192,11 +191,11 @@ private:
   void DumpTopologyToFile();
   void DumpParamListToFile();
 
-  void InitLoadPatchBrowser();
   void InitSavePatchBrowser();
   void InitDumpTopologyBrowser();
   void InitDumpParamListBrowser();
-  
+  void InitLoadPatchBrowser(bool preset);
+
   juce::File GetBrowserInitialPath(std::string const& browserKey);
   void SetBrowserInitialPath(std::string const& browserKey, juce::File const& selected);
 
@@ -207,9 +206,6 @@ private:
     std::string const& undoAction,
     std::string const& patchName,
     std::string const& text);
-
-  juce::PopupMenu MakePresetMenu(
-    std::shared_ptr<FBPresetFolder> folder);
 };
 
 template <class TComponent, class... Args>
