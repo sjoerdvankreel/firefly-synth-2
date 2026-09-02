@@ -910,7 +910,7 @@ FBLookAndFeel::drawRotarySlider(
     char marker;
     if (paramSlider->PlugGUI()->ControlMarkerForAudioParam(paramSlider->Param()->runtimeParamIndex, marker))
     {
-      g.setColour(scheme.primary);
+      g.setColour(scheme.text);
       g.drawText(std::string(1, marker), bounds, Justification::centred, false);
     }
   }
