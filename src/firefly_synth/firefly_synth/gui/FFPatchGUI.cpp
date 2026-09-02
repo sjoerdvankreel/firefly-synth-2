@@ -31,11 +31,26 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
   load->onClick = [plugGUI]() { plugGUI->LoadPatchFromFile(false); };
   grid->Add(0, 2, load);
 
+  auto preset = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Preset");
+  preset->setTooltip("Load Preset");
+  preset->onClick = [plugGUI]() { plugGUI->LoadPatchFromFile(true); };
+  grid->Add(0, 3, preset);
+
+  auto init = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Init");
+  init->setTooltip("Init Defaults");
+  init->onClick = [plugGUI]() { plugGUI->InitPatch(); };
+  grid->Add(0, 4, init);
+
+  auto session = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Session");
+  session->setTooltip("Reload From Session");
+  session->onClick = [plugGUI]() { plugGUI->ReloadSession(); };
+  grid->Add(0, 5, session);
+
   auto reload = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Reload");
   reload->setTooltip("Reload " + context->PatchName());
   reload->onClick = [plugGUI]() { plugGUI->ReloadPatch(); };
   reload->setEnabled(false);
-  grid->Add(0, 3, reload);
+  grid->Add(0, 6, reload);
 
   plugGUI->onPatchLoaded = [reload]() { reload->setEnabled(true); };
   plugGUI->onPatchNameChanged = [reload, name](auto const& newName) {
@@ -43,25 +58,10 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
     reload->setTooltip("Reload " + newName);
   };
 
-  auto session = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Session");
-  session->setTooltip("Reload From Session");
-  session->onClick = [plugGUI]() { plugGUI->ReloadSession(); };
-  grid->Add(0, 4, session);
-
   auto save = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Save");
   save->setTooltip("Save To File");
   save->onClick = [plugGUI]() { plugGUI->SavePatchToFile(); };
-  grid->Add(0, 5, save);
-
-  auto init = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Init");
-  init->setTooltip("Init Defaults");
-  init->onClick = [plugGUI]() { plugGUI->InitPatch(); };
-  grid->Add(0, 6, init);
-
-  auto preset = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Preset");
-  preset->setTooltip("Load Preset");
-  preset->onClick = [plugGUI]() { plugGUI->LoadPatchFromFile(true); };
-  grid->Add(0, 7, preset);
+  grid->Add(0, 7, save);
 
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, true, false, false, card);
