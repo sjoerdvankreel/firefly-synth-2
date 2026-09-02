@@ -142,7 +142,6 @@ private:
   FBHostGUIContext* const _hostContext;
   std::unique_ptr<FBLookAndFeel> _lookAndFeel;
   FBScalarStateContainer _patchBeforePreview;
-  std::map<int, std::string> _paramNamesBeforePreview = {};
 
   juce::Label* _overlayCaption = {};
   std::function<void()> _overlayInit = {};

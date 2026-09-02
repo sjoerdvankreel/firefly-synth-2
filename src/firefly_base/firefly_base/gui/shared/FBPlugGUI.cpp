@@ -771,11 +771,6 @@ FBPlugGUI::LoadPatchFromFile()
   InitLoadPatchBrowser();
   _patchWasPreviewed = false;
   _patchBeforePreview.CopyFrom(HostContext(), true);
-  _paramNamesBeforePreview.clear();
-  std::string name;
-  for (int i = 0; i < HostContext()->Topo()->audio.params.size(); i++)
-    if (HostContext()->GetAudioParamNameOverride(i, name))
-      _paramNamesBeforePreview[i] = name;
   _loadPatchBrowser->Show();
 }
 
@@ -860,10 +855,6 @@ FBPlugGUI::RevertPreviewedPatch()
     return;
   BeforePatchChanged();
   _patchBeforePreview.CopyTo(HostContext(), true);
-  HostContext()->ClearAudioParamNameOverrides();
-  for (auto kv : _paramNamesBeforePreview)
-    HostContext()->SetAudioParamNameOverride(kv.first, kv.second);
-  HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged(false);
 }
 
@@ -873,12 +864,12 @@ FBPlugGUI::LoadPatchAsPreview(
 {
   FB_LOG_ENTRY_EXIT();
   _patchWasPreviewed = true;
+  std::map<int, std::string> previewParamNames;
   FBScalarStateContainer editState(*HostContext()->Topo());
-  if (!HostContext()->Topo()->LoadPatchStateFromString(file.loadFileAsString().toStdString(), editState, *HostContext()))
+  if (!HostContext()->Topo()->LoadPatchStateFromString(file.loadFileAsString().toStdString(), editState, previewParamNames))
     return;
   BeforePatchChanged();
   editState.CopyTo(HostContext(), true);
-  HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged(true);
 }
 
