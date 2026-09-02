@@ -296,7 +296,16 @@ FBPlugGUI::SetAudioParamNameOverride(int index)
   auto const& runtimeParam = HostContext()->Topo()->audio.params[index];
   auto const& indices = HostContext()->Topo()->modules[runtimeParam.runtimeModuleIndex].topoIndices;
   ShowOverlayComponent("Edit Param Name", indices.index, indices.slot, _paramNameEditor, 240, 70, true, 
-    [this, index]() { _paramNameEditor->ClearEdit(index); });
+    [this, index]() { _paramNameEditor->ClearEdit(index); },
+    [this, index]() {
+      HostContext()->UndoState().Snapshot("Change Param Name");
+      auto text = _paramNameEditor->getText().trim();
+      if (text.isEmpty())
+        HostContext()->ClearAudioParamNameOverride(index);
+      else
+        HostContext()->SetAudioParamNameOverride(index, text.toStdString());
+      HostContext()->NotifyHostOfParamNameChanges();
+    });
 }
 
 void
@@ -819,7 +828,7 @@ void
 FBPlugGUI::ShowAboutBox()
 {
   auto const& meta = HostContext()->Topo()->static_->meta;
-  ShowOverlayComponent(meta.name, 0, 0, _aboutBoxStack, 300, 120, false, []() {});
+  ShowOverlayComponent(meta.name, 0, 0, _aboutBoxStack, 300, 120, false, []() {}, []() {});
 }
 
 void
@@ -961,7 +970,7 @@ FBPlugGUI::SetupOverlayGUI()
 
   _overlayInitClose = StoreComponent<FBGridComponent>(this, true, -1, -1, std::vector<int> { { 0 } }, std::vector<int> { { 0, 0, 1 } });
   auto overlayClose = StoreComponent<FBAutoSizeButton>(this, "Close");
-  overlayClose->onClick = [this] { HideOverlayComponent(); };
+  overlayClose->onClick = [this] { _overlayClose(); HideOverlayComponent(); };
   auto overlayCloseSection = StoreComponent<FBMarginComponent>(this, false, true, true, true, overlayClose);
   _overlayInitClose->Add(0, 0, overlayCloseSection);
   _overlayInitButton = StoreComponent<FBAutoSizeButton>(this, "Init");
@@ -984,7 +993,8 @@ FBPlugGUI::HideOverlayComponent()
 {
   if (_overlayComponent == nullptr)
     return;
-  _overlayInit = {};
+  _overlayInit = [](){};
+  _overlayClose = [](){};
   _overlayComponent->setVisible(false);
   _overlayContent->SetContent(nullptr);
   _overlayOuterMargin->setVisible(false);
@@ -998,12 +1008,14 @@ FBPlugGUI::ShowOverlayComponent(
   int moduleIndex, int moduleSlot,
   Component* overlay,
   int w, int h, bool hasInit,
-  std::function<void()> init)
+  std::function<void()> init,
+  std::function<void()> close)
 {
   HideAllOverlaysAndFileBrowsers();
   int x = (getWidth() - w) / 2;
   int y = (getHeight() - h) / 2;
   _overlayInit = init;
+  _overlayClose = close;
   _overlayInitButton->setVisible(hasInit);
   _overlayContent->SetContent(overlay);
   _overlayOuterMargin->setBounds(x, y, w, h);

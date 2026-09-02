@@ -82,7 +82,8 @@ public:
     int moduleIndex, int moduleSlot,
     juce::Component* overlay,
     int w, int h, bool hasInit,
-    std::function<void()> init);
+    std::function<void()> init,
+    std::function<void()> close);
 
   void AddThemeListener(IFBThemeListener* listener);
   void AddParamListener(IFBParamListener* listener);
@@ -145,6 +146,7 @@ private:
 
   juce::Label* _overlayCaption = {};
   std::function<void()> _overlayInit = {};
+  std::function<void()> _overlayClose = {};
   FBAutoSizeButton* _overlayInitButton = {};
   FBCardComponent* _overlayCard = {};
   FBGridComponent* _overlayGrid = {};

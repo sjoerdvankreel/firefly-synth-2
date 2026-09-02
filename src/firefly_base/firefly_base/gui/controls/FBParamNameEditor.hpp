@@ -19,7 +19,6 @@ public:
   void InitEdit(int paramIndex);
   void ClearEdit(int paramIndex);
   void paint(juce::Graphics& g) override;
-  void textEditorTextChanged(juce::TextEditor&) override;
   void textEditorFocusLost(juce::TextEditor&) override {}
   void textEditorReturnKeyPressed(juce::TextEditor&) override {}
   void textEditorEscapeKeyPressed(juce::TextEditor&) override {}

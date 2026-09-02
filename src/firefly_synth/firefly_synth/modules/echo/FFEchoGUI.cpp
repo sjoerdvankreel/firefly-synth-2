@@ -197,7 +197,7 @@ MakeEchoSectionTaps(
       for (int p = (int)FFEchoParam::TapFirst; p <= (int)FFEchoParam::TapLast; p++)
         for(int s = 0; s < FFEchoTapCount; s++)
           plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
-    });
+    } , []() {});
   };
   grid->Add(0, 0, showTapsEditor);
 

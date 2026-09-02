@@ -35,8 +35,6 @@ FBParamNameEditor::ClearEdit(int paramIndex)
 {
   setText("");
   _paramIndex = paramIndex;
-  _plugGUI->HostContext()->ClearAudioParamNameOverride(paramIndex);
-  _plugGUI->HostContext()->NotifyHostOfParamNameChanges();
 }
 
 void 
@@ -47,17 +45,4 @@ FBParamNameEditor::InitEdit(int paramIndex)
   _paramIndex = paramIndex;
   if (_plugGUI->HostContext()->GetAudioParamNameOverride(paramIndex, name))
     setText(name);
-}
-
-void
-FBParamNameEditor::textEditorTextChanged(TextEditor&)
-{
-  if (_paramIndex != -1)
-  {
-    if (getText().isEmpty())
-      _plugGUI->HostContext()->ClearAudioParamNameOverride(_paramIndex);
-    else
-      _plugGUI->HostContext()->SetAudioParamNameOverride(_paramIndex, getText().toStdString());
-    _plugGUI->HostContext()->NotifyHostOfParamNameChanges();
-  }
 }
