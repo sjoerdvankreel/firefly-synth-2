@@ -9,7 +9,7 @@
     "dimDisabled": 0.25,
     "text": "FFEEEEEE",
     "text2": "FFEEEEEE",
-    "primary": "FFFF8020",
+    "primary": "FF30C060",
     "background": "FF000000",
     "meterFill": "FFA0A0A0",
     "meterTrack": "FF505050",
@@ -21,24 +21,24 @@
     "paramHighlight": "80FFFFFF",
     "paramBackground": "FF181818",
     "sliderEngineThumb": "80FFFFFF",
-    "alertWindowPrimary": "FFFF8020",
-    "fileBrowserPrimary": "FFFF8020",
-    "fileBrowserHighlight": "80FF8020",
-    "buttonBackground": "FF984C09",
-    "activeTabBackground": "FF984C09"
+    "alertWindowPrimary": "FF30C060",
+    "fileBrowserPrimary": "FF30C060",
+    "fileBrowserHighlight": "8030C060",
+    "buttonBackground": "FF186030",
+    "activeTabBackground": "FF186030"
   },
   "colorSchemes_comment": "Define color schemes to be referenced by modules, parameters, and non-module related component colors.",
   "colorSchemes": {
-    "Red": {
-      "comment": "Can override other stuff as well.",
-      "primary": "FFFF2840",
-      "buttonBackground": "FF801420",
-      "activeTabBackground": "FF801420"
-    },
     "Green": {
+      "comment": "Can override other stuff as well.",
       "primary": "FF30C060",
       "buttonBackground": "FF186030",
       "activeTabBackground": "FF186030"
+    },
+    "Red": {
+      "primary": "FFFF2840",
+      "buttonBackground": "FF801420",
+      "activeTabBackground": "FF801420"
     }
   },
   "componentColors_comment": "Overrides the default scheme for anything not related to a module.",
@@ -291,7 +291,7 @@
           "comment": "Voice Count",
           "paramId": "617F995E-38CC-40BE-899E-AEAE37852092",
           "paramSlot": -1,
-          "colorScheme": "Red"
+          "colorScheme": "Green"
         }
       ]
     }
