@@ -60,7 +60,7 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->guiAspectRatioHeight = 35;
   result->patchExtension = "ff2preset";    
   result->patchFilterName = "FF2 Presets";                            
-  result->defaultThemeName = "Blue Orange";                         
+  result->defaultThemeName = "Red Green";                         
   result->guiUserScaleModule = (int)FFModuleType::GUISettings;
   result->guiUserScaleParam = (int)FFGUISettingsGUIParam::UserScale;
   result->guiFactory = [](FBHostGUIContext* hostContext) { 
