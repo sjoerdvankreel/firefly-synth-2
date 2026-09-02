@@ -93,15 +93,7 @@ FBPlugGUI::InitLoadPatchBrowser()
     }, [this](juce::File const& file) { 
       LoadPatchAsPreview(file); 
     }, [this] {
-      if (!_patchWasPreviewed)
-        return;
-      BeforePatchChanged();
-      _patchBeforePreview.CopyTo(HostContext(), true);
-      HostContext()->ClearAudioParamNameOverrides();
-      for (auto kv : _paramNamesBeforePreview)
-        HostContext()->SetAudioParamNameOverride(kv.first, kv.second);
-      HostContext()->NotifyHostOfParamNameChanges();
-      AfterPatchChanged(false);
+      RevertPreviewedPatch();
     });
   _loadPatchBrowser->SetPreviewEnabled(_isPatchPreviewEnabled);
 }
@@ -862,6 +854,20 @@ FBPlugGUI::InitPatch()
 }
 
 void 
+FBPlugGUI::RevertPreviewedPatch()
+{
+  if (!_patchWasPreviewed)
+    return;
+  BeforePatchChanged();
+  _patchBeforePreview.CopyTo(HostContext(), true);
+  HostContext()->ClearAudioParamNameOverrides();
+  for (auto kv : _paramNamesBeforePreview)
+    HostContext()->SetAudioParamNameOverride(kv.first, kv.second);
+  HostContext()->NotifyHostOfParamNameChanges();
+  AfterPatchChanged(false);
+}
+
+void 
 FBPlugGUI::LoadPatchAsPreview(
   juce::File const& file)
 {
@@ -883,6 +889,7 @@ FBPlugGUI::LoadPatchFromText(
   std::string const& text)
 {
   FB_LOG_ENTRY_EXIT();
+  RevertPreviewedPatch();
   FBScalarStateContainer editState(*HostContext()->Topo());
   if (!HostContext()->Topo()->LoadPatchStateFromString(text, editState, *HostContext()))
     return false;

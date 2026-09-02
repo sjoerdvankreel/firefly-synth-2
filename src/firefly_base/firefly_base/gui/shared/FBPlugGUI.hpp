@@ -199,6 +199,7 @@ private:
   juce::File GetBrowserInitialPath(std::string const& browserKey);
   void SetBrowserInitialPath(std::string const& browserKey, juce::File const& selected);
 
+  void RevertPreviewedPatch();
   void LoadPatchAsPreview(
     juce::File const& file);
   bool LoadPatchFromText(
