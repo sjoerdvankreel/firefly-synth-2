@@ -33,6 +33,7 @@ void
 FBHostGUIContext::RevertPatchToPatchState()
 {
   _patchState.CopyTo(this, true);
+  ClearAudioParamNameOverrides();
   for (auto kv : _patchParamNameOverridesByIndex)
     SetAudioParamNameOverride(kv.first, kv.second);
 }
@@ -41,6 +42,7 @@ void
 FBHostGUIContext::RevertPatchToSessionState()
 {
   _sessionState.CopyTo(this, true);
+  ClearAudioParamNameOverrides();
   for (auto kv : _sessionParamNameOverridesByIndex)
     SetAudioParamNameOverride(kv.first, kv.second);
 }
