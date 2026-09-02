@@ -47,6 +47,7 @@ FBUndoStateContainer::Snapshot(std::string const& action)
   FBUndoItem item(*_hostContext->Topo());
   item.action = action;
   item.state.CopyFrom(_hostContext, false);
+  item.paramNameOverrides = _hostContext->GetAudioParamNameOverrides();
   item.patchName = _hostContext->PatchName();
   _items.push_back(std::move(item));
   while (_items.size() > _hostContext->Topo()->static_->maxUndoSize)
