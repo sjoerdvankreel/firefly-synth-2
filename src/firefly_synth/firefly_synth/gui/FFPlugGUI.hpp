@@ -84,7 +84,7 @@ public FBPlugGUI
   std::unique_ptr<FFVoiceModuleParamListener> _voiceModuleParamListener = {};
   std::unique_ptr<FFMainTabChangedListener> _mainTabChangedListener = {};
 
-  JUCE_DECLARE_WEAK_REFERENCEABLE(FFPlugGUI);
+  JUCE_DECLARE_WEAK_REFERENCEABLE(FFPlugGUI) // not-msvc dont want ; here
 
   void SetupGUI();
   bool HighlightModulationBounds() const override;
