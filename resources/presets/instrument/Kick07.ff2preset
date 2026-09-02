@@ -1,5 +1,13 @@
 {
   "paramNameOverrides": {
+    "220460541": "RGlzdCAx",
+    "220460542": "RGlzdCAy",
+    "220460543": "RGlzdCAz",
+    "220460544": "TWl4IDE=",
+    "220460545": "TWl4IDI=",
+    "220460546": "TWl4IDM=",
+    "220460547": "TGVuZ3Ro",
+    "220460548": "RmlsdGVy"
   },
   "patchState": {
     "magic": "{84A1EBED-4BE5-47F2-8E53-13B965628974}",
@@ -38,7 +46,7 @@
         "moduleId": "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}",
         "paramSlot": 2,
         "moduleSlot": 0,
-        "val": "33.725491",
+        "val": "0.000000",
         "name": "Master Aux 3"
       },
       {
@@ -49,7 +57,7 @@
         "moduleId": "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}",
         "paramSlot": 3,
         "moduleSlot": 0,
-        "val": "0.000000",
+        "val": "100.000000",
         "name": "Master Aux 4"
       },
       {
@@ -60,7 +68,7 @@
         "moduleId": "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}",
         "paramSlot": 4,
         "moduleSlot": 0,
-        "val": "0.000000",
+        "val": "100.000000",
         "name": "Master Aux 5"
       },
       {
@@ -82,7 +90,7 @@
         "moduleId": "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}",
         "paramSlot": 6,
         "moduleSlot": 0,
-        "val": "0.000000",
+        "val": "100.000000",
         "name": "Master Aux 7"
       },
       {
@@ -93,7 +101,7 @@
         "moduleId": "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}",
         "paramSlot": 7,
         "moduleSlot": 0,
-        "val": "0.000000",
+        "val": "100.000000",
         "name": "Master Aux 8"
       },
       {
