@@ -95,9 +95,9 @@ FFPlugGUI::BeforePatchChanged()
 }
 
 void
-FFPlugGUI::AfterPatchChanged()
+FFPlugGUI::AfterPatchChanged(bool wasPreview)
 {
-  FBPlugGUI::AfterPatchChanged();
+  FBPlugGUI::AfterPatchChanged(wasPreview);
 
   // Get old stuff out of the delay lines.
   FBParamTopoIndices indices = { { (int)FFModuleType::Other, 0 }, { (int)FFOtherParam::FlushAudioToggle, 0 } };

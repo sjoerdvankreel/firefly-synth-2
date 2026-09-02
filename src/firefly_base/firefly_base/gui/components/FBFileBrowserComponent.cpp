@@ -18,13 +18,15 @@ FBFileBrowserComponent::
 
 FBFileBrowserComponent::
 FBFileBrowserComponent(
-  FBPlugGUI* plugGUI, bool isSave,
-  std::string const& title, std::string const& extension, std::string const& filterName,
-  juce::File initialPath, std::function<void(File const&)> onSelect):
+  FBPlugGUI* plugGUI, bool isSave, bool hasPreview,
+  std::string const& title, std::string const& extension, std::string const& filterName, juce::File initialPath, 
+  std::function<void(File const&)> onSelect, std::function<void(File const&)> onPreview):
 _plugGUI(plugGUI),
 _isSave(isSave),
+_hasPreview(hasPreview),
 _extension(extension),
-_onSelect(onSelect)
+_onSelect(onSelect),
+_onPreview(onPreview)
 {
   _title = std::make_unique<FBAutoSizeLabel>(plugGUI, title, FBLabelAlign::Center);
   _okButton = std::make_unique<FBAutoSizeButton>(plugGUI, "OK");
@@ -32,6 +34,12 @@ _onSelect(onSelect)
   _cancelButton = std::make_unique<FBAutoSizeButton>(plugGUI, "Cancel");
   _cancelButton->onClick = [this]() { Hide(); };
   _filter = std::make_unique<WildcardFileFilter>("*." + extension, "", filterName);
+  if (hasPreview)
+  {
+    _previewLabel = std::make_unique<FBAutoSizeLabel>(plugGUI, "Preview");
+    _previewToggle = std::make_unique<FBAutoSizeToggleButton>();
+  }
+  
   int browserFlags = FileBrowserComponent::canSelectFiles | FileBrowserComponent::useTreeView;
   if (isSave)
     browserFlags |= FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
@@ -39,12 +47,17 @@ _onSelect(onSelect)
     browserFlags |= FileBrowserComponent::openMode | FileBrowserComponent::filenameBoxIsReadOnly;
   _browser = std::make_unique<FileBrowserComponent>(browserFlags, initialPath, _filter.get(), nullptr);
   _browser->addListener(this);
-  _grid = std::make_unique<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1, 0, }, std::vector<int> { 1, 0, 0, });
-  _grid->Add(0, 0, 1, 3, _title.get());
-  _grid->Add(1, 0, 1, 3, _browser.get());
-  _grid->Add(2, 1, 1, 1, _okButton.get());
-  _grid->Add(2, 2, 1, 1, _cancelButton.get());
-  _grid->MarkSection({ { 0, 0 }, { 3, 3 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
+  _grid = std::make_unique<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 1, 0, }, std::vector<int> { 1, 0, 0, 0, 0 });
+  _grid->Add(0, 0, 1, 5, _title.get());
+  _grid->Add(1, 0, 1, 5, _browser.get());
+  if (hasPreview)
+  {
+    _grid->Add(2, 1, 1, 1, _previewLabel.get());
+    _grid->Add(2, 2, 1, 1, _previewToggle.get());
+  }
+  _grid->Add(2, 3, 1, 1, _okButton.get());
+  _grid->Add(2, 4, 1, 1, _cancelButton.get());
+  _grid->MarkSection({ { 0, 0 }, { 3, 5 } }, FBGridSectionMark::DefaultBackgroundDefaultBorder);
   _margin = std::make_unique<FBMarginComponent>(plugGUI, true, true, true, true, _grid.get(), true);
   addAndMakeVisible(_margin.get());
 }
@@ -53,6 +66,13 @@ void
 FBFileBrowserComponent::fileDoubleClicked(const File& file)
 {
   SelectFile(file);
+}
+
+void 
+FBFileBrowserComponent::fileClicked(const File& file, const MouseEvent& /*event*/)
+{
+  if (_hasPreview && _previewToggle->getToggleState())
+    _onPreview(file);
 }
 
 void

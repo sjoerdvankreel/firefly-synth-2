@@ -80,7 +80,7 @@ FBPlugGUI::InitLoadPatchBrowser()
   auto extension = HostContext()->Topo()->static_->patchExtension;
   auto filterName = HostContext()->Topo()->static_->patchFilterName;
   auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::LoadPatchFolder);
-  _loadPatchBrowser = std::make_unique<FBFileBrowserComponent>(this, false, "Load Patch", extension, filterName, initialPath, [this](juce::File const& file) {
+  _loadPatchBrowser = std::make_unique<FBFileBrowserComponent>(this, false, true, "Load Patch", extension, filterName, initialPath, [this](juce::File const& file) {
     SetBrowserInitialPath(FBUserGlobalSettingKeys::LoadPatchFolder, file);
     auto text = file.loadFileAsString().toStdString();
     if (!LoadPatchFromText("Load Patch", file.getFileNameWithoutExtension().toStdString(), text))
@@ -88,7 +88,7 @@ FBPlugGUI::InitLoadPatchBrowser()
         MessageBoxIconType::NoIcon,
         "Error",
         "Failed to load patch. See log for details.");
-    });
+    }, [this](juce::File const& file) { LoadPatchAsPreview(file); });
 }
 
 void 
@@ -97,32 +97,32 @@ FBPlugGUI::InitSavePatchBrowser()
   auto extension = HostContext()->Topo()->static_->patchExtension;
   auto filterName = HostContext()->Topo()->static_->patchFilterName;
   auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::SavePatchFolder);
-  _savePatchBrowser = std::make_unique<FBFileBrowserComponent>(this, true, "Save Patch", extension, filterName, initialPath, [this](juce::File const& file) {
+  _savePatchBrowser = std::make_unique<FBFileBrowserComponent>(this, true, false, "Save Patch", extension, filterName, initialPath, [this](juce::File const& file) {
     SetBrowserInitialPath(FBUserGlobalSettingKeys::SavePatchFolder, file);
     FBScalarStateContainer editState(*HostContext()->Topo());
     editState.CopyFrom(HostContext(), true);
     file.replaceWithText(HostContext()->Topo()->SavePatchStateToString(editState, *HostContext()));
-  });
+  }, [](juce::File const&){});
 }
 
 void 
 FBPlugGUI::InitDumpTopologyBrowser()
 {
   auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::SaveTopologyFolder);
-  _saveTopologyBrowser = std::make_unique<FBFileBrowserComponent>(this, true, "Dump Topology", "txt", "Text Files", initialPath, [this](juce::File const& file) {
+  _saveTopologyBrowser = std::make_unique<FBFileBrowserComponent>(this, true, false, "Dump Topology", "txt", "Text Files", initialPath, [this](juce::File const& file) {
     SetBrowserInitialPath(FBUserGlobalSettingKeys::SaveTopologyFolder, file);
     file.replaceWithText(HostContext()->Topo()->static_->PrintTopology());
-  });
+  }, [](juce::File const&){});
 }
 
 void 
 FBPlugGUI::InitDumpParamListBrowser()
 {
   auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::SaveParamListFolder);
-  _saveParamListBrowser = std::make_unique<FBFileBrowserComponent>(this, true, "Dump Param List", "txt", "Text Files", initialPath, [this](juce::File const& file) {
+  _saveParamListBrowser = std::make_unique<FBFileBrowserComponent>(this, true, false, "Dump Param List", "txt", "Text Files", initialPath, [this](juce::File const& file) {
     SetBrowserInitialPath(FBUserGlobalSettingKeys::SaveParamListFolder, file);
     file.replaceWithText(HostContext()->Topo()->PrintParamList());
-  });
+  }, [](juce::File const&){});
 }
 
 FBTheme const& 
@@ -148,9 +148,10 @@ FBPlugGUI::SwitchTheme(std::string const& themeName)
 }
 
 void
-FBPlugGUI::AfterPatchChanged()
+FBPlugGUI::AfterPatchChanged(bool wasPreview)
 {
-  RequestGUIReset();
+  if(!wasPreview)
+    RequestGUIReset();
 }
 
 void 
@@ -741,7 +742,7 @@ FBPlugGUI::ReloadPatch()
   HostContext()->RevertPatchToPatchState();
   HostContext()->MarkPatchAsPatchState(oldName);
   HostContext()->NotifyHostOfParamNameChanges();
-  AfterPatchChanged();
+  AfterPatchChanged(false);
 }
 
 void
@@ -752,7 +753,7 @@ FBPlugGUI::ReloadSession()
   HostContext()->UndoState().Snapshot("Reload Session");
   HostContext()->RevertPatchToSessionState();
   HostContext()->NotifyHostOfParamNameChanges();
-  AfterPatchChanged();
+  AfterPatchChanged(false);
 }
 
 void
@@ -835,7 +836,21 @@ FBPlugGUI::InitPatch()
   HostContext()->ClearAudioParamNameOverrides();
   HostContext()->MarkPatchAsPatchState("Init Patch");
   HostContext()->NotifyHostOfParamNameChanges();
-  AfterPatchChanged();
+  AfterPatchChanged(false);
+}
+
+void 
+FBPlugGUI::LoadPatchAsPreview(
+  juce::File const& file)
+{
+  FB_LOG_ENTRY_EXIT();
+  FBScalarStateContainer editState(*HostContext()->Topo());
+  if (!HostContext()->Topo()->LoadPatchStateFromString(file.loadFileAsString().toStdString(), editState, *HostContext()))
+    return;
+  BeforePatchChanged();
+  editState.CopyTo(HostContext(), true);
+  HostContext()->NotifyHostOfParamNameChanges();
+  AfterPatchChanged(true);
 }
 
 bool
@@ -853,7 +868,7 @@ FBPlugGUI::LoadPatchFromText(
   editState.CopyTo(HostContext(), true);
   HostContext()->MarkPatchAsPatchState(patchName);
   HostContext()->NotifyHostOfParamNameChanges();
-  AfterPatchChanged();
+  AfterPatchChanged(false);
   return true;
 }
 

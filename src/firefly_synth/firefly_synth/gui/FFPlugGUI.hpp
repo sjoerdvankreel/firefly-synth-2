@@ -94,9 +94,9 @@ public FBPlugGUI
 
 protected:
   void ForceReLayout() override;
-  void AfterPatchChanged() override;
   void BeforePatchChanged() override;
   void UpdateExchangeStateTick() override;
+  void AfterPatchChanged(bool wasPreview) override;
 
 public:
   std::function<void()> onPatchLoaded = {};

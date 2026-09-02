@@ -126,10 +126,10 @@ protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
   FBPlugGUI(FBHostGUIContext* hostContext);
 
-  virtual void AfterPatchChanged();
   virtual void ForceReLayout() = 0;
   virtual void BeforePatchChanged() = 0;
   virtual void UpdateExchangeStateTick() = 0;
+  virtual void AfterPatchChanged(bool wasPreview);
 
   void InitAllDependencies();
   FBGUIParamControl* GetControlForGUIParamIndex(int paramIndex) const;
@@ -195,6 +195,8 @@ private:
   juce::File GetBrowserInitialPath(std::string const& browserKey);
   void SetBrowserInitialPath(std::string const& browserKey, juce::File const& selected);
 
+  void LoadPatchAsPreview(
+    juce::File const& file);
   bool LoadPatchFromText(
     std::string const& undoAction,
     std::string const& patchName,
