@@ -1,3 +1,4 @@
+[ ] update kvr
 [ ] close stale issues
 [ ] red green default theme + update screenshots
 [ ] screenshots with flstudio host window bc it is more pretty (or bitwig)
