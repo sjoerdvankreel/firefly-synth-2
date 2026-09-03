@@ -220,3 +220,9 @@ added soft knee support based on this https://github.com/tu-studio/IEMPluginSuit
 ## Settings
 
 <img alt="Screenshot MSEG" src="static/screen_settings.png"/>
+
+## Themes
+
+<img alt="Screenshot Blue" src="static/screenshot_theme_blue.png"/>
+<img alt="Screenshot Blue Green" src="static/screenshot_theme_blue_green.png"/>
+<img alt="Screenshot Blue Orange" src="static/screenshot_theme_blue_orange.png"/>
