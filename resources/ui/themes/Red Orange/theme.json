@@ -21,9 +21,9 @@
     "paramHighlight": "80FFFFFF",
     "paramBackground": "FF181818",
     "sliderEngineThumb": "80FFFFFF",
-    "alertWindowPrimary": "FFFF8020",
-    "fileBrowserPrimary": "FFFF8020",
-    "fileBrowserHighlight": "80FF8020",
+    "alertWindowPrimary": "FFFF2840",
+    "fileBrowserPrimary": "FFFF2840",
+    "fileBrowserHighlight": "80FF2840",
     "buttonBackground": "FF984C09",
     "activeTabBackground": "FF984C09"
   },
