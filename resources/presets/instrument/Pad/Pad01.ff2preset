@@ -8673,7 +8673,7 @@
         "moduleId": "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "Off",
+        "val": "2",
         "name": "Amp Env Loop Start"
       },
       {
@@ -30266,7 +30266,7 @@
         "moduleId": "{09ED2CCE-3AC5-455E-935C-A684BEBC154D}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "10.138000",
+        "val": "50.000000",
         "name": "GMix Amp"
       },
       {
