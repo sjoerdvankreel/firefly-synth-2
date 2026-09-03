@@ -1,11 +1,11 @@
 [x] gather the presets + gateway + give meaningful names to the auxes
+[ ] hckick + pretty pad demo
 [ ] red green default theme + update screenshots
 [ ] screenshots with flstudio host window bc it is more pretty (or bitwig)
 [ ] screenshots for themes + big pad video with pretty green theme
 [ ] update manual + screenshots et all
 [ ] adjust website theme
 
-[ ] show which aux params are active in the gui
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] fix the comp and the rms comp
 [ ] switch to MIT ?
