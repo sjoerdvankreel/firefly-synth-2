@@ -437,6 +437,10 @@ Comes with regular load-from/save-to-file, init patch to defaults, and load fact
 * Session: revert the patch state to the time the DAW session was loaded.
 * Reload: revert the patch state to the last time a patch was loaded from file, preset, or default values (init patch).
 
+For load from file/preset, the patch browser has a preview option which immediately switches the plugin patch to the selected file.
+Click the "Preview" toggle to enable this feature. Upon cancel, it will revert back to previous state.
+For patch previewing, some sort of transport (or manual note enter) has to be running, because patch preview is not rendered in the gui itself.
+
 ### Graph plots
 ![image](screen_manual_graph_plot_fx.png)
 ![image](screen_manual_graph_plot_osc.png)
