@@ -30,7 +30,7 @@
         "moduleId": "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}",
         "paramSlot": 1,
         "moduleSlot": 0,
-        "val": "51.919000",
+        "val": "51.919001",
         "name": "Master Aux 2"
       },
       {
@@ -4782,7 +4782,7 @@
         "moduleId": "{AFA1D831-2F91-4FA4-9CBA-958F4AD32DA8}",
         "paramSlot": 0,
         "moduleSlot": 0,
-        "val": "-4.999998",
+        "val": "0.000000",
         "name": "Voice Coarse"
       },
       {
