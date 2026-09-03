@@ -9,7 +9,7 @@
     "dimDisabled": 0.25,
     "text": "FFEEEEEE",
     "text2": "FFEEEEEE",
-    "primary": "FFFF8020",
+    "primary": "FFFF2840",
     "background": "FF000000",
     "meterFill": "FFA0A0A0",
     "meterTrack": "FF505050",
@@ -24,8 +24,8 @@
     "alertWindowPrimary": "FFFF2840",
     "fileBrowserPrimary": "FFFF2840",
     "fileBrowserHighlight": "80FF2840",
-    "buttonBackground": "FF984C09",
-    "activeTabBackground": "FF984C09"
+    "buttonBackground": "FF801420",
+    "activeTabBackground": "FF801420"
   },
   "colorSchemes_comment": "Define color schemes to be referenced by modules, parameters, and non-module related component colors.",
   "colorSchemes": {
@@ -291,7 +291,7 @@
           "comment": "Voice Count",
           "paramId": "617F995E-38CC-40BE-899E-AEAE37852092",
           "paramSlot": -1,
-          "colorScheme": "Orange"
+          "colorScheme": "Red"
         }
       ]
     }
