@@ -1,6 +1,5 @@
-[ ] update kvr
 [ ] close stale issues
-[ ] screenshots for themes + big pad video with pretty green theme
+[ ] big pad video with pretty green theme
 [ ] adjust website theme
 
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
