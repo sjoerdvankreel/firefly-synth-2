@@ -1,20 +1,18 @@
-?, ? - ? - v2.1.5.
+September 3, 2026 - v2.1.5.
 - Update dependencies to latest.
 - Bugfix: ARM build was reporting as X64.
 - Engine: increase max LFO synced period from 4 to 16 bars.
 - Engine: increase max LFO unsynced period from 20 to 50 seconds.
-- UI: remember last selected folder for patch load/save.
-- UI: added more themes (color schemes) and changed the default one to red/green (old default blue/orange still available).
+- Presets: gathered a bunch of presets from the demo material.
 - UI: dropped saving of active tabs.
-- UI: on patch/session load, the first tab "of interest" is now selected- including corresponding graphs/details section (first active osci/fx/lfo etc).
 - UI: renamed voice "Target" to "Amp Env Target".
-- UI: allow customizable parameter names. These are displayed in host automation lanes etc + some places in the plugin. Right-click a parameter and Rename-Param/Clear-Param-Name.
+- UI: added more themes and changed default theme.
+- UI: remember last selected folder for patch load/save.
 - UI: Consolidated load-patch-from-file and load-patch-from-preset.
+- UI: on patch/session load, first tab of interest is now selected (f.e. first active osci).
+- UI: allow customizable parameter names. These are displayed in host automation lanes etc + some places in the plugin. Right-click a parameter and Rename-Param/Clear-Param-Name.
 - UI: Load patch browser now has a preview option so you can click through patchfiles/presets and hear them immediately (transport needs to be running, no rendering on the gui thread).
 - UI: Master Aux controls now display a visual indicator connected to the param name. E.g. rename "Aux 1" to "Filter", will display as "F" in the GUI.
-* This is primarily intended for patch/preset design, to give a visual clue of where the interesting controls are. It only reacts to parameter naming and does not check if "Aux N" is actually connected in the matrix.
-- Presets: gathered a bunch of presets from the demo material. Personal favorites: bass07, kick07, pad04, synth05, synth08.
-* These come directly from the demo tunes with little changes other than some volume adjustments and renamed aux parameters. Many of them have echo applied which may not be what you want.
 
 August 8, 2026 - v2.1.4.
 - Incorporate fixes from https://github.com/emrum/firefly-synth-2:
