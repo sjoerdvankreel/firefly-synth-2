@@ -1,6 +1,3 @@
-[ ] close stale issues
-[ ] big pad video with pretty green theme
-
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] fix the comp and the rms comp
 [ ] switch to MIT ?
