@@ -1,0 +1,35 @@
+{
+  "name": "Orange",
+  "fontSize": 13,
+  "fontFileName": "Satoshi-Bold.ttf",
+  "aboutBoxImageFileName": "about.png",
+  "defaultColorScheme": {
+    "graphAlpha": 0.6,
+    "dimDisabled": 0.25,
+    "text": "FFEEEEEE",
+    "text2": "FFEEEEEE",
+    "primary": "FFFF8020",
+    "background": "FF000000",
+    "meterFill": "FFA0A0A0",
+    "meterTrack": "FF505050",
+    "graphGrid": "FF404040",
+    "graphBackground": "FF181818",
+    "sectionBorder": "80FFFFFF",
+    "sectionBackground": "FF282828",
+    "paramSecondary": "FF505050",
+    "paramHighlight": "80FFFFFF",
+    "paramBackground": "FF181818",
+    "sliderEngineThumb": "80FFFFFF",
+    "alertWindowPrimary": "FFFF8020",
+    "fileBrowserPrimary": "FFFF8020",
+    "fileBrowserHighlight": "80FF8020",
+    "buttonBackground": "FF984C09",
+    "activeTabBackground": "FF984C09"
+  },
+  "colorSchemes": {
+  },
+  "componentColors": [
+  ],
+  "moduleColors": [
+  ]
+}

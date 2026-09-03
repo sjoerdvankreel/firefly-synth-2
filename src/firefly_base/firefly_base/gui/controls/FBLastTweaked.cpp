@@ -61,10 +61,15 @@ FBLastTweakedLabel::AudioParamChanged(int index, double /*normalized*/, bool cha
   auto const& staticModule = topo->static_->modules[module.topoIndices.index];
   auto const& tweakName = param.displayName;
   auto const& fullName = param.shortName;
+
+  std::string overrideName;
   std::string const& moduleDisplay = staticModule.matrixName.size() ? staticModule.matrixName : module.name;
   std::string modulePlusFull = moduleDisplay + " " + fullName;
   std::string modulePlusTweak = moduleDisplay + " " + tweakName;
-  if(lnf->GetStringWidthCached(modulePlusFull) <= _width)
+
+  if(_plugGUI->HostContext()->GetAudioParamNameOverride(index, overrideName))
+    setText(overrideName, dontSendNotification);
+  else if(lnf->GetStringWidthCached(modulePlusFull) <= _width)
     setText(modulePlusFull, dontSendNotification);
   else if (lnf->GetStringWidthCached(fullName) <= _width)
     setText(fullName, dontSendNotification);

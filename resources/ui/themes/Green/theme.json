@@ -1,0 +1,35 @@
+{
+  "name": "Green",
+  "fontSize": 13,
+  "fontFileName": "Satoshi-Bold.ttf",
+  "aboutBoxImageFileName": "about.png",
+  "defaultColorScheme": {
+    "graphAlpha": 0.6,
+    "dimDisabled": 0.25,
+    "text": "FFEEEEEE",
+    "text2": "FFEEEEEE",
+    "primary": "FF30C060",
+    "background": "FF000000",
+    "meterFill": "FFA0A0A0",
+    "meterTrack": "FF505050",
+    "graphGrid": "FF404040",
+    "graphBackground": "FF181818",
+    "sectionBorder": "80FFFFFF",
+    "sectionBackground": "FF282828",
+    "paramSecondary": "FF505050",
+    "paramHighlight": "80FFFFFF",
+    "paramBackground": "FF181818",
+    "sliderEngineThumb": "80FFFFFF",
+    "alertWindowPrimary": "FF30C060",
+    "fileBrowserPrimary": "FF30C060",
+    "fileBrowserHighlight": "8030C060",
+    "buttonBackground": "FF186030",
+    "activeTabBackground": "FF186030"
+  },
+  "colorSchemes": {
+  },
+  "componentColors": [
+  ],
+  "moduleColors": [
+  ]
+}

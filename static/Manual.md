@@ -307,6 +307,7 @@ For example filter frequency ranges from 20 to 20000 Hz, but a host automation e
 Right-click on some empty space to show the generic context menu.
 * Undo/redo options.
 * Show manual: shows this document.
+* Clear param names: resets all customized parameter names.
 * Show log folder: open the directory containing the logfile.
 * Show plugin folder: open the plugin root folder (stores themes and presets alongside the plugin binary itself).
 * About: shows plug version, format and cpu architecture.
@@ -327,6 +328,8 @@ Right-click on an audio parameter:
 * Set to session: set to value at time of DAW session load.
 * Set to patch: set to value at the last time load/reload/init/load preset was used in the current session.
 * Show manual: shows this document at the relevant section.
+* Rename param: customize parameter name that shows up in host automation lanes and the plugin's own tooltips.
+* Clear param name: reset customized parameter name.
 * Host menu options: DAW specific but typically contains stuff like "add automation lane".
 
 ## Theming
@@ -433,6 +436,10 @@ Comes with regular load-from/save-to-file, init patch to defaults, and load fact
 
 * Session: revert the patch state to the time the DAW session was loaded.
 * Reload: revert the patch state to the last time a patch was loaded from file, preset, or default values (init patch).
+
+For load from file/preset, the patch browser has a preview option which immediately switches the plugin patch to the selected file.
+Click the "Preview" toggle to enable this feature. Upon cancel, it will revert back to previous state.
+For patch previewing, some sort of transport (or manual note enter) has to be running, because patch preview is not rendered in the gui itself.
 
 ### Graph plots
 ![image](screen_manual_graph_plot_fx.png)

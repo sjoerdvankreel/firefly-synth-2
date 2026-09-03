@@ -13,21 +13,14 @@
 using namespace juce;
 
 FBModuleSelector::
-FBModuleSelector(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
-_plugGUI(plugGUI), _param(param)
-{
-  double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(_param->runtimeParamIndex);
-  _storedSelection = _param->static_.Discrete().NormalizedToPlainFast((float)normalized);
-}
+FBModuleSelector(FBPlugGUI* plugGUI):
+_plugGUI(plugGUI) {}
 
 void 
 FBModuleSelector::SelectModuleGUI(int index)
 {
   auto const& indices = _moduleIndices[index];
   _plugGUI->ActiveModuleSlotChanged(indices.index, indices.slot);
-  double normalized = _param->static_.Discrete().PlainToNormalizedFast(index);
-  _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
-  _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
 }
 
 void 
@@ -86,40 +79,8 @@ TabBarButton(name, bar) {}
 void 
 FBTabBarButton::clicked(const ModifierKeys& modifiers)
 {
-  FBModuleTabComponent* tabs;
   if (!modifiers.isRightButtonDown())
     TabBarButton::clicked(modifiers);
-  else if ((tabs = findParentComponentOfClass<FBModuleTabComponent>()) != nullptr)
-    tabs->TabRightClicked(getIndex());
-}
-
-FBModuleTabBarButton::
-FBModuleTabBarButton(
-FBPlugGUI* plugGUI,
-std::string const& separatorText,
-const juce::String& name,
-juce::TabbedButtonBar& bar,
-FBTopoIndices const& moduleIndices):
-FBTabBarButton(name, bar),
-_plugGUI(plugGUI),
-_separatorText(separatorText),
-_moduleIndices(moduleIndices) {}
-
-void
-FBModuleTabBarButton::clicked(const ModifierKeys& modifiers)
-{
-  FBTabBarButton::clicked(modifiers);
-  _plugGUI->ModuleSlotClicked(_moduleIndices.index, _moduleIndices.slot);
-}
-
-FBColorScheme const* 
-FBModuleTabBarButton::GetScheme(FBTheme const& theme) const
-{
-  int rtModuleIndex = _plugGUI->HostContext()->Topo()->moduleTopoToRuntime.at(_moduleIndices);
-  auto moduleIter = theme.moduleColors.find(rtModuleIndex);
-  if (moduleIter != theme.moduleColors.end())
-    return &theme.global.colorSchemes.at(moduleIter->second.colorScheme);
-  return nullptr;
 }
 
 FBAutoSizeTabComponent::
@@ -165,76 +126,6 @@ FBAutoSizeTabComponent::AddTab(
   fbTabButton.centerText = centerText;
 }
 
-FBModuleTabComponent::
-FBModuleTabComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
-FBAutoSizeTabComponent(plugGUI),
-FBModuleSelector(plugGUI, param)
-{
-  assert(param != nullptr);
-}
-
-void
-FBModuleTabComponent::TabRightClicked(int tabIndex)
-{
-  if (tabIndex >= 0 && tabIndex < (int)_moduleIndices.size())
-    ShowModulePopupMenuFor(tabIndex, getTabbedButtonBar().getTabButton(tabIndex));
-}
-
-void 
-FBModuleTabComponent::SetTabSeparatorText(int tabIndex, std::string const& text)
-{
-  _tabSeparatorText[tabIndex] = text;
-}
-
-TabBarButton*
-FBModuleTabComponent::createTabButton(const juce::String& tabName, int tabIndex)
-{
-  return new FBModuleTabBarButton(_tabPlugGUI, _tabSeparatorText[tabIndex], tabName, *tabs, _moduleIndices[tabIndex]);
-}
-
-void
-FBModuleTabComponent::ActivateStoredSelection()
-{
-  if (0 <= _storedSelection && _storedSelection < _moduleIndices.size())
-    setCurrentTabIndex(_storedSelection);
-}
-
-void
-FBModuleTabComponent::currentTabChanged(
-  int newCurrentTabIndex, juce::String const& newCurrentTabName)
-{
-  FBAutoSizeTabComponent::currentTabChanged(newCurrentTabIndex, newCurrentTabName);
-  if (newCurrentTabIndex >= 0 && newCurrentTabIndex < _moduleIndices.size())
-    SelectModuleGUI(newCurrentTabIndex);
-}
-
-void
-FBModuleTabComponent::AddModuleTab(
-  bool centerText, bool large,
-  FBTopoIndices const& moduleIndices,
-  Component* component)
-{
-  _moduleIndices.push_back(moduleIndices);
-  auto topo = _tabPlugGUI->HostContext()->Topo();
-  auto const& module = topo->static_->modules[moduleIndices.index];
-
-  std::string header = {};
-  if (module.tabSlotFormatter != nullptr)
-    header = FBMakeRuntimeModuleShortName(
-      *topo->static_, module.name, module.slotCount,
-      moduleIndices.slot, module.tabSlotFormatter, module.slotFormatterOverrides);
-  else if(module.slotCount > 1)
-    header = std::to_string(moduleIndices.slot + 1);
-  else
-    header = module.name;
-
-  addTab(header, Colours::black, component, false);
-  auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
-  auto& fbTabButton = dynamic_cast<FBTabBarButton&>(*button);
-  fbTabButton.large = large;
-  fbTabButton.centerText = centerText;
-}
-
 FBSelectButton::
 FBSelectButton(FBPlugGUI* plugGUI, std::string const& text, bool isTop, bool isBottom, bool isLeft, bool isRight):
 FBAutoSizeButton(plugGUI, text),
@@ -268,9 +159,19 @@ FBSelectButton::mouseUp(const MouseEvent& event)
 }
 
 FBSelectComponent::
-FBSelectComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param, std::vector<int> const& rows, std::vector<int> const& cols):
-FBModuleSelector(plugGUI, param),
-_rows((int)rows.size()), _cols((int)cols.size())
+~FBSelectComponent()
+{
+  _plugGUI->RemoveGUIResetListener(this);
+}
+
+FBSelectComponent::
+FBSelectComponent(
+  FBPlugGUI* plugGUI, 
+  std::vector<int> const& rows, 
+  std::vector<int> const& cols,
+  std::function<int()> resetToIndex):
+FBModuleSelector(plugGUI),
+_rows((int)rows.size()), _cols((int)cols.size()), _resetToIndex(resetToIndex)
 {
   _content = std::make_unique<FBContentComponent>();
   _mainGrid = std::make_unique<FBGridComponent>(plugGUI, true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
@@ -280,6 +181,8 @@ _rows((int)rows.size()), _cols((int)cols.size())
   _marginContent = std::make_unique<FBMarginComponent>(plugGUI, false, false, false, true, _content.get());
   _mainGrid->Add(0, 0, _marginSelect.get());
   _mainGrid->Add(0, 1, _marginContent.get());
+
+  _plugGUI->AddGUIResetListener(this);
   addAndMakeVisible(_mainGrid.get());
 }
 
@@ -290,11 +193,10 @@ FBSelectComponent::resized()
   _mainGrid->resized();
 }
 
-void
-FBSelectComponent::ActivateStoredSelection()
+void 
+FBSelectComponent::OnResetRequest()
 {
-  if (0 <= _storedSelection && _storedSelection < _moduleIndices.size())
-    Select(_storedSelection);
+  Select(_resetToIndex());
 }
 
 void 
@@ -309,6 +211,8 @@ FBSelectComponent::mouseUp(const MouseEvent& event)
 void 
 FBSelectComponent::Select(int index)
 {
+  if (index < 0 || index >= _buttons.size())
+    return;
   for (int i = 0; i < _buttons.size(); i++)
     _buttons[i]->setToggleState(false, dontSendNotification);
   _buttons[index]->setToggleState(true, dontSendNotification);

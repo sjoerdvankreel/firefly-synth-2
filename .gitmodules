@@ -1,15 +1,3 @@
-[submodule "lib/vst3/cmake"]
-	path = lib/vst3/cmake
-	url = https://github.com/sjoerdvankreel/vst3_cmake.git
-[submodule "lib/vst3/base"]
-	path = lib/vst3/base
-	url = https://github.com/sjoerdvankreel/vst3_base.git
-[submodule "lib/vst3/pluginterfaces"]
-	path = lib/vst3/pluginterfaces
-	url = https://github.com/sjoerdvankreel/vst3_pluginterfaces.git
-[submodule "lib/vst3/public.sdk"]
-	path = lib/vst3/public.sdk
-	url = https://github.com/sjoerdvankreel/vst3_public_sdk.git
 [submodule "lib/JUCE"]
 	path = lib/JUCE
 	url = https://github.com/sjoerdvankreel/JUCE.git
@@ -28,3 +16,6 @@
 [submodule "lib/MTS-ESP"]
 	path = lib/MTS-ESP
 	url = https://github.com/sjoerdvankreel/MTS-ESP.git
+[submodule "lib/vst3sdk"]
+	path = lib/vst3sdk
+	url = https://github.com/sjoerdvankreel/vst3sdk.git

@@ -29,22 +29,54 @@ _sessionState(*_topo.get())
 {
 }
 
+std::map<int, std::string> 
+FBHostGUIContext::GetAudioParamNameOverrides() const
+{
+  std::string name;
+  std::map<int, std::string> result;
+  for (int i = 0; i < _topo->audio.params.size(); i++)
+    if (GetAudioParamNameOverride(i, name))
+      result[i] = name;
+  return result;
+}
+
+void 
+FBHostGUIContext::SetAudioParamNameOverrides(std::map<int, std::string> const& overrides)
+{
+  ClearAudioParamNameOverrides();
+  for (auto kv : overrides)
+    SetAudioParamNameOverride(kv.first, kv.second);
+}
+
 void 
 FBHostGUIContext::RevertPatchToPatchState()
 {
   _patchState.CopyTo(this, true);
-}
-
-void
-FBHostGUIContext::MarkPatchAsSessionState()
-{
-  _sessionState.CopyFrom(this, true);
+  SetAudioParamNameOverrides(_patchParamNameOverridesByIndex);
 }
 
 void
 FBHostGUIContext::RevertPatchToSessionState()
 {
   _sessionState.CopyTo(this, true);
+  SetAudioParamNameOverrides(_sessionParamNameOverridesByIndex);
+}
+
+void
+FBHostGUIContext::MarkPatchAsSessionState()
+{
+  _sessionState.CopyFrom(this, true);
+  _sessionParamNameOverridesByIndex = GetAudioParamNameOverrides();
+}
+
+void
+FBHostGUIContext::MarkPatchAsPatchState(std::string const& patchName)
+{
+  _patchState.CopyFrom(this, true);
+  _patchParamNameOverridesByIndex = GetAudioParamNameOverrides();
+  _isPatchLoaded = true;
+  OnPatchLoaded();
+  SetPatchName(patchName);
 }
 
 std::string const& 
@@ -120,15 +152,6 @@ FBHostGUIContext::RemoveListener(IFBHostGUIContextListener* listener)
   auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
   if (iter != _listeners.end())
     _listeners.erase(iter);
-}
-
-void
-FBHostGUIContext::MarkPatchAsPatchState(std::string const& name)
-{
-  _patchState.CopyFrom(this, true);
-  _isPatchLoaded = true;
-  OnPatchLoaded();
-  SetPatchName(name);
 }
 
 double 
@@ -383,39 +406,6 @@ FBHostGUIContext::ShowOnlineManualForModule(int index) const
   auto const& moduleId = Topo()->static_->modules[staticModuleIndex].id;
   auto cleanModuleId = FBCleanTopoId(moduleId);
   juce::URL(OnlineManualLocation()).withAnchor(cleanModuleId).launchInDefaultBrowser();
-}
-
-std::shared_ptr<FBPresetFolder>
-FBHostGUIContext::LoadPresetList(std::filesystem::path const& p) const
-{
-  auto result = std::make_shared<FBPresetFolder>();
-  result->name = p.filename().string();
-  for (auto const& i: std::filesystem::directory_iterator(p))
-  {
-    if (std::filesystem::is_regular_file(i.path()))
-    {
-      FBPresetFile file = {};
-      file.path = i.path().string();
-      file.name = i.path().stem().string();
-      result->files.push_back(file);
-    }
-    if (std::filesystem::is_directory(i.path()))
-      result->folders.push_back(LoadPresetList(i.path()));
-  }
-
-  std::sort(result->files.begin(), result->files.end(), [](auto const& a, auto const& b) { return a.name < b.name;  });
-  std::sort(result->folders.begin(), result->folders.end(), [](auto const& a, auto const& b) { return a->name < b->name; });
-  return result;
-}
-
-std::shared_ptr<FBPresetFolder>
-FBHostGUIContext::LoadPresetList() const
-{
-  std::string subPath = Topo()->static_->meta.isFx ? "fx" : "instrument";
-  std::filesystem::path presetRoot(FBGetPresetsFolderPath() / subPath);
-  if (std::filesystem::exists(presetRoot))
-    return LoadPresetList(presetRoot);
-  return {};
 }
 
 void

@@ -268,16 +268,21 @@ Component*
 FFMakeEffectGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto topo = plugGUI->HostContext()->Topo();
-  auto moduleParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::FXSelectedTab, 0 } });
-  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, moduleParam, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0, 0, 0 });
+  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0, 0, 0 }, [plugGUI]() {
+    for (int i = 0; i < FFEffectCount; i++)
+      if (plugGUI->HostContext()->GetAudioParamBool({ { (int)FFModuleType::VEffect, i }, { (int)FFEffectParam::On, 0 } }))
+        return i;
+    for (int i = 0; i < FFEffectCount; i++)
+      if (plugGUI->HostContext()->GetAudioParamBool({ { (int)FFModuleType::GEffect, i }, { (int)FFEffectParam::On, 0 } }))
+        return FFEffectCount + i;
+    return 0;
+  });
   select->AddLabel(0, 0, "VFX");
   for (int i = 0; i < FFEffectCount; i++)
     select->AddSelector(0, i + 1, { (int)FFModuleType::VEffect, i }, std::to_string(i + 1), MakeEffectTab(plugGUI, FFModuleType::VEffect, i));
   select->AddLabel(1, 0, "GFX");
   for (int i = 0; i < FFEffectCount; i++)
     select->AddSelector(1, i + 1, { (int)FFModuleType::GEffect, i }, std::to_string(i + 1), MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
-  select->ActivateStoredSelection();
   return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::EffectSelector, select);
 }
 

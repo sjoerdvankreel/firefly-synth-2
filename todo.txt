@@ -1,9 +1,11 @@
-[ ] gather the presets
-[ ] filter mix controls
-[ ] labeled aux controls
-[ ] allow longer lfo period
-[ ] do more easy access controls (and maybe more mod sources)
-[ ] after init, load, etc, should select the first graph of everything
+[ ] update kvr
+[ ] close stale issues
+[ ] screenshots for themes + big pad video with pretty green theme
+[ ] adjust website theme
+
+[ ] do more easy access controls in particular glfo (and maybe more mod sources)
+[ ] fix the comp and the rms comp
+[ ] switch to MIT ?
 [ ] fix the 1sec delay on plot visuals
 [ ] programmatic dump screenshot?
 [ ] fix the build scripts for linux-arm
@@ -11,10 +13,6 @@
 [ ] one phase LFO type
 [ ] do mod rate/amt for multitap
 [ ] override all-osci unison
-[ ] GLFO_N->X everywhere you can do VLFO_N->X
-[ ] tooltips for time stuff in hz and seconds?
-[ ] store last selected patch folder in global settings on disk
-[ ] allow click + on first disabled matrix slot
 
 fix the string oversample bug already
 allow full fx module inside the feedback delay
@@ -34,5 +32,4 @@ dedicated distortion module
 split large matrix dropdowns
 architecture/developer document
 percussion/porta lead demo patches
-string timbre should not react to samplerate/oversample
 separate midi, bpm, automation smoothing, auto should be global + per-param override

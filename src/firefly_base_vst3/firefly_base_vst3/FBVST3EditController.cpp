@@ -112,6 +112,42 @@ FBVST3EditController::DoPerformAudioParamEdit(int index, double normalized)
   endEdit(tag);
 }
 
+void
+FBVST3EditController::NotifyHostOfParamNameChanges()
+{
+  if (componentHandler)
+    componentHandler->restartComponent(Vst::kParamTitlesChanged);
+}
+
+void 
+FBVST3EditController::ClearAudioParamNameOverrides()
+{
+  for (int i = 0; i < parameters.getParameterCount(); i++)
+    ClearAudioParamNameOverride(i);
+}
+
+void 
+FBVST3EditController::ClearAudioParamNameOverride(int index)
+{
+  if(auto p = dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index)))
+    p->ClearNameOverride();
+}
+
+bool 
+FBVST3EditController::GetAudioParamNameOverride(int index, std::string& name) const
+{
+  if(auto p = dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index)))
+    return p->GetNameOverride(name);
+  return false;
+}
+
+void 
+FBVST3EditController::SetAudioParamNameOverride(int index, std::string const& name)
+{
+  if(auto p = dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index)))
+    p->SetNameOverride(name);
+}
+
 double
 FBVST3EditController::GetAudioParamNormalized(int index) const
 {
@@ -175,7 +211,7 @@ FBVST3EditController::getState(IBStream* state)
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, state]()
   {
-    std::string json = _topo->SaveGUIStateToString(*_guiState);
+    std::string json = _topo->SaveGUIStateToString(*this);
     if (!FBVST3SaveIBStream(state, json))
       return kResultFalse;
     return kResultOk;
@@ -191,12 +227,14 @@ FBVST3EditController::setState(IBStream* state)
     std::string json;
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
-    _topo->LoadGUIStateFromStringWithDryRun(json, *_guiState);
+    _topo->LoadGUIStateFromStringWithDryRun(json, *this);
     OnPatchNameChanged();
-    OnInstanceNameChanged();
+    OnInstanceNameChanged();    
     if(_guiEditor != nullptr)
       for (int i = 0; i < _guiState->Params().size(); i++)
         _guiEditor->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));      
+    MarkPatchAsSessionState();
+    NotifyHostOfParamNameChanges();
     return kResultTrue;
   });
 }
@@ -215,8 +253,8 @@ FBVST3EditController::setComponentState(IBStream* state)
       return kResultFalse;
     for (int i = 0; i < edit.Params().size(); i++)
       setParamNormalized(_topo->audio.params[i].tag, *edit.Params()[i]);
-
     MarkPatchAsSessionState();
+    NotifyHostOfParamNameChanges();
     return kResultOk;
   });
 }
@@ -239,7 +277,7 @@ FBVST3EditController::initialize(FUnknown* context)
         FB_ASSERT(_topo->modules[m].params[p].tag < FBVST3MIDIParameterMappingBegin);
         auto const& topo = _topo->modules[m].params[p];
         auto info = MakePlugParamInfo(topo, unitId);
-        parameters.addParameter(new FBVST3Parameter(&topo, info));
+        parameters.addParameter(new FBVST3Parameter(this, &topo, info));
       }
       unitId++;
     }

@@ -127,8 +127,14 @@ FBCLAPPlugin::paramsInfo(
     std::fill(info->module, info->module + sizeof(info->module), 0);
     strncpy(info->module, runtimeModule.name.c_str(),
       std::min(sizeof(info->module) - 1, runtimeModule.name.size()));
-    strncpy(info->name, runtimeParam.longName.c_str(),
-      std::min(sizeof(info->name) - 1, runtimeParam.longName.size()));
+
+    std::string nameOverride;
+    if(GetAudioParamNameOverride(paramIndex, nameOverride))
+      strncpy(info->name, nameOverride.c_str(),
+        std::min(sizeof(info->name) - 1, nameOverride.size()));
+    else
+      strncpy(info->name, runtimeParam.longName.c_str(),
+        std::min(sizeof(info->name) - 1, runtimeParam.longName.size()));
 
     info->flags = CLAP_PARAM_REQUIRES_PROCESS;
     auto mode = runtimeParam.static_.mode;

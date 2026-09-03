@@ -1,0 +1,35 @@
+{
+  "name": "Red",
+  "fontSize": 13,
+  "fontFileName": "Satoshi-Bold.ttf",
+  "aboutBoxImageFileName": "about.png",
+  "defaultColorScheme": {
+    "graphAlpha": 0.6,
+    "dimDisabled": 0.25,
+    "text": "FFEEEEEE",
+    "text2": "FFEEEEEE",
+    "primary": "FFFF2840",
+    "background": "FF000000",
+    "meterFill": "FFA0A0A0",
+    "meterTrack": "FF505050",
+    "graphGrid": "FF404040",
+    "graphBackground": "FF181818",
+    "sectionBorder": "80FFFFFF",
+    "sectionBackground": "FF282828",
+    "paramSecondary": "FF505050",
+    "paramHighlight": "80FFFFFF",
+    "paramBackground": "FF181818",
+    "sliderEngineThumb": "80FFFFFF",
+    "alertWindowPrimary": "FFFF2840",
+    "fileBrowserPrimary": "FFFF2840",
+    "fileBrowserHighlight": "80FF2840",
+    "buttonBackground": "FF801420",
+    "activeTabBackground": "FF801420"
+  },
+  "colorSchemes": {
+  },
+  "componentColors": [
+  ],
+  "moduleColors": [
+  ]
+}

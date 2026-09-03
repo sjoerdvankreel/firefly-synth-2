@@ -518,7 +518,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
     return false;
   if (!ParseColorSchemesJson(obj->getProperty("colorSchemes").getDynamicObject(), result.global.defaultColorScheme, result.global.colorSchemes))
     return false;
-
+   
   if (!RequireArrayProperty(obj, "moduleColors"))
     return false;
   if (!ParseModuleColorsJson(obj->getProperty("moduleColors"), result.moduleColors))

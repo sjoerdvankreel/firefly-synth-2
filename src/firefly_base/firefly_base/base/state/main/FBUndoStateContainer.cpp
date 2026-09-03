@@ -8,11 +8,13 @@ SwapContextForItem(
   FBHostGUIContext* hostContext,
   FBUndoItem& item)
 {
-  FBScalarStateContainer temp(*hostContext->Topo());
-  temp.CopyFrom(hostContext, false);
+  FBScalarStateContainer tempState(*hostContext->Topo());
+  tempState.CopyFrom(hostContext, false);
+  auto tempParamNameOverrides = hostContext->GetAudioParamNameOverrides();
   item.state.CopyTo(hostContext, false);
-  item.state.CopyFrom(hostContext->Topo(), temp, false);
-
+  hostContext->SetAudioParamNameOverrides(item.paramNameOverrides);
+  item.state.CopyFrom(hostContext->Topo(), tempState, false);
+  item.paramNameOverrides = tempParamNameOverrides;
   std::string tempName(hostContext->PatchName());
   hostContext->SetPatchName(item.patchName);
   item.patchName = tempName;
@@ -27,6 +29,7 @@ FBUndoStateContainer::Undo()
 {
   FB_ASSERT(CanUndo());
   SwapContextForItem(_hostContext, _items[_position - 1]);
+  _hostContext->NotifyHostOfParamNameChanges();
   _position--;
 }
 
@@ -35,6 +38,7 @@ FBUndoStateContainer::Redo()
 {
   FB_ASSERT(CanRedo());
   SwapContextForItem(_hostContext, _items[_position]);
+  _hostContext->NotifyHostOfParamNameChanges();
   _position++;
 }
 
@@ -45,6 +49,7 @@ FBUndoStateContainer::Snapshot(std::string const& action)
   FBUndoItem item(*_hostContext->Topo());
   item.action = action;
   item.state.CopyFrom(_hostContext, false);
+  item.paramNameOverrides = _hostContext->GetAudioParamNameOverrides();
   item.patchName = _hostContext->PatchName();
   _items.push_back(std::move(item));
   while (_items.size() > _hostContext->Topo()->static_->maxUndoSize)

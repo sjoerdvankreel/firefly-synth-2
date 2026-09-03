@@ -1,0 +1,35 @@
+{
+  "name": "Blue",
+  "fontSize": 13,
+  "fontFileName": "Satoshi-Bold.ttf",
+  "aboutBoxImageFileName": "about.png",
+  "defaultColorScheme": {
+    "graphAlpha": 0.6,
+    "dimDisabled": 0.25,
+    "text": "FFEEEEEE",
+    "text2": "FFEEEEEE",
+    "primary": "FF20A0FF",
+    "background": "FF000000",
+    "meterFill": "FFA0A0A0",
+    "meterTrack": "FF505050",
+    "graphGrid": "FF404040",
+    "graphBackground": "FF181818",
+    "sectionBorder": "80FFFFFF",
+    "sectionBackground": "FF282828",
+    "paramSecondary": "FF505050",
+    "paramHighlight": "80FFFFFF",
+    "paramBackground": "FF181818",
+    "sliderEngineThumb": "80FFFFFF",
+    "alertWindowPrimary": "FF20A0FF",
+    "fileBrowserPrimary": "FF20A0FF",
+    "fileBrowserHighlight": "8020A0FF",
+    "buttonBackground": "FF105080",
+    "activeTabBackground": "FF105080"
+  },
+  "colorSchemes": {
+  },
+  "componentColors": [
+  ],
+  "moduleColors": [
+  ]
+}

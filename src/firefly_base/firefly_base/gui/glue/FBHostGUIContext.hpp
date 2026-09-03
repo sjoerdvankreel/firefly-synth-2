@@ -6,6 +6,7 @@
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -28,19 +29,6 @@ struct FBHostContextMenuItem
   bool separator = false;
   bool subMenuEnd = false;
   bool subMenuStart = false;
-};
-
-struct FBPresetFile
-{
-  std::string name = {};
-  std::string path = {};
-};
-
-struct FBPresetFolder
-{
-  std::string name = {};
-  std::vector<FBPresetFile> files = {};
-  std::vector<std::shared_ptr<FBPresetFolder>> folders = {};
 };
 
 void
@@ -72,13 +60,12 @@ private:
   FBUndoStateContainer _undoState;
   // updated on init/load/reload patch etc
   FBScalarStateContainer _patchState;
+  std::map<int, std::string> _patchParamNameOverridesByIndex = {};
   // updated on daw load
   FBScalarStateContainer _sessionState;
+  std::map<int, std::string> _sessionParamNameOverridesByIndex = {};
 
   void ShowOnlineManualForModule(int index) const;
-
-  std::shared_ptr<FBPresetFolder>
-  LoadPresetList(std::filesystem::path const& p) const;
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostGUIContext);
@@ -108,12 +95,12 @@ public:
   void SetPatchName(std::string const& name);
   void SetThemeName(std::string const& name);
   void SetInstanceName(std::string const& name);
+  
   bool IsPatchLoaded() const { return _isPatchLoaded; }
   
   void ShowOnlineManual() const;
   void ShowOnlineManualForGUIParam(int index) const;
   void ShowOnlineManualForAudioParam(int index) const;
-  std::shared_ptr<FBPresetFolder> LoadPresetList() const;
   virtual std::string OnlineManualLocation() const = 0;
 
   void AddListener(IFBHostGUIContextListener* listener);
@@ -155,10 +142,19 @@ public:
   FBUndoStateContainer& UndoState() { return _undoState; }
   FBRuntimeTopo const* Topo() const { return _topo.get(); }
   FBGUIStateContainer* GUIState() { return _guiState.get(); }
+  FBGUIStateContainer const* GUIState() const { return _guiState.get(); }
   FBExchangeStateContainer const* ExchangeFromDSPState() const { return _exchangeFromDSPState.get(); }
 
   FBScalarStateContainer const& PatchState() const { return _patchState; }
   FBScalarStateContainer const& SessionState() const { return _sessionState; }
+
+  virtual void NotifyHostOfParamNameChanges() = 0;
+  virtual void ClearAudioParamNameOverrides() = 0;
+  virtual void ClearAudioParamNameOverride(int index) = 0;
+  virtual bool GetAudioParamNameOverride(int index, std::string& name) const = 0;
+  virtual void SetAudioParamNameOverride(int index, std::string const& name) = 0;
+  std::map<int, std::string> GetAudioParamNameOverrides() const;
+  void SetAudioParamNameOverrides(std::map<int, std::string> const& overrides);
 
   virtual double GetAudioParamNormalized(int index) const = 0;
   virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;

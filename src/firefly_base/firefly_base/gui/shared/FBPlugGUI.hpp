@@ -22,12 +22,14 @@ class FBCardComponent;
 class FBAutoSizeButton;
 class IFBThemeListener;
 class IFBParamListener;
+class IFBGUIResetListener;
 class FBGUIParamControl;
 class FBParamsDependent;
 class FBHostGUIContext;
 class FBMarginComponent;
 class FBContentComponent;
 class FBStackingComponent;
+class FBParamNameEditor;
 struct FBParamTopoIndices;
 
 // Well here goes my nice distinction between plug and base library again.
@@ -58,8 +60,7 @@ public:
   void ReloadPatch();
   void ReloadSession();
   void SavePatchToFile();
-  void LoadPatchFromFile();
-  void LoadPreset(juce::Component* clickedFrom);
+  void LoadPatchFromFile(bool preset);
   
   void FlashAudioParamDisabling(int index);
   void FlashAudioParamsDisablingParam(int index);
@@ -69,6 +70,7 @@ public:
   FBTheme const& GetTheme() const;
   FBLookAndFeel* LookAndFeel() const { return _lookAndFeel.get(); }
 
+  virtual void RequestGUIReset();
   void SwitchTheme(std::string const& themeName);
   std::vector<FBTheme> const& Themes() const { return _themes; }
 
@@ -79,12 +81,15 @@ public:
     int moduleIndex, int moduleSlot,
     juce::Component* overlay,
     int w, int h, bool hasInit,
-    std::function<void()> init);
+    std::function<void()> init,
+    std::function<void()> close);
 
   void AddThemeListener(IFBThemeListener* listener);
   void AddParamListener(IFBParamListener* listener);
   void RemoveThemeListener(IFBThemeListener* listener);
   void RemoveParamListener(IFBParamListener* listener);
+  void AddGUIResetListener(IFBGUIResetListener* listener);
+  void RemoveGUIResetListener(IFBGUIResetListener* listener);
 
   std::string GetTooltipForGUIParam(int index) const;
   std::string GetTooltipForAudioParam(FBParamControl const* control) const;
@@ -108,6 +113,7 @@ public:
 
   virtual void ModuleSlotClicked(int index, int slot) = 0;
   virtual void ActiveModuleSlotChanged(int index, int slot) = 0;
+  virtual bool ControlMarkerForAudioParam(int index, char& marker) const = 0;
   virtual void GUIParamNormalizedChanged(int index, double normalized);
   virtual void AudioParamNormalizedChangedFromUI(int index, double normalized);
   virtual void AudioParamNormalizedChangedFromHost(int index, double normalized);
@@ -122,9 +128,9 @@ protected:
   FBPlugGUI(FBHostGUIContext* hostContext);
 
   virtual void ForceReLayout() = 0;
-  virtual void AfterPatchChanged() = 0;
   virtual void BeforePatchChanged() = 0;
   virtual void UpdateExchangeStateTick() = 0;
+  virtual void AfterPatchChanged(bool wasPreview);
 
   void InitAllDependencies();
   FBGUIParamControl* GetControlForGUIParamIndex(int paramIndex) const;
@@ -132,11 +138,15 @@ protected:
 
 private:
   double _scale = 1.0;
+  bool _patchWasPreviewed = false;
+  bool _isPatchPreviewEnabled = false;
   FBHostGUIContext* const _hostContext;
   std::unique_ptr<FBLookAndFeel> _lookAndFeel;
+  FBScalarStateContainer _patchBeforePreview;
 
   juce::Label* _overlayCaption = {};
   std::function<void()> _overlayInit = {};
+  std::function<void()> _overlayClose = {};
   FBAutoSizeButton* _overlayInitButton = {};
   FBCardComponent* _overlayCard = {};
   FBGridComponent* _overlayGrid = {};
@@ -149,12 +159,14 @@ private:
   std::vector<FBTheme> _themes = {};
   std::vector<IFBThemeListener*> _themeListeners = {};
   std::vector<IFBParamListener*> _paramListeners = {};
+  std::vector<IFBGUIResetListener*> _resetListeners = {};
 
   std::unique_ptr<FBFileBrowserComponent> _loadPatchBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _savePatchBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _saveTopologyBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _saveParamListBrowser = {};
 
+  FBParamNameEditor* _paramNameEditor = {};
   FBStackingComponent* _aboutBoxStack = {};
   juce::TooltipWindow* _tooltipWindow = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
@@ -166,24 +178,36 @@ private:
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsVisibleDependents = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsEnabledDependents = {};
 
+  void SetupOverlayGUI();
+  void SetupAboutBoxGUI();
+
+  void SetAudioParamNameOverride(int index);
+  void ClearAudioParamNameOverride(int index);
+  void GUIParamNormalizedChanged(int index);
+  void AudioParamNormalizedChanged(int index);
+
   void ShowAboutBox();
   void ShowLogFolder();
   void ShowPluginFolder();
   void DumpTopologyToFile();
   void DumpParamListToFile();
 
-  void SetupOverlayGUI();
-  void SetupAboutBoxGUI();
-  void GUIParamNormalizedChanged(int index);
-  void AudioParamNormalizedChanged(int index);
+  void InitSavePatchBrowser();
+  void InitDumpTopologyBrowser();
+  void InitDumpParamListBrowser();
+  void InitLoadPatchBrowser(bool preset);
 
+  juce::File GetBrowserInitialPath(std::string const& browserKey);
+  void SetBrowserInitialPath(std::string const& browserKey, juce::File const& selected);
+
+  void RevertPreviewedPatch();
+  void RepaintControlsForAudioParam(int index);
+  void LoadPatchAsPreview(
+    juce::File const& file);
   bool LoadPatchFromText(
     std::string const& undoAction,
     std::string const& patchName,
     std::string const& text);
-
-  juce::PopupMenu MakePresetMenu(
-    std::shared_ptr<FBPresetFolder> folder);
 };
 
 template <class TComponent, class... Args>

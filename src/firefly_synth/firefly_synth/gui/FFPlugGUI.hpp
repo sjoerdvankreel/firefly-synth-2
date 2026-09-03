@@ -84,6 +84,8 @@ public FBPlugGUI
   std::unique_ptr<FFVoiceModuleParamListener> _voiceModuleParamListener = {};
   std::unique_ptr<FFMainTabChangedListener> _mainTabChangedListener = {};
 
+  JUCE_DECLARE_WEAK_REFERENCEABLE(FFPlugGUI) // not-msvc dont want ; here
+
   void SetupGUI();
   bool HighlightModulationBounds() const override;
   FBHighlightTweakMode HighlightTweakedMode() const override;
@@ -92,9 +94,9 @@ public FBPlugGUI
 
 protected:
   void ForceReLayout() override;
-  void AfterPatchChanged() override;
   void BeforePatchChanged() override;
   void UpdateExchangeStateTick() override;
+  void AfterPatchChanged(bool wasPreview) override;
 
 public:
   std::function<void()> onPatchLoaded = {};
@@ -111,14 +113,16 @@ public:
   void RequestMainGraphsRerender(int index, int slot);
   void SwitchDetailsSectionToModule(int index, int slot);
 
-  void resized() override;
+  void resized() override;  
   void OnPatchLoaded() override;
+  void RequestGUIReset() override;
   void OnPatchNameChanged(std::string const& name) override;
   void OnInstanceNameChanged(std::string const& name) override;
 
   void ModuleSlotClicked(int index, int slot) override;
   void ActiveModuleSlotChanged(int index, int slot) override;
-  void GUIParamNormalizedChanged(int index, double normalized) override;
+  bool ControlMarkerForAudioParam(int index, char& marker) const override;
+  void GUIParamNormalizedChanged(int index, double normalized) override;  
   void AudioParamNormalizedChangedFromUI(int index, double normalized) override;
   void AudioParamNormalizedChangedFromHost(int index, double normalized) override;
 };

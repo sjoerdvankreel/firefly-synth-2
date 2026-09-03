@@ -228,7 +228,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot, FBMSEGEditor** msegEditor
         plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } });
         plugGUI->HostContext()->DefaultAudioParam({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
       }
-      });
+      }, []() {});
     };
 
   grid->MarkSection({ { 0, 0 }, { 1, 1 } }, FBGridSectionMark::DefaultBackground);
@@ -286,9 +286,12 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
   FB_LOG_ENTRY_EXIT();
   msegEditors.clear();
   FBMSEGEditor* msegEditor = nullptr;
-  auto topo = plugGUI->HostContext()->Topo();
-  auto moduleParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::EnvSelectedTab, 0 } });
-  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, moduleParam, std::vector<int> { 1 }, std::vector<int> { 1, 0, 0, 0, 0, 0, 0, 0 });
+  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1 }, std::vector<int> { 1, 0, 0, 0, 0, 0, 0, 0 }, [plugGUI]() {
+    for (int i = 0; i < FFEnvCount; i++)
+      if (plugGUI->HostContext()->GetAudioParamList<FFEnvType>({ { (int)FFModuleType::Env, i }, { (int)FFEnvParam::Type, 0 } }) != FFEnvType::Off)
+        return i;
+    return 0;
+  });
   select->AddLabel(0, 0, "ENV");
   select->AddSelector(0, 1, { (int)FFModuleType::Env, 0 }, "Amp", MakeEnvTab(plugGUI, FFAmpEnvSlot, &msegEditor));
   msegEditors.push_back(msegEditor);
@@ -298,7 +301,6 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI, std::vector<FBMSEGEditor*>& msegEditors)
     select->AddSelector(0, 1 + i, { (int)FFModuleType::Env, i }, std::to_string(i), MakeEnvTab(plugGUI, i, &msegEditor));
     msegEditors.push_back(msegEditor);
   }
-  select->ActivateStoredSelection();
 
   PopupMenu insertMenu;
   PopupMenu removeMenu;

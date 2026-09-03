@@ -6,11 +6,15 @@
 #include <firefly_synth/modules/lfo/FFLFOGUI.hpp>
 #include <firefly_synth/modules/mix/FFMixGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
+#include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/echo/FFEchoGUI.hpp>
+#include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 #include <firefly_synth/modules/other/FFOtherGUI.hpp>
 #include <firefly_synth/modules/other/FFOtherTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
+#include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
+#include <firefly_synth/modules/master/FFMasterTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
 #include <firefly_synth/modules/settings/FFSettingsGUI.hpp>
@@ -64,6 +68,7 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
     SwitchTheme(HostContext()->Topo()->static_->defaultThemeName);
   SetupGUI();
   InitAllDependencies();
+  RequestGUIReset();
   resized();
 }
 
@@ -91,8 +96,10 @@ FFPlugGUI::BeforePatchChanged()
 }
 
 void
-FFPlugGUI::AfterPatchChanged()
+FFPlugGUI::AfterPatchChanged(bool wasPreview)
 {
+  FBPlugGUI::AfterPatchChanged(wasPreview);
+
   // Get old stuff out of the delay lines.
   FBParamTopoIndices indices = { { (int)FFModuleType::Other, 0 }, { (int)FFOtherParam::FlushAudioToggle, 0 } };
   HostContext()->SetAudioParamBool(indices, _prevFlushAudioToggle);
@@ -209,6 +216,45 @@ FFPlugGUI::SwitchGraphsToModule(int index, int slot)
 }
 
 void 
+FFPlugGUI::RequestGUIReset()
+{
+  FBPlugGUI::RequestGUIReset();
+  _tabs->setCurrentTabIndex(0);
+
+  // must run after all the base stuff has finished, so, async it is
+  // need to be very careful when the host calls this
+  WeakReference<FFPlugGUI> weakRef = this;
+  MessageManager::callAsync([weakRef]() {
+    auto self = weakRef.get();
+    if (!self)
+      return;
+    if (!self->HostContext()->Topo()->static_->meta.isFx)
+    {
+      for (int i = 0; i < FFOsciCount; i++)
+        if (self->HostContext()->GetAudioParamList<FFOsciType>({ { (int)FFModuleType::Osci, i }, { (int)FFOsciParam::Type, 0 } }) != FFOsciType::Off)
+        {
+          self->ModuleSlotClicked((int)FFModuleType::Osci, i);
+          break;
+        }
+    }
+    else if (self->HostContext()->GetAudioParamList<FFGEchoTarget>({ { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } }) != FFGEchoTarget::Off)
+    {
+      self->ModuleSlotClicked((int)FFModuleType::GEcho, 0);
+    }
+    else
+    {
+      for (int i = 0; i < FFEffectCount; i++)
+        if (self->HostContext()->GetAudioParamBool({ { (int)FFModuleType::GEffect, i }, { (int)FFEffectParam::On, 0 } }))
+        {
+          self->ModuleSlotClicked((int)FFModuleType::GEffect, i);
+          return;
+        }
+      self->ModuleSlotClicked((int)FFModuleType::GEffect, 0);
+    }
+  });
+}
+
+void 
 FFPlugGUI::ModuleSlotClicked(int index, int slot)
 {
   SwitchGraphsToModule(index, slot);
@@ -220,6 +266,23 @@ FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
 {
   SwitchGraphsToModule(index, slot);
   SwitchDetailsSectionToModule(index, slot);
+}
+
+bool 
+FFPlugGUI::ControlMarkerForAudioParam(int index, char& marker) const
+{
+  auto const& param = HostContext()->Topo()->audio.params[index];
+  if (param.topoIndices.module.index != (int)FFModuleType::Master)
+    return false;
+  if (param.topoIndices.param.index != (int)FFMasterParam::Aux)
+    return false;
+  std::string name;
+  if (!HostContext()->GetAudioParamNameOverride(index, name))
+    return false;
+  if (name.size() == 0)
+    return false;
+  marker = (char)std::toupper(name[0]);
+  return true;
 }
 
 void 

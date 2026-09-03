@@ -238,21 +238,12 @@ FBLookAndFeel::getTabButtonBestWidth(
   int numTabs = button.getTabbedButtonBar().getNumTabs();
   if (numTabs == 1)
     return barWidth;
-  FBModuleTabBarButton* fbButton = dynamic_cast<FBModuleTabBarButton*>(&button);
-  if (fbButton == nullptr)
-  {
-    int tabWidth = barWidth / numTabs;
-    int remain = barWidth - tabWidth * numTabs;    
-    if (button.getTabbedButtonBar().indexOfTabButton(&button) == numTabs - 1)
-      tabWidth += remain;
-    return tabWidth;
-  }
-  bool large = fbButton->large;
-  bool hasSeparatorText = !fbButton->GetSeparatorText().empty();
-  int result = large ? TabSizeLarge : TabSizeSmall;
-  if (hasSeparatorText)
-    result += TabSizeLarge;
-  return result;
+
+  int tabWidth = barWidth / numTabs;
+  int remain = barWidth - tabWidth * numTabs;    
+  if (button.getTabbedButtonBar().indexOfTabButton(&button) == numTabs - 1)
+    tabWidth += remain;
+  return tabWidth;
 }
 
 Label* 
@@ -913,6 +904,16 @@ FBLookAndFeel::drawRotarySlider(
     g.setColour(Colours::white.withAlpha(0.5f));
     g.fillEllipse(bounds.toFloat().reduced(0.5f, 0.5f));
   }
+
+  if (paramSlider)
+  {
+    char marker;
+    if (paramSlider->PlugGUI()->ControlMarkerForAudioParam(paramSlider->Param()->runtimeParamIndex, marker))
+    {
+      g.setColour(scheme.text);
+      g.drawText(std::string(1, marker), bounds, Justification::centred, false);
+    }
+  }
 }
 
 juce::Rectangle<int> 
@@ -932,29 +933,7 @@ FBLookAndFeel::getTooltipBounds(
   for (int i = 0; i < lines.size(); i++)
   {
     th += textHeight;
-#if _MSC_VER
-#pragma warning(push)
-#pragma warning(disable: 4996)
-#endif
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-    // The JUCE suggested alternatives hang on occasion.
-    tw = std::max(tw, font.getStringWidthFloat(lines[i]));
-#if _MSC_VER
-#pragma warning(pop)
-#endif
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
+    tw = std::max(tw, juce::GlyphArrangement::getStringWidth(font, lines[i]));
   }
 
   int pad = 3;
@@ -1041,8 +1020,6 @@ FBLookAndFeel::drawTabButton(
   {
     large = fbButton->large;
     centerText = fbButton->centerText;
-    if(auto fbModuleButton = dynamic_cast<FBModuleTabBarButton*>(&button))
-      separatorText = fbModuleButton->GetSeparatorText();
   }
 
   if (auto fbt = button.findParentComponentOfClass<FBAutoSizeTabComponent>())

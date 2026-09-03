@@ -2,6 +2,7 @@
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 
+#include <map>
 #include <vector>
 #include <utility>
 

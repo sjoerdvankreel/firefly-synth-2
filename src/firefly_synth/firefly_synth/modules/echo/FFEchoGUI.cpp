@@ -197,7 +197,7 @@ MakeEchoSectionTaps(
       for (int p = (int)FFEchoParam::TapFirst; p <= (int)FFEchoParam::TapLast; p++)
         for(int s = 0; s < FFEchoTapCount; s++)
           plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
-    });
+    } , []() {});
   };
   grid->Add(0, 0, showTapsEditor);
 
@@ -367,12 +367,12 @@ Component*
 FFMakeEchoGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto topo = plugGUI->HostContext()->Topo();
-  auto moduleParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::EchoSelectedTab, 0 } });
-  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, moduleParam, std::vector<int> { 1, 1 }, std::vector<int> { 1 });
+  auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 1 }, [plugGUI]() {
+    FBParamTopoIndices indices = { { (int)FFModuleType::VEcho, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
+    return plugGUI->HostContext()->GetAudioParamList<FFVEchoTarget>(indices) != FFVEchoTarget::Off ? 0 : 1;
+  });
   select->AddSelector(0, 0, { (int)FFModuleType::VEcho, 0 }, "VEcho", MakeEchoTab(plugGUI, false));
   select->AddSelector(1, 0, { (int)FFModuleType::GEcho, 0 }, "GEcho", MakeEchoTab(plugGUI, true));
-  select->ActivateStoredSelection();
   return plugGUI->StoreComponent<FBThemedComponent>(plugGUI, (int)FFThemedComponentId::EchoSelector, select);
 }
 
