@@ -1,12 +1,7 @@
-[ ] 2.1.5 crashes Carla on linux
-[ ] instrument version crashes on flstudio Mac when hit init right after daw load
-[ ] Linux preset browser case sensitive, shows presets root
-[x] gather the presets + gateway + give meaningful names to the auxes
-[ ] hckick + pretty pad demo
+[ ] close stale issues
 [ ] red green default theme + update screenshots
 [ ] screenshots with flstudio host window bc it is more pretty (or bitwig)
 [ ] screenshots for themes + big pad video with pretty green theme
-[ ] update manual + screenshots et all
 [ ] adjust website theme
 
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
