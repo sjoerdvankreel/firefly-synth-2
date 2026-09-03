@@ -227,7 +227,7 @@ added soft knee support based on this https://github.com/tu-studio/IEMPluginSuit
 <img alt="Screenshot Blue Green" src="static/screenshot_theme_blue_green.png"/>
 <img alt="Screenshot Blue Orange" src="static/screenshot_theme_blue_orange.png"/>
 <img alt="Screenshot Green" src="static/screenshot_theme_green.png"/>
-<img alt="Screenshot Green Orange" src="static/screenshot_theme_green_orange.png"/>
+<img alt="Screenshot Green Blue" src="static/screenshot_theme_green_blue.png"/>
 <img alt="Screenshot Green Red" src="static/screenshot_theme_green_red.png"/>
 <img alt="Screenshot Orange" src="static/screenshot_theme_orange.png"/>
 <img alt="Screenshot Orange Blue" src="static/screenshot_theme_orange_blue.png"/>
