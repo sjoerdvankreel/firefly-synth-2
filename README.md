@@ -143,6 +143,9 @@ added soft knee support based on this https://github.com/tu-studio/IEMPluginSuit
 [renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_full_02_prog_house.xrns)
 
 ## Feature demos
+* Fun with kicks
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/fun_with_kicks.mp3)
+[renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/fun_with_kicks.xrns)
 * Plucked strings
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_pluckstring.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_pluckstring.rpp)
