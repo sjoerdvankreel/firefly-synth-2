@@ -1,3 +1,10 @@
+add kick patch
+fix sidechain bug
+fix Linux preset bug
+fix flstudio mac crash
+fix Carla Linux crash
+switch license?
+
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] fix the comp and the rms comp
 [ ] switch to MIT ?
