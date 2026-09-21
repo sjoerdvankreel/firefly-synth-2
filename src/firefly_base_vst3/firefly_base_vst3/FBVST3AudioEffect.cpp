@@ -325,14 +325,14 @@ FBVST3AudioEffect::process(ProcessData& data)
     _input.sidechainAudio = FBHostAudioBlock(zeroIn, data.numSamples);
     if (!_topo->static_->meta.isFx)
     {
-      if(data.numInputs > 0)
+      if(data.numInputs > 0 && data.inputs[0].numChannels == 2 && data.inputs[0].channelBuffers32 != nullptr)
         _input.sidechainAudio = FBHostAudioBlock(data.inputs[0].channelBuffers32, data.numSamples);
     }
     else
     {
-      if(data.numInputs > 0)
+      if (data.numInputs > 0 && data.inputs[0].numChannels == 2 && data.inputs[0].channelBuffers32 != nullptr)
         _input.mainAudio = FBHostAudioBlock(data.inputs[0].channelBuffers32, data.numSamples);
-      if (data.numInputs > 1)
+      if (data.numInputs > 1 && data.inputs[1].numChannels == 2 && data.inputs[1].channelBuffers32 != nullptr)
         _input.sidechainAudio = FBHostAudioBlock(data.inputs[1].channelBuffers32, data.numSamples);
     }
 
