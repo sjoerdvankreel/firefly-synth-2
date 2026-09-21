@@ -1,5 +1,5 @@
 v fix sidechain bug
-add kick patch
+v add kick patch
 load patchstate wont work long term
 fix Linux preset bug
 fix flstudio mac crash
