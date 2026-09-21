@@ -1,6 +1,6 @@
 v fix sidechain bug
 v add kick patch
-load patchstate wont work long term
+v load patchstate wont work long term
 fix Linux preset bug
 fix flstudio mac crash
 fix Carla Linux crash
