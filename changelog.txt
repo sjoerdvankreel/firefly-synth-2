@@ -1,3 +1,9 @@
+September 21, 2026 - v2.1.6.
+- Switch license from GPL3 to MIT.
+- Add a new kick patch (it's kick09, matches the "fun with kicks" demo).
+- Bugfix: Linux preset browser would start 1 directory up because of case sensitivity bug.
+- Bugfix: the instrument version would crash when the host supplied a sidechain with zero channels. This also fixes an outstanding bug regarding Carla on Linux. See https://github.com/sjoerdvankreel/firefly-synth-2/issues/52 (thanks!).
+
 September 3, 2026 - v2.1.5.
 - Update dependencies to latest.
 - Bugfix: ARM build was reporting as X64.
