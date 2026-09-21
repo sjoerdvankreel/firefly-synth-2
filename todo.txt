@@ -1,11 +1,3 @@
-v fix sidechain bug
-v add kick patch
-v load patchstate wont work long term
-v fix Linux preset bug
-fix flstudio mac crash
-v fix Carla Linux crash
-switch license?
-
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] fix the comp and the rms comp
 [ ] switch to MIT ?
