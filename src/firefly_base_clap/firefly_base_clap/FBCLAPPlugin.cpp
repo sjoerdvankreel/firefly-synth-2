@@ -417,14 +417,14 @@ FBCLAPPlugin::process(
     _input.sidechainAudio = FBHostAudioBlock(zeroIn, process->frames_count);
     if (!_topo->static_->meta.isFx)
     {
-      if (process->audio_inputs_count > 0)
+      if (process->audio_inputs_count > 0 && process->audio_inputs[0].channel_count == 2 && process->audio_inputs[0].data32 != nullptr)
         _input.sidechainAudio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
     }
     else
     {
-      if (process->audio_inputs_count > 0)
+      if (process->audio_inputs_count > 0 && process->audio_inputs[0].channel_count == 2 && process->audio_inputs[0].data32 != nullptr)
         _input.mainAudio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
-      if (process->audio_inputs_count > 1)
+      if (process->audio_inputs_count > 1 && process->audio_inputs[1].channel_count == 2 && process->audio_inputs[1].data32 != nullptr)
         _input.sidechainAudio = FBHostAudioBlock(process->audio_inputs[1].data32, process->frames_count);
     }
 

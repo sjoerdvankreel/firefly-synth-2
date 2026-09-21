@@ -83,7 +83,7 @@ FBPlugGUI::InitLoadPatchBrowser(bool preset)
   auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::LoadPatchFolder);
   if (preset)
   {
-    initialPath = File((FBGetPresetsFolderPath() / (HostContext()->Topo()->static_->meta.isFx? "Fx": "Instrument")).string());
+    initialPath = File((FBGetPresetsFolderPath() / (HostContext()->Topo()->static_->meta.isFx? "fx": "instrument")).string());
   }
   _loadPatchBrowser = std::make_unique<FBFileBrowserComponent>(this, false, true, "Load Patch", extension, filterName, initialPath, [this, preset](juce::File const& file) {
     _isPatchPreviewEnabled = _loadPatchBrowser->IsPreviewEnabled();
