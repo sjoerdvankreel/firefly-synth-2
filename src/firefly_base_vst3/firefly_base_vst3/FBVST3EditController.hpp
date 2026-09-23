@@ -74,5 +74,6 @@ public:
   tresult PLUGIN_API setParamNormalized(ParamID tag, ParamValue value) override;
   void PLUGIN_API queueOpened(DataExchangeUserContextID /*id*/, uint32 /*blockSize*/, TBool& /*bg*/) override {}
   tresult PLUGIN_API getMidiControllerAssignment(int32 bus, int16 channel, CtrlNumber number, ParamID& id) override;
+  tresult PLUGIN_API getUnitByBus(MediaType type, BusDirection dir, int32 busIndex, int32 channel, UnitID& unitId) override;
   void PLUGIN_API onDataExchangeBlocksReceived(DataExchangeUserContextID id, uint32 numBlocks, DataExchangeBlock* blocks, TBool bg) override;
 };
