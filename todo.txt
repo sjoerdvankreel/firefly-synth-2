@@ -1,5 +1,5 @@
+V clap extension voice info
 clap extension state context
-clap extension voice info
 clap extension preset discovery
 clap extension preset load
 clap validator
