@@ -22,7 +22,7 @@ MakeMIDIParamInfo(int message, int controlChange)
 {
   ParameterInfo result = {};
   result.stepCount = 0;
-  result.unitId = 1;
+  result.unitId = 0;
   result.id = FBVST3MIDIParameterIDRangeBegin + message + controlChange;
   result.defaultNormalizedValue = 0.0;
   result.flags = ParameterInfo::kIsHidden;
@@ -34,7 +34,7 @@ MakePlugParamInfo(FBRuntimeParam const& param)
 {
   ParameterInfo result;
   result.id = param.tag;
-  result.unitId = 1;
+  result.unitId = 0;
   result.stepCount = std::max(0, param.static_.NonRealTime().ValueCount() - 1);
   result.defaultNormalizedValue = param.DefaultNormalizedByText();
 
@@ -258,11 +258,10 @@ FBVST3EditController::initialize(FUnknown* context)
       return kResultFalse;
 
     // create top root unit with kProgramId as id for the programList
-    addUnit(new Unit(STR("Root"), kRootUnitId, kNoParentUnitId));
-    addUnit(new Unit(STR("Main"), 1, kRootUnitId, 1));
+    addUnit(new Unit(STR("Root"), kRootUnitId, kNoParentUnitId, 1));
 
     // create the program list: here kNumProgs entries
-    auto* prgList = new ProgramList(STR("Bank"), 1, 1);
+    auto* prgList = new ProgramList(STR("Bank"), 1, 0);
     addProgramList(prgList);
     for (int32 i = 0; i < 10; i++)
     {
@@ -305,7 +304,7 @@ tresult PLUGIN_API FBVST3EditController::getUnitByBus(
 {
   if (type == kEvent && dir == kInput && busIndex == 0 && channel == 0)
   {
-    unitId = 1;
+    unitId = 0;
     return kResultTrue;
   }
   return kResultFalse;
