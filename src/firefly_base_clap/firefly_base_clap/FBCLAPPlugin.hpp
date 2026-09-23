@@ -132,6 +132,9 @@ public:
   clap_process_status process(const clap_process* process) noexcept override;
   bool activate(double sampleRate, uint32_t minFrameCount, uint32_t maxFrameCount) noexcept override;
 
+  bool implementsVoiceInfo() const noexcept;
+  bool voiceInfoGet(clap_voice_info* info) noexcept;
+
   uint32_t paramsCount() const noexcept override;
   bool implementsParams() const noexcept override;
   bool paramsValue(clap_id paramId, double* value) noexcept override;
