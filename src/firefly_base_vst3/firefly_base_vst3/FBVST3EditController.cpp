@@ -272,7 +272,7 @@ FBVST3EditController::initialize(FUnknown* context)
 
     //---Program Change parameter---
     Parameter* prgParam = prgList->getParameter();
-     
+      
     // by default this program change parameter if automatable we can overwrite this:
     prgParam->getInfo().flags &= ~ParameterInfo::kCanAutomate;
 
