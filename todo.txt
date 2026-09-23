@@ -1,3 +1,11 @@
+clap extension state context
+clap extension voice info
+clap extension preset discovery
+clap extension preset load
+clap validator
+vst3 IProgramListData/IUnitData
+vst3 validator
+
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] fix the comp and the rms comp
 [ ] switch to MIT ?
