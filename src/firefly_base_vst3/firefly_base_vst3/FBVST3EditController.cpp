@@ -17,14 +17,16 @@
 
 using namespace juce;
 
-static UnitInfo
-MakeUnitInfo(FBRuntimeModule const& module, int id)
+static Vst::ProgramList*
+MakeProgramList()
 {
-  UnitInfo result;
-  result.id = id;
-  result.parentUnitId = kRootUnitId;
-  result.programListId = kNoProgramListId;
-  FBVST3CopyToString128(module.name, result.name);
+  String128 name;
+  FBVST3CopyToString128("Presets", name);
+  auto result = new ProgramList(name, 0, kRootUnitId);
+  FBVST3CopyToString128("Kick", name);
+  result->addProgram(name);
+  FBVST3CopyToString128("Bass", name);
+  result->addProgram(name);
   return result;
 }
 
@@ -34,18 +36,18 @@ MakeMIDIParamInfo(int message, int controlChange)
   ParameterInfo result = {};
   result.stepCount = 0;
   result.unitId = kRootUnitId;
-  result.id = FBVST3MIDIParameterMappingBegin + message + controlChange;
+  result.id = FBVST3MIDIParameterIDRangeBegin + message + controlChange;
   result.defaultNormalizedValue = 0.0;
   result.flags = ParameterInfo::kIsHidden;
   return result;
 }
 
 static ParameterInfo
-MakePlugParamInfo(FBRuntimeParam const& param, int unitId)
+MakePlugParamInfo(FBRuntimeParam const& param)
 {
   ParameterInfo result;
   result.id = param.tag;
-  result.unitId = unitId;
+  result.unitId = kRootUnitId;
   result.stepCount = std::max(0, param.static_.NonRealTime().ValueCount() - 1);
   result.defaultNormalizedValue = param.DefaultNormalizedByText();
 
@@ -173,7 +175,7 @@ tresult PLUGIN_API
 FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
 {
   tresult result = EditControllerEx1::setParamNormalized(tag, value);
-  if(result != kResultTrue || tag >= FBVST3MIDIParameterMappingBegin)
+  if(result != kResultTrue || tag >= FBVST3MIDIParameterIDRangeBegin)
     return result;
   if (_guiEditor != nullptr)
     _guiEditor->SetAudioParamNormalizedFromHost(_topo->audio.paramTagToIndex[tag], value);
@@ -268,19 +270,19 @@ FBVST3EditController::initialize(FUnknown* context)
     if (EditController::initialize(context) != kResultTrue)
       return kResultFalse;
 
-    int unitId = 1;
     for (int m = 0; m < _topo->modules.size(); m++)
     {
-      addUnit(new Unit(MakeUnitInfo(_topo->modules[m], unitId)));
       for (int p = 0; p < _topo->modules[m].params.size(); p++)
       {
-        FB_ASSERT(_topo->modules[m].params[p].tag < FBVST3MIDIParameterMappingBegin);
+        FB_ASSERT(_topo->modules[m].params[p].tag < FBVST3ReservedParameterIDRangeBegin);
         auto const& topo = _topo->modules[m].params[p];
-        auto info = MakePlugParamInfo(topo, unitId);
+        auto info = MakePlugParamInfo(topo);
         parameters.addParameter(new FBVST3Parameter(this, &topo, info));
       }
-      unitId++;
     }
+
+    // Add to end of regular parameters so we dont mess up the index for nothing.
+    //addProgramList(MakeProgramList());
 
     for (int i = 0; i < FBMIDIEvent::CCMessageCount; i++)
       parameters.addParameter(new Parameter(MakeMIDIParamInfo(FBMIDIEvent::CCMessageId, i)));
@@ -300,7 +302,7 @@ FBVST3EditController::getMidiControllerAssignment(
       return kResultFalse;
     if (!(0 <= number && number < kCountCtrlNumber))
       return kResultFalse;
-    id = FBVST3MIDIParameterMappingBegin + number;
+    id = FBVST3MIDIParameterIDRangeBegin + number;
     return kResultTrue;
   });
 }

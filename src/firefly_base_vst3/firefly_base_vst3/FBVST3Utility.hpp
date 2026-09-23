@@ -13,7 +13,9 @@ inline int constexpr FBVST3MIDIMaxChannels = 16;
 inline int constexpr FBVST3MIDIMaxPortsGuess = 128;
 inline int constexpr FBVST3MIDIMaxMessages = FBMIDIEvent::MessageCount;
 inline int constexpr FBVST3MIDIMaxMappableParamsGuess = FBVST3MIDIMaxPortsGuess * FBVST3MIDIMaxChannels * FBVST3MIDIMaxMessages;
-inline int constexpr FBVST3MIDIParameterMappingBegin = std::numeric_limits<int>::max() - FBVST3MIDIMaxMappableParamsGuess;
+inline int constexpr FBVST3ReservedParameterIDRangeBegin = std::numeric_limits<int>::max() - FBVST3MIDIMaxMappableParamsGuess - 1;
+inline int constexpr FBVST3ProgramChangeParameterID = FBVST3ReservedParameterIDRangeBegin;
+inline int constexpr FBVST3MIDIParameterIDRangeBegin = FBVST3ProgramChangeParameterID + 1;
 
 void
 FBVST3CopyToString128(std::string const& in, TChar* out);

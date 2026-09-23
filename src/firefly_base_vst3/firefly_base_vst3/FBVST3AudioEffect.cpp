@@ -291,11 +291,11 @@ FBVST3AudioEffect::process(ProcessData& data)
           if (inQueue->getPointCount() > 0)
           {
             int paramId = inQueue->getParameterId();
-            if (paramId >= FBVST3MIDIParameterMappingBegin && paramId < FBVST3MIDIParameterMappingBegin + FBMIDIEvent::MessageCount)
+            if (paramId >= FBVST3MIDIParameterIDRangeBegin && paramId < FBVST3MIDIParameterIDRangeBegin + FBMIDIEvent::MessageCount)
             {
               for (int point = 0; point < inQueue->getPointCount(); point++)
                 if (inQueue->getPoint(point, position, value) == kResultTrue)
-                  midi.push_back(MakeMIDIEvent(paramId - FBVST3MIDIParameterMappingBegin, position, value));
+                  midi.push_back(MakeMIDIEvent(paramId - FBVST3MIDIParameterIDRangeBegin, position, value));
             }
             else if ((iter = _topo->audio.paramTagToIndex.find(paramId)) != _topo->audio.paramTagToIndex.end())
             {
