@@ -141,6 +141,9 @@ added soft knee support based on this https://github.com/tu-studio/IEMPluginSuit
 * Full 2 (progressive house)
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_full_02_prog_house.mp3)
 [renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_full_02_prog_house.xrns)
+* Full 3 (techno)
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_full_03_techno.mp3)
+[renoise](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_full_03_techno.xrns)
 
 ## Feature demos
 * Fun with kicks
