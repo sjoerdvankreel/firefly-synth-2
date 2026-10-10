@@ -1,3 +1,4 @@
+[ ] string osci dry/wet normal/uniform + conversion
 [ ] techno demo to presets
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] fix the comp and the rms comp
