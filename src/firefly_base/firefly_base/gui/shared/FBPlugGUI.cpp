@@ -44,6 +44,7 @@ _patchBeforePreview(*hostContext->Topo())
   _tooltipWindow = StoreComponent<TooltipWindow>();
   _hostContext->AddListener(this);
 
+  InitLoadAnyFileBrowser("", "", "", [](auto) {});
   InitLoadPatchBrowser(false);
   InitSavePatchBrowser();
   InitDumpTopologyBrowser();
@@ -101,6 +102,20 @@ FBPlugGUI::InitLoadPatchBrowser(bool preset)
       RevertPreviewedPatch();
     });
   _loadPatchBrowser->SetPreviewEnabled(_isPatchPreviewEnabled);
+}
+
+void 
+FBPlugGUI::InitLoadAnyFileBrowser(
+  std::string const& title,
+  std::string const& extension,
+  std::string const& filter,
+  std::function<void(std::string const&)> select)
+{
+  auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::LoadAnyFileFolder);
+  _loadAnyFileBrowser = std::make_unique<FBFileBrowserComponent>(this, false, false, title, extension, filter, initialPath, [select](juce::File const& file) {
+    (void)file;
+    select(""); // TODO Sample
+  }, [](juce::File const&) {}, []() {});
 }
 
 void 
@@ -794,6 +809,19 @@ FBPlugGUI::LoadPatchFromFile(bool preset)
 }
 
 void
+FBPlugGUI::LoadAnyFile(
+  std::string const& title,
+  std::string const& extension,
+  std::string const& filter,
+  std::function<void(std::string const&)> select)
+{
+  FB_LOG_ENTRY_EXIT();
+  HideAllOverlaysAndFileBrowsers();
+  InitLoadAnyFileBrowser(title, extension, filter, select);
+  _loadAnyFileBrowser->Show();
+}
+
+void
 FBPlugGUI::SavePatchToFile()
 {
   FB_LOG_ENTRY_EXIT();
@@ -849,6 +877,7 @@ FBPlugGUI::HideAllOverlaysAndFileBrowsers()
   _savePatchBrowser->Hide();
   _saveTopologyBrowser->Hide();
   _saveParamListBrowser->Hide();
+  _loadAnyFileBrowser->Hide();
 }
 
 void 

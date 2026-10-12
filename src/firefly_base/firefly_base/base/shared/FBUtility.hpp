@@ -75,6 +75,7 @@ inline int const FBDefaultDisplayPrecision = 3;
 namespace FBUserGlobalSettingKeys
 {
   std::string const LoadPatchFolder = "LoadPatchFolder";
+  std::string const LoadAnyFileFolder = "LoadAnyFileFolder";
   std::string const SavePatchFolder = "SavePatchFolder";
   std::string const SaveTopologyFolder = "SaveTopologyFolder";
   std::string const SaveParamListFolder = "SaveParamListFolder";
