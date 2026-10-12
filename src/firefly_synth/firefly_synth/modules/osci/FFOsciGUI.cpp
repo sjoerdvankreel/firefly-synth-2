@@ -391,6 +391,16 @@ MakeOsciSectionAudioIn(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
+MakeOsciSectionSample(FBPlugGUI* plugGUI, int moduleSlot)
+{
+  auto dummy = plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "TODO Sample");
+  FBParamsDependencies dependencies = {};
+  FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
+  dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Sample; });
+  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, dummy, 0, indices, dependencies);
+}
+
+static Component*
 MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
@@ -407,6 +417,7 @@ MakeOsciDetail(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 0, MakeOsciSectionFM(plugGUI, moduleSlot));
   grid->Add(0, 0, MakeOsciSectionString(plugGUI, moduleSlot));
   grid->Add(0, 0, MakeOsciSectionAudioIn(plugGUI, moduleSlot));
+  grid->Add(0, 0, MakeOsciSectionSample(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, true, false, grid);
 }
 

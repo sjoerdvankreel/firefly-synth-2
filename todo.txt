@@ -1,6 +1,8 @@
 [ ] sampler -- just do it i want vocals
 [ ] string osci dry/wet normal/uniform + conversion
 [ ] techno demo to presets
+[ ] do the thingy
+
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] fix the comp and the rms comp
 [ ] fix the 1sec delay on plot visuals

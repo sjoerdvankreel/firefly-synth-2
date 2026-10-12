@@ -62,6 +62,9 @@ FFOsciProcessor::AllocOnDemandBuffers(
   if(graph || type == FFOsciType::String)
     for (int i = 0; i < (graph? FFOsciUniMaxCount: uniCount); i++)
       _stringUniState[i].delayLine.AllocBuffersIfChanged(state->MemoryPool(), maxDelayLineSize);
+
+  // TODO Sample
+  // im pretty sure we need on demand buffers here
 }
 
 void
@@ -162,6 +165,10 @@ FFOsciProcessor::BeginVoice(
     BeginVoiceString(state, graph);
   else if (_type == FFOsciType::AudioIn)
     BeginVoiceAudioIn(state);
+  else if (_type == FFOsciType::Sample)
+  {
+    // TODO Sample
+  }
   else
     FB_ASSERT(false);
 }
@@ -188,8 +195,6 @@ FFOsciProcessor::Process(
     return 0;
 
   float const defaultPitch = 60.0f;
-  float const defaultFreq = FBPitchToFreq(defaultPitch);
-
   float sampleRate = state.input->sampleRate;
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
@@ -264,14 +269,12 @@ FFOsciProcessor::Process(
       auto baseFreq = FBPitchToFreq(pitch);
       basePitchPlain.Store(s, pitch);
       uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
-      if (_graph && _type != FFOsciType::AudioIn)
+      if (_graph)
         _graphPhaseGen.NextBatch(baseFreq / sampleRate);
     }
     else
     {
       basePitchPlain.Store(s, FBBatch<float>(defaultPitch));
-      if (_graph && _type != FFOsciType::AudioIn)
-        _graphPhaseGen.NextBatch(FBBatch<float>(defaultFreq / sampleRate));
     }
 
     panPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::Pan, panNormModulated.Load(s)));
@@ -298,6 +301,10 @@ FFOsciProcessor::Process(
       voiceBasePitch, basePitchPlain, uniDetunePlain);
   else if (_type == FFOsciType::AudioIn)
     ProcessAudioIn(state);
+  else if (_type == FFOsciType::Sample)
+  {
+    // TODO Sample
+  }
   else
     FB_ASSERT(false);
 
