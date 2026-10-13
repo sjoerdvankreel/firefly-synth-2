@@ -109,13 +109,12 @@ FBPlugGUI::InitLoadAnyFileBrowser(
   std::string const& title,
   std::string const& extension,
   std::string const& filter,
-  std::function<void(std::string const&)> select)
+  std::function<void(juce::File const&)> select)
 {
   auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::LoadAnyFileFolder);
   _loadAnyFileBrowser = std::make_unique<FBFileBrowserComponent>(this, false, false, title, extension, filter, initialPath, [this, select](juce::File const& file) {
     SetBrowserInitialPath(FBUserGlobalSettingKeys::LoadAnyFileFolder, file);
-    select(""); // TODO Sample
-  }, [](juce::File const&) {}, []() {});
+    }, [select](juce::File const& file) { select(file);  }, []() {});
 }
 
 void 
@@ -813,7 +812,7 @@ FBPlugGUI::LoadAnyFile(
   std::string const& title,
   std::string const& extension,
   std::string const& filter,
-  std::function<void(std::string const&)> select)
+  std::function<void(juce::File const&)> select)
 {
   FB_LOG_ENTRY_EXIT();
   HideAllOverlaysAndFileBrowsers();

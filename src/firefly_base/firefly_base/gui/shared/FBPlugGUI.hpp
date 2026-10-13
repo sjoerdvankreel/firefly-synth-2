@@ -9,6 +9,7 @@
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBFileBrowserComponent.hpp>
 
+#include <juce_core/juce_core.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <map>
@@ -66,7 +67,7 @@ public:
     std::string const& title,
     std::string const& extension,
     std::string const& filter, 
-    std::function<void(std::string const&)> select);
+    std::function<void(juce::File const&)> select);
   
   void FlashAudioParamDisabling(int index);
   void FlashAudioParamsDisablingParam(int index);
@@ -207,7 +208,7 @@ private:
     std::string const& title,
     std::string const& extension,
     std::string const& filter,
-    std::function<void(std::string const&)> select);
+    std::function<void(juce::File const&)> select);
 
   juce::File GetBrowserInitialPath(std::string const& browserKey);
   void SetBrowserInitialPath(std::string const& browserKey, juce::File const& selected);
