@@ -1,4 +1,5 @@
 [ ] sampler -- pffft not easy
+- update the dependencies list
 - file preview
 - r8brain seems up for realtime SRC
 - do we stereo merge? select channel? osci is mono
