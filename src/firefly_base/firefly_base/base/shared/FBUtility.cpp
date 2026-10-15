@@ -294,5 +294,24 @@ FBSetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std
 bool
 FBAudioFileRead(std::string const& path, FBAudioClip& clip)
 {
-  return false;
+  SF_INFO info = { 0 };
+  SNDFILE* file = sf_open(path.c_str(), SFM_READ, &info);
+  if (file == nullptr)
+    return false;
+
+  clip.data = {};
+  clip.format.channels = info.channels;
+  clip.format.sampleRate = info.samplerate;
+
+  sf_count_t read;
+  float buffer[1024];
+  int framesFitInBuffer = 1024 / info.channels;
+  do
+  {
+    read = sf_readf_float(file, buffer, framesFitInBuffer);
+    clip.data.insert(clip.data.end(), &buffer[0], &buffer[read * info.channels]);
+  } while (read > 0);
+
+  sf_close(file);
+  return true;
 }

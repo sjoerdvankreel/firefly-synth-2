@@ -396,7 +396,9 @@ MakeOsciSectionSample(FBPlugGUI* plugGUI, int moduleSlot)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0 }, std::vector<int> { 0 });
   auto load = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Load Sample");
   load->setTooltip("Load Sample");
-  load->onClick = [plugGUI]() { plugGUI->LoadAnyFile("Load Sample", "raw", "Raw Files", [](auto) {}); };
+  load->onClick = [plugGUI]() { plugGUI->LoadAnyFile("Load Sample", "wav", "Wav Files", [](auto file) {
+    file.exists();
+  }); };
   grid->Add(0, 0, load);
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };

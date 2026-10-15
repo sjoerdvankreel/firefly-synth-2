@@ -71,19 +71,8 @@ inline int const FBDefaultDisplayPrecision = 3;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(x); \
   x() = default
 
-enum class FBAudioFormatType
-{
-  Signed8,
-  Signed16,
-  Signed24,
-  Signed32,
-  Float32,
-  Float64
-};
-
 struct FBAudioFormat
 {
-  FBAudioFormatType type;
   std::uint32_t channels;
   std::uint32_t sampleRate;
 };
@@ -91,7 +80,7 @@ struct FBAudioFormat
 struct FBAudioClip
 {
   FBAudioFormat format;
-  std::vector<std::uint8_t> data;
+  std::vector<float> data;
 };
 
 namespace FBUserGlobalSettingKeys
