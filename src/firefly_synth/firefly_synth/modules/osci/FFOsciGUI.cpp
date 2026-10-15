@@ -396,9 +396,33 @@ MakeOsciSectionSample(FBPlugGUI* plugGUI, int moduleSlot)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0 }, std::vector<int> { 0 });
   auto load = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Load Sample");
   load->setTooltip("Load Sample");
-  load->onClick = [plugGUI]() { plugGUI->LoadAnyFile("Load Sample", "wav", "Wav Files", [](auto file) {
-    file.exists();
-  }); };
+  load->onClick = [plugGUI]() { 
+    plugGUI->LoadAnyFile("Load Sample", "wav", "Wav Files", [plugGUI](juce::File const& file) {
+      if (!file.exists())
+        return;
+      FBAudioClip clip;
+      if (!FBAudioFileRead(file.getFullPathName().toStdString(), clip))
+      {
+        AlertWindow::showAsync(MessageBoxOptions()
+          .withIconType(MessageBoxIconType::WarningIcon)
+          .withTitle("Error")
+          .withMessage("Unrecognized audio file.")
+          .withButton("OK")
+          .withParentComponent(plugGUI), [](int) {});
+        return;
+      }
+      if (clip.format.channels != 1)
+      {
+        AlertWindow::showAsync(MessageBoxOptions()
+          .withIconType(MessageBoxIconType::WarningIcon)
+          .withTitle("Error")
+          .withMessage("Only mono files supported.")
+          .withButton("OK")
+          .withParentComponent(plugGUI), [](int) {});
+        return;
+      }
+    });
+  };
   grid->Add(0, 0, load);
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };

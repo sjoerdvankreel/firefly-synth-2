@@ -114,7 +114,10 @@ FBPlugGUI::InitLoadAnyFileBrowser(
   auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::LoadAnyFileFolder);
   _loadAnyFileBrowser = std::make_unique<FBFileBrowserComponent>(this, false, false, title, extension, filter, initialPath, [this, select](juce::File const& file) {
     SetBrowserInitialPath(FBUserGlobalSettingKeys::LoadAnyFileFolder, file);
-    }, [select](juce::File const& file) { select(file);  }, []() {});
+    select(file);
+    }, [](juce::File const&) {},
+    []() {}
+  );
 }
 
 void 
