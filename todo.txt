@@ -1,5 +1,5 @@
 [ ] sampler -- pffft not easy
-- get all the undo state & friends right
+- get all the undo state & friends right -- just clear undo after sample load
 - update the dependencies list
 - file preview
 - r8brain seems up for realtime SRC
