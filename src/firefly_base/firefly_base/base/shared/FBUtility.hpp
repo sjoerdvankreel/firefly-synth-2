@@ -1,5 +1,4 @@
 #pragma once
-
 #include <juce_core/juce_core.h>
 
 #include <string>
@@ -72,6 +71,29 @@ inline int const FBDefaultDisplayPrecision = 3;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(x); \
   x() = default
 
+enum class FBAudioFormatType
+{
+  Signed8,
+  Signed16,
+  Signed24,
+  Signed32,
+  Float32,
+  Float64
+};
+
+struct FBAudioFormat
+{
+  FBAudioFormatType type;
+  std::uint32_t channels;
+  std::uint32_t sampleRate;
+};
+
+struct FBAudioClip
+{
+  FBAudioFormat format;
+  std::vector<std::uint8_t> data;
+};
+
 namespace FBUserGlobalSettingKeys
 {
   std::string const LoadPatchFolder = "LoadPatchFolder";
@@ -143,3 +165,6 @@ bool
 FBGetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std::string& val);
 void
 FBSetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std::string const& val);
+
+bool
+FBAudioFileRead(std::string const& path, FBAudioClip& clip);

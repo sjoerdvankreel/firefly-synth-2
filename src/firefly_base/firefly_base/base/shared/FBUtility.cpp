@@ -2,7 +2,9 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 
+#include <sndfile.h>
 #include <juce_core/juce_core.h>
+
 #include <sstream>
 #include <fstream>
 #include <atomic>
@@ -287,4 +289,10 @@ FBSetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std
 {
   auto propsFile = GetUserGlobalSettingsFile(meta);
   propsFile.setValue(String(key), String(val));
+}
+
+bool
+FBAudioFileRead(std::string const& path, FBAudioClip& clip)
+{
+  return false;
 }
