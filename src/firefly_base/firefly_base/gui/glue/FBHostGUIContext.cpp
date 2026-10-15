@@ -40,6 +40,17 @@ FBHostGUIContext::GetAudioParamNameOverrides() const
   return result;
 }
 
+std::int64_t
+FBHostGUIContext::AddAudioClip(FBAudioClip const& clip)
+{
+  std::int64_t newId = 0;
+  for (auto const& kv : _audioClips)
+    if (kv.first >= newId)
+      newId = kv.first + 1;
+  _audioClips[newId] = clip;
+  return newId;
+}
+
 void 
 FBHostGUIContext::SetAudioParamNameOverrides(std::map<int, std::string> const& overrides)
 {

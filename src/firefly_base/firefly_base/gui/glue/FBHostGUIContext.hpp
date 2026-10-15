@@ -64,6 +64,8 @@ private:
   // updated on daw load
   FBScalarStateContainer _sessionState;
   std::map<int, std::string> _sessionParamNameOverridesByIndex = {};
+  // gui side clips
+  std::map<std::int64_t, FBAudioClip> _audioClips = {};
 
   void ShowOnlineManualForModule(int index) const;
 
@@ -79,6 +81,9 @@ protected:
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
 
 public:
+  std::int64_t AddAudioClip(FBAudioClip const& clip);
+  void RemoveAudioClip(std::int64_t id) { _audioClips.erase(id); }
+
   void RevertPatchToPatchState();
   void MarkPatchAsSessionState();
   void RevertPatchToSessionState();
