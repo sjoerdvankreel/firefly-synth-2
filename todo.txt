@@ -1,4 +1,5 @@
 [ ] sampler -- pffft not easy
+- do the validators
 - check "todo sampler"
 - compress the patchfile
 - get all the undo state & friends right -- just clear undo after sample load

@@ -1204,5 +1204,19 @@ FFMakeOsciTopo(bool isFx)
   audioInGain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAudioInGain);
   audioInGain.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::AudioIn; });
 
+  auto& sampleIsLoaded = result->params[(int)FFOsciParam::SampleIsLoaded];
+  sampleIsLoaded.mode = FBParamMode::Block;
+  sampleIsLoaded.name = "SampleIsLoaded";
+  sampleIsLoaded.slotCount = 1;
+  sampleIsLoaded.defaultText = "Off";
+  sampleIsLoaded.id = "{7FF0EE9B-A4A0-4D81-84BB-7CCBAF7F4622}";
+  sampleIsLoaded.description = "Sample is loaded";
+  sampleIsLoaded.type = FBParamType::Boolean;
+  auto selectSampleIsLoaded = [](auto& module) { return &module.block.sampleIsLoaded; };
+  sampleIsLoaded.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSampleIsLoaded);
+  sampleIsLoaded.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectSampleIsLoaded);
+  sampleIsLoaded.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSampleIsLoaded);
+  sampleIsLoaded.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Sample; });
+
   return result;
 }

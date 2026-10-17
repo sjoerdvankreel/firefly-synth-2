@@ -63,6 +63,12 @@ MakePlugParamInfo(FBRuntimeParam const& param, int unitId)
     if (param.static_.NonRealTime().IsItems())
       result.flags |= ParameterInfo::kIsList;
   }
+  if (param.static_.isHidden)
+  {
+    result.flags |= ParameterInfo::kIsHidden;
+    result.flags |= ParameterInfo::kIsReadOnly;
+    result.flags &= ~ParameterInfo::kCanAutomate;
+  }
   return result;
 }
 

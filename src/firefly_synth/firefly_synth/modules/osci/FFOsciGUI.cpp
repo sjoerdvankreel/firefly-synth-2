@@ -393,7 +393,7 @@ MakeOsciSectionAudioIn(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 MakeOsciSectionSample(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0 }, std::vector<int> { 0 });
+  auto unloadedGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0 }, std::vector<int> { 0 });
   auto load = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Load Sample");
   load->setTooltip("Load Sample");
   load->onClick = [plugGUI, moduleSlot]() {
@@ -422,11 +422,31 @@ MakeOsciSectionSample(FBPlugGUI* plugGUI, int moduleSlot)
         return;
       }
       plugGUI->HostContext()->SetAudioClip(FFOsciSampleSlotIds[moduleSlot], clip);
+      plugGUI->HostContext()->SetAudioParamBool({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleIsLoaded, 0 } }, true);
     });
   };
-  grid->Add(0, 0, load);
-  FBParamsDependencies dependencies = {};
+  unloadedGrid->Add(0, 0, load);
+  FBParamsDependencies unloadedDependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
+  unloadedDependencies.visible.audio.WhenSimple({ (int)FFOsciParam::SampleIsLoaded }, [](auto const& vs) { return vs[0] == 0; });
+  auto unloadedGUI = plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, unloadedGrid, 0, indices, unloadedDependencies);
+
+  auto loadedGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0 }, std::vector<int> { 0 });
+  auto unload = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Clear Sample");
+  unload->setTooltip("Clear Sample");
+  unload->onClick = [plugGUI, moduleSlot]() {
+    plugGUI->HostContext()->RemoveAudioClip(FFOsciSampleSlotIds[moduleSlot]);
+    plugGUI->HostContext()->SetAudioParamBool({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleIsLoaded, 0 } }, false);
+  };
+  loadedGrid->Add(0, 0, unload);
+  FBParamsDependencies loadedDependencies = {};
+  loadedDependencies.visible.audio.WhenSimple({ (int)FFOsciParam::SampleIsLoaded }, [](auto const& vs) { return vs[0] == 1; });
+  auto loadedGUI = plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, loadedGrid, 0, indices, loadedDependencies);
+
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0 }, std::vector<int> { 0 });
+  grid->Add(0, 0, loadedGUI);
+  grid->Add(0, 0, unloadedGUI);
+  FBParamsDependencies dependencies = {};  
   dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Sample; });
   return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
 }
