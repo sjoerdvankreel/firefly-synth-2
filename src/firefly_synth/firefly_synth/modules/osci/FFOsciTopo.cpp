@@ -1205,6 +1205,7 @@ FFMakeOsciTopo(bool isFx)
   audioInGain.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::AudioIn; });
 
   auto& sampleIsLoaded = result->params[(int)FFOsciParam::SampleIsLoaded];
+  sampleIsLoaded.isHidden = true;
   sampleIsLoaded.mode = FBParamMode::Block;
   sampleIsLoaded.name = "SampleIsLoaded";
   sampleIsLoaded.slotCount = 1;
