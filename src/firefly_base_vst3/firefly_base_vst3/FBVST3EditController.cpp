@@ -157,14 +157,32 @@ FBVST3EditController::SetAudioParamNameOverride(int index, std::string const& na
 void 
 FBVST3EditController::ClearAudioClipToDSP(std::string const& id)
 {
-  (void)id;
+  IMessage* message = allocateMessage();
+  if (!message)
+    return;
+  TChar vst3Id[128];
+  FReleaser release(message);
+  FBVST3CopyToString128(id, vst3Id);
+  message->setMessageID(FBVST3ClearAudioClipMessageId.c_str());
+  message->getAttributes()->setString("id", vst3Id);
+  sendMessage(message);
 }
 
 void 
 FBVST3EditController::PushAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
 {
-  (void)id;
-  (void)clip;
+  IMessage* message = allocateMessage();
+  if (!message) 
+    return;
+  TChar vst3Id[128];
+  FReleaser release(message);
+  FBVST3CopyToString128(id, vst3Id);
+  message->setMessageID(FBVST3LoadAudioClipMessageId.c_str());
+  message->getAttributes()->setString("id", vst3Id);
+  message->getAttributes()->setInt("channels", clip.channels);
+  message->getAttributes()->setInt("sampleRate", clip.sampleRate);
+  message->getAttributes()->setBinary("data", clip.data.data(), (uint32)(clip.data.size() * sizeof(float)));
+  sendMessage(message);
 }
 
 double

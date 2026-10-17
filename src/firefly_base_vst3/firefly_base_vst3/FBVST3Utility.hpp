@@ -9,6 +9,9 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
+inline std::string const FBVST3LoadAudioClipMessageId = "FBVST3LoadAudioClipMessageId";
+inline std::string const FBVST3ClearAudioClipMessageId = "FBVST3ClearAudioClipMessageId";
+
 inline int constexpr FBVST3MIDIMaxChannels = 16;
 inline int constexpr FBVST3MIDIMaxPortsGuess = 128;
 inline int constexpr FBVST3MIDIMaxMessages = FBMIDIEvent::MessageCount;
