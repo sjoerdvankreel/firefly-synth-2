@@ -25,6 +25,7 @@ private:
   bool LoadParamStateFromVar(bool isGuiState, juce::var const& json, TContainer& container, TParamsTopo& params, bool patchOnly) const;
 
   juce::var SaveGUIStateToVar(FBHostGUIContext const& hostContext) const;
+  juce::var SaveAudioClipsToVar(FBHostGUIContext const& hostContext) const;
   juce::var SaveParamNameOverridesToVar(FBHostGUIContext const& hostContext) const;
   juce::var SaveProcStateToVar(FBProcStateContainer const& procState, bool patchOnly) const;
   juce::var SaveEditStateToVar(FBScalarStateContainer const& editState, bool patchOnly) const;
@@ -34,6 +35,7 @@ private:
   bool LoadGUIStateFromVar(juce::var const& json, FBHostGUIContext& hostContext) const;
   bool LoadProcStateFromVar(juce::var const& json, FBProcStateContainer& proc, bool patchOnly) const;
   bool LoadEditStateFromVar(juce::var const& json, FBScalarStateContainer& edit, bool patchOnly) const;
+  bool LoadAudioClipsFromVar(juce::var const& json, std::map<std::string, FBAudioClip>& audioClips) const;
   bool LoadParamNameOverridesFromVar(juce::var const& json, std::map<int, std::string>& paramNameOverrides) const;
   bool LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext& hostContext) const;
   bool LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& editState, std::map<int, std::string>& paramNameOverrides) const;

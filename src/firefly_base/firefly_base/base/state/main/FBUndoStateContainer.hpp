@@ -29,6 +29,7 @@ class FBUndoStateContainer final
 public:
   void Undo();
   void Redo();
+  void Clear();
   void Snapshot(std::string const& action);
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBUndoStateContainer);

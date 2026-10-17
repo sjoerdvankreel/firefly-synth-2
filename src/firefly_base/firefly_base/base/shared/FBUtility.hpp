@@ -71,15 +71,11 @@ inline int const FBDefaultDisplayPrecision = 3;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(x); \
   x() = default
 
-struct FBAudioFormat
-{
-  std::uint32_t channels;
-  std::uint32_t sampleRate;
-};
-
 struct FBAudioClip
 {
-  FBAudioFormat format;
+  std::string name;
+  std::int32_t channels;
+  std::int32_t sampleRate;
   std::vector<float> data;
 };
 

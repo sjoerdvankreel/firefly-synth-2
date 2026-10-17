@@ -396,8 +396,8 @@ MakeOsciSectionSample(FBPlugGUI* plugGUI, int moduleSlot)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0 }, std::vector<int> { 0 });
   auto load = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Load Sample");
   load->setTooltip("Load Sample");
-  load->onClick = [plugGUI]() { 
-    plugGUI->LoadAnyFile("Load Sample", "wav", "Wav Files", [plugGUI](juce::File const& file) {
+  load->onClick = [plugGUI, moduleSlot]() {
+    plugGUI->LoadAnyFile("Load Sample", "wav", "Wav Files", [plugGUI, moduleSlot](juce::File const& file) {
       if (!file.exists())
         return;
       FBAudioClip clip;
@@ -421,6 +421,7 @@ MakeOsciSectionSample(FBPlugGUI* plugGUI, int moduleSlot)
           .withParentComponent(plugGUI), [](int) {});
         return;
       }
+      plugGUI->HostContext()->SetAudioClip(FFOsciSampleSlotIds[moduleSlot], clip);
     });
   };
   grid->Add(0, 0, load);

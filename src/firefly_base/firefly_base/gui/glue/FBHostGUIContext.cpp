@@ -40,15 +40,31 @@ FBHostGUIContext::GetAudioParamNameOverrides() const
   return result;
 }
 
-std::int64_t
-FBHostGUIContext::AddAudioClip(FBAudioClip const& clip)
+std::map<std::string, FBAudioClip> const& 
+FBHostGUIContext::GetAudioClips() const
 {
-  std::int64_t newId = 0;
-  for (auto const& kv : _audioClips)
-    if (kv.first >= newId)
-      newId = kv.first + 1;
-  _audioClips[newId] = clip;
-  return newId;
+  return _audioClips;
+}
+
+void 
+FBHostGUIContext::RemoveAudioClip(std::string const& id)
+{ 
+  _undoState.Clear();
+  _audioClips.erase(id);
+}
+
+void
+FBHostGUIContext::SetAudioClip(std::string const& id, FBAudioClip const& clip)
+{
+  _undoState.Clear();
+  _audioClips[id] = clip;
+}
+
+void 
+FBHostGUIContext::SetAudioClips(std::map<std::string, FBAudioClip> const& clips) 
+{ 
+  _undoState.Clear();
+  _audioClips = clips;
 }
 
 void 

@@ -921,6 +921,7 @@ void
 FBPlugGUI::LoadPatchAsPreview(
   juce::File const& file)
 {
+  // TODO Sampler
   FB_LOG_ENTRY_EXIT();
   _patchWasPreviewed = true;
   std::map<int, std::string> previewParamNames;

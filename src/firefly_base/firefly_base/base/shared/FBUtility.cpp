@@ -302,6 +302,7 @@ FBAudioFileRead(std::string const& path, FBAudioClip& clip)
   clip.data = {};
   clip.format.channels = info.channels;
   clip.format.sampleRate = info.samplerate;
+  clip.name = std::filesystem::path(path).filename().stem().string();
 
   sf_count_t read;
   float buffer[1024];

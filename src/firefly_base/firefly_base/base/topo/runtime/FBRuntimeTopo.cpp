@@ -395,6 +395,56 @@ FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
   hostContext.SetAudioParamNameOverrides(paramNameOverrides);
 }
 
+var
+FBRuntimeTopo::SaveAudioClipsToVar(FBHostGUIContext const& hostContext) const
+{
+  DynamicObject* result = new DynamicObject;
+  for (auto const& kv : hostContext.GetAudioClips())
+  {
+    DynamicObject* clip = new DynamicObject;
+    clip->setProperty("name", String(kv.second.name));
+    clip->setProperty("channels", (int)kv.second.channels);
+    clip->setProperty("sampleRate", (int)kv.second.sampleRate);
+    clip->setProperty("data", Base64::toBase64(kv.second.data.data(), kv.second.data.size() * sizeof(kv.second.data[0])));
+    result->setProperty(String(kv.first), var(clip));
+  }
+  return var(result);
+}
+
+bool
+FBRuntimeTopo::LoadAudioClipsFromVar(juce::var const& json, std::map<std::string, FBAudioClip>& audioClips) const
+{
+  audioClips.clear();
+  auto* obj = json.getDynamicObject();
+  if (obj == nullptr)
+    return false;
+
+  for (auto const& prop : obj->getProperties())
+  {
+    FBAudioClip clip;
+    var const& clipJson = obj->getProperty(prop.name);
+    if (!clipJson.hasProperty("name") || !clipJson["name"].isString())
+      return false;
+    clip.name = clipJson["name"].toString().toStdString();
+    if (!clipJson.hasProperty("channels") || !clipJson["channels"].isInt())
+      return false;
+    clip.channels = (int)clipJson["channels"];
+    if (!clipJson.hasProperty("sampleRate") || !clipJson["sampleRate"].isInt())
+      return false;
+    clip.sampleRate = (int)clipJson["sampleRate"];
+    if (!clipJson.hasProperty("data") || !clipJson["data"].isString())
+      return false;
+    MemoryOutputStream stream;
+    if (!Base64::convertFromBase64(stream, clipJson["data"].toString()))
+      return false;
+    if (stream.getDataSize() % (sizeof(float) * clip.channels) != 0)
+      return false;
+    clip.data = std::vector<float>((float*)stream.getData(), (float*)((char*)stream.getData() + stream.getDataSize()));
+    audioClips[prop.name] = clip;
+  }
+  return true;
+}
+
 var 
 FBRuntimeTopo::SaveParamNameOverridesToVar(FBHostGUIContext const& hostContext) const
 {
