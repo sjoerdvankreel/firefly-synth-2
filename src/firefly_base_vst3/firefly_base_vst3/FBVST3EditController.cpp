@@ -236,6 +236,7 @@ FBVST3EditController::setState(IBStream* state)
     _topo->LoadGUIStateFromStringWithDryRun(json, *this);
     OnPatchNameChanged();
     OnInstanceNameChanged();    
+    OnAudioClipsChanged();
     if(_guiEditor != nullptr)
       for (int i = 0; i < _guiState->Params().size(); i++)
         _guiEditor->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));      

@@ -100,6 +100,7 @@ protected:
 
 public:
   std::function<void()> onPatchLoaded = {};
+  std::function<void()> onAudioClipsChanged = {};
   std::function<void(std::string const&)> onPatchNameChanged = {};
   std::function<void(std::string const&)> onInstanceNameChanged = {};
 
@@ -116,6 +117,7 @@ public:
   void resized() override;  
   void OnPatchLoaded() override;
   void RequestGUIReset() override;
+  void OnAudioClipsChanged() override;
   void OnPatchNameChanged(std::string const& name) override;
   void OnInstanceNameChanged(std::string const& name) override;
 

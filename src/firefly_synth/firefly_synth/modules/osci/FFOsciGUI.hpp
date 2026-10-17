@@ -4,6 +4,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class FBPlugGUI;
+class FFPlugGUI;
 
 class FFOsciParamListener:
 public IFBParamListener
@@ -19,9 +20,9 @@ public:
 };
 
 juce::Component*
-FFMakeOsciGUI(FBPlugGUI* plugGUI);
+FFMakeOsciGUI(FFPlugGUI* plugGUI);
 juce::Component*
-FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot);
+FFMakeOsciDetailGUI(FFPlugGUI* plugGUI, int moduleSlot);
 
 bool
 FFOsciAdjustParamModulationGUIBounds(

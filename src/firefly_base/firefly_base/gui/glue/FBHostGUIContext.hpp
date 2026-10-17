@@ -42,6 +42,7 @@ class IFBHostGUIContextListener
 public:
   virtual ~IFBHostGUIContextListener() {}
   virtual void OnPatchLoaded() = 0;
+  virtual void OnAudioClipsChanged() = 0;
   virtual void OnPatchNameChanged(std::string const& name) = 0;
   virtual void OnInstanceNameChanged(std::string const& name) = 0;
 };
@@ -75,6 +76,7 @@ protected:
 
   void OnPatchLoaded();
   void OnPatchNameChanged();
+  void OnAudioClipsChanged();
   void OnInstanceNameChanged();
   virtual void DoEndAudioParamChange(int index) = 0;
   virtual void DoBeginAudioParamChange(int index) = 0;
@@ -82,6 +84,7 @@ protected:
 
 public:
   void RemoveAudioClip(std::string const& id);
+  FBAudioClip const* FindAudioClip(std::string const& id) const;
   std::map<std::string, FBAudioClip> const& GetAudioClips() const;
   void SetAudioClip(std::string const& id, FBAudioClip const& clip);
   void SetAudioClips(std::map<std::string, FBAudioClip> const& clips);

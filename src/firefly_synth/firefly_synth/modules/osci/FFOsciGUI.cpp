@@ -1,3 +1,4 @@
+#include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/dsp/shared/FFModulate.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
@@ -391,7 +392,7 @@ MakeOsciSectionAudioIn(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-MakeOsciSectionSample(FBPlugGUI* plugGUI, int moduleSlot)
+MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
 {
   auto unloadedGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0 }, std::vector<int> { 0 });
   auto load = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Load Sample");
@@ -435,7 +436,17 @@ MakeOsciSectionSample(FBPlugGUI* plugGUI, int moduleSlot)
   auto nameGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0 }, std::vector<int> { 0, 1 });
   auto nameLabel = plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Name");
   nameGrid->Add(0, 0, nameLabel);
-  auto name = plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Name");
+  auto name = plugGUI->StoreComponent<FBAutoSizeLabel2>(true, false, false, 150);
+  auto clip = plugGUI->HostContext()->FindAudioClip(FFOsciSampleSlotIds[moduleSlot]);
+  if (clip != nullptr)
+    name->setText(clip->name, dontSendNotification);
+  plugGUI->onAudioClipsChanged = [plugGUI, name, moduleSlot]() {
+    std::string newName = "";
+    auto clip = plugGUI->HostContext()->FindAudioClip(FFOsciSampleSlotIds[moduleSlot]);
+    if (clip != nullptr)
+      newName = clip->name;
+    name->setText(newName, dontSendNotification);
+  };
   nameGrid->Add(0, 1, name);
   auto unload = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Clear Sample");
   unload->setTooltip("Clear Sample");
@@ -467,7 +478,7 @@ MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-MakeOsciDetail(FBPlugGUI* plugGUI, int moduleSlot)
+MakeOsciDetail(FFPlugGUI* plugGUI, int moduleSlot)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1 });
   grid->Add(0, 0, MakeOsciSectionWave(plugGUI, moduleSlot));
@@ -479,7 +490,7 @@ MakeOsciDetail(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 Component*
-FFMakeOsciGUI(FBPlugGUI* plugGUI)
+FFMakeOsciGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0 }, [plugGUI]() { 
@@ -500,7 +511,7 @@ FFMakeOsciGUI(FBPlugGUI* plugGUI)
 }
 
 Component*
-FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
+FFMakeOsciDetailGUI(FFPlugGUI* plugGUI, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();

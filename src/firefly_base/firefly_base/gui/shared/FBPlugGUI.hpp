@@ -103,6 +103,7 @@ public:
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
   void OnPatchLoaded() override {}
+  void OnAudioClipsChanged() override {}
   void OnPatchNameChanged(std::string const& /*name*/) override {}
   void OnInstanceNameChanged(std::string const& /*name*/) override {}
   void mouseUp(const juce::MouseEvent& event) override;

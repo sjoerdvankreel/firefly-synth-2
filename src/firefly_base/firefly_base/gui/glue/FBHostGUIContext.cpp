@@ -46,11 +46,21 @@ FBHostGUIContext::GetAudioClips() const
   return _audioClips;
 }
 
+FBAudioClip const* 
+FBHostGUIContext::FindAudioClip(std::string const& id) const
+{
+  auto iter = _audioClips.find(id);
+  if (iter == _audioClips.end())
+    return nullptr;
+  return &iter->second;
+}
+
 void 
 FBHostGUIContext::RemoveAudioClip(std::string const& id)
 { 
   _undoState.Clear();
   _audioClips.erase(id);
+  OnAudioClipsChanged();
 }
 
 void
@@ -58,6 +68,7 @@ FBHostGUIContext::SetAudioClip(std::string const& id, FBAudioClip const& clip)
 {
   _undoState.Clear();
   _audioClips[id] = clip;
+  OnAudioClipsChanged();
 }
 
 void 
@@ -65,6 +76,7 @@ FBHostGUIContext::SetAudioClips(std::map<std::string, FBAudioClip> const& clips)
 { 
   _undoState.Clear();
   _audioClips = clips;
+  OnAudioClipsChanged();
 }
 
 void 
@@ -136,6 +148,13 @@ FBHostGUIContext::OnPatchNameChanged()
 {
   for (int i = 0; i < _listeners.size(); i++)
     _listeners[i]->OnPatchNameChanged(PatchName());
+}
+
+void
+FBHostGUIContext::OnAudioClipsChanged()
+{
+  for (int i = 0; i < _listeners.size(); i++)
+    _listeners[i]->OnAudioClipsChanged();
 }
 
 void
