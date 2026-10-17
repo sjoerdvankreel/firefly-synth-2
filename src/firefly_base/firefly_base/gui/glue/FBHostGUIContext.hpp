@@ -61,9 +61,11 @@ private:
   FBUndoStateContainer _undoState;
   // updated on init/load/reload patch etc
   FBScalarStateContainer _patchState;
+  std::map<std::string, FBAudioClip> _patchAudioClips = {};
   std::map<int, std::string> _patchParamNameOverridesByIndex = {};
   // updated on daw load
   FBScalarStateContainer _sessionState;
+  std::map<std::string, FBAudioClip> _sessionAudioClips = {};
   std::map<int, std::string> _sessionParamNameOverridesByIndex = {};
   // gui side clips
   std::map<std::string, FBAudioClip> _audioClips = {};

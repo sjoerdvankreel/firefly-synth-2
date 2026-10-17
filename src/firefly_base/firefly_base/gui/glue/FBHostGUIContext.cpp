@@ -99,6 +99,7 @@ void
 FBHostGUIContext::RevertPatchToPatchState()
 {
   _patchState.CopyTo(this, true);
+  SetAudioClips(_patchAudioClips);
   SetAudioParamNameOverrides(_patchParamNameOverridesByIndex);
 }
 
@@ -106,6 +107,7 @@ void
 FBHostGUIContext::RevertPatchToSessionState()
 {
   _sessionState.CopyTo(this, true);
+  SetAudioClips(_sessionAudioClips);
   SetAudioParamNameOverrides(_sessionParamNameOverridesByIndex);
 }
 
@@ -113,6 +115,7 @@ void
 FBHostGUIContext::MarkPatchAsSessionState()
 {
   _sessionState.CopyFrom(this, true);
+  _sessionAudioClips = GetAudioClips();
   _sessionParamNameOverridesByIndex = GetAudioParamNameOverrides();
 }
 
@@ -120,6 +123,7 @@ void
 FBHostGUIContext::MarkPatchAsPatchState(std::string const& patchName)
 {
   _patchState.CopyFrom(this, true);
+  _patchAudioClips = GetAudioClips();
   _patchParamNameOverridesByIndex = GetAudioParamNameOverrides();
   _isPatchLoaded = true;
   OnPatchLoaded();
