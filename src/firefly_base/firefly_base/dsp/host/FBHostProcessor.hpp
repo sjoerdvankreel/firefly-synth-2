@@ -34,7 +34,9 @@ class FBHostProcessor final
   bool _anyNoteEverReceived = false;
   bool _anyNoteWasOnLastSamplePrevRound = {};
   float _lastKeyRawLastSamplePrevRound = -1.0f;
+  std::map<std::string, FBAudioClip> _audioClips = {};
 
+  IFBHostDSPContext* const _hostContext;
   float const _sampleRate;
   float _prevRoundCpuUsage = 0.0f;
   FBRuntimeTopo const* const _topo;

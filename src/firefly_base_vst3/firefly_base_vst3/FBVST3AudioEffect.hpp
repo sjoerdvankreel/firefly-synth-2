@@ -41,7 +41,6 @@ public IFBHostDSPContext
   FBHostInputBlock _input = {};
   FBHostOutputBlock _output = {};
   std::array<std::vector<float>, 2> _zeroIn = {};
-  std::map<std::string, FBAudioClip> _audioClips = {};
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
   std::unique_ptr<DataExchangeHandler> _exchangeHandler = {};
 

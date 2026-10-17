@@ -298,9 +298,9 @@ FBVST3AudioEffect::UpdateAudioClipsFromGUI(std::map<std::string, FBAudioClip>& c
   while (_audioClipCommands.try_dequeue(command))
   {
     if (command.clear)
-      _audioClips.erase(command.id);
+      clips.erase(command.id);
     else
-      _audioClips[command.id] = command.clip;
+      clips[command.id] = command.clip;
   }
 }
 

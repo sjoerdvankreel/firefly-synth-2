@@ -25,6 +25,7 @@ FFOsciProcessor::ProcessSample(
   FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
   FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain)
 {
+  state.
   // todo sample
   (void)state;
   (void)basePitchPlain;
