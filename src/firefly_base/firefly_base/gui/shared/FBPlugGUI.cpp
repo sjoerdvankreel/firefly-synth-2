@@ -925,8 +925,9 @@ FBPlugGUI::LoadPatchAsPreview(
   FB_LOG_ENTRY_EXIT();
   _patchWasPreviewed = true;
   std::map<int, std::string> previewParamNames;
+  std::map<std::string, FBAudioClip> previewGuiAudioClips;
   FBScalarStateContainer editState(*HostContext()->Topo());
-  if (!HostContext()->Topo()->LoadPatchStateFromString(file.loadFileAsString().toStdString(), editState, previewParamNames))
+  if (!HostContext()->Topo()->LoadPatchStateFromString(file.loadFileAsString().toStdString(), editState, previewParamNames, previewGuiAudioClips))
     return;
   BeforePatchChanged();
   editState.CopyTo(HostContext(), true);
