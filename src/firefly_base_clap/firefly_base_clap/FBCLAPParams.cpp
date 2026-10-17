@@ -141,6 +141,7 @@ FBCLAPPlugin::paramsInfo(
     if (mode == FBParamMode::Block || mode == FBParamMode::Fake || mode == FBParamMode::Output)
     {
       info->flags |= CLAP_PARAM_IS_READONLY;
+      info->flags |= CLAP_PARAM_IS_HIDDEN;
       if (runtimeParam.static_.NonRealTime().IsStepped())
       {
         info->flags |= CLAP_PARAM_IS_STEPPED;
@@ -159,6 +160,16 @@ FBCLAPPlugin::paramsInfo(
         info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL;
         info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID;
       }
+    }
+    if (runtimeParam.static_.isHidden)
+    {
+      info->flags |= CLAP_PARAM_IS_READONLY;
+      info->flags |= CLAP_PARAM_IS_HIDDEN;
+      info->flags &= ~CLAP_PARAM_IS_AUTOMATABLE;
+      info->flags &= ~CLAP_PARAM_IS_MODULATABLE;
+      info->flags &= ~CLAP_PARAM_IS_MODULATABLE_PER_KEY;
+      info->flags &= ~CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL;
+      info->flags &= ~CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID;
     }
     return true;
   });

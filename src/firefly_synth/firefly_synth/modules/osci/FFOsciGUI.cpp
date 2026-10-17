@@ -1,3 +1,4 @@
+#include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/dsp/shared/FFModulate.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
@@ -391,6 +392,96 @@ MakeOsciSectionAudioIn(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
+MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
+{
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0 }, std::vector<int> { 1, 1 });
+  auto load = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Load");
+  load->setTooltip("Load Sample");
+  load->onClick = [plugGUI, moduleSlot]() {
+    plugGUI->LoadAnyFile("Load Sample", "wav", "Wav Files", [plugGUI, moduleSlot](juce::File const& file) {
+      if (!file.exists())
+        return;
+      FBAudioClip clip;
+      if (!FBAudioFileRead(file.getFullPathName().toStdString(), clip))
+      {
+        AlertWindow::showAsync(MessageBoxOptions()
+          .withIconType(MessageBoxIconType::WarningIcon)
+          .withTitle("Error")
+          .withMessage("Unrecognized audio file.")
+          .withButton("OK")
+          .withParentComponent(plugGUI), [](int) {});
+        return;
+      }
+      if (clip.channels != 1)
+      {
+        AlertWindow::showAsync(MessageBoxOptions()
+          .withIconType(MessageBoxIconType::WarningIcon)
+          .withTitle("Error")
+          .withMessage("Only mono files supported.")
+          .withButton("OK")
+          .withParentComponent(plugGUI), [](int) {});
+        return;
+      }
+      plugGUI->HostContext()->SetAudioClip(FFOsciSampleSlotIds[moduleSlot], clip);
+      plugGUI->HostContext()->SetAudioParamBool({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleIsLoaded, 0 } }, true);
+    });
+  };
+  grid->Add(0, 0, load);
+
+  auto clear = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Clear");
+  clear->setTooltip("Clear Sample");
+  clear->onClick = [plugGUI, moduleSlot]() {
+    plugGUI->HostContext()->RemoveAudioClip(FFOsciSampleSlotIds[moduleSlot]);
+    plugGUI->HostContext()->SetAudioParamBool({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleIsLoaded, 0 } }, false);
+  };
+  grid->Add(0, 1, clear);
+
+  auto nameGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0 }, std::vector<int> { 0, 1 });
+  auto nameLabel = plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Name");
+  nameGrid->Add(0, 0, nameLabel);
+  auto name = plugGUI->StoreComponent<FBAutoSizeLabel2>(true, false, false, 150);
+  nameGrid->Add(0, 1, name);
+  grid->Add(1, 0, 1, 2, nameGrid);
+
+  auto rateGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0 }, std::vector<int> { 0, 1 });
+  auto rateLabel = plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Sample Rate");
+  rateGrid->Add(0, 0, rateLabel);
+  auto rate = plugGUI->StoreComponent<FBAutoSizeLabel2>(true, false, false, 150);
+  rateGrid->Add(0, 1, rate);
+  grid->Add(2, 0, 1, 2, rateGrid);
+
+  auto clip = plugGUI->HostContext()->FindAudioClip(FFOsciSampleSlotIds[moduleSlot]);
+  if (clip != nullptr)
+  {
+    name->setText(clip->name, dontSendNotification);
+    rate->setText(std::to_string(clip->sampleRate), dontSendNotification);
+  }
+  else
+  {
+    name->setText("No Sample Loaded", dontSendNotification);
+    rate->setText("", dontSendNotification);
+  }
+
+  plugGUI->onAudioClipsChanged[FFOsciSampleSlotIds[moduleSlot]] = [plugGUI, name, rate, moduleSlot]() {
+    std::string newName = "No Sample Loaded";
+    std::string newRate = "";
+    auto clip = plugGUI->HostContext()->FindAudioClip(FFOsciSampleSlotIds[moduleSlot]);
+    if (clip != nullptr)
+    {
+      newName = clip->name;
+      newRate = std::to_string(clip->sampleRate);
+    }
+    name->setText(newName, dontSendNotification);
+    rate->setText(newRate, dontSendNotification);
+  };
+
+  FBParamsDependencies dependencies = {};  
+  FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
+  dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Sample; });
+  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
+}
+
+static Component*
 MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
@@ -400,18 +491,19 @@ MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-MakeOsciDetail(FBPlugGUI* plugGUI, int moduleSlot)
+MakeOsciDetail(FFPlugGUI* plugGUI, int moduleSlot)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 1 }, std::vector<int> { 1 });
   grid->Add(0, 0, MakeOsciSectionWave(plugGUI, moduleSlot));
   grid->Add(0, 0, MakeOsciSectionFM(plugGUI, moduleSlot));
   grid->Add(0, 0, MakeOsciSectionString(plugGUI, moduleSlot));
   grid->Add(0, 0, MakeOsciSectionAudioIn(plugGUI, moduleSlot));
+  grid->Add(0, 0, MakeOsciSectionSample(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, false, true, false, grid);
 }
 
 Component*
-FFMakeOsciGUI(FBPlugGUI* plugGUI)
+FFMakeOsciGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto select = plugGUI->StoreComponent<FBSelectComponent>(plugGUI, std::vector<int> { 1, 1 }, std::vector<int> { 1, 0, 0 }, [plugGUI]() { 
@@ -432,7 +524,7 @@ FFMakeOsciGUI(FBPlugGUI* plugGUI)
 }
 
 Component*
-FFMakeOsciDetailGUI(FBPlugGUI* plugGUI, int moduleSlot)
+FFMakeOsciDetailGUI(FFPlugGUI* plugGUI, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();

@@ -117,6 +117,14 @@ FFPlugGUI::OnPatchLoaded()
     onPatchLoaded();
 }
 
+void
+FFPlugGUI::OnAudioClipsChanged()
+{
+  FBPlugGUI::OnAudioClipsChanged();
+  for (auto const& kv : onAudioClipsChanged)
+    kv.second();
+}
+
 void 
 FFPlugGUI::OnPatchNameChanged(std::string const& name)
 {

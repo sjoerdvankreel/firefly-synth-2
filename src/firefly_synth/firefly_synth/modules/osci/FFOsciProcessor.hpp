@@ -60,6 +60,8 @@ class FFOsciProcessor final
   float _uniOffsetPlain = {};
   float _uniRandomPlain = {};
 
+  bool _sampleIsLoaded = {};
+
   bool _audioInLPOn = {};
   bool _audioInHPOn = {};
   FFOsciAudioInSource _audioInSource = {};
@@ -129,6 +131,10 @@ class FFOsciProcessor final
 
   void ProcessAudioIn(
     FBModuleProcState& state);
+  void ProcessSample(
+    FBModuleProcState& state,
+    FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
+    FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain);
   void ProcessFM(
     FBModuleProcState& state,
     FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
@@ -145,6 +151,7 @@ class FFOsciProcessor final
     FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain);
 
   void BeginVoiceAudioIn(FBModuleProcState& state);
+  void BeginVoiceSample(FBModuleProcState& state, bool graph);
   void BeginVoiceString(FBModuleProcState& state, bool graph);
   void BeginVoiceFM(FBModuleProcState& state, FBSArray<float, FFOsciUniMaxCount> const& uniPhaseInit);
   void BeginVoiceWave(FBModuleProcState& state, FBSArray<float, FFOsciUniMaxCount> const& uniPhaseInit);

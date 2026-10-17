@@ -40,6 +40,53 @@ FBHostGUIContext::GetAudioParamNameOverrides() const
   return result;
 }
 
+std::map<std::string, FBAudioClip> const& 
+FBHostGUIContext::GetAudioClips() const
+{
+  return _audioClips;
+}
+
+FBAudioClip const* 
+FBHostGUIContext::FindAudioClip(std::string const& id) const
+{
+  auto iter = _audioClips.find(id);
+  if (iter == _audioClips.end())
+    return nullptr;
+  return &iter->second;
+}
+
+void 
+FBHostGUIContext::ClearAudioClips()
+{
+  _undoState.Clear();
+  _audioClips.clear();
+  OnAudioClipsChanged();
+}
+
+void 
+FBHostGUIContext::RemoveAudioClip(std::string const& id)
+{ 
+  _undoState.Clear();
+  _audioClips.erase(id);
+  OnAudioClipsChanged();
+}
+
+void
+FBHostGUIContext::SetAudioClip(std::string const& id, FBAudioClip const& clip)
+{
+  _undoState.Clear();
+  _audioClips[id] = clip;
+  OnAudioClipsChanged();
+}
+
+void 
+FBHostGUIContext::SetAudioClips(std::map<std::string, FBAudioClip> const& clips) 
+{ 
+  _undoState.Clear();
+  _audioClips = clips;
+  OnAudioClipsChanged();
+}
+
 void 
 FBHostGUIContext::SetAudioParamNameOverrides(std::map<int, std::string> const& overrides)
 {
@@ -52,6 +99,7 @@ void
 FBHostGUIContext::RevertPatchToPatchState()
 {
   _patchState.CopyTo(this, true);
+  SetAudioClips(_patchAudioClips);
   SetAudioParamNameOverrides(_patchParamNameOverridesByIndex);
 }
 
@@ -59,6 +107,7 @@ void
 FBHostGUIContext::RevertPatchToSessionState()
 {
   _sessionState.CopyTo(this, true);
+  SetAudioClips(_sessionAudioClips);
   SetAudioParamNameOverrides(_sessionParamNameOverridesByIndex);
 }
 
@@ -66,6 +115,7 @@ void
 FBHostGUIContext::MarkPatchAsSessionState()
 {
   _sessionState.CopyFrom(this, true);
+  _sessionAudioClips = GetAudioClips();
   _sessionParamNameOverridesByIndex = GetAudioParamNameOverrides();
 }
 
@@ -73,6 +123,7 @@ void
 FBHostGUIContext::MarkPatchAsPatchState(std::string const& patchName)
 {
   _patchState.CopyFrom(this, true);
+  _patchAudioClips = GetAudioClips();
   _patchParamNameOverridesByIndex = GetAudioParamNameOverrides();
   _isPatchLoaded = true;
   OnPatchLoaded();
@@ -109,6 +160,13 @@ FBHostGUIContext::OnPatchNameChanged()
 {
   for (int i = 0; i < _listeners.size(); i++)
     _listeners[i]->OnPatchNameChanged(PatchName());
+}
+
+void
+FBHostGUIContext::OnAudioClipsChanged()
+{
+  for (int i = 0; i < _listeners.size(); i++)
+    _listeners[i]->OnAudioClipsChanged();
 }
 
 void

@@ -42,6 +42,7 @@ class IFBHostGUIContextListener
 public:
   virtual ~IFBHostGUIContextListener() {}
   virtual void OnPatchLoaded() = 0;
+  virtual void OnAudioClipsChanged() = 0;
   virtual void OnPatchNameChanged(std::string const& name) = 0;
   virtual void OnInstanceNameChanged(std::string const& name) = 0;
 };
@@ -60,10 +61,14 @@ private:
   FBUndoStateContainer _undoState;
   // updated on init/load/reload patch etc
   FBScalarStateContainer _patchState;
+  std::map<std::string, FBAudioClip> _patchAudioClips = {};
   std::map<int, std::string> _patchParamNameOverridesByIndex = {};
   // updated on daw load
   FBScalarStateContainer _sessionState;
+  std::map<std::string, FBAudioClip> _sessionAudioClips = {};
   std::map<int, std::string> _sessionParamNameOverridesByIndex = {};
+  // gui side clips
+  std::map<std::string, FBAudioClip> _audioClips = {};
 
   void ShowOnlineManualForModule(int index) const;
 
@@ -73,12 +78,24 @@ protected:
 
   void OnPatchLoaded();
   void OnPatchNameChanged();
+  void OnAudioClipsChanged();
   void OnInstanceNameChanged();
+
   virtual void DoEndAudioParamChange(int index) = 0;
   virtual void DoBeginAudioParamChange(int index) = 0;
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
 
 public:
+  void ClearAudioClips();
+  void RemoveAudioClip(std::string const& id);
+  FBAudioClip const* FindAudioClip(std::string const& id) const;
+  std::map<std::string, FBAudioClip> const& GetAudioClips() const;
+  void SetAudioClip(std::string const& id, FBAudioClip const& clip);
+  void SetAudioClips(std::map<std::string, FBAudioClip> const& clips);
+
+  virtual void ClearAudioClipToDSP(std::string const& id) = 0;
+  virtual void PushAudioClipToDSP(std::string const& id, FBAudioClip const& clip) = 0;
+
   void RevertPatchToPatchState();
   void MarkPatchAsSessionState();
   void RevertPatchToSessionState();

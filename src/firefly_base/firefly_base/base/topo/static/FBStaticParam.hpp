@@ -148,6 +148,7 @@ public:
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 
   FBParamMode mode = {};
+  bool isHidden = false; // host should not provide a gui nor automation capabilities
   bool storeInPatch = true; // or session only
   FBScalarParamAddrSelector scalarAddr = {};
   FBVoiceExchangeParamAddrSelector voiceExchangeAddr = {};

@@ -1,11 +1,16 @@
 #pragma once
 
+#include <firefly_base_vst3/FBVST3Utility.hpp>
 #include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
 #include <firefly_base/dsp/host/FBHostDSPContext.hpp>
 
 #include <public.sdk/source/vst/vstaudioeffect.h>
 #include <public.sdk/source/vst/utility/dataexchange.h>
+
+// dear lord, why did i ever went with kDistributable
+// ohhh yeah its so distributable, i get my processor notifies on the gui thread -- whats the point of separation now?
+#include <readerwriterqueue.h>
 
 #include <array>
 #include <vector>
@@ -38,6 +43,8 @@ public IFBHostDSPContext
   std::array<std::vector<float>, 2> _zeroIn = {};
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
   std::unique_ptr<DataExchangeHandler> _exchangeHandler = {};
+
+  moodycamel::ReaderWriterQueue<FBVST3AudioClipCommand, 16> _audioClipCommands;
   DataExchangeBlock _exchangeBlock = { nullptr, 0, InvalidDataExchangeBlockID };
 
 public:
@@ -51,9 +58,11 @@ public:
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
   FBProcStateContainer* ProcState() override { return _procState.get(); }
   FBExchangeStateContainer* ExchangeToGUIState() override { return _exchangeState.get(); }
+  void UpdateAudioClipsFromGUI(std::map<std::string, FBAudioClip>& clips) override;
 
   tresult PLUGIN_API setActive(TBool state) override;
   tresult PLUGIN_API setState(IBStream* state) override;
+  tresult PLUGIN_API notify(IMessage* message) override;
   tresult PLUGIN_API getState(IBStream* state) override;
   tresult PLUGIN_API process(ProcessData& data) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;

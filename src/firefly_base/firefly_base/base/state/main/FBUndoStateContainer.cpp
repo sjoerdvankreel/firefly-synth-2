@@ -24,6 +24,13 @@ FBUndoStateContainer::
 FBUndoStateContainer(FBHostGUIContext* hostContext):
 _hostContext(hostContext) {}
 
+void
+FBUndoStateContainer::Clear()
+{
+  _items.clear();
+  _position = 0;
+}
+
 void 
 FBUndoStateContainer::Undo()
 {

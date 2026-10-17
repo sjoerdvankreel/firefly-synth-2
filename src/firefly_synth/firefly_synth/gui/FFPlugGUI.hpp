@@ -16,6 +16,7 @@
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBContentComponent.hpp>
 
+#include <map>
 #include <array>
 #include <memory>
 #include <vector>
@@ -102,6 +103,7 @@ public:
   std::function<void()> onPatchLoaded = {};
   std::function<void(std::string const&)> onPatchNameChanged = {};
   std::function<void(std::string const&)> onInstanceNameChanged = {};
+  std::map<std::string, std::function<void()>> onAudioClipsChanged = {};
 
   ~FFPlugGUI();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
@@ -116,6 +118,7 @@ public:
   void resized() override;  
   void OnPatchLoaded() override;
   void RequestGUIReset() override;
+  void OnAudioClipsChanged() override;
   void OnPatchNameChanged(std::string const& name) override;
   void OnInstanceNameChanged(std::string const& name) override;
 

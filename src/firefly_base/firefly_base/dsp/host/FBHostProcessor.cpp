@@ -25,6 +25,7 @@ FBHostProcessor::
 
 FBHostProcessor::
 FBHostProcessor(IFBHostDSPContext* hostContext):
+_hostContext(hostContext),
 _sampleRate(hostContext->SampleRate()),
 _topo(hostContext->Topo()),
 _procState(hostContext->ProcState()),
@@ -111,8 +112,10 @@ FBHostProcessor::ProcessHost(
   auto processBeginTime = std::chrono::high_resolution_clock::now();
 
   _plugIn.bpm = input.bpm;
+  _plugIn.audioClips = &_audioClips;
   _plugIn.prevRoundCpuUsage = _prevRoundCpuUsage;
   _plugIn.projectTimeSamples = input.projectTimeSamples;
+  _hostContext->UpdateAudioClipsFromGUI(_audioClips);
 
   for (auto const& be : input.blockAuto)
     _procState->Params()[be.param].Value(be.normalized);

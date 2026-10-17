@@ -9,11 +9,13 @@
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBFileBrowserComponent.hpp>
 
+#include <juce_core/juce_core.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <map>
 #include <chrono>
 #include <vector>
+#include <functional>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -61,6 +63,11 @@ public:
   void ReloadSession();
   void SavePatchToFile();
   void LoadPatchFromFile(bool preset);
+  void LoadAnyFile(
+    std::string const& title,
+    std::string const& extension,
+    std::string const& filter, 
+    std::function<void(juce::File const&)> select);
   
   void FlashAudioParamDisabling(int index);
   void FlashAudioParamsDisablingParam(int index);
@@ -96,6 +103,7 @@ public:
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
   void OnPatchLoaded() override {}
+  void OnAudioClipsChanged() override {}
   void OnPatchNameChanged(std::string const& /*name*/) override {}
   void OnInstanceNameChanged(std::string const& /*name*/) override {}
   void mouseUp(const juce::MouseEvent& event) override;
@@ -162,6 +170,7 @@ private:
   std::vector<IFBGUIResetListener*> _resetListeners = {};
 
   std::unique_ptr<FBFileBrowserComponent> _loadPatchBrowser = {};
+  std::unique_ptr<FBFileBrowserComponent> _loadAnyFileBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _savePatchBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _saveTopologyBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _saveParamListBrowser = {};
@@ -196,6 +205,11 @@ private:
   void InitDumpTopologyBrowser();
   void InitDumpParamListBrowser();
   void InitLoadPatchBrowser(bool preset);
+  void InitLoadAnyFileBrowser(
+    std::string const& title,
+    std::string const& extension,
+    std::string const& filter,
+    std::function<void(juce::File const&)> select);
 
   juce::File GetBrowserInitialPath(std::string const& browserKey);
   void SetBrowserInitialPath(std::string const& browserKey, juce::File const& selected);

@@ -19,3 +19,6 @@
 [submodule "lib/vst3sdk"]
 	path = lib/vst3sdk
 	url = https://github.com/sjoerdvankreel/vst3sdk.git
+[submodule "lib/libsndfile"]
+	path = lib/libsndfile
+	url = https://github.com/sjoerdvankreel/libsndfile.git

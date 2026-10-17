@@ -63,6 +63,12 @@ MakePlugParamInfo(FBRuntimeParam const& param, int unitId)
     if (param.static_.NonRealTime().IsItems())
       result.flags |= ParameterInfo::kIsList;
   }
+  if (param.static_.isHidden)
+  {
+    result.flags |= ParameterInfo::kIsHidden;
+    result.flags |= ParameterInfo::kIsReadOnly;
+    result.flags &= ~ParameterInfo::kCanAutomate;
+  }
   return result;
 }
 
@@ -148,6 +154,38 @@ FBVST3EditController::SetAudioParamNameOverride(int index, std::string const& na
     p->SetNameOverride(name);
 }
 
+void 
+FBVST3EditController::ClearAudioClipToDSP(std::string const& id)
+{
+  IMessage* message = allocateMessage();
+  if (!message)
+    return;
+  TChar vst3Id[128];
+  FReleaser release(message);
+  FBVST3CopyToString128(id, vst3Id);
+  message->setMessageID(FBVST3ClearAudioClipMessageId.c_str());
+  message->getAttributes()->setString("id", vst3Id);
+  sendMessage(message);
+}
+
+void 
+FBVST3EditController::PushAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
+{
+  IMessage* message = allocateMessage();
+  if (!message) 
+    return;
+  TChar vst3Id[128];
+  FReleaser release(message);
+  FBVST3CopyToString128(id, vst3Id);
+  message->setMessageID(FBVST3LoadAudioClipMessageId.c_str());
+  message->getAttributes()->setString("id", vst3Id);
+  message->getAttributes()->setInt("channels", clip.channels);
+  message->getAttributes()->setInt("sampleRate", clip.sampleRate);
+  message->getAttributes()->setInt("sampleCount", clip.data.size());
+  message->getAttributes()->setBinary("data", clip.data.data(), (uint32)(clip.data.size() * sizeof(float)));
+  sendMessage(message);
+}
+
 double
 FBVST3EditController::GetAudioParamNormalized(int index) const
 {
@@ -230,6 +268,7 @@ FBVST3EditController::setState(IBStream* state)
     _topo->LoadGUIStateFromStringWithDryRun(json, *this);
     OnPatchNameChanged();
     OnInstanceNameChanged();    
+    OnAudioClipsChanged();
     if(_guiEditor != nullptr)
       for (int i = 0; i < _guiState->Params().size(); i++)
         _guiEditor->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));      
