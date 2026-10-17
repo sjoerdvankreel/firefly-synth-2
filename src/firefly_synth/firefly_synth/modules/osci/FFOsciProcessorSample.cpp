@@ -14,9 +14,13 @@ void
 FFOsciProcessor::BeginVoiceSample(
   FBModuleProcState& state, bool graph)
 {
-  // todo sample
-  (void)state;
   (void)graph;
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& params = procState->param.voice.osci[state.moduleSlot];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
+  float sampleIsLoadedNorm = params.block.sampleIsLoaded[0].Voice()[voice];
+  _sampleIsLoaded = topo.NormalizedToBoolFast(FFOsciParam::SampleIsLoaded, sampleIsLoadedNorm);
 }
 
 void 
