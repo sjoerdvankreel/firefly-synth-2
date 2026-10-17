@@ -411,7 +411,7 @@ MakeOsciSectionSample(FBPlugGUI* plugGUI, int moduleSlot)
           .withParentComponent(plugGUI), [](int) {});
         return;
       }
-      if (clip.format.channels != 1)
+      if (clip.channels != 1)
       {
         AlertWindow::showAsync(MessageBoxOptions()
           .withIconType(MessageBoxIconType::WarningIcon)

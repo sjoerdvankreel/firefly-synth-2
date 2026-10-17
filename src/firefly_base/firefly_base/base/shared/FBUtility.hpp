@@ -73,10 +73,10 @@ inline int const FBDefaultDisplayPrecision = 3;
 
 struct FBAudioClip
 {
-  std::string name;
-  std::int32_t channels;
-  std::int32_t sampleRate;
-  std::vector<float> data;
+  std::string name = {};
+  std::int32_t channels = {};
+  std::int32_t sampleRate = {};
+  std::vector<float> data = {};
 };
 
 namespace FBUserGlobalSettingKeys

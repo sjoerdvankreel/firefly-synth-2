@@ -440,7 +440,7 @@ FBRuntimeTopo::LoadAudioClipsFromVar(juce::var const& json, std::map<std::string
     if (stream.getDataSize() % (sizeof(float) * clip.channels) != 0)
       return false;
     clip.data = std::vector<float>((float*)stream.getData(), (float*)((char*)stream.getData() + stream.getDataSize()));
-    audioClips[prop.name] = clip;
+    audioClips[prop.name.toString().toStdString()] = clip;
   }
   return true;
 }
