@@ -1,4 +1,5 @@
 [ ] sampler -- pffft not easy
+- no undo for all patch stuff
 - MarkPatchAsPatchState/SessionState/OnPatchLoaded
 - do the validators
 - run it in debug
