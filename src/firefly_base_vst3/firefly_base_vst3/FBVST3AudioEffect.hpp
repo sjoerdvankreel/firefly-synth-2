@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_base_vst3/FBVST3Utility.hpp>
 #include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
 #include <firefly_base/dsp/host/FBHostDSPContext.hpp>
@@ -42,6 +43,8 @@ public IFBHostDSPContext
   std::array<std::vector<float>, 2> _zeroIn = {};
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
   std::unique_ptr<DataExchangeHandler> _exchangeHandler = {};
+
+  moodycamel::ReaderWriterQueue<FBVST3AudioClipCommand, 16> _audioClipCommands;
   DataExchangeBlock _exchangeBlock = { nullptr, 0, InvalidDataExchangeBlockID };
 
 public:

@@ -91,7 +91,8 @@ FBVST3AudioEffect(
 _mtsClient(mtsClient),
 _topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
 _procState(std::make_unique<FBProcStateContainer>(*_topo)),
-_exchangeState(std::make_unique<FBExchangeStateContainer>(*_topo))
+_exchangeState(std::make_unique<FBExchangeStateContainer>(*_topo)),
+_audioClipCommands(16)
 {
   FB_LOG_ENTRY_EXIT();
   setControllerClass(controllerId);
@@ -254,11 +255,39 @@ FBVST3AudioEffect::connect(IConnectionPoint* other)
 tresult PLUGIN_API 
 FBVST3AudioEffect::notify(IMessage* message)
 {
+  if (AudioEffect::notify(message) == kResultOk)
+    return kResultOk;
+
   // This is received on the gui thread.
   // Thanks, Steinberg!
-  // todo sampler
-  (void)message;
-  return kResultTrue;
+  std::string clipId;
+  TChar clipIdVst3[128];
+  message->getAttributes()->getString("id", clipIdVst3, 128 * sizeof(clipId[0]));
+  FBVST3CopyFromString128(clipIdVst3, clipId);
+
+  FBVST3AudioClipCommand command = {};
+  command.id = clipId;
+  command.clear = std::string(message->getMessageID()) == FBVST3ClearAudioClipMessageId;
+  if (command.clear)
+  {
+    _audioClipCommands.enqueue(command);
+    return kResultOk;
+  }
+
+  void const* data;
+  int64 channels;
+  int64 sampleRate;
+  int64 sampleCount;
+  uint32 dataSizeBytes;
+  message->getAttributes()->getInt("channels", channels);
+  message->getAttributes()->getInt("sampleRate", sampleRate);
+  message->getAttributes()->getInt("sampleCount", sampleCount);
+  message->getAttributes()->getBinary("data", data, dataSizeBytes);
+  command.clip.channels = (int)channels;
+  command.clip.sampleRate = (int)sampleRate;
+  command.clip.data = std::vector<float>((float*)data, (float*)((char*)data + dataSizeBytes));
+  _audioClipCommands.enqueue(command);
+  return kResultOk;
 }
 
 tresult PLUGIN_API

@@ -181,6 +181,7 @@ FBVST3EditController::PushAudioClipToDSP(std::string const& id, FBAudioClip cons
   message->getAttributes()->setString("id", vst3Id);
   message->getAttributes()->setInt("channels", clip.channels);
   message->getAttributes()->setInt("sampleRate", clip.sampleRate);
+  message->getAttributes()->setInt("sampleCount", clip.data.size());
   message->getAttributes()->setBinary("data", clip.data.data(), (uint32)(clip.data.size() * sizeof(float)));
   sendMessage(message);
 }
