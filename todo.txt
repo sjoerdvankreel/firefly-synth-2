@@ -1,3 +1,4 @@
+- the repo is too big again
 [ ] sampler -- pffft not easy
 - no undo for all patch stuff
 - MarkPatchAsPatchState/SessionState/OnPatchLoaded
