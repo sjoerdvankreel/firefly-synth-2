@@ -121,8 +121,8 @@ void
 FFPlugGUI::OnAudioClipsChanged()
 {
   FBPlugGUI::OnAudioClipsChanged();
-  if (onAudioClipsChanged)
-    onAudioClipsChanged();
+  for (auto const& kv : onAudioClipsChanged)
+    kv.second();
 }
 
 void 

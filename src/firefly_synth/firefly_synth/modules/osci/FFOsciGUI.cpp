@@ -463,7 +463,7 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
     rate->setText(std::to_string(clip->sampleRate), dontSendNotification);
   }
 
-  plugGUI->onAudioClipsChanged = [plugGUI, name, rate, moduleSlot]() {
+  plugGUI->onAudioClipsChanged[FFOsciSampleSlotIds[moduleSlot]] = [plugGUI, name, rate, moduleSlot]() {
     std::string newName = "";
     std::string newRate = "";
     auto clip = plugGUI->HostContext()->FindAudioClip(FFOsciSampleSlotIds[moduleSlot]);
