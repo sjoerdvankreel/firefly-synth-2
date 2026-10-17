@@ -166,9 +166,7 @@ FFOsciProcessor::BeginVoice(
   else if (_type == FFOsciType::AudioIn)
     BeginVoiceAudioIn(state);
   else if (_type == FFOsciType::Sample)
-  {
-    // TODO Sample
-  }
+    BeginVoiceSample(state, graph);
   else
     FB_ASSERT(false);
 }
@@ -294,7 +292,7 @@ FFOsciProcessor::Process(
   else if (_type == FFOsciType::FM)
     ProcessFM(state, basePitchPlain, uniDetunePlain);
   else if (_type == FFOsciType::String)
-    ProcessString(state, 
+    ProcessString(state,
       topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNormModulated.Get(0)),
       topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNormModulated.Get(0)),
       topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm.CV().Get(0)),
@@ -302,9 +300,7 @@ FFOsciProcessor::Process(
   else if (_type == FFOsciType::AudioIn)
     ProcessAudioIn(state);
   else if (_type == FFOsciType::Sample)
-  {
-    // TODO Sample
-  }
+    ProcessSample(state, basePitchPlain, uniDetunePlain);
   else
     FB_ASSERT(false);
 
