@@ -54,6 +54,7 @@ public:
 
   tresult PLUGIN_API setActive(TBool state) override;
   tresult PLUGIN_API setState(IBStream* state) override;
+  tresult PLUGIN_API notify(IMessage* message) override;
   tresult PLUGIN_API getState(IBStream* state) override;
   tresult PLUGIN_API process(ProcessData& data) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;

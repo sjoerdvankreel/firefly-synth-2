@@ -251,6 +251,16 @@ FBVST3AudioEffect::connect(IConnectionPoint* other)
   });
 }
 
+tresult PLUGIN_API 
+FBVST3AudioEffect::notify(IMessage* message)
+{
+  // This is received on the gui thread.
+  // Thanks, Steinberg!
+  // todo sampler
+  (void)message;
+  return kResultTrue;
+}
+
 tresult PLUGIN_API
 FBVST3AudioEffect::process(ProcessData& data)
 {
