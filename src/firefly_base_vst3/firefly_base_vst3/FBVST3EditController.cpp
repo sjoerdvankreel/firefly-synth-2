@@ -154,6 +154,19 @@ FBVST3EditController::SetAudioParamNameOverride(int index, std::string const& na
     p->SetNameOverride(name);
 }
 
+void 
+FBVST3EditController::ClearAudioClipToDSP(std::string const& id)
+{
+  (void)id;
+}
+
+void 
+FBVST3EditController::PushAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
+{
+  (void)id;
+  (void)clip;
+}
+
 double
 FBVST3EditController::GetAudioParamNormalized(int index) const
 {

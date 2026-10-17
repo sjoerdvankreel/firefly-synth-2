@@ -83,6 +83,21 @@ FBCLAPPlugin::GetAudioParamNameOverride(int index, std::string& name) const
   return true;
 }
 
+void 
+FBCLAPPlugin::ClearAudioClipToDSP(std::string const& id)
+{
+  (void)id;
+  // todo sample
+}
+
+void 
+FBCLAPPlugin::PushAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
+{
+  (void)id;
+  (void)clip;
+  // todo sample
+}
+
 double
 FBCLAPPlugin::GetAudioParamNormalized(int index) const
 {

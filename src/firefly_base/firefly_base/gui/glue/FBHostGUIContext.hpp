@@ -80,6 +80,7 @@ protected:
   void OnPatchNameChanged();
   void OnAudioClipsChanged();
   void OnInstanceNameChanged();
+
   virtual void DoEndAudioParamChange(int index) = 0;
   virtual void DoBeginAudioParamChange(int index) = 0;
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
@@ -91,6 +92,9 @@ public:
   std::map<std::string, FBAudioClip> const& GetAudioClips() const;
   void SetAudioClip(std::string const& id, FBAudioClip const& clip);
   void SetAudioClips(std::map<std::string, FBAudioClip> const& clips);
+
+  virtual void ClearAudioClipToDSP(std::string const& id) = 0;
+  virtual void PushAudioClipToDSP(std::string const& id, FBAudioClip const& clip) = 0;
 
   void RevertPatchToPatchState();
   void MarkPatchAsSessionState();
