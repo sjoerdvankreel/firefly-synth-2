@@ -83,6 +83,7 @@ protected:
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
 
 public:
+  void ClearAudioClips();
   void RemoveAudioClip(std::string const& id);
   FBAudioClip const* FindAudioClip(std::string const& id) const;
   std::map<std::string, FBAudioClip> const& GetAudioClips() const;

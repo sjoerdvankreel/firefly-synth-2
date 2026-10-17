@@ -892,6 +892,7 @@ FBPlugGUI::InitPatch()
   for (int i = 0; i < defaultState.Params().size(); i++)
     if(HostContext()->Topo()->audio.params[i].static_.storeInPatch)
       HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
+  HostContext()->ClearAudioClips();
   HostContext()->ClearAudioParamNameOverrides();
   HostContext()->MarkPatchAsPatchState("Init Patch");
   HostContext()->NotifyHostOfParamNameChanges();

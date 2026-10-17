@@ -56,6 +56,14 @@ FBHostGUIContext::FindAudioClip(std::string const& id) const
 }
 
 void 
+FBHostGUIContext::ClearAudioClips()
+{
+  _undoState.Clear();
+  _audioClips.clear();
+  OnAudioClipsChanged();
+}
+
+void 
 FBHostGUIContext::RemoveAudioClip(std::string const& id)
 { 
   _undoState.Clear();
