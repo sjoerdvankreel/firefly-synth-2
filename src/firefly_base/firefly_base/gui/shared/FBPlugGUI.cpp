@@ -415,7 +415,7 @@ FBPlugGUI::GetControlCountForAudioParamIndex(int paramIndex) const
   {
     // Allow opt-out of otherwise obligatory minimum of 1 controller for param.
     auto const& paramTopo = HostContext()->Topo()->audio.params[paramIndex];
-    if (paramTopo.static_.mode == FBParamMode::Fake)
+    if (paramTopo.static_.mode == FBParamMode::Fake || paramTopo.static_.isHidden)
       return 0;
   }
 #ifndef NDEBUG
