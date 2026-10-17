@@ -290,6 +290,20 @@ FBVST3AudioEffect::notify(IMessage* message)
   return kResultOk;
 }
 
+void
+FBVST3AudioEffect::UpdateAudioClipsFromGUI(std::map<std::string, FBAudioClip>& clips)
+{
+  (void)clips;
+  FBVST3AudioClipCommand command;
+  while (_audioClipCommands.try_dequeue(command))
+  {
+    if (command.clear)
+      _audioClips.erase(command.id);
+    else
+      _audioClips[command.id] = command.clip;
+  }
+}
+
 tresult PLUGIN_API
 FBVST3AudioEffect::process(ProcessData& data)
 {

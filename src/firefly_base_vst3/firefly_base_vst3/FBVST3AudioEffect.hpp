@@ -41,6 +41,7 @@ public IFBHostDSPContext
   FBHostInputBlock _input = {};
   FBHostOutputBlock _output = {};
   std::array<std::vector<float>, 2> _zeroIn = {};
+  std::map<std::string, FBAudioClip> _audioClips = {};
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
   std::unique_ptr<DataExchangeHandler> _exchangeHandler = {};
 
@@ -58,6 +59,7 @@ public:
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
   FBProcStateContainer* ProcState() override { return _procState.get(); }
   FBExchangeStateContainer* ExchangeToGUIState() override { return _exchangeState.get(); }
+  void UpdateAudioClipsFromGUI(std::map<std::string, FBAudioClip>& clips) override;
 
   tresult PLUGIN_API setActive(TBool state) override;
   tresult PLUGIN_API setState(IBStream* state) override;

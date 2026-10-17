@@ -22,4 +22,5 @@ public:
   virtual FBProcStateContainer* ProcState() = 0;
   virtual FBExchangeStateContainer* ExchangeToGUIState() = 0;
   virtual std::unique_ptr<IFBPlugProcessor> MakePlugProcessor() = 0;
+  virtual void UpdateAudioClipsFromGUI(std::map<std::string, FBAudioClip>& clips) = 0;
 };

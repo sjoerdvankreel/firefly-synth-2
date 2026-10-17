@@ -98,6 +98,13 @@ FBCLAPPlugin::PushAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
   // todo sample
 }
 
+void
+FBCLAPPlugin::UpdateAudioClipsFromGUI(std::map<std::string, FBAudioClip>& clips)
+{
+  // TODO Sample
+  (void)clips;
+}
+
 double
 FBCLAPPlugin::GetAudioParamNormalized(int index) const
 {

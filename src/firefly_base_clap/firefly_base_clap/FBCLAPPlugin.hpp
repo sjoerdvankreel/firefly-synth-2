@@ -114,7 +114,8 @@ public:
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
   FBProcStateContainer* ProcState() override { return _procState.get(); }
   FBExchangeStateContainer* ExchangeToGUIState() override { return _exchangeToGUIState.get(); } 
-  
+  void UpdateAudioClipsFromGUI(std::map<std::string, FBAudioClip>& clips) override;
+
   void NotifyHostOfParamNameChanges() override;
   void ClearAudioParamNameOverrides() override;
   void ClearAudioParamNameOverride(int index) override;
