@@ -7,6 +7,10 @@
 #include <public.sdk/source/vst/vstaudioeffect.h>
 #include <public.sdk/source/vst/utility/dataexchange.h>
 
+// dear lord, why did i ever went with kDistributable
+// ohhh yeah its so distributable, i get my processor notifies on the gui thread -- whats the point of separation now?
+#include <readerwriterqueue.h>
+
 #include <array>
 #include <vector>
 #include <memory>
