@@ -96,6 +96,8 @@ FBPlugGUI::InitLoadPatchBrowser(bool preset)
         MessageBoxIconType::NoIcon,
         "Error",
         "Failed to load patch. See log for details.");
+    else
+      HostContext()->UndoState().Clear(); // because samples
     }, [this](juce::File const& file) { 
       LoadPatchAsPreview(file); 
     }, [this] {
@@ -781,10 +783,10 @@ FBPlugGUI::ReloadPatch()
   FB_LOG_ENTRY_EXIT();
   BeforePatchChanged();
   std::string oldName = HostContext()->PatchName();
-  HostContext()->UndoState().Snapshot("Reload Patch");
   HostContext()->RevertPatchToPatchState();
   HostContext()->MarkPatchAsPatchState(oldName);
   HostContext()->NotifyHostOfParamNameChanges();
+  HostContext()->UndoState().Clear(); // because samples
   AfterPatchChanged(false);
 }
 
@@ -793,9 +795,9 @@ FBPlugGUI::ReloadSession()
 {
   FB_LOG_ENTRY_EXIT();
   BeforePatchChanged();
-  HostContext()->UndoState().Snapshot("Reload Session");
   HostContext()->RevertPatchToSessionState();
   HostContext()->NotifyHostOfParamNameChanges();
+  HostContext()->UndoState().Clear(); // because samples
   AfterPatchChanged(false);
 }
 
@@ -887,7 +889,6 @@ FBPlugGUI::InitPatch()
 {
   FB_LOG_ENTRY_EXIT();
   BeforePatchChanged();
-  HostContext()->UndoState().Snapshot("Init Patch");
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
     if(HostContext()->Topo()->audio.params[i].static_.storeInPatch)
@@ -896,6 +897,7 @@ FBPlugGUI::InitPatch()
   HostContext()->ClearAudioParamNameOverrides();
   HostContext()->MarkPatchAsPatchState("Init Patch");
   HostContext()->NotifyHostOfParamNameChanges();
+  HostContext()->UndoState().Clear(); // because samples
   AfterPatchChanged(false);
 }
 

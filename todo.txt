@@ -1,6 +1,7 @@
 [ ] sampler -- pffft not easy
 - no undo for all patch stuff
 - MarkPatchAsPatchState/SessionState/OnPatchLoaded
+- preset patch with demo sample + all host tests
 - do the validators
 - run it in debug
 - pitchtrack, unison
