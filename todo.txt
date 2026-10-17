@@ -1,19 +1,20 @@
 - the repo is too big again
 [ ] sampler -- pffft not easy
-- no undo for all patch stuff
-- MarkPatchAsPatchState/SessionState/OnPatchLoaded
+V no undo for all patch stuff
+V MarkPatchAsPatchState/SessionState/OnPatchLoaded
+V get all the undo state & friends right -- just clear undo after sample load
+V do we stereo merge? select channel? osci is mono -> just only mono support
+V want 16/24/32 bit, need lib for convert ? or do naive -> libsndfile
+V raw? needs user input. wav, au, aiff etc, need parse headers. another lib? compressed -- not a chance, not even lossless 
 - preset patch with demo sample + all host tests
 - do the validators
 - run it in debug
 - pitchtrack, unison
 - check "todo sampler"
 - compress the patchfile
-- get all the undo state & friends right -- just clear undo after sample load
 - update the dependencies list
 - file preview
 - r8brain seems up for realtime SRC
-- do we stereo merge? select channel? osci is mono
-- want 16/24/32 bit, need lib for convert ? or do naive
 - i want react to offset from C4 including all pitch mods -- no nontracking only. whats the granularity? internal block size? does SRC overflow those?
 -- double tricky, resample, timestretch, or both
 - all the simple stuff, pan/amp envs etc
@@ -21,7 +22,6 @@
 - store in patchfile only for now, maybe expand to link on disk with all headache that follows
 - how tf i push from controller to processor. this is not params, may need dataexchange for vst3. but not super-supported everywhere, fallback to msg/connectionpoint?
 -- CLAP is guaranteed single process. luvu.
-- raw? needs user input. wav, au, aiff etc, need parse headers. another lib? compressed -- not a chance, not even lossless 
 
 [ ] sampler -- just do it i want vocals
 [ ] string osci dry/wet normal/uniform + conversion
