@@ -41,7 +41,7 @@ FBHostGUIContext::GetAudioParamNameOverrides() const
 }
 
 std::map<std::string, FBAudioClip> const& 
-FBHostGUIContext::GUIAudioClips() const
+FBHostGUIContext::GetGUIAudioClips() const
 {
   return _guiAudioClips;
 }
@@ -60,7 +60,7 @@ FBHostGUIContext::ClearGUIAudioClips()
 {
   _undoState.Clear();
   for (auto const& kv : _guiAudioClips)
-    ClearAudioClipToDSP(kv.first);
+    ClearDSPAudioClipToDSP(kv.first);
   _guiAudioClips.clear();
   OnGUIAudioClipsChanged();
 }
@@ -69,7 +69,7 @@ void
 FBHostGUIContext::RemoveGUIAudioClip(std::string const& id)
 { 
   _undoState.Clear();
-  ClearAudioClipToDSP(id);
+  ClearDSPAudioClipToDSP(id);
   _guiAudioClips.erase(id);
   OnGUIAudioClipsChanged();
 }
@@ -79,7 +79,7 @@ FBHostGUIContext::SetGUIAudioClip(std::string const& id, FBAudioClip const& clip
 {
   _undoState.Clear();
   _guiAudioClips[id] = FBAudioClip(clip);
-  PushAudioClipToDSP(id, clip);
+  PushDSPAudioClipToDSP(id, clip);
   OnGUIAudioClipsChanged();
 }
 
@@ -88,10 +88,10 @@ FBHostGUIContext::SetGUIAudioClips(std::map<std::string, FBAudioClip> const& cli
 { 
   _undoState.Clear();
   for (auto const& kv : _guiAudioClips)
-    ClearAudioClipToDSP(kv.first);
+    ClearDSPAudioClipToDSP(kv.first);
   _guiAudioClips = clips;
   for (auto const& kv : _guiAudioClips)
-    PushAudioClipToDSP(kv.first, kv.second);
+    PushDSPAudioClipToDSP(kv.first, kv.second);
   OnGUIAudioClipsChanged();
 }
 

@@ -94,8 +94,8 @@ public:
   void SetGUIAudioClips(std::map<std::string, FBAudioClip> const& clips);
 
   // TODO Sampler
-  virtual void ClearAudioClipToDSP(std::string const& id) = 0;
-  virtual void PushAudioClipToDSP(std::string const& id, FBAudioClip const& clip) = 0;
+  virtual void ClearDSPAudioClipToDSP(std::string const& id) = 0;
+  virtual void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip) = 0;
 
   void RevertPatchToPatchState();
   void MarkPatchAsSessionState();
