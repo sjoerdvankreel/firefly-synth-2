@@ -38,13 +38,13 @@ class FBProcStateContainer final
   // like everyone else does it. But, bit late to do that now.
   // Non-owning pointer! On the GUI side it comes from HostGUIContext.
   // On the DSP side it comes from the HostDSPContext.
-  std::map<std::string, FBAudioClip> const* const _audioClips;
+  std::map<std::string, FBAudioClip>* const _audioClips;
 
   void InitProcessing(int index, int voice, float value);
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBProcStateContainer);
-  FBProcStateContainer(FBRuntimeTopo const& topo, std::map<std::string, FBAudioClip> const* audioClips);
+  FBProcStateContainer(FBRuntimeTopo const& topo, std::map<std::string, FBAudioClip>* audioClips);
   ~FBProcStateContainer() { _freeRawState(_rawState); }
 
   void SetSmoothingCoeffs(int sampleCount);
@@ -61,6 +61,7 @@ public:
   FBMemoryPool* MemoryPool() { return &_memoryPool; }
   std::vector<FBProcParamState>& Params() { return _params; }
   std::vector<FBProcParamState> const& Params() const { return _params; }
+  std::map<std::string, FBAudioClip>& AudioClips() { return *_audioClips; }
   std::map<std::string, FBAudioClip> const& AudioClips() const { return *_audioClips; }
   FBNoteMatrix<FBGlobalAccParamState>& NoteMatrixSmth() { return _noteMatrixSmth; }
   FBNoteMatrix<FBGlobalAccParamState> const& NoteMatrixSmth() const { return _noteMatrixSmth; }

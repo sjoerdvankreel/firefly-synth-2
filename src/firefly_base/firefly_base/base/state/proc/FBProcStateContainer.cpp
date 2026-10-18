@@ -8,7 +8,7 @@
 #include <set>
 
 FBProcStateContainer::
-FBProcStateContainer(FBRuntimeTopo const& topo, std::map<std::string, FBAudioClip> const* audioClips):
+FBProcStateContainer(FBRuntimeTopo const& topo, std::map<std::string, FBAudioClip>* audioClips):
 _rawState(topo.static_->allocRawProcState()),
 _freeRawState(topo.static_->freeRawProcState),
 _audioClips(audioClips)

@@ -40,12 +40,6 @@ FBHostGUIContext::GetAudioParamNameOverrides() const
   return result;
 }
 
-std::map<std::string, FBAudioClip> const& 
-FBHostGUIContext::GetGUIAudioClips() const
-{
-  return _guiAudioClips;
-}
-
 FBAudioClip const* 
 FBHostGUIContext::FindGUIAudioClip(std::string const& id) const
 {

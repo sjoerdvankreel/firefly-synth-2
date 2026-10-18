@@ -157,9 +157,13 @@ var
 FBRuntimeTopo::SaveProcStateToVar(
   FBProcStateContainer const& procState, bool patchOnly) const
 {
+  // 2.1.7 split root into "proc" and "dspAudioClips"
+  juce::DynamicObject* result = new juce::DynamicObject;
   FBScalarStateContainer editState(*this);
   editState.CopyFrom(this, procState, patchOnly);
-  return SaveEditStateToVar(editState, patchOnly);
+  result->setProperty("proc", SaveEditStateToVar(editState, patchOnly));
+  result->setProperty("dspAudioClips", SaveAudioClipsToVar(procState.AudioClips()));
+  return var(result);
 }
 
 var
@@ -191,17 +195,6 @@ FBRuntimeTopo::LoadEditStateFromVar(
 }
 
 bool
-FBRuntimeTopo::LoadProcStateFromVar(
-  var const& json, FBProcStateContainer& procState, bool patchOnly) const
-{
-  FBScalarStateContainer editState(*this);
-  if (!LoadEditStateFromVar(json, editState, patchOnly))
-    return false;
-  procState.InitProcessing(editState);
-  return true;
-}
-
-bool
 FBRuntimeTopo::LoadGUIStateFromString(
   std::string const& text, FBHostGUIContext& hostContext) const
 {
@@ -223,16 +216,6 @@ FBRuntimeTopo::LoadGUIStateFromString(
 }
 
 bool
-FBRuntimeTopo::LoadProcStateFromString(
-  std::string const& text, FBProcStateContainer& procState, bool patchOnly) const
-{
-  var json;
-  if (!FBParseJson(text, json))
-    return false;
-  return LoadProcStateFromVar(json, procState, patchOnly);
-}
-
-bool
 FBRuntimeTopo::LoadEditStateFromString(
   std::string const& text, FBScalarStateContainer& editState, bool patchOnly) const
 {
@@ -240,6 +223,16 @@ FBRuntimeTopo::LoadEditStateFromString(
   if (!FBParseJson(text, json))
     return false;
   return LoadEditStateFromVar(json, editState, patchOnly);
+}
+
+void
+FBRuntimeTopo::LoadProcStateFromStringWithDryRun(
+  std::string const& text, FBProcStateContainer& procState, bool patchOnly) const
+{
+  var json;
+  if (!FBParseJson(text, json))
+    return;
+  LoadProcStateFromVarWithDryRun(json, procState, patchOnly);
 }
 
 bool 
@@ -372,14 +365,28 @@ FBRuntimeTopo::LoadEditAndGUIStateFromVar(
   return true;
 }
 
-void
-FBRuntimeTopo::LoadProcStateFromStringWithDryRun(
-  std::string const& text, FBProcStateContainer& procState, bool patchOnly) const
+void 
+FBRuntimeTopo::LoadProcStateFromVarWithDryRun(
+  juce::var const& json, FBProcStateContainer& procState, bool patchOnly) const
 {
   FBScalarStateContainer dryEditState(*this);
   dryEditState.CopyFrom(this, procState, patchOnly);
-  if (LoadEditStateFromString(text, dryEditState, patchOnly))
-    procState.InitProcessing(dryEditState);
+
+  // 2.1.7 split root into "proc" and "dspAudioClips"
+  if (!json.hasProperty("proc") || !json.hasProperty("dspAudioClips"))
+  {
+    if (LoadEditStateFromVar(json, dryEditState, patchOnly))
+      procState.InitProcessing(dryEditState);
+    return;
+  }
+
+  std::map<std::string, FBAudioClip> dryDSPAudioClips;
+  if (!LoadEditStateFromVar(json["proc"], dryEditState, patchOnly))
+    return;
+  if(!LoadAudioClipsFromVar(json["dspAudioClips"], dryDSPAudioClips))
+    return;
+  procState.InitProcessing(dryEditState);
+  procState.AudioClips() = dryDSPAudioClips;  
 }
 
 void

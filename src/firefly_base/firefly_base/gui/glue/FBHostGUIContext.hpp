@@ -87,14 +87,14 @@ protected:
 
 public:
   FBAudioClip const* FindGUIAudioClip(std::string const& id) const;
-  std::map<std::string, FBAudioClip> const& GetGUIAudioClips() const;
   void SetGUIAudioClips(std::map<std::string, FBAudioClip> const& clips);
+  std::map<std::string, FBAudioClip>& GetGUIAudioClips() { return _guiAudioClips; }
+  std::map<std::string, FBAudioClip> const& GetGUIAudioClips() const { return _guiAudioClips; }
 
   void ClearGUIAndDSPAudioClips();
   void RemoveGUIAndDSPAudioClip(std::string const& id);
   void SetGUIAndDSPAudioClip(std::string const& id, FBAudioClip const& guiClip, FBAudioClip const& dspClip);
 
-  // TODO Sampler
   virtual void ClearDSPAudioClipToDSP(std::string const& id) = 0;
   virtual void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip) = 0;
 
