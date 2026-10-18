@@ -62,8 +62,10 @@ FFOsciProcessor::ProcessSample(
       auto uniPitch = basePitchPlain.Get(subBlockStart);
       uniPitch += _uniPosMHalfToHalf.Get(u) * uniDetunePlain.Get(subBlockStart);
       double speedRatio = baseSpeedRatio * FBPitchToFreq(uniPitch) / freqC4;
+      int samplesAvailable = (int)clip.data.size() - _samplerSamplesUsed[u];
+      if(samplesAvailable > speedRatio * subBlockSize)
         _samplerSamplesUsed[u] += _samplerInterpolators[u].process(
           speedRatio, clip.data.data() + _samplerSamplesUsed[u],
-          uniOutputOversampled[u].Ptr(subBlockStart), subBlockSize, (int)clip.data.size() - _samplerSamplesUsed[u], 0);
+          uniOutputOversampled[u].Ptr(subBlockStart), subBlockSize, samplesAvailable, 0);
     }
 }
