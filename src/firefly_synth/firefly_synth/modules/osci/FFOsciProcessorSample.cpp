@@ -33,6 +33,7 @@ FFOsciProcessor::ProcessSample(
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
 
   if (!_sampleIsLoaded)
@@ -47,7 +48,7 @@ FFOsciProcessor::ProcessSample(
 
   // todo oversample
   int s = 0;
-  for (; _samplePosition < clip.data.size(); _samplePosition++, s++)
+  for (; _samplePosition < clip.data.size() && s < totalSamples; _samplePosition++, s++)
     for (int u = 0; u < _uniCount; u++)
       uniOutputOversampled[u].Set(s, clip.data[_samplePosition]);
 
