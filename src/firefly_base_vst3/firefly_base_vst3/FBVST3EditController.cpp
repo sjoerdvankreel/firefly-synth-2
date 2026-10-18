@@ -265,7 +265,7 @@ FBVST3EditController::setState(IBStream* state)
     std::string json;
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
-    _topo->LoadGUIStateFromStringWithDryRun(json, *this);
+    _topo->LoadVST3GUIStateFromStringWithDryRun(json, *this);
     OnPatchNameChanged();
     OnInstanceNameChanged();    
     OnGUIAudioClipsChanged();

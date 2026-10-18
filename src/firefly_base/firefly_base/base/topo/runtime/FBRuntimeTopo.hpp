@@ -11,6 +11,7 @@
 #include <memory>
 
 struct FBStaticTopo;
+class FBHostDSPContext;
 class FBHostGUIContext;
 class FBGUIStateContainer;
 class FBProcStateContainer;
@@ -27,22 +28,22 @@ private:
   juce::var SaveGUIStateToVar(FBHostGUIContext const& hostContext) const;
   juce::var SaveParamNameOverridesToVar(FBHostGUIContext const& hostContext) const;
   juce::var SaveAudioClipsToVar(std::map<std::string, FBAudioClip> const& audioClips) const;
-  juce::var SaveProcStateToVar(FBProcStateContainer const& procState, bool patchOnly) const;
+  juce::var SaveVST3ProcStateToVar(FBProcStateContainer const& procState, bool patchOnly) const;
   juce::var SaveEditStateToVar(FBScalarStateContainer const& editState, bool patchOnly) const;
   juce::var SavePatchStateToVar(FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext) const;
-  juce::var SaveEditAndGUIStateToVar(FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext, bool patchOnly) const;
+  juce::var SaveCLAPEverythingToVar(FBScalarStateContainer const& editState, FBHostGUIContext const& hostGUIContext, FBHostDSPContext const& hostDSPContext, bool patchOnly) const;
 
   bool LoadGUIStateFromVar(juce::var const& json, FBHostGUIContext& hostContext) const;
   bool LoadEditStateFromVar(juce::var const& json, FBScalarStateContainer& edit, bool patchOnly) const;
   bool LoadVST3EditStateFromVar(juce::var const& json, FBScalarStateContainer& edit, bool patchOnly) const; // hint: mess
   bool LoadAudioClipsFromVar(juce::var const& json, std::map<std::string, FBAudioClip>& audioClips) const;
   bool LoadParamNameOverridesFromVar(juce::var const& json, std::map<int, std::string>& paramNameOverrides) const;
-  void LoadProcStateFromVarWithDryRun(juce::var const& json, FBProcStateContainer& procState, bool patchOnly) const;
+  void LoadVST3ProcStateFromVarWithDryRun(juce::var const& json, FBProcStateContainer& procState, bool patchOnly) const;
   bool LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext& hostContext) const;
   bool LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& editState, std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips) const;
   bool LoadGUIStateFromVar(juce::var const& json, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips) const;
-  bool LoadEditAndGUIStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext& hostContext, bool patchOnly) const;
-  bool LoadEditAndGUIStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips, bool patchOnly) const;
+  bool LoadCLAPEverythingFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext& hostGUIContext, FBHostDSPContext& hostDSPContext, bool patchOnly) const;
+  bool LoadCLAPEverythingFromVar(juce::var const& json, FBScalarStateContainer& edit, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips, std::map<std::string, FBAudioClip>& dspAudioClips, bool patchOnly) const;
 
 public:
   std::unique_ptr<FBStaticTopo> static_;
@@ -57,15 +58,11 @@ public:
   std::string PrintParamList() const;
   FBRuntimeModule const* ModuleAtTopo(FBTopoIndices const& topoIndices) const;
 
-  // GUIState/ProcState/EditState is for VST3, bc were not SingleComponentEffect (too bad).
-  // EditAndGUIState is for CLAP, which is much simpler.
-  // PatchState is shared.
-
   std::string SaveGUIStateToString(FBHostGUIContext const& hostContext) const;
-  std::string SaveProcStateToString(FBProcStateContainer const& procState, bool patchOnly) const;
   std::string SaveEditStateToString(FBScalarStateContainer const& editState, bool patchOnly) const;
+  std::string SaveVST3ProcStateToString(FBProcStateContainer const& procState, bool patchOnly) const;
   std::string SavePatchStateToString(FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext) const;
-  std::string SaveEditAndGUIStateToString(FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext, bool patchOnly) const;
+  std::string SaveCLAPEverythingToString(FBScalarStateContainer const& editState, FBHostGUIContext const& hostGUIContext, FBHostDSPContext const& hostDSPContext, bool patchOnly) const;
 
   bool LoadGUIStateFromString(std::string const& text, FBHostGUIContext& hostContext) const;
   bool LoadEditStateFromString(std::string const& text, FBScalarStateContainer& editState, bool patchOnly) const;
@@ -73,13 +70,13 @@ public:
   bool LoadPatchStateFromString(std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext& hostContext) const;
   bool LoadPatchStateFromString(std::string const& text, FBScalarStateContainer& editState, std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips) const;
   bool LoadGUIStateFromString(std::string const& text, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips) const;
-  bool LoadEditAndGUIStateFromString(std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext& hostContext, bool patchOnly) const;
-  bool LoadEditAndGUIStateFromString(std::string const& text, FBScalarStateContainer& editState, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips, bool patchOnly) const;
+  bool LoadCLAPEverythingFromString(std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext& hostGUIContext, FBHostDSPContext& hostDSPContext, bool patchOnly) const;
+  bool LoadCLAPEverythingFromString(std::string const& text, FBScalarStateContainer& editState, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips, std::map<std::string, FBAudioClip>& dspAudioClips, bool patchOnly) const;
 
   // With dry run copies over the loaded state only if load succeeded.
   // It returns void rather than bool because it "always succeeds" even if not.
   // This is important to keep bitwig happy (i.e. do nothing on load fail) rather than crashing the host.
-  void LoadGUIStateFromStringWithDryRun(std::string const& text, FBHostGUIContext& hostContext) const;
-  void LoadProcStateFromStringWithDryRun(std::string const& text, FBProcStateContainer& procState, bool patchOnly) const;
-  void LoadEditAndGUIStateFromStringWithDryRun(std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext& hostContext, bool patchOnly) const;
+  void LoadVST3GUIStateFromStringWithDryRun(std::string const& text, FBHostGUIContext& hostContext) const;
+  void LoadVST3ProcStateFromStringWithDryRun(std::string const& text, FBProcStateContainer& procState, bool patchOnly) const;
+  void LoadCLAPEverythingFromStringWithDryRun(std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext& hostGUIContext, FBHostDSPContext& hostDSPContext, bool patchOnly) const;
 };
