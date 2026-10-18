@@ -52,14 +52,23 @@ FFOsciProcessor::ProcessSample(
   auto const& clip = iter->second;
 
   // todo oversample
-  double speedRatio = clip.sampleRate / (double)sampleRate * FBPitchToFreq(basePitchPlain.Get(0)) / FBPitchToFreq(60.0f);
+  int subBlockSize = 4;
+  float freqC4 = FBPitchToFreq(60.0f);
+  double baseSpeedRatio = clip.sampleRate / (double)sampleRate;
   for (int u = 0; u < _uniCount; u++)
-    _samplerSamplesUsed[u] += _samplerInterpolators[u].process(
-      speedRatio, clip.data.data() + _samplerSamplesUsed[u], 
-      uniOutputOversampled[u].Ptr(0), totalSamples, (int)clip.data.size() - _samplerSamplesUsed[u], 0);
-
-  // todo sample
-  (void)state;
-  (void)basePitchPlain;
-  (void)uniDetunePlain;
+  {
+    for (int block = 0; block < totalSamples / subBlockSize; block++)
+    {
+      int subBlockStart = block * subBlockSize;
+      for (int s = subBlockStart; s < subBlockStart + subBlockSize; s++)
+      {
+        auto uniPitch = basePitchPlain.Get(s);
+        uniPitch += _uniPosMHalfToHalf.Get(u) * uniDetunePlain.Get(s);
+        double speedRatio = baseSpeedRatio * FBPitchToFreq(uniPitch) / freqC4;
+        _samplerSamplesUsed[u] += _samplerInterpolators[u].process(
+          speedRatio, clip.data.data() + _samplerSamplesUsed[u],
+          uniOutputOversampled[u].Ptr(s), subBlockSize, (int)clip.data.size() - _samplerSamplesUsed[u], 0);
+      }
+    }
+  }
 }
