@@ -445,6 +445,7 @@ FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
   hostContext.GUIState()->SetThemeName(dryGUIState.ThemeName());
   hostContext.GUIState()->SetInstanceName(dryGUIState.InstanceName());
   hostContext.SetAudioParamNameOverrides(paramNameOverrides);
+  hostContext.SetGUIAudioClips(guiAudioClips);
 }
 
 var

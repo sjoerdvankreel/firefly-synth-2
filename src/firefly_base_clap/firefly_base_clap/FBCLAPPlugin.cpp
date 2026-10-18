@@ -179,6 +179,7 @@ FBCLAPPlugin(
   std::unique_ptr<FBCLAPExchangeStateQueueBase>&& exchangeStateQueue):
 Plugin(desc, host),
 FBHostGUIContext(std::move(topo)),
+FBHostDSPContext(_topo.get()),
 _audioToMainEvents(FBCLAPSyncEventReserve - 1),
 _mainToAudioEvents(FBCLAPSyncEventReserve - 1),
 _mtsClient(mtsClient),
