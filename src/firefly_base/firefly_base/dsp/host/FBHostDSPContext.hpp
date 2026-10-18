@@ -1,14 +1,14 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
+#include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
+
 #include <memory>
 
-class MTSClient;
 struct FBRuntimeTopo;
-
+class MTSClient;
 class IFBPlugProcessor;
-class FBProcStateContainer;
-class FBExchangeStateContainer;
 
 class FBHostDSPContext
 {
