@@ -179,7 +179,7 @@ FBRuntimeTopo::SavePatchStateToVar(FBScalarStateContainer const& editState, FBHo
   // "patchState" not "patch", thats used by major-minor-patch
   result->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext));
   result->setProperty("patchState", SaveEditStateToVar(editState, true));
-  result->setProperty("guiAudioClips", SaveAudioClipsToVar(hostContext));
+  result->setProperty("guiAudioClips", SaveAudioClipsToVar(hostContext.GetGUIAudioClips()));
   return var(result);
 }
 
@@ -292,7 +292,7 @@ FBRuntimeTopo::LoadPatchStateFromVar(juce::var const& json, FBScalarStateContain
   if (!LoadPatchStateFromVar(json, edit, paramNameOverrides, guiAudioClips))
     return false;
   hostContext.SetAudioParamNameOverrides(paramNameOverrides);
-  hostContext.SetAudioClips(guiAudioClips);
+  hostContext.SetGUIAudioClips(guiAudioClips);
   return true;
 }
 
@@ -331,7 +331,7 @@ FBRuntimeTopo::LoadGUIStateFromVar(
   if (!LoadGUIStateFromVar(json, *hostContext.GUIState(), paramNameOverrides, guiAudioClips))
     return false;
   hostContext.SetAudioParamNameOverrides(paramNameOverrides);
-  hostContext.SetAudioClips(guiAudioClips);
+  hostContext.SetGUIAudioClips(guiAudioClips);
   return true;
 }
 
@@ -362,7 +362,7 @@ FBRuntimeTopo::LoadEditAndGUIStateFromVar(
     if (LoadGUIStateFromVar(obj->getProperty("gui"), *hostContext.GUIState(), paramNameOverrides, guiAudioClips))
     {
       hostContext.SetAudioParamNameOverrides(paramNameOverrides);
-      hostContext.SetAudioClips(guiAudioClips);
+      hostContext.SetGUIAudioClips(guiAudioClips);
     }
   if (obj->hasProperty("edit"))
     return LoadEditStateFromVar(obj->getProperty("edit"), editState, patchOnly);
@@ -396,7 +396,7 @@ FBRuntimeTopo::LoadGUIStateFromStringWithDryRun(
     hostContext.GUIState()->SetThemeName(dryGUIState.ThemeName());
     hostContext.GUIState()->SetInstanceName(dryGUIState.InstanceName());
     hostContext.SetAudioParamNameOverrides(paramNameOverrides);
-    hostContext.SetAudioClips(guiAudioClips);
+    hostContext.SetGUIAudioClips(guiAudioClips);
   }
 }
 
@@ -522,7 +522,7 @@ FBRuntimeTopo::SaveGUIStateToVar(
   result->setProperty("themeName", String(hostContext.GUIState()->ThemeName()));
   result->setProperty("instanceName", String(hostContext.GUIState()->InstanceName()));
   result->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext));
-  result->setProperty("guiAudioClips", SaveAudioClipsToVar(hostContext));
+  result->setProperty("guiAudioClips", SaveAudioClipsToVar(hostContext.GetGUIAudioClips()));
   return var(result);
 }
 

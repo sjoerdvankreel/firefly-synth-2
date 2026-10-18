@@ -112,7 +112,7 @@ FBHostProcessor::ProcessHost(
   auto processBeginTime = std::chrono::high_resolution_clock::now();
 
   _plugIn.bpm = input.bpm;
-  _plugIn.audioClips = &_hostContext->DSPAudioClips();
+  _plugIn.audioClips = &_hostContext->GetDSPAudioClips();
   _plugIn.prevRoundCpuUsage = _prevRoundCpuUsage;
   _plugIn.projectTimeSamples = input.projectTimeSamples;
   _hostContext->PullDSPAudioClipsFromGUI();

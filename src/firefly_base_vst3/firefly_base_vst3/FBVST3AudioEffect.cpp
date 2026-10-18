@@ -295,9 +295,9 @@ FBVST3AudioEffect::PullDSPAudioClipsFromGUI()
   while (_audioClipCommands.try_dequeue(command))
   {
     if (command.clear)
-      DSPAudioClips().erase(command.id);
+      GetDSPAudioClips().erase(command.id);
     else
-      clips[command.id] = FBAudioClip(command.clip);
+      GetDSPAudioClips()[command.id] = FBAudioClip(command.clip);
   }
 }
 
