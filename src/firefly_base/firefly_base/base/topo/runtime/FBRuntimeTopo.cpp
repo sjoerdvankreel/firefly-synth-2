@@ -195,6 +195,16 @@ FBRuntimeTopo::LoadEditStateFromVar(
 }
 
 bool
+FBRuntimeTopo::LoadVST3EditStateFromVar(
+  var const& json, FBScalarStateContainer& editState, bool patchOnly) const
+{
+  // 2.1.7 split root into "proc" and "dspAudioClips"
+  if(!json.hasProperty("proc") || !json.hasProperty("dspAudioClips"))
+    return LoadParamStateFromVar(false, json, editState, audio, patchOnly);
+  return LoadParamStateFromVar(false, json["proc"], editState, audio, patchOnly);
+}
+
+bool
 FBRuntimeTopo::LoadGUIStateFromString(
   std::string const& text, FBHostGUIContext& hostContext) const
 {
@@ -223,6 +233,16 @@ FBRuntimeTopo::LoadEditStateFromString(
   if (!FBParseJson(text, json))
     return false;
   return LoadEditStateFromVar(json, editState, patchOnly);
+}
+
+bool
+FBRuntimeTopo::LoadVST3EditStateFromString(
+  std::string const& text, FBScalarStateContainer& editState, bool patchOnly) const
+{
+  var json;
+  if (!FBParseJson(text, json))
+    return false;
+  return LoadVST3EditStateFromVar(json, editState, patchOnly);
 }
 
 void

@@ -54,6 +54,7 @@ V raw? needs user input. wav, au, aiff etc, need parse headers. another lib? com
 [ ] do mod rate/amt for multitap
 [ ] override all-osci unison
 
+ditch kDistributable and go with SingleComponentEffect
 fix the string oversample bug already
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo
