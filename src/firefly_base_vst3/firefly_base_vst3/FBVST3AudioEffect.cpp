@@ -86,10 +86,12 @@ FBVST3AudioEffect::
 
 FBVST3AudioEffect::
 FBVST3AudioEffect(
-  std::unique_ptr<FBStaticTopo>&& topo, 
+  std::unique_ptr<FBRuntimeTopo>&& topo,
   FUID const& controllerId, MTSClient* mtsClient):
+AudioEffect(),
+FBHostDSPContext(topo.get()),
 _mtsClient(mtsClient),
-_topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
+_topo(std::move(topo)),
 _audioClipCommands(16)
 {
   FB_LOG_ENTRY_EXIT();

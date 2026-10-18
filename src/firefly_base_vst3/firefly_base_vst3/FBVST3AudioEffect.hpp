@@ -48,7 +48,7 @@ public FBHostDSPContext
 public:
   ~FBVST3AudioEffect();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3AudioEffect);
-  FBVST3AudioEffect(std::unique_ptr<FBStaticTopo>&& topo, FUID const& controllerId, MTSClient* mtsClient);
+  FBVST3AudioEffect(std::unique_ptr<FBRuntimeTopo>&& topo, FUID const& controllerId, MTSClient* mtsClient);
   uint32 PLUGIN_API getLatencySamples() override { return FBFixedBlockSamples; }
 
   void PullDSPAudioClipsFromGUI() override;
