@@ -354,9 +354,13 @@ FFOsciProcessor::Process(
   float lastBaseFreq = FBPitchToFreq(basePitchPlain.Get(_oversampleTimes * FBFixedBlockSamples - 1));
   if (exchangeToGUI == nullptr)
   {
-    if (_type == FFOsciType::String)
+    if (_type == FFOsciType::String || _type == FFOsciType::Sample)
     {
-      int graphSamples = FBFreqToSamples(lastBaseFreq, sampleRate) * FFOsciStringGraphRounds;
+      int graphSamples;
+      if (_type == FFOsciType::String)
+        graphSamples = FBFreqToSamples(lastBaseFreq, sampleRate) * FFOsciStringGraphRounds;
+      else
+        graphSamples = FFOsciSamplerGUISampleCount;
       return std::clamp(graphSamples - _graphPosition, 0, FBFixedBlockSamples);
     }
     else

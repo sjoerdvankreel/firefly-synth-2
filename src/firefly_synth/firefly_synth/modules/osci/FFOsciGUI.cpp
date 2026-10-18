@@ -473,7 +473,7 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
   if (clip != nullptr)
   {
     name->setText(clip->name, dontSendNotification);
-    rate->setText(std::to_string(clip->sampleRate), dontSendNotification);
+    rate->setText(std::to_string(clip->originalSampleRate), dontSendNotification);
   }
   else
   {
@@ -488,7 +488,7 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
     if (clip != nullptr)
     {
       newName = clip->name;
-      newRate = std::to_string(clip->sampleRate);
+      newRate = std::to_string(clip->originalSampleRate);
     }
     name->setText(newName, dontSendNotification);
     rate->setText(newRate, dontSendNotification);

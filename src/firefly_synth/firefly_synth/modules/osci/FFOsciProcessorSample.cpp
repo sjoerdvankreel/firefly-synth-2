@@ -42,16 +42,23 @@ FFOsciProcessor::ProcessSample(
   auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
 
   if (!_sampleIsLoaded)
+  {
+    _graphPosition = FFOsciSamplerGUISampleCount;
     return;
+  }
 
   auto const& iter = state.input->audioClips->find(FFOsciSampleSlotIds[state.moduleSlot]);
   if (iter == state.input->audioClips->end())
+  {
+    _graphPosition = FFOsciSamplerGUISampleCount;
     return;
-  auto const& clip = iter->second;
+  }
 
   int subBlockSize = 4;
+  auto const& clip = iter->second;
   float freqC4 = FBPitchToFreq(60.0f);
-  double baseSpeedRatio = clip.sampleRate / ((double)sampleRate * _oversampleTimes);
+  _graphPosition += FBFixedBlockSamples;
+  double baseSpeedRatio = _graph? 1.0: clip.sampleRate / ((double)sampleRate * _oversampleTimes);
   for (int u = 0; u < _uniCount; u++)
     for (int block = 0; block < totalSamples / subBlockSize; block++)
     {
