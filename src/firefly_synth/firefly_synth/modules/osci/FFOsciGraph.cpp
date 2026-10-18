@@ -173,7 +173,7 @@ OsciGraphProcessor::PlotParams(bool /*detailGraphs*/, int /*graphIndex*/) const
   result.sampleCount = samples * rounds;
 
   if (type == FFOsciType::Wave)
-    result.sampleCount = 1000;
+    result.sampleCount = 1000; // todo sampler
 
   return result;
 }
