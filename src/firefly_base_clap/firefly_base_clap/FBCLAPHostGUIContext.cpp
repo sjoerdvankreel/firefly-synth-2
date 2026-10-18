@@ -83,25 +83,23 @@ FBCLAPPlugin::GetAudioParamNameOverride(int index, std::string& name) const
   return true;
 }
 
-void 
+void
 FBCLAPPlugin::ClearDSPAudioClipToDSP(std::string const& id)
 {
-  (void)id;
-  // todo sample
-}
-
-void 
-FBCLAPPlugin::PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
-{
-  (void)id;
-  (void)clip;
-  // todo sample
+  FBCLAPAudioClipCommand command;
+  command.id = id;
+  command.clear = true;
+  _audioClipCommands.enqueue(command);
 }
 
 void
-FBCLAPPlugin::PullDSPAudioClipsFromGUI()
+FBCLAPPlugin::PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
 {
-  // TODO Sample
+  FBCLAPAudioClipCommand command;
+  command.id = id;
+  command.clear = false;
+  command.clip = FBAudioClip(clip);
+  _audioClipCommands.enqueue(command);
 }
 
 double

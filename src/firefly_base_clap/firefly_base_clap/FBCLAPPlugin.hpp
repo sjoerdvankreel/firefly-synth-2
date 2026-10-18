@@ -3,6 +3,7 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base_clap/FBCLAPSyncEvent.hpp>
+#include <firefly_base_clap/FBCLAPUtility.hpp>
 
 #include <clap/helpers/plugin.hh>
 #include <readerwriterqueue.h>
@@ -51,6 +52,7 @@ public FBHostDSPContext
   std::unique_ptr<FBScalarStateContainer> _editState;
   std::map<int, std::string> _audioParamNameOverridesByIndex = {};
   std::unique_ptr<FBCLAPExchangeStateQueueBase> _exchangeStateQueue;
+  moodycamel::ReaderWriterQueue<FBCLAPAudioClipCommand, 16> _audioClipCommands;
 
   float _sampleRate = 0.0f;
   FBHostInputBlock _input = {};

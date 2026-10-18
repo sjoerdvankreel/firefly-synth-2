@@ -21,6 +21,10 @@ inline int constexpr FBVST3MIDIMaxMessages = FBMIDIEvent::MessageCount;
 inline int constexpr FBVST3MIDIMaxMappableParamsGuess = FBVST3MIDIMaxPortsGuess * FBVST3MIDIMaxChannels * FBVST3MIDIMaxMessages;
 inline int constexpr FBVST3MIDIParameterMappingBegin = std::numeric_limits<int>::max() - FBVST3MIDIMaxMappableParamsGuess;
 
+// Duplicated between vst3 and clap.
+// VST3 goes thru the host queue first, is received by the processor (on the gui thread no less),
+// then pushed from processor "gui" to processor realtime.
+// CLAP skips the host queue (IMessage).
 struct FBVST3AudioClipCommand
 {
   bool clear = {};

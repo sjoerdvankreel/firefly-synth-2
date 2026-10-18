@@ -184,7 +184,8 @@ _mainToAudioEvents(FBCLAPSyncEventReserve - 1),
 _mtsClient(mtsClient),
 _gui(),
 _editState(std::make_unique<FBScalarStateContainer>(*_topo)),
-_exchangeStateQueue(std::move(exchangeStateQueue))
+_exchangeStateQueue(std::move(exchangeStateQueue)),
+_audioClipCommands(16)
 {
   FB_LOG_ENTRY_EXIT();
 }

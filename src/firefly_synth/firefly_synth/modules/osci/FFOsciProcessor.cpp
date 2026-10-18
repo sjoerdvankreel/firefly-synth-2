@@ -62,9 +62,6 @@ FFOsciProcessor::AllocOnDemandBuffers(
   if(graph || type == FFOsciType::String)
     for (int i = 0; i < (graph? FFOsciUniMaxCount: uniCount); i++)
       _stringUniState[i].delayLine.AllocBuffersIfChanged(state->MemoryPool(), maxDelayLineSize);
-
-  // TODO Sample
-  // im pretty sure we need on demand buffers here
 }
 
 void
