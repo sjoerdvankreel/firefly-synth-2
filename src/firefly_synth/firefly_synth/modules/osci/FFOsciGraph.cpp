@@ -166,11 +166,15 @@ OsciGraphProcessor::PlotParams(bool /*detailGraphs*/, int /*graphIndex*/) const
   float pitch = 60.0f + static_cast<float>(state->AudioParamLinear(indices, false, -1));
   pitch += state->AudioParamLinear({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Fine, 0 } }, false, -1);
   auto type = state->AudioParamList<FFOsciType>({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Type, 0 } }, false, -1);
-  int rounds = type == FFOsciType::String? FFOsciStringGraphRounds : 1; // TODO SAMPLE
+  int rounds = type == FFOsciType::String? FFOsciStringGraphRounds : 1;
 
   auto freq = FBPitchToFreq(pitch);
   auto samples = FBFreqToSamples(freq, sampleRate);
   result.sampleCount = samples * rounds;
+
+  if (type == FFOsciType::Wave)
+    result.sampleCount = 1000;
+
   return result;
 }
 

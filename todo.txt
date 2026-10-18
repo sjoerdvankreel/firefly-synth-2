@@ -8,6 +8,7 @@ V do we stereo merge? select channel? osci is mono -> just only mono support
 V want 16/24/32 bit, need lib for convert ? or do naive -> libsndfile
 V raw? needs user input. wav, au, aiff etc, need parse headers. another lib? compressed -- not a chance, not even lossless 
 - get rid of reload session/patch
+- shrink the gui side clip
 - do we need clips ptr in the procstate ?
 - do all formats that juce supports + stereo merge
 - drop libsndfile https://forum.juce.com/t/reading-a-wav-file-into-an-array-of-samples/47449/4 
