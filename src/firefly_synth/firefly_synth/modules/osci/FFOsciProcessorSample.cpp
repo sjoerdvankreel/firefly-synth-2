@@ -21,6 +21,7 @@ FFOsciProcessor::BeginVoiceSample(
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
   float sampleIsLoadedNorm = params.block.sampleIsLoaded[0].Voice()[voice];
   _sampleIsLoaded = topo.NormalizedToBoolFast(FFOsciParam::SampleIsLoaded, sampleIsLoadedNorm);
+  _samplePosition = 0;
 }
 
 void 
@@ -29,7 +30,24 @@ FFOsciProcessor::ProcessSample(
   FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
   FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain)
 {
-  state.
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto& voiceState = procState->dsp.voice[voice];
+  auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
+
+  if (!_sampleIsLoaded)
+    return;
+  auto const& iter = state.input->audioClips->find(FFOsciSampleSlotIds[state.moduleSlot]);
+  if (iter == state.input->audioClips->end())
+    return;
+  auto const& clip = iter->second;
+
+  // todo oversample
+  int s = 0;
+  for (; _samplePosition < clip.data.size(); _samplePosition++, s++)
+    for (int u = 0; u < _uniCount; u++)
+      uniOutputOversampled[u].Set(s, clip.data[_samplePosition]);
+
   // todo sample
   (void)state;
   (void)basePitchPlain;

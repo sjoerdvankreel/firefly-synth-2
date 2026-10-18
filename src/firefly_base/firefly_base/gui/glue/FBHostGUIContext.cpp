@@ -75,7 +75,7 @@ void
 FBHostGUIContext::SetAudioClip(std::string const& id, FBAudioClip const& clip)
 {
   _undoState.Clear();
-  _audioClips[id] = clip;
+  _audioClips[id] = FBAudioClip(clip);
   OnAudioClipsChanged();
 }
 

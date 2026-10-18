@@ -7,6 +7,9 @@ V get all the undo state & friends right -- just clear undo after sample load
 V do we stereo merge? select channel? osci is mono -> just only mono support
 V want 16/24/32 bit, need lib for convert ? or do naive -> libsndfile
 V raw? needs user input. wav, au, aiff etc, need parse headers. another lib? compressed -- not a chance, not even lossless 
+- rename guiAudioClips
+- check what oversampling does to audio in (and sample)
+- check what fm/rm/am does to audio in (and sample)
 - review the whole thing
 - graphs + all unison & change pitch etc
 - update the docs

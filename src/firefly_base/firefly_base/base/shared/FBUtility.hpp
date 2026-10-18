@@ -73,6 +73,7 @@ inline int const FBDefaultDisplayPrecision = 3;
 
 struct FBAudioClip
 {
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBAudioClip);
   std::string name = {};
   std::int32_t channels = {};
   std::int32_t sampleRate = {};
