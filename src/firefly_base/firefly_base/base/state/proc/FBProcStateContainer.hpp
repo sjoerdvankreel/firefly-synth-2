@@ -31,11 +31,20 @@ class FBProcStateContainer final
   FBNoteMatrix<FBGlobalAccParamState> _noteMatrixSmth = {};
   std::array<FBGlobalAccParamState, FBMIDIEvent::MessageCount> _midiParams = {};
 
+  // Also very VST3-centric.
+  // We keep a copy of an audio clip on both the processor side and the controller side.
+  // Controller side is a very slimmed down version (1000 samples or so -- small).
+  // It's either that or i ditch kDistributable and go with SingleComponentEffect
+  // like everyone else does it. But, bit late to do that now.
+  // Non-owning pointer! On the GUI side it comes from HostGUIContext.
+  // On the DSP side it comes from the HostDSPContext.
+  std::map<std::string, FBAudioClip> const* const _audioClips;
+
   void InitProcessing(int index, int voice, float value);
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBProcStateContainer);
-  FBProcStateContainer(FBRuntimeTopo const& topo);
+  FBProcStateContainer(FBRuntimeTopo const& topo, std::map<std::string, FBAudioClip> const* audioClips);
   ~FBProcStateContainer() { _freeRawState(_rawState); }
 
   void SetSmoothingCoeffs(int sampleCount);
@@ -52,6 +61,7 @@ public:
   FBMemoryPool* MemoryPool() { return &_memoryPool; }
   std::vector<FBProcParamState>& Params() { return _params; }
   std::vector<FBProcParamState> const& Params() const { return _params; }
+  std::map<std::string, FBAudioClip> const& AudioClips() const { return *_audioClips; }
   FBNoteMatrix<FBGlobalAccParamState>& NoteMatrixSmth() { return _noteMatrixSmth; }
   FBNoteMatrix<FBGlobalAccParamState> const& NoteMatrixSmth() const { return _noteMatrixSmth; }
   std::array<FBGlobalAccParamState, FBMIDIEvent::MessageCount>& MIDIParams() { return _midiParams; }

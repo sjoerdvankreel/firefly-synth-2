@@ -41,58 +41,58 @@ FBHostGUIContext::GetAudioParamNameOverrides() const
 }
 
 std::map<std::string, FBAudioClip> const& 
-FBHostGUIContext::GetAudioClips() const
+FBHostGUIContext::GUIAudioClips() const
 {
-  return _audioClips;
+  return _guiAudioClips;
 }
 
 FBAudioClip const* 
-FBHostGUIContext::FindAudioClip(std::string const& id) const
+FBHostGUIContext::FindGUIAudioClip(std::string const& id) const
 {
-  auto iter = _audioClips.find(id);
-  if (iter == _audioClips.end())
+  auto iter = _guiAudioClips.find(id);
+  if (iter == _guiAudioClips.end())
     return nullptr;
   return &iter->second;
 }
 
 void 
-FBHostGUIContext::ClearAudioClips()
+FBHostGUIContext::ClearGUIAudioClips()
 {
   _undoState.Clear();
-  for (auto const& kv : _audioClips)
+  for (auto const& kv : _guiAudioClips)
     ClearAudioClipToDSP(kv.first);
-  _audioClips.clear();
-  OnAudioClipsChanged();
+  _guiAudioClips.clear();
+  OnGUIAudioClipsChanged();
 }
 
 void 
-FBHostGUIContext::RemoveAudioClip(std::string const& id)
+FBHostGUIContext::RemoveGUIAudioClip(std::string const& id)
 { 
   _undoState.Clear();
   ClearAudioClipToDSP(id);
-  _audioClips.erase(id);
-  OnAudioClipsChanged();
+  _guiAudioClips.erase(id);
+  OnGUIAudioClipsChanged();
 }
 
 void
-FBHostGUIContext::SetAudioClip(std::string const& id, FBAudioClip const& clip)
+FBHostGUIContext::SetGUIAudioClip(std::string const& id, FBAudioClip const& clip)
 {
   _undoState.Clear();
-  _audioClips[id] = FBAudioClip(clip);
+  _guiAudioClips[id] = FBAudioClip(clip);
   PushAudioClipToDSP(id, clip);
-  OnAudioClipsChanged();
+  OnGUIAudioClipsChanged();
 }
 
 void 
-FBHostGUIContext::SetAudioClips(std::map<std::string, FBAudioClip> const& clips) 
+FBHostGUIContext::SetGUIAudioClips(std::map<std::string, FBAudioClip> const& clips) 
 { 
   _undoState.Clear();
-  for (auto const& kv : _audioClips)
+  for (auto const& kv : _guiAudioClips)
     ClearAudioClipToDSP(kv.first);
-  _audioClips = clips;
-  for (auto const& kv : _audioClips)
+  _guiAudioClips = clips;
+  for (auto const& kv : _guiAudioClips)
     PushAudioClipToDSP(kv.first, kv.second);
-  OnAudioClipsChanged();
+  OnGUIAudioClipsChanged();
 }
 
 void 
@@ -107,7 +107,7 @@ void
 FBHostGUIContext::RevertPatchToPatchState()
 {
   _patchState.CopyTo(this, true);
-  SetAudioClips(_patchAudioClips);
+  SetGUIAudioClips(_patchGUIAudioClips);
   SetAudioParamNameOverrides(_patchParamNameOverridesByIndex);
 }
 
@@ -115,7 +115,7 @@ void
 FBHostGUIContext::RevertPatchToSessionState()
 {
   _sessionState.CopyTo(this, true);
-  SetAudioClips(_sessionAudioClips);
+  SetGUIAudioClips(_sessionGUIAudioClips);
   SetAudioParamNameOverrides(_sessionParamNameOverridesByIndex);
 }
 
@@ -123,7 +123,7 @@ void
 FBHostGUIContext::MarkPatchAsSessionState()
 {
   _sessionState.CopyFrom(this, true);
-  _sessionAudioClips = GetAudioClips();
+  _sessionGUIAudioClips = GetGUIAudioClips();
   _sessionParamNameOverridesByIndex = GetAudioParamNameOverrides();
 }
 
@@ -131,7 +131,7 @@ void
 FBHostGUIContext::MarkPatchAsPatchState(std::string const& patchName)
 {
   _patchState.CopyFrom(this, true);
-  _patchAudioClips = GetAudioClips();
+  _patchGUIAudioClips = GetGUIAudioClips();
   _patchParamNameOverridesByIndex = GetAudioParamNameOverrides();
   _isPatchLoaded = true;
   OnPatchLoaded();
@@ -171,10 +171,10 @@ FBHostGUIContext::OnPatchNameChanged()
 }
 
 void
-FBHostGUIContext::OnAudioClipsChanged()
+FBHostGUIContext::OnGUIAudioClipsChanged()
 {
   for (int i = 0; i < _listeners.size(); i++)
-    _listeners[i]->OnAudioClipsChanged();
+    _listeners[i]->OnGUIAudioClipsChanged();
 }
 
 void

@@ -155,7 +155,7 @@ FBVST3EditController::SetAudioParamNameOverride(int index, std::string const& na
 }
 
 void 
-FBVST3EditController::ClearAudioClipToDSP(std::string const& id)
+FBVST3EditController::ClearDSPAudioClipToDSP(std::string const& id)
 {
   IMessage* message = allocateMessage();
   if (!message)
@@ -169,7 +169,7 @@ FBVST3EditController::ClearAudioClipToDSP(std::string const& id)
 }
 
 void 
-FBVST3EditController::PushAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
+FBVST3EditController::PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
 {
   IMessage* message = allocateMessage();
   if (!message) 
@@ -268,7 +268,7 @@ FBVST3EditController::setState(IBStream* state)
     _topo->LoadGUIStateFromStringWithDryRun(json, *this);
     OnPatchNameChanged();
     OnInstanceNameChanged();    
-    OnAudioClipsChanged();
+    OnGUIAudioClipsChanged();
     if(_guiEditor != nullptr)
       for (int i = 0; i < _guiState->Params().size(); i++)
         _guiEditor->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));      

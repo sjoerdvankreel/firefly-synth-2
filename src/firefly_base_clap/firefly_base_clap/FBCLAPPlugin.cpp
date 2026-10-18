@@ -183,9 +183,7 @@ _audioToMainEvents(FBCLAPSyncEventReserve - 1),
 _mainToAudioEvents(FBCLAPSyncEventReserve - 1),
 _mtsClient(mtsClient),
 _gui(),
-_procState(std::make_unique<FBProcStateContainer>(*_topo)),
 _editState(std::make_unique<FBScalarStateContainer>(*_topo)),
-_exchangeToGUIState(std::make_unique<FBExchangeStateContainer>(*_topo)),
 _exchangeStateQueue(std::move(exchangeStateQueue))
 {
   FB_LOG_ENTRY_EXIT();
@@ -299,7 +297,7 @@ FBCLAPPlugin::ProcessMainToAudioEvents(
       if (pushToProcBlock)
         PushParamChangeToProcessorBlock(uiEvent.paramIndex, uiEvent.normalized, 0);
       else
-        _procState->InitProcessing(uiEvent.paramIndex, uiEvent.normalized);
+        ProcState()->InitProcessing(uiEvent.paramIndex, uiEvent.normalized);
       break;
     default:
       FB_ASSERT(false);
@@ -429,7 +427,7 @@ FBCLAPPlugin::process(
     }
 
     _hostProcessor->ProcessHost(_input, _output);
-    _exchangeStateQueue->TryEnqueue(_exchangeToGUIState->Raw());
+    _exchangeStateQueue->TryEnqueue(ExchangeToGUIState()->Raw());
 
     for (auto const& op : _output.outputParams)
       _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(op.param, op.normalized));

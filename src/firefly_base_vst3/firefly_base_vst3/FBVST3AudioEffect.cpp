@@ -90,8 +90,6 @@ FBVST3AudioEffect(
   FUID const& controllerId, MTSClient* mtsClient):
 _mtsClient(mtsClient),
 _topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
-_procState(std::make_unique<FBProcStateContainer>(*_topo)),
-_exchangeState(std::make_unique<FBExchangeStateContainer>(*_topo)),
 _audioClipCommands(16)
 {
   FB_LOG_ENTRY_EXIT();
@@ -124,7 +122,7 @@ FBVST3AudioEffect::getState(IBStream* state)
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, state]()
   {
-    std::string json = _topo->SaveProcStateToString(*_procState, false);
+    std::string json = _topo->SaveProcStateToString(*ProcState(), false);
     if (!FBVST3SaveIBStream(state, json))
       return kResultFalse;
     return kResultOk;
@@ -140,7 +138,7 @@ FBVST3AudioEffect::setState(IBStream* state)
     std::string json;
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
-    _topo->LoadProcStateFromStringWithDryRun(json, *_procState, false);
+    _topo->LoadProcStateFromStringWithDryRun(json, *ProcState(), false);
     return kResultOk;
   });
 }
@@ -291,14 +289,13 @@ FBVST3AudioEffect::notify(IMessage* message)
 }
 
 void
-FBVST3AudioEffect::UpdateAudioClipsFromGUI(std::map<std::string, FBAudioClip>& clips)
+FBVST3AudioEffect::PullDSPAudioClipsFromGUI()
 {
-  (void)clips;
   FBVST3AudioClipCommand command;
   while (_audioClipCommands.try_dequeue(command))
   {
     if (command.clear)
-      clips.erase(command.id);
+      DSPAudioClips().erase(command.id);
     else
       clips[command.id] = FBAudioClip(command.clip);
   }
@@ -407,7 +404,7 @@ FBVST3AudioEffect::process(ProcessData& data)
 
     if (_exchangeBlock.blockID != InvalidDataExchangeBlockID)
     {
-      memcpy(_exchangeBlock.data, _exchangeState->Raw(), _exchangeBlock.size);
+      memcpy(_exchangeBlock.data, ExchangeToGUIState()->Raw(), _exchangeBlock.size);
       _exchangeHandler->sendCurrentBlock();
       _exchangeBlock = _exchangeHandler->getCurrentOrNewBlock();
     }

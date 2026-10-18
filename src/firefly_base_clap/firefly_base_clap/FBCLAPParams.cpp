@@ -90,7 +90,7 @@ FBCLAPPlugin::paramsFlush(
         continue;
       if (isProcessing())
       {
-        _procState->InitProcessing(index, static_cast<float>(event->value));
+        ProcState()->InitProcessing(index, static_cast<float>(event->value));
         _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(index, event->value));
       }
       else

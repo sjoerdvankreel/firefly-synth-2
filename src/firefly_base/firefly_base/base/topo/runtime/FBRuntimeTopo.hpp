@@ -25,8 +25,8 @@ private:
   bool LoadParamStateFromVar(bool isGuiState, juce::var const& json, TContainer& container, TParamsTopo& params, bool patchOnly) const;
 
   juce::var SaveGUIStateToVar(FBHostGUIContext const& hostContext) const;
-  juce::var SaveAudioClipsToVar(FBHostGUIContext const& hostContext) const;
   juce::var SaveParamNameOverridesToVar(FBHostGUIContext const& hostContext) const;
+  juce::var SaveAudioClipsToVar(std::map<std::string, FBAudioClip> const& audioClips) const;
   juce::var SaveProcStateToVar(FBProcStateContainer const& procState, bool patchOnly) const;
   juce::var SaveEditStateToVar(FBScalarStateContainer const& editState, bool patchOnly) const;
   juce::var SavePatchStateToVar(FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext) const;

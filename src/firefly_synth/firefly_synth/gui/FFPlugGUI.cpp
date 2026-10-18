@@ -118,10 +118,10 @@ FFPlugGUI::OnPatchLoaded()
 }
 
 void
-FFPlugGUI::OnAudioClipsChanged()
+FFPlugGUI::OnGUIAudioClipsChanged()
 {
-  FBPlugGUI::OnAudioClipsChanged();
-  for (auto const& kv : onAudioClipsChanged)
+  FBPlugGUI::OnGUIAudioClipsChanged();
+  for (auto const& kv : onGUIAudioClipsChanged)
     kv.second();
 }
 

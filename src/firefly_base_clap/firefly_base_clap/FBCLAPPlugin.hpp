@@ -32,7 +32,7 @@ class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
 public juce::Timer,
 public FBHostGUIContext,
-public IFBHostDSPContext
+public FBHostDSPContext
 {
 #if _MSC_VER
 #pragma warning(push)
@@ -48,10 +48,8 @@ public IFBHostDSPContext
 
   MTSClient* const _mtsClient;
   std::unique_ptr<FBPlugGUIContext> _gui;
-  std::unique_ptr<FBProcStateContainer> _procState;
   std::unique_ptr<FBScalarStateContainer> _editState;
   std::map<int, std::string> _audioParamNameOverridesByIndex = {};
-  std::unique_ptr<FBExchangeStateContainer> _exchangeToGUIState;
   std::unique_ptr<FBCLAPExchangeStateQueueBase> _exchangeStateQueue;
 
   float _sampleRate = 0.0f;
@@ -109,12 +107,10 @@ public:
   bool guiGetResizeHints(clap_gui_resize_hints_t* hints) noexcept override;
   bool guiIsApiSupported(const char* api, bool isFloating) noexcept override;
 
+  void PullDSPAudioClipsFromGUI() override;
   float SampleRate() const override { return _sampleRate; }
   MTSClient* GetMTSClient() override { return _mtsClient; }
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
-  FBProcStateContainer* ProcState() override { return _procState.get(); }
-  FBExchangeStateContainer* ExchangeToGUIState() override { return _exchangeToGUIState.get(); } 
-  void UpdateAudioClipsFromGUI(std::map<std::string, FBAudioClip>& clips) override;
 
   void NotifyHostOfParamNameChanges() override;
   void ClearAudioParamNameOverrides() override;
@@ -122,8 +118,8 @@ public:
   bool GetAudioParamNameOverride(int index, std::string& name) const override;
   void SetAudioParamNameOverride(int index, std::string const& name) override;
 
-  void ClearAudioClipToDSP(std::string const& id) override;
-  void PushAudioClipToDSP(std::string const& id, FBAudioClip const& clip) override;
+  void ClearDSPAudioClipToDSP(std::string const& id) override;
+  void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip) override;
 
   double GetAudioParamNormalized(int index) const override;
   void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;

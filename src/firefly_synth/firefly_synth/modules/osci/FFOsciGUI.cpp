@@ -422,7 +422,7 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
           .withParentComponent(plugGUI), [](int) {});
         return;
       }
-      plugGUI->HostContext()->SetAudioClip(FFOsciSampleSlotIds[moduleSlot], clip);
+      plugGUI->HostContext()->SetGUIAudioClip(FFOsciSampleSlotIds[moduleSlot], clip);
       plugGUI->HostContext()->SetAudioParamBool({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleIsLoaded, 0 } }, true);
     });
   };
@@ -431,7 +431,7 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
   auto clear = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Clear");
   clear->setTooltip("Clear Sample");
   clear->onClick = [plugGUI, moduleSlot]() {
-    plugGUI->HostContext()->RemoveAudioClip(FFOsciSampleSlotIds[moduleSlot]);
+    plugGUI->HostContext()->RemoveGUIAudioClip(FFOsciSampleSlotIds[moduleSlot]);
     plugGUI->HostContext()->SetAudioParamBool({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleIsLoaded, 0 } }, false);
   };
   grid->Add(0, 1, clear);
@@ -450,7 +450,7 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
   rateGrid->Add(0, 1, rate);
   grid->Add(2, 0, 1, 2, rateGrid);
 
-  auto clip = plugGUI->HostContext()->FindAudioClip(FFOsciSampleSlotIds[moduleSlot]);
+  auto clip = plugGUI->HostContext()->FindGUIAudioClip(FFOsciSampleSlotIds[moduleSlot]);
   if (clip != nullptr)
   {
     name->setText(clip->name, dontSendNotification);
@@ -462,10 +462,10 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
     rate->setText("", dontSendNotification);
   }
 
-  plugGUI->onAudioClipsChanged[FFOsciSampleSlotIds[moduleSlot]] = [plugGUI, name, rate, moduleSlot]() {
+  plugGUI->onGUIAudioClipsChanged[FFOsciSampleSlotIds[moduleSlot]] = [plugGUI, name, rate, moduleSlot]() {
     std::string newName = "No Sample Loaded";
     std::string newRate = "";
-    auto clip = plugGUI->HostContext()->FindAudioClip(FFOsciSampleSlotIds[moduleSlot]);
+    auto clip = plugGUI->HostContext()->FindGUIAudioClip(FFOsciSampleSlotIds[moduleSlot]);
     if (clip != nullptr)
     {
       newName = clip->name;

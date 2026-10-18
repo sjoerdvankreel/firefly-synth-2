@@ -421,10 +421,10 @@ FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
 }
 
 var
-FBRuntimeTopo::SaveAudioClipsToVar(FBHostGUIContext const& hostContext) const
+FBRuntimeTopo::SaveAudioClipsToVar(std::map<std::string, FBAudioClip> const& audioClips) const
 {
   DynamicObject* result = new DynamicObject;
-  for (auto const& kv : hostContext.GetAudioClips())
+  for (auto const& kv : audioClips)
   {
     DynamicObject* clip = new DynamicObject;
     clip->setProperty("name", String(kv.second.name));

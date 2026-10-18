@@ -30,12 +30,10 @@ class FBExchangeStateContainer;
 
 class FBVST3AudioEffect:
 public AudioEffect,
-public IFBHostDSPContext
+public FBHostDSPContext
 {
   MTSClient* _mtsClient;
   std::unique_ptr<FBRuntimeTopo> _topo;
-  std::unique_ptr<FBProcStateContainer> _procState;
-  std::unique_ptr<FBExchangeStateContainer> _exchangeState;
 
   float _sampleRate = 0.0f;
   FBHostInputBlock _input = {};
@@ -53,12 +51,10 @@ public:
   FBVST3AudioEffect(std::unique_ptr<FBStaticTopo>&& topo, FUID const& controllerId, MTSClient* mtsClient);
   uint32 PLUGIN_API getLatencySamples() override { return FBFixedBlockSamples; }
 
+  void PullDSPAudioClipsFromGUI() override;
   float SampleRate() const override { return _sampleRate; }
   MTSClient* GetMTSClient() override { return _mtsClient; }
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
-  FBProcStateContainer* ProcState() override { return _procState.get(); }
-  FBExchangeStateContainer* ExchangeToGUIState() override { return _exchangeState.get(); }
-  void UpdateAudioClipsFromGUI(std::map<std::string, FBAudioClip>& clips) override;
 
   tresult PLUGIN_API setActive(TBool state) override;
   tresult PLUGIN_API setState(IBStream* state) override;

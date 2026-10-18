@@ -60,8 +60,8 @@ public:
   bool GetAudioParamNameOverride(int index, std::string& name) const override;
   void SetAudioParamNameOverride(int index, std::string const& name) override;
 
-  void ClearAudioClipToDSP(std::string const& id) override;
-  void PushAudioClipToDSP(std::string const& id, FBAudioClip const& clip) override;
+  void ClearDSPAudioClipToDSP(std::string const& id) override;
+  void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip) override;
 
   double GetAudioParamNormalized(int index) const override;
   void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;

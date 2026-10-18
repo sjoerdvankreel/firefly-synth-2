@@ -103,7 +103,7 @@ public:
   std::function<void()> onPatchLoaded = {};
   std::function<void(std::string const&)> onPatchNameChanged = {};
   std::function<void(std::string const&)> onInstanceNameChanged = {};
-  std::map<std::string, std::function<void()>> onAudioClipsChanged = {};
+  std::map<std::string, std::function<void()>> onGUIAudioClipsChanged = {};
 
   ~FFPlugGUI();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
@@ -118,7 +118,7 @@ public:
   void resized() override;  
   void OnPatchLoaded() override;
   void RequestGUIReset() override;
-  void OnAudioClipsChanged() override;
+  void OnGUIAudioClipsChanged() override;
   void OnPatchNameChanged(std::string const& name) override;
   void OnInstanceNameChanged(std::string const& name) override;
 
