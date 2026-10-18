@@ -43,8 +43,6 @@ FFOsciProcessor::ProcessSample(
 
   if (!_sampleIsLoaded)
     return;
-  if (_graph)
-    return; // todo sample
 
   auto const& iter = state.input->audioClips->find(FFOsciSampleSlotIds[state.moduleSlot]);
   if (iter == state.input->audioClips->end())

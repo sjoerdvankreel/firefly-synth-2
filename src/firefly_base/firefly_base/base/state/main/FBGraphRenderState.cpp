@@ -40,6 +40,7 @@ _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
   _input->noteEvents = &_noteEvents;
   _input->procState = _procState.get();
   _input->noteMatrixRaw = &_noteMatrixRaw;
+  _input->audioClips = &plugGUI->HostContext()->GetGUIAudioClips();
 
   auto hostContext = plugGUI->HostContext();
   for (int i = 0; i < hostContext->Topo()->audio.params.size(); i++)
