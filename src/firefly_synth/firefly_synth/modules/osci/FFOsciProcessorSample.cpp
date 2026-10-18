@@ -21,7 +21,11 @@ FFOsciProcessor::BeginVoiceSample(
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
   float sampleIsLoadedNorm = params.block.sampleIsLoaded[0].Voice()[voice];
   _sampleIsLoaded = topo.NormalizedToBoolFast(FFOsciParam::SampleIsLoaded, sampleIsLoadedNorm);
-  _samplePosition = 0;
+  for (int i = 0; i < _uniCount; i++)
+  {
+    _samplerSamplesUsed[i] = 0;
+    _samplerInterpolators[i].reset();
+  }
 }
 
 void 
@@ -31,6 +35,7 @@ FFOsciProcessor::ProcessSample(
   FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain)
 {
   int voice = state.voice->slot;
+  float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
@@ -47,10 +52,11 @@ FFOsciProcessor::ProcessSample(
   auto const& clip = iter->second;
 
   // todo oversample
-  int s = 0;
-  for (; _samplePosition < clip.data.size() && s < totalSamples; _samplePosition++, s++)
-    for (int u = 0; u < _uniCount; u++)
-      uniOutputOversampled[u].Set(s, clip.data[_samplePosition]);
+  double speedRatio = clip.sampleRate / (double)sampleRate * FBPitchToFreq(basePitchPlain.Get(0)) / FBPitchToFreq(60.0f);
+  for (int u = 0; u < _uniCount; u++)
+    _samplerSamplesUsed[u] += _samplerInterpolators[u].process(
+      speedRatio, clip.data.data() + _samplerSamplesUsed[u], 
+      uniOutputOversampled[u].Ptr(0), totalSamples, (int)clip.data.size() - _samplerSamplesUsed[u], 0);
 
   // todo sample
   (void)state;

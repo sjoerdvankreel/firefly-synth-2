@@ -103,7 +103,8 @@ class FFOsciProcessor final
   juce::dsp::AudioBlock<float> _downsampledBlock = {};
   std::array<float*, FFOsciUniMaxCount> _downsampledChannelPtrs = {};
 
-  int _samplePosition = {};
+  std::array<int, FFOsciUniMaxCount> _samplerSamplesUsed = {};
+  std::array<juce::LagrangeInterpolator, FFOsciUniMaxCount> _samplerInterpolators = {};
 
   FFStateVariableFilter<1> _audioInLPFilter = {};
   FFStateVariableFilter<1> _audioInHPFilter = {};
