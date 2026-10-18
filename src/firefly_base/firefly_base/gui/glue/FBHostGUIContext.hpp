@@ -86,12 +86,13 @@ protected:
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
 
 public:
-  void ClearGUIAudioClips();
-  void RemoveGUIAudioClip(std::string const& id);
   FBAudioClip const* FindGUIAudioClip(std::string const& id) const;
   std::map<std::string, FBAudioClip> const& GetGUIAudioClips() const;
-  void SetGUIAudioClip(std::string const& id, FBAudioClip const& clip);
   void SetGUIAudioClips(std::map<std::string, FBAudioClip> const& clips);
+
+  void ClearGUIAndDSPAudioClips();
+  void RemoveGUIAndDSPAudioClip(std::string const& id);
+  void SetGUIAndDSPAudioClip(std::string const& id, FBAudioClip const& guiClip, FBAudioClip const& dspClip);
 
   // TODO Sampler
   virtual void ClearDSPAudioClipToDSP(std::string const& id) = 0;

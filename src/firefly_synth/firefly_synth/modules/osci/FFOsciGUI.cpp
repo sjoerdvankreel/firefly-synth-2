@@ -22,6 +22,8 @@
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
 
+#include <juce_dsp/juce_dsp.h>
+
 using namespace juce;
 
 FFOsciParamListener::
@@ -401,8 +403,8 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
     plugGUI->LoadAnyFile("Load Sample", "wav", "Wav Files", [plugGUI, moduleSlot](juce::File const& file) {
       if (!file.exists())
         return;
-      FBAudioClip clip;
-      if (!FBAudioFileRead(file.getFullPathName().toStdString(), clip))
+      FBAudioClip dspClip;
+      if (!FBAudioFileRead(file.getFullPathName().toStdString(), dspClip))
       {
         AlertWindow::showAsync(MessageBoxOptions()
           .withIconType(MessageBoxIconType::WarningIcon)
@@ -412,7 +414,7 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
           .withParentComponent(plugGUI), [](int) {});
         return;
       }
-      if (clip.channels != 1)
+      if (dspClip.channels != 1) // todo sampler
       {
         AlertWindow::showAsync(MessageBoxOptions()
           .withIconType(MessageBoxIconType::WarningIcon)
@@ -422,7 +424,24 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
           .withParentComponent(plugGUI), [](int) {});
         return;
       }
-      plugGUI->HostContext()->SetGUIAudioClip(FFOsciSampleSlotIds[moduleSlot], clip);
+      
+      FBAudioClip guiClip;
+      guiClip.name = dspClip.name;
+      guiClip.channels = dspClip.channels;
+      guiClip.sampleRate = dspClip.sampleRate;
+      guiClip.originalSampleRate = dspClip.originalSampleRate;
+
+      if (dspClip.data.size() <= FFOsciSamplerGUISampleCount)
+        guiClip.data = dspClip.data;
+      else
+      {
+        juce::LagrangeInterpolator resampler;
+        guiClip.data.resize(FFOsciSamplerGUISampleCount);
+        double speedRatio = dspClip.data.size() / (double)FFOsciSamplerGUISampleCount;
+        guiClip.sampleRate = (int)(dspClip.sampleRate / speedRatio);
+        resampler.process(speedRatio, dspClip.data.data(), guiClip.data.data(), FFOsciSamplerGUISampleCount);
+      }
+      plugGUI->HostContext()->SetGUIAndDSPAudioClip(FFOsciSampleSlotIds[moduleSlot], guiClip, dspClip);
       plugGUI->HostContext()->SetAudioParamBool({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleIsLoaded, 0 } }, true);
     });
   };
@@ -431,7 +450,7 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
   auto clear = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Clear");
   clear->setTooltip("Clear Sample");
   clear->onClick = [plugGUI, moduleSlot]() {
-    plugGUI->HostContext()->RemoveGUIAudioClip(FFOsciSampleSlotIds[moduleSlot]);
+    plugGUI->HostContext()->RemoveGUIAndDSPAudioClip(FFOsciSampleSlotIds[moduleSlot]);
     plugGUI->HostContext()->SetAudioParamBool({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleIsLoaded, 0 } }, false);
   };
   grid->Add(0, 1, clear);

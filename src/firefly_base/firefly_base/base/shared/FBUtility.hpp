@@ -77,6 +77,7 @@ struct FBAudioClip
   std::string name = {};
   std::int32_t channels = {};
   std::int32_t sampleRate = {};
+  std::int32_t originalSampleRate = {};
   std::vector<float> data = {};
 };
 

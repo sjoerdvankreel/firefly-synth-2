@@ -430,6 +430,7 @@ FBRuntimeTopo::SaveAudioClipsToVar(std::map<std::string, FBAudioClip> const& aud
     clip->setProperty("name", String(kv.second.name));
     clip->setProperty("channels", (int)kv.second.channels);
     clip->setProperty("sampleRate", (int)kv.second.sampleRate);
+    clip->setProperty("originalSampleRate", (int)kv.second.originalSampleRate);
     clip->setProperty("data", Base64::toBase64(kv.second.data.data(), kv.second.data.size() * sizeof(kv.second.data[0])));
     result->setProperty(String(kv.first), var(clip));
   }
@@ -457,6 +458,9 @@ FBRuntimeTopo::LoadAudioClipsFromVar(juce::var const& json, std::map<std::string
     if (!clipJson.hasProperty("sampleRate") || !clipJson["sampleRate"].isInt())
       return false;
     clip.sampleRate = (int)clipJson["sampleRate"];
+    if (!clipJson.hasProperty("originalSampleRate") || !clipJson["originalSampleRate"].isInt())
+      return false;
+    clip.originalSampleRate = (int)clipJson["originalSampleRate"];
     if (!clipJson.hasProperty("data") || !clipJson["data"].isString())
       return false;
     MemoryOutputStream stream;
