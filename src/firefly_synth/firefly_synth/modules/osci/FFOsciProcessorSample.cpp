@@ -51,10 +51,9 @@ FFOsciProcessor::ProcessSample(
     return;
   auto const& clip = iter->second;
 
-  // todo oversample
   int subBlockSize = 4;
   float freqC4 = FBPitchToFreq(60.0f);
-  double baseSpeedRatio = clip.sampleRate / (double)sampleRate;
+  double baseSpeedRatio = clip.sampleRate / ((double)sampleRate * _oversampleTimes);
   for (int u = 0; u < _uniCount; u++)
     for (int block = 0; block < totalSamples / subBlockSize; block++)
     {
