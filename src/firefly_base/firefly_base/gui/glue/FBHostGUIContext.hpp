@@ -59,14 +59,13 @@ protected:
 private:
   bool _isPatchLoaded = {};
   FBUndoStateContainer _undoState;
-  // updated on init/load/reload patch etc
+
+  // copy of patch/session state on daw load/patch load
+  // we use it to be able to highlight params tweaked from patch/session
+  // used to be able to revert back to it, but since introduction of sampler, no longer possible
   FBScalarStateContainer _patchState;
-  std::map<std::string, FBAudioClip> _patchGUIAudioClips = {};
-  std::map<int, std::string> _patchParamNameOverridesByIndex = {};
-  // updated on daw load
   FBScalarStateContainer _sessionState;
-  std::map<std::string, FBAudioClip> _sessionGUIAudioClips = {};
-  std::map<int, std::string> _sessionParamNameOverridesByIndex = {};
+  
   // gui side clips
   std::map<std::string, FBAudioClip> _guiAudioClips = {};
 
@@ -98,9 +97,7 @@ public:
   virtual void ClearDSPAudioClipToDSP(std::string const& id) = 0;
   virtual void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip) = 0;
 
-  void RevertPatchToPatchState();
   void MarkPatchAsSessionState();
-  void RevertPatchToSessionState();
   void MarkPatchAsPatchState(std::string const& name);
 
   double GetUserScaleMin() const;

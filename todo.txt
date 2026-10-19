@@ -7,8 +7,10 @@ V get all the undo state & friends right -- just clear undo after sample load
 V do we stereo merge? select channel? osci is mono -> just only mono support
 V want 16/24/32 bit, need lib for convert ? or do naive -> libsndfile
 V raw? needs user input. wav, au, aiff etc, need parse headers. another lib? compressed -- not a chance, not even lossless 
+- copy/paste patch
 - do clap side
 - do patch side
+- check microtuning
 - do the docs
 - test all hosts
 - get rid of audio input gain, make no sense??? or is it pre-post?

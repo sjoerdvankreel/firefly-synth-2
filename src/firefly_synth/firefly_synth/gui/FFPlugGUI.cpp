@@ -109,28 +109,12 @@ FFPlugGUI::AfterPatchChanged(bool wasPreview)
   repaint();
 }
 
-void 
-FFPlugGUI::OnPatchLoaded()
-{
-  FBPlugGUI::OnPatchLoaded();
-  if (onPatchLoaded)
-    onPatchLoaded();
-}
-
 void
 FFPlugGUI::OnGUIAudioClipsChanged()
 {
   FBPlugGUI::OnGUIAudioClipsChanged();
   for (auto const& kv : onGUIAudioClipsChanged)
     kv.second();
-}
-
-void 
-FFPlugGUI::OnPatchNameChanged(std::string const& name)
-{
-  FBPlugGUI::OnPatchNameChanged(name);
-  if (onPatchNameChanged)
-    onPatchNameChanged(name);
 }
 
 void

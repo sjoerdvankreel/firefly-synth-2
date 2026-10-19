@@ -94,36 +94,16 @@ FBHostGUIContext::SetAudioParamNameOverrides(std::map<int, std::string> const& o
     SetAudioParamNameOverride(kv.first, kv.second);
 }
 
-void 
-FBHostGUIContext::RevertPatchToPatchState()
-{
-  _patchState.CopyTo(this, true);
-  SetGUIAudioClips(_patchGUIAudioClips);
-  SetAudioParamNameOverrides(_patchParamNameOverridesByIndex);
-}
-
-void
-FBHostGUIContext::RevertPatchToSessionState()
-{
-  _sessionState.CopyTo(this, true);
-  SetGUIAudioClips(_sessionGUIAudioClips);
-  SetAudioParamNameOverrides(_sessionParamNameOverridesByIndex);
-}
-
 void
 FBHostGUIContext::MarkPatchAsSessionState()
 {
   _sessionState.CopyFrom(this, true);
-  _sessionGUIAudioClips = GetGUIAudioClips();
-  _sessionParamNameOverridesByIndex = GetAudioParamNameOverrides();
 }
 
 void
 FBHostGUIContext::MarkPatchAsPatchState(std::string const& patchName)
 {
   _patchState.CopyFrom(this, true);
-  _patchGUIAudioClips = GetGUIAudioClips();
-  _patchParamNameOverridesByIndex = GetAudioParamNameOverrides();
   _isPatchLoaded = true;
   OnPatchLoaded();
   SetPatchName(patchName);

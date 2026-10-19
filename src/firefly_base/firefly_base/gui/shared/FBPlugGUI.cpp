@@ -778,30 +778,6 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
 }
 
 void
-FBPlugGUI::ReloadPatch()
-{
-  FB_LOG_ENTRY_EXIT();
-  BeforePatchChanged();
-  std::string oldName = HostContext()->PatchName();
-  HostContext()->RevertPatchToPatchState();
-  HostContext()->MarkPatchAsPatchState(oldName);
-  HostContext()->NotifyHostOfParamNameChanges();
-  HostContext()->UndoState().Clear(); // because samples
-  AfterPatchChanged(false);
-}
-
-void
-FBPlugGUI::ReloadSession()
-{
-  FB_LOG_ENTRY_EXIT();
-  BeforePatchChanged();
-  HostContext()->RevertPatchToSessionState();
-  HostContext()->NotifyHostOfParamNameChanges();
-  HostContext()->UndoState().Clear(); // because samples
-  AfterPatchChanged(false);
-}
-
-void
 FBPlugGUI::LoadPatchFromFile(bool preset)
 {
   FB_LOG_ENTRY_EXIT();
