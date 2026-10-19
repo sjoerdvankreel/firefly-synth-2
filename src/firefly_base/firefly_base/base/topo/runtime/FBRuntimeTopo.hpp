@@ -54,7 +54,7 @@ private:
   bool LoadParamNameOverridesFromVar(juce::var const& json, std::map<int, std::string>& paramNameOverrides) const;
   void LoadVST3ProcStateFromVarWithDryRun(juce::var const& json, FBProcStateContainer& procState, bool patchOnly) const;
   bool LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext& hostContext) const;
-  bool LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& editState, std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips) const;
+  bool LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& editState, std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips, std::map<std::string, FBAudioClip>& dspAudioClips) const;
   bool LoadGUIStateFromVar(juce::var const& json, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips) const;
   bool LoadCLAPEverythingFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext& hostGUIContext, FBHostDSPContext& hostDSPContext, bool patchOnly) const;
   bool LoadCLAPEverythingFromVar(juce::var const& json, FBScalarStateContainer& edit, FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips, std::map<std::string, FBAudioClip>& dspAudioClips, bool patchOnly) const;

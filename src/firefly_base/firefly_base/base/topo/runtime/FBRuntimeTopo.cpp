@@ -186,6 +186,7 @@ FBRuntimeTopo::SavePatchStateToVar(FBScalarStateContainer const& editState, FBHo
   result->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext));
   result->setProperty("patchState", SaveEditStateToVar(editState, true));
   result->setProperty("guiAudioClips", SaveAudioClipsToVar(hostContext.GetGUIAudioClips()));
+  result->setProperty("dspAudioClips", SaveAudioClipsToVar(hostContext.PullDSPAudioClipsToGUI()));
   return var(result);
 }
 
@@ -305,17 +306,21 @@ FBRuntimeTopo::LoadPatchStateFromVar(juce::var const& json, FBScalarStateContain
 {
   std::map<int, std::string> paramNameOverrides;
   std::map<std::string, FBAudioClip> guiAudioClips;
-  if (!LoadPatchStateFromVar(json, edit, paramNameOverrides, guiAudioClips))
+  std::map<std::string, FBAudioClip> dspAudioClips;
+  if (!LoadPatchStateFromVar(json, edit, paramNameOverrides, guiAudioClips, dspAudioClips))
     return false;
   hostContext.SetAudioParamNameOverrides(paramNameOverrides);
   hostContext.SetGUIAudioClips(guiAudioClips);
+  hostContext.PushDSPAudioClipsToDSP(dspAudioClips);  
   return true;
 }
 
 bool 
 FBRuntimeTopo::LoadPatchStateFromVar(
   juce::var const& json, FBScalarStateContainer& edit, 
-  std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips) const
+  std::map<int, std::string>& paramNameOverrides, 
+  std::map<std::string, FBAudioClip>& guiAudioClips,
+  std::map<std::string, FBAudioClip>& dspAudioClips) const
 {
   // 2.1.5: added paramNameOverrides, what was previously root is now "patchState"
   if (!json.hasProperty("patchState"))
@@ -334,6 +339,11 @@ FBRuntimeTopo::LoadPatchStateFromVar(
   if (json.hasProperty("guiAudioClips"))
   {
     LoadAudioClipsFromVar(json["guiAudioClips"], guiAudioClips);
+  }
+  dspAudioClips.clear();
+  if (json.hasProperty("dspAudioClips"))
+  {
+    LoadAudioClipsFromVar(json["dspAudioClips"], dspAudioClips);
   }
   return true;
 }
