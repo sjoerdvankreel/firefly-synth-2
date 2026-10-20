@@ -92,7 +92,7 @@ AudioEffect(),
 FBHostDSPContext(topo.get()),
 _mtsClient(mtsClient),
 _topo(std::move(topo)),
-_audioClipCommands(16)
+_audioClipToDSPCommands(16)
 {
   FB_LOG_ENTRY_EXIT();
   setControllerClass(controllerId);
@@ -293,13 +293,24 @@ FBVST3AudioEffect::notify(IMessage* message)
 void
 FBVST3AudioEffect::PullDSPAudioClipsFromGUI()
 {
-  FBVST3AudioClipCommand command;
-  while (_audioClipCommands.try_dequeue(command))
+  FBVST3AudioClipToDSPCommand command;
+  while (_audioClipToDSPCommands.try_dequeue(command))
   {
-    if (command.clear)
+    switch (command.Type)
+    {
+    case FBVST3AudioClipToDSPCommand::Clear:
       GetDSPAudioClips().erase(command.id);
-    else
+      break;
+    case FBVST3AudioClipToDSPCommand::Single:
       GetDSPAudioClips()[command.id] = FBAudioClip(command.clip);
+      break;
+    case FBVST3AudioClipToDSPCommand::All:
+      GetDSPAudioClips() = command.allClips;
+      break;
+    default:
+      FB_ASSERT(false);
+      break;
+    }
   }
 }
 

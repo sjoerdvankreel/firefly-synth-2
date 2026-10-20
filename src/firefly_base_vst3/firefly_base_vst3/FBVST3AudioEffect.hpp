@@ -42,7 +42,7 @@ public FBHostDSPContext
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
   std::unique_ptr<DataExchangeHandler> _exchangeHandler = {};
 
-  moodycamel::ReaderWriterQueue<FBVST3AudioClipCommand, 16> _audioClipCommands;
+  moodycamel::ReaderWriterQueue<FBVST3AudioClipToDSPCommand, 16> _audioClipToDSPCommands;
   DataExchangeBlock _exchangeBlock = { nullptr, 0, InvalidDataExchangeBlockID };
 
 public:

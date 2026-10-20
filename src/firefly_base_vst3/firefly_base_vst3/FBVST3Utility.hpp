@@ -12,8 +12,9 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
-inline std::string const FBVST3LoadAudioClipMessageId = "FBVST3LoadAudioClipMessageId";
-inline std::string const FBVST3ClearAudioClipMessageId = "FBVST3ClearAudioClipMessageId";
+inline std::string const FBVST3LoadAllAudioClipsMessageId = "FBVST3LoadAllAudioClipsMessageId";
+inline std::string const FBVST3LoadSingleAudioClipMessageId = "FBVST3LoadSingleAudioClipMessageId";
+inline std::string const FBVST3ClearSingleAudioClipMessageId = "FBVST3ClearSingleAudioClipMessageId";
 
 inline int constexpr FBVST3MIDIMaxChannels = 16;
 inline int constexpr FBVST3MIDIMaxPortsGuess = 128;
@@ -25,11 +26,12 @@ inline int constexpr FBVST3MIDIParameterMappingBegin = std::numeric_limits<int>:
 // VST3 goes thru the host queue first, is received by the processor (on the gui thread no less),
 // then pushed from processor "gui" to processor realtime.
 // CLAP skips the host queue (IMessage).
-struct FBVST3AudioClipCommand
+struct FBVST3AudioClipToDSPCommand
 {
-  bool clear = {};
+  enum { Clear, Single, All } Type;
   std::string id = {};
   FBAudioClip clip = {};
+  std::map<std::string, FBAudioClip> allClips = {};
 };
 
 void

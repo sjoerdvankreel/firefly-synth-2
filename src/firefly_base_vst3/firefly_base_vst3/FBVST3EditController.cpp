@@ -163,7 +163,7 @@ FBVST3EditController::ClearDSPAudioClipToDSP(std::string const& id)
   TChar vst3Id[128];
   FReleaser release(message);
   FBVST3CopyToString128(id, vst3Id);
-  message->setMessageID(FBVST3ClearAudioClipMessageId.c_str());
+  message->setMessageID(FBVST3ClearSingleAudioClipMessageId.c_str());
   message->getAttributes()->setString("id", vst3Id);
   sendMessage(message);
 }
@@ -177,7 +177,7 @@ FBVST3EditController::PushDSPAudioClipToDSP(std::string const& id, FBAudioClip c
   TChar vst3Id[128];
   FReleaser release(message);
   FBVST3CopyToString128(id, vst3Id);
-  message->setMessageID(FBVST3LoadAudioClipMessageId.c_str());
+  message->setMessageID(FBVST3LoadSingleAudioClipMessageId.c_str());
   message->getAttributes()->setString("id", vst3Id);
   message->getAttributes()->setInt("channels", clip.channels);
   message->getAttributes()->setInt("sampleRate", clip.sampleRate);
@@ -186,19 +186,37 @@ FBVST3EditController::PushDSPAudioClipToDSP(std::string const& id, FBAudioClip c
   sendMessage(message);
 }
 
+void
+FBVST3EditController::PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips)
+{
+  IMessage* message = allocateMessage();
+  if (!message)
+    return;
+  FReleaser release(message);
+  message->setMessageID(FBVST3LoadAllAudioClipsMessageId.c_str());
+  message->getAttributes()->setInt("count", dspClips.size());
+
+  // where is my setIntArray and friends
+  int i = 0;
+  for (auto const& kv : dspClips)
+  {
+    TChar vst3Id[128];
+    FBVST3CopyToString128(kv.first, vst3Id);
+    message->getAttributes()->setString((std::string("id") + std::to_string(i)).c_str(), vst3Id);
+    message->getAttributes()->setInt((std::string("channels") + std::to_string(i)).c_str(), kv.second.channels);
+    message->getAttributes()->setInt((std::string("sampleRate") + std::to_string(i)).c_str(), kv.second.sampleRate);
+    message->getAttributes()->setInt((std::string("sampleCount") + std::to_string(i)).c_str(), kv.second.data.size());
+    message->getAttributes()->setBinary((std::string("data") + std::to_string(i)).c_str(), kv.second.data.data(), (uint32)(kv.second.data.size() * sizeof(float)));
+    i++;
+  }
+  sendMessage(message);
+}
+
 std::map<std::string, FBAudioClip> 
 FBVST3EditController::PullDSPAudioClipsToGUI() const
 {
   // todo sampler
   return {};
-}
-
-void 
-FBVST3EditController::PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips)
-{
-  (void)dspClips;
-  // todo sampler
-  return;
 }
 
 double
