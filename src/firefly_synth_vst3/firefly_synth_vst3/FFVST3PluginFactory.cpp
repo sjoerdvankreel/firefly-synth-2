@@ -115,7 +115,7 @@ BEGIN_FACTORY_DEF(FFVendorName, FFVendorURL, FFVendorMail)
   DEF_CLASS2(
     INLINE_UID_FROM_FUID(TextToFUID(FFPlugUniqueId)),
       PClassInfo::kManyInstances, kVstAudioEffectClass, 
-      FFPlugName, kDistributable, FFPlugType,
+      FFPlugName, 0, FFPlugType,
       FF_PLUG_VERSION, kVstVersionString, ComponentFactory);
   DEF_CLASS2(
     INLINE_UID_FROM_FUID(TextToFUID(FFPlugControllerId)),

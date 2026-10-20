@@ -34,8 +34,6 @@ class FBProcStateContainer final
   // Also very VST3-centric.
   // We keep a copy of an audio clip on both the processor side and the controller side.
   // Controller side is a very slimmed down version (1000 samples or so -- small).
-  // It's either that or i ditch kDistributable and go with SingleComponentEffect
-  // like everyone else does it. But, bit late to do that now.
   // Non-owning pointer! On the GUI side it comes from HostGUIContext.
   // On the DSP side it comes from the HostDSPContext.
   std::map<std::string, FBAudioClip>* const _audioClips;

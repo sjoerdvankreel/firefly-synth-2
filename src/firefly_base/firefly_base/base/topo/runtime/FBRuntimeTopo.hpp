@@ -20,7 +20,8 @@ class FBScalarStateContainer;
 // Note to self:
 // VST3 processor/controller separation really gets in the way.
 // Implementing the sampler made that 100% clear.
-// I'm not too thrilled about ditching kDistributable and go with SingleComponentEffect this far in the project either.
+// I'm not too thrilled about going with SingleComponentEffect this far in the project 
+// but i dropped kDistributable at least to guarantee single-process (see PullDSPAudioClipsToGUI).
 // So, current solution:
 // 1: on sample load button we make a trimmed down copy (1000 samples or so) of the loaded sample
 // 2: store that on the gui side, send the original to dsp side
@@ -29,8 +30,7 @@ class FBScalarStateContainer;
 // 5: on patch load, we need to get samples back from gui to dsp, just like sample load button
 // 6: for clap gui->dsp is doable: gui->dsp pushes through a single queue, dsp eventually picks up
 // 7: for vst3 gui->dsp is "doable": we first go through IMessage and then same sort of queue as for clap
-// 8: for both, dsp->gui is meh: gui side needs to sent "give me all dsp samples" request, then go wait for the answer to store in patch
-// 9: it's queues everywhere. even tho i know of no host that runs proc/controller out of process. 
+// 8: for both, dsp->gui is meh: need to wait for the gui->dsp queue to clear, take locks everywhere, copy from in-process.
 struct FBRuntimeTopo final
 {
 private:
