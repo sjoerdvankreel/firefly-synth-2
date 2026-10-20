@@ -122,6 +122,8 @@ public:
 
   void ClearDSPAudioClipToDSP(std::string const& id) override;
   void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip) override;
+  std::map<std::string, FBAudioClip> PullDSPAudioClipsToGUI() const override;
+  void PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips) override;
 
   double GetAudioParamNormalized(int index) const override;
   void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;

@@ -269,13 +269,16 @@ FBRuntimeTopo::LoadPatchStateFromString(std::string const& text, FBScalarStateCo
 
 bool 
 FBRuntimeTopo::LoadPatchStateFromString(
-  std::string const& text, FBScalarStateContainer& editState, 
-  std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips) const
+  std::string const& text, 
+  FBScalarStateContainer& editState, 
+  std::map<int, std::string>& paramNameOverrides, 
+  std::map<std::string, FBAudioClip>& guiAudioClips, 
+  std::map<std::string, FBAudioClip>& dspAudioClips) const
 {
   var json;
   if (!FBParseJson(text, json))
     return false;
-  return LoadPatchStateFromVar(json, editState, paramNameOverrides, guiAudioClips);
+  return LoadPatchStateFromVar(json, editState, paramNameOverrides, guiAudioClips, dspAudioClips);
 }
 
 bool

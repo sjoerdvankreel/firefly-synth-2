@@ -97,7 +97,7 @@ public:
   virtual void ClearDSPAudioClipToDSP(std::string const& id) = 0;
   virtual void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip) = 0;
   virtual std::map<std::string, FBAudioClip> PullDSPAudioClipsToGUI() const = 0;
-  virtual void PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips) const = 0;
+  virtual void PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips) = 0;
 
   void MarkPatchAsSessionState();
   void MarkPatchAsPatchState(std::string const& name);
