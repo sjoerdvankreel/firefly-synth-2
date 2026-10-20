@@ -90,7 +90,7 @@ FBCLAPPlugin::ClearDSPAudioClipToDSP(std::string const& id)
   _writingAudioClipsToDSPIsDirty.store(true);
   FBCLAPAudioClipToDSPCommand command = {};
   command.id = id;
-  command.Type = FBCLAPAudioClipToDSPCommand::Clear;
+  command.Type = FBCLAPAudioClipToDSPCommand::ClearSingle;
   _audioClipToDSPCommands.enqueue(command);
 }
 
@@ -101,7 +101,7 @@ FBCLAPPlugin::PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& cl
   _writingAudioClipsToDSPIsDirty.store(true);
   FBCLAPAudioClipToDSPCommand command = {};
   command.id = id;
-  command.Type = FBCLAPAudioClipToDSPCommand::Single;
+  command.Type = FBCLAPAudioClipToDSPCommand::LoadSingle;
   command.clip = FBAudioClip(clip);
   _audioClipToDSPCommands.enqueue(command);
 }
@@ -112,7 +112,7 @@ FBCLAPPlugin::PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& d
   std::lock_guard lock(_blockWritingAudioClipsToDSP);
   _writingAudioClipsToDSPIsDirty.store(true);
   FBCLAPAudioClipToDSPCommand command = {};
-  command.Type = FBCLAPAudioClipToDSPCommand::All;
+  command.Type = FBCLAPAudioClipToDSPCommand::LoadAll;
   command.allClips = dspClips;
   _audioClipToDSPCommands.enqueue(command);
 }

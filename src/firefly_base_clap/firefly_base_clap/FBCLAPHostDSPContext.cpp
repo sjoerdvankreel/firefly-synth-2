@@ -11,13 +11,13 @@ FBCLAPPlugin::PullDSPAudioClipsFromGUI()
   {
     switch (command.Type)
     {
-    case FBCLAPAudioClipToDSPCommand::Clear:
+    case FBCLAPAudioClipToDSPCommand::ClearSingle:
       GetDSPAudioClips().erase(command.id);
       break;
-    case FBCLAPAudioClipToDSPCommand::Single:
+    case FBCLAPAudioClipToDSPCommand::LoadSingle:
       GetDSPAudioClips()[command.id] = FBAudioClip(command.clip);
       break;
-    case FBCLAPAudioClipToDSPCommand::All:
+    case FBCLAPAudioClipToDSPCommand::LoadAll:
       GetDSPAudioClips() = command.allClips;
       break;
     default:

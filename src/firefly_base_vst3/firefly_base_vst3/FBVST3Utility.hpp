@@ -28,7 +28,7 @@ inline int constexpr FBVST3MIDIParameterMappingBegin = std::numeric_limits<int>:
 // CLAP skips the host queue (IMessage).
 struct FBVST3AudioClipToDSPCommand
 {
-  enum { Clear, Single, All } Type;
+  enum { ClearSingle, LoadSingle, LoadAll } Type;
   std::string id = {};
   FBAudioClip clip = {};
   std::map<std::string, FBAudioClip> allClips = {};

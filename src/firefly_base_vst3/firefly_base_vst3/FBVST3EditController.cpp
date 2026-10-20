@@ -181,7 +181,6 @@ FBVST3EditController::PushDSPAudioClipToDSP(std::string const& id, FBAudioClip c
   message->getAttributes()->setString("id", vst3Id);
   message->getAttributes()->setInt("channels", clip.channels);
   message->getAttributes()->setInt("sampleRate", clip.sampleRate);
-  message->getAttributes()->setInt("sampleCount", clip.data.size());
   message->getAttributes()->setBinary("data", clip.data.data(), (uint32)(clip.data.size() * sizeof(float)));
   sendMessage(message);
 }
@@ -205,7 +204,6 @@ FBVST3EditController::PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> 
     message->getAttributes()->setString((std::string("id") + std::to_string(i)).c_str(), vst3Id);
     message->getAttributes()->setInt((std::string("channels") + std::to_string(i)).c_str(), kv.second.channels);
     message->getAttributes()->setInt((std::string("sampleRate") + std::to_string(i)).c_str(), kv.second.sampleRate);
-    message->getAttributes()->setInt((std::string("sampleCount") + std::to_string(i)).c_str(), kv.second.data.size());
     message->getAttributes()->setBinary((std::string("data") + std::to_string(i)).c_str(), kv.second.data.data(), (uint32)(kv.second.data.size() * sizeof(float)));
     i++;
   }

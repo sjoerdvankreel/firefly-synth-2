@@ -11,7 +11,7 @@ struct FBStaticParam;
 // CLAP skips the host queue (IMessage).
 struct FBCLAPAudioClipToDSPCommand
 {
-  enum { Clear, Single, All } Type;
+  enum { ClearSingle, LoadSingle, LoadAll } Type;
   std::string id = {};
   FBAudioClip clip = {};
   std::map<std::string, FBAudioClip> allClips = {};

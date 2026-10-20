@@ -260,34 +260,66 @@ FBVST3AudioEffect::notify(IMessage* message)
 
   // This is received on the gui thread.
   // Thanks, Steinberg!
+  int64 channels;
+  int64 sampleRate;
+  uint32 dataSizeBytes;
+
+  void const* data;
   std::string clipId;
   TChar clipIdVst3[128];
-  message->getAttributes()->getString("id", clipIdVst3, 128 * sizeof(clipId[0]));
-  FBVST3CopyFromString128(clipIdVst3, clipId);
 
-  FBVST3AudioClipCommand command = {};
-  command.id = clipId;
-  command.clear = std::string(message->getMessageID()) == FBVST3ClearAudioClipMessageId;
-  if (command.clear)
+  if (std::string(message->getMessageID()) == FBVST3ClearSingleAudioClipMessageId)
   {
-    _audioClipCommands.enqueue(command);
+    message->getAttributes()->getString("id", clipIdVst3, 128 * sizeof(clipId[0]));
+    FBVST3CopyFromString128(clipIdVst3, clipId);
+    FBVST3AudioClipToDSPCommand command = {};
+    command.id = clipId;
+    command.Type = FBVST3AudioClipToDSPCommand::ClearSingle;
+    _audioClipToDSPCommands.enqueue(command);
     return kResultOk;
   }
 
-  void const* data;
-  int64 channels;
-  int64 sampleRate;
-  int64 sampleCount;
-  uint32 dataSizeBytes;
-  message->getAttributes()->getInt("channels", channels);
-  message->getAttributes()->getInt("sampleRate", sampleRate);
-  message->getAttributes()->getInt("sampleCount", sampleCount);
-  message->getAttributes()->getBinary("data", data, dataSizeBytes);
-  command.clip.channels = (int)channels;
-  command.clip.sampleRate = (int)sampleRate;
-  command.clip.data = std::vector<float>((float*)data, (float*)((char*)data + dataSizeBytes));
-  _audioClipCommands.enqueue(command);
-  return kResultOk;
+  if (std::string(message->getMessageID()) == FBVST3LoadSingleAudioClipMessageId)
+  {
+    message->getAttributes()->getString("id", clipIdVst3, 128 * sizeof(clipId[0]));
+    FBVST3CopyFromString128(clipIdVst3, clipId);
+    message->getAttributes()->getInt("channels", channels);
+    message->getAttributes()->getInt("sampleRate", sampleRate);
+    message->getAttributes()->getBinary("data", data, dataSizeBytes);
+    FBVST3AudioClipToDSPCommand command = {};
+    command.id = clipId;
+    command.Type = FBVST3AudioClipToDSPCommand::LoadSingle;
+    command.clip.channels = (int)channels;
+    command.clip.sampleRate = (int)sampleRate;
+    command.clip.data = std::vector<float>((float*)data, (float*)((char*)data + dataSizeBytes));
+    _audioClipToDSPCommands.enqueue(command);
+    return kResultOk;
+  }
+
+  if (std::string(message->getMessageID()) == FBVST3LoadAllAudioClipsMessageId)
+  {
+    int64 count;
+    message->getAttributes()->getInt("count", count);
+    FBVST3AudioClipToDSPCommand command = {};
+    command.Type = FBVST3AudioClipToDSPCommand::LoadAll;
+    for (int64 i = 0; i < count; i++)
+    {
+      message->getAttributes()->getString((std::string("id") + std::to_string(i)).c_str(), clipIdVst3, 128 * sizeof(clipId[0]));
+      FBVST3CopyFromString128(clipIdVst3, clipId);
+      message->getAttributes()->getInt((std::string("channels") + std::to_string(i)).c_str(), channels);
+      message->getAttributes()->getInt((std::string("sampleRate") + std::to_string(i)).c_str(), sampleRate);
+      message->getAttributes()->getBinary((std::string("data") + std::to_string(i)).c_str(), data, dataSizeBytes);
+      FBAudioClip clip = {};
+      clip.channels = channels;
+      clip.sampleRate = sampleRate;
+      clip.data = std::vector<float>((float*)data, (float*)((char*)data + dataSizeBytes));
+      command.allClips[clipId] = FBAudioClip(clip);
+    }
+    _audioClipToDSPCommands.enqueue(command);
+    return kResultOk;
+  }
+
+  return kResultFalse;
 }
 
 void
@@ -298,13 +330,13 @@ FBVST3AudioEffect::PullDSPAudioClipsFromGUI()
   {
     switch (command.Type)
     {
-    case FBVST3AudioClipToDSPCommand::Clear:
+    case FBVST3AudioClipToDSPCommand::ClearSingle:
       GetDSPAudioClips().erase(command.id);
       break;
-    case FBVST3AudioClipToDSPCommand::Single:
+    case FBVST3AudioClipToDSPCommand::LoadSingle:
       GetDSPAudioClips()[command.id] = FBAudioClip(command.clip);
       break;
-    case FBVST3AudioClipToDSPCommand::All:
+    case FBVST3AudioClipToDSPCommand::LoadAll:
       GetDSPAudioClips() = command.allClips;
       break;
     default:
