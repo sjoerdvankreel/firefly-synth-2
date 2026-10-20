@@ -186,6 +186,21 @@ FBVST3EditController::PushDSPAudioClipToDSP(std::string const& id, FBAudioClip c
   sendMessage(message);
 }
 
+std::map<std::string, FBAudioClip> 
+FBVST3EditController::PullDSPAudioClipsToGUI() const
+{
+  // todo sampler
+  return {};
+}
+
+void 
+FBVST3EditController::PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips)
+{
+  (void)dspClips;
+  // todo sampler
+  return;
+}
+
 double
 FBVST3EditController::GetAudioParamNormalized(int index) const
 {

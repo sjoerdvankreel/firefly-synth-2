@@ -9,11 +9,12 @@ struct FBStaticParam;
 // VST3 goes thru the host queue first, is received by the processor (on the gui thread no less),
 // then pushed from processor "gui" to processor realtime.
 // CLAP skips the host queue (IMessage).
-struct FBCLAPAudioClipCommand
+struct FBCLAPAudioClipToDSPCommand
 {
-  bool clear = {};
+  enum { Clear, Single, All } Type;
   std::string id = {};
   FBAudioClip clip = {};
+  std::map<std::string, FBAudioClip> allClips = {};
 };
 
 double

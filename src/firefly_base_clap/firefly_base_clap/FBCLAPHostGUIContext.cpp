@@ -86,20 +86,54 @@ FBCLAPPlugin::GetAudioParamNameOverride(int index, std::string& name) const
 void
 FBCLAPPlugin::ClearDSPAudioClipToDSP(std::string const& id)
 {
-  FBCLAPAudioClipCommand command;
+  std::lock_guard lock(_blockWritingAudioClipsToDSP);
+  _writingAudioClipsToDSPIsDirty.store(true);
+  FBCLAPAudioClipToDSPCommand command = {};
   command.id = id;
-  command.clear = true;
-  _audioClipCommands.enqueue(command);
+  command.Type = FBCLAPAudioClipToDSPCommand::Clear;
+  _audioClipToDSPCommands.enqueue(command);
 }
 
 void
 FBCLAPPlugin::PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
 {
-  FBCLAPAudioClipCommand command;
+  std::lock_guard lock(_blockWritingAudioClipsToDSP);
+  _writingAudioClipsToDSPIsDirty.store(true);
+  FBCLAPAudioClipToDSPCommand command = {};
   command.id = id;
-  command.clear = false;
+  command.Type = FBCLAPAudioClipToDSPCommand::Single;
   command.clip = FBAudioClip(clip);
-  _audioClipCommands.enqueue(command);
+  _audioClipToDSPCommands.enqueue(command);
+}
+
+void 
+FBCLAPPlugin::PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips)
+{
+  std::lock_guard lock(_blockWritingAudioClipsToDSP);
+  _writingAudioClipsToDSPIsDirty.store(true);
+  FBCLAPAudioClipToDSPCommand command = {};
+  command.Type = FBCLAPAudioClipToDSPCommand::All;
+  command.allClips = dspClips;
+  _audioClipToDSPCommands.enqueue(command);
+}
+
+std::map<std::string, FBAudioClip>
+FBCLAPPlugin::PullDSPAudioClipsToGUI() const
+{
+  // OK so for CLAP this is "easy":
+  // we're not in the whole vst3 separation stuff so:
+  // 1. on any push we set the dsp-is-dirty-flag
+  // 2. processor eventually picks up
+  // 3. we lock on not-push-now mutex everywhere from gui->dsp
+  // 4. wait for dirty flag to become unset WHILE still holding the lock
+  // 5. any writers have finished now (they are all gui side)
+  // 6. we are ready to copy from in-memory
+  // 7. we should be lock-free & safe on dsp. I think. I hope.
+  std::lock_guard lock(_blockWritingAudioClipsToDSP);
+
+  // Sue me. I should probably bring in a condition variable here.
+  while (_writingAudioClipsToDSPIsDirty.load());
+  return GetDSPAudioClips();
 }
 
 double

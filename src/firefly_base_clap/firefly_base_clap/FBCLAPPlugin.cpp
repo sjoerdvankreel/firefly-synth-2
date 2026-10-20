@@ -186,7 +186,7 @@ _mtsClient(mtsClient),
 _gui(),
 _editState(std::make_unique<FBScalarStateContainer>(*_topo)),
 _exchangeStateQueue(std::move(exchangeStateQueue)),
-_audioClipCommands(16)
+_audioClipToDSPCommands(16)
 {
   FB_LOG_ENTRY_EXIT();
 }

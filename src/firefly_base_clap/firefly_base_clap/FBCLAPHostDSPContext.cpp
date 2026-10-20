@@ -6,12 +6,24 @@
 void
 FBCLAPPlugin::PullDSPAudioClipsFromGUI()
 {
-  FBCLAPAudioClipCommand command;
-  while (_audioClipCommands.try_dequeue(command))
+  FBCLAPAudioClipToDSPCommand command;
+  while (_audioClipToDSPCommands.try_dequeue(command))
   {
-    if (command.clear)
+    switch (command.Type)
+    {
+    case FBCLAPAudioClipToDSPCommand::Clear:
       GetDSPAudioClips().erase(command.id);
-    else
+      break;
+    case FBCLAPAudioClipToDSPCommand::Single:
       GetDSPAudioClips()[command.id] = FBAudioClip(command.clip);
+      break;
+    case FBCLAPAudioClipToDSPCommand::All:
+      GetDSPAudioClips() = command.allClips;
+      break;
+    default:
+      FB_ASSERT(false);
+      break;
+    }
   }
+  _writingAudioClipsToDSPIsDirty.store(false);
 }

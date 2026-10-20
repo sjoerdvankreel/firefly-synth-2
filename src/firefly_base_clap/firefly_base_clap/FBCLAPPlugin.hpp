@@ -11,6 +11,7 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <thread>
 
 using namespace clap;
 using namespace clap::helpers;
@@ -52,7 +53,10 @@ public FBHostDSPContext
   std::unique_ptr<FBScalarStateContainer> _editState;
   std::map<int, std::string> _audioParamNameOverridesByIndex = {};
   std::unique_ptr<FBCLAPExchangeStateQueueBase> _exchangeStateQueue;
-  moodycamel::ReaderWriterQueue<FBCLAPAudioClipCommand, 16> _audioClipCommands;
+
+  mutable std::mutex _blockWritingAudioClipsToDSP = {};
+  std::atomic_bool _writingAudioClipsToDSPIsDirty = {};
+  moodycamel::ReaderWriterQueue<FBCLAPAudioClipToDSPCommand, 16> _audioClipToDSPCommands;
 
   float _sampleRate = 0.0f;
   FBHostInputBlock _input = {};
