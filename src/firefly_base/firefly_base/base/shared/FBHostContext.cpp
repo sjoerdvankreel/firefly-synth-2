@@ -1,4 +1,4 @@
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBGUIStateContainer.hpp>
@@ -17,6 +17,12 @@ struct MenuBuilder
   std::string name = {};
   std::shared_ptr<PopupMenu> menu = {};
 };
+
+FBHostDSPContext::
+FBHostDSPContext(FBRuntimeTopo const* topo):
+_dspAudioClips(),
+_procState(std::make_unique<FBProcStateContainer>(*topo, &_dspAudioClips)),
+_exchangeToGUIState(std::make_unique<FBExchangeStateContainer>(*topo)) { }
 
 FBHostGUIContext::
 FBHostGUIContext(std::unique_ptr<FBStaticTopo>&& topo):

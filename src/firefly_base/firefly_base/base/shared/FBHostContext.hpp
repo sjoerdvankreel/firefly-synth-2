@@ -4,6 +4,9 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBUndoStateContainer.hpp>
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
+#include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
+#include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
+
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <map>
@@ -17,6 +20,8 @@ struct FBTopoIndices;
 struct FBRuntimeTopo;
 struct FBParamTopoIndices;
 
+class MTSClient;
+class IFBPlugProcessor;
 class FBGUIStateContainer;
 class FBExchangeStateContainer;
 
@@ -31,49 +36,46 @@ struct FBHostContextMenuItem
   bool subMenuStart = false;
 };
 
-void
-FBAddHostContextMenu(
-  std::shared_ptr<juce::PopupMenu> menu,
-  int offset,
-  std::vector<FBHostContextMenuItem> const& items);
-
-class IFBHostGUIContextListener
+class IFBHostContextGUIListener
 {
 public:
-  virtual ~IFBHostGUIContextListener() {}
+  virtual ~IFBHostContextGUIListener() {}
   virtual void OnPatchLoaded() = 0;
   virtual void OnGUIAudioClipsChanged() = 0;
   virtual void OnPatchNameChanged(std::string const& name) = 0;
   virtual void OnInstanceNameChanged(std::string const& name) = 0;
 };
 
-class FBHostGUIContext
+void
+FBAddHostContextMenu(
+  std::shared_ptr<juce::PopupMenu> menu,
+  int offset,
+  std::vector<FBHostContextMenuItem> const& items);
+
+class FBHostContext
 {
-  std::vector<IFBHostGUIContextListener*> _listeners = {};
-
-protected:
   std::unique_ptr<FBRuntimeTopo> _topo;
-  std::unique_ptr<FBGUIStateContainer> _guiState;
-  std::unique_ptr<FBExchangeStateContainer> _exchangeFromDSPState;
-
-private:
-  bool _isPatchLoaded = {};
   FBUndoStateContainer _undoState;
-
   // copy of patch/session state on daw load/patch load
   // we use it to be able to highlight params tweaked from patch/session
   // used to be able to revert back to it, but since introduction of sampler, no longer possible
   FBScalarStateContainer _patchState;
   FBScalarStateContainer _sessionState;
-  
-  // gui side clips
+  std::unique_ptr<FBGUIStateContainer> _guiState;
+  std::unique_ptr<FBProcStateContainer> _procState;
+  std::unique_ptr<FBExchangeStateContainer> _exchangeToGUIState;
+  std::unique_ptr<FBExchangeStateContainer> _exchangeFromDSPState;
+
+  bool _isPatchLoaded = {};
   std::map<std::string, FBAudioClip> _guiAudioClips = {};
+  std::map<std::string, FBAudioClip> _dspAudioClips = {};
+  std::vector<IFBHostContextGUIListener*> _guiListeners = {};
 
   void ShowOnlineManualForModule(int index) const;
 
 protected:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostGUIContext);
-  FBHostGUIContext(std::unique_ptr<FBStaticTopo>&& topo);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostContext);
+  FBHostContext(std::unique_ptr<FBStaticTopo>&& topo);
 
   void OnPatchLoaded();
   void OnPatchNameChanged();
@@ -85,19 +87,42 @@ protected:
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
 
 public:
-  FBAudioClip const* FindGUIAudioClip(std::string const& id) const;
-  void SetGUIAudioClips(std::map<std::string, FBAudioClip> const& clips);
-  std::map<std::string, FBAudioClip>& GetGUIAudioClips() { return _guiAudioClips; }
-  std::map<std::string, FBAudioClip> const& GetGUIAudioClips() const { return _guiAudioClips; }
+  virtual ~FBHostContext() {}
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBHostContext);
 
-  void ClearGUIAndDSPAudioClips();
-  void RemoveGUIAndDSPAudioClip(std::string const& id);
-  void SetGUIAndDSPAudioClip(std::string const& id, FBAudioClip const& guiClip, FBAudioClip const& dspClip);
+  virtual float SampleRate() const = 0;
+  virtual MTSClient* GetMTSClient() = 0;
+  virtual void PullDSPAudioClipsFromGUI() = 0;
+  virtual std::unique_ptr<IFBPlugProcessor> MakePlugProcessor() = 0;
+
+  virtual void NotifyHostOfParamNameChanges() = 0;
+  virtual void ClearAudioParamNameOverrides() = 0;
+  virtual void ClearAudioParamNameOverride(int index) = 0;
+  virtual bool GetAudioParamNameOverride(int index, std::string& name) const = 0;
+  virtual void SetAudioParamNameOverride(int index, std::string const& name) = 0;
+
+  virtual double GetAudioParamNormalized(int index) const = 0;
+  virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;
+  virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;
 
   virtual void ClearDSPAudioClipToDSP(std::string const& id) = 0;
   virtual void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip) = 0;
   virtual std::map<std::string, FBAudioClip> PullDSPAudioClipsToGUI() const = 0;
   virtual void PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips) = 0;
+
+  void ClearGUIAndDSPAudioClips();
+  void RemoveGUIAndDSPAudioClip(std::string const& id);
+  void SetGUIAndDSPAudioClip(std::string const& id, FBAudioClip const& guiClip, FBAudioClip const& dspClip);
+
+  FBProcStateContainer* ProcState() { return _procState.get(); }
+  FBExchangeStateContainer* ExchangeToGUIState() { return _exchangeToGUIState.get(); }
+  std::map<std::string, FBAudioClip>& GetDSPAudioClips() { return _dspAudioClips; }
+  std::map<std::string, FBAudioClip> const& GetDSPAudioClips() const { return _dspAudioClips; }
+
+  FBAudioClip const* FindGUIAudioClip(std::string const& id) const;
+  void SetGUIAudioClips(std::map<std::string, FBAudioClip> const& clips);
+  std::map<std::string, FBAudioClip>& GetGUIAudioClips() { return _guiAudioClips; }
+  std::map<std::string, FBAudioClip> const& GetGUIAudioClips() const { return _guiAudioClips; }
 
   void MarkPatchAsSessionState();
   void MarkPatchAsPatchState(std::string const& name);
@@ -113,16 +138,20 @@ public:
   void SetPatchName(std::string const& name);
   void SetThemeName(std::string const& name);
   void SetInstanceName(std::string const& name);
-  
+
   bool IsPatchLoaded() const { return _isPatchLoaded; }
-  
+  std::map<int, std::string> GetAudioParamNameOverrides() const;
+  void SetAudioParamNameOverrides(std::map<int, std::string> const& overrides);
+  FBScalarStateContainer const& PatchState() const { return _patchState; }
+  FBScalarStateContainer const& SessionState() const { return _sessionState; }
+
   void ShowOnlineManual() const;
   void ShowOnlineManualForGUIParam(int index) const;
   void ShowOnlineManualForAudioParam(int index) const;
   virtual std::string OnlineManualLocation() const = 0;
 
-  void AddListener(IFBHostGUIContextListener* listener);
-  void RemoveListener(IFBHostGUIContextListener* listener);
+  void AddGUIListener(IFBHostContextGUIListener* listener);
+  void RemoveGUIListener(IFBHostContextGUIListener* listener);
 
   bool GetGUIParamBool(FBParamTopoIndices const& indices) const;
   int GetGUIParamDiscrete(FBParamTopoIndices const& indices) const;
@@ -162,25 +191,10 @@ public:
   FBGUIStateContainer* GUIState() { return _guiState.get(); }
   FBGUIStateContainer const* GUIState() const { return _guiState.get(); }
   FBExchangeStateContainer const* ExchangeFromDSPState() const { return _exchangeFromDSPState.get(); }
-
-  FBScalarStateContainer const& PatchState() const { return _patchState; }
-  FBScalarStateContainer const& SessionState() const { return _sessionState; }
-
-  virtual void NotifyHostOfParamNameChanges() = 0;
-  virtual void ClearAudioParamNameOverrides() = 0;
-  virtual void ClearAudioParamNameOverride(int index) = 0;
-  virtual bool GetAudioParamNameOverride(int index, std::string& name) const = 0;
-  virtual void SetAudioParamNameOverride(int index, std::string const& name) = 0;
-  std::map<int, std::string> GetAudioParamNameOverrides() const;
-  void SetAudioParamNameOverrides(std::map<int, std::string> const& overrides);
-
-  virtual double GetAudioParamNormalized(int index) const = 0;
-  virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;
-  virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;
 };
 
 template <class T>
-T FBHostGUIContext::GetGUIParamList(FBParamTopoIndices const& indices) const
+T FBHostContext::GetGUIParamList(FBParamTopoIndices const& indices) const
 {
   auto param = Topo()->gui.ParamAtTopo(indices);
   double normalized = GetGUIParamNormalized(param->runtimeParamIndex);
@@ -188,7 +202,7 @@ T FBHostGUIContext::GetGUIParamList(FBParamTopoIndices const& indices) const
 }
 
 template <class T>
-T FBHostGUIContext::GetAudioParamList(FBParamTopoIndices const& indices) const
+T FBHostContext::GetAudioParamList(FBParamTopoIndices const& indices) const
 {
   auto param = Topo()->audio.ParamAtTopo(indices);
   double normalized = GetAudioParamNormalized(param->runtimeParamIndex);
