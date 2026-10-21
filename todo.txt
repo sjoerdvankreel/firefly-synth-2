@@ -30,9 +30,12 @@ v CLAP is guaranteed single process. luvu.
 v hunt down the comments for kDistributable and singlecomponenteffect
 v sidechaintests are borked
 v FLStudioVST3ModMatrix not load good
+- also finish up the new demo tune with some vocals and include the patches right away
+- recheck automation lanes on all renoise things
 - close the renoise bug
 - make dedicated test for microtune and paramnameoverride and guisettings
 - make it loadpre217load***state
+- save all the demo in the new format
 - retest / implement save gui params
 - make a note that guiparams will get lost
 - do pre-post host tests
