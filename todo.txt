@@ -8,6 +8,7 @@ V do we stereo merge? select channel? osci is mono -> just only mono support
 V want 16/24/32 bit, need lib for convert ? or do naive -> libsndfile
 V raw? needs user input. wav, au, aiff etc, need parse headers. another lib? compressed -- not a chance, not even lossless 
 - drop kDistributable, merge hostgui/hostdspcontext, share lots of stuff between clap/vst3
+- get rid of exchangeStateSize
 - consolidate the pull/push with clap/vst3
 - clean up the headers in thenew files
 - copy/paste patch
