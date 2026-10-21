@@ -7,47 +7,44 @@ V get all the undo state & friends right -- just clear undo after sample load
 V do we stereo merge? select channel? osci is mono -> just only mono support
 V want 16/24/32 bit, need lib for convert ? or do naive -> libsndfile
 V raw? needs user input. wav, au, aiff etc, need parse headers. another lib? compressed -- not a chance, not even lossless 
+v drop kDistributable, merge hostgui/hostdspcontext, share lots of stuff between clap/vst3
+v get rid of exchangeStateSize
+v consolidate the pull/push with clap/vst3
+v clean up the headers in thenew files
+v do clap side
+v get rid of reload session/patch
+v shrink the gui side clip
+v do we need clips ptr in the procstate ?
+v rename guiAudioClips
+v check what oversampling does to audio in (and sample)
+v check what fm/rm/am does to audio in (and sample)
+v review the whole thing
+v graphs + all unison & change pitch etc
+v pitchtrack, unison
+v i want react to offset from C4 including all pitch mods -- no nontracking only. whats the granularity? internal block size? does SRC overflow those?
+v all the simple stuff, pan/amp envs etc
+v gui graph render should be accurate, whatever that may be
+v store in patchfile only for now, maybe expand to link on disk with all headache that follows
+v how tf i push from controller to processor. this is not params, may need dataexchange for vst3. but not super-supported everywhere, fallback to msg/connectionpoint?
+v CLAP is guaranteed single process. luvu.
+- do patch side ???
 - hunt down the comments for kDistributable and singlecomponenteffect
-- drop kDistributable, merge hostgui/hostdspcontext, share lots of stuff between clap/vst3
 - retest midi and sampler and basically everything on every host and every platform
-- get rid of exchangeStateSize
-- consolidate the pull/push with clap/vst3
-- clean up the headers in thenew files
 - copy/paste patch
-- do clap side
-- do patch side
 - check microtuning
 - do the docs
 - test all hosts
 - get rid of audio input gain, make no sense??? or is it pre-post?
-- get rid of reload session/patch
 - do load/save tests on old sessions and patches
-- shrink the gui side clip
-- do we need clips ptr in the procstate ?
 - do all formats that juce supports + stereo merge
 - drop libsndfile https://forum.juce.com/t/reading-a-wav-file-into-an-array-of-samples/47449/4 
-- rename guiAudioClips
-- check what oversampling does to audio in (and sample)
-- check what fm/rm/am does to audio in (and sample)
-- review the whole thing
-- graphs + all unison & change pitch etc
-- update the docs
 - preset patch with demo sample + all host tests
 - do the validators
 - run it in debug
-- pitchtrack, unison
 - check "todo sampler"
 - compress the patchfile
 - update the dependencies list
 - file preview
-- r8brain seems up for realtime SRC
-- i want react to offset from C4 including all pitch mods -- no nontracking only. whats the granularity? internal block size? does SRC overflow those?
--- double tricky, resample, timestretch, or both
-- all the simple stuff, pan/amp envs etc
-- gui graph render should be accurate, whatever that may be
-- store in patchfile only for now, maybe expand to link on disk with all headache that follows
-- how tf i push from controller to processor. this is not params, may need dataexchange for vst3. but not super-supported everywhere, fallback to msg/connectionpoint?
--- CLAP is guaranteed single process. luvu.
 
 [ ] sampler -- just do it i want vocals
 [ ] string osci dry/wet normal/uniform + conversion
