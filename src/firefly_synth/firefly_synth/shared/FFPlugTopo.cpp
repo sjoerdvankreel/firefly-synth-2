@@ -99,7 +99,6 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->themedComponents[(int)FFThemedComponentId::MixSelector].name = "Mix Selector";
   result->themedComponents[(int)FFThemedComponentId::MixSelector].id = "{B1B4E0FB-5A5F-4359-AE9A-D9EF5F83500A}";
    
-  result->exchangeStateSize = sizeof(FFExchangeState);
   result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };
   result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
   result->allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };

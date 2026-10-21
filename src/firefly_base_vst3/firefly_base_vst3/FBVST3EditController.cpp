@@ -1,19 +1,15 @@
+#include <firefly_base_vst3/FBVST3Plugin.hpp>
 #include <firefly_base_vst3/FBVST3Utility.hpp>
 #include <firefly_base_vst3/FBVST3Parameter.hpp>
 #include <firefly_base_vst3/FBVST3GUIEditor.hpp>
-#include <firefly_base_vst3/FBVST3EditController.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBGUIStateContainer.hpp>
-#include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <pluginterfaces/vst/ivstmidicontrollers.h>
 #include <base/source/fstring.h>
-
-#include <utility>
-#include <algorithm>
 
 using namespace juce;
 
@@ -72,196 +68,8 @@ MakePlugParamInfo(FBRuntimeParam const& param, int unitId)
   return result;
 }
 
-FBVST3EditController::
-~FBVST3EditController()
-{
-  FB_LOG_ENTRY_EXIT();
-}
-
-FBVST3EditController::
-FBVST3EditController(std::unique_ptr<FBStaticTopo>&& topo) :
-FBHostGUIContext(std::move(topo)),
-_exchangeHandler(this)
-{
-  FB_LOG_ENTRY_EXIT();
-}
-
-void
-FBVST3EditController::ResetView()
-{
-  FB_LOG_ENTRY_EXIT();
-  _guiEditor = nullptr;
-}
-
-void
-FBVST3EditController::DoEndAudioParamChange(int /*index*/)
-{
-  // see PerformAudioParamEdit
-}
-
-void
-FBVST3EditController::DoBeginAudioParamChange(int /*index*/)
-{
-  // see PerformAudioParamEdit
-}
-
-void
-FBVST3EditController::DoPerformAudioParamEdit(int index, double normalized)
-{
-  int tag = _topo->audio.params[index].tag;
-  setParamNormalized(tag, normalized);
-
-  // this is not ideal but it prevents automation getting ignored
-  // once an automated parameter is user-modified on reaper
-  beginEdit(tag);
-  performEdit(tag, normalized);
-  endEdit(tag);
-}
-
-void
-FBVST3EditController::NotifyHostOfParamNameChanges()
-{
-  if (componentHandler)
-    componentHandler->restartComponent(Vst::kParamTitlesChanged);
-}
-
-void 
-FBVST3EditController::ClearAudioParamNameOverrides()
-{
-  for (int i = 0; i < parameters.getParameterCount(); i++)
-    ClearAudioParamNameOverride(i);
-}
-
-void 
-FBVST3EditController::ClearAudioParamNameOverride(int index)
-{
-  if(auto p = dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index)))
-    p->ClearNameOverride();
-}
-
-bool 
-FBVST3EditController::GetAudioParamNameOverride(int index, std::string& name) const
-{
-  if(auto p = dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index)))
-    return p->GetNameOverride(name);
-  return false;
-}
-
-void 
-FBVST3EditController::SetAudioParamNameOverride(int index, std::string const& name)
-{
-  if(auto p = dynamic_cast<FBVST3Parameter*>(parameters.getParameterByIndex(index)))
-    p->SetNameOverride(name);
-}
-
-void 
-FBVST3EditController::ClearDSPAudioClipToDSP(std::string const& id)
-{
-  IMessage* message = allocateMessage();
-  if (!message)
-    return;
-  TChar vst3Id[128];
-  FReleaser release(message);
-  FBVST3CopyToString128(id, vst3Id);
-  message->setMessageID(FBVST3ClearSingleAudioClipMessageId.c_str());
-  message->getAttributes()->setString("id", vst3Id);
-  sendMessage(message);
-}
-
-void 
-FBVST3EditController::PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
-{
-  IMessage* message = allocateMessage();
-  if (!message) 
-    return;
-  TChar vst3Id[128];
-  FReleaser release(message);
-  FBVST3CopyToString128(id, vst3Id);
-  message->setMessageID(FBVST3LoadSingleAudioClipMessageId.c_str());
-  message->getAttributes()->setString("id", vst3Id);
-  message->getAttributes()->setInt("channels", clip.channels);
-  message->getAttributes()->setInt("sampleRate", clip.sampleRate);
-  message->getAttributes()->setBinary("data", clip.data.data(), (uint32)(clip.data.size() * sizeof(float)));
-  sendMessage(message);
-}
-
-void
-FBVST3EditController::PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips)
-{
-  IMessage* message = allocateMessage();
-  if (!message)
-    return;
-  FReleaser release(message);
-  message->setMessageID(FBVST3LoadAllAudioClipsMessageId.c_str());
-  message->getAttributes()->setInt("count", dspClips.size());
-
-  // where is my setIntArray and friends
-  int i = 0;
-  for (auto const& kv : dspClips)
-  {
-    TChar vst3Id[128];
-    FBVST3CopyToString128(kv.first, vst3Id);
-    message->getAttributes()->setString((std::string("id") + std::to_string(i)).c_str(), vst3Id);
-    message->getAttributes()->setInt((std::string("channels") + std::to_string(i)).c_str(), kv.second.channels);
-    message->getAttributes()->setInt((std::string("sampleRate") + std::to_string(i)).c_str(), kv.second.sampleRate);
-    message->getAttributes()->setBinary((std::string("data") + std::to_string(i)).c_str(), kv.second.data.data(), (uint32)(kv.second.data.size() * sizeof(float)));
-    i++;
-  }
-  sendMessage(message);
-}
-
-std::map<std::string, FBAudioClip> 
-FBVST3EditController::PullDSPAudioClipsToGUI() const
-{
-  // todo sampler
-  return {};
-}
-
-double
-FBVST3EditController::GetAudioParamNormalized(int index) const
-{
-  return parameters.getParameterByIndex(index)->getNormalized();
-}
-
-std::vector<FBHostContextMenuItem>
-FBVST3EditController::MakeAudioParamContextMenu(int index)
-{
-  if (!_guiEditor)
-    return {};
-  return _guiEditor->MakeParamContextMenu(componentHandler, index);
-}
-
-void
-FBVST3EditController::AudioParamContextMenuClicked(int paramIndex, int juceTag)
-{
-  if (_guiEditor)
-    _guiEditor->ParamContextMenuClicked(componentHandler, paramIndex, juceTag);
-}
-
-tresult PLUGIN_API 
-FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
-{
-  tresult result = EditControllerEx1::setParamNormalized(tag, value);
-  if(result != kResultTrue || tag >= FBVST3MIDIParameterMappingBegin)
-    return result;
-  if (_guiEditor != nullptr)
-    _guiEditor->SetAudioParamNormalizedFromHost(_topo->audio.paramTagToIndex[tag], value);
-  return kResultTrue;
-}
-
-tresult PLUGIN_API 
-FBVST3EditController::notify(IMessage* message)
-{
-  return FBWithLogException([this, message]()
-  {
-    if (_exchangeHandler.onMessage(message))
-      return static_cast<tresult>(kResultTrue);
-    return EditControllerEx1::notify(message);
-  });
-}
-
 IPlugView* PLUGIN_API
-FBVST3EditController::createView(FIDString name)
+FBVST3Plugin::createView(FIDString name)
 {
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, name]()
@@ -269,13 +77,38 @@ FBVST3EditController::createView(FIDString name)
     if (ConstString(name) != ViewType::kEditor)
       return static_cast<IPlugView*>(nullptr);
     if (_guiEditor == nullptr)
-      _guiEditor = new FBVST3GUIEditor(nullptr);
+      _guiEditor = new FBVST3GUIEditor(this);
     return static_cast<IPlugView*>(_guiEditor);
   });
 }
 
+tresult PLUGIN_API 
+FBVST3Plugin::getMidiControllerAssignment(
+  int32 bus, int16, CtrlNumber number, ParamID& id)
+{
+  return FBWithLogException([bus, number, &id]() {
+    if (bus != 0)
+      return kResultFalse;
+    if (!(0 <= number && number < kCountCtrlNumber))
+      return kResultFalse;
+    id = FBVST3MIDIParameterMappingBegin + number;
+    return kResultTrue;
+  });
+}
+
 tresult PLUGIN_API
-FBVST3EditController::getState(IBStream* state)
+FBVST3Plugin::setParamNormalized(ParamID tag, ParamValue value)
+{
+  tresult result = SingleComponentEffect::setParamNormalized(tag, value);
+  if (result != kResultTrue || tag >= FBVST3MIDIParameterMappingBegin)
+    return result;
+  if (_guiEditor != nullptr)
+    _guiEditor->SetAudioParamNormalizedFromHost(_topo->audio.paramTagToIndex[tag], value);
+  return kResultTrue;
+}
+
+tresult PLUGIN_API
+FBVST3Plugin::getEditorState(IBStream* state)
 {
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, state]()
@@ -288,7 +121,7 @@ FBVST3EditController::getState(IBStream* state)
 }
 
 tresult PLUGIN_API 
-FBVST3EditController::setState(IBStream* state)
+FBVST3Plugin::setEditorState(IBStream* state)
 {
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, state]()
@@ -310,7 +143,7 @@ FBVST3EditController::setState(IBStream* state)
 }
 
 tresult PLUGIN_API
-FBVST3EditController::setComponentState(IBStream* state)
+FBVST3Plugin::setComponentState(IBStream* state)
 {
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, state]()
@@ -329,15 +162,12 @@ FBVST3EditController::setComponentState(IBStream* state)
   });
 }
 
-tresult PLUGIN_API
-FBVST3EditController::initialize(FUnknown* context)
+void
+FBVST3Plugin::InitializeEditController()
 {
   FB_LOG_ENTRY_EXIT();
-  return FBWithLogException([this, context]()
+  FBWithLogException([this]()
   {
-    if (EditController::initialize(context) != kResultTrue)
-      return kResultFalse;
-
     int unitId = 1;
     for (int m = 0; m < _topo->modules.size(); m++)
     {
@@ -356,35 +186,5 @@ FBVST3EditController::initialize(FUnknown* context)
       parameters.addParameter(new Parameter(MakeMIDIParamInfo(FBMIDIEvent::CCMessageId, i)));
     parameters.addParameter(new Parameter(MakeMIDIParamInfo(FBMIDIEvent::CPMessageId, 0)));
     parameters.addParameter(new Parameter(MakeMIDIParamInfo(FBMIDIEvent::PBMessageId, 0)));
-
-    return kResultTrue;
-  });
-}
-
-tresult PLUGIN_API 
-FBVST3EditController::getMidiControllerAssignment(
-  int32 bus, int16, CtrlNumber number, ParamID& id)
-{
-  return FBWithLogException([bus, number, &id]() {
-    if (bus != 0)
-      return kResultFalse;
-    if (!(0 <= number && number < kCountCtrlNumber))
-      return kResultFalse;
-    id = FBVST3MIDIParameterMappingBegin + number;
-    return kResultTrue;
-  });
-}
-
-void PLUGIN_API
-FBVST3EditController::onDataExchangeBlocksReceived(
-  DataExchangeUserContextID /*id*/, uint32 numBlocks, DataExchangeBlock* blocks, TBool /*bg*/)
-{
-  FBWithLogException([this, numBlocks, blocks]()
-  {
-    if (numBlocks == 0)
-      return;
-    memcpy(_exchangeFromDSPState->Raw(), blocks[numBlocks - 1].data, _topo->static_->exchangeStateSize);
-    if (_guiEditor != nullptr)
-      _guiEditor->UpdateExchangeState();
   });
 }

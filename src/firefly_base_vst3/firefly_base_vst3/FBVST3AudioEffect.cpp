@@ -1,5 +1,5 @@
+#include <firefly_base_vst3/FBVST3Plugin.hpp>
 #include <firefly_base_vst3/FBVST3Utility.hpp>
-#include <firefly_base_vst3/FBVST3AudioEffect.hpp>
 
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
 #include <firefly_base/dsp/plug/FBPlugProcessor.hpp>
@@ -78,48 +78,16 @@ MakeMIDIEvent(int eventId, int pos, ParamValue value)
   return result;
 }
 
-FBVST3AudioEffect::
-~FBVST3AudioEffect()
+tresult PLUGIN_API
+FBVST3Plugin::canProcessSampleSize(int32 symbolicSize)
 {
-  FB_LOG_ENTRY_EXIT();
-}
-
-FBVST3AudioEffect::
-FBVST3AudioEffect(
-  std::unique_ptr<FBRuntimeTopo>&& topo,
-  FUID const& controllerId, MTSClient* mtsClient):
-AudioEffect(),
-FBHostDSPContext(topo.get()),
-_mtsClient(mtsClient),
-_topo(std::move(topo)),
-_audioClipToDSPCommands(16)
-{
-  FB_LOG_ENTRY_EXIT();
-  setControllerClass(controllerId);
-  processContextRequirements.needTempo();
-  processContextRequirements.needContinousTimeSamples();
-}
-
-tresult PLUGIN_API 
-FBVST3AudioEffect::setActive(TBool state)
-{
-  return FBWithLogException([this, state]()
-  {
-    // Ardour calls this before connect (windows linux both).
-    // Seems sketchy but i have no clue if this is actually inside the bounds of what vst3 allows or not.
-    if (_exchangeHandler)
-    {
-      if (state)
-        _exchangeHandler->onActivate(processSetup);
-      else
-        _exchangeHandler->onDeactivate();
-    }
-    return AudioEffect::setActive(state);
-  });
+  if (symbolicSize == kSample32)
+    return kResultTrue;
+  return kResultFalse;
 }
 
 tresult PLUGIN_API
-FBVST3AudioEffect::getState(IBStream* state)
+FBVST3Plugin::getState(IBStream* state)
 {
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, state]()
@@ -132,7 +100,7 @@ FBVST3AudioEffect::getState(IBStream* state)
 }
 
 tresult PLUGIN_API
-FBVST3AudioEffect::setState(IBStream* state)
+FBVST3Plugin::setState(IBStream* state)
 {
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, state]()
@@ -146,50 +114,21 @@ FBVST3AudioEffect::setState(IBStream* state)
 }
 
 tresult PLUGIN_API
-FBVST3AudioEffect::disconnect(IConnectionPoint* other)
-{
-  return FBWithLogException([this, other]() 
-  {
-    if (_exchangeHandler)
-    {
-      _exchangeHandler->onDisconnect(other);
-      _exchangeHandler.reset();
-    }
-    return AudioEffect::disconnect(other);
-  });
-}
-
-tresult PLUGIN_API
-FBVST3AudioEffect::initialize(FUnknown* context)
+FBVST3Plugin::setupProcessing(ProcessSetup& setup)
 {
   FB_LOG_ENTRY_EXIT();
-  return FBWithLogException([this, context]() 
+  return FBWithLogException([this, &setup]() 
   {
-    if (AudioEffect::initialize(context) != kResultTrue)
-      return kResultFalse;
-    addEventInput(STR16("Event In"));
-    addAudioOutput(STR16("Stereo Out"), SpeakerArr::kStereo);
-
-    // The bustype is important to bitwig.
-    // With main, it wont accept sidechaining.
-    // We allow side in for synth and fx both.
-    if(_topo->static_->meta.isFx)
-      addAudioInput(STR16("Stereo In"), SpeakerArr::kStereo, BusTypes::kMain);
-    addAudioInput(STR16("Sidechain"), SpeakerArr::kStereo, BusTypes::kAux);
+    _sampleRate = static_cast<float>(setup.sampleRate);
+    for (int ch = 0; ch < 2; ch++)
+      _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
+    _hostProcessor.reset(new FBHostProcessor(this));
     return kResultTrue;
   });
 }
 
 tresult PLUGIN_API
-FBVST3AudioEffect::canProcessSampleSize(int32 symbolicSize)
-{
-  if (symbolicSize == kSample32) 
-    return kResultTrue;
-  return kResultFalse;
-}
-
-tresult PLUGIN_API
-FBVST3AudioEffect::setBusArrangements(
+FBVST3Plugin::setBusArrangements(
   SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts)
 {
   if (_topo->static_->meta.isFx)
@@ -208,146 +147,29 @@ FBVST3AudioEffect::setBusArrangements(
     if (numIns > 0 && inputs[0] != SpeakerArr::kStereo)
       return kResultFalse;
   } 
-  return AudioEffect::setBusArrangements(inputs, numIns, outputs, numOuts);
+  return SingleComponentEffect::setBusArrangements(inputs, numIns, outputs, numOuts);
 }
 
-tresult PLUGIN_API
-FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
+void 
+FBVST3Plugin::InitializeAudioEffect()
 {
   FB_LOG_ENTRY_EXIT();
-  return FBWithLogException([this, &setup]() 
+  FBWithLogException([this]()
   {
-    _sampleRate = static_cast<float>(setup.sampleRate);
-    for (int ch = 0; ch < 2; ch++)
-      _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
-    _hostProcessor.reset(new FBHostProcessor(this));
-    return kResultTrue;
+    addEventInput(STR16("Event In"));
+    addAudioOutput(STR16("Stereo Out"), SpeakerArr::kStereo);
+
+    // The bustype is important to bitwig.
+    // With main, it wont accept sidechaining.
+    // We allow side in for synth and fx both.
+    if (_topo->static_->meta.isFx)
+      addAudioInput(STR16("Stereo In"), SpeakerArr::kStereo, BusTypes::kMain);
+    addAudioInput(STR16("Sidechain"), SpeakerArr::kStereo, BusTypes::kAux);
   });
-}
-
-tresult PLUGIN_API 
-FBVST3AudioEffect::connect(IConnectionPoint* other)
-{
-  return FBWithLogException([this, other]()
-  {
-    tresult result = AudioEffect::connect(other);
-    if (result != kResultTrue)
-      return result;
-    auto callback = [this](DataExchangeHandler::Config& config, ProcessSetup const&) {
-      config.numBlocks = 1;
-      config.userContextID = 0;
-      config.blockSize = _topo->static_->exchangeStateSize;
-
-      // If this is set to the natural alignment of the struct being transmitted
-      // this stuff totally breaks down on MacOS. The 32 magic number is not AFAIK
-      // documented anywhere except being mentioned in the sample code at 
-      // https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Data+Exchange/Index.html.
-      config.alignment = 32;
-      // This also wreaks havoc. Better leave it alone.
-      // config.alignment = std::max(32, _topo->static_->exchangeStateAlignment);
-      return true; };
-    _exchangeHandler = std::make_unique<DataExchangeHandler>(this, callback);
-    _exchangeHandler->onConnect(other, getHostContext());
-    return result;
-  });
-}
-
-tresult PLUGIN_API 
-FBVST3AudioEffect::notify(IMessage* message)
-{
-  if (AudioEffect::notify(message) == kResultOk)
-    return kResultOk;
-
-  // This is received on the gui thread.
-  // Thanks, Steinberg!
-  int64 channels;
-  int64 sampleRate;
-  uint32 dataSizeBytes;
-
-  void const* data;
-  std::string clipId;
-  TChar clipIdVst3[128];
-
-  if (std::string(message->getMessageID()) == FBVST3ClearSingleAudioClipMessageId)
-  {
-    message->getAttributes()->getString("id", clipIdVst3, 128 * sizeof(clipId[0]));
-    FBVST3CopyFromString128(clipIdVst3, clipId);
-    FBVST3AudioClipToDSPCommand command = {};
-    command.id = clipId;
-    command.Type = FBVST3AudioClipToDSPCommand::ClearSingle;
-    _audioClipToDSPCommands.enqueue(command);
-    return kResultOk;
-  }
-
-  if (std::string(message->getMessageID()) == FBVST3LoadSingleAudioClipMessageId)
-  {
-    message->getAttributes()->getString("id", clipIdVst3, 128 * sizeof(clipId[0]));
-    FBVST3CopyFromString128(clipIdVst3, clipId);
-    message->getAttributes()->getInt("channels", channels);
-    message->getAttributes()->getInt("sampleRate", sampleRate);
-    message->getAttributes()->getBinary("data", data, dataSizeBytes);
-    FBVST3AudioClipToDSPCommand command = {};
-    command.id = clipId;
-    command.Type = FBVST3AudioClipToDSPCommand::LoadSingle;
-    command.clip.channels = (int)channels;
-    command.clip.sampleRate = (int)sampleRate;
-    command.clip.data = std::vector<float>((float*)data, (float*)((char*)data + dataSizeBytes));
-    _audioClipToDSPCommands.enqueue(command);
-    return kResultOk;
-  }
-
-  if (std::string(message->getMessageID()) == FBVST3LoadAllAudioClipsMessageId)
-  {
-    int64 count;
-    message->getAttributes()->getInt("count", count);
-    FBVST3AudioClipToDSPCommand command = {};
-    command.Type = FBVST3AudioClipToDSPCommand::LoadAll;
-    for (int64 i = 0; i < count; i++)
-    {
-      message->getAttributes()->getString((std::string("id") + std::to_string(i)).c_str(), clipIdVst3, 128 * sizeof(clipId[0]));
-      FBVST3CopyFromString128(clipIdVst3, clipId);
-      message->getAttributes()->getInt((std::string("channels") + std::to_string(i)).c_str(), channels);
-      message->getAttributes()->getInt((std::string("sampleRate") + std::to_string(i)).c_str(), sampleRate);
-      message->getAttributes()->getBinary((std::string("data") + std::to_string(i)).c_str(), data, dataSizeBytes);
-      FBAudioClip clip = {};
-      clip.channels = channels;
-      clip.sampleRate = sampleRate;
-      clip.data = std::vector<float>((float*)data, (float*)((char*)data + dataSizeBytes));
-      command.allClips[clipId] = FBAudioClip(clip);
-    }
-    _audioClipToDSPCommands.enqueue(command);
-    return kResultOk;
-  }
-
-  return kResultFalse;
-}
-
-void
-FBVST3AudioEffect::PullDSPAudioClipsFromGUI()
-{
-  FBVST3AudioClipToDSPCommand command;
-  while (_audioClipToDSPCommands.try_dequeue(command))
-  {
-    switch (command.Type)
-    {
-    case FBVST3AudioClipToDSPCommand::ClearSingle:
-      GetDSPAudioClips().erase(command.id);
-      break;
-    case FBVST3AudioClipToDSPCommand::LoadSingle:
-      GetDSPAudioClips()[command.id] = FBAudioClip(command.clip);
-      break;
-    case FBVST3AudioClipToDSPCommand::LoadAll:
-      GetDSPAudioClips() = command.allClips;
-      break;
-    default:
-      FB_ASSERT(false);
-      break;
-    }
-  }
 }
 
 tresult PLUGIN_API
-FBVST3AudioEffect::process(ProcessData& data)
+FBVST3Plugin::process(ProcessData& data)
 {
   return FBWithLogException([this, &data]()
   {
@@ -443,16 +265,6 @@ FBVST3AudioEffect::process(ProcessData& data)
         if (outQueue != nullptr)
           outQueue->addPoint(0, outEvent.normalized, unused);
       }
-
-    if (_exchangeBlock.blockID == InvalidDataExchangeBlockID)
-      _exchangeBlock = _exchangeHandler->getCurrentOrNewBlock();
-
-    if (_exchangeBlock.blockID != InvalidDataExchangeBlockID)
-    {
-      memcpy(_exchangeBlock.data, ExchangeToGUIState()->Raw(), _exchangeBlock.size);
-      _exchangeHandler->sendCurrentBlock();
-      _exchangeBlock = _exchangeHandler->getCurrentOrNewBlock();
-    }
 
     return kResultTrue;
   });

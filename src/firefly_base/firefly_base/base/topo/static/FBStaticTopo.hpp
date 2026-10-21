@@ -147,7 +147,6 @@ struct FBStaticTopo
   std::vector<FBTopoIndices> moduleProcessOrder = {};
   std::map<int, FBThemedComponentInfo> themedComponents = {};
 
-  int exchangeStateSize = {};
   FBHostExchangeAddrSelector hostExchangeAddr = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
 
