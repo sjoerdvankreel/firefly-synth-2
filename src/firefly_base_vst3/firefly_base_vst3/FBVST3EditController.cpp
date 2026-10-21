@@ -108,6 +108,15 @@ FBVST3Plugin::setParamNormalized(ParamID tag, ParamValue value)
 }
 
 tresult PLUGIN_API
+FBVST3Plugin::setComponentState(IBStream* state)
+{
+  // see setState().
+  (void)state;
+  FB_LOG_ENTRY_EXIT();
+  return kResultOk;
+}
+
+tresult PLUGIN_API
 FBVST3Plugin::getEditorState(IBStream* state)
 {
   FB_LOG_ENTRY_EXIT();
@@ -139,26 +148,6 @@ FBVST3Plugin::setEditorState(IBStream* state)
     MarkPatchAsSessionState();
     NotifyHostOfParamNameChanges();
     return kResultTrue;
-  });
-}
-
-tresult PLUGIN_API
-FBVST3Plugin::setComponentState(IBStream* state)
-{
-  FB_LOG_ENTRY_EXIT();
-  return FBWithLogException([this, state]()
-  {
-    std::string json;
-    if (!FBVST3LoadIBStream(state, json))
-      return kResultFalse;
-    FBScalarStateContainer edit(*Topo());
-    if (!Topo()->LoadVST3EditStateFromString(json, edit, false))
-      return kResultFalse;
-    for (int i = 0; i < edit.Params().size(); i++)
-      setParamNormalized(Topo()->audio.params[i].tag, *edit.Params()[i]);
-    MarkPatchAsSessionState();
-    NotifyHostOfParamNameChanges();
-    return kResultOk;
   });
 }
 

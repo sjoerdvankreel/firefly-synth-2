@@ -110,6 +110,15 @@ FBVST3Plugin::setState(IBStream* state)
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
     Topo()->LoadVST3ProcStateFromStringWithDryRun(json, *ProcState(), false);
+
+    // Because we used to NOT be SingleComponentEffect, we now need to do this.
+    FBScalarStateContainer edit(*Topo());
+    if (!Topo()->LoadVST3EditStateFromString(json, edit, false))
+      return kResultFalse;
+    for (int i = 0; i < edit.Params().size(); i++)
+      setParamNormalized(Topo()->audio.params[i].tag, *edit.Params()[i]);
+    MarkPatchAsSessionState();
+    NotifyHostOfParamNameChanges();
     return kResultOk;
   });
 }
