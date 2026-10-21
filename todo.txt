@@ -34,7 +34,7 @@ v FLStudioVST3ModMatrix not load good
 - recheck automation lanes on all renoise things
 - close the renoise bug
 - make dedicated test for microtune and paramnameoverride and guisettings
-- make it loadpre217load***state
+- make it loadpre217load***state --> if only for the zip
 - save all the demo in the new format
 - retest / implement save gui params
 - make a note that guiparams will get lost
