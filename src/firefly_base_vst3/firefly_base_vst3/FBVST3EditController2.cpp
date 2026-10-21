@@ -162,15 +162,12 @@ FBVST3Plugin::setComponentState(IBStream* state)
   });
 }
 
-tresult
-FBVST3Plugin::InitializeEditController(FUnknown* context)
+void
+FBVST3Plugin::InitializeEditController()
 {
   FB_LOG_ENTRY_EXIT();
-  return FBWithLogException([this, context]()
+  FBWithLogException([this]()
   {
-    if (SingleComponentEffect::initialize(context) != kResultTrue)
-      return kResultFalse;
-
     int unitId = 1;
     for (int m = 0; m < _topo->modules.size(); m++)
     {
@@ -189,7 +186,5 @@ FBVST3Plugin::InitializeEditController(FUnknown* context)
       parameters.addParameter(new Parameter(MakeMIDIParamInfo(FBMIDIEvent::CCMessageId, i)));
     parameters.addParameter(new Parameter(MakeMIDIParamInfo(FBMIDIEvent::CPMessageId, 0)));
     parameters.addParameter(new Parameter(MakeMIDIParamInfo(FBMIDIEvent::PBMessageId, 0)));
-
-    return kResultTrue;
   });
 }

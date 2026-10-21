@@ -50,8 +50,8 @@ public FBHostDSPContext
   std::atomic_bool _writingAudioClipsToDSPIsDirty = {};
   moodycamel::ReaderWriterQueue<FBVST3AudioClipToDSPCommand, 16> _audioClipToDSPCommands;
 
-  tresult InitializeAudioEffect(FUnknown* context);
-  tresult InitializeEditController(FUnknown* context);
+  void InitializeAudioEffect();
+  void InitializeEditController();
 
 protected:
 

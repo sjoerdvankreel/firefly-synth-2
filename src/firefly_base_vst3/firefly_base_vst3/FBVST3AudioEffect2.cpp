@@ -150,14 +150,12 @@ FBVST3Plugin::setBusArrangements(
   return SingleComponentEffect::setBusArrangements(inputs, numIns, outputs, numOuts);
 }
 
-tresult 
-FBVST3Plugin::InitializeAudioEffect(FUnknown* context)
+void 
+FBVST3Plugin::InitializeAudioEffect()
 {
   FB_LOG_ENTRY_EXIT();
-  return FBWithLogException([this, context]()
+  FBWithLogException([this]()
   {
-    if (SingleComponentEffect::initialize(context) != kResultTrue)
-      return kResultFalse;
     addEventInput(STR16("Event In"));
     addAudioOutput(STR16("Stereo Out"), SpeakerArr::kStereo);
 
@@ -167,7 +165,6 @@ FBVST3Plugin::InitializeAudioEffect(FUnknown* context)
     if (_topo->static_->meta.isFx)
       addAudioInput(STR16("Stereo In"), SpeakerArr::kStereo, BusTypes::kMain);
     addAudioInput(STR16("Sidechain"), SpeakerArr::kStereo, BusTypes::kAux);
-    return kResultTrue;
   });
 }
 

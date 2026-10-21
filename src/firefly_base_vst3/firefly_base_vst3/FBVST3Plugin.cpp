@@ -34,7 +34,9 @@ tresult PLUGIN_API
 FBVST3Plugin::initialize(FUnknown* context)
 {
   FB_LOG_ENTRY_EXIT();
-  if (InitializeEditController(context) != kResultTrue)
+  if (SingleComponentEffect::initialize(context) != kResultTrue)
     return kResultFalse;
-  return InitializeAudioEffect(context);
+  InitializeEditController();
+  InitializeAudioEffect();
+  return kResultTrue;
 }
