@@ -63,6 +63,19 @@ protected:
   void DoPerformAudioParamEdit(int index, double normalized) override;
 
 public:
+
+#if _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4458)
+#endif
+  DEFINE_INTERFACES
+    DEF_INTERFACE(IMidiMapping)
+  END_DEFINE_INTERFACES(SingleComponentEffect)
+  DELEGATE_REFCOUNT(SingleComponentEffect)
+#if _MSC_VER
+#pragma warning(pop)
+#endif
+
   ~FBVST3Plugin();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3Plugin);
 

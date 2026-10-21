@@ -7,8 +7,7 @@
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
-#include <firefly_base_vst3/FBVST3AudioEffect.hpp>
-#include <firefly_base_vst3/FBVST3EditController.hpp>
+#include <firefly_base_vst3/FBVST3Plugin.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <public.sdk/source/main/pluginfactory.h>
@@ -37,25 +36,16 @@ auto constexpr FFPlugControllerId = FFPlugControllerIdInst;
 
 class MTSClient;
 
-class FFVST3EditController final:
-public FBVST3EditController
+class FFVST3Plugin final:
+public FBVST3Plugin
 {
 public:
-  FFVST3EditController(std::unique_ptr<FBStaticTopo>&& topo):
-  FBVST3EditController(std::move(topo)) {}
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFVST3Plugin);
+  FFVST3Plugin(std::unique_ptr<FBStaticTopo>&& topo, MTSClient* mtsClient):
+  FBVST3Plugin(std::move(topo), mtsClient) {}
 
   std::string OnlineManualLocation() const override 
   { return FFPlugOnlineManualLocation; }
-};
-
-class FFVST3AudioEffect:
-public FBVST3AudioEffect
-{
-public:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FFVST3AudioEffect);
-  FFVST3AudioEffect(std::unique_ptr<FBRuntimeTopo>&& topo, FUID const& controllerId, MTSClient* mtsClient):
-  FBVST3AudioEffect(std::move(topo), controllerId, mtsClient) {}
-
   std::unique_ptr<IFBPlugProcessor> MakePlugProcessor() override
   { return std::make_unique<FFPlugProcessor>(this); }
 };
@@ -90,23 +80,12 @@ TextToFUID(char const* text)
 }
 
 static FUnknown*
-ControllerFactory(void*) 
-{
-  return FBWithLogException([]() 
-  {
-    auto result = new FFVST3EditController(FFMakeTopo(FBPlugFormat::VST3, FF_IS_FX != 0));
-    return static_cast<IEditController*>(result);
-  });
-}
-
-static FUnknown*
 ComponentFactory(void*)
 {
   return FBWithLogException([]() 
   {
-    auto controllerFuid = TextToFUID(FFPlugControllerId);
     auto staticTopo = FFMakeTopo(FBPlugFormat::VST3, FF_IS_FX != 0);
-    auto result = new FFVST3AudioEffect(std::make_unique<FBRuntimeTopo>(std::move(staticTopo)), controllerFuid, FBTuningGetMTSClient());
+    auto result = new FFVST3Plugin(std::move(staticTopo), FBTuningGetMTSClient());
     return static_cast<IAudioProcessor*>(result);
   });
 }
@@ -117,9 +96,4 @@ BEGIN_FACTORY_DEF(FFVendorName, FFVendorURL, FFVendorMail)
       PClassInfo::kManyInstances, kVstAudioEffectClass, 
       FFPlugName, 0, FFPlugType,
       FF_PLUG_VERSION, kVstVersionString, ComponentFactory);
-  DEF_CLASS2(
-    INLINE_UID_FROM_FUID(TextToFUID(FFPlugControllerId)),
-      PClassInfo::kManyInstances, kVstComponentControllerClass, 
-      FFPlugName, 0, "",
-      FF_PLUG_VERSION, kVstVersionString, ControllerFactory)
 END_FACTORY
