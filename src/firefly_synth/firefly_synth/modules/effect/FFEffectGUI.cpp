@@ -56,7 +56,7 @@ FFEffectParamListener::AudioParamChanged(
 
 bool
 FFEffectAdjustParamModulationGUIBounds(
-  FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
+  FBHostContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
 {
   auto const& rtParam = ctx->Topo()->audio.params[index];
   int staticIndex = ctx->Topo()->modules[rtParam.runtimeModuleIndex].topoIndices.index;

@@ -13,8 +13,7 @@ FBVST3Plugin(
   MTSClient* mtsClient,
   std::unique_ptr<FBExchangeStateQueueBase>&& exchangeStateQueue):
 SingleComponentEffect(),
-FBHostGUIContext(std::move(topo)),
-FBHostDSPContext(_topo.get()),
+FBHostContext(std::move(topo)),
 _mtsClient(mtsClient),
 _audioClipToDSPCommands(16),
 _exchangeStateQueue(std::move(exchangeStateQueue))

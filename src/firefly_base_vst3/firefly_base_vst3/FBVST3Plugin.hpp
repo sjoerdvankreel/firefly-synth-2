@@ -32,8 +32,7 @@ class FBVST3Plugin :
 public SingleComponentEffect,
 public IMidiMapping,
 public juce::Timer,
-public FBHostGUIContext,
-public FBHostDSPContext
+public FBHostContext
 {
   // gui
   FBVST3GUIEditor* _guiEditor = {};
@@ -62,7 +61,7 @@ protected:
     MTSClient* mtsClient,
     std::unique_ptr<FBExchangeStateQueueBase>&& exchangeStateQueue);
 
-  // FBHostGUIContext
+  // FBHostContext
   void DoEndAudioParamChange(int index) override;
   void DoBeginAudioParamChange(int index) override;
   void DoPerformAudioParamEdit(int index, double normalized) override;
@@ -90,7 +89,7 @@ public:
   // juce timer, pull exchange to gui
   void timerCallback() override;
 
-  // FBHostGUIContext
+  // FBHostContext
   void NotifyHostOfParamNameChanges() override;
   void ClearAudioParamNameOverrides() override;
   void ClearAudioParamNameOverride(int index) override;

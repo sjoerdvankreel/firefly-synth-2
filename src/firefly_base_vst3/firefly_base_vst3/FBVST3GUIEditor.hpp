@@ -18,7 +18,7 @@ using namespace Steinberg::Linux;
 
 class FBVST3Plugin;
 class FBPlugGUIContext;
-class FBHostGUIContext;
+class FBHostContext;
 
 class FBVST3GUIEditor final:
 public EditorView,
@@ -27,7 +27,7 @@ public IPlugViewContentScaleSupport
 , public IEventHandler
 #endif
 {
-  FBHostGUIContext* const _hostContext;
+  FBHostContext* const _hostContext;
   std::unique_ptr<FBPlugGUIContext> _gui;
 
   IPtr<IContextMenu> 

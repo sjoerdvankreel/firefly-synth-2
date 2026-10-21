@@ -13,7 +13,7 @@ FBPlugGUIContainer::
 ~FBPlugGUIContainer() {}
 
 FBPlugGUIContainer::
-FBPlugGUIContainer(FBHostGUIContext* hostContext):
+FBPlugGUIContainer(FBHostContext* hostContext):
 FBPlugGUIContext(hostContext),
 _gui(hostContext->Topo()->static_->guiFactory(hostContext))
 {

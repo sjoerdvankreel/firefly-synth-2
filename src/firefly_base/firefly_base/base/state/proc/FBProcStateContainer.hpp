@@ -9,7 +9,7 @@
 #include <vector>
 
 struct FBRuntimeTopo;
-class FBHostGUIContext;
+class FBHostContext;
 class FBScalarStateContainer;
 class FBExchangeStateContainer;
 
@@ -31,11 +31,10 @@ class FBProcStateContainer final
   FBNoteMatrix<FBGlobalAccParamState> _noteMatrixSmth = {};
   std::array<FBGlobalAccParamState, FBMIDIEvent::MessageCount> _midiParams = {};
 
-  // Also very VST3-centric.
-  // We keep a copy of an audio clip on both the processor side and the controller side.
+  // We keep a copy of an audio clip on both realtime and ui.
   // Controller side is a very slimmed down version (1000 samples or so -- small).
-  // Non-owning pointer! On the GUI side it comes from HostGUIContext.
-  // On the DSP side it comes from the HostDSPContext.
+  // Non-owning pointer! On the GUI side it comes from guiAudioClips.
+  // On the DSP side it comes from the dspAudioClips.
   std::map<std::string, FBAudioClip>* const _audioClips;
 
   void InitProcessing(int index, int voice, float value);
@@ -47,7 +46,7 @@ public:
 
   void SetSmoothingCoeffs(int sampleCount);
   void InitProcessing(int index, float value);
-  void InitProcessing(FBHostGUIContext const* context);
+  void InitProcessing(FBHostContext const* context);
   void InitProcessing(FBScalarStateContainer const& scalar);
   void InitProcessing(FBExchangeStateContainer const& exchange);
 

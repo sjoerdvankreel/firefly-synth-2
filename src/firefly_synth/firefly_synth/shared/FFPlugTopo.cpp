@@ -63,7 +63,7 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->defaultThemeName = "Red Green";                         
   result->guiUserScaleModule = (int)FFModuleType::GUISettings;
   result->guiUserScaleParam = (int)FFGUISettingsGUIParam::UserScale;
-  result->guiFactory = [](FBHostGUIContext* hostContext) { 
+  result->guiFactory = [](FBHostContext* hostContext) {
     return std::make_unique<FFPlugGUI>(hostContext); };
   result->deserializationConverterFactory = [](FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo) { 
     return std::make_unique<FFDeserializationConverter>(oldVersion, topo); };

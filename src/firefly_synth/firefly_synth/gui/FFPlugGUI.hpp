@@ -23,7 +23,7 @@
 
 class FFPlugGUI;
 class FBMSEGEditor;
-class FBHostGUIContext;
+class FBHostContext;
 class FBGraphRenderState;
 class FBModuleGraphComponent;
 class FBAutoSizeTabComponent;
@@ -105,7 +105,7 @@ public:
 
   ~FFPlugGUI();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
-  FFPlugGUI(FBHostGUIContext* hostContext);
+  FFPlugGUI(FBHostContext* hostContext);
 
   void FlushAudio();
   void SwitchGraphsToModule(int index, int slot);

@@ -33,8 +33,7 @@ class FBExchangeStateQueueBase;
 class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
 public juce::Timer,
-public FBHostGUIContext,
-public FBHostDSPContext
+public FBHostContext
 {
 #if _MSC_VER
 #pragma warning(push)

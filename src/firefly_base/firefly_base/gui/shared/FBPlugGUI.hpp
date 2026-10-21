@@ -27,7 +27,7 @@ class IFBParamListener;
 class IFBGUIResetListener;
 class FBGUIParamControl;
 class FBParamsDependent;
-class FBHostGUIContext;
+class FBHostContext;
 class FBMarginComponent;
 class FBContentComponent;
 class FBStackingComponent;
@@ -45,7 +45,7 @@ enum FBParamModulationBoundsSource
 
 class FBPlugGUI:
 public juce::Component,
-public IFBHostGUIContextListener
+public IFBHostContextGUIListener
 {
 public:
   virtual ~FBPlugGUI();
@@ -98,7 +98,7 @@ public:
 
   std::string GetTooltipForGUIParam(int index) const;
   std::string GetTooltipForAudioParam(FBParamControl const* control) const;
-  FBHostGUIContext* HostContext() const { return _hostContext; }
+  FBHostContext* HostContext() const { return _hostContext; }
 
   void OnPatchLoaded() override {}
   void OnGUIAudioClipsChanged() override {}
@@ -131,7 +131,7 @@ public:
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
-  FBPlugGUI(FBHostGUIContext* hostContext);
+  FBPlugGUI(FBHostContext* hostContext);
 
   virtual void ForceReLayout() = 0;
   virtual void BeforePatchChanged() = 0;
@@ -146,7 +146,7 @@ private:
   double _scale = 1.0;
   bool _patchWasPreviewed = false;
   bool _isPatchPreviewEnabled = false;
-  FBHostGUIContext* const _hostContext;
+  FBHostContext* const _hostContext;
   std::unique_ptr<FBLookAndFeel> _lookAndFeel;
   FBScalarStateContainer _patchBeforePreview;
 

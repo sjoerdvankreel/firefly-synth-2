@@ -445,7 +445,7 @@ FFMakeModMatrixGUI(FFPlugGUI* plugGUI)
 
 bool
 FFModMatrixAdjustParamModulationGUIBounds(
-  FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
+  FBHostContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
 {
   // Figure out maximum bounds of what the mod matrix would do to the 
   // current value of all sources/scales would use the full 0..1 range.

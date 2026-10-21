@@ -26,5 +26,5 @@ FFMakeOsciDetailGUI(FFPlugGUI* plugGUI, int moduleSlot);
 
 bool
 FFOsciAdjustParamModulationGUIBounds(
-  FBHostGUIContext const* ctx, int index, 
+  FBHostContext const* ctx, int index,
   float& currentMinNorm, float& currentMaxNorm);

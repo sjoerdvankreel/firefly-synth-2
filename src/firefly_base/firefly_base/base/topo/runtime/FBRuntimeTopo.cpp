@@ -114,7 +114,7 @@ FBRuntimeTopo::PrintParamList() const
 
 std::string
 FBRuntimeTopo::SaveGUIStateToString(
-  FBHostGUIContext const& hostContext) const
+  FBHostContext const& hostContext) const
 {
   return JSON::toString(SaveGUIStateToVar(hostContext)).toStdString();
 }
@@ -134,16 +134,16 @@ FBRuntimeTopo::SaveEditStateToString(
 }
 
 std::string
-FBRuntimeTopo::SavePatchStateToString(FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext) const
+FBRuntimeTopo::SavePatchStateToString(FBScalarStateContainer const& editState, FBHostContext const& hostContext) const
 {
   return JSON::toString(SavePatchStateToVar(editState, hostContext)).toStdString();
 }
 
 std::string
 FBRuntimeTopo::SaveCLAPEverythingToString(
-  FBScalarStateContainer const& editState, FBHostGUIContext const& hostGUIContext, FBHostDSPContext const& hostDSPContext, bool patchOnly) const
+  FBScalarStateContainer const& editState, FBHostContext const& hostContext, bool patchOnly) const
 {
-  return JSON::toString(SaveCLAPEverythingToVar(editState, hostGUIContext, hostDSPContext, patchOnly)).toStdString();
+  return JSON::toString(SaveCLAPEverythingToVar(editState, hostContext, patchOnly)).toStdString();
 }
 
 var
@@ -168,7 +168,7 @@ FBRuntimeTopo::SaveVST3ProcStateToVar(
 
 var
 FBRuntimeTopo::SaveCLAPEverythingToVar(
-  FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext, FBHostDSPContext const& hostDSPContext, bool patchOnly) const
+  FBScalarStateContainer const& editState, FBHostContext const& hostContext, FBHostDSPContext const& hostDSPContext, bool patchOnly) const
 {
   auto result = new DynamicObject;
   result->setProperty("gui", SaveGUIStateToVar(hostContext));
@@ -178,7 +178,7 @@ FBRuntimeTopo::SaveCLAPEverythingToVar(
 }
 
 var 
-FBRuntimeTopo::SavePatchStateToVar(FBScalarStateContainer const& editState, FBHostGUIContext const& hostContext) const
+FBRuntimeTopo::SavePatchStateToVar(FBScalarStateContainer const& editState, FBHostContext const& hostContext) const
 {
   auto result = new DynamicObject;
   // "patchState" not "patch", thats used by major-minor-patch
@@ -208,7 +208,7 @@ FBRuntimeTopo::LoadVST3EditStateFromVar(
 
 bool
 FBRuntimeTopo::LoadGUIStateFromString(
-  std::string const& text, FBHostGUIContext& hostContext) const
+  std::string const& text, FBHostContext& hostContext) const
 {
   var json;
   if (!FBParseJson(text, json))
@@ -258,7 +258,7 @@ FBRuntimeTopo::LoadVST3ProcStateFromStringWithDryRun(
 }
 
 bool 
-FBRuntimeTopo::LoadPatchStateFromString(std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext& hostContext) const
+FBRuntimeTopo::LoadPatchStateFromString(std::string const& text, FBScalarStateContainer& editState, FBHostContext& hostContext) const
 {
   var json;
   if (!FBParseJson(text, json))
@@ -283,12 +283,12 @@ FBRuntimeTopo::LoadPatchStateFromString(
 bool
 FBRuntimeTopo::LoadCLAPEverythingFromString(
   std::string const& text, FBScalarStateContainer& editState, 
-  FBHostGUIContext& hostGUIContext, FBHostDSPContext& hostDSPContext, bool patchOnly) const
+  FBHostContext& hostContext, bool patchOnly) const
 {
   var json;
   if (!FBParseJson(text, json))
     return false;
-  return LoadCLAPEverythingFromVar(json, editState, hostGUIContext, hostDSPContext, patchOnly);
+  return LoadCLAPEverythingFromVar(json, editState, hostContext, patchOnly);
 }
 
 bool
@@ -304,7 +304,7 @@ FBRuntimeTopo::LoadCLAPEverythingFromString(
 }
 
 bool 
-FBRuntimeTopo::LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostGUIContext& hostContext) const
+FBRuntimeTopo::LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostContext& hostContext) const
 {
   std::map<int, std::string> paramNameOverrides;
   std::map<std::string, FBAudioClip> guiAudioClips;
@@ -352,7 +352,7 @@ FBRuntimeTopo::LoadPatchStateFromVar(
 
 bool
 FBRuntimeTopo::LoadGUIStateFromVar(
-  var const& json, FBHostGUIContext& hostContext) const
+  var const& json, FBHostContext& hostContext) const
 {
   std::map<int, std::string> paramNameOverrides;
   std::map<std::string, FBAudioClip> guiAudioClips;
@@ -384,19 +384,19 @@ FBRuntimeTopo::LoadCLAPEverythingFromVar(
 
 bool
 FBRuntimeTopo::LoadCLAPEverythingFromVar(
-  var const& json, FBScalarStateContainer& editState, FBHostGUIContext& hostGUIContext, FBHostDSPContext& hostDSPContext, bool patchOnly) const
+  var const& json, FBScalarStateContainer& editState, FBHostContext& hostContext, bool patchOnly) const
 {
   DynamicObject* obj = json.getDynamicObject();
   std::map<int, std::string> paramNameOverrides;
   std::map<std::string, FBAudioClip> guiAudioClips;
   if (obj->hasProperty("gui"))
-    if (LoadGUIStateFromVar(obj->getProperty("gui"), *hostGUIContext.GUIState(), paramNameOverrides, guiAudioClips))
+    if (LoadGUIStateFromVar(obj->getProperty("gui"), *hostContext.GUIState(), paramNameOverrides, guiAudioClips))
     {
-      hostGUIContext.SetAudioParamNameOverrides(paramNameOverrides);
-      hostGUIContext.SetGUIAudioClips(guiAudioClips);
+      hostContext.SetAudioParamNameOverrides(paramNameOverrides);
+      hostContext.SetGUIAudioClips(guiAudioClips);
     }
   if (obj->hasProperty("dspAudioClips"))
-    LoadAudioClipsFromVar(obj->getProperty("dspAudioClips"), hostDSPContext.GetDSPAudioClips());
+    LoadAudioClipsFromVar(obj->getProperty("dspAudioClips"), hostContext.GetDSPAudioClips());
   if (obj->hasProperty("edit"))
     return LoadEditStateFromVar(obj->getProperty("edit"), editState, patchOnly);
   FB_LOG_ERROR("Missing edit state.");
@@ -431,7 +431,7 @@ FBRuntimeTopo::LoadVST3ProcStateFromVarWithDryRun(
 
 void
 FBRuntimeTopo::LoadVST3GUIStateFromStringWithDryRun(
-  std::string const& text, FBHostGUIContext& hostContext) const
+  std::string const& text, FBHostContext& hostContext) const
 {
   FBGUIStateContainer dryGUIState(*this);
   std::map<int, std::string> paramNameOverrides;
@@ -449,25 +449,25 @@ FBRuntimeTopo::LoadVST3GUIStateFromStringWithDryRun(
 
 void
 FBRuntimeTopo::LoadCLAPEverythingFromStringWithDryRun(
-  std::string const& text, FBScalarStateContainer& editState, FBHostGUIContext& hostGUIContext, FBHostDSPContext& hostDSPContext, bool patchOnly) const
+  std::string const& text, FBScalarStateContainer& editState, FBHostContext& hostContext, bool patchOnly) const
 {
   FBGUIStateContainer dryGUIState(*this);
   FBScalarStateContainer dryEditState(*this);
   std::map<int, std::string> paramNameOverrides;
   std::map<std::string, FBAudioClip> guiAudioClips;
   std::map<std::string, FBAudioClip> dspAudioClips;
-  dryGUIState.CopyFrom(*hostGUIContext.GUIState());
+  dryGUIState.CopyFrom(*hostContext.GUIState());
   dryEditState.CopyFrom(this, editState, patchOnly);
   if (!LoadCLAPEverythingFromString(text, dryEditState, dryGUIState, paramNameOverrides, guiAudioClips, dspAudioClips, patchOnly))
     return;
   editState.CopyFrom(this, dryEditState, patchOnly);
-  hostGUIContext.GUIState()->CopyFrom(dryGUIState);
-  hostGUIContext.GUIState()->SetPatchName(dryGUIState.PatchName());
-  hostGUIContext.GUIState()->SetThemeName(dryGUIState.ThemeName());
-  hostGUIContext.GUIState()->SetInstanceName(dryGUIState.InstanceName());
-  hostGUIContext.SetAudioParamNameOverrides(paramNameOverrides);
-  hostGUIContext.SetGUIAudioClips(guiAudioClips);
-  hostDSPContext.GetDSPAudioClips() = dspAudioClips;
+  hostContext.GUIState()->CopyFrom(dryGUIState);
+  hostContext.GUIState()->SetPatchName(dryGUIState.PatchName());
+  hostContext.GUIState()->SetThemeName(dryGUIState.ThemeName());
+  hostContext.GUIState()->SetInstanceName(dryGUIState.InstanceName());
+  hostContext.SetAudioParamNameOverrides(paramNameOverrides);
+  hostContext.SetGUIAudioClips(guiAudioClips);
+  hostContext.GetDSPAudioClips() = dspAudioClips;
 }
 
 var
@@ -525,7 +525,7 @@ FBRuntimeTopo::LoadAudioClipsFromVar(juce::var const& json, std::map<std::string
 }
 
 var 
-FBRuntimeTopo::SaveParamNameOverridesToVar(FBHostGUIContext const& hostContext) const
+FBRuntimeTopo::SaveParamNameOverridesToVar(FBHostContext const& hostContext) const
 {
   std::string name;
   DynamicObject* result = new DynamicObject;
@@ -568,7 +568,7 @@ FBRuntimeTopo::LoadParamNameOverridesFromVar(var const& json, std::map<int, std:
 
 var
 FBRuntimeTopo::SaveGUIStateToVar(
-  FBHostGUIContext const& hostContext) const
+  FBHostContext const& hostContext) const
 {
   DynamicObject* result = new DynamicObject;
   result->setProperty("params", SaveParamStateToVar(*hostContext.GUIState(), this->gui.params, false));

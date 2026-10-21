@@ -8,7 +8,7 @@
 #include <algorithm>
 
 FBPlugGUIContext::
-FBPlugGUIContext(FBHostGUIContext* const hostContext):
+FBPlugGUIContext(FBHostContext* const hostContext):
 _hostContext(hostContext) 
 {
   FB_LOG_ENTRY_EXIT();

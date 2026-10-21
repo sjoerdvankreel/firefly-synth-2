@@ -50,7 +50,7 @@ FFPlugGUI::
 ~FFPlugGUI() { }
 
 FFPlugGUI::
-FFPlugGUI(FBHostGUIContext* hostContext):
+FFPlugGUI(FBHostContext* hostContext):
 FBPlugGUI(hostContext),
 _graphRenderState(std::make_unique<FBGraphRenderState>(this))
 {

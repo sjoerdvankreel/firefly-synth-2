@@ -32,7 +32,7 @@ FBPlugGUI::
 }
 
 FBPlugGUI::
-FBPlugGUI(FBHostGUIContext* hostContext) :
+FBPlugGUI(FBHostContext* hostContext) :
 _hostContext(hostContext),
 _lookAndFeel(std::make_unique<FBLookAndFeel>()),
 _patchBeforePreview(*hostContext->Topo())

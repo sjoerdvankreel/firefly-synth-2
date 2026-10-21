@@ -88,7 +88,7 @@ FBProcStateContainer::InitProcessing(
 
 void 
 FBProcStateContainer::InitProcessing(
-  FBHostGUIContext const* context)
+  FBHostContext const* context)
 {
   for (int p = 0; p < Params().size(); p++)
     InitProcessing(p, static_cast<float>(context->GetAudioParamNormalized(p)));

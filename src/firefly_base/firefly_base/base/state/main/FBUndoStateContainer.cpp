@@ -5,7 +5,7 @@
 
 static void
 SwapContextForItem(
-  FBHostGUIContext* hostContext,
+  FBHostContext* hostContext,
   FBUndoItem& item)
 {
   FBScalarStateContainer tempState(*hostContext->Topo());
@@ -21,7 +21,7 @@ SwapContextForItem(
 }
 
 FBUndoStateContainer::
-FBUndoStateContainer(FBHostGUIContext* hostContext):
+FBUndoStateContainer(FBHostContext* hostContext):
 _hostContext(hostContext) {}
 
 void

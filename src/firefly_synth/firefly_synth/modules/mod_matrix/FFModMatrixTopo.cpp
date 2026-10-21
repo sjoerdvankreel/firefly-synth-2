@@ -386,7 +386,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     target.List().items.push_back({ id, name });
   }
 
-  target.List().enabledSelector = [global](FBHostGUIContext const* context, int runtimeTargetValue)
+  target.List().enabledSelector = [global](FBHostContext const* context, int runtimeTargetValue)
   {
     if (runtimeTargetValue == 0)
       return true; // Off

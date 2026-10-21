@@ -228,7 +228,7 @@ FFMakeGlobalUniGUI(
 
 bool
 FFGlobalUniAdjustParamModulationGUIBounds(
-  FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
+  FBHostContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
 {
   // Better keep this in check with the processor's ApplyToVoice.
 

@@ -6,7 +6,7 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 FBVST3Parameter::
-FBVST3Parameter(FBHostGUIContext const* hostContext, FBRuntimeParam const* topo, ParameterInfo const& info) :
+FBVST3Parameter(FBHostContext const* hostContext, FBRuntimeParam const* topo, ParameterInfo const& info) :
 Parameter(info), _hostContext(hostContext), _topo(topo), _infoOverride(info) {}
 
 void 
