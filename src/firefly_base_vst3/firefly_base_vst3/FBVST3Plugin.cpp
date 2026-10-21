@@ -1,16 +1,21 @@
 #include <firefly_base_vst3/FBVST3Plugin.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
+#include <firefly_base/base/shared/FBExchangeStateQueue.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/state/main/FBGUIStateContainer.hpp>
 
 FBVST3Plugin::
-FBVST3Plugin(std::unique_ptr<FBStaticTopo>&& topo, MTSClient* mtsClient):
+FBVST3Plugin(
+  std::unique_ptr<FBStaticTopo>&& topo, 
+  MTSClient* mtsClient,
+  std::unique_ptr<FBExchangeStateQueueBase>&& exchangeStateQueue):
 SingleComponentEffect(),
 FBHostGUIContext(std::move(topo)),
 FBHostDSPContext(_topo.get()),
 _mtsClient(mtsClient),
-_audioClipToDSPCommands(16)
+_audioClipToDSPCommands(16),
+_exchangeStateQueue(std::move(exchangeStateQueue))
 {
   FB_LOG_ENTRY_EXIT();
   processContextRequirements.needTempo();

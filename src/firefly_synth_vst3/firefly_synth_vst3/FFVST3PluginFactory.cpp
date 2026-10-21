@@ -1,4 +1,5 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/dsp/plug/FFPlugProcessor.hpp>
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
@@ -6,6 +7,7 @@
 #include <firefly_base/dsp/shared/FBTuning.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
+#include <firefly_base/base/shared/FBExchangeStateQueue.hpp>
 
 #include <firefly_base_vst3/FBVST3Plugin.hpp>
 
@@ -40,14 +42,14 @@ class FFVST3Plugin final:
 public FBVST3Plugin
 {
 public:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FFVST3Plugin);
-  FFVST3Plugin(std::unique_ptr<FBStaticTopo>&& topo, MTSClient* mtsClient):
-  FBVST3Plugin(std::move(topo), mtsClient) {}
-
   std::string OnlineManualLocation() const override 
   { return FFPlugOnlineManualLocation; }
   std::unique_ptr<IFBPlugProcessor> MakePlugProcessor() override
   { return std::make_unique<FFPlugProcessor>(this); }
+
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFVST3Plugin);
+  FFVST3Plugin(std::unique_ptr<FBStaticTopo>&& topo, MTSClient* mtsClient):
+  FBVST3Plugin(std::move(topo), mtsClient, std::make_unique<FBExchangeStateQueue<FBQueuedExchangeState<FFExchangeState>>>()) {}
 };
 
 bool

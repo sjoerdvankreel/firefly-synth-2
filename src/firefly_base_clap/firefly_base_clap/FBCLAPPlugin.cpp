@@ -1,11 +1,11 @@
 #include <firefly_base_clap/FBCLAPPlugin.hpp>
 #include <firefly_base_clap/FBCLAPUtility.hpp>
-#include <firefly_base_clap/FBCLAPExchangeStateQueue.hpp>
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
 #include <firefly_base/dsp/plug/FBPlugProcessor.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
+#include <firefly_base/base/shared/FBExchangeStateQueue.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
@@ -176,7 +176,7 @@ FBCLAPPlugin(
   clap_plugin_descriptor const* desc,
   clap_host const* host,
   MTSClient* mtsClient,
-  std::unique_ptr<FBCLAPExchangeStateQueueBase>&& exchangeStateQueue):
+  std::unique_ptr<FBExchangeStateQueueBase>&& exchangeStateQueue):
 Plugin(desc, host),
 FBHostGUIContext(std::move(topo)),
 FBHostDSPContext(_topo.get()),
@@ -185,8 +185,8 @@ _mainToAudioEvents(FBCLAPSyncEventReserve - 1),
 _mtsClient(mtsClient),
 _gui(),
 _editState(std::make_unique<FBScalarStateContainer>(*_topo)),
-_exchangeStateQueue(std::move(exchangeStateQueue)),
-_audioClipToDSPCommands(16)
+_audioClipToDSPCommands(16),
+_exchangeStateQueue(std::move(exchangeStateQueue))
 {
   FB_LOG_ENTRY_EXIT();
 }

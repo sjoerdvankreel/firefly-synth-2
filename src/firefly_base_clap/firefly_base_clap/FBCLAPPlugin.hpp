@@ -28,7 +28,7 @@ class FBGUIStateContainer;
 class FBProcStateContainer;
 class FBScalarStateContainer;
 class FBExchangeStateContainer;
-class FBCLAPExchangeStateQueueBase;
+class FBExchangeStateQueueBase;
 
 class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
@@ -52,11 +52,11 @@ public FBHostDSPContext
   std::unique_ptr<FBPlugGUIContext> _gui;
   std::unique_ptr<FBScalarStateContainer> _editState;
   std::map<int, std::string> _audioParamNameOverridesByIndex = {};
-  std::unique_ptr<FBCLAPExchangeStateQueueBase> _exchangeStateQueue;
 
   mutable std::mutex _blockWritingAudioClipsToDSP = {};
   std::atomic_bool _writingAudioClipsToDSPIsDirty = {};
   moodycamel::ReaderWriterQueue<FBCLAPAudioClipToDSPCommand, 16> _audioClipToDSPCommands;
+  std::unique_ptr<FBExchangeStateQueueBase> _exchangeStateQueue;
 
   float _sampleRate = 0.0f;
   FBHostInputBlock _input = {};
@@ -82,7 +82,7 @@ public:
     clap_plugin_descriptor const* desc, 
     clap_host const* host,    
     MTSClient* mtsClient,
-    std::unique_ptr<FBCLAPExchangeStateQueueBase>&& exchangeStateQueue);
+    std::unique_ptr<FBExchangeStateQueueBase>&& exchangeStateQueue);
 
   bool init() noexcept override;
   void timerCallback() override;

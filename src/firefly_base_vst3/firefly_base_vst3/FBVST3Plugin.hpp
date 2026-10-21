@@ -26,6 +26,7 @@ class IFBPlugProcessor;
 class FBVST3GUIEditor;
 class FBGUIStateContainer;
 class FBProcStateContainer;
+class FBExchangeStateQueueBase;
 class FBExchangeStateContainer;
 
 class FBVST3Plugin :
@@ -49,13 +50,17 @@ public FBHostDSPContext
   mutable std::mutex _blockWritingAudioClipsToDSP = {};
   std::atomic_bool _writingAudioClipsToDSPIsDirty = {};
   moodycamel::ReaderWriterQueue<FBVST3AudioClipToDSPCommand, 16> _audioClipToDSPCommands;
+  std::unique_ptr<FBExchangeStateQueueBase> _exchangeStateQueue;
 
   void InitializeAudioEffect();
   void InitializeEditController();
 
 protected:
 
-  FBVST3Plugin(std::unique_ptr<FBStaticTopo>&& topo, MTSClient* mtsClient);
+  FBVST3Plugin(
+    std::unique_ptr<FBStaticTopo>&& topo,
+    MTSClient* mtsClient,
+    std::unique_ptr<FBExchangeStateQueueBase>&& exchangeStateQueue);
 
   // FBHostGUIContext
   void DoEndAudioParamChange(int index) override;
