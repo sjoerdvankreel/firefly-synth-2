@@ -95,16 +95,11 @@ public:
   void ClearAudioParamNameOverride(int index) override;
   bool GetAudioParamNameOverride(int index, std::string& name) const override;
   void SetAudioParamNameOverride(int index, std::string const& name) override;
-  void ClearDSPAudioClipToDSP(std::string const& id) override;
-  void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip) override;
-  std::map<std::string, FBAudioClip> PullDSPAudioClipsToGUI() const override;
-  void PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips) override;
   double GetAudioParamNormalized(int index) const override;
   void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;
   std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) override;
 
   // FBHostContext (dsp)
-  void PullDSPAudioClipsFromGUI() override;
   float SampleRate() const override { return _sampleRate; }
   MTSClient* GetMTSClient() override { return _mtsClient; }
 
