@@ -67,6 +67,7 @@ public:
 #endif
   DEFINE_INTERFACES
     DEF_INTERFACE(IMidiMapping)
+    DEF_INTERFACE(IEditController)
   END_DEFINE_INTERFACES(SingleComponentEffect)
   DELEGATE_REFCOUNT(SingleComponentEffect)
 #if _MSC_VER
