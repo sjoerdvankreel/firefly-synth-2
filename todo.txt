@@ -30,6 +30,7 @@ v CLAP is guaranteed single process. luvu.
 v hunt down the comments for kDistributable and singlecomponenteffect
 v sidechaintests are borked
 v FLStudioVST3ModMatrix not load good
+- do filters in the sampler like audioin
 - also finish up the new demo tune with some vocals and include the patches right away
 - recheck automation lanes on all renoise things
 - close the renoise bug
