@@ -269,7 +269,7 @@ FBVST3EditController::createView(FIDString name)
     if (ConstString(name) != ViewType::kEditor)
       return static_cast<IPlugView*>(nullptr);
     if (_guiEditor == nullptr)
-      _guiEditor = new FBVST3GUIEditor(this);
+      _guiEditor = new FBVST3GUIEditor(nullptr);
     return static_cast<IPlugView*>(_guiEditor);
   });
 }

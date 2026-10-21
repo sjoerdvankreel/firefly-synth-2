@@ -26,6 +26,7 @@ inline int constexpr FBVST3MIDIParameterMappingBegin = std::numeric_limits<int>:
 // VST3 goes thru the host queue first, is received by the processor (on the gui thread no less),
 // then pushed from processor "gui" to processor realtime.
 // CLAP skips the host queue (IMessage).
+// TODO Sampler
 struct FBVST3AudioClipToDSPCommand
 {
   enum { ClearSingle, LoadSingle, LoadAll } Type;

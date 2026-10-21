@@ -16,9 +16,9 @@ using namespace Steinberg::Vst;
 using namespace Steinberg::Linux;
 #endif
 
+class FBVST3Plugin;
 class FBPlugGUIContext;
 class FBHostGUIContext;
-class FBVST3EditController;
 
 class FBVST3GUIEditor final:
 public EditorView,
@@ -36,7 +36,7 @@ public IPlugViewContentScaleSupport
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3GUIEditor);
   ~FBVST3GUIEditor();
-  FBVST3GUIEditor(FBVST3EditController* editController);
+  FBVST3GUIEditor(FBVST3Plugin* plugin);
 
 #if SMTG_OS_LINUX
   void PLUGIN_API onFDIsSet(FileDescriptor fd) override;

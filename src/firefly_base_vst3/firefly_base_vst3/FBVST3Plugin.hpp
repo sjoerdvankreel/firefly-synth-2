@@ -1,0 +1,111 @@
+#pragma once
+
+#include <firefly_base_vst3/FBVST3Utility.hpp>
+#include <firefly_base/base/shared/FBSIMD.hpp>
+#include <firefly_base/dsp/host/FBHostBlock.hpp>
+#include <firefly_base/dsp/host/FBHostDSPContext.hpp>
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+
+#include <public.sdk/source/vst/vstsinglecomponenteffect.h>
+#include <readerwriterqueue.h>
+
+#include <array>
+#include <vector>
+#include <memory>
+#include <thread>
+
+using namespace Steinberg;
+using namespace Steinberg::Vst;
+
+struct FBStaticTopo;
+struct FBRuntimeTopo;
+
+class MTSClient;
+class FBHostProcessor;
+class IFBPlugProcessor;
+class FBVST3GUIEditor;
+class FBGUIStateContainer;
+class FBProcStateContainer;
+class FBExchangeStateContainer;
+
+class FBVST3Plugin :
+public SingleComponentEffect,
+public IMidiMapping,
+public FBHostGUIContext,
+public FBHostDSPContext
+{
+  // gui
+  FBVST3GUIEditor* _guiEditor = {};
+
+  // realtime
+  MTSClient* _mtsClient;
+  float _sampleRate = 0.0f;
+  FBHostInputBlock _input = {};
+  FBHostOutputBlock _output = {};
+  std::array<std::vector<float>, 2> _zeroIn = {};
+  std::unique_ptr<FBHostProcessor> _hostProcessor = {};
+
+  // shared
+  mutable std::mutex _blockWritingAudioClipsToDSP = {};
+  std::atomic_bool _writingAudioClipsToDSPIsDirty = {};
+  moodycamel::ReaderWriterQueue<FBVST3AudioClipToDSPCommand, 16> _audioClipToDSPCommands;
+
+  tresult InitializeAudioEffect(FUnknown* context);
+  tresult InitializeEditController(FUnknown* context);
+
+protected:
+
+  FBVST3Plugin(std::unique_ptr<FBStaticTopo>&& topo, MTSClient* mtsClient);
+
+  // FBHostGUIContext
+  void DoEndAudioParamChange(int index) override;
+  void DoBeginAudioParamChange(int index) override;
+  void DoPerformAudioParamEdit(int index, double normalized) override;
+
+public:
+  ~FBVST3Plugin();
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3Plugin);
+
+  // for gui editor
+  void ResetView();
+
+  // FBHostGUIContext
+  void NotifyHostOfParamNameChanges() override;
+  void ClearAudioParamNameOverrides() override;
+  void ClearAudioParamNameOverride(int index) override;
+  bool GetAudioParamNameOverride(int index, std::string& name) const override;
+  void SetAudioParamNameOverride(int index, std::string const& name) override;
+  void ClearDSPAudioClipToDSP(std::string const& id) override;
+  void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip) override;
+  std::map<std::string, FBAudioClip> PullDSPAudioClipsToGUI() const override;
+  void PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips) override;
+  double GetAudioParamNormalized(int index) const override;
+  void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;
+  std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) override;
+
+  // FBHostDSPContext
+  void PullDSPAudioClipsFromGUI() override;
+  float SampleRate() const override { return _sampleRate; }
+  MTSClient* GetMTSClient() override { return _mtsClient; }
+  FBRuntimeTopo const* Topo() const override { return _topo.get(); }
+
+  // SingleComponentEffect, both
+  tresult PLUGIN_API initialize(FUnknown* context) override;
+
+  // SingleComponentEffect, controller
+  tresult PLUGIN_API setEditorState(IBStream* state) override;
+  tresult PLUGIN_API getEditorState(IBStream* state) override;
+  IPlugView* PLUGIN_API createView(FIDString name) override;
+  tresult PLUGIN_API setComponentState(IBStream* state) override;
+  tresult PLUGIN_API setParamNormalized(ParamID tag, ParamValue value) override;
+  tresult PLUGIN_API getMidiControllerAssignment(int32 bus, int16 channel, CtrlNumber number, ParamID& id) override;
+
+  // SingleComponentEffect, processor
+  tresult PLUGIN_API setState(IBStream* state) override;
+  tresult PLUGIN_API getState(IBStream* state) override;
+  tresult PLUGIN_API process(ProcessData& data) override;
+  tresult PLUGIN_API setupProcessing(ProcessSetup& setup) override;
+  tresult PLUGIN_API canProcessSampleSize(int32 symbolicSize) override;
+  tresult PLUGIN_API setBusArrangements(SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts) override;
+  uint32 PLUGIN_API getLatencySamples() override { return FBFixedBlockSamples; }
+};
