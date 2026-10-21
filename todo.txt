@@ -28,6 +28,11 @@ v store in patchfile only for now, maybe expand to link on disk with all headach
 v how tf i push from controller to processor. this is not params, may need dataexchange for vst3. but not super-supported everywhere, fallback to msg/connectionpoint?
 v CLAP is guaranteed single process. luvu.
 v hunt down the comments for kDistributable and singlecomponenteffect
+- sidechaintests are borked
+- FLStudioVST3ModMatrix not load good
+- retest everything flstudio
+- retest everything Linux and mac
+- check all prev unsupported dataexchange etc, should now work, and notify
 - notify about need full cache rescan
 - recheck on all hosts: offset from defaults, realtime gui
 - do patch side ???
