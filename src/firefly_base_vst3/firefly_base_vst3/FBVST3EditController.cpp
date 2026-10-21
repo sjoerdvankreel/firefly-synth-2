@@ -103,7 +103,7 @@ FBVST3Plugin::setParamNormalized(ParamID tag, ParamValue value)
   if (result != kResultTrue || tag >= FBVST3MIDIParameterMappingBegin)
     return result;
   if (_guiEditor != nullptr)
-    _guiEditor->SetAudioParamNormalizedFromHost(_topo->audio.paramTagToIndex[tag], value);
+    _guiEditor->SetAudioParamNormalizedFromHost(Topo()->audio.paramTagToIndex[tag], value);
   return kResultTrue;
 }
 
@@ -113,7 +113,7 @@ FBVST3Plugin::getEditorState(IBStream* state)
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, state]()
   {
-    std::string json = _topo->SaveGUIStateToString(*this);
+    std::string json = Topo()->SaveGUIStateToString(*this);
     if (!FBVST3SaveIBStream(state, json))
       return kResultFalse;
     return kResultOk;
@@ -129,12 +129,12 @@ FBVST3Plugin::setEditorState(IBStream* state)
     std::string json;
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
-    _topo->LoadVST3GUIStateFromStringWithDryRun(json, *this);
+    Topo()->LoadVST3GUIStateFromStringWithDryRun(json, *this);
     OnPatchNameChanged();
     OnInstanceNameChanged();    
     OnGUIAudioClipsChanged();
     if(_guiEditor != nullptr)
-      for (int i = 0; i < _guiState->Params().size(); i++)
+      for (int i = 0; i < GUIState()->Params().size(); i++)
         _guiEditor->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));      
     MarkPatchAsSessionState();
     NotifyHostOfParamNameChanges();
@@ -151,11 +151,11 @@ FBVST3Plugin::setComponentState(IBStream* state)
     std::string json;
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
-    FBScalarStateContainer edit(*_topo);
-    if (!_topo->LoadVST3EditStateFromString(json, edit, false))
+    FBScalarStateContainer edit(*Topo());
+    if (!Topo()->LoadVST3EditStateFromString(json, edit, false))
       return kResultFalse;
     for (int i = 0; i < edit.Params().size(); i++)
-      setParamNormalized(_topo->audio.params[i].tag, *edit.Params()[i]);
+      setParamNormalized(Topo()->audio.params[i].tag, *edit.Params()[i]);
     MarkPatchAsSessionState();
     NotifyHostOfParamNameChanges();
     return kResultOk;
@@ -169,13 +169,13 @@ FBVST3Plugin::InitializeEditController()
   FBWithLogException([this]()
   {
     int unitId = 1;
-    for (int m = 0; m < _topo->modules.size(); m++)
+    for (int m = 0; m < Topo()->modules.size(); m++)
     {
-      addUnit(new Unit(MakeUnitInfo(_topo->modules[m], unitId)));
-      for (int p = 0; p < _topo->modules[m].params.size(); p++)
+      addUnit(new Unit(MakeUnitInfo(Topo()->modules[m], unitId)));
+      for (int p = 0; p < Topo()->modules[m].params.size(); p++)
       {
-        FB_ASSERT(_topo->modules[m].params[p].tag < FBVST3MIDIParameterMappingBegin);
-        auto const& topo = _topo->modules[m].params[p];
+        FB_ASSERT(Topo()->modules[m].params[p].tag < FBVST3MIDIParameterMappingBegin);
+        auto const& topo = Topo()->modules[m].params[p];
         auto info = MakePlugParamInfo(topo, unitId);
         parameters.addParameter(new FBVST3Parameter(this, &topo, info));
       }

@@ -74,7 +74,6 @@ class FBHostContext
   void ShowOnlineManualForModule(int index) const;
 
 protected:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostContext);
   FBHostContext(std::unique_ptr<FBStaticTopo>&& topo);
 
   void OnPatchLoaded();
@@ -87,7 +86,7 @@ protected:
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
 
 public:
-  virtual ~FBHostContext() {}
+  virtual ~FBHostContext();
   FB_NOCOPY_NOMOVE_DEFCTOR(FBHostContext);
 
   virtual float SampleRate() const = 0;
@@ -190,6 +189,7 @@ public:
   FBRuntimeTopo const* Topo() const { return _topo.get(); }
   FBGUIStateContainer* GUIState() { return _guiState.get(); }
   FBGUIStateContainer const* GUIState() const { return _guiState.get(); }
+  FBExchangeStateContainer* ExchangeFromDSPState() { return _exchangeFromDSPState.get(); }
   FBExchangeStateContainer const* ExchangeFromDSPState() const { return _exchangeFromDSPState.get(); }
 };
 

@@ -55,7 +55,7 @@ FBVST3Plugin::timerCallback()
   FBWithLogException([this]()
   {
     bool receivedExchange = false;
-    while (_exchangeStateQueue->TryDequeue(_exchangeFromDSPState->Raw()))
+    while (_exchangeStateQueue->TryDequeue(ExchangeFromDSPState()->Raw()))
       receivedExchange = true;
     if (receivedExchange && _guiEditor)
       _guiEditor->UpdateExchangeState();

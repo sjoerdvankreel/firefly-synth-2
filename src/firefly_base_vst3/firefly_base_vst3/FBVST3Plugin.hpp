@@ -107,7 +107,6 @@ public:
   void PullDSPAudioClipsFromGUI() override;
   float SampleRate() const override { return _sampleRate; }
   MTSClient* GetMTSClient() override { return _mtsClient; }
-  FBRuntimeTopo const* Topo() const override { return _topo.get(); }
 
   // SingleComponentEffect, both
   tresult PLUGIN_API initialize(FUnknown* context) override;

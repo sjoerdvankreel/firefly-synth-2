@@ -19,6 +19,11 @@ struct MenuBuilder
 };
 
 FBHostContext::
+~FBHostContext()
+{
+}
+
+FBHostContext::
 FBHostContext(std::unique_ptr<FBStaticTopo>&& topo):
 _topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
 _undoState(this),
@@ -132,29 +137,29 @@ FBHostContext::InstanceName() const
 void
 FBHostContext::OnPatchLoaded()
 {
-  for (int i = 0; i < _listeners.size(); i++)
-    _listeners[i]->OnPatchLoaded();
+  for (int i = 0; i < _guiListeners.size(); i++)
+    _guiListeners[i]->OnPatchLoaded();
 }
 
 void
 FBHostContext::OnPatchNameChanged()
 {
-  for (int i = 0; i < _listeners.size(); i++)
-    _listeners[i]->OnPatchNameChanged(PatchName());
+  for (int i = 0; i < _guiListeners.size(); i++)
+    _guiListeners[i]->OnPatchNameChanged(PatchName());
 }
 
 void
 FBHostContext::OnGUIAudioClipsChanged()
 {
-  for (int i = 0; i < _listeners.size(); i++)
-    _listeners[i]->OnGUIAudioClipsChanged();
+  for (int i = 0; i < _guiListeners.size(); i++)
+    _guiListeners[i]->OnGUIAudioClipsChanged();
 }
 
 void
 FBHostContext::OnInstanceNameChanged()
 {
-  for (int i = 0; i < _listeners.size(); i++)
-    _listeners[i]->OnInstanceNameChanged(InstanceName());
+  for (int i = 0; i < _guiListeners.size(); i++)
+    _guiListeners[i]->OnInstanceNameChanged(InstanceName());
 }
 
 void 

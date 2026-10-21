@@ -93,7 +93,7 @@ FBVST3Plugin::getState(IBStream* state)
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, state]()
   {
-    std::string json = _topo->SaveVST3ProcStateToString(*ProcState(), false);
+    std::string json = Topo()->SaveVST3ProcStateToString(*ProcState(), false);
     if (!FBVST3SaveIBStream(state, json))
       return kResultFalse;
     return kResultOk;
@@ -109,7 +109,7 @@ FBVST3Plugin::setState(IBStream* state)
     std::string json;
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
-    _topo->LoadVST3ProcStateFromStringWithDryRun(json, *ProcState(), false);
+    Topo()->LoadVST3ProcStateFromStringWithDryRun(json, *ProcState(), false);
     return kResultOk;
   });
 }
@@ -132,7 +132,7 @@ tresult PLUGIN_API
 FBVST3Plugin::setBusArrangements(
   SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts)
 {
-  if (_topo->static_->meta.isFx)
+  if (Topo()->static_->meta.isFx)
   {
     if (numIns != 0 && numIns != 1 && numIns != 2)
       return kResultFalse;
@@ -163,7 +163,7 @@ FBVST3Plugin::InitializeAudioEffect()
     // The bustype is important to bitwig.
     // With main, it wont accept sidechaining.
     // We allow side in for synth and fx both.
-    if (_topo->static_->meta.isFx)
+    if (Topo()->static_->meta.isFx)
       addAudioInput(STR16("Stereo In"), SpeakerArr::kStereo, BusTypes::kMain);
     addAudioInput(STR16("Sidechain"), SpeakerArr::kStereo, BusTypes::kAux);
   });
@@ -215,10 +215,10 @@ FBVST3Plugin::process(ProcessData& data)
                 if (inQueue->getPoint(point, position, value) == kResultTrue)
                   midi.push_back(MakeMIDIEvent(paramId - FBVST3MIDIParameterMappingBegin, position, value));
             }
-            else if ((iter = _topo->audio.paramTagToIndex.find(paramId)) != _topo->audio.paramTagToIndex.end())
+            else if ((iter = Topo()->audio.paramTagToIndex.find(paramId)) != Topo()->audio.paramTagToIndex.end())
             {
-              if (_topo->audio.params[iter->second].static_.mode == FBParamMode::Accurate ||
-                _topo->audio.params[iter->second].static_.mode == FBParamMode::VoiceStart)
+              if (Topo()->audio.params[iter->second].static_.mode == FBParamMode::Accurate ||
+                Topo()->audio.params[iter->second].static_.mode == FBParamMode::VoiceStart)
               {
                 for (int point = 0; point < inQueue->getPointCount(); point++)
                   if (inQueue->getPoint(point, position, value) == kResultTrue)
@@ -241,7 +241,7 @@ FBVST3Plugin::process(ProcessData& data)
     float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
     _input.mainAudio = FBHostAudioBlock(zeroIn, data.numSamples);
     _input.sidechainAudio = FBHostAudioBlock(zeroIn, data.numSamples);
-    if (!_topo->static_->meta.isFx)
+    if (!Topo()->static_->meta.isFx)
     {
       if(data.numInputs > 0 && data.inputs[0].numChannels == 2 && data.inputs[0].channelBuffers32 != nullptr)
         _input.sidechainAudio = FBHostAudioBlock(data.inputs[0].channelBuffers32, data.numSamples);
@@ -262,7 +262,7 @@ FBVST3Plugin::process(ProcessData& data)
       {
         int unused;
         auto const& outEvent = _output.outputParams[i];
-        int tag = _topo->audio.params[outEvent.param].tag;
+        int tag = Topo()->audio.params[outEvent.param].tag;
         auto outQueue = data.outputParameterChanges->addParameterData(tag, unused);
         if (outQueue != nullptr)
           outQueue->addPoint(0, outEvent.normalized, unused);

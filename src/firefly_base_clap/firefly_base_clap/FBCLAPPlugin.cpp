@@ -183,7 +183,7 @@ _audioToMainEvents(FBCLAPSyncEventReserve - 1),
 _mainToAudioEvents(FBCLAPSyncEventReserve - 1),
 _mtsClient(mtsClient),
 _gui(),
-_editState(std::make_unique<FBScalarStateContainer>(*_topo)),
+_editState(std::make_unique<FBScalarStateContainer>(*Topo())),
 _audioClipToDSPCommands(16),
 _exchangeStateQueue(std::move(exchangeStateQueue))
 {
@@ -209,7 +209,7 @@ FBCLAPPlugin::timerCallback()
         _gui->SetAudioParamNormalizedFromHost(event.paramIndex, event.normalized);
 
     bool receivedExchange = false;
-    while (_exchangeStateQueue->TryDequeue(_exchangeFromDSPState->Raw()))
+    while (_exchangeStateQueue->TryDequeue(ExchangeFromDSPState()->Raw()))
       receivedExchange = true;
     if (receivedExchange && _gui)
       _gui->UpdateExchangeState();
@@ -222,8 +222,8 @@ FBCLAPPlugin::getParamIndexForParamId(
 {
   return FBWithLogException([this, paramId]()
   {
-    auto iter = _topo->audio.paramTagToIndex.find(paramId);
-    return iter == _topo->audio.paramTagToIndex.end() ? -1 : iter->second;
+    auto iter = Topo()->audio.paramTagToIndex.find(paramId);
+    return iter == Topo()->audio.paramTagToIndex.end() ? -1 : iter->second;
   });
 }
 
@@ -233,8 +233,8 @@ FBCLAPPlugin::getParamInfoForParamId(
 {
   return FBWithLogException([this, paramId, info]()
   {
-    auto iter = _topo->audio.paramTagToIndex.find(paramId);
-    if (iter == _topo->audio.paramTagToIndex.end())
+    auto iter = Topo()->audio.paramTagToIndex.find(paramId);
+    if (iter == Topo()->audio.paramTagToIndex.end())
       return false;
     return paramsInfo(iter->second, info);
   });
@@ -244,7 +244,7 @@ bool
 FBCLAPPlugin::isValidParamId(
   clap_id paramId) const noexcept
 {
-  return _topo->audio.paramTagToIndex.find(paramId) != _topo->audio.paramTagToIndex.end();
+  return Topo()->audio.paramTagToIndex.find(paramId) != Topo()->audio.paramTagToIndex.end();
 }
 
 bool
@@ -266,7 +266,7 @@ void
 FBCLAPPlugin::PushParamChangeToProcessorBlock(
   int index, double normalized, int pos)
 {
-  auto const& static_ = _topo->audio.params[index].static_;
+  auto const& static_ = Topo()->audio.params[index].static_;
   if (static_.mode == FBParamMode::Accurate || static_.mode == FBParamMode::VoiceStart)
     _input.accAutoByParamThenSample.push_back(MakeAccAutoEvent(index, normalized, pos));
   else
@@ -283,7 +283,7 @@ FBCLAPPlugin::ProcessMainToAudioEvents(
     bool gestureBegin;
     clap_event_param_value valueToHost;
     clap_event_param_gesture gestureToHost;
-    auto const& param = _topo->audio.params[uiEvent.paramIndex];
+    auto const& param = Topo()->audio.params[uiEvent.paramIndex];
     switch (uiEvent.type)
     {
     case FBCLAPSyncEventType::EndChange:
@@ -357,16 +357,16 @@ FBCLAPPlugin::process(
         break;
       case CLAP_EVENT_PARAM_MOD:
         modFromHost = reinterpret_cast<clap_event_param_mod const*>(header);
-        if ((iter = _topo->audio.paramTagToIndex.find(modFromHost->param_id)) != _topo->audio.paramTagToIndex.end())
-          if (_topo->audio.params[iter->second].static_.mode == FBParamMode::Accurate || 
-            _topo->audio.params[iter->second].static_.mode == FBParamMode::VoiceStart)
+        if ((iter = Topo()->audio.paramTagToIndex.find(modFromHost->param_id)) != Topo()->audio.paramTagToIndex.end())
+          if (Topo()->audio.params[iter->second].static_.mode == FBParamMode::Accurate ||
+            Topo()->audio.params[iter->second].static_.mode == FBParamMode::VoiceStart)
             _input.accModByParamThenNoteThenSample.push_back(MakeAccModEvent(iter->second, modFromHost));
         break;
       case CLAP_EVENT_PARAM_VALUE:
         valueFromHost = reinterpret_cast<clap_event_param_value const*>(header);
-        if ((iter = _topo->audio.paramTagToIndex.find(valueFromHost->param_id)) != _topo->audio.paramTagToIndex.end())
+        if ((iter = Topo()->audio.paramTagToIndex.find(valueFromHost->param_id)) != Topo()->audio.paramTagToIndex.end())
         {
-          normalized = FBCLAPToNormalized(_topo->audio.params[iter->second].static_, valueFromHost->value);
+          normalized = FBCLAPToNormalized(Topo()->audio.params[iter->second].static_, valueFromHost->value);
           PushParamChangeToProcessorBlock(iter->second, normalized, valueFromHost->header.time);
           _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(iter->second, normalized));
         }
@@ -414,7 +414,7 @@ FBCLAPPlugin::process(
     float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
     _input.mainAudio = FBHostAudioBlock(zeroIn, process->frames_count);
     _input.sidechainAudio = FBHostAudioBlock(zeroIn, process->frames_count);
-    if (!_topo->static_->meta.isFx)
+    if (!Topo()->static_->meta.isFx)
     {
       if (process->audio_inputs_count > 0 && process->audio_inputs[0].channel_count == 2 && process->audio_inputs[0].data32 != nullptr)
         _input.sidechainAudio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
