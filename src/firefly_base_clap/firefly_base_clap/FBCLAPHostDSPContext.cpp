@@ -1,5 +1,5 @@
 #include <firefly_base_clap/FBCLAPPlugin.hpp>
-#include <firefly_base/dsp/host/FBHostDSPContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 
 #include <clap/helpers/plugin.hxx>
 

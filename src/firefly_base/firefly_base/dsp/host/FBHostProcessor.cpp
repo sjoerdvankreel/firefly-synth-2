@@ -11,7 +11,7 @@
 #include <firefly_base/dsp/plug/FBPlugProcessor.hpp>
 #include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
-#include <firefly_base/dsp/host/FBHostDSPContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/dsp/host/FBSmoothingProcessor.hpp>
 #include <firefly_base/dsp/buffer/FBHostToPlugProcessor.hpp>
 #include <firefly_base/dsp/buffer/FBPlugToHostProcessor.hpp>

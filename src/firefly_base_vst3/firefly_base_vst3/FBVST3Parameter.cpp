@@ -1,7 +1,7 @@
 #include <firefly_base_vst3/FBVST3Utility.hpp>
 #include <firefly_base_vst3/FBVST3Parameter.hpp>
 
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 

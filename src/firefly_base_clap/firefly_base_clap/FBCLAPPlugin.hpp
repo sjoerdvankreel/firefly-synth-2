@@ -1,7 +1,7 @@
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
-#include <firefly_base/dsp/host/FBHostDSPContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base_clap/FBCLAPSyncEvent.hpp>
 #include <firefly_base_clap/FBCLAPUtility.hpp>
 

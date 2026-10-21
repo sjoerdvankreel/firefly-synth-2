@@ -1,7 +1,7 @@
 #include <firefly_base_clap/FBCLAPPlugin.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
 
 #include <clap/helpers/plugin.hxx>

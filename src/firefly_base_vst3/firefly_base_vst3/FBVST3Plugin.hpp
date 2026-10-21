@@ -3,8 +3,7 @@
 #include <firefly_base_vst3/FBVST3Utility.hpp>
 #include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
-#include <firefly_base/dsp/host/FBHostDSPContext.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 
 #include <public.sdk/source/vst/vstsinglecomponenteffect.h>
 #include <readerwriterqueue.h>
