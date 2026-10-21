@@ -1,0 +1,1 @@
+#include <public.sdk/source/vst/vstsinglecomponenteffect.cpp>
