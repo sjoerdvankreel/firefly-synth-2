@@ -1,7 +1,9 @@
 #include <firefly_base_vst3/FBVST3Plugin.hpp>
+#include <firefly_base_vst3/FBVST3GUIEditor.hpp>
+#include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/dsp/host/FBHostProcessor.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/shared/FBExchangeStateQueue.hpp>
-#include <firefly_base/dsp/host/FBHostProcessor.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/state/main/FBGUIStateContainer.hpp>
 
@@ -26,6 +28,7 @@ FBVST3Plugin::
 ~FBVST3Plugin()
 {
   FB_LOG_ENTRY_EXIT();
+  stopTimer();
 }
 
 void
@@ -43,5 +46,19 @@ FBVST3Plugin::initialize(FUnknown* context)
     return kResultFalse;
   InitializeEditController();
   InitializeAudioEffect();
+  startTimerHz(FBGUIFPS);
   return kResultTrue;
+}
+
+void 
+FBVST3Plugin::timerCallback()
+{
+  FBWithLogException([this]()
+  {
+    bool receivedExchange = false;
+    while (_exchangeStateQueue->TryDequeue(_exchangeFromDSPState->Raw()))
+      receivedExchange = true;
+    if (receivedExchange && _guiEditor)
+      _guiEditor->UpdateExchangeState();
+  });
 }

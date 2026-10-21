@@ -32,6 +32,7 @@ class FBExchangeStateContainer;
 class FBVST3Plugin :
 public SingleComponentEffect,
 public IMidiMapping,
+public juce::Timer,
 public FBHostGUIContext,
 public FBHostDSPContext
 {
@@ -86,6 +87,9 @@ public:
 
   // for gui editor
   void ResetView();
+
+  // juce timer, pull exchange to gui
+  void timerCallback() override;
 
   // FBHostGUIContext
   void NotifyHostOfParamNameChanges() override;
