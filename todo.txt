@@ -28,7 +28,6 @@ v store in patchfile only for now, maybe expand to link on disk with all headach
 v how tf i push from controller to processor. this is not params, may need dataexchange for vst3. but not super-supported everywhere, fallback to msg/connectionpoint?
 v CLAP is guaranteed single process. luvu.
 v hunt down the comments for kDistributable and singlecomponenteffect
-- show tweaked from is borked
 - recheck on all hosts: offset from defaults, realtime gui
 - do patch side ???
 - retest midi and sampler and basically everything on every host and every platform
