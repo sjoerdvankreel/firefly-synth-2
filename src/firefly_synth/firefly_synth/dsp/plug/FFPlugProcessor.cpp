@@ -15,7 +15,7 @@
 #include <numbers>
 
 FFPlugProcessor::
-FFPlugProcessor(FBHostDSPContext* hostContext) :
+FFPlugProcessor(FBHostContext* hostContext) :
 _sampleRate(hostContext->SampleRate()),
 _topo(hostContext->Topo()),
 _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),

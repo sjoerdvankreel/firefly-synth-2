@@ -12,7 +12,6 @@ struct FBHostInputBlock;
 struct FBHostOutputBlock;
 
 class FBVoiceManager;
-class FBHostDSPContext;
 class FBHostAudioBlock;
 class IFBPlugProcessor;
 class FBSmoothingProcessor;
@@ -35,7 +34,7 @@ class FBHostProcessor final
   bool _anyNoteWasOnLastSamplePrevRound = {};
   float _lastKeyRawLastSamplePrevRound = -1.0f;
 
-  FBHostDSPContext* const _hostContext;
+  FBHostContext* const _hostContext;
   float const _sampleRate;
   float _prevRoundCpuUsage = 0.0f;
   FBRuntimeTopo const* const _topo;
@@ -52,6 +51,6 @@ class FBHostProcessor final
 public:
   ~FBHostProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostProcessor);
-  FBHostProcessor(FBHostDSPContext* hostContext);
+  FBHostProcessor(FBHostContext* hostContext);
   void ProcessHost(FBHostInputBlock const& input, FBHostOutputBlock& output);
 };

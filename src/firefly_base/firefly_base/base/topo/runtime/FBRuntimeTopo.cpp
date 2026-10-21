@@ -168,12 +168,12 @@ FBRuntimeTopo::SaveVST3ProcStateToVar(
 
 var
 FBRuntimeTopo::SaveCLAPEverythingToVar(
-  FBScalarStateContainer const& editState, FBHostContext const& hostContext, FBHostDSPContext const& hostDSPContext, bool patchOnly) const
+  FBScalarStateContainer const& editState, FBHostContext const& hostContext, bool patchOnly) const
 {
   auto result = new DynamicObject;
   result->setProperty("gui", SaveGUIStateToVar(hostContext));
   result->setProperty("edit", SaveEditStateToVar(editState, patchOnly));
-  result->setProperty("dspAudioClips", SaveAudioClipsToVar(hostDSPContext.GetDSPAudioClips()));
+  result->setProperty("dspAudioClips", SaveAudioClipsToVar(hostContext.GetDSPAudioClips()));
   return var(result);
 }
 

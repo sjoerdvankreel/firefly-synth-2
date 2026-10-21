@@ -89,7 +89,7 @@ public:
   // juce timer, pull exchange to gui
   void timerCallback() override;
 
-  // FBHostContext
+  // FBHostContext (gui)
   void NotifyHostOfParamNameChanges() override;
   void ClearAudioParamNameOverrides() override;
   void ClearAudioParamNameOverride(int index) override;
@@ -103,7 +103,7 @@ public:
   void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;
   std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) override;
 
-  // FBHostDSPContext
+  // FBHostContext (dsp)
   void PullDSPAudioClipsFromGUI() override;
   float SampleRate() const override { return _sampleRate; }
   MTSClient* GetMTSClient() override { return _mtsClient; }

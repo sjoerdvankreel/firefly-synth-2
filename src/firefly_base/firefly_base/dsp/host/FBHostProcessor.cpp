@@ -24,7 +24,7 @@ FBHostProcessor::
 ~FBHostProcessor() {}
 
 FBHostProcessor::
-FBHostProcessor(FBHostDSPContext* hostContext):
+FBHostProcessor(FBHostContext* hostContext):
 _hostContext(hostContext),
 _sampleRate(hostContext->SampleRate()),
 _topo(hostContext->Topo()),
