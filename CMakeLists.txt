@@ -149,6 +149,7 @@ target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${JUCE_MODULES_DI
 target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
 target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/MTS-ESP/Client)
 target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/libsndfile/include)
+target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/readerwriterqueue)
 target_include_directories(${PROJECT_NAME_BASE} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   source_group(TREE ${BASE_SRC_DIR} FILES ${BASE_SRC_FILES})

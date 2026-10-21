@@ -254,6 +254,7 @@ FBVST3Plugin::process(ProcessData& data)
     }
 
     _hostProcessor->ProcessHost(_input, _output);
+    _exchangeStateQueue->TryEnqueue(ExchangeToGUIState()->Raw());
 
     if (data.outputParameterChanges != nullptr)
       for (int i = 0; i < _output.outputParams.size(); i++)
