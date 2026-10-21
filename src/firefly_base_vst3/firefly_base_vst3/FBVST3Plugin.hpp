@@ -44,11 +44,6 @@ public FBHostContext
   FBHostOutputBlock _output = {};
   std::array<std::vector<float>, 2> _zeroIn = {};
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
-
-  // shared
-  mutable std::mutex _blockWritingAudioClipsToDSP = {};
-  std::atomic_bool _writingAudioClipsToDSPIsDirty = {};
-  moodycamel::ReaderWriterQueue<FBVST3AudioClipToDSPCommand, 16> _audioClipToDSPCommands;
   std::unique_ptr<FBExchangeStateQueueBase> _exchangeStateQueue;
 
   void InitializeAudioEffect();
