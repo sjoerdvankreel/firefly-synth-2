@@ -51,8 +51,8 @@ FBHostContext::timerCallback()
     bool receivedExchange = false;
     while (_exchangeStateQueue->TryDequeue(ExchangeFromDSPState()->Raw()))
       receivedExchange = true;
-    if (receivedExchange && _guiEditor)
-      _guiEditor->UpdateExchangeState();
+    if (receivedExchange)
+      OnReceivedExchangeFromDSP();
   });
 }
 

@@ -62,6 +62,7 @@ public FBHostContext
   void ProcessMainToAudioEvents(const clap_output_events* out, bool pushToProcBlock);
 
 protected:
+  void OnReceivedExchangeFromDSP() override;
   void DoEndAudioParamChange(int index) override;
   void DoBeginAudioParamChange(int index) override;
   void DoPerformAudioParamEdit(int index, double normalized) override;
@@ -106,7 +107,6 @@ public:
   bool guiIsApiSupported(const char* api, bool isFloating) noexcept override;
 
   float SampleRate() const override { return _sampleRate; }
-  MTSClient* GetMTSClient() override { return _mtsClient; }
 
   void NotifyHostOfParamNameChanges() override;
   void ClearAudioParamNameOverrides() override;

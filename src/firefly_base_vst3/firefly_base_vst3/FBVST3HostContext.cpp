@@ -3,6 +3,13 @@
 #include <firefly_base_vst3/FBVST3Parameter.hpp>
 #include <firefly_base_vst3/FBVST3GUIEditor.hpp>
 
+void 
+FBVST3Plugin::OnReceivedExchangeFromDSP()
+{
+  if (_guiEditor)
+    _guiEditor->UpdateExchangeState();
+}
+
 void
 FBVST3Plugin::DoEndAudioParamChange(int /*index*/)
 {

@@ -54,6 +54,7 @@ protected:
     std::unique_ptr<FBExchangeStateQueueBase>&& exchangeStateQueue);
 
   // FBHostContext
+  void OnReceivedExchangeFromDSP() override;
   void DoEndAudioParamChange(int index) override;
   void DoBeginAudioParamChange(int index) override;
   void DoPerformAudioParamEdit(int index, double normalized) override;
@@ -90,7 +91,6 @@ public:
 
   // FBHostContext (dsp)
   float SampleRate() const override { return _sampleRate; }
-  MTSClient* GetMTSClient() override { return _mtsClient; }
 
   // SingleComponentEffect, both
   tresult PLUGIN_API initialize(FUnknown* context) override;

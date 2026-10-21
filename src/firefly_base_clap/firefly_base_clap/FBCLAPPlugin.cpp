@@ -195,24 +195,6 @@ FBCLAPPlugin::init() noexcept
   return true;
 }
 
-void 
-FBCLAPPlugin::timerCallback()
-{
-  FBWithLogException([this]()
-  {
-    FBCLAPSyncToMainEvent event = {};
-    while (_audioToMainEvents.try_dequeue(event))
-      if (_gui)
-        _gui->SetAudioParamNormalizedFromHost(event.paramIndex, event.normalized);
-
-    bool receivedExchange = false;
-    while (_exchangeStateQueue->TryDequeue(ExchangeFromDSPState()->Raw()))
-      receivedExchange = true;
-    if (receivedExchange && _gui)
-      _gui->UpdateExchangeState();
-  });
-}
-
 int32_t 
 FBCLAPPlugin::getParamIndexForParamId(
   clap_id paramId) const noexcept
@@ -425,7 +407,7 @@ FBCLAPPlugin::process(
     }
 
     _hostProcessor->ProcessHost(_input, _output);
-    _exchangeStateQueue->TryEnqueue(ExchangeToGUIState()->Raw());
+    ExchangeStateQueue()->TryEnqueue(ExchangeToGUIState()->Raw());
 
     for (auto const& op : _output.outputParams)
       _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(op.param, op.normalized));

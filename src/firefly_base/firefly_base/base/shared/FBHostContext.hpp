@@ -103,9 +103,12 @@ protected:
   void OnInstanceNameChanged();
   void OnGUIAudioClipsChanged();
 
+  virtual void OnReceivedExchangeFromDSP() = 0;
   virtual void DoEndAudioParamChange(int index) = 0;
   virtual void DoBeginAudioParamChange(int index) = 0;
   virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
+
+  FBExchangeStateQueueBase* ExchangeStateQueue() { return _exchangeStateQueue.get(); }
 
 public:
   virtual ~FBHostContext();
@@ -113,9 +116,9 @@ public:
 
   // pull exchange from dsp to gui
   void timerCallback() override;
+  MTSClient* GetMTSClient() { return _mtsClient; }
 
   virtual float SampleRate() const = 0;
-  virtual MTSClient* GetMTSClient() = 0;
   virtual std::unique_ptr<IFBPlugProcessor> MakePlugProcessor() = 0;
 
   virtual void NotifyHostOfParamNameChanges() = 0;

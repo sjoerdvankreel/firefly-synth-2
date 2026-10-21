@@ -50,6 +50,26 @@ ContextMenuBuilderAddItem(
 }
 
 void 
+FBCLAPPlugin::OnReceivedExchangeFromDSP()
+{
+  if(_gui)
+    _gui->UpdateExchangeState();
+}
+
+void
+FBCLAPPlugin::timerCallback()
+{
+  FBHostContext::timerCallback();
+  FBWithLogException([this]()
+  {
+    FBCLAPSyncToMainEvent event = {};
+    while (_audioToMainEvents.try_dequeue(event))
+      if (_gui)
+        _gui->SetAudioParamNormalizedFromHost(event.paramIndex, event.normalized);
+  });
+}
+
+void 
 FBCLAPPlugin::NotifyHostOfParamNameChanges()
 {
   _host.paramsRescan(CLAP_PARAM_RESCAN_INFO);
