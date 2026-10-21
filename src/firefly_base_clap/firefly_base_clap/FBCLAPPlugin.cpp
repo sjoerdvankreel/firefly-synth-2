@@ -178,14 +178,11 @@ FBCLAPPlugin(
   MTSClient* mtsClient,
   std::unique_ptr<FBExchangeStateQueueBase>&& exchangeStateQueue):
 Plugin(desc, host),
-FBHostContext(std::move(topo)),
+FBHostContext(std::move(topo), mtsClient, std::move(exchangeStateQueue)),
 _audioToMainEvents(FBCLAPSyncEventReserve - 1),
 _mainToAudioEvents(FBCLAPSyncEventReserve - 1),
-_mtsClient(mtsClient),
 _gui(),
-_editState(std::make_unique<FBScalarStateContainer>(*Topo())),
-_audioClipToDSPCommands(16),
-_exchangeStateQueue(std::move(exchangeStateQueue))
+_editState(std::make_unique<FBScalarStateContainer>(*Topo()))
 {
   FB_LOG_ENTRY_EXIT();
 }

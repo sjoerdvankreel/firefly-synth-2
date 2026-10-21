@@ -31,20 +31,17 @@ class FBExchangeStateContainer;
 class FBVST3Plugin :
 public SingleComponentEffect,
 public IMidiMapping,
-public juce::Timer,
 public FBHostContext
 {
   // gui
   FBVST3GUIEditor* _guiEditor = {};
 
   // realtime
-  MTSClient* _mtsClient;
   float _sampleRate = 0.0f;
   FBHostInputBlock _input = {};
   FBHostOutputBlock _output = {};
   std::array<std::vector<float>, 2> _zeroIn = {};
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
-  std::unique_ptr<FBExchangeStateQueueBase> _exchangeStateQueue;
 
   void InitializeAudioEffect();
   void InitializeEditController();
@@ -80,9 +77,6 @@ public:
 
   // for gui editor
   void ResetView();
-
-  // juce timer, pull exchange to gui
-  void timerCallback() override;
 
   // FBHostContext (gui)
   void NotifyHostOfParamNameChanges() override;

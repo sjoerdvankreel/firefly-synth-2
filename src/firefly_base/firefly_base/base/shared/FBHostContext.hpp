@@ -2,6 +2,7 @@
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
+#include <firefly_base/base/shared/FBExchangeStateQueue.hpp>
 #include <firefly_base/base/state/main/FBUndoStateContainer.hpp>
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
@@ -62,9 +63,12 @@ FBAddHostContextMenu(
   int offset,
   std::vector<FBHostContextMenuItem> const& items);
 
-class FBHostContext
+class FBHostContext:
+public juce::Timer
 {
   std::unique_ptr<FBRuntimeTopo> _topo;
+  MTSClient* _mtsClient;
+
   FBUndoStateContainer _undoState;
   // copy of patch/session state on daw load/patch load
   // we use it to be able to highlight params tweaked from patch/session
@@ -75,6 +79,7 @@ class FBHostContext
   std::unique_ptr<FBProcStateContainer> _procState;
   std::unique_ptr<FBExchangeStateContainer> _exchangeToGUIState;
   std::unique_ptr<FBExchangeStateContainer> _exchangeFromDSPState;
+  std::unique_ptr<FBExchangeStateQueueBase> _exchangeStateQueue;
 
   mutable std::mutex _blockWritingAudioClipsToDSP = {};
   std::atomic_bool _writingAudioClipsToDSPIsDirty = {};
@@ -88,7 +93,10 @@ class FBHostContext
   void ShowOnlineManualForModule(int index) const;
 
 protected:
-  FBHostContext(std::unique_ptr<FBStaticTopo>&& topo);
+  FBHostContext(
+    std::unique_ptr<FBStaticTopo>&& topo,
+    MTSClient* mtsClient,
+    std::unique_ptr<FBExchangeStateQueueBase>&& exchangeStateQueue);
 
   void OnPatchLoaded();
   void OnPatchNameChanged();
@@ -102,6 +110,9 @@ protected:
 public:
   virtual ~FBHostContext();
   FB_NOCOPY_NOMOVE_DEFCTOR(FBHostContext);
+
+  // pull exchange from dsp to gui
+  void timerCallback() override;
 
   virtual float SampleRate() const = 0;
   virtual MTSClient* GetMTSClient() = 0;

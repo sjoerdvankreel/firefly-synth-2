@@ -1,3 +1,4 @@
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -24,8 +25,12 @@ FBHostContext::
 }
 
 FBHostContext::
-FBHostContext(std::unique_ptr<FBStaticTopo>&& topo):
+FBHostContext(
+  std::unique_ptr<FBStaticTopo>&& topo,
+  MTSClient* mtsClient,
+  std::unique_ptr<FBExchangeStateQueueBase>&& exchangeStateQueue):
 _topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
+_mtsClient(mtsClient),
 _undoState(this),
 _patchState(*_topo.get()),
 _sessionState(*_topo.get()),
@@ -33,8 +38,22 @@ _guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
 _procState(std::make_unique<FBProcStateContainer>(*_topo, &_dspAudioClips)),
 _exchangeToGUIState(std::make_unique<FBExchangeStateContainer>(*_topo)),
 _exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo)),
+_exchangeStateQueue(std::move(exchangeStateQueue)),
 _audioClipToDSPCommands(16)
 {
+}
+
+void 
+FBHostContext::timerCallback()
+{
+  FBWithLogException([this]()
+  {
+    bool receivedExchange = false;
+    while (_exchangeStateQueue->TryDequeue(ExchangeFromDSPState()->Raw()))
+      receivedExchange = true;
+    if (receivedExchange && _guiEditor)
+      _guiEditor->UpdateExchangeState();
+  });
 }
 
 std::map<int, std::string> 

@@ -13,10 +13,7 @@ FBVST3Plugin(
   MTSClient* mtsClient,
   std::unique_ptr<FBExchangeStateQueueBase>&& exchangeStateQueue):
 SingleComponentEffect(),
-FBHostContext(std::move(topo)),
-_mtsClient(mtsClient),
-_audioClipToDSPCommands(16),
-_exchangeStateQueue(std::move(exchangeStateQueue))
+FBHostContext(std::move(topo), mtsClient, std::move(exchangeStateQueue))
 {
   FB_LOG_ENTRY_EXIT();
   processContextRequirements.needTempo();
@@ -47,17 +44,4 @@ FBVST3Plugin::initialize(FUnknown* context)
   InitializeAudioEffect();
   startTimerHz(FBGUIFPS);
   return kResultTrue;
-}
-
-void 
-FBVST3Plugin::timerCallback()
-{
-  FBWithLogException([this]()
-  {
-    bool receivedExchange = false;
-    while (_exchangeStateQueue->TryDequeue(ExchangeFromDSPState()->Raw()))
-      receivedExchange = true;
-    if (receivedExchange && _guiEditor)
-      _guiEditor->UpdateExchangeState();
-  });
 }

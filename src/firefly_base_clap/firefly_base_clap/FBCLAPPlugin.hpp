@@ -32,7 +32,6 @@ class FBExchangeStateQueueBase;
 
 class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
-public juce::Timer,
 public FBHostContext
 {
 #if _MSC_VER
@@ -47,11 +46,9 @@ public FBHostContext
 #pragma warning(pop)
 #endif
 
-  MTSClient* const _mtsClient;
   std::unique_ptr<FBPlugGUIContext> _gui;
   std::unique_ptr<FBScalarStateContainer> _editState;
   std::map<int, std::string> _audioParamNameOverridesByIndex = {};
-  std::unique_ptr<FBExchangeStateQueueBase> _exchangeStateQueue;
 
   float _sampleRate = 0.0f;
   FBHostInputBlock _input = {};
