@@ -21,7 +21,7 @@ FBCLAPPlugin::stateSave(const clap_ostream* stream) noexcept
   {
     int64_t written = 0;
     int64_t numWritten = 0;
-    std::string json = _topo->SaveCLAPEverythingToString(*_editState, *this, false);
+    std::string json = Topo()->SaveCLAPEverythingToString(*_editState, *this, false);
     while ((numWritten = stream->write(stream, json.data() + written, json.size() - written)) != 0)
       if (numWritten == -1)
         return false;

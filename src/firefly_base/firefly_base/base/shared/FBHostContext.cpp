@@ -32,7 +32,7 @@ _sessionState(*_topo.get()),
 _guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
 _procState(std::make_unique<FBProcStateContainer>(*topo, &_dspAudioClips)),
 _exchangeToGUIState(std::make_unique<FBExchangeStateContainer>(*topo)),
-_exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo)),
+_exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo))
 {
 }
 

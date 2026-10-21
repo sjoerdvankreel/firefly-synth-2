@@ -103,7 +103,7 @@ FBVST3Plugin::setParamNormalized(ParamID tag, ParamValue value)
   if (result != kResultTrue || tag >= FBVST3MIDIParameterMappingBegin)
     return result;
   if (_guiEditor != nullptr)
-    _guiEditor->SetAudioParamNormalizedFromHost(Topo()->audio.paramTagToIndex[tag], value);
+    _guiEditor->SetAudioParamNormalizedFromHost(Topo()->audio.paramTagToIndex.at(tag), value);
   return kResultTrue;
 }
 

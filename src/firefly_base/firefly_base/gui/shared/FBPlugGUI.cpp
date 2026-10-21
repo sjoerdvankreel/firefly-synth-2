@@ -28,7 +28,7 @@ using namespace juce;
 FBPlugGUI::
 ~FBPlugGUI()
 {
-  _hostContext->RemoveListener(this);
+  _hostContext->RemoveGUIListener(this);
 }
 
 FBPlugGUI::
@@ -42,7 +42,7 @@ _patchBeforePreview(*hostContext->Topo())
     FB_LOG_ERROR("No themes found.");
   setLookAndFeel(_lookAndFeel.get());
   _tooltipWindow = StoreComponent<TooltipWindow>();
-  _hostContext->AddListener(this);
+  _hostContext->AddGUIListener(this);
 
   InitLoadAnyFileBrowser("", "", "", [](auto) {});
   InitLoadPatchBrowser(false);

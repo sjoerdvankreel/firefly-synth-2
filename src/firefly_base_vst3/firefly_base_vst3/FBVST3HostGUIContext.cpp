@@ -18,7 +18,7 @@ FBVST3Plugin::DoBeginAudioParamChange(int /*index*/)
 void
 FBVST3Plugin::DoPerformAudioParamEdit(int index, double normalized)
 {
-  int tag = _topo->audio.params[index].tag;
+  int tag = Topo()->audio.params[index].tag;
   setParamNormalized(tag, normalized);
 
   // this is not ideal but it prevents automation getting ignored
