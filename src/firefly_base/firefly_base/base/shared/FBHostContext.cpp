@@ -32,7 +32,8 @@ _sessionState(*_topo.get()),
 _guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
 _procState(std::make_unique<FBProcStateContainer>(*_topo, &_dspAudioClips)),
 _exchangeToGUIState(std::make_unique<FBExchangeStateContainer>(*_topo)),
-_exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo))
+_exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo)),
+_audioClipToDSPCommands(16)
 {
 }
 
@@ -91,6 +92,74 @@ FBHostContext::SetGUIAndDSPAudioClip(
   _guiAudioClips[id] = FBAudioClip(guiClip);
   PushDSPAudioClipToDSP(id, dspClip);
   OnGUIAudioClipsChanged();
+}
+
+std::map<std::string, FBAudioClip>
+FBHostContext::PullDSPAudioClipsToGUI() const
+{
+  // Sue me. I should probably bring in a condition variable here.
+  std::lock_guard lock(_blockWritingAudioClipsToDSP);
+  while (_writingAudioClipsToDSPIsDirty.load());
+  return GetDSPAudioClips();
+}
+
+void
+FBHostContext::ClearDSPAudioClipToDSP(std::string const& id)
+{
+  std::lock_guard lock(_blockWritingAudioClipsToDSP);
+  _writingAudioClipsToDSPIsDirty.store(true);
+  FBAudioClipToDSPCommand command = {};
+  command.id = id;
+  command.Type = FBAudioClipToDSPCommand::ClearSingle;
+  _audioClipToDSPCommands.enqueue(command);
+}
+
+void
+FBHostContext::PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
+{
+  std::lock_guard lock(_blockWritingAudioClipsToDSP);
+  _writingAudioClipsToDSPIsDirty.store(true);
+  FBAudioClipToDSPCommand command = {};
+  command.id = id;
+  command.Type = FBAudioClipToDSPCommand::LoadSingle;
+  command.clip = FBAudioClip(clip);
+  _audioClipToDSPCommands.enqueue(command);
+}
+
+void
+FBHostContext::PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips)
+{
+  std::lock_guard lock(_blockWritingAudioClipsToDSP);
+  _writingAudioClipsToDSPIsDirty.store(true);
+  FBAudioClipToDSPCommand command = {};
+  command.Type = FBAudioClipToDSPCommand::LoadAll;
+  command.allClips = dspClips;
+  _audioClipToDSPCommands.enqueue(command);
+}
+
+void
+FBHostContext::PullDSPAudioClipsFromGUI()
+{
+  FBAudioClipToDSPCommand command;
+  while (_audioClipToDSPCommands.try_dequeue(command))
+  {
+    switch (command.Type)
+    {
+    case FBAudioClipToDSPCommand::ClearSingle:
+      GetDSPAudioClips().erase(command.id);
+      break;
+    case FBAudioClipToDSPCommand::LoadSingle:
+      GetDSPAudioClips()[command.id] = FBAudioClip(command.clip);
+      break;
+    case FBAudioClipToDSPCommand::LoadAll:
+      GetDSPAudioClips() = command.allClips;
+      break;
+    default:
+      FB_ASSERT(false);
+      break;
+    }
+  }
+  _writingAudioClipsToDSPIsDirty.store(false);
 }
 
 void 

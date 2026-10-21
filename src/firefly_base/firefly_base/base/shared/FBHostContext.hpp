@@ -8,9 +8,11 @@
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
+#include <readerwriterqueue.h>
 
 #include <map>
 #include <memory>
+#include <thread>
 #include <string>
 #include <vector>
 #include <filesystem>
@@ -24,6 +26,14 @@ class MTSClient;
 class IFBPlugProcessor;
 class FBGUIStateContainer;
 class FBExchangeStateContainer;
+
+struct FBAudioClipToDSPCommand
+{
+  enum { ClearSingle, LoadSingle, LoadAll } Type;
+  std::string id = {};
+  FBAudioClip clip = {};
+  std::map<std::string, FBAudioClip> allClips = {};
+};
 
 struct FBHostContextMenuItem
 {
@@ -66,6 +76,10 @@ class FBHostContext
   std::unique_ptr<FBExchangeStateContainer> _exchangeToGUIState;
   std::unique_ptr<FBExchangeStateContainer> _exchangeFromDSPState;
 
+  mutable std::mutex _blockWritingAudioClipsToDSP = {};
+  std::atomic_bool _writingAudioClipsToDSPIsDirty = {};
+  moodycamel::ReaderWriterQueue<FBAudioClipToDSPCommand, 16> _audioClipToDSPCommands;
+
   bool _isPatchLoaded = {};
   std::map<std::string, FBAudioClip> _guiAudioClips = {};
   std::map<std::string, FBAudioClip> _dspAudioClips = {};
@@ -91,7 +105,6 @@ public:
 
   virtual float SampleRate() const = 0;
   virtual MTSClient* GetMTSClient() = 0;
-  virtual void PullDSPAudioClipsFromGUI() = 0;
   virtual std::unique_ptr<IFBPlugProcessor> MakePlugProcessor() = 0;
 
   virtual void NotifyHostOfParamNameChanges() = 0;
@@ -104,10 +117,11 @@ public:
   virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;
   virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;
 
-  virtual void ClearDSPAudioClipToDSP(std::string const& id) = 0;
-  virtual void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip) = 0;
-  virtual std::map<std::string, FBAudioClip> PullDSPAudioClipsToGUI() const = 0;
-  virtual void PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips) = 0;
+  void PullDSPAudioClipsFromGUI();
+  void ClearDSPAudioClipToDSP(std::string const& id);
+  void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip);
+  std::map<std::string, FBAudioClip> PullDSPAudioClipsToGUI() const;
+  void PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips);
 
   void ClearGUIAndDSPAudioClips();
   void RemoveGUIAndDSPAudioClip(std::string const& id);

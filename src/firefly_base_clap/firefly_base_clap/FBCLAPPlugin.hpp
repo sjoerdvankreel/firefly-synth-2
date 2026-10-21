@@ -51,10 +51,6 @@ public FBHostContext
   std::unique_ptr<FBPlugGUIContext> _gui;
   std::unique_ptr<FBScalarStateContainer> _editState;
   std::map<int, std::string> _audioParamNameOverridesByIndex = {};
-
-  mutable std::mutex _blockWritingAudioClipsToDSP = {};
-  std::atomic_bool _writingAudioClipsToDSPIsDirty = {};
-  moodycamel::ReaderWriterQueue<FBCLAPAudioClipToDSPCommand, 16> _audioClipToDSPCommands;
   std::unique_ptr<FBExchangeStateQueueBase> _exchangeStateQueue;
 
   float _sampleRate = 0.0f;
@@ -112,7 +108,6 @@ public:
   bool guiGetResizeHints(clap_gui_resize_hints_t* hints) noexcept override;
   bool guiIsApiSupported(const char* api, bool isFloating) noexcept override;
 
-  void PullDSPAudioClipsFromGUI() override;
   float SampleRate() const override { return _sampleRate; }
   MTSClient* GetMTSClient() override { return _mtsClient; }
 
@@ -121,11 +116,6 @@ public:
   void ClearAudioParamNameOverride(int index) override;
   bool GetAudioParamNameOverride(int index, std::string& name) const override;
   void SetAudioParamNameOverride(int index, std::string const& name) override;
-
-  void ClearDSPAudioClipToDSP(std::string const& id) override;
-  void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip) override;
-  std::map<std::string, FBAudioClip> PullDSPAudioClipsToGUI() const override;
-  void PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips) override;
 
   double GetAudioParamNormalized(int index) const override;
   void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;
