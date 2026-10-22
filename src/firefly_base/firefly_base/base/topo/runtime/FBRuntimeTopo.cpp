@@ -13,6 +13,8 @@
 
 using namespace juce;
 
+static int const
+FileFormatVersion = 2;
 static std::string const
 Magic = "{84A1EBED-4BE5-47F2-8E53-13B965628974}";
 
@@ -112,362 +114,108 @@ FBRuntimeTopo::PrintParamList() const
   return result.str();
 }
 
-std::string
-FBRuntimeTopo::SaveGUIStateToString(
-  FBHostContext const& hostContext) const
+std::string 
+FBRuntimeTopo::SaveStateToString(
+  FBHostContext const& hostContext, 
+  FBScalarStateContainer const& audioParams,
+  bool patchOnly) const
 {
-  return JSON::toString(SaveGUIStateToVar(hostContext)).toStdString();
+  return JSON::toString(SaveStateToVar(hostContext, audioParams, patchOnly)).toStdString();
 }
 
-std::string
-FBRuntimeTopo::SaveVST3ProcStateToString(
-  FBProcStateContainer const& procState, bool patchOnly) const
+bool 
+FBRuntimeTopo::LoadStateFromString(
+  std::string const& text, 
+  FBHostContext& hostContext, 
+  FBScalarStateContainer& audioParams, 
+  bool patchOnly) const
 {
-  return JSON::toString(SaveVST3ProcStateToVar(procState, patchOnly)).toStdString();
+  var json;
+  if (!FBParseJson(text, json))
+    return false;
+  return LoadStateFromVar(json, hostContext, audioParams, patchOnly);
 }
 
-std::string
-FBRuntimeTopo::SaveEditStateToString(
-  FBScalarStateContainer const& editState, bool patchOnly) const
-{
-  return JSON::toString(SaveEditStateToVar(editState, patchOnly)).toStdString();
-}
-
-std::string
-FBRuntimeTopo::SavePatchStateToString(FBScalarStateContainer const& editState, FBHostContext const& hostContext) const
-{
-  return JSON::toString(SavePatchStateToVar(editState, hostContext)).toStdString();
-}
-
-std::string
-FBRuntimeTopo::SaveCLAPEverythingToString(
-  FBScalarStateContainer const& editState, FBHostContext const& hostContext, bool patchOnly) const
-{
-  return JSON::toString(SaveCLAPEverythingToVar(editState, hostContext, patchOnly)).toStdString();
-}
-
-var
-FBRuntimeTopo::SaveEditStateToVar(
-  FBScalarStateContainer const& editState, bool patchOnly) const
-{
-  return SaveParamStateToVar(editState, audio.params, patchOnly);
-}
-
-var
-FBRuntimeTopo::SaveVST3ProcStateToVar(
-  FBProcStateContainer const& procState, bool patchOnly) const
-{
-  // 2.1.7 split root into "proc" and "dspAudioClips"
-  juce::DynamicObject* result = new juce::DynamicObject;
-  FBScalarStateContainer editState(*this);
-  editState.CopyFrom(this, procState, patchOnly);
-  result->setProperty("proc", SaveEditStateToVar(editState, patchOnly));
-  result->setProperty("dspAudioClips", SaveAudioClipsToVar(procState.AudioClips()));
-  return var(result);
-}
-
-var
-FBRuntimeTopo::SaveCLAPEverythingToVar(
-  FBScalarStateContainer const& editState, FBHostContext const& hostContext, bool patchOnly) const
+juce::var 
+FBRuntimeTopo::SaveStateToVar(
+  FBHostContext const& hostContext,
+  FBScalarStateContainer const& audioParams, 
+  bool patchOnly) const
 {
   auto result = new DynamicObject;
-  result->setProperty("gui", SaveGUIStateToVar(hostContext));
-  result->setProperty("edit", SaveEditStateToVar(editState, patchOnly));
-  result->setProperty("dspAudioClips", SaveAudioClipsToVar(hostContext.GetDSPAudioClips()));
-  return var(result);
-}
-
-var 
-FBRuntimeTopo::SavePatchStateToVar(FBScalarStateContainer const& editState, FBHostContext const& hostContext) const
-{
-  auto result = new DynamicObject;
-  // "patchState" not "patch", thats used by major-minor-patch
-  result->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext));
-  result->setProperty("patchState", SaveEditStateToVar(editState, true));
+  result->setProperty("magic", String(Magic));
+  result->setProperty("pluginId", String(static_->meta.id));
+  result->setProperty("fileFormatVersion", FileFormatVersion);
+  result->setProperty("pluginVersionMajor", static_->meta.version.major);
+  result->setProperty("pluginVersionMinor", static_->meta.version.minor);
+  result->setProperty("pluginVersionPatch", static_->meta.version.patch);
+  result->setProperty("patchName", String(hostContext.GUIState()->PatchName()));
   result->setProperty("guiAudioClips", SaveAudioClipsToVar(hostContext.GetGUIAudioClips()));
   result->setProperty("dspAudioClips", SaveAudioClipsToVar(hostContext.PullDSPAudioClipsToGUI()));
+  result->setProperty("audioParams", SaveParamStateToVar(audioParams, this->gui.params, patchOnly));
+  result->setProperty("guiParams", SaveParamStateToVar(*hostContext.GUIState(), this->gui.params, patchOnly));
+  result->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext.GetAudioParamNameOverrides()));
+  if (!patchOnly)
+  {
+    result->setProperty("themeName", String(hostContext.GUIState()->ThemeName()));
+    result->setProperty("instanceName", String(hostContext.GUIState()->InstanceName()));
+  }
+  return var(result);
+}
+
+bool 
+FBRuntimeTopo::LoadStateFromVar(
+  juce::var const& json,
+  FBHostContext& hostContext,
+  FBScalarStateContainer& audioParams, bool patchOnly) const
+{
+  (void)json;
+  (void)hostContext;
+  (void)audioParams;
+  (void)patchOnly;
+  // todo magic
+  return false;
+}
+
+var
+FBRuntimeTopo::SaveParamNameOverridesToVar(std::map<int, std::string> const& paramNameOverrides) const
+{
+  std::string name;
+  DynamicObject* result = new DynamicObject;
+  for(auto const& kv: paramNameOverrides)
+  {
+    auto tag = String(std::to_string(audio.params[kv.first].tag));
+    result->setProperty(tag, Base64::toBase64(String(name)));
+  }
   return var(result);
 }
 
 bool
-FBRuntimeTopo::LoadEditStateFromVar(
-  var const& json, FBScalarStateContainer& editState, bool patchOnly) const
+FBRuntimeTopo::LoadParamNameOverridesFromVar(var const& json, std::map<int, std::string>& paramNameOverrides) const
 {
-  return LoadParamStateFromVar(false, json, editState, audio, patchOnly);
-}
-
-bool
-FBRuntimeTopo::LoadVST3EditStateFromVar(
-  var const& json, FBScalarStateContainer& editState, bool patchOnly) const
-{
-  // 2.1.7 split root into "proc" and "dspAudioClips"
-  if(!json.hasProperty("proc") || !json.hasProperty("dspAudioClips"))
-    return LoadParamStateFromVar(false, json, editState, audio, patchOnly);
-  return LoadParamStateFromVar(false, json["proc"], editState, audio, patchOnly);
-}
-
-bool
-FBRuntimeTopo::LoadGUIStateFromString(
-  std::string const& text, FBHostContext& hostContext) const
-{
-  var json;
-  if (!FBParseJson(text, json))
-    return false;
-  return LoadGUIStateFromVar(json, hostContext);
-}
-
-bool
-FBRuntimeTopo::LoadGUIStateFromString(
-  std::string const& text, FBGUIStateContainer& guiState, 
-  std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips) const
-{
-  var json;
-  if (!FBParseJson(text, json))
-    return false;
-  return LoadGUIStateFromVar(json, guiState, paramNameOverrides, guiAudioClips);
-}
-
-bool
-FBRuntimeTopo::LoadEditStateFromString(
-  std::string const& text, FBScalarStateContainer& editState, bool patchOnly) const
-{
-  var json;
-  if (!FBParseJson(text, json))
-    return false;
-  return LoadEditStateFromVar(json, editState, patchOnly);
-}
-
-bool
-FBRuntimeTopo::LoadVST3EditStateFromString(
-  std::string const& text, FBScalarStateContainer& editState, bool patchOnly) const
-{
-  var json;
-  if (!FBParseJson(text, json))
-    return false;
-  return LoadVST3EditStateFromVar(json, editState, patchOnly);
-}
-
-void
-FBRuntimeTopo::LoadVST3ProcStateFromStringWithDryRun(
-  std::string const& text, FBProcStateContainer& procState, bool patchOnly) const
-{
-  var json;
-  if (!FBParseJson(text, json))
-    return;
-  LoadVST3ProcStateFromVarWithDryRun(json, procState, patchOnly);
-}
-
-bool 
-FBRuntimeTopo::LoadPatchStateFromString(std::string const& text, FBScalarStateContainer& editState, FBHostContext& hostContext) const
-{
-  var json;
-  if (!FBParseJson(text, json))
-    return false;
-  return LoadPatchStateFromVar(json, editState, hostContext);
-}
-
-bool 
-FBRuntimeTopo::LoadPatchStateFromString(
-  std::string const& text, 
-  FBScalarStateContainer& editState, 
-  std::map<int, std::string>& paramNameOverrides, 
-  std::map<std::string, FBAudioClip>& guiAudioClips, 
-  std::map<std::string, FBAudioClip>& dspAudioClips) const
-{
-  var json;
-  if (!FBParseJson(text, json))
-    return false;
-  return LoadPatchStateFromVar(json, editState, paramNameOverrides, guiAudioClips, dspAudioClips);
-}
-
-bool
-FBRuntimeTopo::LoadCLAPEverythingFromString(
-  std::string const& text, FBScalarStateContainer& editState, 
-  FBHostContext& hostContext, bool patchOnly) const
-{
-  var json;
-  if (!FBParseJson(text, json))
-    return false;
-  return LoadCLAPEverythingFromVar(json, editState, hostContext, patchOnly);
-}
-
-bool
-FBRuntimeTopo::LoadCLAPEverythingFromString(
-  std::string const& text, FBScalarStateContainer& editState, 
-  FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides, 
-  std::map<std::string, FBAudioClip>& guiAudioClips, std::map<std::string, FBAudioClip>& dspAudioClips, bool patchOnly) const
-{
-  var json;
-  if (!FBParseJson(text, json))
-    return false;
-  return LoadCLAPEverythingFromVar(json, editState, guiState, paramNameOverrides, guiAudioClips, dspAudioClips, patchOnly);
-}
-
-bool 
-FBRuntimeTopo::LoadPatchStateFromVar(juce::var const& json, FBScalarStateContainer& edit, FBHostContext& hostContext) const
-{
-  std::map<int, std::string> paramNameOverrides;
-  std::map<std::string, FBAudioClip> guiAudioClips;
-  std::map<std::string, FBAudioClip> dspAudioClips;
-  if (!LoadPatchStateFromVar(json, edit, paramNameOverrides, guiAudioClips, dspAudioClips))
-    return false;
-  hostContext.SetAudioParamNameOverrides(paramNameOverrides);
-  hostContext.SetGUIAudioClips(guiAudioClips);
-  hostContext.PushDSPAudioClipsToDSP(dspAudioClips);  
-  return true;
-}
-
-bool 
-FBRuntimeTopo::LoadPatchStateFromVar(
-  juce::var const& json, FBScalarStateContainer& edit, 
-  std::map<int, std::string>& paramNameOverrides, 
-  std::map<std::string, FBAudioClip>& guiAudioClips,
-  std::map<std::string, FBAudioClip>& dspAudioClips) const
-{
-  // 2.1.5: added paramNameOverrides, what was previously root is now "patchState"
-  if (!json.hasProperty("patchState"))
-  {
-    paramNameOverrides.clear();
-    return LoadEditStateFromVar(json, edit, true);
-  }
-  if (!LoadEditStateFromVar(json["patchState"], edit, true))
-    return false;
   paramNameOverrides.clear();
-  if (json.hasProperty("paramNameOverrides"))
-  {
-    LoadParamNameOverridesFromVar(json["paramNameOverrides"], paramNameOverrides);
-  }
-  guiAudioClips.clear();
-  if (json.hasProperty("guiAudioClips"))
-  {
-    LoadAudioClipsFromVar(json["guiAudioClips"], guiAudioClips);
-  }
-  dspAudioClips.clear();
-  if (json.hasProperty("dspAudioClips"))
-  {
-    LoadAudioClipsFromVar(json["dspAudioClips"], dspAudioClips);
-  }
-  return true;
-}
-
-bool
-FBRuntimeTopo::LoadGUIStateFromVar(
-  var const& json, FBHostContext& hostContext) const
-{
-  std::map<int, std::string> paramNameOverrides;
-  std::map<std::string, FBAudioClip> guiAudioClips;
-  if (!LoadGUIStateFromVar(json, *hostContext.GUIState(), paramNameOverrides, guiAudioClips))
+  auto* obj = json.getDynamicObject();
+  if (obj == nullptr)
     return false;
-  hostContext.SetAudioParamNameOverrides(paramNameOverrides);
-  hostContext.SetGUIAudioClips(guiAudioClips);
-  return true;
-}
 
-bool
-FBRuntimeTopo::LoadCLAPEverythingFromVar(
-  juce::var const& json, FBScalarStateContainer& editState,
-  FBGUIStateContainer& guiState, std::map<int, std::string>& paramNameOverrides,
-  std::map<std::string, FBAudioClip>& guiAudioClips, std::map<std::string, FBAudioClip>& dspAudioClips, bool patchOnly) const
-{
-  DynamicObject* obj = json.getDynamicObject();
-  if (obj->hasProperty("gui"))
-    LoadGUIStateFromVar(obj->getProperty("gui"), guiState, paramNameOverrides, guiAudioClips);
-  if (obj->hasProperty("dspAudioClips"))
-    LoadAudioClipsFromVar(obj->getProperty("dspAudioClips"), dspAudioClips);
-  if (obj->hasProperty("edit"))
-    return LoadEditStateFromVar(obj->getProperty("edit"), editState, patchOnly);  
-  FB_LOG_ERROR("Missing edit state.");
-  FBScalarStateContainer editDefaultState(*this);
-  editState.CopyFrom(this, editDefaultState, patchOnly);
-  return true;
-}
-
-bool
-FBRuntimeTopo::LoadCLAPEverythingFromVar(
-  var const& json, FBScalarStateContainer& editState, FBHostContext& hostContext, bool patchOnly) const
-{
-  DynamicObject* obj = json.getDynamicObject();
-  std::map<int, std::string> paramNameOverrides;
-  std::map<std::string, FBAudioClip> guiAudioClips;
-  if (obj->hasProperty("gui"))
-    if (LoadGUIStateFromVar(obj->getProperty("gui"), *hostContext.GUIState(), paramNameOverrides, guiAudioClips))
+  for (auto const& prop : obj->getProperties())
+  {
+    char* unused = nullptr;
+    auto tagString = prop.name.toString().toStdString();
+    int tag = std::strtol(tagString.c_str(), &unused, 10);
+    auto iter = audio.paramTagToIndex.find(tag);
+    if (iter != audio.paramTagToIndex.end())
     {
-      hostContext.SetAudioParamNameOverrides(paramNameOverrides);
-      hostContext.SetGUIAudioClips(guiAudioClips);
+      auto encoded = obj->getProperty(prop.name);
+      if (encoded.isString())
+      {
+        juce::MemoryOutputStream ostream;
+        if (Base64::convertFromBase64(ostream, encoded.toString()))
+          paramNameOverrides[iter->second] = ostream.toString().toStdString();
+      }
     }
-  if (obj->hasProperty("dspAudioClips"))
-    LoadAudioClipsFromVar(obj->getProperty("dspAudioClips"), hostContext.GetDSPAudioClips());
-  if (obj->hasProperty("edit"))
-    return LoadEditStateFromVar(obj->getProperty("edit"), editState, patchOnly);
-  FB_LOG_ERROR("Missing edit state.");
-  FBScalarStateContainer editDefaultState(*this);
-  editState.CopyFrom(this, editDefaultState, patchOnly);
+  }
   return true;
-}
-
-void 
-FBRuntimeTopo::LoadVST3ProcStateFromVarWithDryRun(
-  juce::var const& json, FBProcStateContainer& procState, bool patchOnly) const
-{
-  FBScalarStateContainer dryEditState(*this);
-  dryEditState.CopyFrom(this, procState, patchOnly);
-
-  // 2.1.7 split root into "proc" and "dspAudioClips"
-  if (!json.hasProperty("proc") || !json.hasProperty("dspAudioClips"))
-  {
-    if (LoadEditStateFromVar(json, dryEditState, patchOnly))
-      procState.InitProcessing(dryEditState);
-    return;
-  }
-
-  std::map<std::string, FBAudioClip> dryDSPAudioClips;
-  if (!LoadEditStateFromVar(json["proc"], dryEditState, patchOnly))
-    return;
-  if(!LoadAudioClipsFromVar(json["dspAudioClips"], dryDSPAudioClips))
-    return;
-  procState.InitProcessing(dryEditState);
-  procState.AudioClips() = dryDSPAudioClips;  
-}
-
-void
-FBRuntimeTopo::LoadVST3GUIStateFromStringWithDryRun(
-  std::string const& text, FBHostContext& hostContext) const
-{
-  FBGUIStateContainer dryGUIState(*this);
-  std::map<int, std::string> paramNameOverrides;
-  std::map<std::string, FBAudioClip> guiAudioClips;
-  if (LoadGUIStateFromString(text, dryGUIState, paramNameOverrides, guiAudioClips))
-  {
-    hostContext.GUIState()->CopyFrom(dryGUIState);
-    hostContext.GUIState()->SetPatchName(dryGUIState.PatchName());
-    hostContext.GUIState()->SetThemeName(dryGUIState.ThemeName());
-    hostContext.GUIState()->SetInstanceName(dryGUIState.InstanceName());
-    hostContext.SetAudioParamNameOverrides(paramNameOverrides);
-    hostContext.SetGUIAudioClips(guiAudioClips);
-  }
-}
-
-void
-FBRuntimeTopo::LoadCLAPEverythingFromStringWithDryRun(
-  std::string const& text, FBScalarStateContainer& editState, FBHostContext& hostContext, bool patchOnly) const
-{
-  FBGUIStateContainer dryGUIState(*this);
-  FBScalarStateContainer dryEditState(*this);
-  std::map<int, std::string> paramNameOverrides;
-  std::map<std::string, FBAudioClip> guiAudioClips;
-  std::map<std::string, FBAudioClip> dspAudioClips;
-  dryGUIState.CopyFrom(*hostContext.GUIState());
-  dryEditState.CopyFrom(this, editState, patchOnly);
-  if (!LoadCLAPEverythingFromString(text, dryEditState, dryGUIState, paramNameOverrides, guiAudioClips, dspAudioClips, patchOnly))
-    return;
-  editState.CopyFrom(this, dryEditState, patchOnly);
-  hostContext.GUIState()->CopyFrom(dryGUIState);
-  hostContext.GUIState()->SetPatchName(dryGUIState.PatchName());
-  hostContext.GUIState()->SetThemeName(dryGUIState.ThemeName());
-  hostContext.GUIState()->SetInstanceName(dryGUIState.InstanceName());
-  hostContext.SetAudioParamNameOverrides(paramNameOverrides);
-  hostContext.SetGUIAudioClips(guiAudioClips);
-  hostContext.GetDSPAudioClips() = dspAudioClips;
 }
 
 var
@@ -524,95 +272,6 @@ FBRuntimeTopo::LoadAudioClipsFromVar(juce::var const& json, std::map<std::string
   return true;
 }
 
-var 
-FBRuntimeTopo::SaveParamNameOverridesToVar(FBHostContext const& hostContext) const
-{
-  std::string name;
-  DynamicObject* result = new DynamicObject;
-  for (int p = 0; p < audio.params.size(); p++)
-    if (hostContext.GetAudioParamNameOverride(p, name))
-    {
-      auto tag = String(std::to_string(audio.params[p].tag));
-      result->setProperty(tag, Base64::toBase64(String(name)));
-    }
-  return var(result);
-}
-
-bool
-FBRuntimeTopo::LoadParamNameOverridesFromVar(var const& json, std::map<int, std::string>& paramNameOverrides) const
-{
-  paramNameOverrides.clear();
-  auto* obj = json.getDynamicObject();
-  if (obj == nullptr)
-    return false;
-
-  for (auto const& prop : obj->getProperties())
-  {
-    char* unused = nullptr;
-    auto tagString = prop.name.toString().toStdString();
-    int tag = std::strtol(tagString.c_str(), &unused, 10);
-    auto iter = audio.paramTagToIndex.find(tag);
-    if (iter != audio.paramTagToIndex.end())
-    {
-      auto encoded = obj->getProperty(prop.name);
-      if (encoded.isString())
-      {
-        juce::MemoryOutputStream ostream;
-        if (Base64::convertFromBase64(ostream, encoded.toString()))
-          paramNameOverrides[iter->second] = ostream.toString().toStdString();
-      }
-    }
-  }
-  return true;
-}
-
-var
-FBRuntimeTopo::SaveGUIStateToVar(
-  FBHostContext const& hostContext) const
-{
-  DynamicObject* result = new DynamicObject;
-  result->setProperty("params", SaveParamStateToVar(*hostContext.GUIState(), this->gui.params, false));
-  result->setProperty("patchName", String(hostContext.GUIState()->PatchName()));
-  result->setProperty("themeName", String(hostContext.GUIState()->ThemeName()));
-  result->setProperty("instanceName", String(hostContext.GUIState()->InstanceName()));
-  result->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext));
-  result->setProperty("guiAudioClips", SaveAudioClipsToVar(hostContext.GetGUIAudioClips()));
-  return var(result);
-}
-
-bool 
-FBRuntimeTopo::LoadGUIStateFromVar(
-  juce::var const& json, FBGUIStateContainer& guiState, 
-  std::map<int, std::string>& paramNameOverrides, std::map<std::string, FBAudioClip>& guiAudioClips) const
-{
-  // 2.0.6 alpha 26, "gui" element split into "params" and "patchName"
-  if (json.hasProperty("params"))
-  {
-    if (!LoadParamStateFromVar(true, json["params"], guiState, this->gui, false))
-      return false;
-    if (json.hasProperty("patchName"))
-      guiState.SetPatchName(json["patchName"].toString().toStdString());
-    if (json.hasProperty("themeName"))
-      guiState.SetThemeName(json["themeName"].toString().toStdString());
-    if (json.hasProperty("instanceName"))
-      guiState.SetInstanceName(json["instanceName"].toString().toStdString());
-
-    // 2.1.5 added paramNameOverrides
-    paramNameOverrides.clear();
-    if (json.hasProperty("paramNameOverrides"))
-      LoadParamNameOverridesFromVar(json["paramNameOverrides"], paramNameOverrides);
-
-    // 2.1.7 added guiAudioClips
-    guiAudioClips.clear();
-    if (json.hasProperty("guiAudioClips"))
-      LoadAudioClipsFromVar(json["guiAudioClips"], guiAudioClips);
-
-    return true;
-  }
-
-  return LoadParamStateFromVar(true, json, guiState, this->gui, false);
-}
-
 template <class TContainer, class TParam>
 var
 FBRuntimeTopo::SaveParamStateToVar(
@@ -652,125 +311,18 @@ FBRuntimeTopo::SaveParamStateToVar(
         longNameClean.push_back('?');
     }
     param->setProperty("name", String(longNameClean));
-
     state.append(var(param));
   }
-
-  auto result = new DynamicObject;
-  result->setProperty("magic", String(Magic));
-  result->setProperty("id", String(static_->meta.id));
-  result->setProperty("major", static_->meta.version.major);
-  result->setProperty("minor", static_->meta.version.minor);
-  result->setProperty("patch", static_->meta.version.patch);
-  result->setProperty("state", state);
-  return var(result);
+  return state;
 }
 
 template <class TContainer, class TParamsTopo>
 bool
 FBRuntimeTopo::LoadParamStateFromVar(
-  bool isGuiState, var const& json, TContainer& container, TParamsTopo& params, bool patchOnly) const
+  juce::var const& json, FBPlugVersion const& loadingVersion,
+  bool isGuiState, TContainer& container, TParamsTopo& params, bool patchOnly) const
 {
   FB_LOG_ENTRY_EXIT();
-
-  DynamicObject* obj = json.getDynamicObject();
-  if (!obj->hasProperty("magic"))
-  {
-    FB_LOG_ERROR("Missing file magic.");
-    return false;
-  }
-  var magic = obj->getProperty("magic");
-  if (!magic.isString())
-  {
-    FB_LOG_ERROR("File magic is not a string.");
-    return false;
-  }
-  if (magic.toString() != String(Magic))
-  {
-    FB_LOG_ERROR("File magic mismatch.");
-    return false;
-  }
-
-  if (!obj->hasProperty("id"))
-  {
-    FB_LOG_ERROR("Missing plugin id.");
-    return false;
-  }
-  var id = obj->getProperty("id");
-  if (!id.isString())
-  {
-    FB_LOG_ERROR("Plugin id is not a string.");
-    return false;
-  }
-  auto allowedIdIter = std::find(
-    static_->meta.allowLoadFromIds.begin(),
-    static_->meta.allowLoadFromIds.end(),
-    id.toString().toStdString());
-  if (allowedIdIter == static_->meta.allowLoadFromIds.end())
-  {
-    FB_LOG_ERROR("Plugin id mismatch.");
-    return false;
-  }
-
-  if (!obj->hasProperty("major"))
-  {
-    FB_LOG_ERROR("Missing plugin major version.");
-    return false;
-  }
-  var major = obj->getProperty("major");
-  if (!major.isInt())
-  {
-    FB_LOG_ERROR("Plugin major version is not an int.");
-    return false;
-  }
-
-  if (!obj->hasProperty("minor"))
-  {
-    FB_LOG_ERROR("Missing plugin minor version.");
-    return false;
-  }
-  var minor = obj->getProperty("minor");
-  if (!minor.isInt())
-  {
-    FB_LOG_ERROR("Plugin minor version is not an int.");
-    return false;
-  }
-
-  if (!obj->hasProperty("patch"))
-  {
-    FB_LOG_ERROR("Missing plugin patch version.");
-    return false;
-  }
-  var patch = obj->getProperty("patch");
-  if (!patch.isInt())
-  {
-    FB_LOG_ERROR("Plugin patch version is not an int.");
-    return false;
-  }
-
-  FBPlugVersion loadingVersion = {};
-  loadingVersion.major = static_cast<int>(major);
-  loadingVersion.minor = static_cast<int>(minor);
-  loadingVersion.patch = static_cast<int>(patch);
-
-  if (static_->meta.version < loadingVersion)
-  {
-    FB_LOG_ERROR("Stored plugin version is newer than current plugin version.");
-    return false;
-  }
-
-  if (!obj->hasProperty("state"))
-  {
-    FB_LOG_ERROR("Missing plugin state.");
-    return false;
-  }
-  var state = obj->getProperty("state");
-  if (!state.isArray())
-  {
-    FB_LOG_ERROR("Plugin state is not an array.");
-    return false;
-  }
-
   for (int p = 0; p < container.Params().size(); p++)
   {
     double defaultNormalized = 0.0f;
@@ -786,16 +338,16 @@ FBRuntimeTopo::LoadParamStateFromVar(
 
   std::vector<FBOldParamInfo> oldParamInfos = {};
   auto converter = static_->deserializationConverterFactory(loadingVersion, this);
-  for (int sp = 0; sp < state.size(); sp++)
+  for (int sp = 0; sp < json.size(); sp++)
   {
-    DynamicObject* param = state[sp].getDynamicObject();
+    DynamicObject* param = json[sp].getDynamicObject();
 
     if (!param->hasProperty("id"))
     {
       FB_LOG_ERROR("Plugin param state is missing id.");
       return false;
     }
-    id = param->getProperty("id");
+    var id = param->getProperty("id");
     if (!id.isString())
     {
       FB_LOG_ERROR("Plugin param state id is not a string.");
@@ -807,49 +359,71 @@ FBRuntimeTopo::LoadParamStateFromVar(
       FB_LOG_ERROR("Plugin param state is missing value.");
       return false;
     }
-
-    if (!param->getProperty("val").isString())
+    var val = param->getProperty("val");
+    if (!val.isString())
     {
       FB_LOG_ERROR("Plugin param state value is not a string.");
       return false;
     }
-    std::string val = param->getProperty("val").toString().toStdString();
 
     if (!param->hasProperty("name"))
     {
       FB_LOG_ERROR("Plugin param state is missing name.");
       return false;
     }
-    var paramName = param->getProperty("name");
-    if (!paramName.isString())
+    var name = param->getProperty("name");
+    if (!name.isString())
     {
       FB_LOG_ERROR("Plugin param state name is not a string.");
       return false;
     }
 
+    if (!param->hasProperty("moduleId"))
+    {
+      FB_LOG_ERROR("Plugin param state is missing module id.");
+      return false;
+    }
     var oldModuleId = param->getProperty("moduleId");
     if (!oldModuleId.isString())
     {
-      FB_LOG_ERROR("Old module id is not a string.");
-      continue;
+      FB_LOG_ERROR("Plugin param state module id is not a string.");
+      return false;
+    }
+
+    if (!param->hasProperty("moduleSlot"))
+    {
+      FB_LOG_ERROR("Plugin param state is missing module slot.");
+      return false;
     }
     var oldModuleSlot = param->getProperty("moduleSlot");
-    if (!oldModuleSlot.isInt())
+    if (!oldModuleId.isInt())
     {
-      FB_LOG_ERROR("Old module slot is not an int.");
-      continue;
+      FB_LOG_ERROR("Plugin param state module slot is not an int.");
+      return false;
+    }
+
+    if (!param->hasProperty("paramId"))
+    {
+      FB_LOG_ERROR("Plugin param state is missing param id.");
+      return false;
     }
     var oldParamId = param->getProperty("paramId");
     if (!oldParamId.isString())
     {
-      FB_LOG_ERROR("Old param id is not a string.");
-      continue;
+      FB_LOG_ERROR("Plugin param state param id is not a string.");
+      return false;
+    }
+
+    if (!param->hasProperty("paramSlot"))
+    {
+      FB_LOG_ERROR("Plugin param state is missing param slot.");
+      return false;
     }
     var oldParamSlot = param->getProperty("paramSlot");
     if (!oldParamSlot.isInt())
     {
-      FB_LOG_ERROR("Old param slot is not an int.");
-      continue;
+      FB_LOG_ERROR("Plugin param state param slot is not an int.");
+      return false;
     }
 
     int oldTag = FBMakeStableHash(id.toString().toStdString());
@@ -860,7 +434,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
     oldParamInfo.paramSlot = oldParamSlot;
     oldParamInfo.moduleSlot = oldModuleSlot;
     oldParamInfo.id = id.toString().toStdString();
-    oldParamInfo.name = paramName.toString().toStdString();
+    oldParamInfo.name = name.toString().toStdString();
     oldParamInfo.paramId = oldParamId.toString().toStdString();
     oldParamInfo.moduleId = oldModuleId.toString().toStdString();
     oldParamInfos.push_back(oldParamInfo);
@@ -916,7 +490,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
           val, newParamValue))
         {
           normalized = topo.TextToNormalized(true, newParamValue);
-          FB_LOG_INFO("Mapped old to new list-valued parameter value: " + val + " to " + newParamValue + ".");
+          FB_LOG_INFO("Mapped old to new list-valued parameter value: " + val.toString().toStdString() + " to " + newParamValue + ".");
         }
         else
         {

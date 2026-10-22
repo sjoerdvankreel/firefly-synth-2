@@ -68,6 +68,31 @@ MakePlugParamInfo(FBRuntimeParam const& param, int unitId)
   return result;
 }
 
+tresult PLUGIN_API
+FBVST3Plugin::setComponentState(IBStream* state)
+{
+  (void)state;
+  FB_LOG_ENTRY_EXIT();
+  return kResultOk;
+}
+
+tresult PLUGIN_API
+FBVST3Plugin::getEditorState(IBStream* state)
+{
+  (void)state;
+  FB_LOG_ENTRY_EXIT();
+  return kResultOk;
+}
+
+tresult PLUGIN_API
+FBVST3Plugin::setEditorState(IBStream* state)
+{
+  (void)state;
+  FB_LOG_ENTRY_EXIT();
+  return kResultOk;
+}
+
+
 IPlugView* PLUGIN_API
 FBVST3Plugin::createView(FIDString name)
 {
@@ -105,50 +130,6 @@ FBVST3Plugin::setParamNormalized(ParamID tag, ParamValue value)
   if (_guiEditor != nullptr)
     _guiEditor->SetAudioParamNormalizedFromHost(Topo()->audio.paramTagToIndex.at(tag), value);
   return kResultTrue;
-}
-
-tresult PLUGIN_API
-FBVST3Plugin::setComponentState(IBStream* state)
-{
-  // see setState().
-  (void)state;
-  FB_LOG_ENTRY_EXIT();
-  return kResultOk;
-}
-
-tresult PLUGIN_API
-FBVST3Plugin::getEditorState(IBStream* state)
-{
-  FB_LOG_ENTRY_EXIT();
-  return FBWithLogException([this, state]()
-  {
-    std::string json = Topo()->SaveGUIStateToString(*this);
-    if (!FBVST3SaveIBStream(state, json))
-      return kResultFalse;
-    return kResultOk;
-  });
-}
-
-tresult PLUGIN_API 
-FBVST3Plugin::setEditorState(IBStream* state)
-{
-  FB_LOG_ENTRY_EXIT();
-  return FBWithLogException([this, state]()
-  {
-    std::string json;
-    if (!FBVST3LoadIBStream(state, json))
-      return kResultFalse;
-    Topo()->LoadVST3GUIStateFromStringWithDryRun(json, *this);
-    OnPatchNameChanged();
-    OnInstanceNameChanged();    
-    OnGUIAudioClipsChanged();
-    if(_guiEditor != nullptr)
-      for (int i = 0; i < GUIState()->Params().size(); i++)
-        _guiEditor->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));      
-    MarkPatchAsSessionState();
-    NotifyHostOfParamNameChanges();
-    return kResultTrue;
-  });
 }
 
 void

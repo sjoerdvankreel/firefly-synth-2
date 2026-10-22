@@ -130,9 +130,9 @@ FBPlugGUI::InitSavePatchBrowser()
   auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::SavePatchFolder);
   _savePatchBrowser = std::make_unique<FBFileBrowserComponent>(this, true, false, "Save Patch", extension, filterName, initialPath, [this](juce::File const& file) {
     SetBrowserInitialPath(FBUserGlobalSettingKeys::SavePatchFolder, file);
-    FBScalarStateContainer editState(*HostContext()->Topo());
-    editState.CopyFrom(HostContext(), true);
-    file.replaceWithText(HostContext()->Topo()->SavePatchStateToString(editState, *HostContext()));
+    FBScalarStateContainer audioParams(*HostContext()->Topo());
+    audioParams.CopyFrom(HostContext(), true);
+    file.replaceWithText(HostContext()->Topo()->SaveStateToString(*HostContext(), audioParams, true));
   }, [](juce::File const&){}, [](){});
 }
 
@@ -763,9 +763,9 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
       repaint();
     }
     if (id == 4) {
-      FBScalarStateContainer editState(*HostContext()->Topo());
-      editState.CopyFrom(HostContext(), true);
-      SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SavePatchStateToString(editState, *HostContext()));
+      FBScalarStateContainer audioParams(*HostContext()->Topo());
+      audioParams.CopyFrom(HostContext(), true);
+      SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveStateToString(*HostContext(), audioParams, true));
     }
     if (id == 5) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
@@ -902,6 +902,8 @@ FBPlugGUI::LoadPatchAsPreview(
 {
   // TODO Sampler
   FB_LOG_ENTRY_EXIT();
+  (void)file;
+  /*
   _patchWasPreviewed = true;
   std::map<int, std::string> previewParamNames;
   std::map<std::string, FBAudioClip> previewGuiAudioClips;
@@ -912,6 +914,7 @@ FBPlugGUI::LoadPatchAsPreview(
   BeforePatchChanged();
   editState.CopyTo(HostContext(), true);
   AfterPatchChanged(true);
+  */
 }
 
 bool
@@ -922,12 +925,12 @@ FBPlugGUI::LoadPatchFromText(
 {
   FB_LOG_ENTRY_EXIT();
   RevertPreviewedPatch();
-  FBScalarStateContainer editState(*HostContext()->Topo());
+  FBScalarStateContainer audioParams(*HostContext()->Topo());
   HostContext()->UndoState().Snapshot(undoAction);
-  if (!HostContext()->Topo()->LoadPatchStateFromString(text, editState, *HostContext()))
+  if (!HostContext()->Topo()->LoadStateFromString(text, *HostContext(), audioParams, true))
     return false;
   BeforePatchChanged();
-  editState.CopyTo(HostContext(), true);
+  audioParams.CopyTo(HostContext(), true);
   HostContext()->MarkPatchAsPatchState(patchName);
   HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged(false);

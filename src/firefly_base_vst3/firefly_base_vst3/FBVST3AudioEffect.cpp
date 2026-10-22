@@ -1,5 +1,6 @@
 #include <firefly_base_vst3/FBVST3Plugin.hpp>
 #include <firefly_base_vst3/FBVST3Utility.hpp>
+#include <firefly_base_vst3/FBVST3GUIEditor.hpp>
 
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
 #include <firefly_base/dsp/plug/FBPlugProcessor.hpp>
@@ -7,6 +8,7 @@
 #include <firefly_base/base/shared/FBExchangeStateQueue.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
+#include <firefly_base/base/state/main/FBGUIStateContainer.hpp>
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
@@ -93,7 +95,9 @@ FBVST3Plugin::getState(IBStream* state)
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, state]()
   {
-    std::string json = Topo()->SaveVST3ProcStateToString(*ProcState(), false);
+    FBScalarStateContainer audioParams(*Topo());
+    audioParams.CopyFrom(this, false);
+    std::string json = Topo()->SaveStateToString(*this, audioParams, false);
     if (!FBVST3SaveIBStream(state, json))
       return kResultFalse;
     return kResultOk;
@@ -109,16 +113,20 @@ FBVST3Plugin::setState(IBStream* state)
     std::string json;
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
-    Topo()->LoadVST3ProcStateFromStringWithDryRun(json, *ProcState(), false);
-
-    // Because we used to NOT be SingleComponentEffect, we now need to do this.
-    FBScalarStateContainer edit(*Topo());
-    if (!Topo()->LoadVST3EditStateFromString(json, edit, false))
-      return kResultFalse;
-    for (int i = 0; i < edit.Params().size(); i++)
-      setParamNormalized(Topo()->audio.params[i].tag, *edit.Params()[i]);
+    FBScalarStateContainer audioParams(*Topo());
+    if (!Topo()->LoadStateFromString(json, *this, audioParams, false))
+      return kResultTrue; // not crash bitwig
+    for (int i = 0; i < audioParams.Params().size(); i++)
+      setParamNormalized(Topo()->audio.params[i].tag, *audioParams.Params()[i]);
+    
+    OnPatchNameChanged();
+    OnInstanceNameChanged();
+    OnGUIAudioClipsChanged();
     MarkPatchAsSessionState();
     NotifyHostOfParamNameChanges();
+    if (_guiEditor != nullptr)
+      for (int i = 0; i < GUIState()->Params().size(); i++)
+        _guiEditor->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));
     return kResultOk;
   });
 }
