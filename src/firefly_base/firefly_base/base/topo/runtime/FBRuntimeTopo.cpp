@@ -150,16 +150,17 @@ FBRuntimeTopo::SaveStateToVar(
   result->setProperty("pluginVersionMinor", static_->meta.version.minor);
   result->setProperty("pluginVersionPatch", static_->meta.version.patch);
   result->setProperty("patchName", String(hostContext.GUIState()->PatchName()));
-  result->setProperty("guiAudioClips", SaveAudioClipsToVar(hostContext.GetGUIAudioClips()));
-  result->setProperty("dspAudioClips", SaveAudioClipsToVar(hostContext.PullDSPAudioClipsToGUI()));
-  result->setProperty("audioParams", SaveParamStateToVar(audioParams, this->gui.params, patchOnly));
-  result->setProperty("guiParams", SaveParamStateToVar(*hostContext.GUIState(), this->gui.params, patchOnly));
-  result->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext.GetAudioParamNameOverrides()));
   if (!patchOnly)
   {
     result->setProperty("themeName", String(hostContext.GUIState()->ThemeName()));
     result->setProperty("instanceName", String(hostContext.GUIState()->InstanceName()));
   }
+  result->setProperty("guiAudioClips", SaveAudioClipsToVar(hostContext.GetGUIAudioClips()));
+  result->setProperty("dspAudioClips", SaveAudioClipsToVar(hostContext.PullDSPAudioClipsToGUI()));
+  result->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext.GetAudioParamNameOverrides()));
+  if (!patchOnly)
+    result->setProperty("guiParams", SaveParamStateToVar(*hostContext.GUIState(), this->gui.params, patchOnly));
+  result->setProperty("audioParams", SaveParamStateToVar(audioParams, this->audio.params, patchOnly));
   return var(result);
 }
 
@@ -180,12 +181,11 @@ FBRuntimeTopo::LoadStateFromVar(
 var
 FBRuntimeTopo::SaveParamNameOverridesToVar(std::map<int, std::string> const& paramNameOverrides) const
 {
-  std::string name;
   DynamicObject* result = new DynamicObject;
   for(auto const& kv: paramNameOverrides)
   {
     auto tag = String(std::to_string(audio.params[kv.first].tag));
-    result->setProperty(tag, Base64::toBase64(String(name)));
+    result->setProperty(tag, Base64::toBase64(String(kv.second)));
   }
   return var(result);
 }
