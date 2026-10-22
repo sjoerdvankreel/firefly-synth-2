@@ -116,8 +116,7 @@ FBVST3Plugin::setState(IBStream* state)
     FBScalarStateContainer audioParams(*Topo());
     if (!Topo()->LoadStateFromString(json, *this, audioParams, false))
       return kResultTrue; // not crash bitwig
-    for (int i = 0; i < audioParams.Params().size(); i++)
-      setParamNormalized(Topo()->audio.params[i].tag, *audioParams.Params()[i]);
+    audioParams.CopyTo(this, false);
     
     OnPatchNameChanged();
     OnInstanceNameChanged();

@@ -144,8 +144,8 @@ FBRuntimeTopo::SaveStateToVar(
 {
   auto result = new DynamicObject;
   result->setProperty("magic", String(Magic));
-  result->setProperty("pluginId", String(static_->meta.id));
   result->setProperty("fileFormatVersion", FileFormatVersion);
+  result->setProperty("pluginId", String(static_->meta.id));
   result->setProperty("pluginVersionMajor", static_->meta.version.major);
   result->setProperty("pluginVersionMinor", static_->meta.version.minor);
   result->setProperty("pluginVersionPatch", static_->meta.version.patch);
@@ -170,12 +170,249 @@ FBRuntimeTopo::LoadStateFromVar(
   FBHostContext& hostContext,
   FBScalarStateContainer& audioParams, bool patchOnly) const
 {
-  (void)json;
-  (void)hostContext;
-  (void)audioParams;
-  (void)patchOnly;
-  // todo magic
-  return false;
+  DynamicObject* obj = json.getDynamicObject();
+
+  if (!obj->hasProperty("magic"))
+  {
+    FB_LOG_ERROR("Missing file magic.");
+    return false;
+  }
+  var magic = obj->getProperty("magic");
+  if (!magic.isString())
+  {
+    FB_LOG_ERROR("File magic is not a string.");
+    return false;
+  }
+  if (magic.toString() != String(Magic))
+  {
+    FB_LOG_ERROR("File magic mismatch.");
+    return false;
+  }
+
+  if (!obj->hasProperty("pluginId"))
+  {
+    FB_LOG_ERROR("Missing plugin id.");
+    return false;
+  }
+  var pluginId = obj->getProperty("pluginId");
+  if (!pluginId.isString())
+  {
+    FB_LOG_ERROR("Plugin id is not a string.");
+    return false;
+  }
+  auto allowedIdIter = std::find(
+    static_->meta.allowLoadFromIds.begin(),
+    static_->meta.allowLoadFromIds.end(),
+    pluginId.toString().toStdString());
+  if (allowedIdIter == static_->meta.allowLoadFromIds.end())
+  {
+    FB_LOG_ERROR("Plugin id mismatch.");
+    return false;
+  }
+
+  if (!obj->hasProperty("versionMajor"))
+  {
+    FB_LOG_ERROR("Missing plugin major version.");
+    return false;
+  }
+  var versionMajor = obj->getProperty("versionMajor");
+  if (!versionMajor.isInt())
+  {
+    FB_LOG_ERROR("Plugin major version is not an int.");
+    return false;
+  }
+
+  if (!obj->hasProperty("versionMinor"))
+  {
+    FB_LOG_ERROR("Missing plugin minor version.");
+    return false;
+  }
+  var versionMinor = obj->getProperty("versionMinor");
+  if (!versionMinor.isInt())
+  {
+    FB_LOG_ERROR("Plugin minor version is not an int.");
+    return false;
+  }
+
+  if (!obj->hasProperty("versionPatch"))
+  {
+    FB_LOG_ERROR("Missing plugin patch version.");
+    return false;
+  }
+  var versionPatch = obj->getProperty("versionPatch");
+  if (!versionPatch.isInt())
+  {
+    FB_LOG_ERROR("Plugin patch version is not an int.");
+    return false;
+  }
+
+  FBPlugVersion loadingVersion = {};
+  loadingVersion.major = static_cast<int>(versionMajor);
+  loadingVersion.minor = static_cast<int>(versionMinor);
+  loadingVersion.patch = static_cast<int>(versionPatch);
+
+  if (static_->meta.version < loadingVersion)
+  {
+    FB_LOG_ERROR("Stored plugin version is newer than current plugin version.");
+    return false;
+  }
+
+  if (!obj->hasProperty("patchName"))
+  {
+    FB_LOG_ERROR("Missing plugin patch name.");
+    return false;
+  }
+  var patchNameVar = obj->getProperty("patchName");
+  if (!patchNameVar.isString())
+  {
+    FB_LOG_ERROR("Plugin patch name is not a string.");
+    return false;
+  }
+  std::string patchName = patchNameVar.toString().toStdString();
+
+  std::string themeName;
+  if (!patchOnly)
+  {
+    if (!obj->hasProperty("themeName"))
+    {
+      FB_LOG_ERROR("Missing plugin theme name.");
+      return false;
+    }
+    var themeNameVar = obj->getProperty("themeName");
+    if (!themeNameVar.isString())
+    {
+      FB_LOG_ERROR("Plugin theme name is not a string.");
+      return false;
+    }
+    themeName = themeNameVar.toString().toStdString();
+  }
+
+  std::string instanceName;
+  if (!patchOnly)
+  {
+    if (!obj->hasProperty("instanceName"))
+    {
+      FB_LOG_ERROR("Missing plugin instance name.");
+      return false;
+    }
+    var instanceNameVar = obj->getProperty("instanceName");
+    if (!instanceNameVar.isString())
+    {
+      FB_LOG_ERROR("Plugin instance name is not a string.");
+      return false;
+    }
+    instanceName = instanceNameVar.toString().toStdString();
+  }
+
+  std::map<std::string, FBAudioClip> guiAudioClips;
+  if (!obj->hasProperty("guiAudioClips"))
+  {
+    FB_LOG_ERROR("Missing plugin gui audio clips.");
+    return false;
+  }
+  var guiAudioClipsVar = obj->getProperty("guiAudioClips");
+  if (!guiAudioClipsVar.isObject())
+  {
+    FB_LOG_ERROR("Plugin gui audio clips is not an object.");
+    return false;
+  }
+  if (!LoadAudioClipsFromVar(guiAudioClipsVar, guiAudioClips))
+  {
+    FB_LOG_ERROR("Failed to load plugin gui audio clips.");
+    return false;
+  }
+
+  std::map<std::string, FBAudioClip> dspAudioClips;
+  if (!obj->hasProperty("dspAudioClips"))
+  {
+    FB_LOG_ERROR("Missing plugin dsp audio clips.");
+    return false;
+  }
+  var dspAudioClipsVar = obj->getProperty("dspAudioClipsVar");
+  if (!dspAudioClipsVar.isObject())
+  {
+    FB_LOG_ERROR("Plugin dsp audio clips is not an object.");
+    return false;
+  }
+  if (!LoadAudioClipsFromVar(dspAudioClipsVar, dspAudioClips))
+  {
+    FB_LOG_ERROR("Failed to load plugin dsp audio clips.");
+    return false;
+  }
+
+  std::map<int, std::string> paramNameOverrides;
+  if (!obj->hasProperty("paramNameOverrides"))
+  {
+    FB_LOG_ERROR("Missing plugin param name overrides.");
+    return false;
+  }
+  var paramNameOverridesVar = obj->getProperty("paramNameOverrides");
+  if (!paramNameOverridesVar.isObject())
+  {
+    FB_LOG_ERROR("Plugin param name overrides is not an object.");
+    return false;
+  }
+  if (!LoadParamNameOverridesFromVar(paramNameOverridesVar, paramNameOverrides))
+  {
+    FB_LOG_ERROR("Failed to load plugin param name overrides.");
+    return false;
+  }
+
+  FBGUIStateContainer loadGuiParams(*this);
+  if (!patchOnly)
+  {
+    if (!obj->hasProperty("guiParams"))
+    {
+      FB_LOG_ERROR("Missing plugin gui params.");
+      return false;
+    }
+    var guiParamsVar = obj->getProperty("guiParams");
+    if (!guiParamsVar.isArray())
+    {
+      FB_LOG_ERROR("Plugin gui params is not an array.");
+      return false;
+    }
+    if (!LoadParamStateFromVar(guiParamsVar, loadingVersion, true, loadGuiParams, this->gui.params, false))
+    {
+      FB_LOG_ERROR("Failed to load plugin gui params.");
+      return false;
+    }
+  }
+
+  FBScalarStateContainer loadAudioParams(*this);
+  if (!obj->hasProperty("audioParams"))
+  {
+    FB_LOG_ERROR("Missing plugin audio params.");
+    return false;
+  }
+  var audioParamsVar = obj->getProperty("audioParams");
+  if (!audioParamsVar.isArray())
+  {
+    FB_LOG_ERROR("Plugin audio params is not an array.");
+    return false;
+  }
+  if (!LoadParamStateFromVar(audioParamsVar, loadingVersion, false, loadAudioParams, this->audio.params, patchOnly))
+  {
+    FB_LOG_ERROR("Failed to load plugin audio params.");
+    return false;
+  }
+
+  hostContext.SetPatchName(patchName);
+  if (!patchOnly)
+  {
+    hostContext.SetThemeName(themeName);
+    hostContext.SetInstanceName(instanceName);
+  }
+
+  hostContext.SetGUIAudioClips(guiAudioClips);
+  hostContext.PushDSPAudioClipsToDSP(dspAudioClips);
+  hostContext.SetAudioParamNameOverrides(paramNameOverrides);
+
+  if (!patchOnly)
+    hostContext.GUIState()->CopyFrom(loadGuiParams);
+
+  audioParams.CopyFrom(this, loadAudioParams, patchOnly);
+  return true;
 }
 
 var

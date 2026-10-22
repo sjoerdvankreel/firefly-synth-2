@@ -49,7 +49,8 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
       else
         json.append(buffer, read);
 
-    Topo()->LoadStateFromString(json, *this, *_editState, false);
+    if (!Topo()->LoadStateFromString(json, *this, *_editState, false))
+      return true; // bitwig
     OnPatchNameChanged();
     OnInstanceNameChanged();
     OnGUIAudioClipsChanged();
