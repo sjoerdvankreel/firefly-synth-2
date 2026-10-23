@@ -9,7 +9,7 @@
 #include <vector>
 
 struct FBRuntimeTopo;
-class FBHostGUIContext;
+class FBHostContext;
 class FBScalarStateContainer;
 class FBExchangeStateContainer;
 
@@ -31,16 +31,22 @@ class FBProcStateContainer final
   FBNoteMatrix<FBGlobalAccParamState> _noteMatrixSmth = {};
   std::array<FBGlobalAccParamState, FBMIDIEvent::MessageCount> _midiParams = {};
 
+  // We keep a copy of an audio clip on both realtime and ui.
+  // Controller side is a very slimmed down version (1000 samples or so -- small).
+  // Non-owning pointer! On the GUI side it comes from guiAudioClips.
+  // On the DSP side it comes from the dspAudioClips.
+  std::map<std::string, FBAudioClip>* const _audioClips;
+
   void InitProcessing(int index, int voice, float value);
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBProcStateContainer);
-  FBProcStateContainer(FBRuntimeTopo const& topo);
+  FBProcStateContainer(FBRuntimeTopo const& topo, std::map<std::string, FBAudioClip>* audioClips);
   ~FBProcStateContainer() { _freeRawState(_rawState); }
 
   void SetSmoothingCoeffs(int sampleCount);
   void InitProcessing(int index, float value);
-  void InitProcessing(FBHostGUIContext const* context);
+  void InitProcessing(FBHostContext const* context);
   void InitProcessing(FBScalarStateContainer const& scalar);
   void InitProcessing(FBExchangeStateContainer const& exchange);
 
@@ -52,6 +58,8 @@ public:
   FBMemoryPool* MemoryPool() { return &_memoryPool; }
   std::vector<FBProcParamState>& Params() { return _params; }
   std::vector<FBProcParamState> const& Params() const { return _params; }
+  std::map<std::string, FBAudioClip>& AudioClips() { return *_audioClips; }
+  std::map<std::string, FBAudioClip> const& AudioClips() const { return *_audioClips; }
   FBNoteMatrix<FBGlobalAccParamState>& NoteMatrixSmth() { return _noteMatrixSmth; }
   FBNoteMatrix<FBGlobalAccParamState> const& NoteMatrixSmth() const { return _noteMatrixSmth; }
   std::array<FBGlobalAccParamState, FBMIDIEvent::MessageCount>& MIDIParams() { return _midiParams; }

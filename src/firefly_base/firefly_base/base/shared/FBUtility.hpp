@@ -1,5 +1,4 @@
 #pragma once
-
 #include <juce_core/juce_core.h>
 
 #include <string>
@@ -72,9 +71,20 @@ inline int const FBDefaultDisplayPrecision = 3;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(x); \
   x() = default
 
+struct FBAudioClip
+{
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBAudioClip);
+  std::string name = {};
+  std::int32_t channels = {};
+  std::int32_t sampleRate = {};
+  std::int32_t originalSampleRate = {};
+  std::vector<float> data = {};
+};
+
 namespace FBUserGlobalSettingKeys
 {
   std::string const LoadPatchFolder = "LoadPatchFolder";
+  std::string const LoadAnyFileFolder = "LoadAnyFileFolder";
   std::string const SavePatchFolder = "SavePatchFolder";
   std::string const SaveTopologyFolder = "SaveTopologyFolder";
   std::string const SaveParamListFolder = "SaveParamListFolder";
@@ -142,3 +152,6 @@ bool
 FBGetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std::string& val);
 void
 FBSetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std::string const& val);
+
+bool
+FBAudioFileRead(std::string const& path, FBAudioClip& clip);

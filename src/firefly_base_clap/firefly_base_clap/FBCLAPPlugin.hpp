@@ -1,8 +1,9 @@
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
-#include <firefly_base/dsp/host/FBHostDSPContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base_clap/FBCLAPSyncEvent.hpp>
+#include <firefly_base_clap/FBCLAPUtility.hpp>
 
 #include <clap/helpers/plugin.hh>
 #include <readerwriterqueue.h>
@@ -10,6 +11,7 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <thread>
 
 using namespace clap;
 using namespace clap::helpers;
@@ -26,13 +28,11 @@ class FBGUIStateContainer;
 class FBProcStateContainer;
 class FBScalarStateContainer;
 class FBExchangeStateContainer;
-class FBCLAPExchangeStateQueueBase;
+class FBExchangeStateQueueBase;
 
 class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
-public juce::Timer,
-public FBHostGUIContext,
-public IFBHostDSPContext
+public FBHostContext
 {
 #if _MSC_VER
 #pragma warning(push)
@@ -46,13 +46,9 @@ public IFBHostDSPContext
 #pragma warning(pop)
 #endif
 
-  MTSClient* const _mtsClient;
   std::unique_ptr<FBPlugGUIContext> _gui;
-  std::unique_ptr<FBProcStateContainer> _procState;
   std::unique_ptr<FBScalarStateContainer> _editState;
   std::map<int, std::string> _audioParamNameOverridesByIndex = {};
-  std::unique_ptr<FBExchangeStateContainer> _exchangeToGUIState;
-  std::unique_ptr<FBCLAPExchangeStateQueueBase> _exchangeStateQueue;
 
   float _sampleRate = 0.0f;
   FBHostInputBlock _input = {};
@@ -66,6 +62,7 @@ public IFBHostDSPContext
   void ProcessMainToAudioEvents(const clap_output_events* out, bool pushToProcBlock);
 
 protected:
+  void OnReceivedExchangeFromDSP() override;
   void DoEndAudioParamChange(int index) override;
   void DoBeginAudioParamChange(int index) override;
   void DoPerformAudioParamEdit(int index, double normalized) override;
@@ -78,7 +75,7 @@ public:
     clap_plugin_descriptor const* desc, 
     clap_host const* host,    
     MTSClient* mtsClient,
-    std::unique_ptr<FBCLAPExchangeStateQueueBase>&& exchangeStateQueue);
+    std::unique_ptr<FBExchangeStateQueueBase>&& exchangeStateQueue);
 
   bool init() noexcept override;
   void timerCallback() override;
@@ -110,11 +107,7 @@ public:
   bool guiIsApiSupported(const char* api, bool isFloating) noexcept override;
 
   float SampleRate() const override { return _sampleRate; }
-  MTSClient* GetMTSClient() override { return _mtsClient; }
-  FBRuntimeTopo const* Topo() const override { return _topo.get(); }
-  FBProcStateContainer* ProcState() override { return _procState.get(); }
-  FBExchangeStateContainer* ExchangeToGUIState() override { return _exchangeToGUIState.get(); } 
-  
+
   void NotifyHostOfParamNameChanges() override;
   void ClearAudioParamNameOverrides() override;
   void ClearAudioParamNameOverride(int index) override;

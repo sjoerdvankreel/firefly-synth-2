@@ -1,6 +1,78 @@
+- the repo is too big again
+- hunt down (void)
+[ ] sampler -- pffft not easy
+V no undo for all patch stuff
+V MarkPatchAsPatchState/SessionState/OnPatchLoaded
+V get all the undo state & friends right -- just clear undo after sample load
+V do we stereo merge? select channel? osci is mono -> just only mono support
+V want 16/24/32 bit, need lib for convert ? or do naive -> libsndfile
+V raw? needs user input. wav, au, aiff etc, need parse headers. another lib? compressed -- not a chance, not even lossless 
+v drop kDistributable, merge hostgui/hostdspcontext, share lots of stuff between clap/vst3
+v get rid of exchangeStateSize
+v consolidate the pull/push with clap/vst3
+v clean up the headers in thenew files
+v do clap side
+v get rid of reload session/patch
+v shrink the gui side clip
+v do we need clips ptr in the procstate ?
+v rename guiAudioClips
+v check what oversampling does to audio in (and sample)
+v check what fm/rm/am does to audio in (and sample)
+v review the whole thing
+v graphs + all unison & change pitch etc
+v pitchtrack, unison
+v i want react to offset from C4 including all pitch mods -- no nontracking only. whats the granularity? internal block size? does SRC overflow those?
+v all the simple stuff, pan/amp envs etc
+v gui graph render should be accurate, whatever that may be
+v store in patchfile only for now, maybe expand to link on disk with all headache that follows
+v how tf i push from controller to processor. this is not params, may need dataexchange for vst3. but not super-supported everywhere, fallback to msg/connectionpoint?
+v CLAP is guaranteed single process. luvu.
+v hunt down the comments for kDistributable and singlecomponenteffect
+v sidechaintests are borked
+v FLStudioVST3ModMatrix not load good
+- test the conversion on old and new path
+- do all the vst3 oldstyle stuff on load with editorstate and componentstate and blaaahjadidadi
+- retest the conversion
+- dedicated sample demos
+- do filters in the sampler like audioin
+- also finish up the new demo tune with some vocals and include the patches right away
+- recheck automation lanes on all renoise things
+- close the renoise bug
+- make dedicated test for microtune and paramnameoverride and guisettings
+- make it loadpre217load***state --> if only for the zip
+- double check all sounds same after save * looks same where possible
+- save all the demo in the new format
+- retest / implement save gui params
+- make a note that guiparams will get lost
+- do pre-post host tests
+- retest everything flstudio
+- retest everything Linux and mac
+- check all prev unsupported dataexchange etc, should now work, and notify
+- notify about need full cache rescan
+- recheck on all hosts: offset from defaults, realtime gui
+- do patch side ???
+- retest midi and sampler and basically everything on every host and every platform
+- copy/paste patch
+- check microtuning
+- do the docs
+- test all hosts
+- get rid of audio input gain, make no sense??? or is it pre-post?
+- do load/save tests on old sessions and patches
+- do all formats that juce supports + stereo merge
+- drop libsndfile https://forum.juce.com/t/reading-a-wav-file-into-an-array-of-samples/47449/4 
+- preset patch with demo sample + all host tests
+- do the validators
+- run it in debug
+- check "todo sampler"
+- compress the patchfile
+- update the dependencies list
+- file preview
+
 [ ] sampler -- just do it i want vocals
 [ ] string osci dry/wet normal/uniform + conversion
 [ ] techno demo to presets
+[ ] do the thingy
+
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] fix the comp and the rms comp
 [ ] fix the 1sec delay on plot visuals
@@ -11,6 +83,7 @@
 [ ] do mod rate/amt for multitap
 [ ] override all-osci unison
 
+ditch kDistributable and go with SingleComponentEffect
 fix the string oversample bug already
 allow full fx module inside the feedback delay
 dedicated distortion with routing like the echo

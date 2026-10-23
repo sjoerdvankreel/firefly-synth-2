@@ -22,6 +22,7 @@ struct FBPlugInputBlock final
   float sampleRate = {};
   float prevRoundCpuUsage = {};
   std::uint64_t projectTimeSamples = {};
+  std::map<std::string, FBAudioClip> const* audioClips = {};
 
   FBVoiceManager* voiceManager = {};
   FBProcStateContainer* procState = {};

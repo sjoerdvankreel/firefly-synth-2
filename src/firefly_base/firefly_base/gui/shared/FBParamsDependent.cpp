@@ -1,5 +1,5 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/gui/shared/FBParamsDependent.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -49,7 +49,7 @@ runtimeDependencies(RuntimeDependencies(
   topo, slot, audio, moduleIndices, dependency.staticParamIndices)) {}
 
 bool
-FBParamsDependentDependency::EvaluateGUI(FBHostGUIContext const* hostContext)
+FBParamsDependentDependency::EvaluateGUI(FBHostContext const* hostContext)
 {
   if (dependency.evaluate == nullptr)
     return true;
@@ -67,7 +67,7 @@ FBParamsDependentDependency::EvaluateGUI(FBHostGUIContext const* hostContext)
 }
 
 bool
-FBParamsDependentDependency::EvaluateAudio(FBHostGUIContext const* hostContext)
+FBParamsDependentDependency::EvaluateAudio(FBHostContext const* hostContext)
 {
   if (dependency.evaluate == nullptr)
     return true;

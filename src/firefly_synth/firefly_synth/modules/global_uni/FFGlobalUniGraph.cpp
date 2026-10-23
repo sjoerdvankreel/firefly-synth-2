@@ -6,7 +6,7 @@
 #include <firefly_base/gui/graph/FBGraphing.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 
 #include <bit>
 #include <algorithm>

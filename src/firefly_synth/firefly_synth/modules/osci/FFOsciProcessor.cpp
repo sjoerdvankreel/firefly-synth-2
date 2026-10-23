@@ -162,6 +162,8 @@ FFOsciProcessor::BeginVoice(
     BeginVoiceString(state, graph);
   else if (_type == FFOsciType::AudioIn)
     BeginVoiceAudioIn(state);
+  else if (_type == FFOsciType::Sample)
+    BeginVoiceSample(state, graph);
   else
     FB_ASSERT(false);
 }
@@ -188,8 +190,6 @@ FFOsciProcessor::Process(
     return 0;
 
   float const defaultPitch = 60.0f;
-  float const defaultFreq = FBPitchToFreq(defaultPitch);
-
   float sampleRate = state.input->sampleRate;
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
@@ -264,14 +264,12 @@ FFOsciProcessor::Process(
       auto baseFreq = FBPitchToFreq(pitch);
       basePitchPlain.Store(s, pitch);
       uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
-      if (_graph && _type != FFOsciType::AudioIn)
+      if (_graph)
         _graphPhaseGen.NextBatch(baseFreq / sampleRate);
     }
     else
     {
       basePitchPlain.Store(s, FBBatch<float>(defaultPitch));
-      if (_graph && _type != FFOsciType::AudioIn)
-        _graphPhaseGen.NextBatch(FBBatch<float>(defaultFreq / sampleRate));
     }
 
     panPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::Pan, panNormModulated.Load(s)));
@@ -291,13 +289,15 @@ FFOsciProcessor::Process(
   else if (_type == FFOsciType::FM)
     ProcessFM(state, basePitchPlain, uniDetunePlain);
   else if (_type == FFOsciType::String)
-    ProcessString(state, 
+    ProcessString(state,
       topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNormModulated.Get(0)),
       topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNormModulated.Get(0)),
       topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm.CV().Get(0)),
       voiceBasePitch, basePitchPlain, uniDetunePlain);
   else if (_type == FFOsciType::AudioIn)
     ProcessAudioIn(state);
+  else if (_type == FFOsciType::Sample)
+    ProcessSample(state, basePitchPlain, uniDetunePlain);
   else
     FB_ASSERT(false);
 
@@ -351,9 +351,13 @@ FFOsciProcessor::Process(
   float lastBaseFreq = FBPitchToFreq(basePitchPlain.Get(_oversampleTimes * FBFixedBlockSamples - 1));
   if (exchangeToGUI == nullptr)
   {
-    if (_type == FFOsciType::String)
+    if (_type == FFOsciType::String || _type == FFOsciType::Sample)
     {
-      int graphSamples = FBFreqToSamples(lastBaseFreq, sampleRate) * FFOsciStringGraphRounds;
+      int graphSamples;
+      if (_type == FFOsciType::String)
+        graphSamples = FBFreqToSamples(lastBaseFreq, sampleRate) * FFOsciStringGraphRounds;
+      else
+        graphSamples = FFOsciSamplerGUISampleCount;
       return std::clamp(graphSamples - _graphPosition, 0, FBFixedBlockSamples);
     }
     else

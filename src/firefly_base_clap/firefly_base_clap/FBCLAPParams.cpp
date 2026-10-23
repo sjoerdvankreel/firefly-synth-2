@@ -16,7 +16,7 @@ FBCLAPPlugin::implementsParams() const noexcept
 uint32_t 
 FBCLAPPlugin::paramsCount() const noexcept
 {
-  return static_cast<uint32_t>(_topo->audio.params.size());
+  return static_cast<uint32_t>(Topo()->audio.params.size());
 }
 
 bool 
@@ -29,7 +29,7 @@ FBCLAPPlugin::paramsValue(
     if (index == -1)
       return false;
     auto const& state = _editState;
-    auto const& static_ = _topo->audio.params[index].static_;
+    auto const& static_ = Topo()->audio.params[index].static_;
     *value = FBNormalizedToCLAP(static_, *state->Params()[index]);
     return true;
   });
@@ -44,7 +44,7 @@ FBCLAPPlugin::paramsTextToValue(
     int32_t index = getParamIndexForParamId(paramId);
     if (index == -1)
       return false;
-    auto const& topo = _topo->audio.params[index];
+    auto const& topo = Topo()->audio.params[index];
     auto normalized = topo.TextToNormalized(false, display);
     if (!normalized.has_value())
       return false;
@@ -62,8 +62,8 @@ FBCLAPPlugin::paramsValueToText(
     int32_t index = getParamIndexForParamId(paramId);
     if (index == -1)
       return false;
-    double norm = FBCLAPToNormalized(_topo->audio.params[index].static_, value);
-    std::string text = _topo->audio.params[index].NormalizedToText(false, norm);
+    double norm = FBCLAPToNormalized(Topo()->audio.params[index].static_, value);
+    std::string text = Topo()->audio.params[index].NormalizedToText(false, norm);
     std::fill(display, display + size, 0);
     strncpy(display, text.c_str(), std::min(size - 1, static_cast<uint32_t>(text.size())));
     return true;
@@ -90,7 +90,7 @@ FBCLAPPlugin::paramsFlush(
         continue;
       if (isProcessing())
       {
-        _procState->InitProcessing(index, static_cast<float>(event->value));
+        ProcState()->InitProcessing(index, static_cast<float>(event->value));
         _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(index, event->value));
       }
       else
@@ -110,11 +110,11 @@ FBCLAPPlugin::paramsInfo(
 {
   return FBWithLogException([this, paramIndex, info]()
   {
-    auto const& runtimeParam = _topo->audio.params[paramIndex];
+    auto const& runtimeParam = Topo()->audio.params[paramIndex];
     auto const& staticParam = runtimeParam.static_;
-    auto const& runtimeModule = _topo->modules[runtimeParam.runtimeModuleIndex];
-    auto const& staticModule = _topo->static_->modules[runtimeParam.topoIndices.module.index];
-    if (paramIndex >= _topo->audio.params.size())
+    auto const& runtimeModule = Topo()->modules[runtimeParam.runtimeModuleIndex];
+    auto const& staticModule = Topo()->static_->modules[runtimeParam.topoIndices.module.index];
+    if (paramIndex >= Topo()->audio.params.size())
       return false;
 
     info->min_value = 0.0;
@@ -141,6 +141,7 @@ FBCLAPPlugin::paramsInfo(
     if (mode == FBParamMode::Block || mode == FBParamMode::Fake || mode == FBParamMode::Output)
     {
       info->flags |= CLAP_PARAM_IS_READONLY;
+      info->flags |= CLAP_PARAM_IS_HIDDEN;
       if (runtimeParam.static_.NonRealTime().IsStepped())
       {
         info->flags |= CLAP_PARAM_IS_STEPPED;
@@ -159,6 +160,16 @@ FBCLAPPlugin::paramsInfo(
         info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL;
         info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID;
       }
+    }
+    if (runtimeParam.static_.isHidden)
+    {
+      info->flags |= CLAP_PARAM_IS_READONLY;
+      info->flags |= CLAP_PARAM_IS_HIDDEN;
+      info->flags &= ~CLAP_PARAM_IS_AUTOMATABLE;
+      info->flags &= ~CLAP_PARAM_IS_MODULATABLE;
+      info->flags &= ~CLAP_PARAM_IS_MODULATABLE_PER_KEY;
+      info->flags &= ~CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL;
+      info->flags &= ~CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID;
     }
     return true;
   });

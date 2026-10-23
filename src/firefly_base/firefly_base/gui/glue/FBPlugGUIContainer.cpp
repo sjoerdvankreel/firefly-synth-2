@@ -1,6 +1,6 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContainer.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
@@ -13,7 +13,7 @@ FBPlugGUIContainer::
 ~FBPlugGUIContainer() {}
 
 FBPlugGUIContainer::
-FBPlugGUIContainer(FBHostGUIContext* hostContext):
+FBPlugGUIContainer(FBHostContext* hostContext):
 FBPlugGUIContext(hostContext),
 _gui(hostContext->Topo()->static_->guiFactory(hostContext))
 {

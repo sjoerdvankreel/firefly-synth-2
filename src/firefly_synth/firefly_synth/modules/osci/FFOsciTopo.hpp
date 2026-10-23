@@ -6,12 +6,19 @@
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeOsciTopo(bool isFx);
 
+inline int FFOsciSamplerGUISampleCount = 1024;
+inline std::string FFOsciSampleSlotIds[FFOsciCount] = {
+  "{1D4FC59F-5B0C-4395-B1EA-9AA50F4D8C0A}",
+  "{A64D418D-7434-461D-A9C8-7A7852C64161}",
+  "{4FD839F4-96AB-46D8-82B6-A77F6C824065}",
+  "{F960C77A-07F3-4BB0-9E20-D98B498DD4CE}" };
+
 enum class FFOsciFMMode { Linear, Exp };
 enum class FFOsciStringMode { Uni, Norm };
 enum class FFOsciFMRatioMode { Ratio, Free };
 
 enum class FFOsciType { 
-  Off, Wave, FM, String, AudioIn };
+  Off, Wave, FM, String, AudioIn, Sample };
 std::string FFOsciTypeToString(FFOsciType type);
 
 enum class FFOsciWaveDSFMode { Off, Over, BW };
@@ -47,4 +54,5 @@ enum class FFOsciParam {
   AudioInGain, AudioInBal,
   AudioInLPOn, AudioInLPFreq, AudioInLPRes,
   AudioInHPOn, AudioInHPFreq, AudioInHPRes,
+  SampleIsLoaded,
   Count };

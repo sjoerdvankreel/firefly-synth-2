@@ -1,4 +1,5 @@
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBLogging.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBGUIStateContainer.hpp>
@@ -18,19 +19,45 @@ struct MenuBuilder
   std::shared_ptr<PopupMenu> menu = {};
 };
 
-FBHostGUIContext::
-FBHostGUIContext(std::unique_ptr<FBStaticTopo>&& topo):
-_topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
-_guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
-_exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo)),
-_undoState(this),
-_patchState(*_topo.get()),
-_sessionState(*_topo.get())
+FBHostContext::
+~FBHostContext()
 {
 }
 
+FBHostContext::
+FBHostContext(
+  std::unique_ptr<FBStaticTopo>&& topo,
+  MTSClient* mtsClient,
+  std::unique_ptr<FBExchangeStateQueueBase>&& exchangeStateQueue):
+_topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
+_mtsClient(mtsClient),
+_undoState(this),
+_patchState(*_topo.get()),
+_sessionState(*_topo.get()),
+_guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
+_procState(std::make_unique<FBProcStateContainer>(*_topo, &_dspAudioClips)),
+_exchangeToGUIState(std::make_unique<FBExchangeStateContainer>(*_topo)),
+_exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo)),
+_exchangeStateQueue(std::move(exchangeStateQueue)),
+_audioClipToDSPCommands(16)
+{
+}
+
+void 
+FBHostContext::timerCallback()
+{
+  FBWithLogException([this]()
+  {
+    bool receivedExchange = false;
+    while (_exchangeStateQueue->TryDequeue(ExchangeFromDSPState()->Raw()))
+      receivedExchange = true;
+    if (receivedExchange)
+      OnReceivedExchangeFromDSP();
+  });
+}
+
 std::map<int, std::string> 
-FBHostGUIContext::GetAudioParamNameOverrides() const
+FBHostContext::GetAudioParamNameOverrides() const
 {
   std::string name;
   std::map<int, std::string> result;
@@ -40,134 +67,239 @@ FBHostGUIContext::GetAudioParamNameOverrides() const
   return result;
 }
 
+FBAudioClip const* 
+FBHostContext::FindGUIAudioClip(std::string const& id) const
+{
+  auto iter = _guiAudioClips.find(id);
+  if (iter == _guiAudioClips.end())
+    return nullptr;
+  return &iter->second;
+}
+
+void
+FBHostContext::SetGUIAudioClips(std::map<std::string, FBAudioClip> const& clips)
+{
+  _undoState.Clear();
+  _guiAudioClips = clips;
+  OnGUIAudioClipsChanged();
+}
+
 void 
-FBHostGUIContext::SetAudioParamNameOverrides(std::map<int, std::string> const& overrides)
+FBHostContext::ClearGUIAndDSPAudioClips()
+{
+  _undoState.Clear();
+  for (auto const& kv : _guiAudioClips)
+    ClearDSPAudioClipToDSP(kv.first);
+  _guiAudioClips.clear();
+  OnGUIAudioClipsChanged();
+}
+
+void 
+FBHostContext::RemoveGUIAndDSPAudioClip(std::string const& id)
+{ 
+  _undoState.Clear();
+  ClearDSPAudioClipToDSP(id);
+  _guiAudioClips.erase(id);
+  OnGUIAudioClipsChanged();
+}
+
+void
+FBHostContext::SetGUIAndDSPAudioClip(
+  std::string const& id, FBAudioClip const& guiClip, FBAudioClip const& dspClip)
+{
+  _undoState.Clear();
+  _guiAudioClips[id] = FBAudioClip(guiClip);
+  PushDSPAudioClipToDSP(id, dspClip);
+  OnGUIAudioClipsChanged();
+}
+
+std::map<std::string, FBAudioClip>
+FBHostContext::PullDSPAudioClipsToGUI() const
+{
+  // Sue me. I should probably bring in a condition variable here.
+  std::lock_guard lock(_blockWritingAudioClipsToDSP);
+  while (_writingAudioClipsToDSPIsDirty.load());
+  return GetDSPAudioClips();
+}
+
+void
+FBHostContext::ClearDSPAudioClipToDSP(std::string const& id)
+{
+  std::lock_guard lock(_blockWritingAudioClipsToDSP);
+  _writingAudioClipsToDSPIsDirty.store(true);
+  FBAudioClipToDSPCommand command = {};
+  command.id = id;
+  command.Type = FBAudioClipToDSPCommand::ClearSingle;
+  _audioClipToDSPCommands.enqueue(command);
+}
+
+void
+FBHostContext::PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
+{
+  std::lock_guard lock(_blockWritingAudioClipsToDSP);
+  _writingAudioClipsToDSPIsDirty.store(true);
+  FBAudioClipToDSPCommand command = {};
+  command.id = id;
+  command.Type = FBAudioClipToDSPCommand::LoadSingle;
+  command.clip = FBAudioClip(clip);
+  _audioClipToDSPCommands.enqueue(command);
+}
+
+void
+FBHostContext::PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips)
+{
+  std::lock_guard lock(_blockWritingAudioClipsToDSP);
+  _writingAudioClipsToDSPIsDirty.store(true);
+  FBAudioClipToDSPCommand command = {};
+  command.Type = FBAudioClipToDSPCommand::LoadAll;
+  command.allClips = dspClips;
+  _audioClipToDSPCommands.enqueue(command);
+}
+
+void
+FBHostContext::PullDSPAudioClipsFromGUI()
+{
+  FBAudioClipToDSPCommand command;
+  while (_audioClipToDSPCommands.try_dequeue(command))
+  {
+    switch (command.Type)
+    {
+    case FBAudioClipToDSPCommand::ClearSingle:
+      GetDSPAudioClips().erase(command.id);
+      break;
+    case FBAudioClipToDSPCommand::LoadSingle:
+      GetDSPAudioClips()[command.id] = FBAudioClip(command.clip);
+      break;
+    case FBAudioClipToDSPCommand::LoadAll:
+      GetDSPAudioClips() = command.allClips;
+      break;
+    default:
+      FB_ASSERT(false);
+      break;
+    }
+  }
+  _writingAudioClipsToDSPIsDirty.store(false);
+}
+
+void 
+FBHostContext::SetAudioParamNameOverrides(std::map<int, std::string> const& overrides)
 {
   ClearAudioParamNameOverrides();
   for (auto kv : overrides)
     SetAudioParamNameOverride(kv.first, kv.second);
 }
 
-void 
-FBHostGUIContext::RevertPatchToPatchState()
-{
-  _patchState.CopyTo(this, true);
-  SetAudioParamNameOverrides(_patchParamNameOverridesByIndex);
-}
-
 void
-FBHostGUIContext::RevertPatchToSessionState()
-{
-  _sessionState.CopyTo(this, true);
-  SetAudioParamNameOverrides(_sessionParamNameOverridesByIndex);
-}
-
-void
-FBHostGUIContext::MarkPatchAsSessionState()
+FBHostContext::MarkPatchAsSessionState()
 {
   _sessionState.CopyFrom(this, true);
-  _sessionParamNameOverridesByIndex = GetAudioParamNameOverrides();
 }
 
 void
-FBHostGUIContext::MarkPatchAsPatchState(std::string const& patchName)
+FBHostContext::MarkPatchAsPatchState(std::string const& patchName)
 {
   _patchState.CopyFrom(this, true);
-  _patchParamNameOverridesByIndex = GetAudioParamNameOverrides();
   _isPatchLoaded = true;
   OnPatchLoaded();
   SetPatchName(patchName);
 }
 
 std::string const& 
-FBHostGUIContext::PatchName() const 
+FBHostContext::PatchName() const
 { 
   return _guiState->PatchName(); 
 }
 
 std::string const&
-FBHostGUIContext::ThemeName() const
+FBHostContext::ThemeName() const
 {
   return _guiState->ThemeName();
 }
 
 std::string const&
-FBHostGUIContext::InstanceName() const
+FBHostContext::InstanceName() const
 {
   return _guiState->InstanceName();
 }
 
 void
-FBHostGUIContext::OnPatchLoaded()
+FBHostContext::OnPatchLoaded()
 {
-  for (int i = 0; i < _listeners.size(); i++)
-    _listeners[i]->OnPatchLoaded();
+  for (int i = 0; i < _guiListeners.size(); i++)
+    _guiListeners[i]->OnPatchLoaded();
 }
 
 void
-FBHostGUIContext::OnPatchNameChanged()
+FBHostContext::OnPatchNameChanged()
 {
-  for (int i = 0; i < _listeners.size(); i++)
-    _listeners[i]->OnPatchNameChanged(PatchName());
+  for (int i = 0; i < _guiListeners.size(); i++)
+    _guiListeners[i]->OnPatchNameChanged(PatchName());
 }
 
 void
-FBHostGUIContext::OnInstanceNameChanged()
+FBHostContext::OnGUIAudioClipsChanged()
 {
-  for (int i = 0; i < _listeners.size(); i++)
-    _listeners[i]->OnInstanceNameChanged(InstanceName());
+  for (int i = 0; i < _guiListeners.size(); i++)
+    _guiListeners[i]->OnGUIAudioClipsChanged();
+}
+
+void
+FBHostContext::OnInstanceNameChanged()
+{
+  for (int i = 0; i < _guiListeners.size(); i++)
+    _guiListeners[i]->OnInstanceNameChanged(InstanceName());
 }
 
 void 
-FBHostGUIContext::SetPatchName(std::string const& name)
+FBHostContext::SetPatchName(std::string const& name)
 {
   _guiState->SetPatchName(name);
   OnPatchNameChanged();
 }
 
 void
-FBHostGUIContext::SetInstanceName(std::string const& name)
+FBHostContext::SetInstanceName(std::string const& name)
 {
   _guiState->SetInstanceName(name);
   OnInstanceNameChanged();
 }
 
 void
-FBHostGUIContext::SetThemeName(std::string const& name)
+FBHostContext::SetThemeName(std::string const& name)
 {
   _guiState->SetThemeName(name);
 }
 
 void 
-FBHostGUIContext::AddListener(IFBHostGUIContextListener* listener)
+FBHostContext::AddGUIListener(IFBHostContextGUIListener* listener)
 {
-  auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
-  if (iter == _listeners.end())
-    _listeners.push_back(listener);
+  auto iter = std::find(_guiListeners.begin(), _guiListeners.end(), listener);
+  if (iter == _guiListeners.end())
+    _guiListeners.push_back(listener);
 }
 
 void 
-FBHostGUIContext::RemoveListener(IFBHostGUIContextListener* listener)
+FBHostContext::RemoveGUIListener(IFBHostContextGUIListener* listener)
 {
-  auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
-  if (iter != _listeners.end())
-    _listeners.erase(iter);
+  auto iter = std::find(_guiListeners.begin(), _guiListeners.end(), listener);
+  if (iter != _guiListeners.end())
+    _guiListeners.erase(iter);
 }
 
 double 
-FBHostGUIContext::GetGUIParamNormalized(int index) const 
+FBHostContext::GetGUIParamNormalized(int index) const
 { 
   return *_guiState->Params()[index];
 }
 
 void 
-FBHostGUIContext::SetGUIParamNormalized(int index, double normalized) 
+FBHostContext::SetGUIParamNormalized(int index, double normalized)
 { 
   *_guiState->Params()[index] = normalized;
 }
 
 double 
-FBHostGUIContext::GetUserScaleMin() const
+FBHostContext::GetUserScaleMin() const
 {
   int m = _topo->static_->guiUserScaleModule;
   int p = _topo->static_->guiUserScaleParam;
@@ -177,7 +309,7 @@ FBHostGUIContext::GetUserScaleMin() const
 }
 
 double 
-FBHostGUIContext::GetUserScaleMax() const
+FBHostContext::GetUserScaleMax() const
 {
   int m = _topo->static_->guiUserScaleModule;
   int p = _topo->static_->guiUserScaleParam;
@@ -187,7 +319,7 @@ FBHostGUIContext::GetUserScaleMax() const
 }
 
 double 
-FBHostGUIContext::GetUserScalePlain() const
+FBHostContext::GetUserScalePlain() const
 {
   int m = _topo->static_->guiUserScaleModule;
   int p = _topo->static_->guiUserScaleParam;
@@ -198,7 +330,7 @@ FBHostGUIContext::GetUserScalePlain() const
 }
 
 void 
-FBHostGUIContext::SetUserScalePlain(double scale)
+FBHostContext::SetUserScalePlain(double scale)
 {
   int m = _topo->static_->guiUserScaleModule;
   int p = _topo->static_->guiUserScaleParam;
@@ -209,32 +341,32 @@ FBHostGUIContext::SetUserScalePlain(double scale)
 }
 
 void
-FBHostGUIContext::BeginAudioParamChange(int index)
+FBHostContext::BeginAudioParamChange(int index)
 {
   DoBeginAudioParamChange(index);
 }
 
 void
-FBHostGUIContext::EndAudioParamChange(int index)
+FBHostContext::EndAudioParamChange(int index)
 {
   DoEndAudioParamChange(index);
 }
 
 void
-FBHostGUIContext::PerformAudioParamEdit(int index, double normalized)
+FBHostContext::PerformAudioParamEdit(int index, double normalized)
 {
   DoPerformAudioParamEdit(index, normalized);
 }
 
 void
-FBHostGUIContext::PerformImmediateAudioParamEdit(FBParamTopoIndices const& indices, double normalized)
+FBHostContext::PerformImmediateAudioParamEdit(FBParamTopoIndices const& indices, double normalized)
 {
   auto param = Topo()->audio.ParamAtTopo(indices);
   PerformImmediateAudioParamEdit(param->runtimeParamIndex, normalized);
 }
 
 void
-FBHostGUIContext::PerformImmediateAudioParamEdit(int index, double normalized)
+FBHostContext::PerformImmediateAudioParamEdit(int index, double normalized)
 {
   BeginAudioParamChange(index);
   PerformAudioParamEdit(index, normalized);
@@ -242,7 +374,7 @@ FBHostGUIContext::PerformImmediateAudioParamEdit(int index, double normalized)
 }
 
 std::string
-FBHostGUIContext::GetAudioParamText(FBParamTopoIndices const& indices) const
+FBHostContext::GetAudioParamText(FBParamTopoIndices const& indices) const
 {
   auto param = Topo()->audio.ParamAtTopo(indices);
   double normalized = GetAudioParamNormalized(param->runtimeParamIndex);
@@ -250,14 +382,14 @@ FBHostGUIContext::GetAudioParamText(FBParamTopoIndices const& indices) const
 }
 
 double
-FBHostGUIContext::GetAudioParamNormalized(FBParamTopoIndices const& indices) const
+FBHostContext::GetAudioParamNormalized(FBParamTopoIndices const& indices) const
 {
   auto param = Topo()->audio.ParamAtTopo(indices);
   return GetAudioParamNormalized(param->runtimeParamIndex);
 }
 
 int
-FBHostGUIContext::GetAudioParamDiscrete(FBParamTopoIndices const& indices) const
+FBHostContext::GetAudioParamDiscrete(FBParamTopoIndices const& indices) const
 {
   auto param = Topo()->audio.ParamAtTopo(indices);
   double normalized = GetAudioParamNormalized(param->runtimeParamIndex);
@@ -265,7 +397,7 @@ FBHostGUIContext::GetAudioParamDiscrete(FBParamTopoIndices const& indices) const
 }
 
 void
-FBHostGUIContext::SetAudioParamDiscrete(FBParamTopoIndices const& indices, int value)
+FBHostContext::SetAudioParamDiscrete(FBParamTopoIndices const& indices, int value)
 {
   auto param = Topo()->audio.ParamAtTopo(indices);
   double normalized = param->static_.DiscreteNonRealTime().PlainToNormalized(value);
@@ -273,7 +405,7 @@ FBHostGUIContext::SetAudioParamDiscrete(FBParamTopoIndices const& indices, int v
 }
 
 double
-FBHostGUIContext::GetAudioParamLinear(FBParamTopoIndices const& indices) const
+FBHostContext::GetAudioParamLinear(FBParamTopoIndices const& indices) const
 {
   auto param = Topo()->audio.ParamAtTopo(indices);
   double normalized = GetAudioParamNormalized(param->runtimeParamIndex);
@@ -281,7 +413,7 @@ FBHostGUIContext::GetAudioParamLinear(FBParamTopoIndices const& indices) const
 }
 
 double
-FBHostGUIContext::GetAudioParamIdentity(FBParamTopoIndices const& indices) const
+FBHostContext::GetAudioParamIdentity(FBParamTopoIndices const& indices) const
 {
   auto param = Topo()->audio.ParamAtTopo(indices);
   double normalized = GetAudioParamNormalized(param->runtimeParamIndex);
@@ -289,7 +421,7 @@ FBHostGUIContext::GetAudioParamIdentity(FBParamTopoIndices const& indices) const
 }
 
 bool 
-FBHostGUIContext::GetAudioParamBool(FBParamTopoIndices const& indices) const
+FBHostContext::GetAudioParamBool(FBParamTopoIndices const& indices) const
 {
   auto param = Topo()->audio.ParamAtTopo(indices);
   double normalized = GetAudioParamNormalized(param->runtimeParamIndex);
@@ -297,7 +429,7 @@ FBHostGUIContext::GetAudioParamBool(FBParamTopoIndices const& indices) const
 }
 
 void
-FBHostGUIContext::SetAudioParamBool(FBParamTopoIndices const& indices, bool val)
+FBHostContext::SetAudioParamBool(FBParamTopoIndices const& indices, bool val)
 {
   auto param = Topo()->audio.ParamAtTopo(indices);
   double normalized = param->static_.BooleanNonRealTime().PlainToNormalized(val);
@@ -305,7 +437,7 @@ FBHostGUIContext::SetAudioParamBool(FBParamTopoIndices const& indices, bool val)
 }
 
 bool
-FBHostGUIContext::GetGUIParamBool(FBParamTopoIndices const& indices) const
+FBHostContext::GetGUIParamBool(FBParamTopoIndices const& indices) const
 {
   auto param = Topo()->gui.ParamAtTopo(indices);
   double normalized = GetGUIParamNormalized(param->runtimeParamIndex);
@@ -313,7 +445,7 @@ FBHostGUIContext::GetGUIParamBool(FBParamTopoIndices const& indices) const
 }
 
 int 
-FBHostGUIContext::GetGUIParamDiscrete(FBParamTopoIndices const& indices) const
+FBHostContext::GetGUIParamDiscrete(FBParamTopoIndices const& indices) const
 {
   auto param = Topo()->gui.ParamAtTopo(indices);
   double normalized = GetGUIParamNormalized(param->runtimeParamIndex);
@@ -321,7 +453,7 @@ FBHostGUIContext::GetGUIParamDiscrete(FBParamTopoIndices const& indices) const
 }
 
 void
-FBHostGUIContext::SetGUIParamList(FBParamTopoIndices const& indices, int val)
+FBHostContext::SetGUIParamList(FBParamTopoIndices const& indices, int val)
 {
   auto param = Topo()->gui.ParamAtTopo(indices);
   double normalized = param->static_.ListNonRealTime().PlainToNormalized(val);
@@ -329,7 +461,7 @@ FBHostGUIContext::SetGUIParamList(FBParamTopoIndices const& indices, int val)
 }
 
 void 
-FBHostGUIContext::SetGUIParamBool(FBParamTopoIndices const& indices, bool val)
+FBHostContext::SetGUIParamBool(FBParamTopoIndices const& indices, bool val)
 {
   auto param = Topo()->gui.ParamAtTopo(indices);
   double normalized = param->static_.BooleanNonRealTime().PlainToNormalized(val ? 1.0 : 0.0);
@@ -337,7 +469,7 @@ FBHostGUIContext::SetGUIParamBool(FBParamTopoIndices const& indices, bool val)
 }
 
 void 
-FBHostGUIContext::SetGUIParamDiscrete(FBParamTopoIndices const& indices, int val)
+FBHostContext::SetGUIParamDiscrete(FBParamTopoIndices const& indices, int val)
 {
   auto param = Topo()->gui.ParamAtTopo(indices);
   double normalized = param->static_.DiscreteNonRealTime().PlainToNormalized(val);
@@ -345,7 +477,7 @@ FBHostGUIContext::SetGUIParamDiscrete(FBParamTopoIndices const& indices, int val
 }
 
 void 
-FBHostGUIContext::DefaultAudioParam(FBParamTopoIndices const& indices)
+FBHostContext::DefaultAudioParam(FBParamTopoIndices const& indices)
 {
   auto runtimeParam = Topo()->audio.ParamAtTopo(indices);
   double normalized = runtimeParam->DefaultNormalizedByText();
@@ -353,7 +485,7 @@ FBHostGUIContext::DefaultAudioParam(FBParamTopoIndices const& indices)
 }
 
 void 
-FBHostGUIContext::CopyAudioParam(FBParamTopoIndices const& from, FBParamTopoIndices const& to)
+FBHostContext::CopyAudioParam(FBParamTopoIndices const& from, FBParamTopoIndices const& to)
 {
   auto fromRuntimeParam = Topo()->audio.ParamAtTopo(from);
   auto toRuntimeParam = Topo()->audio.ParamAtTopo(to);
@@ -362,7 +494,7 @@ FBHostGUIContext::CopyAudioParam(FBParamTopoIndices const& from, FBParamTopoIndi
 }
 
 void 
-FBHostGUIContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
+FBHostContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
 {  
   auto const& staticModule = Topo()->static_->modules[moduleIndices.index];
   for (int p = 0; p < staticModule.params.size(); p++)
@@ -371,7 +503,7 @@ FBHostGUIContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
 }
 
 void 
-FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int toSlot)
+FBHostContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int toSlot)
 {  
   auto const& staticModule = Topo()->static_->modules[moduleIndices.index];
   for (int p = 0; p < staticModule.params.size(); p++)
@@ -380,27 +512,27 @@ FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int 
 }
 
 void 
-FBHostGUIContext::ShowOnlineManual() const
+FBHostContext::ShowOnlineManual() const
 {
   juce::URL(OnlineManualLocation()).launchInDefaultBrowser();
 }
 
 void
-FBHostGUIContext::ShowOnlineManualForGUIParam(int index) const
+FBHostContext::ShowOnlineManualForGUIParam(int index) const
 {
   int rtModuleIndex = Topo()->gui.params[index].runtimeModuleIndex;
   ShowOnlineManualForModule(rtModuleIndex);
 }
 
 void
-FBHostGUIContext::ShowOnlineManualForAudioParam(int index) const
+FBHostContext::ShowOnlineManualForAudioParam(int index) const
 {
   int rtModuleIndex = Topo()->audio.params[index].runtimeModuleIndex;
   ShowOnlineManualForModule(rtModuleIndex);
 }
 
 void
-FBHostGUIContext::ShowOnlineManualForModule(int index) const
+FBHostContext::ShowOnlineManualForModule(int index) const
 {
   int staticModuleIndex = Topo()->modules[index].topoIndices.index;
   auto const& moduleId = Topo()->static_->modules[staticModuleIndex].id;

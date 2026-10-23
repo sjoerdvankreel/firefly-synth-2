@@ -4,7 +4,7 @@
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/shared/FBParamComponent.hpp>
 #include <firefly_base/gui/shared/FBParamsDependent.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
@@ -28,11 +28,11 @@ using namespace juce;
 FBPlugGUI::
 ~FBPlugGUI()
 {
-  _hostContext->RemoveListener(this);
+  _hostContext->RemoveGUIListener(this);
 }
 
 FBPlugGUI::
-FBPlugGUI(FBHostGUIContext* hostContext) :
+FBPlugGUI(FBHostContext* hostContext) :
 _hostContext(hostContext),
 _lookAndFeel(std::make_unique<FBLookAndFeel>()),
 _patchBeforePreview(*hostContext->Topo())
@@ -42,8 +42,9 @@ _patchBeforePreview(*hostContext->Topo())
     FB_LOG_ERROR("No themes found.");
   setLookAndFeel(_lookAndFeel.get());
   _tooltipWindow = StoreComponent<TooltipWindow>();
-  _hostContext->AddListener(this);
+  _hostContext->AddGUIListener(this);
 
+  InitLoadAnyFileBrowser("", "", "", [](auto) {});
   InitLoadPatchBrowser(false);
   InitSavePatchBrowser();
   InitDumpTopologyBrowser();
@@ -95,12 +96,30 @@ FBPlugGUI::InitLoadPatchBrowser(bool preset)
         MessageBoxIconType::NoIcon,
         "Error",
         "Failed to load patch. See log for details.");
+    else
+      HostContext()->UndoState().Clear(); // because samples
     }, [this](juce::File const& file) { 
       LoadPatchAsPreview(file); 
     }, [this] {
       RevertPreviewedPatch();
     });
   _loadPatchBrowser->SetPreviewEnabled(_isPatchPreviewEnabled);
+}
+
+void 
+FBPlugGUI::InitLoadAnyFileBrowser(
+  std::string const& title,
+  std::string const& extension,
+  std::string const& filter,
+  std::function<void(juce::File const&)> select)
+{
+  auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::LoadAnyFileFolder);
+  _loadAnyFileBrowser = std::make_unique<FBFileBrowserComponent>(this, false, false, title, extension, filter, initialPath, [this, select](juce::File const& file) {
+    SetBrowserInitialPath(FBUserGlobalSettingKeys::LoadAnyFileFolder, file);
+    select(file);
+    }, [](juce::File const&) {},
+    []() {}
+  );
 }
 
 void 
@@ -111,9 +130,9 @@ FBPlugGUI::InitSavePatchBrowser()
   auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::SavePatchFolder);
   _savePatchBrowser = std::make_unique<FBFileBrowserComponent>(this, true, false, "Save Patch", extension, filterName, initialPath, [this](juce::File const& file) {
     SetBrowserInitialPath(FBUserGlobalSettingKeys::SavePatchFolder, file);
-    FBScalarStateContainer editState(*HostContext()->Topo());
-    editState.CopyFrom(HostContext(), true);
-    file.replaceWithText(HostContext()->Topo()->SavePatchStateToString(editState, *HostContext()));
+    FBScalarStateContainer audioParams(*HostContext()->Topo());
+    audioParams.CopyFrom(HostContext(), true);
+    file.replaceWithText(HostContext()->Topo()->SaveStateToString(*HostContext(), audioParams, true));
   }, [](juce::File const&){}, [](){});
 }
 
@@ -398,7 +417,7 @@ FBPlugGUI::GetControlCountForAudioParamIndex(int paramIndex) const
   {
     // Allow opt-out of otherwise obligatory minimum of 1 controller for param.
     auto const& paramTopo = HostContext()->Topo()->audio.params[paramIndex];
-    if (paramTopo.static_.mode == FBParamMode::Fake)
+    if (paramTopo.static_.mode == FBParamMode::Fake || paramTopo.static_.isHidden)
       return 0;
   }
 #ifndef NDEBUG
@@ -744,9 +763,9 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
       repaint();
     }
     if (id == 4) {
-      FBScalarStateContainer editState(*HostContext()->Topo());
-      editState.CopyFrom(HostContext(), true);
-      SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SavePatchStateToString(editState, *HostContext()));
+      FBScalarStateContainer audioParams(*HostContext()->Topo());
+      audioParams.CopyFrom(HostContext(), true);
+      SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveStateToString(*HostContext(), audioParams, true));
     }
     if (id == 5) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
@@ -759,30 +778,6 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
 }
 
 void
-FBPlugGUI::ReloadPatch()
-{
-  FB_LOG_ENTRY_EXIT();
-  BeforePatchChanged();
-  std::string oldName = HostContext()->PatchName();
-  HostContext()->UndoState().Snapshot("Reload Patch");
-  HostContext()->RevertPatchToPatchState();
-  HostContext()->MarkPatchAsPatchState(oldName);
-  HostContext()->NotifyHostOfParamNameChanges();
-  AfterPatchChanged(false);
-}
-
-void
-FBPlugGUI::ReloadSession()
-{
-  FB_LOG_ENTRY_EXIT();
-  BeforePatchChanged();
-  HostContext()->UndoState().Snapshot("Reload Session");
-  HostContext()->RevertPatchToSessionState();
-  HostContext()->NotifyHostOfParamNameChanges();
-  AfterPatchChanged(false);
-}
-
-void
 FBPlugGUI::LoadPatchFromFile(bool preset)
 {
   FB_LOG_ENTRY_EXIT();
@@ -791,6 +786,19 @@ FBPlugGUI::LoadPatchFromFile(bool preset)
   _patchWasPreviewed = false;
   _patchBeforePreview.CopyFrom(HostContext(), true);
   _loadPatchBrowser->Show();
+}
+
+void
+FBPlugGUI::LoadAnyFile(
+  std::string const& title,
+  std::string const& extension,
+  std::string const& filter,
+  std::function<void(juce::File const&)> select)
+{
+  FB_LOG_ENTRY_EXIT();
+  HideAllOverlaysAndFileBrowsers();
+  InitLoadAnyFileBrowser(title, extension, filter, select);
+  _loadAnyFileBrowser->Show();
 }
 
 void
@@ -849,6 +857,7 @@ FBPlugGUI::HideAllOverlaysAndFileBrowsers()
   _savePatchBrowser->Hide();
   _saveTopologyBrowser->Hide();
   _saveParamListBrowser->Hide();
+  _loadAnyFileBrowser->Hide();
 }
 
 void 
@@ -856,14 +865,15 @@ FBPlugGUI::InitPatch()
 {
   FB_LOG_ENTRY_EXIT();
   BeforePatchChanged();
-  HostContext()->UndoState().Snapshot("Init Patch");
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
     if(HostContext()->Topo()->audio.params[i].static_.storeInPatch)
       HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
+  HostContext()->ClearGUIAndDSPAudioClips();
   HostContext()->ClearAudioParamNameOverrides();
   HostContext()->MarkPatchAsPatchState("Init Patch");
   HostContext()->NotifyHostOfParamNameChanges();
+  HostContext()->UndoState().Clear(); // because samples
   AfterPatchChanged(false);
 }
 
@@ -890,15 +900,21 @@ void
 FBPlugGUI::LoadPatchAsPreview(
   juce::File const& file)
 {
+  // TODO Sampler
   FB_LOG_ENTRY_EXIT();
+  (void)file;
+  /*
   _patchWasPreviewed = true;
   std::map<int, std::string> previewParamNames;
+  std::map<std::string, FBAudioClip> previewGuiAudioClips;
+  std::map<std::string, FBAudioClip> previewDspAudioClips;
   FBScalarStateContainer editState(*HostContext()->Topo());
-  if (!HostContext()->Topo()->LoadPatchStateFromString(file.loadFileAsString().toStdString(), editState, previewParamNames))
+  if (!HostContext()->Topo()->LoadPatchStateFromString(file.loadFileAsString().toStdString(), editState, previewParamNames, previewGuiAudioClips, previewDspAudioClips))
     return;
   BeforePatchChanged();
   editState.CopyTo(HostContext(), true);
   AfterPatchChanged(true);
+  */
 }
 
 bool
@@ -909,12 +925,12 @@ FBPlugGUI::LoadPatchFromText(
 {
   FB_LOG_ENTRY_EXIT();
   RevertPreviewedPatch();
-  FBScalarStateContainer editState(*HostContext()->Topo());
+  FBScalarStateContainer audioParams(*HostContext()->Topo());
   HostContext()->UndoState().Snapshot(undoAction);
-  if (!HostContext()->Topo()->LoadPatchStateFromString(text, editState, *HostContext()))
+  if (!HostContext()->Topo()->LoadStateFromString(text, *HostContext(), audioParams, true))
     return false;
   BeforePatchChanged();
-  editState.CopyTo(HostContext(), true);
+  audioParams.CopyTo(HostContext(), true);
   HostContext()->MarkPatchAsPatchState(patchName);
   HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged(false);

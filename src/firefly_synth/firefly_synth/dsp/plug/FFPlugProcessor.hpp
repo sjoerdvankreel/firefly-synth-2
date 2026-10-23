@@ -11,7 +11,7 @@ struct FBRuntimeTopo;
 struct FFExchangeState;
 struct FBPlugOutputBlock;
 
-class IFBHostDSPContext;
+class FBHostContext;
 
 class FFPlugProcessor final:
 public IFBPlugProcessor
@@ -39,7 +39,7 @@ public IFBPlugProcessor
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugProcessor);
-  FFPlugProcessor(IFBHostDSPContext* hostContext);
+  FFPlugProcessor(FBHostContext* hostContext);
 
   void ProcessPreVoice(FBPlugInputBlock const& input) override;
   void ProcessVoice(FBPlugInputBlock const& input, int voice, int releaseAt) override;

@@ -1,13 +1,20 @@
+#pragma once
+
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
 #include <pluginterfaces/vst/vsttypes.h>
 #include <pluginterfaces/base/ibstream.h>
 
+#include <vector>
 #include <string>
 #include <limits>
 #include <cstdint>
 
 using namespace Steinberg;
 using namespace Steinberg::Vst;
+
+inline std::string const FBVST3LoadAllAudioClipsMessageId = "FBVST3LoadAllAudioClipsMessageId";
+inline std::string const FBVST3LoadSingleAudioClipMessageId = "FBVST3LoadSingleAudioClipMessageId";
+inline std::string const FBVST3ClearSingleAudioClipMessageId = "FBVST3ClearSingleAudioClipMessageId";
 
 inline int constexpr FBVST3MIDIMaxChannels = 16;
 inline int constexpr FBVST3MIDIMaxPortsGuess = 128;

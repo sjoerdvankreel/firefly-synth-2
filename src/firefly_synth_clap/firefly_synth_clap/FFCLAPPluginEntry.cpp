@@ -4,11 +4,11 @@
 
 #include <firefly_base/dsp/shared/FBTuning.hpp>
 #include <firefly_base_clap/FBCLAPPlugin.hpp>
-#include <firefly_base_clap/FBCLAPExchangeStateQueue.hpp>
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
+#include <firefly_base/base/shared/FBExchangeStateQueue.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
@@ -31,44 +31,6 @@ auto constexpr FFPlugUniqueId = FFPlugUniqueIdInst;
 #error
 #endif
 
-// Just to make it work with the moodycamel queue without
-// introducing accidental copy/move support into the plugin itself.
-struct alignas(alignof(FFExchangeState)) FFCLAPExchangeState final
-{
-  FFExchangeState state;
-  FFCLAPExchangeState(FFCLAPExchangeState const& rhs);
-  FFCLAPExchangeState& operator=(FFCLAPExchangeState const& rhs);
-};
-
-FFCLAPExchangeState::
-FFCLAPExchangeState(FFCLAPExchangeState const& rhs)
-{
-  FB_ASSERT(&rhs != this);
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdynamic-class-memaccess"
-#endif
-  memcpy(&state, &rhs.state, sizeof(FFExchangeState));
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
-}
-
-FFCLAPExchangeState&
-FFCLAPExchangeState::operator=(FFCLAPExchangeState const& rhs)
-{
-  FB_ASSERT(&rhs != this);
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdynamic-class-memaccess"
-#endif
-  memcpy(&state, &rhs.state, sizeof(FFExchangeState));
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
-  return *this;
-}
-
 class FFCLAPPlugin:
 public FBCLAPPlugin
 {
@@ -80,7 +42,7 @@ public:
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFCLAPPlugin);
   FFCLAPPlugin(std::unique_ptr<FFStaticTopo>&& topo, clap_plugin_descriptor const* desc, clap_host const* host):
-  FBCLAPPlugin(std::move(topo), desc, host, FBTuningGetMTSClient(), std::make_unique<FBCLAPExchangeStateQueue<FFCLAPExchangeState>>()) {}
+  FBCLAPPlugin(std::move(topo), desc, host, FBTuningGetMTSClient(), std::make_unique<FBExchangeStateQueue<FBQueuedExchangeState<FFExchangeState>>>()) {}
 };
 
 static void CLAP_ABI 

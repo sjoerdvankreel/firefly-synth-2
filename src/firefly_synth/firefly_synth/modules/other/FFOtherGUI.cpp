@@ -6,7 +6,7 @@
 #include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>

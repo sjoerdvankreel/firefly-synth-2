@@ -1,7 +1,7 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <public.sdk/source/vst/vsteditcontroller.h>
@@ -16,9 +16,9 @@ using namespace Steinberg::Vst;
 using namespace Steinberg::Linux;
 #endif
 
+class FBVST3Plugin;
 class FBPlugGUIContext;
-class FBHostGUIContext;
-class FBVST3EditController;
+class FBHostContext;
 
 class FBVST3GUIEditor final:
 public EditorView,
@@ -27,7 +27,7 @@ public IPlugViewContentScaleSupport
 , public IEventHandler
 #endif
 {
-  FBHostGUIContext* const _hostContext;
+  FBHostContext* const _hostContext;
   std::unique_ptr<FBPlugGUIContext> _gui;
 
   IPtr<IContextMenu> 
@@ -36,7 +36,7 @@ public IPlugViewContentScaleSupport
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3GUIEditor);
   ~FBVST3GUIEditor();
-  FBVST3GUIEditor(FBVST3EditController* editController);
+  FBVST3GUIEditor(FBVST3Plugin* plugin);
 
 #if SMTG_OS_LINUX
   void PLUGIN_API onFDIsSet(FileDescriptor fd) override;

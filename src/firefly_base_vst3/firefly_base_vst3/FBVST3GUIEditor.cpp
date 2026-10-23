@@ -1,8 +1,8 @@
+#include <firefly_base_vst3/FBVST3Plugin.hpp>
 #include <firefly_base_vst3/FBVST3Utility.hpp>
 #include <firefly_base_vst3/FBVST3GUIEditor.hpp>
-#include <firefly_base_vst3/FBVST3EditController.hpp>
 
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContainer.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -16,10 +16,10 @@
 using namespace juce;
 
 FBVST3GUIEditor::
-FBVST3GUIEditor(FBVST3EditController* editController):
-EditorView(editController),
-_hostContext(editController),
-_gui(std::make_unique<FBPlugGUIContainer>(editController))
+FBVST3GUIEditor(FBVST3Plugin* plugin):
+EditorView(plugin),
+_hostContext(plugin),
+_gui(std::make_unique<FBPlugGUIContainer>(plugin))
 {
   FB_LOG_ENTRY_EXIT();
 }
@@ -28,7 +28,7 @@ FBVST3GUIEditor::
 ~FBVST3GUIEditor()
 {
   FB_LOG_ENTRY_EXIT();
-  dynamic_cast<FBVST3EditController&>(*getController()).ResetView();
+  dynamic_cast<FBVST3Plugin&>(*getController()).ResetView();
 }
 
 void 

@@ -1,7 +1,7 @@
 #include <firefly_base_clap/FBCLAPPlugin.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
 
 #include <clap/helpers/plugin.hxx>
@@ -47,6 +47,26 @@ ContextMenuBuilderAddItem(
   }
   static_cast<std::vector<FBHostContextMenuItem>*>(builder->ctx)->push_back(item);
   return true;
+}
+
+void 
+FBCLAPPlugin::OnReceivedExchangeFromDSP()
+{
+  if(_gui)
+    _gui->UpdateExchangeState();
+}
+
+void
+FBCLAPPlugin::timerCallback()
+{
+  FBHostContext::timerCallback();
+  FBWithLogException([this]()
+  {
+    FBCLAPSyncToMainEvent event = {};
+    while (_audioToMainEvents.try_dequeue(event))
+      if (_gui)
+        _gui->SetAudioParamNormalizedFromHost(event.paramIndex, event.normalized);
+  });
 }
 
 void 
@@ -154,7 +174,7 @@ FBCLAPPlugin::MakeAudioParamContextMenu(int index, std::vector<FBHostContextMenu
     builder.supports = [](auto, auto) { return true; };
 
     auto result = std::make_unique<clap_context_menu_target>();
-    result->id = _topo->audio.params[index].tag;
+    result->id = Topo()->audio.params[index].tag;
     result->kind = CLAP_CONTEXT_MENU_TARGET_KIND_PARAM;
     // bitwig returns false
     _host.contextMenuPopulate(result.get(), &builder);

@@ -7,7 +7,7 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/gui/components/FBCardComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
@@ -19,7 +19,7 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto context = plugGUI->HostContext();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, false, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, false, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Patch"));
   
   auto name = plugGUI->StoreComponent<FBAutoSizeLabel2>(true, false, false, 100);
@@ -41,27 +41,10 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
   init->onClick = [plugGUI]() { plugGUI->InitPatch(); };
   grid->Add(0, 4, init);
 
-  auto session = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Session");
-  session->setTooltip("Reload From Session");
-  session->onClick = [plugGUI]() { plugGUI->ReloadSession(); };
-  grid->Add(0, 5, session);
-
-  auto reload = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Reload");
-  reload->setTooltip("Reload " + context->PatchName());
-  reload->onClick = [plugGUI]() { plugGUI->ReloadPatch(); };
-  reload->setEnabled(false);
-  grid->Add(0, 6, reload);
-
-  plugGUI->onPatchLoaded = [reload]() { reload->setEnabled(true); };
-  plugGUI->onPatchNameChanged = [reload, name](auto const& newName) {
-    name->setText(newName, dontSendNotification); 
-    reload->setTooltip("Reload " + newName);
-  };
-
   auto save = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Save");
   save->setTooltip("Save To File");
   save->onClick = [plugGUI]() { plugGUI->SavePatchToFile(); };
-  grid->Add(0, 7, save);
+  grid->Add(0, 5, save);
 
   auto card = plugGUI->StoreComponent<FBCardComponent>(plugGUI, grid);
   auto margin = plugGUI->StoreComponent<FBMarginComponent>(plugGUI, false, true, false, false, card);

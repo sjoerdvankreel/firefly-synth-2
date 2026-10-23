@@ -14,7 +14,7 @@ FBCLAPPlugin::audioPortsCount(bool isInput) const noexcept
 {
   if (!isInput)
     return 1;
-  return _topo->static_->meta.isFx? 2: 1;
+  return Topo()->static_->meta.isFx? 2: 1;
 }
 
 bool
@@ -23,7 +23,7 @@ FBCLAPPlugin::audioPortsInfo(uint32_t index, bool isInput, clap_audio_port_info*
   if (!isInput && index != 0)
     return false;
 
-  if (_topo->static_->meta.isFx)
+  if (Topo()->static_->meta.isFx)
   {
     if (index > 1)
       return false;
@@ -49,7 +49,7 @@ FBCLAPPlugin::audioPortsInfo(uint32_t index, bool isInput, clap_audio_port_info*
   {
     // The bustype is important to bitwig.
     // With main, it wont accept sidechaining.
-    if (_topo->static_->meta.isFx)
+    if (Topo()->static_->meta.isFx)
     {
       if (index == 0)
       {
