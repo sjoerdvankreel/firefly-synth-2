@@ -210,46 +210,46 @@ FBRuntimeTopo::LoadStateFromVar(
     return false;
   }
 
-  if (!obj->hasProperty("versionMajor"))
+  if (!obj->hasProperty("pluginVersionMajor"))
   {
     FB_LOG_ERROR("Missing plugin major version.");
     return false;
   }
-  var versionMajor = obj->getProperty("versionMajor");
-  if (!versionMajor.isInt())
+  var pluginVersionMajor = obj->getProperty("pluginVersionMajor");
+  if (!pluginVersionMajor.isInt())
   {
     FB_LOG_ERROR("Plugin major version is not an int.");
     return false;
   }
 
-  if (!obj->hasProperty("versionMinor"))
+  if (!obj->hasProperty("pluginVersionMinor"))
   {
     FB_LOG_ERROR("Missing plugin minor version.");
     return false;
   }
-  var versionMinor = obj->getProperty("versionMinor");
-  if (!versionMinor.isInt())
+  var pluginVersionMinor = obj->getProperty("pluginVersionMinor");
+  if (!pluginVersionMinor.isInt())
   {
     FB_LOG_ERROR("Plugin minor version is not an int.");
     return false;
   }
 
-  if (!obj->hasProperty("versionPatch"))
+  if (!obj->hasProperty("pluginVersionPatch"))
   {
     FB_LOG_ERROR("Missing plugin patch version.");
     return false;
   }
-  var versionPatch = obj->getProperty("versionPatch");
-  if (!versionPatch.isInt())
+  var pluginVersionPatch = obj->getProperty("pluginVersionPatch");
+  if (!pluginVersionPatch.isInt())
   {
     FB_LOG_ERROR("Plugin patch version is not an int.");
     return false;
   }
 
   FBPlugVersion loadingVersion = {};
-  loadingVersion.major = static_cast<int>(versionMajor);
-  loadingVersion.minor = static_cast<int>(versionMinor);
-  loadingVersion.patch = static_cast<int>(versionPatch);
+  loadingVersion.major = static_cast<int>(pluginVersionMajor);
+  loadingVersion.minor = static_cast<int>(pluginVersionMinor);
+  loadingVersion.patch = static_cast<int>(pluginVersionPatch);
 
   if (static_->meta.version < loadingVersion)
   {
