@@ -328,7 +328,7 @@ FBRuntimeTopo::LoadStateFromVar(
     FB_LOG_ERROR("Missing plugin dsp audio clips.");
     return false;
   }
-  var dspAudioClipsVar = obj->getProperty("dspAudioClipsVar");
+  var dspAudioClipsVar = obj->getProperty("dspAudioClips");
   if (!dspAudioClipsVar.isObject())
   {
     FB_LOG_ERROR("Plugin dsp audio clips is not an object.");
@@ -633,7 +633,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
       return false;
     }
     var oldModuleSlot = param->getProperty("moduleSlot");
-    if (!oldModuleId.isInt())
+    if (!oldModuleSlot.isInt())
     {
       FB_LOG_ERROR("Plugin param state module slot is not an int.");
       return false;
