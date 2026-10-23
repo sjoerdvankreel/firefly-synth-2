@@ -372,7 +372,7 @@ FBRuntimeTopo::LoadStateFromVar(
       FB_LOG_ERROR("Plugin gui params is not an array.");
       return false;
     }
-    if (!LoadParamStateFromVar(guiParamsVar, loadingVersion, true, loadGuiParams, this->gui.params, false))
+    if (!LoadParamStateFromVar(guiParamsVar, loadingVersion, true, loadGuiParams, this->gui, false))
     {
       FB_LOG_ERROR("Failed to load plugin gui params.");
       return false;
@@ -391,7 +391,7 @@ FBRuntimeTopo::LoadStateFromVar(
     FB_LOG_ERROR("Plugin audio params is not an array.");
     return false;
   }
-  if (!LoadParamStateFromVar(audioParamsVar, loadingVersion, false, loadAudioParams, this->audio.params, patchOnly))
+  if (!LoadParamStateFromVar(audioParamsVar, loadingVersion, false, loadAudioParams, this->audio, patchOnly))
   {
     FB_LOG_ERROR("Failed to load plugin audio params.");
     return false;
@@ -666,12 +666,12 @@ FBRuntimeTopo::LoadParamStateFromVar(
     int oldTag = FBMakeStableHash(id.toString().toStdString());
     FBOldParamInfo oldParamInfo = {};
     oldParamInfo.index = sp;
-    oldParamInfo.value = val;
     oldParamInfo.tag = oldTag;
     oldParamInfo.paramSlot = oldParamSlot;
     oldParamInfo.moduleSlot = oldModuleSlot;
     oldParamInfo.id = id.toString().toStdString();
     oldParamInfo.name = name.toString().toStdString();
+    oldParamInfo.value = val.toString().toStdString();
     oldParamInfo.paramId = oldParamId.toString().toStdString();
     oldParamInfo.moduleId = oldModuleId.toString().toStdString();
     oldParamInfos.push_back(oldParamInfo);
@@ -704,7 +704,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
     }
 
     auto const& topo = params.params[iter->second];
-    auto normalized = topo.TextToNormalized(true, val);
+    auto normalized = topo.TextToNormalized(true, val.toString().toStdString());
     if (!normalized)
     {
       int paramSlot = topo.topoIndices.param.slot;
@@ -716,7 +716,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
         "Invalid param value found for " +
         moduleId + ", param " +
         paramId + ": " +
-        val);
+        val.toString().toStdString());
 
       if (topo.Static().type == FBParamType::List)
       {
@@ -724,7 +724,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
         std::string newParamValue = {};
         if (converter->OnParamListItemNotFound(isGuiState,
           moduleId, moduleSlot, paramId, paramSlot,
-          val, newParamValue))
+          val.toString().toStdString(), newParamValue))
         {
           normalized = topo.TextToNormalized(true, newParamValue);
           FB_LOG_INFO("Mapped old to new list-valued parameter value: " + val.toString().toStdString() + " to " + newParamValue + ".");
