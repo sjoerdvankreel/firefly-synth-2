@@ -315,13 +315,44 @@ FBRuntimeTopo::LoadStateFromVar(
     instanceName = instanceNameVar.toString().toStdString();
   }
 
+  if (!obj->hasProperty("zippedContents"))
+  {
+    FB_LOG_ERROR("Missing plugin zipped contents.");
+    return false;
+  }
+  var zippedContentsVar = obj->getProperty("zippedContents");
+  if (!zippedContentsVar.isString())
+  {
+    FB_LOG_ERROR("Plugin zipped contents is not a string.");
+    return false;
+  }
+  juce::String zippedContentsBase64 = zippedContentsVar.toString();
+  juce::MemoryOutputStream zippedContentsBase64OutputStream;
+  if (!Base64::convertFromBase64(zippedContentsBase64OutputStream, zippedContentsBase64))
+  {
+    FB_LOG_ERROR("Failed to decode zipped contents from base64.");
+    return false;
+  }
+
+  var unzippedContents;
+  zippedContentsBase64OutputStream.setPosition(0);
+  juce::MemoryInputStream zippedContentsBase64InputStream(zippedContentsBase64OutputStream.getData(), zippedContentsBase64OutputStream.getDataSize(), false);
+  juce::GZIPDecompressorInputStream unzipStream(zippedContentsBase64InputStream);
+  auto parseResult = JSON::parse(unzipStream.readString(), unzippedContents);
+  auto contentsObj = unzippedContents.getDynamicObject();
+  if (!parseResult.wasOk() || contentsObj == nullptr)
+  {
+    FB_LOG_ERROR("Failed to unzip zipped contents.");
+    return false;
+  }
+
   std::map<std::string, FBAudioClip> guiAudioClips;
-  if (!obj->hasProperty("guiAudioClips"))
+  if (!contentsObj->hasProperty("guiAudioClips"))
   {
     FB_LOG_ERROR("Missing plugin gui audio clips.");
     return false;
   }
-  var guiAudioClipsVar = obj->getProperty("guiAudioClips");
+  var guiAudioClipsVar = contentsObj->getProperty("guiAudioClips");
   if (!guiAudioClipsVar.isObject())
   {
     FB_LOG_ERROR("Plugin gui audio clips is not an object.");
@@ -334,12 +365,12 @@ FBRuntimeTopo::LoadStateFromVar(
   }
 
   std::map<std::string, FBAudioClip> dspAudioClips;
-  if (!obj->hasProperty("dspAudioClips"))
+  if (!contentsObj->hasProperty("dspAudioClips"))
   {
     FB_LOG_ERROR("Missing plugin dsp audio clips.");
     return false;
   }
-  var dspAudioClipsVar = obj->getProperty("dspAudioClips");
+  var dspAudioClipsVar = contentsObj->getProperty("dspAudioClips");
   if (!dspAudioClipsVar.isObject())
   {
     FB_LOG_ERROR("Plugin dsp audio clips is not an object.");
@@ -352,12 +383,12 @@ FBRuntimeTopo::LoadStateFromVar(
   }
 
   std::map<int, std::string> paramNameOverrides;
-  if (!obj->hasProperty("paramNameOverrides"))
+  if (!contentsObj->hasProperty("paramNameOverrides"))
   {
     FB_LOG_ERROR("Missing plugin param name overrides.");
     return false;
   }
-  var paramNameOverridesVar = obj->getProperty("paramNameOverrides");
+  var paramNameOverridesVar = contentsObj->getProperty("paramNameOverrides");
   if (!paramNameOverridesVar.isObject())
   {
     FB_LOG_ERROR("Plugin param name overrides is not an object.");
@@ -372,12 +403,12 @@ FBRuntimeTopo::LoadStateFromVar(
   FBGUIStateContainer loadGuiParams(*this);
   if (!patchOnly)
   {
-    if (!obj->hasProperty("guiParams"))
+    if (!contentsObj->hasProperty("guiParams"))
     {
       FB_LOG_ERROR("Missing plugin gui params.");
       return false;
     }
-    var guiParamsVar = obj->getProperty("guiParams");
+    var guiParamsVar = contentsObj->getProperty("guiParams");
     if (!guiParamsVar.isArray())
     {
       FB_LOG_ERROR("Plugin gui params is not an array.");
@@ -391,12 +422,12 @@ FBRuntimeTopo::LoadStateFromVar(
   }
 
   FBScalarStateContainer loadAudioParams(*this);
-  if (!obj->hasProperty("audioParams"))
+  if (!contentsObj->hasProperty("audioParams"))
   {
     FB_LOG_ERROR("Missing plugin audio params.");
     return false;
   }
-  var audioParamsVar = obj->getProperty("audioParams");
+  var audioParamsVar = contentsObj->getProperty("audioParams");
   if (!audioParamsVar.isArray())
   {
     FB_LOG_ERROR("Plugin audio params is not an array.");
