@@ -155,23 +155,12 @@ FBRuntimeTopo::SaveStateToVar(
     result->setProperty("themeName", String(hostContext.GUIState()->ThemeName()));
     result->setProperty("instanceName", String(hostContext.GUIState()->InstanceName()));
   }
-  
-  auto zippedContents = new DynamicObject;
-  zippedContents->setProperty("guiAudioClips", SaveAudioClipsToVar(hostContext.GetGUIAudioClips()));
-  zippedContents->setProperty("dspAudioClips", SaveAudioClipsToVar(hostContext.PullDSPAudioClipsToGUI()));
-  zippedContents->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext.GetAudioParamNameOverrides()));
+  result->setProperty("guiAudioClips", SaveAudioClipsToVar(hostContext.GetGUIAudioClips()));
+  result->setProperty("dspAudioClips", SaveAudioClipsToVar(hostContext.PullDSPAudioClipsToGUI()));
+  result->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext.GetAudioParamNameOverrides()));
   if (!patchOnly)
-    zippedContents->setProperty("guiParams", SaveParamStateToVar(*hostContext.GUIState(), this->gui.params, patchOnly));
-  zippedContents->setProperty("audioParams", SaveParamStateToVar(audioParams, this->audio.params, patchOnly));
-  var zippedContentsVar(zippedContents);
-  juce::MemoryOutputStream memoryStream;
-  juce::GZIPCompressorOutputStream zipStream(memoryStream);
-  zipStream.writeString(zippedContentsVar.toString());
-  juce::MemoryOutputStream base64Stream;
-  zipStream.setPosition(0);
-  Base64::convertToBase64(base64Stream, memoryStream.getData(), memoryStream.getDataSize());
-  result->setProperty("zippedContents", base64Stream.toString());
-
+    result->setProperty("guiParams", SaveParamStateToVar(*hostContext.GUIState(), this->gui.params, patchOnly));
+  result->setProperty("audioParams", SaveParamStateToVar(audioParams, this->audio.params, patchOnly));
   return var(result);
 }
 
