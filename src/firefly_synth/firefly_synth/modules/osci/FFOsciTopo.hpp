@@ -54,5 +54,4 @@ enum class FFOsciParam {
   AudioInGain, AudioInBal,
   AudioInLPOn, AudioInLPFreq, AudioInLPRes,
   AudioInHPOn, AudioInHPFreq, AudioInHPRes,
-  SampleIsLoaded,
   Count };

@@ -15,12 +15,7 @@ FFOsciProcessor::BeginVoiceSample(
   FBModuleProcState& state, bool graph)
 {
   (void)graph;
-  int voice = state.voice->slot;
-  auto* procState = state.ProcAs<FFProcState>();
-  auto const& params = procState->param.voice.osci[state.moduleSlot];
-  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
-  float sampleIsLoadedNorm = params.block.sampleIsLoaded[0].Voice()[voice];
-  _sampleIsLoaded = topo.NormalizedToBoolFast(FFOsciParam::SampleIsLoaded, sampleIsLoadedNorm);
+  (void)state;
   for (int i = 0; i < _uniCount; i++)
   {
     _samplerSamplesUsed[i] = 0;
@@ -40,12 +35,6 @@ FFOsciProcessor::ProcessSample(
   auto& voiceState = procState->dsp.voice[voice];
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
-
-  if (!_sampleIsLoaded)
-  {
-    _graphPosition = FFOsciSamplerGUISampleCount;
-    return;
-  }
 
   auto const& iter = state.input->audioClips->find(FFOsciSampleSlotIds[state.moduleSlot]);
   if (iter == state.input->audioClips->end())

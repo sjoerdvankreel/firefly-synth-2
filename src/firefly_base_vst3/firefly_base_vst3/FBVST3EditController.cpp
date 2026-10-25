@@ -32,7 +32,7 @@ MakeMIDIParamInfo(int message, int controlChange)
   result.unitId = kRootUnitId;
   result.id = FBVST3MIDIParameterMappingBegin + message + controlChange;
   result.defaultNormalizedValue = 0.0;
-  result.flags = ParameterInfo::kIsHidden;
+  result.flags = ParameterInfo::kIsHidden | ParameterInfo::kIsReadOnly;
   return result;
 }
 
@@ -58,12 +58,6 @@ MakePlugParamInfo(FBRuntimeParam const& param, int unitId)
     result.flags |= ParameterInfo::kIsReadOnly;
     if (param.static_.NonRealTime().IsItems())
       result.flags |= ParameterInfo::kIsList;
-  }
-  if (param.static_.isHidden)
-  {
-    result.flags |= ParameterInfo::kIsHidden;
-    result.flags |= ParameterInfo::kIsReadOnly;
-    result.flags &= ~ParameterInfo::kCanAutomate;
   }
   return result;
 }

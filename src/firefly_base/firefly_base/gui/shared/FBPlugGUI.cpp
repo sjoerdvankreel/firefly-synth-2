@@ -417,7 +417,7 @@ FBPlugGUI::GetControlCountForAudioParamIndex(int paramIndex) const
   {
     // Allow opt-out of otherwise obligatory minimum of 1 controller for param.
     auto const& paramTopo = HostContext()->Topo()->audio.params[paramIndex];
-    if (paramTopo.static_.mode == FBParamMode::Fake || paramTopo.static_.isHidden)
+    if (paramTopo.static_.mode == FBParamMode::Fake)
       return 0;
   }
 #ifndef NDEBUG
@@ -931,6 +931,10 @@ FBPlugGUI::LoadPatchFromText(
     return false;
   BeforePatchChanged();
   audioParams.CopyTo(HostContext(), true);
+  HostContext()->ProcState()->InitProcessing(HostContext());
+  // process may be running
+  std::atomic_thread_fence(std::memory_order_release);
+
   HostContext()->MarkPatchAsPatchState(patchName);
   HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged(false);

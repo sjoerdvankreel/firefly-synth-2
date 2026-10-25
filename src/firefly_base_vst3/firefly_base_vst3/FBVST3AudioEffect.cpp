@@ -117,6 +117,10 @@ FBVST3Plugin::setState(IBStream* state)
     if (!Topo()->LoadStateFromString(json, *this, audioParams, false))
       return kResultTrue; // not crash bitwig
     audioParams.CopyTo(this, false);
+
+    ProcState()->InitProcessing(this);
+    // we can be called during processing
+    std::atomic_thread_fence(std::memory_order_release);
     
     OnPatchNameChanged();
     OnInstanceNameChanged();

@@ -51,6 +51,11 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
 
     if (!Topo()->LoadStateFromString(json, *this, *_editState, false))
       return true; // bitwig
+
+    ProcState()->InitProcessing(this);
+    // can we be called during processing?
+    std::atomic_thread_fence(std::memory_order_release);
+
     OnPatchNameChanged();
     OnInstanceNameChanged();
     OnGUIAudioClipsChanged();
@@ -60,10 +65,10 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
     for (int i = 0; i < _editState->Params().size(); i++)
     {
       double normalized = *_editState->Params()[i];
-      ProcState()->InitProcessing(i, static_cast<float>(normalized));
       if (_gui)
         _gui->SetAudioParamNormalizedFromHost(i, normalized);
     }
+
     MarkPatchAsSessionState();
     NotifyHostOfParamNameChanges();
     return true;

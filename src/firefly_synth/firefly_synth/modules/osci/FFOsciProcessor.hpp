@@ -60,8 +60,6 @@ class FFOsciProcessor final
   float _uniOffsetPlain = {};
   float _uniRandomPlain = {};
 
-  bool _sampleIsLoaded = {};
-
   bool _audioInLPOn = {};
   bool _audioInHPOn = {};
   FFOsciAudioInSource _audioInSource = {};

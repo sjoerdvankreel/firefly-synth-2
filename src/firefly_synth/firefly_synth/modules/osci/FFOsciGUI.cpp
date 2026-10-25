@@ -442,7 +442,6 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
         resampler.process(speedRatio, dspClip.data.data(), guiClip.data.data(), FFOsciSamplerGUISampleCount);
       }
       plugGUI->HostContext()->SetGUIAndDSPAudioClip(FFOsciSampleSlotIds[moduleSlot], guiClip, dspClip);
-      plugGUI->HostContext()->SetAudioParamBool({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleIsLoaded, 0 } }, true);
     });
   };
   grid->Add(0, 0, load);
@@ -451,7 +450,6 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
   clear->setTooltip("Clear Sample");
   clear->onClick = [plugGUI, moduleSlot]() {
     plugGUI->HostContext()->RemoveGUIAndDSPAudioClip(FFOsciSampleSlotIds[moduleSlot]);
-    plugGUI->HostContext()->SetAudioParamBool({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleIsLoaded, 0 } }, false);
   };
   grid->Add(0, 1, clear);
 
