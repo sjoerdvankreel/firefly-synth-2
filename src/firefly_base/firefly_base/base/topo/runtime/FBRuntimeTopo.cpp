@@ -164,13 +164,16 @@ FBRuntimeTopo::SaveStateToVar(
     contentsToZip->setProperty("guiParams", SaveParamStateToVar(*hostContext.GUIState(), this->gui.params, patchOnly));
   contentsToZip->setProperty("audioParams", SaveParamStateToVar(audioParams, this->audio.params, patchOnly));
   var contentsToZipVar(contentsToZip);
+  MemoryOutputStream contentsToZipStream;
+  JSON::writeToStream(contentsToZipStream, contentsToZipVar, true);
+
   juce::MemoryOutputStream memoryStream;
   juce::GZIPCompressorOutputStream zipStream(memoryStream);
-  zipStream.writeString(JSON::toString(contentsToZipVar));
+  zipStream.write(contentsToZipStream.getData(), contentsToZipStream.getDataSize());
+
   juce::MemoryOutputStream base64Stream;
   Base64::convertToBase64(base64Stream, memoryStream.getData(), memoryStream.getDataSize());
-  auto base64ZippedString = base64Stream.toString();
-  result->setProperty("zippedContents", base64ZippedString);
+  result->setProperty("zippedContents", base64Stream.toString());
 
   return var(result);
 }
@@ -338,7 +341,9 @@ FBRuntimeTopo::LoadStateFromVar(
   zippedContentsBase64OutputStream.setPosition(0);
   juce::MemoryInputStream zippedContentsBase64InputStream(zippedContentsBase64OutputStream.getData(), zippedContentsBase64OutputStream.getDataSize(), false);
   juce::GZIPDecompressorInputStream unzipStream(zippedContentsBase64InputStream);
-  auto parseResult = JSON::parse(unzipStream.readString(), unzippedContents);
+  juce::String unzippedString = unzipStream.readEntireStreamAsString();
+
+  auto parseResult = JSON::parse(unzippedString, unzippedContents);
   auto contentsObj = unzippedContents.getDynamicObject();
   if (!parseResult.wasOk() || contentsObj == nullptr)
   {
