@@ -156,21 +156,21 @@ FBRuntimeTopo::SaveStateToVar(
     result->setProperty("instanceName", String(hostContext.GUIState()->InstanceName()));
   }
   
-  auto zippedContents = new DynamicObject;
-  zippedContents->setProperty("guiAudioClips", SaveAudioClipsToVar(hostContext.GetGUIAudioClips()));
-  zippedContents->setProperty("dspAudioClips", SaveAudioClipsToVar(hostContext.PullDSPAudioClipsToGUI()));
-  zippedContents->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext.GetAudioParamNameOverrides()));
+  auto contentsToZip = new DynamicObject;
+  contentsToZip->setProperty("guiAudioClips", SaveAudioClipsToVar(hostContext.GetGUIAudioClips()));
+  contentsToZip->setProperty("dspAudioClips", SaveAudioClipsToVar(hostContext.PullDSPAudioClipsToGUI()));
+  contentsToZip->setProperty("paramNameOverrides", SaveParamNameOverridesToVar(hostContext.GetAudioParamNameOverrides()));
   if (!patchOnly)
-    zippedContents->setProperty("guiParams", SaveParamStateToVar(*hostContext.GUIState(), this->gui.params, patchOnly));
-  zippedContents->setProperty("audioParams", SaveParamStateToVar(audioParams, this->audio.params, patchOnly));
-  var zippedContentsVar(zippedContents);
+    contentsToZip->setProperty("guiParams", SaveParamStateToVar(*hostContext.GUIState(), this->gui.params, patchOnly));
+  contentsToZip->setProperty("audioParams", SaveParamStateToVar(audioParams, this->audio.params, patchOnly));
+  var contentsToZipVar(contentsToZip);
   juce::MemoryOutputStream memoryStream;
   juce::GZIPCompressorOutputStream zipStream(memoryStream);
-  zipStream.writeString(zippedContentsVar.toString());
+  zipStream.writeString(JSON::toString(contentsToZipVar));
   juce::MemoryOutputStream base64Stream;
-  zipStream.setPosition(0);
   Base64::convertToBase64(base64Stream, memoryStream.getData(), memoryStream.getDataSize());
-  result->setProperty("zippedContents", base64Stream.toString());
+  auto base64ZippedString = base64Stream.toString();
+  result->setProperty("zippedContents", base64ZippedString);
 
   return var(result);
 }
