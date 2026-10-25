@@ -30,6 +30,7 @@ v CLAP is guaranteed single process. luvu.
 v hunt down the comments for kDistributable and singlecomponenteffect
 v sidechaintests are borked
 v FLStudioVST3ModMatrix not load good
+- validators
 - get rid of alertwindow
 - test the conversion on old and new path
 - do all the vst3 oldstyle stuff on load with editorstate and componentstate and blaaahjadidadi
