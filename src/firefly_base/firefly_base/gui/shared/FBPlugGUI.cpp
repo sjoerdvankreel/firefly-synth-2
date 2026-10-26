@@ -93,7 +93,7 @@ FBPlugGUI::InitLoadPatchBrowser(bool preset)
     MemoryBlock block;
     file.loadFileAsData(block);
     std::vector<std::uint8_t> data((uint8_t*)block.getData(), (uint8_t*)block.getData() + block.getSize());
-    if (!LoadPatchFromBytes(data))
+    if (!LoadPatchFromBytes(file.getFileNameWithoutExtension().toStdString(), data))
       AlertWindow::showMessageBoxAsync(
         MessageBoxIconType::NoIcon,
         "Error",
@@ -774,7 +774,7 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
       if (Base64::convertFromBase64(decoded, SystemClipboard::getTextFromClipboard()))
       {
         std::vector<std::uint8_t> bytes((uint8_t*)decoded.getData(), (uint8_t*)decoded.getData() + decoded.getDataSize());
-        if (LoadPatchFromBytes(bytes))
+        if (LoadPatchFromBytes("Paste Patch", bytes))
           return;
       }
       AlertWindow::showMessageBoxAsync(
@@ -927,6 +927,7 @@ FBPlugGUI::LoadPatchAsPreview(
 
 bool
 FBPlugGUI::LoadPatchFromBytes(
+  std::string const& patchName,
   std::vector<std::uint8_t> const& bytes)
 {
   FB_LOG_ENTRY_EXIT();
@@ -940,7 +941,7 @@ FBPlugGUI::LoadPatchFromBytes(
   HostContext()->ProcState()->InitProcessing(HostContext());
   // process may be running
   std::atomic_thread_fence(std::memory_order_release);
-  HostContext()->MarkPatchAsPatchState(HostContext()->PatchName());
+  HostContext()->MarkPatchAsPatchState(patchName);
   HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged(false);
   return true;

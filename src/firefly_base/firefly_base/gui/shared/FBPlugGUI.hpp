@@ -217,6 +217,7 @@ private:
   void LoadPatchAsPreview(
     juce::File const& file);
   bool LoadPatchFromBytes(
+    std::string const& patchName,
     std::vector<std::uint8_t> const& bytes);
 };
 
