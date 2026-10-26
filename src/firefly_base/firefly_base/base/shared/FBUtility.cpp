@@ -254,7 +254,7 @@ FBReadFile(std::filesystem::path const& p)
 }
 
 bool
-FBParseJson(std::string const& text, var& json)
+FBParseJson(juce::String const& text, var& json)
 {
   auto parsed = JSON::parse(text, json);
   DynamicObject* obj = json.getDynamicObject();

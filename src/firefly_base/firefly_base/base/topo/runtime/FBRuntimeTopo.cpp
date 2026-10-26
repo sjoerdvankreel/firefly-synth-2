@@ -159,7 +159,7 @@ FBRuntimeTopo::LoadStateFromBytes(
   var json;
   juce::String::CharPointerType ptr((juce::CharPointer_UTF8::CharType*)bytes.data() + sizeof(FileFormatVersion) + Magic.length());
   juce::String string(ptr, ptr + (int)bytes.size() - sizeof(FileFormatVersion) - (int)Magic.length());
-  if (!FBParseJson(string.toStdString(), json))
+  if (!FBParseJson(string, json))
     return false;
   return LoadStateFromVar(json, hostContext, audioParams, patchOnly);
 }
