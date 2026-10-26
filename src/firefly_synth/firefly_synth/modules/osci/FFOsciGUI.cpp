@@ -414,7 +414,7 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
           .withParentComponent(plugGUI), [](int) {});
         return;
       }
-      if (dspClip.channels != 1) // todo sampler
+      if (dspClip.channels != 1) // todo sampler drop the lib
       {
         AlertWindow::showAsync(MessageBoxOptions()
           .withIconType(MessageBoxIconType::WarningIcon)
