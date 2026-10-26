@@ -21,8 +21,8 @@ FBCLAPPlugin::stateSave(const clap_ostream* stream) noexcept
   {
     int64_t written = 0;
     int64_t numWritten = 0;
-    std::string json = Topo()->SaveStateToString(*this, *_editState, false);
-    while ((numWritten = stream->write(stream, json.data() + written, json.size() - written)) != 0)
+    auto data = Topo()->SaveStateToBytes(*this, *_editState, false);
+    while ((numWritten = stream->write(stream, data.data() + written, data.size() - written)) != 0)
       if (numWritten == -1)
         return false;
       else
@@ -42,14 +42,14 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
   {
     int64_t read = 0;
     char buffer[1024];
-    std::string json = {};
+    std::vector<std::uint8_t> data;
     while ((read = stream->read(stream, buffer, sizeof(buffer))) != 0)
       if (read == -1)
         return false;
       else
-        json.append(buffer, read);
+        data.insert(data.end(), buffer, buffer + read);
 
-    if (!Topo()->LoadStateFromString(json, *this, *_editState, false))
+    if (!Topo()->LoadStateFromBytes(data, *this, *_editState, false))
       return true; // bitwig
 
     ProcState()->InitProcessing(this);

@@ -97,8 +97,8 @@ FBVST3Plugin::getState(IBStream* state)
   {
     FBScalarStateContainer audioParams(*Topo());
     audioParams.CopyFrom(this, false);
-    std::string json = Topo()->SaveStateToString(*this, audioParams, false);
-    if (!FBVST3SaveIBStream(state, json))
+    auto data = Topo()->SaveStateToBytes(*this, audioParams, false);
+    if (!FBVST3SaveIBStream(state, data))
       return kResultFalse;
     return kResultOk;
   });
@@ -110,11 +110,11 @@ FBVST3Plugin::setState(IBStream* state)
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this, state]()
   {
-    std::string json;
-    if (!FBVST3LoadIBStream(state, json))
+    std::vector<std::uint8_t> data;
+    if (!FBVST3LoadIBStream(state, data))
       return kResultFalse;
     FBScalarStateContainer audioParams(*Topo());
-    if (!Topo()->LoadStateFromString(json, *this, audioParams, false))
+    if (!Topo()->LoadStateFromBytes(data, *this, audioParams, false))
       return kResultTrue; // not crash bitwig
     audioParams.CopyTo(this, false);
 

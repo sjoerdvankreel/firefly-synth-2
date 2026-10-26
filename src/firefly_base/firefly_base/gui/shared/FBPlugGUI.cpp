@@ -132,7 +132,8 @@ FBPlugGUI::InitSavePatchBrowser()
     SetBrowserInitialPath(FBUserGlobalSettingKeys::SavePatchFolder, file);
     FBScalarStateContainer audioParams(*HostContext()->Topo());
     audioParams.CopyFrom(HostContext(), true);
-    file.replaceWithText(HostContext()->Topo()->SaveStateToString(*HostContext(), audioParams, true));
+    auto data = HostContext()->Topo()->SaveStateToBytes(*HostContext(), audioParams, true);
+    file.replaceWithData(data.data(), data.size());
   }, [](juce::File const&){}, [](){});
 }
 
@@ -765,7 +766,9 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
     if (id == 4) {
       FBScalarStateContainer audioParams(*HostContext()->Topo());
       audioParams.CopyFrom(HostContext(), true);
-      SystemClipboard::copyTextToClipboard(HostContext()->Topo()->SaveStateToString(*HostContext(), audioParams, true));
+      auto data = HostContext()->Topo()->SaveStateToBytes(*HostContext(), audioParams, true);
+      (void)data;
+      // TODO sampler
     }
     if (id == 5) {
       if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))

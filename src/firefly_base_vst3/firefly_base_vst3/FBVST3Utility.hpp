@@ -28,6 +28,6 @@ void
 FBVST3CopyFromString128(TChar const* in, std::string& out);
 
 bool
-FBVST3LoadIBStream(IBStream* stream, std::string& state);
+FBVST3LoadIBStream(IBStream* stream, std::vector<std::uint8_t>& state);
 bool
-FBVST3SaveIBStream(IBStream* stream, std::string const& state);
+FBVST3SaveIBStream(IBStream* stream, std::vector<std::uint8_t> const& state);

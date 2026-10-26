@@ -114,24 +114,28 @@ FBRuntimeTopo::PrintParamList() const
   return result.str();
 }
 
-std::string 
-FBRuntimeTopo::SaveStateToString(
+std::vector<std::uint8_t> 
+FBRuntimeTopo::SaveStateToBytes(
   FBHostContext const& hostContext, 
   FBScalarStateContainer const& audioParams,
   bool patchOnly) const
 {
-  return JSON::toString(SaveStateToVar(hostContext, audioParams, patchOnly)).toStdString();
+  auto string = JSON::toString(SaveStateToVar(hostContext, audioParams, patchOnly));
+  auto ptr = (uint8_t*)string.getCharPointer().getAddress();
+  return std::vector<std::uint8_t>(ptr, ptr + string.length());
 }
 
 bool 
-FBRuntimeTopo::LoadStateFromString(
-  std::string const& text, 
+FBRuntimeTopo::LoadStateFromBytes(
+  std::vector<std::uint8_t> const& bytes,
   FBHostContext& hostContext, 
   FBScalarStateContainer& audioParams, 
   bool patchOnly) const
 {
   var json;
-  if (!FBParseJson(text, json))
+  juce::String::CharPointerType ptr((juce::CharPointer_UTF8::CharType*)bytes.data());
+  juce::String string(ptr, ptr + (int)bytes.size());
+  if (!FBParseJson(string.toStdString(), json))
     return false;
   return LoadStateFromVar(json, hostContext, audioParams, patchOnly);
 }
