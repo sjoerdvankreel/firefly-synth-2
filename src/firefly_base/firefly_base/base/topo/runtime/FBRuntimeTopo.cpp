@@ -141,19 +141,8 @@ FBRuntimeTopo::LoadPatchFromBytesWithPreFormat2Check(
 {
   FB_LOG_ENTRY_EXIT();
 
-  // if all of this matches, its the new format
-  if (bytes.size() >= sizeof(FileFormatVersion) + Magic.length())
-  {
-    std::string fileMagic((char*)bytes.data(), (char*)bytes.data() + Magic.length());
-    if (fileMagic == Magic)
-    {
-      int formatVersion = *((int*)(bytes.data() + Magic.length()));
-      if (formatVersion == FileFormatVersion)
-      {
-        return LoadStateFromBytes(bytes, hostContext, audioParams, true);
-      }
-    }
-  }
+  if (LoadStateFromBytes(bytes, hostContext, audioParams, true))
+    return true;
 
   // now we need to reconstruct the new format from the old
   juce::var oldJsonVar;
