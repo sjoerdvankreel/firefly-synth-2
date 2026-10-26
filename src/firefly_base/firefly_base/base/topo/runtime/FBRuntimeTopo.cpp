@@ -134,6 +134,89 @@ FBRuntimeTopo::SaveStateToBytes(
 }
 
 bool 
+FBRuntimeTopo::LoadCLAPFromBytesWithPreFormat2Check(
+  std::vector<std::uint8_t> const& bytes,
+  FBHostContext& hostContext,
+  FBScalarStateContainer& audioParams) const
+{
+  FB_LOG_ENTRY_EXIT();
+
+  if (LoadStateFromBytes(bytes, hostContext, audioParams, true))
+    return true;
+
+  // now we need to reconstruct the new format from the old
+  juce::var oldJsonVar;
+  std::string stext((char*)bytes.data(), (char*)bytes.data() + bytes.size());
+  juce::String text(stext);
+  if (!FBParseJson(text, oldJsonVar))
+    return false;
+
+  auto oldJson = oldJsonVar.getDynamicObject();
+  if (!oldJson->hasProperty("edit"))
+  {
+    FB_LOG_ERROR("Old CLAP json has no edit state.");
+    return false;
+  }
+  var oldEditJsonVar = oldJson->getProperty("edit");
+  auto* oldEditJson = oldEditJsonVar.getDynamicObject();
+
+  auto newJson = std::make_unique<juce::DynamicObject>();
+  if (!oldEditJson->hasProperty("magic") ||
+    !oldEditJson->getProperty("magic").isString() ||
+    oldEditJson->getProperty("magic").toString().toStdString() != Magic)
+  {
+    FB_LOG_ERROR("Old CLAP json has wrong magic.");
+    return false;
+  }
+
+  if (!oldEditJson->hasProperty("id"))
+  {
+    FB_LOG_ERROR("Old CLAP json is missing id.");
+    return false;
+  }
+  newJson->setProperty("pluginId", oldEditJson->getProperty("id"));
+
+  if (!oldEditJson->hasProperty("major"))
+  {
+    FB_LOG_ERROR("Old CLAP json is missing major.");
+    return false;
+  }
+  newJson->setProperty("pluginVersionMajor", oldEditJson->getProperty("major"));
+
+  if (!oldEditJson->hasProperty("minor"))
+  {
+    FB_LOG_ERROR("Old CLAP json is missing minor.");
+    return false;
+  }
+  newJson->setProperty("pluginVersionMinor", oldEditJson->getProperty("minor"));
+
+  if (!oldEditJson->hasProperty("patch"))
+  {
+    FB_LOG_ERROR("Old CLAP json is missing patch.");
+    return false;
+  }
+  newJson->setProperty("pluginVersionPatch", oldEditJson->getProperty("patch"));
+
+  newJson->setProperty("patchName", "");
+  newJson->setProperty("themeName", ""); // todo sampler
+  newJson->setProperty("instanceName", ""); // todo sampler
+  newJson->setProperty("guiAudioClips", var(new DynamicObject));
+  newJson->setProperty("dspAudioClips", var(new DynamicObject));
+  newJson->setProperty("paramNameOverrides", var(new DynamicObject)); // todo sampler
+  var emptyArray;
+  emptyArray.resize(0);
+  newJson->setProperty("guiParams", emptyArray); // todo sampler
+  
+  if (!oldEditJson->hasProperty("state"))
+  {
+    FB_LOG_ERROR("Old CLAP json is missing state.");
+    return false;
+  }
+  newJson->setProperty("audioParams", oldEditJson->getProperty("state"));
+  return LoadStateFromVar(var(newJson.release()), hostContext, audioParams, false);
+}
+
+bool 
 FBRuntimeTopo::LoadPatchFromBytesWithPreFormat2Check(
   std::vector<std::uint8_t> const& bytes,
   FBHostContext& hostContext,
@@ -176,34 +259,34 @@ FBRuntimeTopo::LoadPatchFromBytesWithPreFormat2Check(
     !oldPatchJson->getProperty("magic").isString() || 
     oldPatchJson->getProperty("magic").toString().toStdString() != Magic)
   {
-    FB_LOG_ERROR("Old format json has wrong magic.");
+    FB_LOG_ERROR("Old patch json has wrong magic.");
     return false;
   }
 
   if (!oldPatchJson->hasProperty("id"))
   {
-    FB_LOG_ERROR("Old format json is missing id.");
+    FB_LOG_ERROR("Old patch json is missing id.");
     return false;
   }
   newJson->setProperty("pluginId", oldPatchJson->getProperty("id"));
 
   if (!oldPatchJson->hasProperty("major"))
   {
-    FB_LOG_ERROR("Old format json is missing major.");
+    FB_LOG_ERROR("Old patch json is missing major.");
     return false;
   }
   newJson->setProperty("pluginVersionMajor", oldPatchJson->getProperty("major"));
 
   if (!oldPatchJson->hasProperty("minor"))
   {
-    FB_LOG_ERROR("Old format json is missing minor.");
+    FB_LOG_ERROR("Old patch json is missing minor.");
     return false;
   }
   newJson->setProperty("pluginVersionMinor", oldPatchJson->getProperty("minor"));
 
   if (!oldPatchJson->hasProperty("patch"))
   {
-    FB_LOG_ERROR("Old format json is missing patch.");
+    FB_LOG_ERROR("Old patch json is missing patch.");
     return false;
   }
   newJson->setProperty("pluginVersionPatch", oldPatchJson->getProperty("patch"));
@@ -218,7 +301,7 @@ FBRuntimeTopo::LoadPatchFromBytesWithPreFormat2Check(
 
   if (!oldPatchJson->hasProperty("state"))
   {
-    FB_LOG_ERROR("Old format json is missing state.");
+    FB_LOG_ERROR("Old patch json is missing state.");
     return false;
   }
   newJson->setProperty("audioParams", oldPatchJson->getProperty("state"));

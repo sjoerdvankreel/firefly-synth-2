@@ -49,7 +49,7 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
       else
         data.insert(data.end(), buffer, buffer + read);
 
-    if (!Topo()->LoadStateFromBytes(data, *this, *_editState, false))
+    if (!Topo()->LoadCLAPFromBytesWithPreFormat2Check(data, *this, *_editState))
       return true; // bitwig
 
     ProcState()->InitProcessing(this);
