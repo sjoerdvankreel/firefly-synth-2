@@ -216,10 +216,8 @@ private:
   void RepaintControlsForAudioParam(int index);
   void LoadPatchAsPreview(
     juce::File const& file);
-  bool LoadPatchFromText(
-    std::string const& undoAction,
-    std::string const& patchName,
-    std::string const& text);
+  bool LoadPatchFromBytes(
+    std::vector<std::uint8_t> const& bytes);
 };
 
 template <class TComponent, class... Args>

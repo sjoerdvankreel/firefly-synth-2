@@ -90,14 +90,14 @@ FBPlugGUI::InitLoadPatchBrowser(bool preset)
     _isPatchPreviewEnabled = _loadPatchBrowser->IsPreviewEnabled();
     if(!preset)
       SetBrowserInitialPath(FBUserGlobalSettingKeys::LoadPatchFolder, file);
-    auto text = file.loadFileAsString().toStdString();
-    if (!LoadPatchFromText("Load Patch", file.getFileNameWithoutExtension().toStdString(), text))
+    MemoryBlock block;
+    file.loadFileAsData(block);
+    std::vector<std::uint8_t> data((uint8_t*)block.getData(), (uint8_t*)block.getData() + block.getSize());
+    if (!LoadPatchFromBytes(data))
       AlertWindow::showMessageBoxAsync(
         MessageBoxIconType::NoIcon,
         "Error",
         "Failed to load patch. See log for details.");
-    else
-      HostContext()->UndoState().Clear(); // because samples
     }, [this](juce::File const& file) { 
       LoadPatchAsPreview(file); 
     }, [this] {
@@ -767,15 +767,20 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
       FBScalarStateContainer audioParams(*HostContext()->Topo());
       audioParams.CopyFrom(HostContext(), true);
       auto data = HostContext()->Topo()->SaveStateToBytes(*HostContext(), audioParams, true);
-      (void)data;
-      // TODO sampler
+      SystemClipboard::copyTextToClipboard(Base64::toBase64(data.data(), data.size()));
     }
     if (id == 5) {
-      if(!LoadPatchFromText("Paste Patch", "Paste Patch", SystemClipboard::getTextFromClipboard().toStdString()))
-        AlertWindow::showMessageBoxAsync(
-          MessageBoxIconType::NoIcon,
-          "Warning",
-          "No valid patch data found on clipboard.");
+      MemoryOutputStream decoded;
+      if (Base64::convertFromBase64(decoded, SystemClipboard::getTextFromClipboard()))
+      {
+        std::vector<std::uint8_t> bytes((uint8_t*)decoded.getData(), (uint8_t*)decoded.getData() + decoded.getDataSize());
+        if (LoadPatchFromBytes(bytes))
+          return;
+      }
+      AlertWindow::showMessageBoxAsync(
+        MessageBoxIconType::NoIcon,
+        "Warning",
+        "No valid patch data found on clipboard.");
     }  
   });
 }
@@ -921,31 +926,23 @@ FBPlugGUI::LoadPatchAsPreview(
 }
 
 bool
-FBPlugGUI::LoadPatchFromText(
-  std::string const& undoAction, // todo sampler remove
-  std::string const& patchName,
-  std::string const& text)
+FBPlugGUI::LoadPatchFromBytes(
+  std::vector<std::uint8_t> const& bytes)
 {
-  (void)undoAction;
-  (void)patchName;
-  (void)text;
-#if 0 // todo sampler
   FB_LOG_ENTRY_EXIT();
   RevertPreviewedPatch();
   FBScalarStateContainer audioParams(*HostContext()->Topo());
-  HostContext()->UndoState().Snapshot(undoAction);
-  if (!HostContext()->Topo()->LoadStateFromString(text, *HostContext(), audioParams, true))
+  if (!HostContext()->Topo()->LoadStateFromBytes(bytes, *HostContext(), audioParams, true))
     return false;
+  HostContext()->UndoState().Clear(); // because samples
   BeforePatchChanged();
   audioParams.CopyTo(HostContext(), true);
   HostContext()->ProcState()->InitProcessing(HostContext());
   // process may be running
   std::atomic_thread_fence(std::memory_order_release);
-
-  HostContext()->MarkPatchAsPatchState(patchName);
+  HostContext()->MarkPatchAsPatchState(HostContext()->PatchName());
   HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged(false);
-#endif
   return true;
 }
 
