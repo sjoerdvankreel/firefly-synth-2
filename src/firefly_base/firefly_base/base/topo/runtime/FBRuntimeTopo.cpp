@@ -120,9 +120,13 @@ FBRuntimeTopo::SaveStateToBytes(
   FBScalarStateContainer const& audioParams,
   bool patchOnly) const
 {
+  std::vector<std::uint8_t> result;
   auto string = JSON::toString(SaveStateToVar(hostContext, audioParams, patchOnly));
   auto ptr = (uint8_t*)string.getCharPointer().getAddress();
-  return std::vector<std::uint8_t>(ptr, ptr + string.length());
+  result.insert(result.end(), (uint8_t*)Magic.data(), (uint8_t*)Magic.data() + Magic.length());
+  result.insert(result.end(), (uint8_t*)&FileFormatVersion, (uint8_t*)&FileFormatVersion + sizeof(FileFormatVersion));
+  result.insert(result.end(), ptr, ptr + string.length());
+  return result;
 }
 
 bool 
@@ -132,9 +136,29 @@ FBRuntimeTopo::LoadStateFromBytes(
   FBScalarStateContainer& audioParams, 
   bool patchOnly) const
 {
+  if (bytes.size() < sizeof(FileFormatVersion) + Magic.length())
+  {
+    FB_LOG_ERROR("Input data is too small.");
+    return false;
+  }
+
+  std::string fileMagic((char*)bytes.data(), (char*)bytes.data() + Magic.length());
+  if (fileMagic != Magic)
+  {
+    FB_LOG_ERROR("Unexpected file magic.");
+    return false;
+  }
+
+  int formatVersion = *((int*)(bytes.data() + Magic.length()));
+  if (formatVersion != FileFormatVersion)
+  {
+    FB_LOG_ERROR("Unexpected file format version.");
+    return false;
+  }
+  
   var json;
-  juce::String::CharPointerType ptr((juce::CharPointer_UTF8::CharType*)bytes.data());
-  juce::String string(ptr, ptr + (int)bytes.size());
+  juce::String::CharPointerType ptr((juce::CharPointer_UTF8::CharType*)bytes.data() + sizeof(FileFormatVersion) + Magic.length());
+  juce::String string(ptr, ptr + (int)bytes.size() - sizeof(FileFormatVersion) - (int)Magic.length());
   if (!FBParseJson(string.toStdString(), json))
     return false;
   return LoadStateFromVar(json, hostContext, audioParams, patchOnly);
@@ -147,8 +171,6 @@ FBRuntimeTopo::SaveStateToVar(
   bool patchOnly) const
 {
   auto result = new DynamicObject;
-  result->setProperty("magic", String(Magic));
-  result->setProperty("fileFormatVersion", FileFormatVersion);
   result->setProperty("pluginId", String(static_->meta.id));
   result->setProperty("pluginVersionMajor", static_->meta.version.major);
   result->setProperty("pluginVersionMinor", static_->meta.version.minor);
@@ -175,24 +197,6 @@ FBRuntimeTopo::LoadStateFromVar(
   FBScalarStateContainer& audioParams, bool patchOnly) const
 {
   DynamicObject* obj = json.getDynamicObject();
-
-  if (!obj->hasProperty("magic"))
-  {
-    FB_LOG_ERROR("Missing file magic.");
-    return false;
-  }
-  var magic = obj->getProperty("magic");
-  if (!magic.isString())
-  {
-    FB_LOG_ERROR("File magic is not a string.");
-    return false;
-  }
-  if (magic.toString() != String(Magic))
-  {
-    FB_LOG_ERROR("File magic mismatch.");
-    return false;
-  }
-
   if (!obj->hasProperty("pluginId"))
   {
     FB_LOG_ERROR("Missing plugin id.");

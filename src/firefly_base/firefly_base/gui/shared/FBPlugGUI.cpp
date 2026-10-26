@@ -922,10 +922,14 @@ FBPlugGUI::LoadPatchAsPreview(
 
 bool
 FBPlugGUI::LoadPatchFromText(
-  std::string const& undoAction,
+  std::string const& undoAction, // todo sampler remove
   std::string const& patchName,
   std::string const& text)
 {
+  (void)undoAction;
+  (void)patchName;
+  (void)text;
+#if 0 // todo sampler
   FB_LOG_ENTRY_EXIT();
   RevertPreviewedPatch();
   FBScalarStateContainer audioParams(*HostContext()->Topo());
@@ -941,6 +945,7 @@ FBPlugGUI::LoadPatchFromText(
   HostContext()->MarkPatchAsPatchState(patchName);
   HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged(false);
+#endif
   return true;
 }
 
