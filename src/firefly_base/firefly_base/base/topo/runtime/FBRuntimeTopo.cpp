@@ -121,11 +121,15 @@ FBRuntimeTopo::SaveStateToBytes(
   bool patchOnly) const
 {
   std::vector<std::uint8_t> result;
-  auto string = JSON::toString(SaveStateToVar(hostContext, audioParams, patchOnly));
-  auto ptr = (uint8_t*)string.getCharPointer().getAddress();
   result.insert(result.end(), (uint8_t*)Magic.data(), (uint8_t*)Magic.data() + Magic.length());
   result.insert(result.end(), (uint8_t*)&FileFormatVersion, (uint8_t*)&FileFormatVersion + sizeof(FileFormatVersion));
-  result.insert(result.end(), ptr, ptr + string.length());
+
+  juce::MemoryOutputStream os;
+  juce::GZIPCompressorOutputStream zipOs(os);
+  auto string = JSON::toString(SaveStateToVar(hostContext, audioParams, patchOnly));
+  zipOs.writeString(string);
+  zipOs.flush();
+  result.insert(result.end(), (uint8_t*)os.getData(), (uint8_t*)os.getData() + os.getDataSize());
   return result;
 }
 
@@ -155,11 +159,11 @@ FBRuntimeTopo::LoadStateFromBytes(
     FB_LOG_ERROR("Unexpected file format version.");
     return false;
   }
-  
+
   var json;
-  juce::String::CharPointerType ptr((juce::CharPointer_UTF8::CharType*)bytes.data() + sizeof(FileFormatVersion) + Magic.length());
-  juce::String string(ptr, ptr + (int)bytes.size() - sizeof(FileFormatVersion) - (int)Magic.length());
-  if (!FBParseJson(string, json))
+  juce::MemoryInputStream is(bytes.data() + sizeof(FileFormatVersion) + Magic.length(), (int)bytes.size() - sizeof(FileFormatVersion) - (int)Magic.length(), false);
+  juce::GZIPDecompressorInputStream zipIs(is);
+  if (!FBParseJson(zipIs.readEntireStreamAsString(), json))
     return false;
   return LoadStateFromVar(json, hostContext, audioParams, patchOnly);
 }
