@@ -49,5 +49,6 @@ public:
   std::string PrintParamList() const;
   FBRuntimeModule const* ModuleAtTopo(FBTopoIndices const& topoIndices) const;
   std::vector<std::uint8_t> SaveStateToBytes(FBHostContext const& hostContext, FBScalarStateContainer const& audioParams, bool patchOnly) const;
-  bool LoadStateFromBytes(std::vector<std::uint8_t> const& bytes, FBHostContext& hostContext, FBScalarStateContainer& audioParams, bool patchOnly) const;
+  bool LoadStateFromBytes(std::vector<std::uint8_t> const& bytes, FBHostContext& hostContext, FBScalarStateContainer& audioParams, bool patchOnly) const; // todo sampler move to private
+  bool LoadPatchFromBytesWithPreFormat2Check(std::vector<std::uint8_t> const& bytes, FBHostContext& hostContext, FBScalarStateContainer& audioParams) const;
 };

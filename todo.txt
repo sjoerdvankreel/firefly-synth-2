@@ -33,6 +33,7 @@ v FLStudioVST3ModMatrix not load good
 v copy/paste patch
 - load old files
 - load old patches
+- save presets as new
 - get rid of alertwindow
 - test the conversion on old and new path
 - do all the vst3 oldstyle stuff on load with editorstate and componentstate and blaaahjadidadi

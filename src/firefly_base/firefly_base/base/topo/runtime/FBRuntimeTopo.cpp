@@ -134,12 +134,117 @@ FBRuntimeTopo::SaveStateToBytes(
 }
 
 bool 
+FBRuntimeTopo::LoadPatchFromBytesWithPreFormat2Check(
+  std::vector<std::uint8_t> const& bytes,
+  FBHostContext& hostContext,
+  FBScalarStateContainer& audioParams) const
+{
+  FB_LOG_ENTRY_EXIT();
+
+  // if all of this matches, its the new format
+  if (bytes.size() >= sizeof(FileFormatVersion) + Magic.length())
+  {
+    std::string fileMagic((char*)bytes.data(), (char*)bytes.data() + Magic.length());
+    if (fileMagic == Magic)
+    {
+      int formatVersion = *((int*)(bytes.data() + Magic.length()));
+      if (formatVersion == FileFormatVersion)
+      {
+        return LoadStateFromBytes(bytes, hostContext, audioParams, true);
+      }
+    }
+  }
+
+  // now we need to reconstruct the new format from the old
+  juce::var oldJsonVar;
+  std::string stext((char*)bytes.data(), (char*)bytes.data() + bytes.size());
+  juce::String text(stext);
+  if (!FBParseJson(text, oldJsonVar))
+    return false;
+ 
+  var oldPatchState;
+  var oldParamNameOverrides;
+  bool haveOldParamNameOverrides = false;
+  auto* oldEitherJson = oldJsonVar.getDynamicObject();
+  if (oldEitherJson->hasProperty("patchState"))
+  {
+    oldPatchState = oldEitherJson->getProperty("patchState");
+    if (oldEitherJson->hasProperty("paramNameOverrides"))
+    {
+      oldParamNameOverrides = oldEitherJson->getProperty("paramNameOverrides");
+      haveOldParamNameOverrides = true;
+    }
+  }
+  else
+  {
+    oldPatchState = oldJsonVar;
+  }
+
+  auto newJson = std::make_unique<juce::DynamicObject>();
+  auto oldPatchJson = oldPatchState.getDynamicObject();
+
+  if (!oldPatchJson->hasProperty("magic") || 
+    !oldPatchJson->getProperty("magic").isString() || 
+    oldPatchJson->getProperty("magic").toString().toStdString() != Magic)
+  {
+    FB_LOG_ERROR("Old format json has wrong magic.");
+    return false;
+  }
+
+  if (!oldPatchJson->hasProperty("id"))
+  {
+    FB_LOG_ERROR("Old format json is missing id.");
+    return false;
+  }
+  newJson->setProperty("pluginId", oldPatchJson->getProperty("id"));
+
+  if (!oldPatchJson->hasProperty("major"))
+  {
+    FB_LOG_ERROR("Old format json is missing major.");
+    return false;
+  }
+  newJson->setProperty("pluginVersionMajor", oldPatchJson->getProperty("major"));
+
+  if (!oldPatchJson->hasProperty("minor"))
+  {
+    FB_LOG_ERROR("Old format json is missing minor.");
+    return false;
+  }
+  newJson->setProperty("pluginVersionMinor", oldPatchJson->getProperty("minor"));
+
+  if (!oldPatchJson->hasProperty("patch"))
+  {
+    FB_LOG_ERROR("Old format json is missing patch.");
+    return false;
+  }
+  newJson->setProperty("pluginVersionPatch", oldPatchJson->getProperty("patch"));
+
+  newJson->setProperty("patchName", "");
+  newJson->setProperty("guiAudioClips", var(new DynamicObject));
+  newJson->setProperty("dspAudioClips", var(new DynamicObject));
+  if (haveOldParamNameOverrides)
+    newJson->setProperty("paramNameOverrides", oldParamNameOverrides);
+  else
+    newJson->setProperty("paramNameOverrides", var(new DynamicObject));
+
+  if (!oldPatchJson->hasProperty("state"))
+  {
+    FB_LOG_ERROR("Old format json is missing state.");
+    return false;
+  }
+  newJson->setProperty("audioParams", oldPatchJson->getProperty("state"));
+  return LoadStateFromVar(var(newJson.release()), hostContext, audioParams, true);
+}
+
+bool 
 FBRuntimeTopo::LoadStateFromBytes(
   std::vector<std::uint8_t> const& bytes,
   FBHostContext& hostContext, 
   FBScalarStateContainer& audioParams, 
   bool patchOnly) const
 {
+  FB_LOG_ENTRY_EXIT();
+
   if (bytes.size() < sizeof(FileFormatVersion) + Magic.length())
   {
     FB_LOG_ERROR("Input data is too small.");
@@ -200,6 +305,8 @@ FBRuntimeTopo::LoadStateFromVar(
   FBHostContext& hostContext,
   FBScalarStateContainer& audioParams, bool patchOnly) const
 {
+  FB_LOG_ENTRY_EXIT();
+
   DynamicObject* obj = json.getDynamicObject();
   if (!obj->hasProperty("pluginId"))
   {

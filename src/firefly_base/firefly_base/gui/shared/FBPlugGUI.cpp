@@ -933,7 +933,7 @@ FBPlugGUI::LoadPatchFromBytes(
   FB_LOG_ENTRY_EXIT();
   RevertPreviewedPatch();
   FBScalarStateContainer audioParams(*HostContext()->Topo());
-  if (!HostContext()->Topo()->LoadStateFromBytes(bytes, *HostContext(), audioParams, true))
+  if (!HostContext()->Topo()->LoadPatchFromBytesWithPreFormat2Check(bytes, *HostContext(), audioParams))
     return false;
   HostContext()->UndoState().Clear(); // because samples
   BeforePatchChanged();
