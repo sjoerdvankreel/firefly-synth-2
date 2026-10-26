@@ -26,6 +26,10 @@ FFMakePatchGUI(FFPlugGUI* plugGUI)
   name->setText(context->PatchName(), dontSendNotification);
   grid->Add(0, 1, name);
 
+  plugGUI->onPatchNameChanged = [name](auto const& newName) {
+    name->setText(newName, dontSendNotification); 
+  };
+
   auto load = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Load");
   load->setTooltip("Load From File");
   load->onClick = [plugGUI]() { plugGUI->LoadPatchFromFile(false); };

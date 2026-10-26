@@ -100,6 +100,7 @@ protected:
   void AfterPatchChanged(bool wasPreview) override;
 
 public:
+  std::function<void(std::string const&)> onPatchNameChanged = {};
   std::function<void(std::string const&)> onInstanceNameChanged = {};
   std::map<std::string, std::function<void()>> onGUIAudioClipsChanged = {};
 
@@ -116,6 +117,7 @@ public:
   void resized() override;  
   void RequestGUIReset() override;
   void OnGUIAudioClipsChanged() override;
+  void OnPatchNameChanged(std::string const& name) override;
   void OnInstanceNameChanged(std::string const& name) override;
 
   void ModuleSlotClicked(int index, int slot) override;

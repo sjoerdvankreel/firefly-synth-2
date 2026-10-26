@@ -118,6 +118,14 @@ FFPlugGUI::OnGUIAudioClipsChanged()
 }
 
 void
+FFPlugGUI::OnPatchNameChanged(std::string const& name)
+{
+  FBPlugGUI::OnPatchNameChanged(name);
+  if (onPatchNameChanged)
+    onPatchNameChanged(name);
+}
+
+void
 FFPlugGUI::OnInstanceNameChanged(std::string const& name)
 {
   FBPlugGUI::OnInstanceNameChanged(name);
