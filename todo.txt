@@ -30,6 +30,7 @@ v CLAP is guaranteed single process. luvu.
 v hunt down the comments for kDistributable and singlecomponenteffect
 v sidechaintests are borked
 v FLStudioVST3ModMatrix not load good
+v copy/paste patch
 - load old files
 - load old patches
 - get rid of alertwindow
@@ -55,7 +56,6 @@ v FLStudioVST3ModMatrix not load good
 - recheck on all hosts: offset from defaults, realtime gui
 - do patch side ???
 - retest midi and sampler and basically everything on every host and every platform
-- copy/paste patch
 - check microtuning
 - do the docs
 - test all hosts
