@@ -102,14 +102,6 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   source_group(TREE ${MTS_ESP_SRC_DIR} FILES ${MTS_ESP_SRC_FILES})
 endif()
 
-# libsndfile
-set(ENABLE_CPACK OFF)
-set(BUILD_TESTING OFF)
-set(BUILD_PROGRAMS OFF)
-set(BUILD_EXAMPLES OFF)
-set(INSTALL_MANPAGES OFF)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/libsndfile)
-
 # juce
 # static library not officially supported, but i dont want to build juce 4 times
 # https://forum.juce.com/t/using-cmake-flow-to-build-libraries-android-apps/40492/19
@@ -117,7 +109,7 @@ set(JUCE_MODULES_ONLY ON)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/JUCE)
 add_library(juce_plugin_modules STATIC)
 target_link_libraries(juce_plugin_modules
-  PRIVATE juce::juce_core juce::juce_events juce::juce_gui_basics juce::juce_dsp
+  PRIVATE juce::juce_core juce::juce_events juce::juce_gui_basics juce::juce_dsp juce::juce_audio_formats
   PUBLIC  juce::juce_recommended_config_flags)
 target_compile_definitions(juce_plugin_modules
   PUBLIC JUCE_USE_CURL=0 JUCE_MODAL_LOOPS_PERMITTED=0 JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1
@@ -142,13 +134,11 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/lib/vst3sdk")
 set (BASE_SRC_DIR "${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE}")
 file(GLOB_RECURSE BASE_SRC_FILES "${BASE_SRC_DIR}/*.*")
 add_library(${PROJECT_NAME_BASE} STATIC ${BASE_SRC_FILES})
-target_link_libraries(${PROJECT_NAME_BASE} PUBLIC SndFile::sndfile)
 target_link_libraries(${PROJECT_NAME_BASE} PUBLIC juce_plugin_modules)
 target_compile_options(${PROJECT_NAME_BASE} PRIVATE "${FF_COMPILE_OPTIONS}")
 target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${JUCE_MODULES_DIR})
 target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
 target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/MTS-ESP/Client)
-target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/libsndfile/include)
 target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/readerwriterqueue)
 target_include_directories(${PROJECT_NAME_BASE} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

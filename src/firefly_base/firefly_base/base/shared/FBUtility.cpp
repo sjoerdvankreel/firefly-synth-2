@@ -2,8 +2,8 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 
-#include <sndfile.h>
 #include <juce_core/juce_core.h>
+#include <juce_audio_formats/juce_audio_formats.h>
 
 #include <sstream>
 #include <fstream>
@@ -294,26 +294,22 @@ FBSetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std
 bool
 FBAudioFileRead(std::string const& path, FBAudioClip& clip)
 {
-  SF_INFO info = { 0 };
-  SNDFILE* file = sf_open(path.c_str(), SFM_READ, &info);
-  if (file == nullptr)
+  juce::AudioFormatManager manager;
+  manager.registerBasicFormats();
+  juce::File file(path);
+  std::unique_ptr<juce::AudioFormatReader> reader(manager.createReaderFor(file));
+  if (!reader)
+    return false;
+  
+  juce::AudioSampleBuffer buffer(1, (int)reader->lengthInSamples);
+  if (!reader->read(&buffer, 0, (int)reader->lengthInSamples, 0, true, false))
     return false;
 
   clip.data = {};
-  clip.channels = info.channels;
-  clip.sampleRate = info.samplerate;
-  clip.originalSampleRate = info.samplerate;
+  clip.channels = 1;
+  clip.sampleRate = (int)reader->sampleRate;
+  clip.originalSampleRate = (int)reader->sampleRate;
   clip.name = std::filesystem::path(path).filename().stem().string();
-
-  sf_count_t read;
-  float buffer[1024];
-  int framesFitInBuffer = 1024 / info.channels;
-  do
-  {
-    read = sf_readf_float(file, buffer, framesFitInBuffer);
-    clip.data.insert(clip.data.end(), &buffer[0], &buffer[read * info.channels]);
-  } while (read > 0);
-
-  sf_close(file);
+  clip.data = std::vector<float>(buffer.getReadPointer(0), buffer.getReadPointer(0) + reader->lengthInSamples);
   return true;
 }
