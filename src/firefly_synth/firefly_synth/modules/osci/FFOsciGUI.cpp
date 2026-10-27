@@ -396,7 +396,7 @@ MakeOsciSectionAudioIn(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0 }, std::vector<int> { 1, 1 });
+  auto upperGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0 }, std::vector<int> { 1, 1 });
   auto load = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Load");
   load->setTooltip("Load Sample");
   load->onClick = [plugGUI, moduleSlot]() {
@@ -444,28 +444,28 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
       plugGUI->HostContext()->SetGUIAndDSPAudioClip(FFOsciSampleSlotIds[moduleSlot], guiClip, dspClip);
     });
   };
-  grid->Add(0, 0, load);
+  upperGrid->Add(0, 0, load);
 
   auto clear = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Clear");
   clear->setTooltip("Clear Sample");
   clear->onClick = [plugGUI, moduleSlot]() {
     plugGUI->HostContext()->RemoveGUIAndDSPAudioClip(FFOsciSampleSlotIds[moduleSlot]);
   };
-  grid->Add(0, 1, clear);
+  upperGrid->Add(0, 1, clear);
 
   auto nameGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0 }, std::vector<int> { 0, 1 });
   auto nameLabel = plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Name");
   nameGrid->Add(0, 0, nameLabel);
   auto name = plugGUI->StoreComponent<FBAutoSizeLabel2>(true, false, false, 150);
   nameGrid->Add(0, 1, name);
-  grid->Add(1, 0, 1, 2, nameGrid);
+  upperGrid->Add(1, 0, 1, 2, nameGrid);
 
   auto rateGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0 }, std::vector<int> { 0, 1 });
   auto rateLabel = plugGUI->StoreComponent<FBAutoSizeLabel>(plugGUI, "Sample Rate");
   rateGrid->Add(0, 0, rateLabel);
   auto rate = plugGUI->StoreComponent<FBAutoSizeLabel2>(true, false, false, 150);
   rateGrid->Add(0, 1, rate);
-  grid->Add(2, 0, 1, 2, rateGrid);
+  upperGrid->Add(2, 0, 1, 2, rateGrid);
 
   auto clip = plugGUI->HostContext()->FindGUIAudioClip(FFOsciSampleSlotIds[moduleSlot]);
   if (clip != nullptr)
@@ -491,6 +491,39 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
     name->setText(newName, dontSendNotification);
     rate->setText(newRate, dontSendNotification);
   };
+
+  auto topo = plugGUI->HostContext()->Topo();
+  std::vector<int> columnSizes = { 0, 1, 0, 0, 0, 0 };
+  auto lowerGrid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0, 0 }, columnSizes);
+
+  auto inputGain = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleGain, 0 } });
+  lowerGrid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, inputGain));
+  lowerGrid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, inputGain, Slider::SliderStyle::LinearHorizontal));
+  auto lpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleLPFreq, 0 } });
+  lowerGrid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpFreq));
+  lowerGrid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::LinearHorizontal));
+  auto lpRes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleLPRes, 0 } });
+  lowerGrid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpRes));
+  lowerGrid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  auto lpOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleLPOn, 0 } });
+  lowerGrid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpOn));
+  lowerGrid->Add(1, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, lpOn));
+  auto hpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleHPFreq, 0 } });
+  lowerGrid->Add(2, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpFreq));
+  lowerGrid->Add(2, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, Slider::SliderStyle::LinearHorizontal));
+  auto hpRes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleHPRes, 0 } });
+  lowerGrid->Add(2, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
+  lowerGrid->Add(2, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  auto hpOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::SampleHPOn, 0 } });
+  lowerGrid->Add(2, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpOn));
+  lowerGrid->Add(2, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, hpOn));
+
+  for (int i = 0; i < 3; i += 2)
+    lowerGrid->MarkSection({ { i, 0 }, { 1, 6 } }, FBGridSectionMark::AlternateBackground);
+
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(plugGUI, true, std::vector<int> { 0, 0 }, std::vector<int> { 1 });
+  grid->Add(0, 0, upperGrid);
+  grid->Add(1, 0, lowerGrid);
 
   FBParamsDependencies dependencies = {};  
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
