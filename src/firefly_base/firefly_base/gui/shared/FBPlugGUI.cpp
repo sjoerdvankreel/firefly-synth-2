@@ -34,8 +34,7 @@ FBPlugGUI::
 FBPlugGUI::
 FBPlugGUI(FBHostContext* hostContext) :
 _hostContext(hostContext),
-_lookAndFeel(std::make_unique<FBLookAndFeel>()),
-_patchBeforePreview(*hostContext->Topo())
+_lookAndFeel(std::make_unique<FBLookAndFeel>())
 {
   _themes = FBLoadThemes(hostContext->Topo());
   if (_themes.empty())
@@ -792,7 +791,8 @@ FBPlugGUI::LoadPatchFromFile(bool preset)
   HideAllOverlaysAndFileBrowsers();
   InitLoadPatchBrowser(preset);
   _patchWasPreviewed = false;
-  _patchBeforePreview.CopyFrom(HostContext(), true);
+  FBScalarStateContainer audioParams(*HostContext()->Topo());
+  _patchBeforePreviewBytes = HostContext()->Topo()->SaveStateToBytes(*HostContext(), audioParams, true);
   _loadPatchBrowser->Show();
 }
 
@@ -900,7 +900,15 @@ FBPlugGUI::RevertPreviewedPatch()
   if (!_patchWasPreviewed)
     return;
   BeforePatchChanged();
-  _patchBeforePreview.CopyTo(HostContext(), true);
+  FBScalarStateContainer audioParams(*HostContext()->Topo());
+  if (!HostContext()->Topo()->LoadPatchFromBytesWithPreFormat2Check(_patchBeforePreviewBytes, *HostContext(), audioParams))
+    return;
+  HostContext()->UndoState().Clear(); // because samples
+  audioParams.CopyTo(HostContext(), true);
+  HostContext()->ProcState()->InitProcessing(HostContext());
+  // process may be running
+  std::atomic_thread_fence(std::memory_order_release);
+  HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged(false);
 }
 
@@ -908,21 +916,23 @@ void
 FBPlugGUI::LoadPatchAsPreview(
   juce::File const& file)
 {
-  // TODO Sampler
   FB_LOG_ENTRY_EXIT();
-  (void)file;
-  /*
-  _patchWasPreviewed = true;
-  std::map<int, std::string> previewParamNames;
-  std::map<std::string, FBAudioClip> previewGuiAudioClips;
-  std::map<std::string, FBAudioClip> previewDspAudioClips;
-  FBScalarStateContainer editState(*HostContext()->Topo());
-  if (!HostContext()->Topo()->LoadPatchStateFromString(file.loadFileAsString().toStdString(), editState, previewParamNames, previewGuiAudioClips, previewDspAudioClips))
+  MemoryBlock block;
+  if (!file.loadFileAsData(block))
     return;
+  std::vector<std::uint8_t> data((uint8_t*)block.getData(), (uint8_t*)block.getData() + block.getSize());
+  FBScalarStateContainer audioParams(*HostContext()->Topo());
+  if (!HostContext()->Topo()->LoadPatchFromBytesWithPreFormat2Check(data, *HostContext(), audioParams))
+    return;
+  _patchWasPreviewed = true;
+  HostContext()->UndoState().Clear(); // because samples
   BeforePatchChanged();
-  editState.CopyTo(HostContext(), true);
+  audioParams.CopyTo(HostContext(), true);
+  HostContext()->ProcState()->InitProcessing(HostContext());
+  // process may be running
+  std::atomic_thread_fence(std::memory_order_release);
+  HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged(true);
-  */
 }
 
 bool
@@ -931,7 +941,6 @@ FBPlugGUI::LoadPatchFromBytes(
   std::vector<std::uint8_t> const& bytes)
 {
   FB_LOG_ENTRY_EXIT();
-  RevertPreviewedPatch();
   FBScalarStateContainer audioParams(*HostContext()->Topo());
   if (!HostContext()->Topo()->LoadPatchFromBytesWithPreFormat2Check(bytes, *HostContext(), audioParams))
     return false;

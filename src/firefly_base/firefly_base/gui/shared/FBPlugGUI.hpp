@@ -148,7 +148,7 @@ private:
   bool _isPatchPreviewEnabled = false;
   FBHostContext* const _hostContext;
   std::unique_ptr<FBLookAndFeel> _lookAndFeel;
-  FBScalarStateContainer _patchBeforePreview;
+  std::vector<std::uint8_t> _patchBeforePreviewBytes = {};
 
   juce::Label* _overlayCaption = {};
   std::function<void()> _overlayInit = {};
