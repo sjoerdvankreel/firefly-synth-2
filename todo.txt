@@ -31,6 +31,7 @@ v hunt down the comments for kDistributable and singlecomponenteffect
 v sidechaintests are borked
 v FLStudioVST3ModMatrix not load good
 v copy/paste patch
+- do session name label
 - do a kvr update bc why not
 - fix the juce paint jank
 - refix all the renoise automation lanes
