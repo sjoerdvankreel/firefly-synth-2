@@ -47,6 +47,7 @@ v do load/save tests on old sessions and patches
 v run it in debug
 v compress the patchfile
 v drop libsndfile
+- note it responds to unison etc
 - all the new docs, screenshots, website, release notes, history etc
 - do session name label
 - do a kvr update bc why not
