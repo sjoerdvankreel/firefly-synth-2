@@ -52,6 +52,7 @@ v do all the vst3 oldstyle stuff on load with editorstate and componentstate and
 v recheck on all hosts: offset from defaults, realtime gui
 v do all formats that juce supports + stereo merge
 v drop libsndfile https://forum.juce.com/t/reading-a-wav-file-into-an-array-of-samples/47449/4 
+- actual sample preview within the osci ?
 - note it responds to unison etc
 - all the new docs, screenshots, website, release notes, history etc
 - do a kvr update bc why not
