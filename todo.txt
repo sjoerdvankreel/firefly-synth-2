@@ -31,6 +31,21 @@ v hunt down the comments for kDistributable and singlecomponenteffect
 v sidechaintests are borked
 v FLStudioVST3ModMatrix not load good
 v copy/paste patch
+v load old files
+v load old patches
+v test the conversion on old and new path
+v retest the conversion
+v make dedicated test for microtune and paramnameoverride and guisettings
+v make it loadpre217load***state --> if only for the zip
+v retest / implement save gui params
+v retest everything flstudio
+v do patch side ???
+v retest midi and sampler and basically everything on every host and every platform
+v check microtuning
+v test all hosts
+v do load/save tests on old sessions and patches
+v run it in debug
+v compress the patchfile
 - all the new docs, screenshots, website, release notes, history etc
 - do session name label
 - do a kvr update bc why not
@@ -39,44 +54,28 @@ v copy/paste patch
 - do ParamNamesAndAllOptionsOn tests for linux
 - 2.1.6+bitwig not save theme
 - revert to old default theme
-- load old files
-- load old patches
 - save presets as new
 - get rid of alertwindow
-- test the conversion on old and new path
 - do all the vst3 oldstyle stuff on load with editorstate and componentstate and blaaahjadidadi
-- retest the conversion
 - dedicated sample demos
 - do filters in the sampler like audioin
 - also finish up the new demo tune with some vocals and include the patches right away
 - recheck automation lanes on all renoise things
 - close the renoise bug
-- make dedicated test for microtune and paramnameoverride and guisettings
-- make it loadpre217load***state --> if only for the zip
 - double check all sounds same after save * looks same where possible
 - save all the demo in the new format
-- retest / implement save gui params
 - make a note that guiparams will get lost
 - do pre-post host tests
-- retest everything flstudio
 - retest everything Linux and mac
 - check all prev unsupported dataexchange etc, should now work, and notify
 - notify about need full cache rescan
 - recheck on all hosts: offset from defaults, realtime gui
-- do patch side ???
-- retest midi and sampler and basically everything on every host and every platform
-- check microtuning
 - do the docs
-- test all hosts
-- get rid of audio input gain, make no sense??? or is it pre-post?
-- do load/save tests on old sessions and patches
 - do all formats that juce supports + stereo merge
 - drop libsndfile https://forum.juce.com/t/reading-a-wav-file-into-an-array-of-samples/47449/4 
 - preset patch with demo sample + all host tests
 - do the validators
-- run it in debug
 - check "todo sampler"
-- compress the patchfile
 - update the dependencies list
 - file preview
 
