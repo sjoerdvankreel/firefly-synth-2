@@ -31,6 +31,7 @@ v hunt down the comments for kDistributable and singlecomponenteffect
 v sidechaintests are borked
 v FLStudioVST3ModMatrix not load good
 v copy/paste patch
+- do ParamNamesAndAllOptionsOn tests for linux
 - 2.1.6+bitwig not save theme
 - revert to old default theme
 - load old files
