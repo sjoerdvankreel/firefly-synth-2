@@ -177,26 +177,26 @@ FBRuntimeTopo::LoadVST3PreFormat2GUIFromBytes(
   {
     var const& oldGuiParams = oldJson->getProperty("params");
     auto* oldGuiParamsJson = oldGuiParams.getDynamicObject();
-    if (!oldGuiParamsJson->hasProperty("major") || !oldJson->getProperty("major").isInt())
+    if (!oldGuiParamsJson->hasProperty("major") || !oldGuiParamsJson->getProperty("major").isInt())
     {
       FB_LOG_ERROR("Old VST3 GUI json is missing major.");
       return true;
     }
-    if (!oldGuiParamsJson->hasProperty("minor") || !oldJson->getProperty("minor").isInt())
+    if (!oldGuiParamsJson->hasProperty("minor") || !oldGuiParamsJson->getProperty("minor").isInt())
     {
       FB_LOG_ERROR("Old VST3 GUI json is missing minor.");
       return true;
     }
-    if (!oldGuiParamsJson->hasProperty("patch") || !oldJson->getProperty("patch").isInt())
+    if (!oldGuiParamsJson->hasProperty("patch") || !oldGuiParamsJson->getProperty("patch").isInt())
     {
       FB_LOG_ERROR("Old VST3 GUI json is missing patch.");
       return true;
     }
 
     FBPlugVersion loadingVersion = {};
-    loadingVersion.major = static_cast<int>(oldJson->getProperty("major"));
-    loadingVersion.minor = static_cast<int>(oldJson->getProperty("minor"));
-    loadingVersion.patch = static_cast<int>(oldJson->getProperty("patch"));
+    loadingVersion.major = static_cast<int>(oldGuiParamsJson->getProperty("major"));
+    loadingVersion.minor = static_cast<int>(oldGuiParamsJson->getProperty("minor"));
+    loadingVersion.patch = static_cast<int>(oldGuiParamsJson->getProperty("patch"));
     
     if (oldGuiParamsJson->hasProperty("state"))
     {
