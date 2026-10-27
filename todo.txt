@@ -48,6 +48,10 @@ v run it in debug
 v compress the patchfile
 v drop libsndfile
 v do session name label
+v do all the vst3 oldstyle stuff on load with editorstate and componentstate and blaaahjadidadi
+v recheck on all hosts: offset from defaults, realtime gui
+v do all formats that juce supports + stereo merge
+v drop libsndfile https://forum.juce.com/t/reading-a-wav-file-into-an-array-of-samples/47449/4 
 - note it responds to unison etc
 - all the new docs, screenshots, website, release notes, history etc
 - do a kvr update bc why not
@@ -58,7 +62,6 @@ v do session name label
 - revert to old default theme
 - save presets as new
 - get rid of alertwindow
-- do all the vst3 oldstyle stuff on load with editorstate and componentstate and blaaahjadidadi
 - dedicated sample demos
 - do filters in the sampler like audioin
 - also finish up the new demo tune with some vocals and include the patches right away
@@ -71,10 +74,7 @@ v do session name label
 - retest everything Linux and mac
 - check all prev unsupported dataexchange etc, should now work, and notify
 - notify about need full cache rescan
-- recheck on all hosts: offset from defaults, realtime gui
 - do the docs
-- do all formats that juce supports + stereo merge
-- drop libsndfile https://forum.juce.com/t/reading-a-wav-file-into-an-array-of-samples/47449/4 
 - preset patch with demo sample + all host tests
 - do the validators
 - check "todo sampler"
