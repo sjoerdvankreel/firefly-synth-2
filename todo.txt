@@ -47,9 +47,9 @@ v do load/save tests on old sessions and patches
 v run it in debug
 v compress the patchfile
 v drop libsndfile
+v do session name label
 - note it responds to unison etc
 - all the new docs, screenshots, website, release notes, history etc
-- do session name label
 - do a kvr update bc why not
 - fix the juce paint jank
 - refix all the renoise automation lanes
