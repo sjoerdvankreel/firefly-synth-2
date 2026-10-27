@@ -64,6 +64,9 @@ class FFOsciProcessor final
   bool _audioInHPOn = {};
   FFOsciAudioInSource _audioInSource = {};
 
+  bool _sampleLPOn = {};
+  bool _sampleHPOn = {};
+
   int _stringSeed = {};
   int _stringPoles = {};
   bool _stringLPOn = {};
@@ -106,6 +109,9 @@ class FFOsciProcessor final
 
   FFStateVariableFilter<1> _audioInLPFilter = {};
   FFStateVariableFilter<1> _audioInHPFilter = {};
+
+  FFStateVariableFilter<FFOsciUniMaxCount> _sampleLPFilter = {};
+  FFStateVariableFilter<FFOsciUniMaxCount> _sampleHPFilter = {};
 
   FFStateVariableFilter<FFOsciUniMaxCount> _stringLPFilter = {};
   FFStateVariableFilter<FFOsciUniMaxCount> _stringHPFilter = {};

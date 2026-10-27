@@ -14,8 +14,18 @@ void
 FFOsciProcessor::BeginVoiceSample(
   FBModuleProcState& state, bool graph)
 {
-  (void)graph;
-  (void)state;
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& params = procState->param.voice.osci[state.moduleSlot];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
+
+  float sampleLPOnNorm = params.block.sampleLPOn[0].Voice()[voice];
+  float sampleHPOnNorm = params.block.sampleHPOn[0].Voice()[voice];
+  _sampleLPOn = topo.NormalizedToBoolFast(FFOsciParam::SampleLPOn, sampleLPOnNorm);
+  _sampleHPOn = topo.NormalizedToBoolFast(FFOsciParam::SampleHPOn, sampleHPOnNorm);
+  _sampleLPFilter.Reset();
+  _sampleHPFilter.Reset();
+
   for (int i = 0; i < _uniCount; i++)
   {
     _samplerSamplesUsed[i] = 0;
@@ -33,12 +43,21 @@ FFOsciProcessor::ProcessSample(
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
+  auto const& procParams = procState->param.voice.osci[state.moduleSlot];
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
+
+  auto const& sampleLPResNorm = procParams.acc.sampleLPRes[0].Voice()[voice];
+  auto const& sampleHPResNorm = procParams.acc.sampleHPRes[0].Voice()[voice];
+  auto const& sampleLPFreqNorm = procParams.acc.sampleLPFreq[0].Voice()[voice];
+  auto const& sampleHPFreqNorm = procParams.acc.sampleHPFreq[0].Voice()[voice];
+  auto const& sampleGainNorm = procParams.acc.sampleGain[0].Voice()[voice];
 
   auto const& iter = state.input->audioClips->find(FFOsciSampleSlotIds[state.moduleSlot]);
   if (iter == state.input->audioClips->end())
   {
+    // todo sampler the output stuff
     _graphPosition = FFOsciSamplerGUISampleCount;
     return;
   }
@@ -56,9 +75,35 @@ FFOsciProcessor::ProcessSample(
       uniPitch += _uniPosMHalfToHalf.Get(u) * uniDetunePlain.Get(subBlockStart);
       double speedRatio = baseSpeedRatio * FBPitchToFreq(uniPitch) / freqC4;
       int samplesAvailable = (int)clip.data.size() - _samplerSamplesUsed[u];
-      if(samplesAvailable > speedRatio * subBlockSize)
+      if (samplesAvailable > speedRatio * subBlockSize)
+      {
         _samplerSamplesUsed[u] += _samplerInterpolators[u].process(
           speedRatio, clip.data.data() + _samplerSamplesUsed[u],
           uniOutputOversampled[u].Ptr(subBlockStart), subBlockSize, samplesAvailable, 0);
+
+        // blabla, filter first, oversample second, todooooooooooooo
+        if (_sampleLPOn)
+        {
+          for (int s = block * subBlockSize; s < block * subBlockSize + subBlockSize; s++)
+          {
+            float lpFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::SampleLPFreq, sampleLPFreqNorm.CV().Get(s));
+            float lpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::SampleLPRes, sampleLPResNorm.CV().Get(s));
+            lpFreqPlain *= _graphStVarFilterFreqMultiplier;
+            _audioInLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0f);
+            audioInMono.Set(s, (float)_audioInLPFilter.Next(0, audioInMono.Get(s)));
+          }
+        }
+
+        if (_audioInHPOn)
+        {
+          float hpFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::AudioInHPFreq, audioInHPFreqNorm.CV().Get(s));
+          float hpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::AudioInHPRes, audioInHPResNorm.CV().Get(s));
+          hpFreqPlain *= _graphStVarFilterFreqMultiplier;
+          _audioInHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0f);
+          audioInMono.Set(s, (float)_audioInHPFilter.Next(0, audioInMono.Get(s)));
+        }
+      }
     }
+
+  // todo sampler the output stuff
 }
