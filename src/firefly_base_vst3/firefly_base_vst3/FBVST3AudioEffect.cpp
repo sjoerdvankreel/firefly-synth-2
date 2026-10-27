@@ -113,8 +113,9 @@ FBVST3Plugin::setState(IBStream* state)
     std::vector<std::uint8_t> data;
     if (!FBVST3LoadIBStream(state, data))
       return kResultFalse;
+
     FBScalarStateContainer audioParams(*Topo());
-    if (!Topo()->LoadStateFromBytes(data, *this, audioParams, false))
+    if (!Topo()->LoadVST3FromBytesWithPreFormat2Check(data, *this, audioParams))
       return kResultTrue; // not crash bitwig
     audioParams.CopyTo(this, false);
 

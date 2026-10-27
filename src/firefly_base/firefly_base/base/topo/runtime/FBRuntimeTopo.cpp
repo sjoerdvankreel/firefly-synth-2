@@ -133,6 +133,82 @@ FBRuntimeTopo::SaveStateToBytes(
   return result;
 }
 
+bool
+FBRuntimeTopo::LoadVST3FromBytesWithPreFormat2Check(
+  std::vector<std::uint8_t> const& bytes,
+  FBHostContext& hostContext,
+  FBScalarStateContainer& audioParams) const
+{
+  FB_LOG_ENTRY_EXIT();
+
+  if (LoadStateFromBytes(bytes, hostContext, audioParams, true))
+    return true;
+
+  // now we need to reconstruct the new format from the old
+  juce::var oldJsonVar;
+  std::string stext((char*)bytes.data(), (char*)bytes.data() + bytes.size());
+  juce::String text(stext);
+  if (!FBParseJson(text, oldJsonVar))
+    return false;
+
+  auto oldJson = oldJsonVar.getDynamicObject();
+  auto newJson = std::make_unique<juce::DynamicObject>();
+  if (!oldJson->hasProperty("magic") ||
+    !oldJson->getProperty("magic").isString() ||
+    oldJson->getProperty("magic").toString().toStdString() != Magic)
+  {
+    FB_LOG_ERROR("Old VST3 json has wrong magic.");
+    return false;
+  }
+
+  if (!oldJson->hasProperty("id"))
+  {
+    FB_LOG_ERROR("Old VST3 json is missing id.");
+    return false;
+  }
+  newJson->setProperty("pluginId", oldJson->getProperty("id"));
+
+  if (!oldJson->hasProperty("major"))
+  {
+    FB_LOG_ERROR("Old VST3 json is missing major.");
+    return false;
+  }
+  newJson->setProperty("pluginVersionMajor", oldJson->getProperty("major"));
+
+  if (!oldJson->hasProperty("minor"))
+  {
+    FB_LOG_ERROR("Old VST3 json is missing minor.");
+    return false;
+  }
+  newJson->setProperty("pluginVersionMinor", oldJson->getProperty("minor"));
+
+  if (!oldJson->hasProperty("patch"))
+  {
+    FB_LOG_ERROR("Old VST3 json is missing patch.");
+    return false;
+  }
+  newJson->setProperty("pluginVersionPatch", oldJson->getProperty("patch"));
+
+  newJson->setProperty("guiAudioClips", var(new DynamicObject));
+  newJson->setProperty("dspAudioClips", var(new DynamicObject));
+
+  var emptyArray;
+  emptyArray.resize(0);
+  newJson->setProperty("patchName", "");
+  newJson->setProperty("themeName", "");
+  newJson->setProperty("instanceName", "");
+  newJson->setProperty("paramNameOverrides", var(new DynamicObject));
+  newJson->setProperty("guiParams", emptyArray);
+
+  if (!oldJson->hasProperty("state"))
+  {
+    FB_LOG_ERROR("Old VST3 json is missing state.");
+    return false;
+  }
+  newJson->setProperty("audioParams", oldJson->getProperty("state"));
+  return LoadStateFromVar(var(newJson.release()), hostContext, audioParams, false);
+}
+
 bool 
 FBRuntimeTopo::LoadCLAPFromBytesWithPreFormat2Check(
   std::vector<std::uint8_t> const& bytes,

@@ -35,6 +35,7 @@ private:
   bool LoadAudioClipsFromVar(juce::var const& json, std::map<std::string, FBAudioClip>& audioClips) const;
   bool LoadParamNameOverridesFromVar(juce::var const& json, std::map<int, std::string>& paramNameOverrides) const;
   bool LoadStateFromVar(juce::var const& json, FBHostContext& hostContext, FBScalarStateContainer& audioParams, bool patchOnly) const;
+  bool LoadStateFromBytes(std::vector<std::uint8_t> const& bytes, FBHostContext& hostContext, FBScalarStateContainer& audioParams, bool patchOnly) const;
 
 public:
   std::unique_ptr<FBStaticTopo> static_;
@@ -49,7 +50,7 @@ public:
   std::string PrintParamList() const;
   FBRuntimeModule const* ModuleAtTopo(FBTopoIndices const& topoIndices) const;
   std::vector<std::uint8_t> SaveStateToBytes(FBHostContext const& hostContext, FBScalarStateContainer const& audioParams, bool patchOnly) const;
-  bool LoadStateFromBytes(std::vector<std::uint8_t> const& bytes, FBHostContext& hostContext, FBScalarStateContainer& audioParams, bool patchOnly) const; // todo sampler move to private
+  bool LoadVST3FromBytesWithPreFormat2Check(std::vector<std::uint8_t> const& bytes, FBHostContext& hostContext, FBScalarStateContainer& audioParams) const;
   bool LoadCLAPFromBytesWithPreFormat2Check(std::vector<std::uint8_t> const& bytes, FBHostContext& hostContext, FBScalarStateContainer& audioParams) const;
   bool LoadPatchFromBytesWithPreFormat2Check(std::vector<std::uint8_t> const& bytes, FBHostContext& hostContext, FBScalarStateContainer& audioParams) const;
 };
