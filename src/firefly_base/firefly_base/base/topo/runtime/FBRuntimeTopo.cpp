@@ -133,6 +133,82 @@ FBRuntimeTopo::SaveStateToBytes(
   return result;
 }
 
+bool 
+FBRuntimeTopo::LoadVST3PreFormat2GUIFromBytes(
+  std::vector<std::uint8_t> const& bytes,
+  FBHostContext& hostContext) const
+{
+  FB_LOG_ENTRY_EXIT();
+
+  // VST3 old format had everything in 2 streams: processor and controller
+  // here we deal with the controller only
+  // note: this is only for load not save. new format has 1 stream only
+
+  juce::var oldJsonVar;
+  std::string stext((char*)bytes.data(), (char*)bytes.data() + bytes.size());
+  juce::String text(stext);
+  if (!FBParseJson(text, oldJsonVar))
+    return false;
+
+  auto oldJson = oldJsonVar.getDynamicObject();
+
+  // from here on it's really best-effort
+  // hosts behave very differently when plug switched from processor/controller with kDistributable to SingleComponentEffect
+  // i prefer to keep as much stuff intact as possible, but as long as all the audio params are ok (LoadVST3FromBytesWithPreFormat2Check), were good anyway
+
+  if (oldJson->hasProperty("patchName"))
+    hostContext.SetPatchName(oldJson->getProperty("patchName").toString().toStdString());
+  if (oldJson->hasProperty("themeName"))
+    hostContext.SetThemeName(oldJson->getProperty("themeName").toString().toStdString());
+  if (oldJson->hasProperty("instanceName"))
+    hostContext.SetInstanceName(oldJson->getProperty("instanceName").toString().toStdString());
+
+  std::map<int, std::string> paramNameOverrides;
+  var const& paramNameOverridesVar = oldJson->getProperty("paramNameOverrides");
+  if (paramNameOverridesVar.isObject())
+    if (LoadParamNameOverridesFromVar(paramNameOverridesVar, paramNameOverrides))
+      hostContext.SetAudioParamNameOverrides(paramNameOverrides);
+
+  // note: never return false from here -- we can live without this info
+  // theres no need to repeat the magic/id/fileformat checks -- regular load will catch them
+  // but, we do need to parse the version info for conversion to kick in
+
+  if (oldJson->hasProperty("params"))
+  {
+    var const& oldGuiParams = oldJson->getProperty("params");
+    auto* oldGuiParamsJson = oldGuiParams.getDynamicObject();
+    if (!oldGuiParamsJson->hasProperty("major") || !oldJson->getProperty("major").isInt())
+    {
+      FB_LOG_ERROR("Old VST3 GUI json is missing major.");
+      return true;
+    }
+    if (!oldGuiParamsJson->hasProperty("minor") || !oldJson->getProperty("minor").isInt())
+    {
+      FB_LOG_ERROR("Old VST3 GUI json is missing minor.");
+      return true;
+    }
+    if (!oldGuiParamsJson->hasProperty("patch") || !oldJson->getProperty("patch").isInt())
+    {
+      FB_LOG_ERROR("Old VST3 GUI json is missing patch.");
+      return true;
+    }
+
+    FBPlugVersion loadingVersion = {};
+    loadingVersion.major = static_cast<int>(oldJson->getProperty("major"));
+    loadingVersion.minor = static_cast<int>(oldJson->getProperty("minor"));
+    loadingVersion.patch = static_cast<int>(oldJson->getProperty("patch"));
+    
+    if (oldGuiParamsJson->hasProperty("state"))
+    {
+      FBGUIStateContainer loadGuiParams(*this);
+      if(LoadParamStateFromVar(oldGuiParamsJson->getProperty("state"), loadingVersion, true, loadGuiParams, this->gui, false))
+        hostContext.GUIState()->CopyFrom(loadGuiParams);
+    }
+  }
+
+  return true;
+}
+
 bool
 FBRuntimeTopo::LoadVST3FromBytesWithPreFormat2Check(
   std::vector<std::uint8_t> const& bytes,
@@ -145,6 +221,9 @@ FBRuntimeTopo::LoadVST3FromBytesWithPreFormat2Check(
     return true;
 
   // now we need to reconstruct the new format from the old
+  // VST3 old format had everything in 2 streams: processor and controller
+  // here we deal with the processor only
+
   juce::var oldJsonVar;
   std::string stext((char*)bytes.data(), (char*)bytes.data() + bytes.size());
   juce::String text(stext);
@@ -221,6 +300,8 @@ FBRuntimeTopo::LoadCLAPFromBytesWithPreFormat2Check(
     return true;
 
   // now we need to reconstruct the new format from the old
+  // CLAP old format had everything in 1 stream, just juggled around a bit
+
   juce::var oldJsonVar;
   std::string stext((char*)bytes.data(), (char*)bytes.data() + bytes.size());
   juce::String text(stext);
@@ -326,6 +407,8 @@ FBRuntimeTopo::LoadPatchFromBytesWithPreFormat2Check(
     return true;
 
   // now we need to reconstruct the new format from the old
+  // patch old format had everything in 1 stream, just juggled around a bit
+
   juce::var oldJsonVar;
   std::string stext((char*)bytes.data(), (char*)bytes.data() + bytes.size());
   juce::String text(stext);

@@ -81,9 +81,26 @@ FBVST3Plugin::getEditorState(IBStream* state)
 tresult PLUGIN_API
 FBVST3Plugin::setEditorState(IBStream* state)
 {
-  (void)state;
   FB_LOG_ENTRY_EXIT();
-  return kResultOk;
+  return FBWithLogException([this, state]()
+  {
+    std::vector<std::uint8_t> data;
+    if (!FBVST3LoadIBStream(state, data))
+      return kResultFalse;
+
+    if (!Topo()->LoadVST3PreFormat2GUIFromBytes(data, *this))
+      return kResultTrue; // not crash bitwig
+    
+    OnPatchNameChanged();
+    OnInstanceNameChanged();
+    OnGUIAudioClipsChanged();
+    MarkPatchAsSessionState();
+    NotifyHostOfParamNameChanges();
+    if (_guiEditor != nullptr)
+      for (int i = 0; i < GUIState()->Params().size(); i++)
+        _guiEditor->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));
+    return kResultOk;
+  });
 }
 
 
