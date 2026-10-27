@@ -157,7 +157,7 @@ FBRuntimeTopo::LoadCLAPFromBytesWithPreFormat2Check(
     FB_LOG_ERROR("Old CLAP json has no edit state.");
     return false;
   }
-  var oldEditJsonVar = oldJson->getProperty("edit");
+  var const& oldEditJsonVar = oldJson->getProperty("edit");
   auto* oldEditJson = oldEditJsonVar.getDynamicObject();
 
   auto newJson = std::make_unique<juce::DynamicObject>();
@@ -197,15 +197,37 @@ FBRuntimeTopo::LoadCLAPFromBytesWithPreFormat2Check(
   }
   newJson->setProperty("pluginVersionPatch", oldEditJson->getProperty("patch"));
 
-  newJson->setProperty("patchName", "");
-  newJson->setProperty("themeName", ""); // todo sampler
-  newJson->setProperty("instanceName", ""); // todo sampler
   newJson->setProperty("guiAudioClips", var(new DynamicObject));
   newJson->setProperty("dspAudioClips", var(new DynamicObject));
-  newJson->setProperty("paramNameOverrides", var(new DynamicObject)); // todo sampler
+
   var emptyArray;
   emptyArray.resize(0);
-  newJson->setProperty("guiParams", emptyArray); // todo sampler
+  newJson->setProperty("patchName", "");
+  newJson->setProperty("themeName", "");
+  newJson->setProperty("instanceName", "");
+  newJson->setProperty("paramNameOverrides", var(new DynamicObject));
+  newJson->setProperty("guiParams", emptyArray);
+
+  if (oldJson->hasProperty("gui"))
+  {
+    var const& oldGuiJsonVar = oldJson->getProperty("gui");
+    auto* oldGuiJson = oldGuiJsonVar.getDynamicObject();
+    if (oldGuiJson->hasProperty("patchName"))
+      newJson->setProperty("patchName", oldGuiJson->getProperty("patchName"));
+    if (oldGuiJson->hasProperty("themeName"))
+      newJson->setProperty("themeName", oldGuiJson->getProperty("themeName"));
+    if (oldGuiJson->hasProperty("instanceName"))
+      newJson->setProperty("instanceName", oldGuiJson->getProperty("instanceName"));
+    if (oldGuiJson->hasProperty("paramNameOverrides"))
+      newJson->setProperty("paramNameOverrides", oldGuiJson->getProperty("paramNameOverrides"));
+    if (oldGuiJson->hasProperty("params"))
+    {
+      var const& oldGuiParamsVar = oldGuiJson->getProperty("params");
+      auto oldGuiParamsObj = oldGuiParamsVar.getDynamicObject();
+      if(oldGuiParamsObj->hasProperty("state"))
+        newJson->setProperty("guiParams", oldGuiParamsObj->getProperty("state"));
+    }
+  }
   
   if (!oldEditJson->hasProperty("state"))
   {
@@ -501,7 +523,7 @@ FBRuntimeTopo::LoadStateFromVar(
     FB_LOG_ERROR("Missing plugin gui audio clips.");
     return false;
   }
-  var guiAudioClipsVar = obj->getProperty("guiAudioClips");
+  var const& guiAudioClipsVar = obj->getProperty("guiAudioClips");
   if (!guiAudioClipsVar.isObject())
   {
     FB_LOG_ERROR("Plugin gui audio clips is not an object.");
@@ -519,7 +541,7 @@ FBRuntimeTopo::LoadStateFromVar(
     FB_LOG_ERROR("Missing plugin dsp audio clips.");
     return false;
   }
-  var dspAudioClipsVar = obj->getProperty("dspAudioClips");
+  var const& dspAudioClipsVar = obj->getProperty("dspAudioClips");
   if (!dspAudioClipsVar.isObject())
   {
     FB_LOG_ERROR("Plugin dsp audio clips is not an object.");
@@ -537,7 +559,7 @@ FBRuntimeTopo::LoadStateFromVar(
     FB_LOG_ERROR("Missing plugin param name overrides.");
     return false;
   }
-  var paramNameOverridesVar = obj->getProperty("paramNameOverrides");
+  var const& paramNameOverridesVar = obj->getProperty("paramNameOverrides");
   if (!paramNameOverridesVar.isObject())
   {
     FB_LOG_ERROR("Plugin param name overrides is not an object.");
@@ -557,7 +579,7 @@ FBRuntimeTopo::LoadStateFromVar(
       FB_LOG_ERROR("Missing plugin gui params.");
       return false;
     }
-    var guiParamsVar = obj->getProperty("guiParams");
+    var const& guiParamsVar = obj->getProperty("guiParams");
     if (!guiParamsVar.isArray())
     {
       FB_LOG_ERROR("Plugin gui params is not an array.");
@@ -576,7 +598,7 @@ FBRuntimeTopo::LoadStateFromVar(
     FB_LOG_ERROR("Missing plugin audio params.");
     return false;
   }
-  var audioParamsVar = obj->getProperty("audioParams");
+  var const& audioParamsVar = obj->getProperty("audioParams");
   if (!audioParamsVar.isArray())
   {
     FB_LOG_ERROR("Plugin audio params is not an array.");
@@ -634,7 +656,7 @@ FBRuntimeTopo::LoadParamNameOverridesFromVar(var const& json, std::map<int, std:
     auto iter = audio.paramTagToIndex.find(tag);
     if (iter != audio.paramTagToIndex.end())
     {
-      auto encoded = obj->getProperty(prop.name);
+      var const& encoded = obj->getProperty(prop.name);
       if (encoded.isString())
       {
         juce::MemoryOutputStream ostream;
@@ -775,7 +797,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
       FB_LOG_ERROR("Plugin param state is missing id.");
       return false;
     }
-    var id = param->getProperty("id");
+    var const& id = param->getProperty("id");
     if (!id.isString())
     {
       FB_LOG_ERROR("Plugin param state id is not a string.");
@@ -787,7 +809,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
       FB_LOG_ERROR("Plugin param state is missing value.");
       return false;
     }
-    var val = param->getProperty("val");
+    var const& val = param->getProperty("val");
     if (!val.isString())
     {
       FB_LOG_ERROR("Plugin param state value is not a string.");
@@ -799,7 +821,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
       FB_LOG_ERROR("Plugin param state is missing name.");
       return false;
     }
-    var name = param->getProperty("name");
+    var const& name = param->getProperty("name");
     if (!name.isString())
     {
       FB_LOG_ERROR("Plugin param state name is not a string.");
@@ -811,7 +833,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
       FB_LOG_ERROR("Plugin param state is missing module id.");
       return false;
     }
-    var oldModuleId = param->getProperty("moduleId");
+    var const& oldModuleId = param->getProperty("moduleId");
     if (!oldModuleId.isString())
     {
       FB_LOG_ERROR("Plugin param state module id is not a string.");
@@ -823,7 +845,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
       FB_LOG_ERROR("Plugin param state is missing module slot.");
       return false;
     }
-    var oldModuleSlot = param->getProperty("moduleSlot");
+    var const& oldModuleSlot = param->getProperty("moduleSlot");
     if (!oldModuleSlot.isInt())
     {
       FB_LOG_ERROR("Plugin param state module slot is not an int.");
@@ -835,7 +857,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
       FB_LOG_ERROR("Plugin param state is missing param id.");
       return false;
     }
-    var oldParamId = param->getProperty("paramId");
+    var const& oldParamId = param->getProperty("paramId");
     if (!oldParamId.isString())
     {
       FB_LOG_ERROR("Plugin param state param id is not a string.");
@@ -847,7 +869,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
       FB_LOG_ERROR("Plugin param state is missing param slot.");
       return false;
     }
-    var oldParamSlot = param->getProperty("paramSlot");
+    var const& oldParamSlot = param->getProperty("paramSlot");
     if (!oldParamSlot.isInt())
     {
       FB_LOG_ERROR("Plugin param state param slot is not an int.");
