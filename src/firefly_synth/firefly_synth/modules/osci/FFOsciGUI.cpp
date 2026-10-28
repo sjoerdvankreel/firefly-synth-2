@@ -414,16 +414,6 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
           .withParentComponent(plugGUI), [](int) {});
         return;
       }
-      if (dspClip.channels != 1)
-      {
-        AlertWindow::showAsync(MessageBoxOptions()
-          .withIconType(MessageBoxIconType::WarningIcon)
-          .withTitle("Error")
-          .withMessage("Only mono files supported.")
-          .withButton("OK")
-          .withParentComponent(plugGUI), [](int) {});
-        return;
-      }
       
       FBAudioClip guiClip;
       guiClip.name = dspClip.name;
