@@ -96,7 +96,7 @@ FFOsciProcessor::ProcessSample(
             float lpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::SampleLPRes, sampleLPResNorm.CV().Get(s));
             lpFreqPlain *= _graphStVarFilterFreqMultiplier;
             _sampleLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate * _oversampleTimes, lpFreqPlain, lpResPlain, 0.0f);
-            uniOutputOversampled[u].Set(s, (float)_sampleLPFilter.Next(0, uniOutputOversampled[u].Get(s)));
+            uniOutputOversampled[u].Set(s, (float)_sampleLPFilter.Next(u, uniOutputOversampled[u].Get(s)));
           }
         }
 
@@ -108,7 +108,7 @@ FFOsciProcessor::ProcessSample(
             float hpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::SampleHPRes, sampleHPResNorm.CV().Get(s));
             hpFreqPlain *= _graphStVarFilterFreqMultiplier;
             _sampleHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate * _oversampleTimes, hpFreqPlain, hpResPlain, 0.0f);
-            uniOutputOversampled[u].Set(s, (float)_sampleHPFilter.Next(0, uniOutputOversampled[u].Get(s)));
+            uniOutputOversampled[u].Set(s, (float)_sampleHPFilter.Next(u, uniOutputOversampled[u].Get(s)));
           }
         }
       }
