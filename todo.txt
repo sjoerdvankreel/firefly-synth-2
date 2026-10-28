@@ -54,20 +54,23 @@ v do all formats that juce supports + stereo merge
 v drop libsndfile https://forum.juce.com/t/reading-a-wav-file-into-an-array-of-samples/47449/4 
 x actual sample preview within the osci ?
 x fix the juce paint jank
-- check all the metadata on renoise
+v check modmatrix on the sampler params
+v do filters in the sampler like audioin
+v file preview
+x update the dependencies list
 - sample preview (no patch load)
-- check modmatrix on the sampler params
+- do ParamNamesAndAllOptionsOn tests for linux
+- get rid of alertwindow
+- revert to old default theme
+
 - note it responds to unison etc
+- check all the metadata on renoise
 - all the new docs, screenshots, website, release notes, history etc
 - do a kvr update bc why not
 - refix all the renoise automation lanes
-- do ParamNamesAndAllOptionsOn tests for linux
 - 2.1.6+bitwig not save theme
-- revert to old default theme
 - save presets as new
-- get rid of alertwindow
 - dedicated sample demos
-- do filters in the sampler like audioin
 - also finish up the new demo tune with some vocals and include the patches right away
 - recheck automation lanes on all renoise things
 - close the renoise bug
@@ -82,8 +85,6 @@ x fix the juce paint jank
 - preset patch with demo sample + all host tests
 - do the validators
 - check "todo sampler"
-- update the dependencies list
-- file preview
 
 [ ] sampler -- just do it i want vocals
 [ ] string osci dry/wet normal/uniform + conversion
