@@ -60,17 +60,19 @@ v file preview
 x update the dependencies list
 v sample preview
 x get rid of alertwindow
-- do ParamNamesAndAllOptionsOn tests for linux
-- revert to old default theme
+v revert to old default theme
+v check all the metadata on renoise
+- save presets as new
+- dedicated sample demos
 
+- note the sample hides behind the VAMP
+- do ParamNamesAndAllOptionsOn tests for linux
 - note it responds to unison etc
-- check all the metadata on renoise
+- update screenshots for old default theme
 - all the new docs, screenshots, website, release notes, history etc
 - do a kvr update bc why not
 - refix all the renoise automation lanes
 - 2.1.6+bitwig not save theme
-- save presets as new
-- dedicated sample demos
 - also finish up the new demo tune with some vocals and include the patches right away
 - recheck automation lanes on all renoise things
 - close the renoise bug
