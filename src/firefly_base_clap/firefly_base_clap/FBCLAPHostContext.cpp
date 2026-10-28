@@ -73,12 +73,16 @@ void
 FBCLAPPlugin::NotifyHostOfParamNameChangesOnly()
 {
   _host.paramsRescan(CLAP_PARAM_RESCAN_INFO);
+  if (_gui)
+    _gui->RequestRepaint();
 }
 
 void
 FBCLAPPlugin::NotifyHostOfBulkUpdateAndParamNameChanges()
 {
   _host.paramsRescan(CLAP_PARAM_RESCAN_VALUES | CLAP_PARAM_RESCAN_INFO);
+  if (_gui)
+    _gui->RequestRepaint();
 }
 
 void 

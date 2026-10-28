@@ -32,6 +32,12 @@ FBVST3GUIEditor::
 }
 
 void 
+FBVST3GUIEditor::RequestRepaint()
+{
+  _gui->RequestRepaint();
+}
+
+void 
 FBVST3GUIEditor::UpdateExchangeState()
 {
   _gui->UpdateExchangeState();

@@ -46,6 +46,8 @@ FBVST3Plugin::NotifyHostOfParamNameChangesOnly()
 {
   if (componentHandler)
     componentHandler->restartComponent(Vst::kParamTitlesChanged);
+  if (_guiEditor)
+    _guiEditor->RequestRepaint();
 }
 
 void 
@@ -53,6 +55,8 @@ FBVST3Plugin::NotifyHostOfBulkUpdateAndParamNameChanges()
 {
   if (componentHandler)
     componentHandler->restartComponent(Vst::kParamValuesChanged | Vst::kParamTitlesChanged);
+  if (_guiEditor)
+    _guiEditor->RequestRepaint();
 }
 
 void 

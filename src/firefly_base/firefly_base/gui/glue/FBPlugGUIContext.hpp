@@ -17,6 +17,7 @@ protected:
   virtual void RequestRescale(double combinedScale) = 0;
 
 public:
+  virtual void RequestRepaint() = 0;
   void SetSystemScale(double scale);
   void SetUserScaleByHostWidth(int width);
   std::pair<int, int> GetHostSize() const;

@@ -45,6 +45,12 @@ FBPlugGUIContainer::paint(Graphics& g)
   g.fillAll(Colours::black);
 }
 
+void 
+FBPlugGUIContainer::RequestRepaint()
+{
+  repaint();
+}
+
 void
 FBPlugGUIContainer::RemoveFromDesktop()
 {
