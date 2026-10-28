@@ -58,9 +58,9 @@ v check modmatrix on the sampler params
 v do filters in the sampler like audioin
 v file preview
 x update the dependencies list
-- sample preview (no patch load)
+v sample preview
+x get rid of alertwindow
 - do ParamNamesAndAllOptionsOn tests for linux
-- get rid of alertwindow
 - revert to old default theme
 
 - note it responds to unison etc
