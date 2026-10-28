@@ -62,10 +62,13 @@ public:
   void SavePatchToFile();
   void LoadPatchFromFile(bool preset);
   void LoadAnyFile(
+    bool hasPreview,
     std::string const& title,
     std::string const& extension,
-    std::string const& filter, 
-    std::function<void(juce::File const&)> select);
+    std::string const& filter,
+    std::function<void(juce::File const&)> onSelect,
+    std::function<void(juce::File const&)> onPreview,
+    std::function<void()> onCancel);
   
   void FlashAudioParamDisabling(int index);
   void FlashAudioParamsDisablingParam(int index);
@@ -204,10 +207,13 @@ private:
   void InitDumpParamListBrowser();
   void InitLoadPatchBrowser(bool preset);
   void InitLoadAnyFileBrowser(
+    bool hasPreview,
     std::string const& title,
     std::string const& extension,
     std::string const& filter,
-    std::function<void(juce::File const&)> select);
+    std::function<void(juce::File const&)> onSelect,
+    std::function<void(juce::File const&)> onPreview,
+    std::function<void()> onCancel);
 
   juce::File GetBrowserInitialPath(std::string const& browserKey);
   void SetBrowserInitialPath(std::string const& browserKey, juce::File const& selected);

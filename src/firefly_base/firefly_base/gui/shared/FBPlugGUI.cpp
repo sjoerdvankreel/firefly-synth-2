@@ -43,7 +43,7 @@ _lookAndFeel(std::make_unique<FBLookAndFeel>())
   _tooltipWindow = StoreComponent<TooltipWindow>();
   _hostContext->AddGUIListener(this);
 
-  InitLoadAnyFileBrowser("", "", "", [](auto) {});
+  InitLoadAnyFileBrowser(false, "", "", "", [](auto) {}, [](auto) {}, []() {});
   InitLoadPatchBrowser(false);
   InitSavePatchBrowser();
   InitDumpTopologyBrowser();
@@ -107,18 +107,20 @@ FBPlugGUI::InitLoadPatchBrowser(bool preset)
 
 void 
 FBPlugGUI::InitLoadAnyFileBrowser(
+  bool hasPreview,
   std::string const& title,
   std::string const& extension,
   std::string const& filter,
-  std::function<void(juce::File const&)> select)
+  std::function<void(juce::File const&)> onSelect,
+  std::function<void(juce::File const&)> onPreview,
+  std::function<void()> onCancel)
 {
   auto initialPath = GetBrowserInitialPath(FBUserGlobalSettingKeys::LoadAnyFileFolder);
-  _loadAnyFileBrowser = std::make_unique<FBFileBrowserComponent>(this, false, false, title, extension, filter, initialPath, [this, select](juce::File const& file) {
-    SetBrowserInitialPath(FBUserGlobalSettingKeys::LoadAnyFileFolder, file);
-    select(file);
-    }, [](juce::File const&) {},
-    []() {}
-  );
+  _loadAnyFileBrowser = std::make_unique<FBFileBrowserComponent>(this, false, hasPreview, title, extension, filter, initialPath,
+    [this, onSelect](juce::File const& file) {
+      SetBrowserInitialPath(FBUserGlobalSettingKeys::LoadAnyFileFolder, file);
+      onSelect(file);
+    }, onPreview, onCancel);
 }
 
 void 
@@ -798,14 +800,17 @@ FBPlugGUI::LoadPatchFromFile(bool preset)
 
 void
 FBPlugGUI::LoadAnyFile(
+  bool hasPreview,
   std::string const& title,
   std::string const& extension,
   std::string const& filter,
-  std::function<void(juce::File const&)> select)
+  std::function<void(juce::File const&)> onSelect,
+  std::function<void(juce::File const&)> onPreview,
+  std::function<void()> onCancel)
 {
   FB_LOG_ENTRY_EXIT();
   HideAllOverlaysAndFileBrowsers();
-  InitLoadAnyFileBrowser(title, extension, filter, select);
+  InitLoadAnyFileBrowser(hasPreview, title, extension, filter, onSelect, onPreview, onCancel);
   _loadAnyFileBrowser->Show();
 }
 

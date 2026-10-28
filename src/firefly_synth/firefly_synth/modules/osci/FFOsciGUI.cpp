@@ -393,6 +393,43 @@ MakeOsciSectionAudioIn(FBPlugGUI* plugGUI, int moduleSlot)
   return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
 }
 
+static void 
+LoadOsciSample(FFPlugGUI* plugGUI, int moduleSlot, juce::File const& file)
+{
+  if (!file.exists())
+    return;
+
+  FBAudioClip dspClip;
+  if (!FBAudioFileRead(file.getFullPathName().toStdString(), dspClip))
+  {
+    AlertWindow::showAsync(MessageBoxOptions()
+      .withIconType(MessageBoxIconType::WarningIcon)
+      .withTitle("Error")
+      .withMessage("Unrecognized audio file.")
+      .withButton("OK")
+      .withParentComponent(plugGUI), [](int) {});
+    return;
+  }
+
+  FBAudioClip guiClip;
+  guiClip.name = dspClip.name;
+  guiClip.channels = dspClip.channels;
+  guiClip.sampleRate = dspClip.sampleRate;
+  guiClip.originalSampleRate = dspClip.originalSampleRate;
+
+  if (dspClip.data.size() <= FFOsciSamplerGUISampleCount)
+    guiClip.data = dspClip.data;
+  else
+  {
+    juce::LagrangeInterpolator resampler;
+    guiClip.data.resize(FFOsciSamplerGUISampleCount);
+    double speedRatio = dspClip.data.size() / (double)FFOsciSamplerGUISampleCount;
+    guiClip.sampleRate = (int)(dspClip.sampleRate / speedRatio);
+    resampler.process(speedRatio, dspClip.data.data(), guiClip.data.data(), FFOsciSamplerGUISampleCount);
+  }
+  plugGUI->HostContext()->SetGUIAndDSPAudioClip(FFOsciSampleSlotIds[moduleSlot], guiClip, dspClip);
+}
+
 static Component*
 MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
 {
@@ -400,39 +437,15 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
   auto load = plugGUI->StoreComponent<FBAutoSizeButton>(plugGUI, "Load");
   load->setTooltip("Load Sample");
   load->onClick = [plugGUI, moduleSlot]() {
-    plugGUI->LoadAnyFile("Load Sample", "wav", "Wav Files", [plugGUI, moduleSlot](juce::File const& file) {
-      if (!file.exists())
-        return;
-      FBAudioClip dspClip;
-      if (!FBAudioFileRead(file.getFullPathName().toStdString(), dspClip))
-      {
-        AlertWindow::showAsync(MessageBoxOptions()
-          .withIconType(MessageBoxIconType::WarningIcon)
-          .withTitle("Error")
-          .withMessage("Unrecognized audio file.")
-          .withButton("OK")
-          .withParentComponent(plugGUI), [](int) {});
-        return;
+    plugGUI->LoadAnyFile(true, "Load Sample", "wav", "Wav Files", 
+      [plugGUI, moduleSlot](juce::File const& file) {
+        LoadOsciSample(plugGUI, moduleSlot, file);
+      },
+      [](juce::File const&) {
+      },
+      []() {
       }
-      
-      FBAudioClip guiClip;
-      guiClip.name = dspClip.name;
-      guiClip.channels = dspClip.channels;
-      guiClip.sampleRate = dspClip.sampleRate;
-      guiClip.originalSampleRate = dspClip.originalSampleRate;
-
-      if (dspClip.data.size() <= FFOsciSamplerGUISampleCount)
-        guiClip.data = dspClip.data;
-      else
-      {
-        juce::LagrangeInterpolator resampler;
-        guiClip.data.resize(FFOsciSamplerGUISampleCount);
-        double speedRatio = dspClip.data.size() / (double)FFOsciSamplerGUISampleCount;
-        guiClip.sampleRate = (int)(dspClip.sampleRate / speedRatio);
-        resampler.process(speedRatio, dspClip.data.data(), guiClip.data.data(), FFOsciSamplerGUISampleCount);
-      }
-      plugGUI->HostContext()->SetGUIAndDSPAudioClip(FFOsciSampleSlotIds[moduleSlot], guiClip, dspClip);
-    });
+    );
   };
   upperGrid->Add(0, 0, load);
 
