@@ -11,8 +11,13 @@ SwapContextForItem(
   FBScalarStateContainer tempState(*hostContext->Topo());
   tempState.CopyFrom(hostContext, false);
   auto tempParamNameOverrides = hostContext->GetAudioParamNameOverrides();
-  item.state.CopyTo(hostContext, false);
+  hostContext->BulkUpdateAudioParamsToGUI(item.state, false);
   hostContext->SetAudioParamNameOverrides(item.paramNameOverrides);
+  
+  // process may be running
+  hostContext->ProcState()->InitProcessing(hostContext);
+  std::atomic_thread_fence(std::memory_order_release);
+
   item.state.CopyFrom(hostContext->Topo(), tempState, false);
   item.paramNameOverrides = tempParamNameOverrides;
   std::string tempName(hostContext->PatchName());
@@ -36,7 +41,7 @@ FBUndoStateContainer::Undo()
 {
   FB_ASSERT(CanUndo());
   SwapContextForItem(_hostContext, _items[_position - 1]);
-  _hostContext->NotifyHostOfParamNameChanges();
+  _hostContext->NotifyHostOfBulkUpdateAndParamNameChanges();
   _position--;
 }
 
@@ -45,7 +50,7 @@ FBUndoStateContainer::Redo()
 {
   FB_ASSERT(CanRedo());
   SwapContextForItem(_hostContext, _items[_position]);
-  _hostContext->NotifyHostOfParamNameChanges();
+  _hostContext->NotifyHostOfBulkUpdateAndParamNameChanges();
   _position++;
 }
 

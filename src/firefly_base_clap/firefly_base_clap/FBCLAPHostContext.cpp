@@ -70,9 +70,29 @@ FBCLAPPlugin::timerCallback()
 }
 
 void 
-FBCLAPPlugin::NotifyHostOfParamNameChanges()
+FBCLAPPlugin::NotifyHostOfParamNameChangesOnly()
 {
   _host.paramsRescan(CLAP_PARAM_RESCAN_INFO);
+}
+
+void
+FBCLAPPlugin::NotifyHostOfBulkUpdateAndParamNameChanges()
+{
+  _host.paramsRescan(CLAP_PARAM_RESCAN_VALUES | CLAP_PARAM_RESCAN_INFO);
+}
+
+void 
+FBCLAPPlugin::BulkUpdateAudioParamsToGUI(FBScalarStateContainer const& audioParams, bool patchOnly)
+{
+  for (int p = 0; p < audioParams.Params().size(); p++)
+    if (!patchOnly || Topo()->audio.params[p].static_.storeInPatch)
+    {
+      *_editState->Params()[p] = *audioParams.Params()[p];
+      if (_gui)
+        _gui->SetAudioParamNormalizedFromHost(p, *audioParams.Params()[p]);
+    }
+  if (_host.canUseParams())
+    _host.paramsRequestFlush();
 }
 
 void

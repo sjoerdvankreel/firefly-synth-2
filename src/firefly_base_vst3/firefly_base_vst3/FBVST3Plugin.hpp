@@ -81,7 +81,10 @@ public:
   void ResetView();
 
   // FBHostContext (gui)
-  void NotifyHostOfParamNameChanges() override;
+  void NotifyHostOfParamNameChangesOnly() override;
+  void NotifyHostOfBulkUpdateAndParamNameChanges() override;
+  void BulkUpdateAudioParamsToGUI(FBScalarStateContainer const& audioParams, bool patchOnly) override;
+
   void ClearAudioParamNameOverrides() override;
   void ClearAudioParamNameOverride(int index) override;
   bool GetAudioParamNameOverride(int index, std::string& name) const override;

@@ -42,10 +42,25 @@ FBVST3Plugin::GetAudioParamNormalized(int index) const
 }
 
 void
-FBVST3Plugin::NotifyHostOfParamNameChanges()
+FBVST3Plugin::NotifyHostOfParamNameChangesOnly()
 {
   if (componentHandler)
     componentHandler->restartComponent(Vst::kParamTitlesChanged);
+}
+
+void 
+FBVST3Plugin::NotifyHostOfBulkUpdateAndParamNameChanges()
+{
+  if (componentHandler)
+    componentHandler->restartComponent(Vst::kParamValuesChanged | Vst::kParamTitlesChanged);
+}
+
+void 
+FBVST3Plugin::BulkUpdateAudioParamsToGUI(FBScalarStateContainer const& audioParams, bool patchOnly)
+{
+  for (int p = 0; p < audioParams.Params().size(); p++)
+    if (!patchOnly || Topo()->audio.params[p].static_.storeInPatch)
+      setParamNormalized(Topo()->audio.params[p].tag, *audioParams.Params()[p]);
 }
 
 void

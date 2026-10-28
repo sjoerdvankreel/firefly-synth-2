@@ -52,8 +52,8 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
     if (!Topo()->LoadCLAPFromBytesWithPreFormat2Check(data, *this, *_editState))
       return true; // bitwig
 
-    ProcState()->InitProcessing(this);
     // can we be called during processing?
+    ProcState()->InitProcessing(this);
     std::atomic_thread_fence(std::memory_order_release);
 
     OnPatchNameChanged();

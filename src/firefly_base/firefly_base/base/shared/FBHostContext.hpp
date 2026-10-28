@@ -121,11 +121,14 @@ public:
   virtual float SampleRate() const = 0;
   virtual std::unique_ptr<IFBPlugProcessor> MakePlugProcessor() = 0;
 
-  virtual void NotifyHostOfParamNameChanges() = 0;
+  virtual void NotifyHostOfParamNameChangesOnly() = 0;
   virtual void ClearAudioParamNameOverrides() = 0;
   virtual void ClearAudioParamNameOverride(int index) = 0;
   virtual bool GetAudioParamNameOverride(int index, std::string& name) const = 0;
   virtual void SetAudioParamNameOverride(int index, std::string const& name) = 0;
+
+  virtual void NotifyHostOfBulkUpdateAndParamNameChanges() = 0;
+  virtual void BulkUpdateAudioParamsToGUI(FBScalarStateContainer const& audioParams, bool patchOnly) = 0;
 
   virtual double GetAudioParamNormalized(int index) const = 0;
   virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;

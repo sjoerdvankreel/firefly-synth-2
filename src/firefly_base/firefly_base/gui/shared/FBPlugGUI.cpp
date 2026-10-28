@@ -330,7 +330,7 @@ FBPlugGUI::SetAudioParamNameOverride(int index)
         HostContext()->ClearAudioParamNameOverride(index);
       else
         HostContext()->SetAudioParamNameOverride(index, text.toStdString());
-      HostContext()->NotifyHostOfParamNameChanges();
+      HostContext()->NotifyHostOfParamNameChangesOnly();
       RepaintControlsForAudioParam(index);
     });
 }
@@ -340,7 +340,7 @@ FBPlugGUI::ClearAudioParamNameOverride(int index)
 {
   HostContext()->UndoState().Snapshot("Clear Param Name");
   _hostContext->ClearAudioParamNameOverride(index);
-  _hostContext->NotifyHostOfParamNameChanges();
+  _hostContext->NotifyHostOfParamNameChangesOnly();
   RepaintControlsForAudioParam(index);
 }
 
@@ -761,7 +761,7 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
     if (id == 3) {
       HostContext()->UndoState().Snapshot("Clear Param Names");
       HostContext()->ClearAudioParamNameOverrides();
-      HostContext()->NotifyHostOfParamNameChanges();
+      HostContext()->NotifyHostOfParamNameChangesOnly();
       repaint();
     }
     if (id == 4) {
@@ -879,15 +879,17 @@ FBPlugGUI::InitPatch()
   FB_LOG_ENTRY_EXIT();
   BeforePatchChanged();
   FBScalarStateContainer defaultState(*HostContext()->Topo());
-  for (int i = 0; i < defaultState.Params().size(); i++)
-    if(HostContext()->Topo()->audio.params[i].static_.storeInPatch)
-      HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
+  HostContext()->BulkUpdateAudioParamsToGUI(defaultState, true);
   HostContext()->ClearGUIAndDSPAudioClips();
   HostContext()->ClearAudioParamNameOverrides();
   HostContext()->MarkPatchAsPatchState("Init Patch");
-  HostContext()->NotifyHostOfParamNameChanges();
+  HostContext()->NotifyHostOfBulkUpdateAndParamNameChanges();
   HostContext()->UndoState().Clear(); // because samples
   AfterPatchChanged(false);
+
+  // process may be running
+  HostContext()->ProcState()->InitProcessing(HostContext());
+  std::atomic_thread_fence(std::memory_order_release);
 }
 
 void
@@ -909,12 +911,13 @@ FBPlugGUI::RevertPreviewedPatch()
   if (!HostContext()->Topo()->LoadPatchFromBytesWithPreFormat2Check(_patchBeforePreviewBytes, *HostContext(), audioParams))
     return;
   HostContext()->UndoState().Clear(); // because samples
-  audioParams.CopyTo(HostContext(), true);
-  HostContext()->ProcState()->InitProcessing(HostContext());
-  // process may be running
-  std::atomic_thread_fence(std::memory_order_release);
-  HostContext()->NotifyHostOfParamNameChanges();
+  HostContext()->BulkUpdateAudioParamsToGUI(audioParams, true);
+  HostContext()->NotifyHostOfBulkUpdateAndParamNameChanges();
   AfterPatchChanged(false);
+
+  // process may be running
+  HostContext()->ProcState()->InitProcessing(HostContext());
+  std::atomic_thread_fence(std::memory_order_release);
 }
 
 void 
@@ -932,12 +935,13 @@ FBPlugGUI::LoadPatchAsPreview(
   _patchWasPreviewed = true;
   HostContext()->UndoState().Clear(); // because samples
   BeforePatchChanged();
-  audioParams.CopyTo(HostContext(), true);
-  HostContext()->ProcState()->InitProcessing(HostContext());
-  // process may be running
-  std::atomic_thread_fence(std::memory_order_release);
-  HostContext()->NotifyHostOfParamNameChanges();
+  HostContext()->BulkUpdateAudioParamsToGUI(audioParams, true);
+  HostContext()->NotifyHostOfBulkUpdateAndParamNameChanges();
   AfterPatchChanged(true);
+
+  // process may be running
+  HostContext()->ProcState()->InitProcessing(HostContext());
+  std::atomic_thread_fence(std::memory_order_release);
 }
 
 bool
@@ -951,13 +955,13 @@ FBPlugGUI::LoadPatchFromBytes(
     return false;
   HostContext()->UndoState().Clear(); // because samples
   BeforePatchChanged();
-  audioParams.CopyTo(HostContext(), true);
-  HostContext()->ProcState()->InitProcessing(HostContext());
-  // process may be running
-  std::atomic_thread_fence(std::memory_order_release);
+  HostContext()->BulkUpdateAudioParamsToGUI(audioParams, true);
+  HostContext()->NotifyHostOfBulkUpdateAndParamNameChanges();
   HostContext()->MarkPatchAsPatchState(patchName);
-  HostContext()->NotifyHostOfParamNameChanges();
   AfterPatchChanged(false);
+  // process may be running
+  HostContext()->ProcState()->InitProcessing(HostContext());
+  std::atomic_thread_fence(std::memory_order_release);
   return true;
 }
 

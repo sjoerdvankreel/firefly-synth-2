@@ -64,6 +64,7 @@ v revert to old default theme
 v check all the metadata on renoise
 - save presets as new
 - dedicated sample demos
+- fruit patchload bugfix
 
 - make note about vst3/clap code share
 - make note about compress

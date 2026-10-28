@@ -119,15 +119,15 @@ FBVST3Plugin::setState(IBStream* state)
       return kResultTrue; // not crash bitwig
     audioParams.CopyTo(this, false);
 
-    ProcState()->InitProcessing(this);
     // we can be called during processing
+    ProcState()->InitProcessing(this);
     std::atomic_thread_fence(std::memory_order_release);
     
     OnPatchNameChanged();
     OnInstanceNameChanged();
     OnGUIAudioClipsChanged();
     MarkPatchAsSessionState();
-    NotifyHostOfParamNameChanges();
+    NotifyHostOfParamNameChangesOnly();
     if (_guiEditor != nullptr)
       for (int i = 0; i < GUIState()->Params().size(); i++)
         _guiEditor->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));
