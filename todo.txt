@@ -54,6 +54,8 @@ v do all formats that juce supports + stereo merge
 v drop libsndfile https://forum.juce.com/t/reading-a-wav-file-into-an-array-of-samples/47449/4 
 x actual sample preview within the osci ?
 x fix the juce paint jank
+- check all the metadata on renoise
+- sample preview (no patch load)
 - check modmatrix on the sampler params
 - note it responds to unison etc
 - all the new docs, screenshots, website, release notes, history etc

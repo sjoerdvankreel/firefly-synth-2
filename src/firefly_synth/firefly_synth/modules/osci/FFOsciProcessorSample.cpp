@@ -63,6 +63,41 @@ FFOsciProcessor::ProcessSample(
     return;
   }
 
+  FBSArray<float, FFOsciFixedBlockOversamples> sampleGainPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> sampleLPResPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> sampleHPResPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> sampleLPFreqPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> sampleHPFreqPlain;
+
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+  {
+    sampleGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::SampleGain, sampleGainNorm, s));
+    if (_sampleLPOn)
+    {
+      sampleLPResPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::SampleLPRes, sampleLPResNorm, s));
+      sampleLPFreqPlain.Store(s, topo.NormalizedToLog2Fast(FFOsciParam::SampleLPFreq, sampleLPFreqNorm, s));
+    }
+    if (_sampleHPOn)
+    {
+      sampleHPResPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::SampleHPRes, sampleHPResNorm, s));
+      sampleHPFreqPlain.Store(s, topo.NormalizedToLog2Fast(FFOsciParam::SampleHPFreq, sampleHPFreqNorm, s));
+    }
+  }
+  if (_oversampleTimes != 1)
+  {
+    sampleGainPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    if (_sampleLPOn)
+    {
+      sampleLPResPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      sampleLPFreqPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    }
+    if (_sampleHPOn)
+    {
+      sampleHPResPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      sampleHPFreqPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    }
+  }
+
   int const subBlockSize = 4;
   auto const& clip = iter->second;
   float freqC4 = FBPitchToFreq(60.0f);
@@ -83,17 +118,14 @@ FFOsciProcessor::ProcessSample(
           uniOutputOversampled[u].Ptr(subBlockStart), subBlockSize, samplesAvailable, 0);
 
         for (int s = block * subBlockSize; s < block * subBlockSize + subBlockSize; s++)
-        {
-          float inputGain = topo.NormalizedToLinearFast(FFOsciParam::SampleGain, sampleGainNorm.CV().Get(s));
-          uniOutputOversampled[u].Set(s, uniOutputOversampled[u].Get(s) * inputGain);
-        }
+          uniOutputOversampled[u].Set(s, uniOutputOversampled[u].Get(s) * sampleGainPlain.Get(s));
 
         if (_sampleLPOn)
         {
           for (int s = block * subBlockSize; s < block * subBlockSize + subBlockSize; s++)
           {
-            float lpFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::SampleLPFreq, sampleLPFreqNorm.CV().Get(s));
-            float lpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::SampleLPRes, sampleLPResNorm.CV().Get(s));
+            float lpFreqPlain = sampleLPFreqPlain.Get(s);
+            float lpResPlain = sampleLPResPlain.Get(s);
             lpFreqPlain *= _graphStVarFilterFreqMultiplier;
             _sampleLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate * _oversampleTimes, lpFreqPlain, lpResPlain, 0.0f);
             uniOutputOversampled[u].Set(s, (float)_sampleLPFilter.Next(u, uniOutputOversampled[u].Get(s)));
@@ -104,8 +136,8 @@ FFOsciProcessor::ProcessSample(
         {
           for (int s = block * subBlockSize; s < block * subBlockSize + subBlockSize; s++)
           {
-            float hpFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::SampleHPFreq, sampleHPFreqNorm.CV().Get(s));
-            float hpResPlain = topo.NormalizedToIdentityFast(FFOsciParam::SampleHPRes, sampleHPResNorm.CV().Get(s));
+            float hpFreqPlain = sampleHPFreqPlain.Get(s);
+            float hpResPlain = sampleHPResPlain.Get(s);
             hpFreqPlain *= _graphStVarFilterFreqMultiplier;
             _sampleHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate * _oversampleTimes, hpFreqPlain, hpResPlain, 0.0f);
             uniOutputOversampled[u].Set(s, (float)_sampleHPFilter.Next(u, uniOutputOversampled[u].Get(s)));
