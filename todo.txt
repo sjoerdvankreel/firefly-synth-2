@@ -65,13 +65,15 @@ v dedicated sample demos
 v fruity patchload bugfix
 v check "todo sampler"
 v preset patch with demo sample + all host tests
+v do the docs
+v notify sample clears undo
+v note the sample hides behind the VAMP
+v note it responds to unison etc
+
 - save presets as new
-- notify sample clears undo
 - make note about vst3/clap code share
 - make note about compress
-- note the sample hides behind the VAMP
 - do ParamNamesAndAllOptionsOn tests for linux
-- note it responds to unison etc
 - update screenshots for old default theme
 - all the new docs, screenshots, website, release notes, history etc
 - do a kvr update bc why not
@@ -86,7 +88,6 @@ v preset patch with demo sample + all host tests
 - retest everything Linux and mac
 - check all prev unsupported dataexchange etc, should now work, and notify
 - notify about need full cache rescan
-- do the docs
 - close the gh sampling request
 
 [ ] vst3/clap validator
