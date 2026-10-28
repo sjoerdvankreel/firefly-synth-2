@@ -65,6 +65,8 @@ v check all the metadata on renoise
 - save presets as new
 - dedicated sample demos
 
+- make note about vst3/clap code share
+- make note about compress
 - note the sample hides behind the VAMP
 - do ParamNamesAndAllOptionsOn tests for linux
 - note it responds to unison etc
