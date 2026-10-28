@@ -794,6 +794,7 @@ FBPlugGUI::LoadPatchFromFile(bool preset)
   InitLoadPatchBrowser(preset);
   _patchWasPreviewed = false;
   FBScalarStateContainer audioParams(*HostContext()->Topo());
+  audioParams.CopyFrom(HostContext(), true);
   _patchBeforePreviewBytes = HostContext()->Topo()->SaveStateToBytes(*HostContext(), audioParams, true);
   _loadPatchBrowser->Show();
 }
