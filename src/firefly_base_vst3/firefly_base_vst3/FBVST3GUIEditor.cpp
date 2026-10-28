@@ -2,6 +2,7 @@
 #include <firefly_base_vst3/FBVST3Utility.hpp>
 #include <firefly_base_vst3/FBVST3GUIEditor.hpp>
 
+#include <firefly_base/dsp/host/FBHostProcessor.hpp>
 #include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContainer.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
