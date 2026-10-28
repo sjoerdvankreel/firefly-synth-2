@@ -65,7 +65,7 @@ v check all the metadata on renoise
 - save presets as new
 - dedicated sample demos
 - fruit patchload bugfix
-
+- notify sample clears undo
 - make note about vst3/clap code share
 - make note about compress
 - note the sample hides behind the VAMP
