@@ -112,7 +112,7 @@ protected:
 
 public:
   virtual ~FBHostContext();
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBHostContext);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostContext);
 
   // pull exchange from dsp to gui
   void timerCallback() override;
