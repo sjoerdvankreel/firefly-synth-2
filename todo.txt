@@ -87,6 +87,7 @@ v preset patch with demo sample + all host tests
 - check all prev unsupported dataexchange etc, should now work, and notify
 - notify about need full cache rescan
 - do the docs
+- close the gh sampling request
 
 [ ] vst3/clap validator
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
