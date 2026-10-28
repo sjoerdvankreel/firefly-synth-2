@@ -100,6 +100,11 @@ protected:
   void AfterPatchChanged(bool wasPreview) override;
 
 public:
+  bool osciSampleIsPreviewed = {};
+  bool hadOsciSampleBeforePreview = {};
+  FBAudioClip osciSampleGuiBeforePreview = {};
+  FBAudioClip osciSampleDspBeforePreview = {};
+
   std::function<void(std::string const&)> onPatchNameChanged = {};
   std::function<void(std::string const&)> onInstanceNameChanged = {};
   std::map<std::string, std::function<void()>> onGUIAudioClipsChanged = {};

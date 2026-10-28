@@ -122,6 +122,20 @@ FBHostContext::PullDSPAudioClipsToGUI() const
   return GetDSPAudioClips();
 }
 
+bool
+FBHostContext::PullDSPAudioClipToGUI(std::string const& id, FBAudioClip& clip) const
+{
+  // Sue me. I should probably bring in a condition variable here.
+  std::lock_guard lock(_blockWritingAudioClipsToDSP);
+  while (_writingAudioClipsToDSPIsDirty.load());
+  auto const& clips = GetDSPAudioClips();
+  auto iter = clips.find(id);
+  if (iter == clips.end())
+    return false;
+  clip = FBAudioClip(iter->second);
+  return true;
+}
+
 void
 FBHostContext::ClearDSPAudioClipToDSP(std::string const& id)
 {

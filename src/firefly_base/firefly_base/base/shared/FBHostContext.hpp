@@ -135,6 +135,7 @@ public:
   void ClearDSPAudioClipToDSP(std::string const& id);
   void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip);
   std::map<std::string, FBAudioClip> PullDSPAudioClipsToGUI() const;
+  bool PullDSPAudioClipToGUI(std::string const& id, FBAudioClip& clip) const;
   void PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips);
 
   void ClearGUIAndDSPAudioClips();

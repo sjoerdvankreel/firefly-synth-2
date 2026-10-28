@@ -393,8 +393,22 @@ MakeOsciSectionAudioIn(FBPlugGUI* plugGUI, int moduleSlot)
   return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
 }
 
-static void 
-LoadOsciSample(FFPlugGUI* plugGUI, int moduleSlot, juce::File const& file)
+static void
+RevertPreviewedOsciSample(FFPlugGUI* plugGUI, int moduleSlot)
+{
+  if (plugGUI->osciSampleIsPreviewed)
+    plugGUI->HostContext()->SetGUIAndDSPAudioClip(
+      FFOsciSampleSlotIds[moduleSlot], 
+      plugGUI->osciSampleGuiBeforePreview, 
+      plugGUI->osciSampleDspBeforePreview);
+  plugGUI->osciSampleIsPreviewed = false;
+  plugGUI->osciSampleGuiBeforePreview = {};
+  plugGUI->osciSampleDspBeforePreview = {};
+  plugGUI->hadOsciSampleBeforePreview = false;
+}
+
+static void
+LoadOsciSampleCore(FFPlugGUI* plugGUI, int moduleSlot, juce::File const& file)
 {
   if (!file.exists())
     return;
@@ -427,7 +441,42 @@ LoadOsciSample(FFPlugGUI* plugGUI, int moduleSlot, juce::File const& file)
     guiClip.sampleRate = (int)(dspClip.sampleRate / speedRatio);
     resampler.process(speedRatio, dspClip.data.data(), guiClip.data.data(), FFOsciSamplerGUISampleCount);
   }
+
   plugGUI->HostContext()->SetGUIAndDSPAudioClip(FFOsciSampleSlotIds[moduleSlot], guiClip, dspClip);
+  return;
+}
+
+static void 
+LoadOsciSample(FFPlugGUI* plugGUI, int moduleSlot, juce::File const& file, bool loadAsPreview)
+{ 
+  if (!loadAsPreview)
+  {
+    plugGUI->osciSampleIsPreviewed = false;
+    plugGUI->osciSampleGuiBeforePreview = {};
+    plugGUI->osciSampleDspBeforePreview = {};
+    plugGUI->hadOsciSampleBeforePreview = false;
+    LoadOsciSampleCore(plugGUI, moduleSlot, file);
+    return;
+  }
+
+  if (!plugGUI->osciSampleIsPreviewed)
+  {
+    plugGUI->osciSampleIsPreviewed = true;
+    plugGUI->osciSampleGuiBeforePreview = {};
+    plugGUI->osciSampleDspBeforePreview = {};
+    plugGUI->hadOsciSampleBeforePreview = false;
+
+    FBAudioClip currentDspClip;
+    FBAudioClip const* currentGuiClip = plugGUI->HostContext()->FindGUIAudioClip(FFOsciSampleSlotIds[moduleSlot]);
+    if (currentGuiClip != nullptr && plugGUI->HostContext()->PullDSPAudioClipToGUI(FFOsciSampleSlotIds[moduleSlot], currentDspClip))
+    {
+      plugGUI->osciSampleGuiBeforePreview = FBAudioClip(*currentGuiClip);
+      plugGUI->osciSampleDspBeforePreview = FBAudioClip(currentDspClip);
+      plugGUI->hadOsciSampleBeforePreview = true;
+    }
+  }
+
+  LoadOsciSampleCore(plugGUI, moduleSlot, file);
 }
 
 static Component*
@@ -439,11 +488,13 @@ MakeOsciSectionSample(FFPlugGUI* plugGUI, int moduleSlot)
   load->onClick = [plugGUI, moduleSlot]() {
     plugGUI->LoadAnyFile(true, "Load Sample", "wav", "Wav Files", 
       [plugGUI, moduleSlot](juce::File const& file) {
-        LoadOsciSample(plugGUI, moduleSlot, file);
+        LoadOsciSample(plugGUI, moduleSlot, file, false);
       },
-      [](juce::File const&) {
+      [plugGUI, moduleSlot](juce::File const& file) {
+        LoadOsciSample(plugGUI, moduleSlot, file, true);
       },
-      []() {
+      [plugGUI, moduleSlot]() {
+        RevertPreviewedOsciSample(plugGUI, moduleSlot);
       }
     );
   };
