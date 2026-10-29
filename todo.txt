@@ -70,7 +70,7 @@ v notify sample clears undo
 v note the sample hides behind the VAMP
 v note it responds to unison etc
 v demo manual vst3 reaper load pad04 preset crash
-- update screenshots for old default theme
+v update screenshots for old default theme
 
 - check all kvr
 - check all website
