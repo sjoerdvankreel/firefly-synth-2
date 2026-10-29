@@ -95,6 +95,7 @@ v refix all the renoise automation lanes
 - add flstudio Linux to the test set
 - make note it fix all the Linux + thensome paint stuff
 - show loaded session/patch + fileformatversion and all that in the aboutbox
+- note it not lose audioparams
 
 [ ] vst3/clap validator
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
