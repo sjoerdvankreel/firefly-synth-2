@@ -94,6 +94,7 @@ v refix all the renoise automation lanes
 - close the gh sampling request
 - add flstudio Linux to the test set
 - make note it fix all the Linux + thensome paint stuff
+- show loaded session/patch + fileformatversion and all that in the aboutbox
 
 [ ] vst3/clap validator
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
