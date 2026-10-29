@@ -73,7 +73,7 @@ v demo manual vst3 reaper load pad04 preset crash
 v update screenshots for old default theme
 x do ParamNamesAndAllOptionsOn tests for linux
 v save presets as new
-- refix all the renoise automation lanes
+v refix all the renoise automation lanes
 
 - check all kvr
 - check all website
