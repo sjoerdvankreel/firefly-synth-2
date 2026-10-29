@@ -75,6 +75,8 @@ x do ParamNamesAndAllOptionsOn tests for linux
 v save presets as new
 v refix all the renoise automation lanes
 
+----- oooohhh boohoo new format after save 216->217 not remember the settings screen params
+
 - check all kvr
 - check all website
 - make note about vst3/clap code share
