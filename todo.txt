@@ -71,13 +71,13 @@ v note the sample hides behind the VAMP
 v note it responds to unison etc
 v demo manual vst3 reaper load pad04 preset crash
 v update screenshots for old default theme
+x do ParamNamesAndAllOptionsOn tests for linux
+- save presets as new
 
 - check all kvr
 - check all website
-- save presets as new
 - make note about vst3/clap code share
 - make note about compress
-- do ParamNamesAndAllOptionsOn tests for linux
 - all the new docs, screenshots, website, release notes, history etc
 - do a kvr update bc why not
 - refix all the renoise automation lanes
