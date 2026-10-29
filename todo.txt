@@ -72,7 +72,8 @@ v note it responds to unison etc
 v demo manual vst3 reaper load pad04 preset crash
 v update screenshots for old default theme
 x do ParamNamesAndAllOptionsOn tests for linux
-- save presets as new
+v save presets as new
+- refix all the renoise automation lanes
 
 - check all kvr
 - check all website
@@ -80,7 +81,6 @@ x do ParamNamesAndAllOptionsOn tests for linux
 - make note about compress
 - all the new docs, screenshots, website, release notes, history etc
 - do a kvr update bc why not
-- refix all the renoise automation lanes
 - 2.1.6+bitwig not save theme
 - recheck automation lanes on all renoise things
 - close the renoise bug
