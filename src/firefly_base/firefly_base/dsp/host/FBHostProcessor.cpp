@@ -115,10 +115,9 @@ FBHostProcessor::ProcessHost(
   _plugIn.audioClips = &_hostContext->GetDSPAudioClips();
   _plugIn.prevRoundCpuUsage = _prevRoundCpuUsage;
   _plugIn.projectTimeSamples = input.projectTimeSamples;
-  _hostContext->PullDSPAudioClipsFromGUI();
 
-  // vst3 setState/clap stateLoad
-  std::atomic_thread_fence(std::memory_order_acquire);
+  _hostContext->PullProcStateFromGUI();
+  _hostContext->PullDSPAudioClipsFromGUI();
 
   for (auto const& be : input.blockAuto)
     _procState->Params()[be.param].Value(be.normalized);

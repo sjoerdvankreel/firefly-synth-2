@@ -13,11 +13,7 @@ SwapContextForItem(
   auto tempParamNameOverrides = hostContext->GetAudioParamNameOverrides();
   hostContext->BulkUpdateAudioParamsToGUI(item.state, false);
   hostContext->SetAudioParamNameOverrides(item.paramNameOverrides);
-  
-  // process may be running
-  hostContext->ProcState()->InitProcessing(hostContext);
-  std::atomic_thread_fence(std::memory_order_release);
-
+  hostContext->PushProcStateToDSP();
   item.state.CopyFrom(hostContext->Topo(), tempState, false);
   item.paramNameOverrides = tempParamNameOverrides;
   std::string tempName(hostContext->PatchName());

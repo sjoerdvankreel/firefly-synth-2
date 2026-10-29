@@ -887,10 +887,7 @@ FBPlugGUI::InitPatch()
   HostContext()->NotifyHostOfBulkUpdateAndParamNameChanges();
   HostContext()->UndoState().Clear(); // because samples
   AfterPatchChanged(false);
-
-  // process may be running
-  HostContext()->ProcState()->InitProcessing(HostContext());
-  std::atomic_thread_fence(std::memory_order_release);
+  HostContext()->PushProcStateToDSP();
 }
 
 void
@@ -915,10 +912,7 @@ FBPlugGUI::RevertPreviewedPatch()
   HostContext()->BulkUpdateAudioParamsToGUI(audioParams, true);
   HostContext()->NotifyHostOfBulkUpdateAndParamNameChanges();
   AfterPatchChanged(false);
-
-  // process may be running
-  HostContext()->ProcState()->InitProcessing(HostContext());
-  std::atomic_thread_fence(std::memory_order_release);
+  HostContext()->PushProcStateToDSP();
 }
 
 void 
@@ -939,10 +933,7 @@ FBPlugGUI::LoadPatchAsPreview(
   HostContext()->BulkUpdateAudioParamsToGUI(audioParams, true);
   HostContext()->NotifyHostOfBulkUpdateAndParamNameChanges();
   AfterPatchChanged(true);
-
-  // process may be running
-  HostContext()->ProcState()->InitProcessing(HostContext());
-  std::atomic_thread_fence(std::memory_order_release);
+  HostContext()->PushProcStateToDSP();
 }
 
 bool
@@ -960,9 +951,7 @@ FBPlugGUI::LoadPatchFromBytes(
   HostContext()->NotifyHostOfBulkUpdateAndParamNameChanges();
   HostContext()->MarkPatchAsPatchState(patchName);
   AfterPatchChanged(false);
-  // process may be running
-  HostContext()->ProcState()->InitProcessing(HostContext());
-  std::atomic_thread_fence(std::memory_order_release);
+  HostContext()->PushProcStateToDSP();
   return true;
 }
 

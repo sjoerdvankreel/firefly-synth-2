@@ -39,7 +39,8 @@ _procState(std::make_unique<FBProcStateContainer>(*_topo, &_dspAudioClips)),
 _exchangeToGUIState(std::make_unique<FBExchangeStateContainer>(*_topo)),
 _exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo)),
 _exchangeStateQueue(std::move(exchangeStateQueue)),
-_audioClipToDSPCommands(16)
+_audioClipToDSPCommands(16),
+_audioParamsToDSPQueue(16)
 {
 }
 
@@ -111,6 +112,27 @@ FBHostContext::SetGUIAndDSPAudioClip(
   _guiAudioClips[id] = FBAudioClip(guiClip);
   PushDSPAudioClipToDSP(id, dspClip);
   OnGUIAudioClipsChanged();
+}
+
+void
+FBHostContext::PullProcStateFromGUI()
+{
+  std::vector<float> audioParams;
+  if (!_audioParamsToDSPQueue.try_dequeue(audioParams))
+    return;
+  for (int p = 0; p < audioParams.size(); p++)
+    ProcState()->InitProcessing(p, audioParams[p]);
+}
+
+void 
+FBHostContext::PushProcStateToDSP()
+{
+  FBScalarStateContainer audioParams(*Topo());
+  audioParams.CopyFrom(this, false);
+  std::vector<float> queueItem(audioParams.Params().size(), 0.0f);
+  for (int i = 0; i < (int)queueItem.size(); i++)
+    queueItem[i] = (float)(*audioParams.Params()[i]);
+  _audioParamsToDSPQueue.enqueue(queueItem);
 }
 
 std::map<std::string, FBAudioClip>

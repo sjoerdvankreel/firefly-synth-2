@@ -85,6 +85,8 @@ public juce::Timer
   std::atomic_bool _writingAudioClipsToDSPIsDirty = {};
   moodycamel::ReaderWriterQueue<FBAudioClipToDSPCommand, 16> _audioClipToDSPCommands;
 
+  moodycamel::ReaderWriterQueue<std::vector<float>, 16> _audioParamsToDSPQueue;
+
   bool _isPatchLoaded = {};
   std::map<std::string, FBAudioClip> _guiAudioClips = {};
   std::map<std::string, FBAudioClip> _dspAudioClips = {};
@@ -133,6 +135,9 @@ public:
   virtual double GetAudioParamNormalized(int index) const = 0;
   virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;
   virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;
+
+  void PushProcStateToDSP();
+  void PullProcStateFromGUI();
 
   void PullDSPAudioClipsFromGUI();
   void ClearDSPAudioClipToDSP(std::string const& id);

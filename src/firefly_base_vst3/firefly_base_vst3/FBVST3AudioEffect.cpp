@@ -118,10 +118,7 @@ FBVST3Plugin::setState(IBStream* state)
     if (!Topo()->LoadVST3FromBytesWithPreFormat2Check(data, *this, audioParams))
       return kResultTrue; // not crash bitwig
     audioParams.CopyTo(this, false);
-
-    // we can be called during processing
-    ProcState()->InitProcessing(this);
-    std::atomic_thread_fence(std::memory_order_release);
+    PushProcStateToDSP();
     
     OnPatchNameChanged();
     OnInstanceNameChanged();
