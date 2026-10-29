@@ -73,7 +73,10 @@ inline int const FBDefaultDisplayPrecision = 3;
 
 struct FBAudioClip
 {
+  // clang doesnt like std::maps of values with explicit cctors
+#ifndef __clang__
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBAudioClip);
+#endif
   std::string name = {};
   std::int32_t channels = {};
   std::int32_t sampleRate = {};

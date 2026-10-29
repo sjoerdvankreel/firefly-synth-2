@@ -80,7 +80,7 @@ void
 FBHostContext::SetGUIAudioClips(std::map<std::string, FBAudioClip> const& clips)
 {
   _undoState.Clear();
-  _guiAudioClips = std::map<std::string, FBAudioClip>(clips);
+  _guiAudioClips = clips;
   OnGUIAudioClipsChanged();
 }
 
