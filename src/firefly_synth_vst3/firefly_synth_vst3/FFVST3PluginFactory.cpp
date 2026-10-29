@@ -25,12 +25,10 @@ using namespace Steinberg::Vst;
 auto constexpr FFPlugType = PlugType::kFx;
 auto constexpr FFPlugName = FFPlugNameFX;
 auto constexpr FFPlugUniqueId = FFPlugUniqueIdFX;
-auto constexpr FFPlugControllerId = FFPlugControllerIdFX;
 #else
 auto constexpr FFPlugType = PlugType::kInstrument;
 auto constexpr FFPlugName = FFPlugNameInst;
 auto constexpr FFPlugUniqueId = FFPlugUniqueIdInst;
-auto constexpr FFPlugControllerId = FFPlugControllerIdInst;
 #endif
 #else
 #error
