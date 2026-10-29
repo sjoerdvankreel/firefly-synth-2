@@ -93,6 +93,7 @@ v update screenshots for old default theme
 - notify about need full cache rescan
 - close the gh sampling request
 - add flstudio Linux to the test set
+- make note it fix all the Linux + thensome paint stuff
 
 [ ] vst3/clap validator
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
