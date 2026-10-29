@@ -92,6 +92,7 @@ v update screenshots for old default theme
 - check all prev unsupported dataexchange etc, should now work, and notify
 - notify about need full cache rescan
 - close the gh sampling request
+- add flstudio Linux to the test set
 
 [ ] vst3/clap validator
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
