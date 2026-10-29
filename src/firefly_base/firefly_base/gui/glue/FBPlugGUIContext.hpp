@@ -2,28 +2,29 @@
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 
-class FBHostGUIContext;
+class FBHostContext;
 struct FBStaticGUIParam;
 
 class FBPlugGUIContext
 {
   double _systemScale = 1.0;
-  FBHostGUIContext* const _hostContext;
+  FBHostContext* const _hostContext;
   double CombinedScale() const;
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUIContext);
-  FBPlugGUIContext(FBHostGUIContext* const hostContext);
+  FBPlugGUIContext(FBHostContext* const hostContext);
   virtual void RequestRescale(double combinedScale) = 0;
 
 public:
+  virtual void RequestRepaint() = 0;
   void SetSystemScale(double scale);
   void SetUserScaleByHostWidth(int width);
   std::pair<int, int> GetHostSize() const;
   int GetHeightForAspectRatio(int width) const;
   void ClampHostSizeForScale(int& width, int& height) const;
-  FBHostGUIContext* HostContext() { return _hostContext; }
-  FBHostGUIContext const* HostContext() const { return _hostContext; }
+  FBHostContext* HostContext() { return _hostContext; }
+  FBHostContext const* HostContext() const { return _hostContext; }
 
   virtual ~FBPlugGUIContext() {}
   virtual void RemoveFromDesktop() = 0;

@@ -8,7 +8,7 @@
 #include <memory>
 
 class FBPlugGUI;
-class FBHostGUIContext;
+class FBHostContext;
 
 struct FBRuntimeTopo;
 struct FBTopoIndices;
@@ -23,8 +23,8 @@ struct FBParamsDependentDependency final
   FBParamsDependency dependency;
   std::vector<int> const runtimeDependencies;
   
-  bool EvaluateGUI(FBHostGUIContext const* hostContext);
-  bool EvaluateAudio(FBHostGUIContext const* hostContext);
+  bool EvaluateGUI(FBHostContext const* hostContext);
+  bool EvaluateAudio(FBHostContext const* hostContext);
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamsDependentDependency);  
   FBParamsDependentDependency(

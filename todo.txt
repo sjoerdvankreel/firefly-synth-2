@@ -1,6 +1,106 @@
-[ ] sampler -- just do it i want vocals
-[ ] string osci dry/wet normal/uniform + conversion
-[ ] techno demo to presets
+[ ] sampler -- pffft not easy
+V no undo for all patch stuff
+V MarkPatchAsPatchState/SessionState/OnPatchLoaded
+V get all the undo state & friends right -- just clear undo after sample load
+V do we stereo merge? select channel? osci is mono -> just only mono support
+V want 16/24/32 bit, need lib for convert ? or do naive -> libsndfile
+V raw? needs user input. wav, au, aiff etc, need parse headers. another lib? compressed -- not a chance, not even lossless 
+v drop kDistributable, merge hostgui/hostdspcontext, share lots of stuff between clap/vst3
+v get rid of exchangeStateSize
+v consolidate the pull/push with clap/vst3
+v clean up the headers in thenew files
+v do clap side
+v get rid of reload session/patch
+v shrink the gui side clip
+v do we need clips ptr in the procstate ?
+v rename guiAudioClips
+v check what oversampling does to audio in (and sample)
+v check what fm/rm/am does to audio in (and sample)
+v review the whole thing
+v graphs + all unison & change pitch etc
+v pitchtrack, unison
+v i want react to offset from C4 including all pitch mods -- no nontracking only. whats the granularity? internal block size? does SRC overflow those?
+v all the simple stuff, pan/amp envs etc
+v gui graph render should be accurate, whatever that may be
+v store in patchfile only for now, maybe expand to link on disk with all headache that follows
+v how tf i push from controller to processor. this is not params, may need dataexchange for vst3. but not super-supported everywhere, fallback to msg/connectionpoint?
+v CLAP is guaranteed single process. luvu.
+v hunt down the comments for kDistributable and singlecomponenteffect
+v sidechaintests are borked
+v FLStudioVST3ModMatrix not load good
+v copy/paste patch
+v load old files
+v load old patches
+v test the conversion on old and new path
+v retest the conversion
+v make dedicated test for microtune and paramnameoverride and guisettings
+v make it loadpre217load***state --> if only for the zip
+v retest / implement save gui params
+v retest everything flstudio
+v do patch side ???
+v retest midi and sampler and basically everything on every host and every platform
+v check microtuning
+v test all hosts
+v do load/save tests on old sessions and patches
+v run it in debug
+v compress the patchfile
+v drop libsndfile
+v do session name label
+v do all the vst3 oldstyle stuff on load with editorstate and componentstate and blaaahjadidadi
+v recheck on all hosts: offset from defaults, realtime gui
+v do all formats that juce supports + stereo merge
+v drop libsndfile https://forum.juce.com/t/reading-a-wav-file-into-an-array-of-samples/47449/4 
+x actual sample preview within the osci ?
+x fix the juce paint jank
+v check modmatrix on the sampler params
+v do filters in the sampler like audioin
+v file preview
+x update the dependencies list
+v sample preview
+x get rid of alertwindow
+v revert to old default theme
+v check all the metadata on renoise
+v repaint bug on paramname change
+v dedicated sample demos
+v fruity patchload bugfix
+v check "todo sampler"
+v preset patch with demo sample + all host tests
+v do the docs
+v notify sample clears undo
+v note the sample hides behind the VAMP
+v note it responds to unison etc
+v demo manual vst3 reaper load pad04 preset crash
+v update screenshots for old default theme
+x do ParamNamesAndAllOptionsOn tests for linux
+v save presets as new
+v refix all the renoise automation lanes
+
+----- oooohhh boohoo new format after save 216->217 not remember the settings screen params
+
+- check all kvr
+- check all website
+- make note about vst3/clap code share
+- make note about compress
+- all the new docs, screenshots, website, release notes, history etc
+- do a kvr update bc why not
+- 2.1.6+bitwig not save theme
+- recheck automation lanes on all renoise things
+- close the renoise bug
+- double check all sounds same after save * looks same where possible
+- save all the demo in the new format
+- make a note that guiparams will get lost
+- do pre-post host tests
+- retest everything Linux and mac
+- check all prev unsupported dataexchange etc, should now work, and notify
+- notify about need full cache rescan
+- close the gh sampling request
+- add flstudio Linux to the test set
+- make note it fix all the Linux + thensome paint stuff
+- show loaded session/patch + fileformatversion and all that in the aboutbox
+- note it not lose audioparams
+- the repo is big af, do something
+
+[ ] vst3/clap validator
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] fix the comp and the rms comp
 [ ] fix the 1sec delay on plot visuals
@@ -10,6 +110,8 @@
 [ ] one phase LFO type
 [ ] do mod rate/amt for multitap
 [ ] override all-osci unison
+[ ] finish up the new demo tune with some vocals and include the patches
+[ ] the repo is too big again
 
 fix the string oversample bug already
 allow full fx module inside the feedback delay
@@ -21,7 +123,6 @@ pck support
 arpeggiator
 allow more stuff on the feedback delay path, like, try to get an entire fx block in there somehow => just put one in a popup window?
 more presets
-fancy patch browser
 check into AV Linux
 arpeggiator/sequencer
 vst3 note expr + midi mpe

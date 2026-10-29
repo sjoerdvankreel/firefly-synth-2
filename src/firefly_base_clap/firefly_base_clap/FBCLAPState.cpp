@@ -21,8 +21,8 @@ FBCLAPPlugin::stateSave(const clap_ostream* stream) noexcept
   {
     int64_t written = 0;
     int64_t numWritten = 0;
-    std::string json = _topo->SaveEditAndGUIStateToString(*_editState, *this, false);
-    while ((numWritten = stream->write(stream, json.data() + written, json.size() - written)) != 0)
+    auto data = Topo()->SaveStateToBytes(*this, *_editState, false);
+    while ((numWritten = stream->write(stream, data.data() + written, data.size() - written)) != 0)
       if (numWritten == -1)
         return false;
       else
@@ -42,28 +42,32 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
   {
     int64_t read = 0;
     char buffer[1024];
-    std::string json = {};
+    std::vector<std::uint8_t> data;
     while ((read = stream->read(stream, buffer, sizeof(buffer))) != 0)
       if (read == -1)
         return false;
       else
-        json.append(buffer, read);
+        data.insert(data.end(), buffer, buffer + read);
 
-    _topo->LoadEditAndGUIStateFromStringWithDryRun(json, *_editState, *this, false);
+    if (!Topo()->LoadCLAPFromBytesWithPreFormat2Check(data, *this, *_editState))
+      return true; // bitwig
+    PushProcStateToDSP();
+
     OnPatchNameChanged();
     OnInstanceNameChanged();
+    OnGUIAudioClipsChanged();
     if(_gui)
-      for(int i = 0; i < _guiState->Params().size(); i++)
+      for(int i = 0; i < GUIState()->Params().size(); i++)
         _gui->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));
     for (int i = 0; i < _editState->Params().size(); i++)
     {
       double normalized = *_editState->Params()[i];
-      _procState->InitProcessing(i, static_cast<float>(normalized));
       if (_gui)
         _gui->SetAudioParamNormalizedFromHost(i, normalized);
     }
+
     MarkPatchAsSessionState();
-    NotifyHostOfParamNameChanges();
+    NotifyHostOfParamNameChangesOnly();
     return true;
   });
 }

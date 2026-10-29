@@ -4,7 +4,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class FFPlugGUI;
-class FBHostGUIContext;
+class FBHostContext;
 
 class FFModMatrixParamListener:
 public IFBParamListener
@@ -22,4 +22,4 @@ public:
 juce::Component*
 FFMakeModMatrixGUI(FFPlugGUI* plugGUI);
 bool FFModMatrixAdjustParamModulationGUIBounds(
-FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm);
+FBHostContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm);

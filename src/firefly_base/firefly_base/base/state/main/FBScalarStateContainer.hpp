@@ -4,7 +4,7 @@
 #include <vector>
 
 struct FBRuntimeTopo;
-class FBHostGUIContext;
+class FBHostContext;
 class FBProcStateContainer;
 
 class FBScalarStateContainer final
@@ -21,8 +21,8 @@ public:
   FBScalarStateContainer(FBScalarStateContainer const&) = delete;
   FBScalarStateContainer& operator=(FBScalarStateContainer const&) = delete;
 
-  void CopyTo(FBHostGUIContext* context, bool patchOnly) const;
-  void CopyFrom(FBHostGUIContext const* context, bool patchOnly);
+  void CopyTo(FBHostContext* context, bool patchOnly) const;
+  void CopyFrom(FBHostContext const* context, bool patchOnly);
   void CopyFrom(FBRuntimeTopo const* topo, FBProcStateContainer const& proc, bool patchOnly);
   void CopyFrom(FBRuntimeTopo const* topo, FBScalarStateContainer const& scalar, bool patchOnly);
 

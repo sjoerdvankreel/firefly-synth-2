@@ -21,4 +21,4 @@ public:
 juce::Component*
 FFMakeVoiceModuleGUI(FBPlugGUI* plugGUI);
 bool FFVoiceModuleAdjustParamModulationGUIBounds(
-FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm);
+FBHostContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm);

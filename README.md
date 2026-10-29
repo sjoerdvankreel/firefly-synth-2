@@ -205,7 +205,7 @@ added soft knee support based on this https://github.com/tu-studio/IEMPluginSuit
 
 ## Main
 
-<img alt="Screenshot Main" src="static/screen_main.png"/>
+<img alt="Screenshot Main" src="static/screen_main1.png"/>
 
 ## Matrix
 

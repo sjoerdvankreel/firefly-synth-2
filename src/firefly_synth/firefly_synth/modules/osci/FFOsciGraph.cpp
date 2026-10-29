@@ -4,7 +4,7 @@
 
 #include <firefly_base/gui/graph/FBGraphing.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 
 #include <algorithm>
    
@@ -166,11 +166,17 @@ OsciGraphProcessor::PlotParams(bool /*detailGraphs*/, int /*graphIndex*/) const
   float pitch = 60.0f + static_cast<float>(state->AudioParamLinear(indices, false, -1));
   pitch += state->AudioParamLinear({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Fine, 0 } }, false, -1);
   auto type = state->AudioParamList<FFOsciType>({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Type, 0 } }, false, -1);
-  int rounds = type == FFOsciType::String? FFOsciStringGraphRounds : 1;
 
-  auto freq = FBPitchToFreq(pitch);
-  auto samples = FBFreqToSamples(freq, sampleRate);
-  result.sampleCount = samples * rounds;
+  if (type == FFOsciType::Sample)
+    result.sampleCount = FFOsciSamplerGUISampleCount;
+  else
+  {
+    int rounds = type == FFOsciType::String ? FFOsciStringGraphRounds : 1;
+    auto freq = FBPitchToFreq(pitch);
+    auto samples = FBFreqToSamples(freq, sampleRate);
+    result.sampleCount = samples * rounds;
+  }
+
   return result;
 }
 

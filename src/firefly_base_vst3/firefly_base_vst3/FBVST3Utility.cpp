@@ -20,24 +20,24 @@ FBVST3CopyFromString128(TChar const* in, std::string& out)
 }
 
 bool
-FBVST3LoadIBStream(IBStream* stream, std::string& state)
+FBVST3LoadIBStream(IBStream* stream, std::vector<std::uint8_t>& state)
 {
   state = {};
   int32 read = 0;
-  char buffer[1024];
+  uint8_t buffer[1024];
   tresult result = kResultFalse;
   while ((result = stream->read(buffer, sizeof(buffer), &read)) == kResultTrue && read > 0)
-    state.append(buffer, read);
+    state.insert(state.end(), buffer, buffer + read);
   return result == kResultTrue;
 }
 
 bool
-FBVST3SaveIBStream(IBStream* stream, std::string const& state)
+FBVST3SaveIBStream(IBStream* stream, std::vector<std::uint8_t> const& state)
 {
   int32 written = 0;
   int32 numWritten = 0;
   tresult result = kResultFalse;
-  char* data = const_cast<char*>(state.data());
+  uint8_t* data = const_cast<uint8_t*>(state.data());
   while ((result = stream->write(data + written, static_cast<int32>(state.size() - written), &numWritten)) == kResultTrue && numWritten > 0)
   {
     written += numWritten;

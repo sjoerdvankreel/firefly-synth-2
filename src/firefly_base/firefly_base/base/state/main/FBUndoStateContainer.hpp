@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-class FBHostGUIContext;
+class FBHostContext;
 
 struct FBUndoItem final
 {
@@ -24,15 +24,16 @@ class FBUndoStateContainer final
 {
   int _position = 0;
   std::vector<FBUndoItem> _items = {};
-  FBHostGUIContext* const _hostContext;
+  FBHostContext* const _hostContext;
 
 public:
   void Undo();
   void Redo();
+  void Clear();
   void Snapshot(std::string const& action);
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBUndoStateContainer);
-  FBUndoStateContainer(FBHostGUIContext* hostContext);
+  FBUndoStateContainer(FBHostContext* hostContext);
 
   bool CanUndo() const { return _items.size() > 0 && _position > 0; }
   bool CanRedo() const { return _items.size() > 0 && _position < (int)_items.size(); }

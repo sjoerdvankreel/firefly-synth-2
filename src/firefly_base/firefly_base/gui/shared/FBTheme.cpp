@@ -489,7 +489,7 @@ ParseThemeJson(String const& jsonText, FBThemeJson& result)
   var json;
   result = {};
   
-  if (!FBParseJson(jsonText.toStdString(), json))
+  if (!FBParseJson(jsonText, json))
     return false;
   DynamicObject const* obj = json.getDynamicObject();
 

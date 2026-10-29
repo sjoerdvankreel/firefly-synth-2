@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<instant>
+  <LastUsedSnapshot name="ArdourWinAndMacVST3FX"/>
+  <Main x="45" y="33" w="1859" h="960" current-tab="editor"/>
+  <Editor id="53" edit-vertical-pane-pos="0.89999997615814209" mixer-width="Wide" zoom-focus="ZoomFocusPlayhead" edit-point="EditAtMouse" visible-track-count="-1" marker-click-behavior="MarkerClickSelectOnly" zoom="2048" grid-type="GridTypeBeat" snap-mode="SnapOff" internal-grid-type="GridTypeBeat" internal-snap-mode="SnapOff" pre-internal-grid-type="GridTypeBeat" pre-internal-snap-mode="SnapOff" left-frame="0" playhead="298631" y-origin="0" maximised="0" follow-playhead="1" stationary-playhead="0" mouse-mode="MouseDraw" join-object-range="0" show-editor-mixer="1" show-editor-list="0" show-editor-props="0" editor-list-page="0" editor-list-btn1="0" editor-list-btn2="4" show-marker-lines="0" show-touched-automation="0" nudge-clock-value="a1411200000@a0">
+    <Window name="Editor" visible="0" x-off="-1" y-off="-1" x-size="-1" y-size="-1" tabbed="1" editor-rightpane-pos="1"/>
+    <Buttons>
+      <Press/>
+      <Release/>
+    </Buttons>
+    <Selection>
+      <StripableView id="171"/>
+    </Selection>
+    <EditorLocations clock-mode="BBT"/>
+  </Editor>
+  <Mixer mixer-sidebar-page="1" mixer-sidebar-btn1="0" mixer-sidebar-btn2="4" mixer-plugin-list="0" mixer-inner-pane-pos="0.80000001192092896" narrow-strips="0" show-mixer="0" maximised="0" show-mixer-list="1" monitor-section-visible="1" foldback-strip-visible="1" show-vca-pane="1">
+    <Window name="Mixer" visible="0" x-off="-1" y-off="-1" x-size="-1" y-size="-1" tabbed="1" mixer-leftpane-pos="0.15000000596046448"/>
+  </Mixer>
+  <Preferences>
+    <Window name="Preferences" visible="0" x-off="-1" y-off="-1" x-size="-1" y-size="-1" tabbed="0" preferences-rightpane-pos="-1"/>
+  </Preferences>
+  <Meterbridge show-meterbridge="0">
+    <geometry x-size="600" y-size="400" x-pos="1" y-pos="1"/>
+  </Meterbridge>
+  <Recorder recorder-vpane-pos="0.75">
+    <Window name="Recorder" visible="0" x-off="-1" y-off="-1" x-size="-1" y-size="-1" tabbed="1"/>
+  </Recorder>
+  <TriggerPage triggerpage-sidebar-page="0" triggerpage-sidebar-btn1="0" triggerpage-sidebar-btn2="3" show-trigger-list="1" show-trigger-properties="1">
+    <Window name="Cues" visible="0" x-off="-1" y-off="-1" x-size="-1" y-size="-1" tabbed="1" trigger-rightpane-pos="0.8308107852935791" trigger-bottompane-pos="0.85000002384185791"/>
+    <MIDICueEditor zoom="2048" grid-type="GridTypeBeat" snap-mode="SnapMagnetic" internal-grid-type="GridTypeBeat" internal-snap-mode="SnapMagnetic" pre-internal-grid-type="GridTypeBeat" pre-internal-snap-mode="SnapOff" left-frame="0"/>
+    <AudioClipEditor zoom="2048" grid-type="GridTypeMinSec" snap-mode="SnapMagnetic" internal-grid-type="GridTypeBeat" internal-snap-mode="SnapOff" pre-internal-grid-type="GridTypeBeat" pre-internal-snap-mode="SnapOff" left-frame="0"/>
+  </TriggerPage>
+  <ClockModes>
+    <Clock name="primary" mode="BBT" on="1"/>
+    <Clock name="secondary" mode="Timecode" on="1"/>
+    <Clock name="bigclock" mode="Timecode" on="1"/>
+    <Clock name="primary" mode="BBT" on="1"/>
+    <Clock name="secondary" mode="Timecode" on="1"/>
+    <Clock name="nudge" mode="Timecode" on="1"/>
+    <Clock name="EditorTimeInfo-selection-start" mode="Timecode" on="0"/>
+    <Clock name="EditorTimeInfo-selection-end" mode="Timecode" on="0"/>
+    <Clock name="EditorTimeInfo-selection-length" mode="Timecode" on="0"/>
+    <Clock name="EditorTimeInfo-punch-start" mode="Timecode" on="0"/>
+    <Clock name="EditorTimeInfo-punch-end" mode="Timecode" on="0"/>
+    <Clock name="ToolbarTimeInfo-selection-start" mode="Timecode" on="0"/>
+    <Clock name="ToolbarTimeInfo-selection-end" mode="Timecode" on="0"/>
+    <Clock name="ToolbarTimeInfo-selection-length" mode="Timecode" on="0"/>
+    <Clock name="primary" mode="BBT" on="1"/>
+    <Clock name="secondary" mode="Timecode" on="1"/>
+    <Clock name="ToolbarTimeInfo-selection-start" mode="Timecode" on="0"/>
+    <Clock name="ToolbarTimeInfo-selection-end" mode="Timecode" on="0"/>
+    <Clock name="ToolbarTimeInfo-selection-length" mode="Timecode" on="0"/>
+    <Clock name="primary" mode="BBT" on="1"/>
+    <Clock name="secondary" mode="Timecode" on="1"/>
+    <Clock name="ToolbarTimeInfo-selection-start" mode="Timecode" on="0"/>
+    <Clock name="ToolbarTimeInfo-selection-end" mode="Timecode" on="0"/>
+    <Clock name="ToolbarTimeInfo-selection-length" mode="Timecode" on="0"/>
+    <Clock name="primary" mode="BBT" on="1"/>
+    <Clock name="secondary" mode="Timecode" on="1"/>
+    <Clock name="EditorTimeInfo-selection-start" mode="Timecode" on="0"/>
+    <Clock name="EditorTimeInfo-selection-end" mode="Timecode" on="0"/>
+    <Clock name="EditorTimeInfo-selection-length" mode="Timecode" on="0"/>
+    <Clock name="EditorTimeInfo-punch-start" mode="Timecode" on="0"/>
+    <Clock name="EditorTimeInfo-punch-end" mode="Timecode" on="0"/>
+    <Clock name="ToolbarTimeInfo-selection-start" mode="Timecode" on="0"/>
+    <Clock name="ToolbarTimeInfo-selection-end" mode="Timecode" on="0"/>
+    <Clock name="ToolbarTimeInfo-selection-length" mode="Timecode" on="0"/>
+  </ClockModes>
+  <RTAManager rta-warp="Medium" rta-speed="Moderate">
+    <RouteID id="71"/>
+  </RTAManager>
+</instant>

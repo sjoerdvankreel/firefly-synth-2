@@ -796,6 +796,22 @@ If you just want to throw some effects to external input, use Global Mixer ("Aud
 FF2 does not support true stereo oscillators before the unison stage.
 * Built-in low/highpass filters for additional control.
 
+### Sampler Section
+
+Use an audio sample as an oscillator.<br/>
+Samples are stored in-memory, in-daw-session, and in-patch, so this is not suitable for really large waveforms.<br/>
+
+* Click Load to load an external audio sample.
+* Click Clear to remove an existing audio sample.
+* Enable Preview in the Load dialog to preview the sample into the patch.
+* Like Audio In oscillator, comes with gain control and LP/HP filters.
+* Loads WAV files only, of whatever format JUCE supports (8, 16, 24, 32 bit), multichannel loads but uses the first channel only.
+
+The sampler reacts to all pitch controls including osci-level and global unison.<br/>
+Note that the sampler osci reacts to the voice (VMix) envelope just like any other oscillator.<br/>
+You may want to set the VMix Amp Env Target to off, or at least disable the voice amplitude envelope attack section.<br/>
+
+
 <a id="546F9D74-670A-463D-80B0-B4BBD061DA88"></a>
 ## Oscillator Oversampling and Cross-modulation
 

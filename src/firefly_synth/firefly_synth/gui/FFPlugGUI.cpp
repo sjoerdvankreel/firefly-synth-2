@@ -28,7 +28,7 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBGraphRenderState.hpp>
 #include <firefly_base/gui/graph/FBModuleGraphComponent.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
@@ -50,7 +50,7 @@ FFPlugGUI::
 ~FFPlugGUI() { }
 
 FFPlugGUI::
-FFPlugGUI(FBHostGUIContext* hostContext):
+FFPlugGUI(FBHostContext* hostContext):
 FBPlugGUI(hostContext),
 _graphRenderState(std::make_unique<FBGraphRenderState>(this))
 {
@@ -109,15 +109,15 @@ FFPlugGUI::AfterPatchChanged(bool wasPreview)
   repaint();
 }
 
-void 
-FFPlugGUI::OnPatchLoaded()
+void
+FFPlugGUI::OnGUIAudioClipsChanged()
 {
-  FBPlugGUI::OnPatchLoaded();
-  if (onPatchLoaded)
-    onPatchLoaded();
+  FBPlugGUI::OnGUIAudioClipsChanged();
+  for (auto const& kv : onGUIAudioClipsChanged)
+    kv.second();
 }
 
-void 
+void
 FFPlugGUI::OnPatchNameChanged(std::string const& name)
 {
   FBPlugGUI::OnPatchNameChanged(name);

@@ -3,6 +3,8 @@
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 
 #include <juce_core/juce_core.h>
+#include <juce_audio_formats/juce_audio_formats.h>
+
 #include <sstream>
 #include <fstream>
 #include <atomic>
@@ -252,7 +254,7 @@ FBReadFile(std::filesystem::path const& p)
 }
 
 bool
-FBParseJson(std::string const& text, var& json)
+FBParseJson(juce::String const& text, var& json)
 {
   auto parsed = JSON::parse(text, json);
   DynamicObject* obj = json.getDynamicObject();
@@ -287,4 +289,27 @@ FBSetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std
 {
   auto propsFile = GetUserGlobalSettingsFile(meta);
   propsFile.setValue(String(key), String(val));
+}
+
+bool
+FBAudioFileRead(std::string const& path, FBAudioClip& clip)
+{
+  juce::AudioFormatManager manager;
+  manager.registerBasicFormats();
+  juce::File file(path);
+  std::unique_ptr<juce::AudioFormatReader> reader(manager.createReaderFor(file));
+  if (!reader)
+    return false;
+  
+  juce::AudioSampleBuffer buffer(1, (int)reader->lengthInSamples);
+  if (!reader->read(&buffer, 0, (int)reader->lengthInSamples, 0, true, false))
+    return false;
+
+  clip.data = {};
+  clip.channels = 1;
+  clip.sampleRate = (int)reader->sampleRate;
+  clip.originalSampleRate = (int)reader->sampleRate;
+  clip.name = std::filesystem::path(path).filename().stem().string();
+  clip.data = std::vector<float>(buffer.getReadPointer(0), buffer.getReadPointer(0) + reader->lengthInSamples);
+  return true;
 }

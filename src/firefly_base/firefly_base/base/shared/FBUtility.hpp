@@ -1,5 +1,4 @@
 #pragma once
-
 #include <juce_core/juce_core.h>
 
 #include <string>
@@ -72,9 +71,23 @@ inline int const FBDefaultDisplayPrecision = 3;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(x); \
   x() = default
 
+struct FBAudioClip
+{
+  // clang doesnt like std::maps of values with explicit cctors
+#ifndef __clang__
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBAudioClip);
+#endif
+  std::string name = {};
+  std::int32_t channels = {};
+  std::int32_t sampleRate = {};
+  std::int32_t originalSampleRate = {};
+  std::vector<float> data = {};
+};
+
 namespace FBUserGlobalSettingKeys
 {
   std::string const LoadPatchFolder = "LoadPatchFolder";
+  std::string const LoadAnyFileFolder = "LoadAnyFileFolder";
   std::string const SavePatchFolder = "SavePatchFolder";
   std::string const SaveTopologyFolder = "SaveTopologyFolder";
   std::string const SaveParamListFolder = "SaveParamListFolder";
@@ -121,7 +134,7 @@ FBStringToDoubleOptCLocale(std::string const& text);
 std::vector<std::uint8_t>
 FBReadFile(std::filesystem::path const& p);
 bool
-FBParseJson(std::string const& text, juce::var& json);
+FBParseJson(juce::String const& text, juce::var& json);
 
 std::filesystem::path
 FBGetUserDataFolder();
@@ -142,3 +155,6 @@ bool
 FBGetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std::string& val);
 void
 FBSetUserGlobalSetting(FBStaticTopoMeta const& meta, std::string const& key, std::string const& val);
+
+bool
+FBAudioFileRead(std::string const& path, FBAudioClip& clip);
