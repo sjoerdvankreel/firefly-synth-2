@@ -11,8 +11,7 @@ FBThemedComponent::
 FBThemedComponent(FBPlugGUI* plugGUI, int componentId, Component* content):
 Component(),
 _plugGUI(plugGUI),
-_componentId(componentId),
-_content(content)
+_componentId(componentId)
 {
   addAndMakeVisible(content);
 }

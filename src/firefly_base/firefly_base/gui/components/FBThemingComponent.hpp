@@ -25,7 +25,6 @@ public IFBThemingComponent
 {
   FBPlugGUI* const _plugGUI;
   int _componentId;
-  juce::Component* _content;
 
 public:
   void resized() override;
