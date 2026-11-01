@@ -217,7 +217,7 @@ FBRuntimeTopo::LoadVST3FromBytesWithPreFormat2Check(
 {
   FB_LOG_ENTRY_EXIT();
 
-  if (LoadStateFromBytes(bytes, hostContext, audioParams, true))
+  if (LoadStateFromBytes(bytes, hostContext, audioParams, false))
     return true;
 
   // now we need to reconstruct the new format from the old
@@ -296,7 +296,7 @@ FBRuntimeTopo::LoadCLAPFromBytesWithPreFormat2Check(
 {
   FB_LOG_ENTRY_EXIT();
 
-  if (LoadStateFromBytes(bytes, hostContext, audioParams, true))
+  if (LoadStateFromBytes(bytes, hostContext, audioParams, false))
     return true;
 
   // now we need to reconstruct the new format from the old
