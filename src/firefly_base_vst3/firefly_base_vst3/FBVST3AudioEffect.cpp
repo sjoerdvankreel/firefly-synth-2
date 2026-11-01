@@ -124,7 +124,7 @@ FBVST3Plugin::setState(IBStream* state)
     OnInstanceNameChanged();
     OnGUIAudioClipsChanged();
     MarkPatchAsSessionState();
-    NotifyHostOfParamNameChangesOnly();
+    NotifyHostOfBulkUpdateAndParamNameChanges();
     if (_guiEditor != nullptr)
       for (int i = 0; i < GUIState()->Params().size(); i++)
         _guiEditor->SetGUIParamNormalizedFromHost(i, GetGUIParamNormalized(i));
