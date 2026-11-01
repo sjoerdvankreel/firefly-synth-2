@@ -117,11 +117,13 @@ FBHostContext::SetGUIAndDSPAudioClip(
 void
 FBHostContext::PullProcStateFromGUI()
 {
+  bool haveDequeued = false;
   std::vector<float> audioParams;
-  if (!_audioParamsToDSPQueue.try_dequeue(audioParams))
-    return;
-  for (int p = 0; p < audioParams.size(); p++)
-    ProcState()->InitProcessing(p, audioParams[p]);
+  while (_audioParamsToDSPQueue.try_dequeue(audioParams))
+    haveDequeued = true;
+  if(haveDequeued)
+    for (int p = 0; p < audioParams.size(); p++)
+      ProcState()->InitProcessing(p, audioParams[p]);
 }
 
 void 
