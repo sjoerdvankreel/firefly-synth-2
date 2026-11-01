@@ -110,7 +110,7 @@ FFOsciProcessor::ProcessSample(
         uniPitch += _uniPosMHalfToHalf.Get(u) * uniDetunePlain.Get(subBlockStart);
         double speedRatio = baseSpeedRatio * FBPitchToFreq(uniPitch) / freqC4;
         int samplesAvailable = (int)clip.data.size() - _samplerSamplesUsed[u];
-        if (samplesAvailable > speedRatio * subBlockSize)
+        if (samplesAvailable > 0)
         {
           _samplerSamplesUsed[u] += _samplerInterpolators[u].process(
             speedRatio, clip.data.data() + _samplerSamplesUsed[u],
