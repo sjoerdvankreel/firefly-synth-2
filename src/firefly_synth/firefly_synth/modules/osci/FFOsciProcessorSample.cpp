@@ -10,7 +10,7 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
-void 
+void
 FFOsciProcessor::BeginVoiceSample(
   FBModuleProcState& state, bool graph)
 {
@@ -34,7 +34,7 @@ FFOsciProcessor::BeginVoiceSample(
   }
 }
 
-void 
+void
 FFOsciProcessor::ProcessSample(
   FBModuleProcState& state,
   FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
@@ -115,34 +115,32 @@ FFOsciProcessor::ProcessSample(
           _samplerSamplesUsed[u] += _samplerInterpolators[u].process(
             speedRatio, clip.data.data() + _samplerSamplesUsed[u],
             uniOutputOversampled[u].Ptr(subBlockStart), subBlockSize, samplesAvailable, 0);
-
           for (int s = block * subBlockSize; s < block * subBlockSize + subBlockSize; s++)
             uniOutputOversampled[u].Set(s, uniOutputOversampled[u].Get(s) * sampleGainPlain.Get(s));
-
-          if (_sampleLPOn)
-          {
-            for (int s = block * subBlockSize; s < block * subBlockSize + subBlockSize; s++)
-            {
-              float lpFreqPlain = sampleLPFreqPlain.Get(s);
-              float lpResPlain = sampleLPResPlain.Get(s);
-              lpFreqPlain *= _graphStVarFilterFreqMultiplier;
-              _sampleLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate * _oversampleTimes, lpFreqPlain, lpResPlain, 0.0f);
-              uniOutputOversampled[u].Set(s, (float)_sampleLPFilter.Next(u, uniOutputOversampled[u].Get(s)));
-            }
-          }
-
-          if (_sampleHPOn)
-          {
-            for (int s = block * subBlockSize; s < block * subBlockSize + subBlockSize; s++)
-            {
-              float hpFreqPlain = sampleHPFreqPlain.Get(s);
-              float hpResPlain = sampleHPResPlain.Get(s);
-              hpFreqPlain *= _graphStVarFilterFreqMultiplier;
-              _sampleHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate * _oversampleTimes, hpFreqPlain, hpResPlain, 0.0f);
-              uniOutputOversampled[u].Set(s, (float)_sampleHPFilter.Next(u, uniOutputOversampled[u].Get(s)));
-            }
-          }
         }
+      }
+    }
+
+    for (int s = 0; s < totalSamples; s++)
+    {
+      if (_sampleLPOn)
+      {
+        float lpFreqPlain = sampleLPFreqPlain.Get(s);
+        float lpResPlain = sampleLPResPlain.Get(s);
+        lpFreqPlain *= _graphStVarFilterFreqMultiplier;
+        _sampleLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate * _oversampleTimes, lpFreqPlain, lpResPlain, 0.0f);
+        for(int u = 0; u < _uniCount; u++)
+          uniOutputOversampled[u].Set(s, (float)_sampleLPFilter.Next(u, uniOutputOversampled[u].Get(s)));
+      }
+
+      if (_sampleHPOn)
+      {
+        float hpFreqPlain = sampleHPFreqPlain.Get(s);
+        float hpResPlain = sampleHPResPlain.Get(s);
+        hpFreqPlain *= _graphStVarFilterFreqMultiplier;
+        _sampleHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate * _oversampleTimes, hpFreqPlain, hpResPlain, 0.0f);
+        for (int u = 0; u < _uniCount; u++)
+          uniOutputOversampled[u].Set(s, (float)_sampleHPFilter.Next(u, uniOutputOversampled[u].Get(s)));
       }
     }
   }
