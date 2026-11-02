@@ -74,6 +74,7 @@ v update screenshots for old default theme
 x do ParamNamesAndAllOptionsOn tests for linux
 v save presets as new
 v refix all the renoise automation lanes
+--- diskwriter
 
 ----- oooohhh boohoo new format after save 216->217 not remember the settings screen params
 

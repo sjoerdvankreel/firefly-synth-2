@@ -11,6 +11,7 @@ struct FBRuntimeTopo;
 struct FBHostInputBlock;
 struct FBHostOutputBlock;
 
+class FBHostContext;
 class FBVoiceManager;
 class FBHostAudioBlock;
 class IFBPlugProcessor;
