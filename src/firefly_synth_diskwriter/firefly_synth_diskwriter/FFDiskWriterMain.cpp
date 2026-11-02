@@ -112,7 +112,7 @@ ParseOptions(int argc, char** argv, FFDiskWriterOptions& options)
 {
   if (argc != 8)
   {
-    std::cerr << "Usage: FFDiskWriter inputPatchPath outputWavPath sampleRate midiNote bpm totalDurationMilliseconds holdDurationMilliseconds" << std::endl;
+    std::cerr << "Usage: FireflySynth2DiskWriter inputPatchPath outputWavPath sampleRate midiNote bpm totalDurationMilliseconds holdDurationMilliseconds" << std::endl;
     return false;
   }
 
@@ -123,15 +123,17 @@ ParseOptions(int argc, char** argv, FFDiskWriterOptions& options)
     return false;
   }
 
+  options.outputWavPath = argv[2];
+
   options.sampleRate = std::stoi(argv[3]);
-  if (options.sampleRate < 1 || options.sampleRate > 392000)
+  if (options.sampleRate < 1 || options.sampleRate > 192000)
   {
     std::cerr << "Invalid sample rate." << std::endl;
     return false;
   }
   
   options.midiNote = std::stoi(argv[4]);
-  if (options.midiNote < 0 || options.midiNote > 128)
+  if (options.midiNote < 0 || options.midiNote > 127)
   {
     std::cerr << "Invalid midi note." << std::endl;
     return false;
@@ -145,14 +147,14 @@ ParseOptions(int argc, char** argv, FFDiskWriterOptions& options)
   }
 
   options.totalDurationMilliseconds = std::stoi(argv[6]);
-  if (options.totalDurationMilliseconds < 1 || options.totalDurationMilliseconds > 100000)
+  if (options.totalDurationMilliseconds < 1 || options.totalDurationMilliseconds > 10000)
   {
     std::cerr << "Invalid total duration." << std::endl;
     return false;
   }
 
   options.holdDurationMilliseconds = std::stoi(argv[7]);
-  if (options.holdDurationMilliseconds < 1 || options.holdDurationMilliseconds > 100000)
+  if (options.holdDurationMilliseconds < 1 || options.holdDurationMilliseconds > 10000)
   {
     std::cerr << "Invalid hold duration." << std::endl;
     return false;
