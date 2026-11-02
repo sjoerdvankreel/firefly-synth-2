@@ -17,27 +17,9 @@ Cleanup()
   FBLogTerminate();
 }
 
-int 
-main(int argc, char** argv)
+static bool
+RenderPatchToFile(FFDiskWriterOptions const& options)
 {
-  (void)argc;
-  (void)argv;
-
-  // init
-  auto meta = FFPlugMeta(FBPlugFormat::VST3, false);
-  FBLogInit(meta);
-  FBUtilityInit(meta);
-  FBTuningInit();
-
-  // get options from commandline
-  FFDiskWriterOptions options;
-  options.bpm = 120;
-  options.midiNote = 60;
-  options.sampleRate = 48000;
-  options.durationMilliseconds = 1000;
-  options.outputWavPath = "c:\\temp\\testpatch123.wav";
-  options.inputPatchPath = "c:\\temp\\testpatch123.ff2preset";
-
   // we render a single note hit
   FBNoteEvent noteOn;
   noteOn.pos = 0;
@@ -73,57 +55,79 @@ main(int argc, char** argv)
   float* out[2] = { outData[0].data(), outData[1].data() };
   outputBlock.audio = FBHostAudioBlock(out, maxFrameCount);
 
-  { // destructors should run before cleanup
+  // create the plugin context, load the patchfile, and set up all audio parameters on both gui and dsp side
+  juce::MemoryBlock block;
+  juce::File inFile(options.inputPatchPath);
+  auto context = std::make_unique<FFDiskWriterContext>(options);
+  if (!inFile.loadFileAsData(block))
+  {
+    std::cout << "Load file failed." << std::endl;
+    return false;
+  }
+  std::vector<std::uint8_t> data((uint8_t*)block.getData(), (uint8_t*)block.getData() + block.getSize());
+  FBScalarStateContainer audioParams(*context->Topo());
+  if (!context->Topo()->LoadPatchFromBytesWithPreFormat2Check(data, *context, audioParams))
+  {
+    std::cout << "Load patch failed." << std::endl;
+    return false;
+  }
+  context->BulkUpdateAudioParamsToGUI(audioParams, true);
+  context->PushProcStateToDSP();
 
-    // create the plugin context, load the patchfile, and set up all audio parameters on both gui and dsp side
-    juce::MemoryBlock block;
-    juce::File inFile(options.inputPatchPath);
-    auto context = std::make_unique<FFDiskWriterContext>(options);
-    if (!inFile.loadFileAsData(block))
-    {
-      std::cout << "Load file failed." << std::endl;
-      Cleanup();
-      return 1;
-    }
-    std::vector<std::uint8_t> data((uint8_t*)block.getData(), (uint8_t*)block.getData() + block.getSize());
-    FBScalarStateContainer audioParams(*context->Topo());
-    if (!context->Topo()->LoadPatchFromBytesWithPreFormat2Check(data, *context, audioParams))
-    {
-      std::cout << "Load patch failed." << std::endl;
-      Cleanup();
-      return 1;
-    }
-    context->BulkUpdateAudioParamsToGUI(audioParams, true);
-    context->PushProcStateToDSP();
+  // make some noise
+  auto hostProcessor = std::make_unique<FBHostProcessor>(context.get());
+  hostProcessor->ProcessHost(inputBlock, outputBlock);
 
-    // make some noise
-    auto hostProcessor = std::make_unique<FBHostProcessor>(context.get());
-    hostProcessor->ProcessHost(inputBlock, outputBlock);
+  // dump to wav file
+  juce::AudioFormatWriterOptions juceOptions;
+  juceOptions = juceOptions.withNumChannels(2);
+  juceOptions = juceOptions.withBitsPerSample(32);
+  juceOptions = juceOptions.withSampleRate(options.sampleRate);
+  juceOptions = juceOptions.withSampleFormat(juce::AudioFormatWriterOptions::SampleFormat::floatingPoint);
 
-    // dump to wav file
-    juce::AudioFormatWriterOptions juceOptions;
-    juceOptions = juceOptions.withNumChannels(2);
-    juceOptions = juceOptions.withBitsPerSample(32);
-    juceOptions = juceOptions.withSampleRate(options.sampleRate);
-    juceOptions = juceOptions.withSampleFormat(juce::AudioFormatWriterOptions::SampleFormat::floatingPoint);
-
-    juce::WavAudioFormat format;
-    out[0] = out[0] + FBFixedBlockSamples;
-    out[1] = out[1] + FBFixedBlockSamples;
-    juce::File outFile(options.outputWavPath);
-    outFile.deleteFile();
-    std::unique_ptr<juce::OutputStream> outStream = std::make_unique<juce::FileOutputStream>(outFile);
-    auto writer = format.createWriterFor(outStream, juceOptions);
-    if (!writer)
-    {
-      std::cout << "Create writer failed." << std::endl;
-      Cleanup();
-      return 1;
-    }
-    writer->writeFromFloatArrays(out, 2, maxFrameCount - FBFixedBlockSamples);
-
+  juce::WavAudioFormat format;
+  out[0] = out[0] + FBFixedBlockSamples;
+  out[1] = out[1] + FBFixedBlockSamples;
+  juce::File outFile(options.outputWavPath);
+  outFile.deleteFile();
+  std::unique_ptr<juce::OutputStream> outStream = std::make_unique<juce::FileOutputStream>(outFile);
+  auto writer = format.createWriterFor(outStream, juceOptions);
+  if (!writer)
+  {
+    std::cout << "Create writer failed." << std::endl;
+    return false;
+  }
+  if (!writer->writeFromFloatArrays(out, 2, maxFrameCount - FBFixedBlockSamples))
+  {
+    std::cout << "Write audio failed." << std::endl;
+    return false;
   }
 
+  return true;
+}
+
+int 
+main(int argc, char** argv)
+{
+  (void)argc;
+  (void)argv;
+
+  // init
+  auto meta = FFPlugMeta(FBPlugFormat::VST3, false);
+  FBLogInit(meta);
+  FBUtilityInit(meta);
+  FBTuningInit();
+
+  // get options from commandline
+  FFDiskWriterOptions options;
+  options.bpm = 120;
+  options.midiNote = 60;
+  options.sampleRate = 48000;
+  options.durationMilliseconds = 1000;
+  options.outputWavPath = "c:\\temp\\testpatch123.wav";
+  options.inputPatchPath = "c:\\temp\\testpatch123.ff2preset";
+  
+  bool result = RenderPatchToFile(options);
   Cleanup();
-  return 0;
+  return result ? 0 : 1;
 }
