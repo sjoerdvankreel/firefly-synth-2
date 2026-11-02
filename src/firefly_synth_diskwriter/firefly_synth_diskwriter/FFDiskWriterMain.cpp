@@ -29,14 +29,23 @@ RenderPatchToFile(FFDiskWriterOptions const& options)
   noteOn.note.channel = 0;
   noteOn.note.key = options.midiNote;
 
-  // set up the input data -- no events other than a single note
-  int maxFrameCount = options.sampleRate * options.durationMilliseconds / 1000;
+  FBNoteEvent noteOff;
+  noteOn.pos = options.sampleRate * options.holdDurationMilliseconds / 1000;
+  noteOn.on = false;
+  noteOn.velo = 1.0f;
+  noteOn.note.id = 0;
+  noteOn.note.channel = 0;
+  noteOn.note.key = options.midiNote;
+
+  // set up the input data -- no events other than a single note on/off
+  int maxFrameCount = options.sampleRate * options.totalDurationMilliseconds / 1000;
   maxFrameCount += FBFixedBlockSamples; // because of the delay, we drop it later
   FBHostInputBlock inputBlock = {};
   inputBlock.projectTimeSamples = 0;
   inputBlock.bpm = (float)options.bpm;
   inputBlock.sampleCount = maxFrameCount;
   inputBlock.noteEvents.push_back(noteOn);
+  inputBlock.noteEvents.push_back(noteOff);
 
   // set up the input data buffers -- we won't use them, but the plug needs them
   // we are acting as the host right now
@@ -61,14 +70,14 @@ RenderPatchToFile(FFDiskWriterOptions const& options)
   auto context = std::make_unique<FFDiskWriterContext>(options);
   if (!inFile.loadFileAsData(block))
   {
-    std::cout << "Load file failed." << std::endl;
+    std::cerr << "Load file failed." << std::endl;
     return false;
   }
   std::vector<std::uint8_t> data((uint8_t*)block.getData(), (uint8_t*)block.getData() + block.getSize());
   FBScalarStateContainer audioParams(*context->Topo());
   if (!context->Topo()->LoadPatchFromBytesWithPreFormat2Check(data, *context, audioParams))
   {
-    std::cout << "Load patch failed." << std::endl;
+    std::cerr << "Load patch failed." << std::endl;
     return false;
   }
   context->BulkUpdateAudioParamsToGUI(audioParams, true);
@@ -94,12 +103,12 @@ RenderPatchToFile(FFDiskWriterOptions const& options)
   auto writer = format.createWriterFor(outStream, juceOptions);
   if (!writer)
   {
-    std::cout << "Create writer failed." << std::endl;
+    std::cerr << "Create writer failed." << std::endl;
     return false;
   }
   if (!writer->writeFromFloatArrays(out, 2, maxFrameCount - FBFixedBlockSamples))
   {
-    std::cout << "Write audio failed." << std::endl;
+    std::cerr << "Write audio failed." << std::endl;
     return false;
   }
 
@@ -123,7 +132,8 @@ main(int argc, char** argv)
   options.bpm = 120;
   options.midiNote = 60;
   options.sampleRate = 48000;
-  options.durationMilliseconds = 1000;
+  options.holdDurationMilliseconds = 1000;
+  options.totalDurationMilliseconds = 2000;
   options.outputWavPath = "c:\\temp\\testpatch123.wav";
   options.inputPatchPath = "c:\\temp\\testpatch123.ff2preset";
   
