@@ -7,6 +7,7 @@
 #include <firefly_synth_diskwriter/FFDiskWriterContext.hpp>
 
 #include <juce_audio_formats/juce_audio_formats.h>
+#include <iostream>
 
 static void
 Cleanup()
@@ -72,46 +73,56 @@ main(int argc, char** argv)
   float* out[2] = { outData[0].data(), outData[1].data() };
   outputBlock.audio = FBHostAudioBlock(out, maxFrameCount);
 
-  // create the plugin context, load the patchfile, and set up all audio parameters on both gui and dsp side
-  juce::MemoryBlock block;
-  juce::File inFile(options.inputPatchPath);
-  auto context = std::make_unique<FFDiskWriterContext>(options);
-  if (!inFile.loadFileAsData(block))
-  {
-    std::cout << "Load file failed." << std::endl;
-    Cleanup();
-    return 1;
+  { // destructors should run before cleanup
+
+    // create the plugin context, load the patchfile, and set up all audio parameters on both gui and dsp side
+    juce::MemoryBlock block;
+    juce::File inFile(options.inputPatchPath);
+    auto context = std::make_unique<FFDiskWriterContext>(options);
+    if (!inFile.loadFileAsData(block))
+    {
+      std::cout << "Load file failed." << std::endl;
+      Cleanup();
+      return 1;
+    }
+    std::vector<std::uint8_t> data((uint8_t*)block.getData(), (uint8_t*)block.getData() + block.getSize());
+    FBScalarStateContainer audioParams(*context->Topo());
+    if (!context->Topo()->LoadPatchFromBytesWithPreFormat2Check(data, *context, audioParams))
+    {
+      std::cout << "Load patch failed." << std::endl;
+      Cleanup();
+      return 1;
+    }
+    context->BulkUpdateAudioParamsToGUI(audioParams, true);
+    context->PushProcStateToDSP();
+
+    // make some noise
+    auto hostProcessor = std::make_unique<FBHostProcessor>(context.get());
+    hostProcessor->ProcessHost(inputBlock, outputBlock);
+
+    // dump to wav file
+    juce::AudioFormatWriterOptions juceOptions;
+    juceOptions = juceOptions.withNumChannels(2);
+    juceOptions = juceOptions.withBitsPerSample(32);
+    juceOptions = juceOptions.withSampleRate(options.sampleRate);
+    juceOptions = juceOptions.withSampleFormat(juce::AudioFormatWriterOptions::SampleFormat::floatingPoint);
+
+    juce::WavAudioFormat format;
+    out[0] = out[0] + FBFixedBlockSamples;
+    out[1] = out[1] + FBFixedBlockSamples;
+    juce::File outFile(options.outputWavPath);
+    outFile.deleteFile();
+    std::unique_ptr<juce::OutputStream> outStream = std::make_unique<juce::FileOutputStream>(outFile);
+    auto writer = format.createWriterFor(outStream, juceOptions);
+    if (!writer)
+    {
+      std::cout << "Create writer failed." << std::endl;
+      Cleanup();
+      return 1;
+    }
+    writer->writeFromFloatArrays(out, 2, maxFrameCount - FBFixedBlockSamples);
+
   }
-  std::vector<std::uint8_t> data((uint8_t*)block.getData(), (uint8_t*)block.getData() + block.getSize());
-  FBScalarStateContainer audioParams(*context->Topo());
-  if (!context->Topo()->LoadPatchFromBytesWithPreFormat2Check(data, *context, audioParams))
-  {
-    std::cout << "Load patch failed." << std::endl;
-    Cleanup();
-    return 1;
-  }
-  context->BulkUpdateAudioParamsToGUI(audioParams, true);
-  context->PushProcStateToDSP();
-
-  // make some noise
-  auto hostProcessor = std::make_unique<FBHostProcessor>(context.get());
-  hostProcessor->ProcessHost(inputBlock, outputBlock);
-
-  // dump to wav file
-  juce::AudioFormatWriterOptions juceOptions;
-  juceOptions = juceOptions.withNumChannels(2);
-  juceOptions = juceOptions.withBitsPerSample(32);
-  juceOptions = juceOptions.withSampleRate(options.sampleRate);
-  juceOptions = juceOptions.withSampleFormat(juce::AudioFormatWriterOptions::SampleFormat::floatingPoint);
-
-  juce::WavAudioFormat format;
-  out[0] = out[0] + FBFixedBlockSamples;
-  out[1] = out[1] + FBFixedBlockSamples;
-  juce::File outFile(options.outputWavPath);
-  outFile.deleteFile();
-  std::unique_ptr<juce::OutputStream> outStream = std::make_unique<juce::FileOutputStream>(outFile);
-  auto writer = format.createWriterFor(outStream, juceOptions);
-  writer->writeFromFloatArrays(out, 2, maxFrameCount - FBFixedBlockSamples);
 
   Cleanup();
   return 0;
