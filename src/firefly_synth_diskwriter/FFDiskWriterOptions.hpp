@@ -4,8 +4,9 @@
 
 struct FFDiskWriterOptions
 {
+  int bpm;
+  int midiNote;
   int sampleRate;
-  int baseMIDINote;
   int durationMilliseconds;
   std::string outputRawPath;
   std::string inputPatchPath;
