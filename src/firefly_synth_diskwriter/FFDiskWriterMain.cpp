@@ -1,12 +1,24 @@
+#include <firefly_base/dsp/shared/FBTuning.hpp>
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
+#include <firefly_base/base/shared/FBLogging.hpp>
+
+#include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth_diskwriter/FFDiskWriterContext.hpp>
+
+#include <juce_audio_formats/juce_audio_formats.h>
 
 int 
 main(int argc, char** argv)
 {
   (void)argc;
   (void)argv;
+
+  // init
+  auto meta = FFPlugMeta(FBPlugFormat::VST3, false);
+  FBLogInit(meta);
+  FBUtilityInit(meta);
+  FBTuningInit();
 
   // get options from commandline
   FFDiskWriterOptions options;
@@ -28,6 +40,7 @@ main(int argc, char** argv)
 
   // set up the input data -- no events other than a single note
   int maxFrameCount = options.sampleRate * options.durationMilliseconds / 1000;
+  maxFrameCount += FBFixedBlockSamples; // because of the delay, we drop it later
   FBHostInputBlock inputBlock = {};
   inputBlock.projectTimeSamples = 0;
   inputBlock.bpm = (float)options.bpm;
@@ -68,15 +81,19 @@ main(int argc, char** argv)
   auto hostProcessor = std::make_unique<FBHostProcessor>(context.get());
   hostProcessor->ProcessHost(inputBlock, outputBlock);
 
-  // interleave the channels and dump to raw audio file
-  std::vector<float> rawAudioInterleaved(2 * maxFrameCount, 0.0f);
-  for (int f = 0; f < maxFrameCount; f++)
-  {
-    rawAudioInterleaved[f * 2] = out[0][f];
-    rawAudioInterleaved[f * 2 + 1] = out[1][f];
-  }
-  juce::File f(options.outputRawPath);
-  f.replaceWithData(rawAudioInterleaved.data(), rawAudioInterleaved.size() * sizeof(float));
+  // dump to wav file
+  juce::AudioFormatWriterOptions juceOptions;
+  juceOptions = juceOptions.withNumChannels(2);
+  juceOptions = juceOptions.withBitsPerSample(32);
+  juceOptions = juceOptions.withSampleRate(options.sampleRate);
+  juceOptions = juceOptions.withSampleFormat(juce::AudioFormatWriterOptions::SampleFormat::floatingPoint);
+
+  juce::WavAudioFormat format;
+  out[0] = out[0] + FBFixedBlockSamples;
+  out[1] = out[1] + FBFixedBlockSamples;
+  std::unique_ptr<juce::OutputStream> outFile = std::make_unique<juce::FileOutputStream>(juce::File(options.outputRawPath));
+  auto writer = format.createWriterFor(outFile, juceOptions);
+  writer->write((int const**)out, maxFrameCount - FBFixedBlockSamples);
 
   return 0;
 }

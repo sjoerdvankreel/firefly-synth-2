@@ -1,5 +1,6 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFPlugState.hpp>
+#include <firefly_base/dsp/shared/FBTuning.hpp>
 #include <firefly_synth/dsp/plug/FFPlugProcessor.hpp>
 #include <firefly_synth_diskwriter/FFDiskWriterContext.hpp>
 #include <firefly_synth_diskwriter/FFDiskWriterOptions.hpp>
@@ -7,7 +8,7 @@
 FFDiskWriterContext::
 FFDiskWriterContext(FFDiskWriterOptions const& options):
 FBHostContext(
-  FFMakeTopo(FBPlugFormat::VST3, false), nullptr, 
+  FFMakeTopo(FBPlugFormat::VST3, false), FBTuningGetMTSClient(),
   std::make_unique<FBExchangeStateQueue<FBQueuedExchangeState<FFExchangeState>>>()),
 _options(options),
 _audioParams(*Topo()) {}
