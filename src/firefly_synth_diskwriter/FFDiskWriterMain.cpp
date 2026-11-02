@@ -8,6 +8,14 @@
 
 #include <juce_audio_formats/juce_audio_formats.h>
 
+static void
+Cleanup()
+{
+  FBTuningTerminate();
+  FBUtilityTerminate();
+  FBLogTerminate();
+}
+
 int 
 main(int argc, char** argv)
 {
@@ -26,7 +34,7 @@ main(int argc, char** argv)
   options.midiNote = 60;
   options.sampleRate = 48000;
   options.durationMilliseconds = 1000;
-  options.outputRawPath = "c:\\temp\\testpatch123.raw";
+  options.outputWavPath = "c:\\temp\\testpatch123.wav";
   options.inputPatchPath = "c:\\temp\\testpatch123.ff2preset";
 
   // we render a single note hit
@@ -69,11 +77,19 @@ main(int argc, char** argv)
   juce::File inFile(options.inputPatchPath);
   auto context = std::make_unique<FFDiskWriterContext>(options);
   if (!inFile.loadFileAsData(block))
+  {
+    std::cout << "Load file failed." << std::endl;
+    Cleanup();
     return 1;
+  }
   std::vector<std::uint8_t> data((uint8_t*)block.getData(), (uint8_t*)block.getData() + block.getSize());
   FBScalarStateContainer audioParams(*context->Topo());
   if (!context->Topo()->LoadPatchFromBytesWithPreFormat2Check(data, *context, audioParams))
+  {
+    std::cout << "Load patch failed." << std::endl;
+    Cleanup();
     return 1;
+  }
   context->BulkUpdateAudioParamsToGUI(audioParams, true);
   context->PushProcStateToDSP();
 
@@ -91,11 +107,12 @@ main(int argc, char** argv)
   juce::WavAudioFormat format;
   out[0] = out[0] + FBFixedBlockSamples;
   out[1] = out[1] + FBFixedBlockSamples;
-  juce::File outFile(options.outputRawPath);
+  juce::File outFile(options.outputWavPath);
   outFile.deleteFile();
   std::unique_ptr<juce::OutputStream> outStream = std::make_unique<juce::FileOutputStream>(outFile);
   auto writer = format.createWriterFor(outStream, juceOptions);
   writer->writeFromFloatArrays(out, 2, maxFrameCount - FBFixedBlockSamples);
 
+  Cleanup();
   return 0;
 }

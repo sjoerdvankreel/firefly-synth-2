@@ -8,6 +8,6 @@ struct FFDiskWriterOptions
   int midiNote;
   int sampleRate;
   int durationMilliseconds;
-  std::string outputRawPath;
+  std::string outputWavPath;
   std::string inputPatchPath;
 };
