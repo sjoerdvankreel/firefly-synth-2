@@ -91,9 +91,11 @@ main(int argc, char** argv)
   juce::WavAudioFormat format;
   out[0] = out[0] + FBFixedBlockSamples;
   out[1] = out[1] + FBFixedBlockSamples;
-  std::unique_ptr<juce::OutputStream> outFile = std::make_unique<juce::FileOutputStream>(juce::File(options.outputRawPath));
-  auto writer = format.createWriterFor(outFile, juceOptions);
-  writer->write((int const**)out, maxFrameCount - FBFixedBlockSamples);
+  juce::File outFile(options.outputRawPath);
+  outFile.deleteFile();
+  std::unique_ptr<juce::OutputStream> outStream = std::make_unique<juce::FileOutputStream>(outFile);
+  auto writer = format.createWriterFor(outStream, juceOptions);
+  writer->writeFromFloatArrays(out, 2, maxFrameCount - FBFixedBlockSamples);
 
   return 0;
 }
