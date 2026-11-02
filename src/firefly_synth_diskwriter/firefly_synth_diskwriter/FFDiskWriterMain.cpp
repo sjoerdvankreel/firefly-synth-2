@@ -9,14 +9,6 @@
 #include <juce_audio_formats/juce_audio_formats.h>
 #include <iostream>
 
-static void
-Cleanup()
-{
-  FBTuningTerminate();
-  FBUtilityTerminate();
-  FBLogTerminate();
-}
-
 static bool
 RenderPatchToFile(FFDiskWriterOptions const& options)
 {
@@ -115,29 +107,75 @@ RenderPatchToFile(FFDiskWriterOptions const& options)
   return true;
 }
 
+static bool
+ParseOptions(int argc, char** argv, FFDiskWriterOptions& options)
+{
+  if (argc != 8)
+  {
+    std::cerr << "Usage: FFDiskWriter inputPatchPath outputWavPath sampleRate midiNote bpm totalDurationMilliseconds holdDurationMilliseconds" << std::endl;
+    return false;
+  }
+
+  options.inputPatchPath = argv[1];
+  if (!juce::File(options.inputPatchPath).exists())
+  {
+    std::cerr << "Input file not found." << std::endl;
+    return false;
+  }
+
+  options.sampleRate = std::stoi(argv[3]);
+  if (options.sampleRate < 1 || options.sampleRate > 392000)
+  {
+    std::cerr << "Invalid sample rate." << std::endl;
+    return false;
+  }
+  
+  options.midiNote = std::stoi(argv[4]);
+  if (options.midiNote < 0 || options.midiNote > 128)
+  {
+    std::cerr << "Invalid midi note." << std::endl;
+    return false;
+  }
+
+  options.bpm = std::stoi(argv[5]);
+  if (options.bpm < 1 || options.bpm > 1000)
+  {
+    std::cerr << "Invalid bpm." << std::endl;
+    return false;
+  }
+
+  options.totalDurationMilliseconds = std::stoi(argv[6]);
+  if (options.totalDurationMilliseconds < 1 || options.totalDurationMilliseconds > 100000)
+  {
+    std::cerr << "Invalid total duration." << std::endl;
+    return false;
+  }
+
+  options.holdDurationMilliseconds = std::stoi(argv[7]);
+  if (options.holdDurationMilliseconds < 1 || options.holdDurationMilliseconds > 100000)
+  {
+    std::cerr << "Invalid hold duration." << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
 int 
 main(int argc, char** argv)
 {
-  (void)argc;
-  (void)argv;
-
-  // init
   auto meta = FFPlugMeta(FBPlugFormat::VST3, false);
   FBLogInit(meta);
   FBUtilityInit(meta);
   FBTuningInit();
-
-  // get options from commandline
-  FFDiskWriterOptions options;
-  options.bpm = 120;
-  options.midiNote = 60;
-  options.sampleRate = 48000;
-  options.holdDurationMilliseconds = 1000;
-  options.totalDurationMilliseconds = 2000;
-  options.outputWavPath = "c:\\temp\\testpatch123.wav";
-  options.inputPatchPath = "c:\\temp\\testpatch123.ff2preset";
   
-  bool result = RenderPatchToFile(options);
-  Cleanup();
+  FFDiskWriterOptions options;
+  bool result = ParseOptions(argc, argv, options);
+  if(result)
+    result &= RenderPatchToFile(options);
+
+  FBTuningTerminate();
+  FBUtilityTerminate();
+  FBLogTerminate();
   return result ? 0 : 1;
 }
