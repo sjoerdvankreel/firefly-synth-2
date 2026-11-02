@@ -30,12 +30,12 @@ RenderPatchToFile(FFDiskWriterOptions const& options)
   noteOn.note.key = options.midiNote;
 
   FBNoteEvent noteOff;
-  noteOn.pos = options.sampleRate * options.holdDurationMilliseconds / 1000;
-  noteOn.on = false;
-  noteOn.velo = 1.0f;
-  noteOn.note.id = 0;
-  noteOn.note.channel = 0;
-  noteOn.note.key = options.midiNote;
+  noteOff.pos = options.sampleRate * options.holdDurationMilliseconds / 1000;
+  noteOff.on = false;
+  noteOff.velo = 1.0f;
+  noteOff.note.id = 0;
+  noteOff.note.channel = 0;
+  noteOff.note.key = options.midiNote;
 
   // set up the input data -- no events other than a single note on/off
   int maxFrameCount = options.sampleRate * options.totalDurationMilliseconds / 1000;
