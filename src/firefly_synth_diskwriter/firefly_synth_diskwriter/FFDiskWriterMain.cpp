@@ -154,7 +154,7 @@ ParseOptions(int argc, char** argv, FFDiskWriterOptions& options)
   }
 
   options.holdDurationMilliseconds = std::stoi(argv[7]);
-  if (options.holdDurationMilliseconds < 1 || options.holdDurationMilliseconds > 10000)
+  if (options.holdDurationMilliseconds < 1 || options.holdDurationMilliseconds > 10000 || options.holdDurationMilliseconds >= options.totalDurationMilliseconds)
   {
     std::cerr << "Invalid hold duration." << std::endl;
     return false;
