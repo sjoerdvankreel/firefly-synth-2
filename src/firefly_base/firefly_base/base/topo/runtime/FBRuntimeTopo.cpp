@@ -511,7 +511,8 @@ FBRuntimeTopo::LoadStateFromBytes(
     return false;
   }
 
-  int formatVersion = *((int*)(bytes.data() + Magic.length()));
+  int formatVersion = 0;
+  std::memcpy(&formatVersion, bytes.data() + Magic.length(), sizeof(formatVersion));
   if (formatVersion != FileFormatVersion)
   {
     FB_LOG_ERROR("Unexpected file format version.");
