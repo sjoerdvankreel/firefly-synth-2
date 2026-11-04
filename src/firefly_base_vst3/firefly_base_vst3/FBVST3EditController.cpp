@@ -34,6 +34,16 @@ MakeMIDIParamInfo(int message, int controlChange)
   result.id = FBVST3MIDIParameterMappingBegin + message + controlChange;
   result.defaultNormalizedValue = 0.0;
   result.flags = ParameterInfo::kIsHidden;
+
+  std::string title;
+  if (message == FBMIDIEvent::CPMessageId)
+    title = "MIDI Channel Pressure";
+  else if (message == FBMIDIEvent::PBMessageId)
+    title = "MIDI Pitch Bend";
+  else
+    title = "MIDI CC " + std::to_string(controlChange);
+  FBVST3CopyToString128(title, result.title);
+  FBVST3CopyToString128(title, result.shortTitle);
   return result;
 }
 

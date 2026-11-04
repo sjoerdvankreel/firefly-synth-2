@@ -243,5 +243,6 @@ FBHostProcessor::ProcessHost(
   auto processDuration = std::chrono::duration_cast<std::chrono::microseconds>(processEndTime - processBeginTime);
   float durationSeconds = processDuration.count() / (1000.0f * 1000.0f);
   float windowTimeSeconds = input.sampleCount / _sampleRate;
-  _prevRoundCpuUsage = durationSeconds / windowTimeSeconds;
+  if (windowTimeSeconds > 0.0f)
+    _prevRoundCpuUsage = durationSeconds / windowTimeSeconds;
 }

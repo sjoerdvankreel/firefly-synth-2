@@ -254,7 +254,11 @@ FBVST3Plugin::process(ProcessData& data)
     std::sort(accAuto.begin(), accAuto.end(), FBAccAutoEventOrderByParamThenPos);
 
     _output.outputParams.clear();
-    _output.audio = FBHostAudioBlock(data.outputs->channelBuffers32, data.numSamples);
+    // Hosts may call process without audio buffers to flush parameter changes.
+    if (data.numOutputs > 0 && data.outputs != nullptr && data.outputs[0].channelBuffers32 != nullptr)
+      _output.audio = FBHostAudioBlock(data.outputs[0].channelBuffers32, data.numSamples);
+    else
+      _output.audio = FBHostAudioBlock();
 
     float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
     _input.mainAudio = FBHostAudioBlock(zeroIn, data.numSamples);
