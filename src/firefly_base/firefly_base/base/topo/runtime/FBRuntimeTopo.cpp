@@ -865,6 +865,8 @@ FBRuntimeTopo::LoadAudioClipsFromVar(juce::var const& json, std::map<std::string
     if (!clipJson.hasProperty("sampleRate") || !clipJson["sampleRate"].isInt())
       return false;
     clip.sampleRate = (int)clipJson["sampleRate"];
+    if (clip.sampleRate < 1)
+      return false;
     if (!clipJson.hasProperty("originalSampleRate") || !clipJson["originalSampleRate"].isInt())
       return false;
     clip.originalSampleRate = (int)clipJson["originalSampleRate"];
@@ -872,6 +874,8 @@ FBRuntimeTopo::LoadAudioClipsFromVar(juce::var const& json, std::map<std::string
       return false;
     MemoryOutputStream stream;
     if (!Base64::convertFromBase64(stream, clipJson["data"].toString()))
+      return false;
+    if (clip.channels < 1)
       return false;
     if (stream.getDataSize() % (sizeof(float) * clip.channels) != 0)
       return false;
