@@ -8,10 +8,9 @@
 #include <set>
 
 FBProcStateContainer::
-FBProcStateContainer(FBRuntimeTopo const& topo, std::map<std::string, FBAudioClip>* audioClips):
+FBProcStateContainer(FBRuntimeTopo const& topo):
 _rawState(topo.static_->allocRawProcState()),
-_freeRawState(topo.static_->freeRawProcState),
-_audioClips(audioClips)
+_freeRawState(topo.static_->freeRawProcState)
 {
   // MIDI PB is special as it defaults to 0.5
   _midiParams[FBMIDIEvent::PBMessageId].Global().InitProcessing(0.5f);

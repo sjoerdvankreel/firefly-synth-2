@@ -28,12 +28,15 @@ class IFBPlugProcessor;
 class FBGUIStateContainer;
 class FBExchangeStateContainer;
 
+// DSP audio clips are owned by the GUI thread, and borrowed by the audio thread.
+// GUI sends non-owning pointers to the audio thread, audio thread sends them
+// back when it no longer uses them, GUI deletes them only after that.
 struct FBAudioClipToDSPCommand
 {
   enum { ClearSingle, LoadSingle, LoadAll } Type = {};
   std::string id = {};
-  FBAudioClip clip = {};
-  std::map<std::string, FBAudioClip> allClips = {};
+  FBAudioClip const* clip = {};
+  std::vector<std::pair<std::string, FBAudioClip const*>> allClips = {};
 };
 
 struct FBHostContextMenuItem
@@ -67,9 +70,21 @@ class FBHostContext:
 public juce::Timer
 {
   bool _isPatchLoaded = {};
-  std::map<std::string, FBAudioClip> _guiAudioClips = {};
-  std::map<std::string, FBAudioClip> _dspAudioClips = {};
   std::vector<IFBHostContextGUIListener*> _guiListeners = {};
+
+  // GUI thread only. Small, downsampled clips for display and graphs.
+  // The views point into _guiAudioClips, for graph rendering.
+  std::map<std::string, FBAudioClip> _guiAudioClips = {};
+  std::map<std::string, FBAudioClip const*> _guiAudioClipViews = {};
+
+  // GUI thread only. Owner of all full-size DSP clips.
+  // Retired clips are no longer current but may still be in use
+  // by the audio thread, until it sends them back.
+  std::map<std::string, std::unique_ptr<FBAudioClip>> _ownedDSPAudioClips = {};
+  std::map<FBAudioClip const*, std::unique_ptr<FBAudioClip>> _retiredDSPAudioClips = {};
+
+  // Audio thread only. Non-owning, borrowed from _ownedDSPAudioClips.
+  std::map<std::string, FBAudioClip const*> _dspAudioClips = {};
 
   std::unique_ptr<FBRuntimeTopo> _topo;
   MTSClient* _mtsClient;
@@ -86,12 +101,16 @@ public juce::Timer
   std::unique_ptr<FBExchangeStateContainer> _exchangeFromDSPState;
   std::unique_ptr<FBExchangeStateQueueBase> _exchangeStateQueue;
 
-  mutable std::mutex _blockWritingAudioClipsToDSP = {};
-  std::atomic_bool _writingAudioClipsToDSPIsDirty = {};
+  // Both unbounded. Enqueueing may allocate, but only happens as
+  // a result of loading clips, never during plain processing.
   moodycamel::ReaderWriterQueue<FBAudioClipToDSPCommand, 16> _audioClipToDSPCommands;
+  moodycamel::ReaderWriterQueue<FBAudioClip const*, 16> _audioClipsReturnedFromDSP;
   moodycamel::ReaderWriterQueue<std::vector<float>, 16> _audioParamsToDSPQueue;
 
   void ShowOnlineManualForModule(int index) const;
+  void RebuildGUIAudioClipViews();
+  void RetireOwnedDSPAudioClip(std::string const& id);
+  void ReleaseDSPAudioClipsReturnedFromDSP();
 
 protected:
   FBHostContext(
@@ -138,12 +157,16 @@ public:
   void PushProcStateToDSP();
   void PullProcStateFromGUI();
 
+  // Audio thread.
   void PullDSPAudioClipsFromGUI();
+  std::map<std::string, FBAudioClip const*> const& GetDSPAudioClips() const { return _dspAudioClips; }
+
+  // GUI thread. None of these wait for the audio thread.
   void ClearDSPAudioClipToDSP(std::string const& id);
   void PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip);
+  void PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips);
   std::map<std::string, FBAudioClip> PullDSPAudioClipsToGUI() const;
   bool PullDSPAudioClipToGUI(std::string const& id, FBAudioClip& clip) const;
-  void PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips);
 
   void ClearGUIAndDSPAudioClips();
   void RemoveGUIAndDSPAudioClip(std::string const& id);
@@ -151,13 +174,11 @@ public:
 
   FBProcStateContainer* ProcState() { return _procState.get(); }
   FBExchangeStateContainer* ExchangeToGUIState() { return _exchangeToGUIState.get(); }
-  std::map<std::string, FBAudioClip>& GetDSPAudioClips() { return _dspAudioClips; }
-  std::map<std::string, FBAudioClip> const& GetDSPAudioClips() const { return _dspAudioClips; }
 
   FBAudioClip const* FindGUIAudioClip(std::string const& id) const;
   void SetGUIAudioClips(std::map<std::string, FBAudioClip> const& clips);
-  std::map<std::string, FBAudioClip>& GetGUIAudioClips() { return _guiAudioClips; }
   std::map<std::string, FBAudioClip> const& GetGUIAudioClips() const { return _guiAudioClips; }
+  std::map<std::string, FBAudioClip const*> const& GetGUIAudioClipViews() const { return _guiAudioClipViews; }
 
   void MarkPatchAsSessionState();
   void MarkPatchAsPatchState(std::string const& name);

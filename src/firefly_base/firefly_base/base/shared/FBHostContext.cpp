@@ -35,11 +35,12 @@ _undoState(this),
 _patchState(*_topo.get()),
 _sessionState(*_topo.get()),
 _guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
-_procState(std::make_unique<FBProcStateContainer>(*_topo, &_dspAudioClips)),
+_procState(std::make_unique<FBProcStateContainer>(*_topo)),
 _exchangeToGUIState(std::make_unique<FBExchangeStateContainer>(*_topo)),
 _exchangeFromDSPState(std::make_unique<FBExchangeStateContainer>(*_topo)),
 _exchangeStateQueue(std::move(exchangeStateQueue)),
 _audioClipToDSPCommands(16),
+_audioClipsReturnedFromDSP(16),
 _audioParamsToDSPQueue(16)
 {
 }
@@ -49,6 +50,7 @@ FBHostContext::timerCallback()
 {
   FBWithLogException([this]()
   {
+    ReleaseDSPAudioClipsReturnedFromDSP();
     bool receivedExchange = false;
     while (_exchangeStateQueue->TryDequeue(ExchangeFromDSPState()->Raw()))
       receivedExchange = true;
@@ -82,6 +84,7 @@ FBHostContext::SetGUIAudioClips(std::map<std::string, FBAudioClip> const& clips)
 {
   _undoState.Clear();
   _guiAudioClips = clips;
+  RebuildGUIAudioClipViews();
   OnGUIAudioClipsChanged();
 }
 
@@ -92,6 +95,7 @@ FBHostContext::ClearGUIAndDSPAudioClips()
   for (auto const& kv : _guiAudioClips)
     ClearDSPAudioClipToDSP(kv.first);
   _guiAudioClips.clear();
+  RebuildGUIAudioClipViews();
   OnGUIAudioClipsChanged();
 }
 
@@ -101,6 +105,7 @@ FBHostContext::RemoveGUIAndDSPAudioClip(std::string const& id)
   _undoState.Clear();
   ClearDSPAudioClipToDSP(id);
   _guiAudioClips.erase(id);
+  RebuildGUIAudioClipViews();
   OnGUIAudioClipsChanged();
 }
 
@@ -110,8 +115,17 @@ FBHostContext::SetGUIAndDSPAudioClip(
 {
   _undoState.Clear();
   _guiAudioClips[id] = FBAudioClip(guiClip);
+  RebuildGUIAudioClipViews();
   PushDSPAudioClipToDSP(id, dspClip);
   OnGUIAudioClipsChanged();
+}
+
+void
+FBHostContext::RebuildGUIAudioClipViews()
+{
+  _guiAudioClipViews.clear();
+  for (auto const& kv : _guiAudioClips)
+    _guiAudioClipViews[kv.first] = &kv.second;
 }
 
 void
@@ -140,83 +154,131 @@ FBHostContext::PushProcStateToDSP()
 std::map<std::string, FBAudioClip>
 FBHostContext::PullDSPAudioClipsToGUI() const
 {
-  // Sue me. I should probably bring in a condition variable here.
-  std::lock_guard lock(_blockWritingAudioClipsToDSP);
-  while (_writingAudioClipsToDSPIsDirty.load());
-  return GetDSPAudioClips();
+  // The GUI owns the DSP clips, so its own map is always up to date
+  // with respect to what it has sent, no need to wait for the audio thread.
+  std::map<std::string, FBAudioClip> result = {};
+  for (auto const& kv : _ownedDSPAudioClips)
+    result[kv.first] = FBAudioClip(*kv.second);
+  return result;
 }
 
 bool
 FBHostContext::PullDSPAudioClipToGUI(std::string const& id, FBAudioClip& clip) const
 {
-  // Sue me. I should probably bring in a condition variable here.
-  std::lock_guard lock(_blockWritingAudioClipsToDSP);
-  while (_writingAudioClipsToDSPIsDirty.load());
-  auto const& clips = GetDSPAudioClips();
-  auto iter = clips.find(id);
-  if (iter == clips.end())
+  auto iter = _ownedDSPAudioClips.find(id);
+  if (iter == _ownedDSPAudioClips.end())
     return false;
-  clip = FBAudioClip(iter->second);
+  clip = FBAudioClip(*iter->second);
   return true;
+}
+
+void
+FBHostContext::RetireOwnedDSPAudioClip(std::string const& id)
+{
+  // Not deleted yet, the audio thread may still be using it.
+  // It is deleted when the audio thread sends it back.
+  auto iter = _ownedDSPAudioClips.find(id);
+  if (iter == _ownedDSPAudioClips.end())
+    return;
+  FBAudioClip const* key = iter->second.get();
+  _retiredDSPAudioClips[key] = std::move(iter->second);
+  _ownedDSPAudioClips.erase(iter);
+}
+
+void
+FBHostContext::ReleaseDSPAudioClipsReturnedFromDSP()
+{
+  FBAudioClip const* clip = nullptr;
+  while (_audioClipsReturnedFromDSP.try_dequeue(clip))
+    _retiredDSPAudioClips.erase(clip);
 }
 
 void
 FBHostContext::ClearDSPAudioClipToDSP(std::string const& id)
 {
-  std::lock_guard lock(_blockWritingAudioClipsToDSP);
-  _writingAudioClipsToDSPIsDirty.store(true);
+  ReleaseDSPAudioClipsReturnedFromDSP();
+  RetireOwnedDSPAudioClip(id);
   FBAudioClipToDSPCommand command = {};
   command.id = id;
   command.Type = FBAudioClipToDSPCommand::ClearSingle;
-  _audioClipToDSPCommands.enqueue(command);
+  _audioClipToDSPCommands.enqueue(std::move(command));
 }
 
 void
 FBHostContext::PushDSPAudioClipToDSP(std::string const& id, FBAudioClip const& clip)
 {
-  std::lock_guard lock(_blockWritingAudioClipsToDSP);
-  _writingAudioClipsToDSPIsDirty.store(true);
+  ReleaseDSPAudioClipsReturnedFromDSP();
+  RetireOwnedDSPAudioClip(id);
+  auto owned = std::make_unique<FBAudioClip>(clip);
   FBAudioClipToDSPCommand command = {};
   command.id = id;
+  command.clip = owned.get();
   command.Type = FBAudioClipToDSPCommand::LoadSingle;
-  command.clip = FBAudioClip(clip);
-  _audioClipToDSPCommands.enqueue(command);
+  _ownedDSPAudioClips[id] = std::move(owned);
+  _audioClipToDSPCommands.enqueue(std::move(command));
 }
 
 void
 FBHostContext::PushDSPAudioClipsToDSP(std::map<std::string, FBAudioClip> const& dspClips)
 {
-  std::lock_guard lock(_blockWritingAudioClipsToDSP);
-  _writingAudioClipsToDSPIsDirty.store(true);
+  ReleaseDSPAudioClipsReturnedFromDSP();
+  while (!_ownedDSPAudioClips.empty())
+    RetireOwnedDSPAudioClip(_ownedDSPAudioClips.begin()->first);
   FBAudioClipToDSPCommand command = {};
   command.Type = FBAudioClipToDSPCommand::LoadAll;
-  command.allClips = dspClips;
-  _audioClipToDSPCommands.enqueue(command);
+  for (auto const& kv : dspClips)
+  {
+    auto owned = std::make_unique<FBAudioClip>(kv.second);
+    command.allClips.push_back({ kv.first, owned.get() });
+    _ownedDSPAudioClips[kv.first] = std::move(owned);
+  }
+  _audioClipToDSPCommands.enqueue(std::move(command));
 }
 
 void
 FBHostContext::PullDSPAudioClipsFromGUI()
 {
+  // Audio thread. Every clip we stop using goes back to the GUI, which deletes it.
+  // This only allocates/frees when clips were actually (re)loaded, never on plain processing.
   FBAudioClipToDSPCommand command;
   while (_audioClipToDSPCommands.try_dequeue(command))
   {
     switch (command.Type)
     {
     case FBAudioClipToDSPCommand::ClearSingle:
-      GetDSPAudioClips().erase(command.id);
+    {
+      auto iter = _dspAudioClips.find(command.id);
+      if (iter != _dspAudioClips.end())
+      {
+        _audioClipsReturnedFromDSP.enqueue(iter->second);
+        _dspAudioClips.erase(iter);
+      }
       break;
+    }
     case FBAudioClipToDSPCommand::LoadSingle:
-      GetDSPAudioClips()[command.id] = FBAudioClip(command.clip);
+    {
+      auto iter = _dspAudioClips.find(command.id);
+      if (iter == _dspAudioClips.end())
+        _dspAudioClips[command.id] = command.clip;
+      else
+      {
+        _audioClipsReturnedFromDSP.enqueue(iter->second);
+        iter->second = command.clip;
+      }
       break;
+    }
     case FBAudioClipToDSPCommand::LoadAll:
-      GetDSPAudioClips() = command.allClips;
+      for (auto const& kv : _dspAudioClips)
+        _audioClipsReturnedFromDSP.enqueue(kv.second);
+      _dspAudioClips.clear();
+      for (auto const& entry : command.allClips)
+        _dspAudioClips[entry.first] = entry.second;
       break;
     default:
       FB_ASSERT(false);
       break;
     }
   }
-  _writingAudioClipsToDSPIsDirty.store(false);
 }
 
 void 

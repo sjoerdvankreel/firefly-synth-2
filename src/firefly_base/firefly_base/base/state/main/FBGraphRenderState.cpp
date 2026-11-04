@@ -31,7 +31,7 @@ FBGraphRenderState(FBPlugGUI const* plugGUI):
 _plugGUI(plugGUI),
 _input(std::make_unique<FBPlugInputBlock>()),
 _moduleState(std::make_unique<FBModuleProcState>()),
-_procState(std::make_unique<FBProcStateContainer>(*plugGUI->HostContext()->Topo(), &plugGUI->HostContext()->GetGUIAudioClips())),
+_procState(std::make_unique<FBProcStateContainer>(*plugGUI->HostContext()->Topo())),
 _primaryVoiceManager(std::make_unique<FBVoiceManager>(_procState.get())),
 _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
 {
@@ -40,7 +40,7 @@ _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
   _input->noteEvents = &_noteEvents;
   _input->procState = _procState.get();
   _input->noteMatrixRaw = &_noteMatrixRaw;
-  _input->audioClips = &plugGUI->HostContext()->GetGUIAudioClips();
+  _input->audioClips = &plugGUI->HostContext()->GetGUIAudioClipViews();
 
   auto hostContext = plugGUI->HostContext();
   for (int i = 0; i < hostContext->Topo()->audio.params.size(); i++)

@@ -97,7 +97,7 @@ FFOsciProcessor::ProcessSample(
     }
 
     int const subBlockSize = 4;
-    auto const& clip = iter->second;
+    auto const& clip = *iter->second;
     float freqC4 = FBPitchToFreq(60.0f);
     _graphPosition += FBFixedBlockSamples;
     double baseSpeedRatio = _graph ? 1.0 : clip.sampleRate / ((double)sampleRate * _oversampleTimes);
