@@ -37,18 +37,24 @@ tresult PLUGIN_API
 FBVST3Plugin::terminate()
 {
   FB_LOG_ENTRY_EXIT();
-  stopTimer();
-  return SingleComponentEffect::terminate();
+  return FBWithLogException([this]()
+  {
+    stopTimer();
+    return SingleComponentEffect::terminate();
+  });
 }
 
 tresult PLUGIN_API
 FBVST3Plugin::initialize(FUnknown* context)
 {
   FB_LOG_ENTRY_EXIT();
-  if (SingleComponentEffect::initialize(context) != kResultTrue)
-    return kResultFalse;
-  InitializeEditController();
-  InitializeAudioEffect();
-  startTimerHz(FBGUIFPS);
-  return kResultTrue;
+  return FBWithLogException([this, context]()
+  {
+    if (SingleComponentEffect::initialize(context) != kResultTrue)
+      return kResultFalse;
+    InitializeEditController();
+    InitializeAudioEffect();
+    startTimerHz(FBGUIFPS);
+    return kResultTrue;
+  });
 }

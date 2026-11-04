@@ -30,7 +30,7 @@ class FBExchangeStateContainer;
 
 struct FBAudioClipToDSPCommand
 {
-  enum { ClearSingle, LoadSingle, LoadAll } Type;
+  enum { ClearSingle, LoadSingle, LoadAll } Type = {};
   std::string id = {};
   FBAudioClip clip = {};
   std::map<std::string, FBAudioClip> allClips = {};
@@ -66,6 +66,11 @@ FBAddHostContextMenu(
 class FBHostContext:
 public juce::Timer
 {
+  bool _isPatchLoaded = {};
+  std::map<std::string, FBAudioClip> _guiAudioClips = {};
+  std::map<std::string, FBAudioClip> _dspAudioClips = {};
+  std::vector<IFBHostContextGUIListener*> _guiListeners = {};
+
   std::unique_ptr<FBRuntimeTopo> _topo;
   MTSClient* _mtsClient;
 
@@ -84,13 +89,7 @@ public juce::Timer
   mutable std::mutex _blockWritingAudioClipsToDSP = {};
   std::atomic_bool _writingAudioClipsToDSPIsDirty = {};
   moodycamel::ReaderWriterQueue<FBAudioClipToDSPCommand, 16> _audioClipToDSPCommands;
-
   moodycamel::ReaderWriterQueue<std::vector<float>, 16> _audioParamsToDSPQueue;
-
-  bool _isPatchLoaded = {};
-  std::map<std::string, FBAudioClip> _guiAudioClips = {};
-  std::map<std::string, FBAudioClip> _dspAudioClips = {};
-  std::vector<IFBHostContextGUIListener*> _guiListeners = {};
 
   void ShowOnlineManualForModule(int index) const;
 
