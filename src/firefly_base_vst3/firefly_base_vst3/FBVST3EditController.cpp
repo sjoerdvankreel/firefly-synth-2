@@ -33,7 +33,7 @@ MakeMIDIParamInfo(int message, int controlChange)
   result.unitId = kRootUnitId;
   result.id = FBVST3MIDIParameterMappingBegin + message + controlChange;
   result.defaultNormalizedValue = 0.0;
-  result.flags = ParameterInfo::kIsHidden | ParameterInfo::kIsReadOnly;
+  result.flags = ParameterInfo::kIsHidden;
   return result;
 }
 
