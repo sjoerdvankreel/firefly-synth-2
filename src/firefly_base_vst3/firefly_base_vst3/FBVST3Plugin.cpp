@@ -38,6 +38,7 @@ FBVST3Plugin::terminate()
 {
   FB_LOG_ENTRY_EXIT();
   stopTimer();
+  return SingleComponentEffect::terminate();
 }
 
 tresult PLUGIN_API
