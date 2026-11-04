@@ -132,6 +132,31 @@ endif()
 set(public_sdk_SOURCE_DIR "${CMAKE_SOURCE_DIR}/lib/vst3sdk/public.sdk")
 add_subdirectory("${CMAKE_SOURCE_DIR}/lib/vst3sdk")
 
+# clap validator
+# rust project, built with cargo into the build tree, does not go to dist
+# cargo does its own up-to-date checking, so always invoking it is cheap
+# cmake config -> cargo profile: Debug -> dev (output dir "debug"), Release -> release,
+# RelWithDebInfo -> custom "relwithdebinfo" profile (release + debug info), defined through env
+find_program(FB_CARGO_EXECUTABLE cargo HINTS "$ENV{USERPROFILE}/.cargo/bin" "$ENV{HOME}/.cargo/bin")
+if(FB_CARGO_EXECUTABLE)
+  set(FB_CLAP_VALIDATOR_DIR "${CMAKE_BINARY_DIR}/clap-validator")
+  set(FB_CARGO_PROFILE "$<IF:$<CONFIG:Release>,release,$<IF:$<CONFIG:RelWithDebInfo>,relwithdebinfo,dev>>")
+  add_custom_target(clap_validator ALL
+    COMMAND "${CMAKE_COMMAND}" -E env
+      CARGO_PROFILE_RELWITHDEBINFO_INHERITS=release
+      CARGO_PROFILE_RELWITHDEBINFO_DEBUG=true
+      "${FB_CARGO_EXECUTABLE}" build --profile "${FB_CARGO_PROFILE}"
+      --manifest-path "${CMAKE_SOURCE_DIR}/lib/clap-validator/Cargo.toml"
+      --target-dir "${FB_CLAP_VALIDATOR_DIR}"
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/lib/clap-validator"
+    COMMENT "Building clap-validator"
+    USES_TERMINAL
+    VERBATIM)
+  message(STATUS "clap-validator: ${FB_CLAP_VALIDATOR_DIR}/<debug|release|relwithdebinfo>/clap-validator")
+else()
+  message(STATUS "cargo not found, skipping clap-validator (install rust from https://rustup.rs)")
+endif()
+
 # plugin base
 set (BASE_SRC_DIR "${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE}")
 file(GLOB_RECURSE BASE_SRC_FILES "${BASE_SRC_DIR}/*.*")

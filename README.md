@@ -98,6 +98,7 @@ For help with loads of stuff, from low-level technical details to CLAP support t
 - MTS-ESP: [https://github.com/ODDSound/MTS-ESP](https://github.com/ODDSound/MTS-ESP)
 - Steinberg VST3 SDK: [https://github.com/steinbergmedia/vst3sdk](https://github.com/steinbergmedia/vst3sdk)
 - Readerwriterqueue: [https://github.com/cameron314/readerwriterqueue](https://github.com/cameron314/readerwriterqueue)
+- CLAP validator (optional, dev tool only, needs Rust): [https://github.com/free-audio/clap-validator](https://github.com/free-audio/clap-validator)
 
 # Credits
 * Same (modified) Freeverb: https://github.com/sinshu/freeverb.
