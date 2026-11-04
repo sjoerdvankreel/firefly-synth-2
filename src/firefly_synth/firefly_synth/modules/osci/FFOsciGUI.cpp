@@ -401,6 +401,8 @@ RevertPreviewedOsciSample(FFPlugGUI* plugGUI, int moduleSlot)
       FFOsciSampleSlotIds[moduleSlot], 
       plugGUI->osciSampleGuiBeforePreview, 
       plugGUI->osciSampleDspBeforePreview);
+  if (plugGUI->osciSampleIsPreviewed && !plugGUI->hadOsciSampleBeforePreview)
+    plugGUI->HostContext()->RemoveGUIAndDSPAudioClip(FFOsciSampleSlotIds[moduleSlot]);
   plugGUI->osciSampleIsPreviewed = false;
   plugGUI->osciSampleGuiBeforePreview = {};
   plugGUI->osciSampleDspBeforePreview = {};
