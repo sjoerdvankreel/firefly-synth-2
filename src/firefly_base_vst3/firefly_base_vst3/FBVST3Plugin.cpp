@@ -24,7 +24,6 @@ FBVST3Plugin::
 ~FBVST3Plugin()
 {
   FB_LOG_ENTRY_EXIT();
-  stopTimer();
 }
 
 void
@@ -32,6 +31,13 @@ FBVST3Plugin::ResetView()
 {
   FB_LOG_ENTRY_EXIT();
   _guiEditor = nullptr;
+}
+
+tresult PLUGIN_API 
+FBVST3Plugin::terminate()
+{
+  FB_LOG_ENTRY_EXIT();
+  stopTimer();
 }
 
 tresult PLUGIN_API

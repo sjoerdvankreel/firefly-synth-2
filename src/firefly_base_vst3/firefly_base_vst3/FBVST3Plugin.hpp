@@ -97,6 +97,7 @@ public:
   float SampleRate() const override { return _sampleRate; }
 
   // SingleComponentEffect, both
+  tresult PLUGIN_API terminate() override;
   tresult PLUGIN_API initialize(FUnknown* context) override;
 
   // SingleComponentEffect, controller
