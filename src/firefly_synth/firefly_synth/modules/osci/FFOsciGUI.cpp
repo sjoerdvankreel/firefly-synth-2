@@ -396,7 +396,7 @@ MakeOsciSectionAudioIn(FBPlugGUI* plugGUI, int moduleSlot)
 static void
 RevertPreviewedOsciSample(FFPlugGUI* plugGUI, int moduleSlot)
 {
-  if (plugGUI->osciSampleIsPreviewed)
+  if (plugGUI->osciSampleIsPreviewed && plugGUI->hadOsciSampleBeforePreview)
     plugGUI->HostContext()->SetGUIAndDSPAudioClip(
       FFOsciSampleSlotIds[moduleSlot], 
       plugGUI->osciSampleGuiBeforePreview, 
