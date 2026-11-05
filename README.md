@@ -78,10 +78,6 @@ This causes clicking which you can get rid of by disabling MIDI modwheel/pitchbe
 If you actually do need and use it, let me know how it fares.
 * "Show Manual"/"Show Log Folder"/"Show Plugin Folder" context menu options are broken on some Linux hosts.<br/>
 Workaround: go find those folders yourself (see above), and the manual is over [here](/static/Manual.md).
-* Some hosts do not paint the realtime visualization (graphs and knobs) for VST3.
-This affects mostly Linux hosts, but some Windows/Mac as well.
-CLAP should be OK everywhere, and even for VST3 it's not a big deal, just means you don't get realtime visual feedback.<br/>
-Maybe related: https://forums.steinberg.net/t/dataexchange-on-linux/917660/4.<br/>
 
 # Special Thanks
 * [thoth-amon](https://github.com/thoth-amon)<br/>

@@ -23,6 +23,14 @@
 - This will shrink host state for hosts that dont compress (eg reaper) as well.
 - For hosts that do compress (eg bitwig) it will slightly inflate.
 
+- VST3 rearchitecture:
+- Finally bit the bullet.
+- Dropped kDistributable and went with SingleComponentEffect.
+- Lots of code is now shared between CLAP and VST3, and vst3 data exchange interface is gone (it wasnt too widely supported anyway).
+- This means realtime visualization is now fully supported for VST3 on all Linux hosts.
+- Unfortunate side effect: old session state may lose GUI settings like patch name, theme name, session name, show-tweaked-from etc.
+- I made a best effort to keep GUI settings intact where possible.
+- All audio params should be good -- the conversion does NOT impact audio parameters and host automation lanes etc - it should render the same.
 - 
 
 September 21, 2026 - v2.1.6.

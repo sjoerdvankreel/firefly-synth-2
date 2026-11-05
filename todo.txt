@@ -1,11 +1,4 @@
 [ ] sampler -- pffft not easy
-v drop kDistributable, merge hostgui/hostdspcontext, share lots of stuff between clap/vst3
-v consolidate the pull/push with clap/vst3
-v make dedicated test for microtune and paramnameoverride and guisettings
-v retest / implement save gui params
-v do all the vst3 oldstyle stuff on load with editorstate and componentstate and blaaahjadidadi
-v do filters in the sampler like audioin
-v revert to old default theme
 - get rid of the not work on Linux comments
 - make note about vst3/clap code share
 - 2.1.6+bitwig not save theme
