@@ -7,7 +7,7 @@ struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeOsciTopo(bool isFx);
 
 inline int constexpr FFOsciSamplerGUISampleCount = 1024;
-inline std::string FFOsciSampleSlotIds[FFOsciCount] = {
+inline std::string const FFOsciSampleSlotIds[FFOsciCount] = {
   "{1D4FC59F-5B0C-4395-B1EA-9AA50F4D8C0A}",
   "{A64D418D-7434-461D-A9C8-7A7852C64161}",
   "{4FD839F4-96AB-46D8-82B6-A77F6C824065}",
