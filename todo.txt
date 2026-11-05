@@ -3,7 +3,6 @@
 - check all website
 - all the new docs, screenshots, website, release notes, history etc
 - do a kvr update bc why not
-- close the renoise bug
 - save all the demo in the new format
 - retest everything /*Linux*/ and mac
 - close the gh sampling request
@@ -15,8 +14,6 @@
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] fix the comp and the rms comp
 [ ] fix the 1sec delay on plot visuals
-[ ] programmatic dump screenshot?
-[ ] fix the build scripts for linux-arm
 [ ] add loop count param
 [ ] one phase LFO type
 [ ] do mod rate/amt for multitap
