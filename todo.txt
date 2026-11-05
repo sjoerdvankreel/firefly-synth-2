@@ -79,6 +79,7 @@ v double check all sounds same after save * looks same where possible
 v diskwriter
 v oooohhh boohoo new format after save 216->217 not remember the settings screen params
 
+- run the validators
 - check all kvr
 - check all website
 - make note about vst3/clap code share
