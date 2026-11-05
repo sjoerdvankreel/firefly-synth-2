@@ -305,6 +305,13 @@ FBAudioFileRead(std::string const& path, FBAudioClip& clip)
   if (!reader->read(&buffer, 0, (int)reader->lengthInSamples, 0, true, false))
     return false;
 
+  if (reader->sampleRate < 1)
+    return false;
+  if (reader->numChannels < 1)
+    return false;
+  if (reader->lengthInSamples < 1)
+    return false;
+
   clip.data = {};
   clip.channels = 1;
   clip.sampleRate = (int)reader->sampleRate;

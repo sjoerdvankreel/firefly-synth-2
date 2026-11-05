@@ -409,11 +409,11 @@ RevertPreviewedOsciSample(FFPlugGUI* plugGUI, int moduleSlot)
   plugGUI->hadOsciSampleBeforePreview = false;
 }
 
-static void
+static bool
 LoadOsciSampleCore(FFPlugGUI* plugGUI, int moduleSlot, juce::File const& file)
 {
   if (!file.exists())
-    return;
+    return false;
 
   FBAudioClip dspClip;
   if (!FBAudioFileRead(file.getFullPathName().toStdString(), dspClip))
@@ -424,7 +424,7 @@ LoadOsciSampleCore(FFPlugGUI* plugGUI, int moduleSlot, juce::File const& file)
       .withMessage("Unrecognized audio file.")
       .withButton("OK")
       .withParentComponent(plugGUI), [](int) {});
-    return;
+    return false;
   }
 
   FBAudioClip guiClip;
@@ -445,7 +445,7 @@ LoadOsciSampleCore(FFPlugGUI* plugGUI, int moduleSlot, juce::File const& file)
   }
 
   plugGUI->HostContext()->SetGUIAndDSPAudioClip(FFOsciSampleSlotIds[moduleSlot], guiClip, dspClip);
-  return;
+  return true;
 }
 
 static void 
@@ -453,11 +453,12 @@ LoadOsciSample(FFPlugGUI* plugGUI, int moduleSlot, juce::File const& file, bool 
 { 
   if (!loadAsPreview)
   {
+    if(!LoadOsciSampleCore(plugGUI, moduleSlot, file))
+      return;
     plugGUI->osciSampleIsPreviewed = false;
     plugGUI->osciSampleGuiBeforePreview = {};
     plugGUI->osciSampleDspBeforePreview = {};
     plugGUI->hadOsciSampleBeforePreview = false;
-    LoadOsciSampleCore(plugGUI, moduleSlot, file);
     return;
   }
 
