@@ -31,7 +31,8 @@
 - Unfortunate side effect: old session state may lose GUI settings like patch name, theme name, session name, show-tweaked-from etc.
 - I made a best effort to keep GUI settings intact where possible.
 - All audio params should be good -- the conversion does NOT impact audio parameters and host automation lanes etc - it should render the same.
-- 
+- IMPORTANT: the controller side of VST3 gets lost -- only the processor remains.
+- Some hosts cache this kind of info -- you may need a full plug rescan including manually dropping existing on-disk caches.
 
 September 21, 2026 - v2.1.6.
 - Switch license from GPL3 to MIT.
