@@ -88,15 +88,16 @@ FBCLAPPlugin::paramsFlush(
       int index = getParamIndexForParamId(event->param_id);
       if (index == -1)
         continue;
+      double normalized = FBCLAPToNormalized(Topo()->audio.params[index].static_, event->value);
       if (isProcessing())
       {
-        ProcState()->InitProcessing(index, static_cast<float>(event->value));
-        _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(index, event->value));
+        ProcState()->InitProcessing(index, static_cast<float>(normalized));
+        _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(index, normalized));
       }
       else
       {
-        *_editState->Params()[index] = event->value;
-        _mainToAudioEvents.enqueue(FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, event->value));
+        *_editState->Params()[index] = normalized;
+        _mainToAudioEvents.enqueue(FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, normalized));
       }
     }
 
