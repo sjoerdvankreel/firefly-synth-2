@@ -74,9 +74,10 @@ v update screenshots for old default theme
 x do ParamNamesAndAllOptionsOn tests for linux
 v save presets as new
 v refix all the renoise automation lanes
---- diskwriter
-
------ oooohhh boohoo new format after save 216->217 not remember the settings screen params
+v recheck automation lanes on all renoise things
+v double check all sounds same after save * looks same where possible
+v diskwriter
+v oooohhh boohoo new format after save 216->217 not remember the settings screen params
 
 - check all kvr
 - check all website
@@ -85,9 +86,7 @@ v refix all the renoise automation lanes
 - all the new docs, screenshots, website, release notes, history etc
 - do a kvr update bc why not
 - 2.1.6+bitwig not save theme
-- recheck automation lanes on all renoise things
 - close the renoise bug
-- double check all sounds same after save * looks same where possible
 - save all the demo in the new format
 - make a note that guiparams will get lost
 - do pre-post host tests
