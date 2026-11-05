@@ -432,10 +432,7 @@ Comes in handy for stuck notes or when you managed to fill the delay lines with 
 
 ### Patch panel
 Shows the name of the last loaded patch.<br/>
-Comes with regular load-from/save-to-file, init patch to defaults, and load factory preset options, as well as:
-
-* Session: revert the patch state to the time the DAW session was loaded.
-* Reload: revert the patch state to the last time a patch was loaded from file, preset, or default values (init patch).
+Comes with regular load-from/save-to-file, init patch to defaults, and load factory preset options.
 
 For load from file/preset, the patch browser has a preview option which immediately switches the plugin patch to the selected file.
 Click the "Preview" toggle to enable this feature. Upon cancel, it will revert back to previous state.
@@ -810,7 +807,7 @@ Samples are stored in-memory, in-daw-session, and in-patch, so this is not suita
 The sampler reacts to all pitch controls including osci-level and global unison.<br/>
 Note that the sampler osci reacts to the voice (VMix) envelope just like any other oscillator.<br/>
 You may want to set the VMix Amp Env Target to off, or at least disable the voice amplitude envelope attack section.<br/>
-
+Loading and/or previewing a sample clears the entire undo state.
 
 <a id="546F9D74-670A-463D-80B0-B4BBD061DA88"></a>
 ## Oscillator Oversampling and Cross-modulation
