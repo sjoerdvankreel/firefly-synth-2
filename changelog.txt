@@ -1,3 +1,30 @@
+?, ? - v2.1.7.
+- GUI:
+- Reverted default theme back to blue & orange - it was prettier vs read & green.
+
+- Sampler:
+- Add sampler as an osci type.
+- Removed revert-to-patch/revert-to-session buttons. Too expensive too keep samples in there.
+- For the same reason, loading (including previewing) any patch (with or without samples) clears the undo history.
+- Also for the same reason, the sampler osci's "load"/"clear"/"preview" buttons also clear the undo history.
+- Sampler selects the first channel only in case of multi-channel sample files.
+- It only loads .wav files for now. 8/16/24/32 bits. Everything is converted to 32-bit float on load.
+- Sampler follows oscillator MIDI note, oversampling, coarse/fine pitch, unison detune, modulation etc etc by resampling -- not timestretch, too difficult.
+- Sampler can be AM/RM/FM source and AM/RM target.
+- Sampler osci graph follows a (shortened) version of the loaded sample including pitch changes.
+- Samples are stored in-memory, in-patch and in-session. It's fine for percussion, short vocals, strings etc etc. Just don't load Beethoven's 5th -- it will crash.
+- Sampler comes with dedicated LP/HP and gain controls just like the audio-in osci.
+- Sampler osci "load" button comes with preview option just like patch load - the sample is loaded into the patch, joining the effect chain etc.
+- Sampler osci hides behind the voice amplitude envelope just like any other osci. You might want to disable the per-voice amp env altogether.
+
+- Compression:
+- All patch and session state is now saved as compressed (gzip).
+- This will shrink patch files without samples by ~90%. With samples -- they become big anyway.
+- This will shrink host state for hosts that dont compress (eg reaper) as well.
+- For hosts that do compress (eg bitwig) it will slightly inflate.
+
+- 
+
 September 21, 2026 - v2.1.6.
 - Switch license from GPL3 to MIT.
 - Add a new kick patch (it's kick09, matches the "fun with kicks" demo).
