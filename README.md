@@ -24,6 +24,8 @@ See the [Releases](https://github.com/sjoerdvankreel/firefly-synth-2/releases) s
 All of it, entire folder, not just the binary.
 * Copy the new version folder to your VST3/CLAP plugin folder.<br/>
 The entire folder, not just the binary.
+* If needed, force your host to re-scan plugins.<br/>
+If really needed, manually clear the plug-in cache.
 
 # Build From Source
 * Git clone recursive
