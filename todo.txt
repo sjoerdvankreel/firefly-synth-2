@@ -1,15 +1,21 @@
-[ ] sampler -- just do it i want vocals
-[ ] string osci dry/wet normal/uniform + conversion
-[ ] techno demo to presets
+- check all kvr
+- check all website
+- all the new docs, screenshots, website, release notes, history etc
+- do a kvr update bc why not
+- close the gh sampling request
+- add flstudio Linux to the test set
+- show loaded session/patch + fileformatversion and all that in the aboutbox
+- the repo is big af, do something
+
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] fix the comp and the rms comp
 [ ] fix the 1sec delay on plot visuals
-[ ] programmatic dump screenshot?
-[ ] fix the build scripts for linux-arm
 [ ] add loop count param
 [ ] one phase LFO type
 [ ] do mod rate/amt for multitap
 [ ] override all-osci unison
+[ ] finish up the new demo tune with some vocals and include the patches
+[ ] the repo is too big again
 
 fix the string oversample bug already
 allow full fx module inside the feedback delay
@@ -21,7 +27,6 @@ pck support
 arpeggiator
 allow more stuff on the feedback delay path, like, try to get an entire fx block in there somehow => just put one in a popup window?
 more presets
-fancy patch browser
 check into AV Linux
 arpeggiator/sequencer
 vst3 note expr + midi mpe

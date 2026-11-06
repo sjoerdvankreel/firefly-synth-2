@@ -1,6 +1,6 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 using namespace juce;

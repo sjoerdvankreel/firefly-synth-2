@@ -1,6 +1,6 @@
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
@@ -8,7 +8,7 @@
 #include <algorithm>
 
 FBPlugGUIContext::
-FBPlugGUIContext(FBHostGUIContext* const hostContext):
+FBPlugGUIContext(FBHostContext* const hostContext):
 _hostContext(hostContext) 
 {
   FB_LOG_ENTRY_EXIT();

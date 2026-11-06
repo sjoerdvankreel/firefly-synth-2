@@ -8,7 +8,7 @@
 #include <memory>
 
 class FBPlugGUI;
-class FBHostGUIContext;
+class FBHostContext;
 
 class FBPlugGUIContainer final:
 public juce::Component,
@@ -22,10 +22,11 @@ protected:
 public:
   ~FBPlugGUIContainer();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUIContainer);
-  FBPlugGUIContainer(FBHostGUIContext* hostContext);
+  FBPlugGUIContainer(FBHostContext* hostContext);
 
   void paint(juce::Graphics& g) override;
 
+  void RequestRepaint() override;
   void RemoveFromDesktop() override;
   void UpdateExchangeState() override;
   void SetVisible(bool visible) override;

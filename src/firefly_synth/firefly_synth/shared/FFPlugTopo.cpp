@@ -60,10 +60,10 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->guiAspectRatioHeight = 35;
   result->patchExtension = "ff2preset";    
   result->patchFilterName = "FF2 Presets";                            
-  result->defaultThemeName = "Red Green";                         
+  result->defaultThemeName = "Blue Orange";                         
   result->guiUserScaleModule = (int)FFModuleType::GUISettings;
   result->guiUserScaleParam = (int)FFGUISettingsGUIParam::UserScale;
-  result->guiFactory = [](FBHostGUIContext* hostContext) { 
+  result->guiFactory = [](FBHostContext* hostContext) {
     return std::make_unique<FFPlugGUI>(hostContext); };
   result->deserializationConverterFactory = [](FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo) { 
     return std::make_unique<FFDeserializationConverter>(oldVersion, topo); };
@@ -99,7 +99,6 @@ FFMakeTopo(FBPlugFormat format, bool isFX)
   result->themedComponents[(int)FFThemedComponentId::MixSelector].name = "Mix Selector";
   result->themedComponents[(int)FFThemedComponentId::MixSelector].id = "{B1B4E0FB-5A5F-4359-AE9A-D9EF5F83500A}";
    
-  result->exchangeStateSize = sizeof(FFExchangeState);
   result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };
   result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
   result->allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };

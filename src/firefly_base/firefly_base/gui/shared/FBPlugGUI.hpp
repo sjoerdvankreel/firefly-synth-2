@@ -3,17 +3,19 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/shared/FBTheme.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>
 #include <firefly_base/gui/components/FBFileBrowserComponent.hpp>
 
+#include <juce_core/juce_core.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <map>
 #include <chrono>
 #include <vector>
+#include <functional>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -25,7 +27,7 @@ class IFBParamListener;
 class IFBGUIResetListener;
 class FBGUIParamControl;
 class FBParamsDependent;
-class FBHostGUIContext;
+class FBHostContext;
 class FBMarginComponent;
 class FBContentComponent;
 class FBStackingComponent;
@@ -43,7 +45,7 @@ enum FBParamModulationBoundsSource
 
 class FBPlugGUI:
 public juce::Component,
-public IFBHostGUIContextListener
+public IFBHostContextGUIListener
 {
 public:
   virtual ~FBPlugGUI();
@@ -57,10 +59,16 @@ public:
     std::function<void(int)> callback);
 
   void InitPatch();
-  void ReloadPatch();
-  void ReloadSession();
   void SavePatchToFile();
   void LoadPatchFromFile(bool preset);
+  void LoadAnyFile(
+    bool hasPreview,
+    std::string const& title,
+    std::string const& extension,
+    std::string const& filter,
+    std::function<void(juce::File const&)> onSelect,
+    std::function<void(juce::File const&)> onPreview,
+    std::function<void()> onCancel);
   
   void FlashAudioParamDisabling(int index);
   void FlashAudioParamsDisablingParam(int index);
@@ -93,9 +101,10 @@ public:
 
   std::string GetTooltipForGUIParam(int index) const;
   std::string GetTooltipForAudioParam(FBParamControl const* control) const;
-  FBHostGUIContext* HostContext() const { return _hostContext; }
+  FBHostContext* HostContext() const { return _hostContext; }
 
   void OnPatchLoaded() override {}
+  void OnGUIAudioClipsChanged() override {}
   void OnPatchNameChanged(std::string const& /*name*/) override {}
   void OnInstanceNameChanged(std::string const& /*name*/) override {}
   void mouseUp(const juce::MouseEvent& event) override;
@@ -125,7 +134,7 @@ public:
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
-  FBPlugGUI(FBHostGUIContext* hostContext);
+  FBPlugGUI(FBHostContext* hostContext);
 
   virtual void ForceReLayout() = 0;
   virtual void BeforePatchChanged() = 0;
@@ -140,9 +149,9 @@ private:
   double _scale = 1.0;
   bool _patchWasPreviewed = false;
   bool _isPatchPreviewEnabled = false;
-  FBHostGUIContext* const _hostContext;
+  FBHostContext* const _hostContext;
   std::unique_ptr<FBLookAndFeel> _lookAndFeel;
-  FBScalarStateContainer _patchBeforePreview;
+  std::vector<std::uint8_t> _patchBeforePreviewBytes = {};
 
   juce::Label* _overlayCaption = {};
   std::function<void()> _overlayInit = {};
@@ -162,6 +171,7 @@ private:
   std::vector<IFBGUIResetListener*> _resetListeners = {};
 
   std::unique_ptr<FBFileBrowserComponent> _loadPatchBrowser = {};
+  std::unique_ptr<FBFileBrowserComponent> _loadAnyFileBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _savePatchBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _saveTopologyBrowser = {};
   std::unique_ptr<FBFileBrowserComponent> _saveParamListBrowser = {};
@@ -196,6 +206,14 @@ private:
   void InitDumpTopologyBrowser();
   void InitDumpParamListBrowser();
   void InitLoadPatchBrowser(bool preset);
+  void InitLoadAnyFileBrowser(
+    bool hasPreview,
+    std::string const& title,
+    std::string const& extension,
+    std::string const& filter,
+    std::function<void(juce::File const&)> onSelect,
+    std::function<void(juce::File const&)> onPreview,
+    std::function<void()> onCancel);
 
   juce::File GetBrowserInitialPath(std::string const& browserKey);
   void SetBrowserInitialPath(std::string const& browserKey, juce::File const& selected);
@@ -204,10 +222,9 @@ private:
   void RepaintControlsForAudioParam(int index);
   void LoadPatchAsPreview(
     juce::File const& file);
-  bool LoadPatchFromText(
-    std::string const& undoAction,
+  bool LoadPatchFromBytes(
     std::string const& patchName,
-    std::string const& text);
+    std::vector<std::uint8_t> const& bytes);
 };
 
 template <class TComponent, class... Args>

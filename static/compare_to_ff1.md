@@ -87,6 +87,8 @@ Of course, FF2 is a fully-featured synth just like FF1 so there's bound to be so
 
 # The Brand-New
 
+* Sampler oscillator.<br/>
+FF2 has a basic load-sample-as-osci.
 * Basic oscillator algorithms.<br/>
 FF2 gained lots of them.
 * LFO min/max.<br/>

@@ -24,6 +24,8 @@ See the [Releases](https://github.com/sjoerdvankreel/firefly-synth-2/releases) s
 All of it, entire folder, not just the binary.
 * Copy the new version folder to your VST3/CLAP plugin folder.<br/>
 The entire folder, not just the binary.
+* If needed, force your host to re-scan plugins.<br/>
+If really needed, manually clear the plug-in cache.
 
 # Build From Source
 * Git clone recursive
@@ -78,10 +80,6 @@ This causes clicking which you can get rid of by disabling MIDI modwheel/pitchbe
 If you actually do need and use it, let me know how it fares.
 * "Show Manual"/"Show Log Folder"/"Show Plugin Folder" context menu options are broken on some Linux hosts.<br/>
 Workaround: go find those folders yourself (see above), and the manual is over [here](/static/Manual.md).
-* Some hosts do not paint the realtime visualization (graphs and knobs) for VST3.
-This affects mostly Linux hosts, but some Windows/Mac as well.
-CLAP should be OK everywhere, and even for VST3 it's not a big deal, just means you don't get realtime visual feedback.<br/>
-Maybe related: https://forums.steinberg.net/t/dataexchange-on-linux/917660/4.<br/>
 
 # Special Thanks
 * [thoth-amon](https://github.com/thoth-amon)<br/>
@@ -98,6 +96,7 @@ For help with loads of stuff, from low-level technical details to CLAP support t
 - MTS-ESP: [https://github.com/ODDSound/MTS-ESP](https://github.com/ODDSound/MTS-ESP)
 - Steinberg VST3 SDK: [https://github.com/steinbergmedia/vst3sdk](https://github.com/steinbergmedia/vst3sdk)
 - Readerwriterqueue: [https://github.com/cameron314/readerwriterqueue](https://github.com/cameron314/readerwriterqueue)
+- CLAP validator (optional, dev tool only, needs Rust): [https://github.com/free-audio/clap-validator](https://github.com/free-audio/clap-validator)
 
 # Credits
 * Same (modified) Freeverb: https://github.com/sinshu/freeverb.
@@ -205,7 +204,7 @@ added soft knee support based on this https://github.com/tu-studio/IEMPluginSuit
 
 ## Main
 
-<img alt="Screenshot Main" src="static/screen_main.png"/>
+<img alt="Screenshot Main" src="static/screen_main1.png"/>
 
 ## Matrix
 

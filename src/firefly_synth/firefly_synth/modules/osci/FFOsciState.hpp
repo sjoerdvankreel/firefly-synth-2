@@ -58,6 +58,8 @@ class alignas(alignof(TBlock)) FFOsciBlockParamState final
   std::array<TBlock, 1> audioInLPOn = {};
   std::array<TBlock, 1> audioInHPOn = {};
   std::array<TBlock, 1> audioInSource = {};
+  std::array<TBlock, 1> sampleLPOn = {};
+  std::array<TBlock, 1> sampleHPOn = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockParamState);
 };
@@ -106,6 +108,11 @@ class alignas(alignof(TAccurate)) FFOsciAccParamState final
   std::array<TAccurate, 1> audioInHPRes = {};
   std::array<TAccurate, 1> audioInLPFreq = {};
   std::array<TAccurate, 1> audioInHPFreq = {};
+  std::array<TAccurate, 1> sampleGain = {};
+  std::array<TAccurate, 1> sampleLPRes = {};
+  std::array<TAccurate, 1> sampleHPRes = {};
+  std::array<TAccurate, 1> sampleLPFreq = {};
+  std::array<TAccurate, 1> sampleHPFreq = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamState);
 };

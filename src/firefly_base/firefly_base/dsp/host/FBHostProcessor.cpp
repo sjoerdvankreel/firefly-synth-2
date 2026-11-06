@@ -11,7 +11,7 @@
 #include <firefly_base/dsp/plug/FBPlugProcessor.hpp>
 #include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
-#include <firefly_base/dsp/host/FBHostDSPContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/dsp/host/FBSmoothingProcessor.hpp>
 #include <firefly_base/dsp/buffer/FBHostToPlugProcessor.hpp>
 #include <firefly_base/dsp/buffer/FBPlugToHostProcessor.hpp>
@@ -24,7 +24,8 @@ FBHostProcessor::
 ~FBHostProcessor() {}
 
 FBHostProcessor::
-FBHostProcessor(IFBHostDSPContext* hostContext):
+FBHostProcessor(FBHostContext* hostContext):
+_hostContext(hostContext),
 _sampleRate(hostContext->SampleRate()),
 _topo(hostContext->Topo()),
 _procState(hostContext->ProcState()),
@@ -111,8 +112,12 @@ FBHostProcessor::ProcessHost(
   auto processBeginTime = std::chrono::high_resolution_clock::now();
 
   _plugIn.bpm = input.bpm;
+  _plugIn.audioClips = &_hostContext->GetDSPAudioClips();
   _plugIn.prevRoundCpuUsage = _prevRoundCpuUsage;
   _plugIn.projectTimeSamples = input.projectTimeSamples;
+
+  _hostContext->PullProcStateFromGUI();
+  _hostContext->PullDSPAudioClipsFromGUI();
 
   for (auto const& be : input.blockAuto)
     _procState->Params()[be.param].Value(be.normalized);
@@ -238,5 +243,6 @@ FBHostProcessor::ProcessHost(
   auto processDuration = std::chrono::duration_cast<std::chrono::microseconds>(processEndTime - processBeginTime);
   float durationSeconds = processDuration.count() / (1000.0f * 1000.0f);
   float windowTimeSeconds = input.sampleCount / _sampleRate;
-  _prevRoundCpuUsage = durationSeconds / windowTimeSeconds;
+  if (windowTimeSeconds > 0.0f)
+    _prevRoundCpuUsage = durationSeconds / windowTimeSeconds;
 }

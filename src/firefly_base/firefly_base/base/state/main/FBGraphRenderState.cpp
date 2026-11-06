@@ -1,5 +1,5 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
@@ -40,6 +40,7 @@ _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
   _input->noteEvents = &_noteEvents;
   _input->procState = _procState.get();
   _input->noteMatrixRaw = &_noteMatrixRaw;
+  _input->audioClips = &plugGUI->HostContext()->GetGUIAudioClipViews();
 
   auto hostContext = plugGUI->HostContext();
   for (int i = 0; i < hostContext->Topo()->audio.params.size(); i++)

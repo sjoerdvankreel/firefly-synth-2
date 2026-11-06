@@ -1,4 +1,4 @@
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
@@ -87,7 +87,7 @@ FBProcStateContainer::InitProcessing(
 
 void 
 FBProcStateContainer::InitProcessing(
-  FBHostGUIContext const* context)
+  FBHostContext const* context)
 {
   for (int p = 0; p < Params().size(); p++)
     InitProcessing(p, static_cast<float>(context->GetAudioParamNormalized(p)));

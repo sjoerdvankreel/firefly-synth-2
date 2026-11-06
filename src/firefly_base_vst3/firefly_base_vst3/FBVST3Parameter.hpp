@@ -5,18 +5,18 @@
 using namespace Steinberg::Vst;
 
 struct FBRuntimeParam;
-class FBHostGUIContext;
+class FBHostContext;
 
 class FBVST3Parameter final:
 public Parameter
 {
-	FBHostGUIContext const* _hostContext;
+	FBHostContext const* _hostContext;
 	FBRuntimeParam const* const _topo;
 	ParameterInfo _infoOverride;
 
 public:
 	virtual ~FBVST3Parameter() = default;
-  FBVST3Parameter(FBHostGUIContext const* hostContext, FBRuntimeParam const* topo, ParameterInfo const& info);
+  FBVST3Parameter(FBHostContext const* hostContext, FBRuntimeParam const* topo, ParameterInfo const& info);
 
 	void ClearNameOverride();
 	bool GetNameOverride(std::string& name) const;

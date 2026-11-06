@@ -18,7 +18,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS YES)
 # project
 set (PROJECT_VERSION_MAJOR 2)
 set (PROJECT_VERSION_MINOR 1)
-set (PROJECT_VERSION_PATCH 6)
+set (PROJECT_VERSION_PATCH 7)
 set (PROJECT_NAME_BASE firefly_base)
 set (PROJECT_NAME_PLUG firefly_synth)
 set (PROJECT_NAME_BASE_VST3 "${PROJECT_NAME_BASE}_vst3")
@@ -29,8 +29,10 @@ set (PROJECT_NAME_PLUG_VST3_INST "${PROJECT_NAME_PLUG}_vst3_inst")
 set (PROJECT_NAME_PLUG_CLAP_DIR "${PROJECT_NAME_PLUG}_clap")
 set (PROJECT_NAME_PLUG_CLAP_FX "${PROJECT_NAME_PLUG}_clap_fx")
 set (PROJECT_NAME_PLUG_CLAP_INST "${PROJECT_NAME_PLUG}_clap_inst")
+set (PROJECT_NAME_PLUG_DISKWRITER "${PROJECT_NAME_PLUG}_diskwriter")
 set (PROJECT_NAME_OUT_FX FireflySynth2FX)
 set (PROJECT_NAME_OUT_INST FireflySynth2)
+set (PROJECT_NAME_OUT_DISKWRITER FireflySynth2DiskWriter)
 
 # want this only for dev
 if (NOT DEFINED FB_WARN_AS_ERROR)
@@ -109,7 +111,7 @@ set(JUCE_MODULES_ONLY ON)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/JUCE)
 add_library(juce_plugin_modules STATIC)
 target_link_libraries(juce_plugin_modules
-  PRIVATE juce::juce_core juce::juce_events juce::juce_gui_basics juce::juce_dsp
+  PRIVATE juce::juce_core juce::juce_events juce::juce_gui_basics juce::juce_dsp juce::juce_audio_formats
   PUBLIC  juce::juce_recommended_config_flags)
 target_compile_definitions(juce_plugin_modules
   PUBLIC JUCE_USE_CURL=0 JUCE_MODAL_LOOPS_PERMITTED=0 JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1
@@ -130,6 +132,31 @@ endif()
 set(public_sdk_SOURCE_DIR "${CMAKE_SOURCE_DIR}/lib/vst3sdk/public.sdk")
 add_subdirectory("${CMAKE_SOURCE_DIR}/lib/vst3sdk")
 
+# clap validator
+# rust project, built with cargo into the build tree, does not go to dist
+# cargo does its own up-to-date checking, so always invoking it is cheap
+# cmake config -> cargo profile: Debug -> dev (output dir "debug"), Release -> release,
+# RelWithDebInfo -> custom "relwithdebinfo" profile (release + debug info), defined through env
+find_program(FB_CARGO_EXECUTABLE cargo HINTS "$ENV{USERPROFILE}/.cargo/bin" "$ENV{HOME}/.cargo/bin")
+if(FB_CARGO_EXECUTABLE)
+  set(FB_CLAP_VALIDATOR_DIR "${CMAKE_BINARY_DIR}/clap-validator")
+  set(FB_CARGO_PROFILE "$<IF:$<CONFIG:Release>,release,$<IF:$<CONFIG:RelWithDebInfo>,relwithdebinfo,dev>>")
+  add_custom_target(clap_validator ALL
+    COMMAND "${CMAKE_COMMAND}" -E env
+      CARGO_PROFILE_RELWITHDEBINFO_INHERITS=release
+      CARGO_PROFILE_RELWITHDEBINFO_DEBUG=true
+      "${FB_CARGO_EXECUTABLE}" build --profile "${FB_CARGO_PROFILE}"
+      --manifest-path "${CMAKE_SOURCE_DIR}/lib/clap-validator/Cargo.toml"
+      --target-dir "${FB_CLAP_VALIDATOR_DIR}"
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/lib/clap-validator"
+    COMMENT "Building clap-validator"
+    USES_TERMINAL
+    VERBATIM)
+  message(STATUS "clap-validator: ${FB_CLAP_VALIDATOR_DIR}/<debug|release|relwithdebinfo>/clap-validator")
+else()
+  message(STATUS "cargo not found, skipping clap-validator (install rust from https://rustup.rs)")
+endif()
+
 # plugin base
 set (BASE_SRC_DIR "${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE}")
 file(GLOB_RECURSE BASE_SRC_FILES "${BASE_SRC_DIR}/*.*")
@@ -139,6 +166,7 @@ target_compile_options(${PROJECT_NAME_BASE} PRIVATE "${FF_COMPILE_OPTIONS}")
 target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${JUCE_MODULES_DIR})
 target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
 target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/MTS-ESP/Client)
+target_include_directories(${PROJECT_NAME_BASE} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/readerwriterqueue)
 target_include_directories(${PROJECT_NAME_BASE} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   source_group(TREE ${BASE_SRC_DIR} FILES ${BASE_SRC_FILES})
@@ -153,6 +181,7 @@ target_compile_options(${PROJECT_NAME_BASE_VST3} PRIVATE "${FF_COMPILE_OPTIONS}"
 target_include_directories(${PROJECT_NAME_BASE_VST3} SYSTEM PRIVATE ${JUCE_MODULES_DIR})
 target_include_directories(${PROJECT_NAME_BASE_VST3} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/vst3sdk)
 target_include_directories(${PROJECT_NAME_BASE_VST3} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
+target_include_directories(${PROJECT_NAME_BASE_VST3} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/readerwriterqueue)
 target_include_directories(${PROJECT_NAME_BASE_VST3} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
 target_include_directories(${PROJECT_NAME_BASE_VST3} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE_VST3})
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -185,6 +214,7 @@ target_compile_options(${PROJECT_NAME_PLUG} PRIVATE "${FF_COMPILE_OPTIONS}")
 target_include_directories(${PROJECT_NAME_PLUG} SYSTEM PRIVATE ${JUCE_MODULES_DIR})
 target_include_directories(${PROJECT_NAME_PLUG} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
 target_include_directories(${PROJECT_NAME_PLUG} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/MTS-ESP/Client)
+target_include_directories(${PROJECT_NAME_PLUG} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/readerwriterqueue)
 target_include_directories(${PROJECT_NAME_PLUG} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG})
 target_include_directories(${PROJECT_NAME_PLUG} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
 target_compile_definitions(${PROJECT_NAME_PLUG} PUBLIC FF_PLUG_VERSION_MAJOR=${PROJECT_VERSION_MAJOR})
@@ -208,6 +238,7 @@ target_link_libraries(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE base sdk sdk_common M
 target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} SYSTEM PRIVATE ${JUCE_MODULES_DIR})
 target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/vst3sdk)
 target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
+target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/readerwriterqueue)
 target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
 target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG})
 target_include_directories(${PROJECT_NAME_PLUG_VST3_FX} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE_VST3})
@@ -237,6 +268,7 @@ target_link_libraries(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE base sdk sdk_common
 target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} SYSTEM PRIVATE ${JUCE_MODULES_DIR})
 target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/vst3sdk)
 target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
+target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/readerwriterqueue)
 target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
 target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG})
 target_include_directories(${PROJECT_NAME_PLUG_VST3_INST} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE_VST3})
@@ -310,6 +342,29 @@ else ()
 endif ()
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   source_group(TREE ${PLUG_CLAP_INST_SRC_DIR} FILES ${PLUG_CLAP_INST_SRC_FILES})
+endif()
+
+# plug diskwriter
+set (PLUG_DISKWRITER_SRC_DIR "${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_DISKWRITER}")
+file(GLOB_RECURSE PLUG_DISKWRITER_SRC_FILES "${PLUG_DISKWRITER_SRC_DIR}/*.*")
+add_executable(${PROJECT_NAME_PLUG_DISKWRITER} ${PLUG_DISKWRITER_SRC_FILES})
+target_compile_options(${PROJECT_NAME_PLUG_DISKWRITER} PRIVATE "${FF_COMPILE_OPTIONS}")
+target_link_libraries(${PROJECT_NAME_PLUG_DISKWRITER} PUBLIC juce_plugin_modules)
+target_link_libraries(${PROJECT_NAME_PLUG_DISKWRITER} PRIVATE ${PROJECT_NAME_PLUG})
+target_link_libraries(${PROJECT_NAME_PLUG_DISKWRITER} PRIVATE ${PROJECT_NAME_BASE})
+target_link_libraries(${PROJECT_NAME_PLUG_DISKWRITER} PRIVATE MTS-ESP)
+target_include_directories(${PROJECT_NAME_PLUG_DISKWRITER} SYSTEM PRIVATE ${JUCE_MODULES_DIR})
+target_include_directories(${PROJECT_NAME_PLUG_DISKWRITER} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/xsimd/include)
+target_include_directories(${PROJECT_NAME_PLUG_DISKWRITER} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/clap/include)
+target_include_directories(${PROJECT_NAME_PLUG_DISKWRITER} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/clap-helpers/include)
+target_include_directories(${PROJECT_NAME_PLUG_DISKWRITER} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
+target_include_directories(${PROJECT_NAME_PLUG_DISKWRITER} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG})
+target_include_directories(${PROJECT_NAME_PLUG_DISKWRITER} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_DISKWRITER})
+target_include_directories(${PROJECT_NAME_PLUG_DISKWRITER} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/readerwriterqueue)
+target_compile_definitions(${PROJECT_NAME_PLUG_DISKWRITER} PRIVATE FF_IS_FX=0)
+set_target_properties(${PROJECT_NAME_PLUG_DISKWRITER} PROPERTIES OUTPUT_NAME ${PROJECT_NAME_OUT_DISKWRITER})
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  source_group(TREE ${PLUG_DISKWRITER_SRC_DIR} FILES ${PLUG_DISKWRITER_SRC_FILES})
 endif()
 
 # vst3 fx to dist
@@ -444,6 +499,21 @@ elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
   add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP_INST} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/macos/inst/Info.plist
     "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_INST}.clap/Contents/Info.plist")
+else ()
+  message(FATAL_ERROR "Unsupported platform.")
+endif()
+
+# diskwriter to dist
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_DISKWRITER} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_DISKWRITER}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_DISKWRITER}.exe"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE_DIR:${PROJECT_NAME_PLUG_DISKWRITER}>/${PROJECT_NAME_OUT_DISKWRITER}.pdb
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT_DISKWRITER}.pdb" || (exit 0))
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_DISKWRITER} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_DISKWRITER}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT_DISKWRITER}")
 else ()
   message(FATAL_ERROR "Unsupported platform.")
 endif()

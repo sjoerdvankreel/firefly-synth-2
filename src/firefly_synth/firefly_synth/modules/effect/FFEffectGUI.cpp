@@ -7,7 +7,7 @@
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
@@ -56,7 +56,7 @@ FFEffectParamListener::AudioParamChanged(
 
 bool
 FFEffectAdjustParamModulationGUIBounds(
-  FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
+  FBHostContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
 {
   auto const& rtParam = ctx->Topo()->audio.params[index];
   int staticIndex = ctx->Topo()->modules[rtParam.runtimeModuleIndex].topoIndices.index;

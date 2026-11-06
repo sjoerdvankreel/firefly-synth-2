@@ -22,6 +22,9 @@ struct FBPlugInputBlock final
   float sampleRate = {};
   float prevRoundCpuUsage = {};
   std::uint64_t projectTimeSamples = {};
+  // Non-owning. On the audio thread these point to the full-size DSP clips,
+  // for graph rendering they point to the small GUI clips.
+  std::map<std::string, FBAudioClip const*> const* audioClips = {};
 
   FBVoiceManager* voiceManager = {};
   FBProcStateContainer* procState = {};

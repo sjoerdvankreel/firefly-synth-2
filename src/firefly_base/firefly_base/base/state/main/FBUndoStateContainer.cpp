@@ -1,18 +1,19 @@
 #include <firefly_base/base/state/main/FBUndoStateContainer.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 
 static void
 SwapContextForItem(
-  FBHostGUIContext* hostContext,
+  FBHostContext* hostContext,
   FBUndoItem& item)
 {
   FBScalarStateContainer tempState(*hostContext->Topo());
   tempState.CopyFrom(hostContext, false);
   auto tempParamNameOverrides = hostContext->GetAudioParamNameOverrides();
-  item.state.CopyTo(hostContext, false);
+  hostContext->BulkUpdateAudioParamsToGUI(item.state, false);
   hostContext->SetAudioParamNameOverrides(item.paramNameOverrides);
+  hostContext->PushProcStateToDSP();
   item.state.CopyFrom(hostContext->Topo(), tempState, false);
   item.paramNameOverrides = tempParamNameOverrides;
   std::string tempName(hostContext->PatchName());
@@ -21,15 +22,22 @@ SwapContextForItem(
 }
 
 FBUndoStateContainer::
-FBUndoStateContainer(FBHostGUIContext* hostContext):
+FBUndoStateContainer(FBHostContext* hostContext):
 _hostContext(hostContext) {}
+
+void
+FBUndoStateContainer::Clear()
+{
+  _items.clear();
+  _position = 0;
+}
 
 void 
 FBUndoStateContainer::Undo()
 {
   FB_ASSERT(CanUndo());
   SwapContextForItem(_hostContext, _items[_position - 1]);
-  _hostContext->NotifyHostOfParamNameChanges();
+  _hostContext->NotifyHostOfBulkUpdateAndParamNameChanges();
   _position--;
 }
 
@@ -38,7 +46,7 @@ FBUndoStateContainer::Redo()
 {
   FB_ASSERT(CanRedo());
   SwapContextForItem(_hostContext, _items[_position]);
-  _hostContext->NotifyHostOfParamNameChanges();
+  _hostContext->NotifyHostOfBulkUpdateAndParamNameChanges();
   _position++;
 }
 

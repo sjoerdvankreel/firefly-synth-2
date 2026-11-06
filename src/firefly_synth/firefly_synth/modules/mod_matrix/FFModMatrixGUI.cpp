@@ -8,7 +8,7 @@
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
@@ -445,7 +445,7 @@ FFMakeModMatrixGUI(FFPlugGUI* plugGUI)
 
 bool
 FFModMatrixAdjustParamModulationGUIBounds(
-  FBHostGUIContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
+  FBHostContext const* ctx, int index, float& currentMinNorm, float& currentMaxNorm)
 {
   // Figure out maximum bounds of what the mod matrix would do to the 
   // current value of all sources/scales would use the full 0..1 range.

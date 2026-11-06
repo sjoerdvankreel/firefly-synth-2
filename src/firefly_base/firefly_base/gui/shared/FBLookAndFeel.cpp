@@ -5,7 +5,7 @@
 #include <firefly_base/gui/controls/FBInstanceNameEditor.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBThemingComponent.hpp>

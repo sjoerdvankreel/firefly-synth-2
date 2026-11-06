@@ -16,7 +16,7 @@ struct FBRuntimeTopo;
 struct FBHostExchangeState;
 
 class FBPlugGUI;
-class FBHostGUIContext;
+class FBHostContext;
 class FBGlobalBlockParamState;
 
 enum class FBPlugFormat { VST3, CLAP };
@@ -112,7 +112,7 @@ typedef std::function<std::array<FBVoiceInfo, FBMaxVoices>* (void* state)>
 FBVoicesExchangeAddrSelector;
 
 typedef std::function<std::unique_ptr<FBPlugGUI>(
-  FBHostGUIContext* context)>
+  FBHostContext* context)>
 FBPlugGUIFactory;
 typedef std::function<std::unique_ptr<FBDeserializationConverter>(
   FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo)>
@@ -147,7 +147,6 @@ struct FBStaticTopo
   std::vector<FBTopoIndices> moduleProcessOrder = {};
   std::map<int, FBThemedComponentInfo> themedComponents = {};
 
-  int exchangeStateSize = {};
   FBHostExchangeAddrSelector hostExchangeAddr = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
 

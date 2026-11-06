@@ -12,6 +12,7 @@
 * Various basic waveforms
 * Dedicated FM oscillator
 * Combined string/noise algorithm
+* Sampler oscillator
 * Inter-oscillator AM/FM options
 * Allows external audio as oscillator
 * Optional oversampling

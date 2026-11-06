@@ -9,14 +9,14 @@
 #include <algorithm>
 #include <functional>
 
-class FBHostGUIContext;
+class FBHostContext;
 
 typedef std::function<std::string(
 int moduleIndex, int itemSlot)>
 FBItemSlotFormatter;
 
 typedef std::function<bool(
-FBHostGUIContext const*, int runtimeValue)>
+FBHostContext const*, int runtimeValue)>
 FBItemEnabledSelector;
 
 typedef std::function<bool(

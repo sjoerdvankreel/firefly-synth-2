@@ -16,13 +16,14 @@
 #include <firefly_base/gui/components/FBMarginComponent.hpp>
 #include <firefly_base/gui/components/FBContentComponent.hpp>
 
+#include <map>
 #include <array>
 #include <memory>
 #include <vector>
 
 class FFPlugGUI;
 class FBMSEGEditor;
-class FBHostGUIContext;
+class FBHostContext;
 class FBGraphRenderState;
 class FBModuleGraphComponent;
 class FBAutoSizeTabComponent;
@@ -99,13 +100,18 @@ protected:
   void AfterPatchChanged(bool wasPreview) override;
 
 public:
-  std::function<void()> onPatchLoaded = {};
+  bool osciSampleIsPreviewed = {};
+  bool hadOsciSampleBeforePreview = {};
+  FBAudioClip osciSampleGuiBeforePreview = {};
+  FBAudioClip osciSampleDspBeforePreview = {};
+
   std::function<void(std::string const&)> onPatchNameChanged = {};
   std::function<void(std::string const&)> onInstanceNameChanged = {};
+  std::map<std::string, std::function<void()>> onGUIAudioClipsChanged = {};
 
   ~FFPlugGUI();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
-  FFPlugGUI(FBHostGUIContext* hostContext);
+  FFPlugGUI(FBHostContext* hostContext);
 
   void FlushAudio();
   void SwitchGraphsToModule(int index, int slot);
@@ -114,8 +120,8 @@ public:
   void SwitchDetailsSectionToModule(int index, int slot);
 
   void resized() override;  
-  void OnPatchLoaded() override;
   void RequestGUIReset() override;
+  void OnGUIAudioClipsChanged() override;
   void OnPatchNameChanged(std::string const& name) override;
   void OnInstanceNameChanged(std::string const& name) override;
 

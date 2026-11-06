@@ -1,4 +1,4 @@
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/shared/FBHostContext.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
@@ -45,7 +45,7 @@ _freeRawState(topo.static_->freeRawScalarState)
 }
 
 void 
-FBScalarStateContainer::CopyTo(FBHostGUIContext* context, bool patchOnly) const
+FBScalarStateContainer::CopyTo(FBHostContext* context, bool patchOnly) const
 {
   for (int p = 0; p < Params().size(); p++)
     if(!patchOnly || context->Topo()->audio.params[p].static_.storeInPatch)
@@ -53,7 +53,7 @@ FBScalarStateContainer::CopyTo(FBHostGUIContext* context, bool patchOnly) const
 }
 
 void 
-FBScalarStateContainer::CopyFrom(FBHostGUIContext const* context, bool patchOnly)
+FBScalarStateContainer::CopyFrom(FBHostContext const* context, bool patchOnly)
 {
   for (int p = 0; p < Params().size(); p++)
     if (!patchOnly || context->Topo()->audio.params[p].static_.storeInPatch)
