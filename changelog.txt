@@ -2,6 +2,9 @@
 - GUI:
 - Reverted default theme back to blue & orange - it was prettier vs read & green.
 
+- Bugfix:
+- CLAP wasn't saving param changes that went outside either the plug gui or automation lanes.
+
 - Sampler:
 - Add sampler as an osci type.
 - Removed revert-to-patch/revert-to-session buttons. Too expensive too keep samples in there.
