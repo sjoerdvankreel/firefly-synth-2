@@ -2,7 +2,6 @@
 - check all website
 - all the new docs, screenshots, website, release notes, history etc
 - do a kvr update bc why not
-- close the gh sampling request
 
 [ ] add flstudio Linux to the test set
 [ ] show loaded session/patch + fileformatversion and all that in the aboutbox
