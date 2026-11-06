@@ -64,8 +64,11 @@ FBCLAPPlugin::timerCallback()
   {
     FBCLAPSyncToMainEvent event = {};
     while (_audioToMainEvents.try_dequeue(event))
+    {
+      *_editState->Params()[event.paramIndex] = event.normalized;
       if (_gui)
         _gui->SetAudioParamNormalizedFromHost(event.paramIndex, event.normalized);
+    }
   });
 }
 
