@@ -1,6 +1,6 @@
 November 6, 2026 - v2.1.7.
 - GUI:
-- Reverted default theme back to blue & orange - it was prettier vs read & green.
+- Reverted default theme back to blue & orange - it was prettier vs red & green.
 
 - Bugfix:
 - CLAP wasn't saving param changes that went outside either the plug gui or automation lanes.
