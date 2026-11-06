@@ -1,16 +1,12 @@
-- run the validators
 - check all kvr
 - check all website
 - all the new docs, screenshots, website, release notes, history etc
 - do a kvr update bc why not
-- save all the demo in the new format
-- retest everything /*Linux*/ and mac
 - close the gh sampling request
 - add flstudio Linux to the test set
 - show loaded session/patch + fileformatversion and all that in the aboutbox
 - the repo is big af, do something
 
-[ ] vst3/clap validator
 [ ] do more easy access controls in particular glfo (and maybe more mod sources)
 [ ] fix the comp and the rms comp
 [ ] fix the 1sec delay on plot visuals
